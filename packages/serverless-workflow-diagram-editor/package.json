@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@kie-tools/serverless-workflow-diagram-editor",
   "version": "0.0.0",
   "description": "",
@@ -12,20 +13,16 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "types": "index.d.ts",
-  "main": "index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "build:dev": "run-script-os",
-    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs=$(build-env global.build.testIT --not) -Pno-showcase && pnpm dist",
-    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs=$(build-env global.build.testIT --not) `-Pno-showcase\" && pnpm dist",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs=$(build-env global.build.testIT --not) -Pno-showcase",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs=$(build-env global.build.testIT --not) `-Pno-showcase\"",
     "build:prod": "run-script-os",
-    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env integrationTests.run --not) -Pno-showcase && pnpm dist",
-    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env integrationTests.run --not) `-Pno-showcase\" && pnpm dist",
-    "dist": "rimraf dist && mkdir dist && pnpm dist:sw",
-    "dist:sw": "mkdir \"dist/sw\" && cpr ./sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor ./dist/sw/org.kie.workbench.common.stunner.sw.KogitoSWEditor",
+    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env integrationTests.run --not) -Pno-showcase",
+    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env integrationTests.run --not) `-Pno-showcase\"",
     "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"

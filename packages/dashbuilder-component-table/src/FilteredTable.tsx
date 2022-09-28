@@ -205,7 +205,7 @@ export const FilteredTable = (props: Props) => {
               }}
               selected={isSelectedRow(row)}
               style={
-                isSelectedRow(row) && selectable
+                isSelectedRow(row) && props.selectable
                   ? {
                       backgroundColor: "#DFDFDF",
                     }

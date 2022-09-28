@@ -23,12 +23,19 @@ import { SwfLsNode, SwfLsNodeType } from "./types";
  * @param nodeType the node type where to stop
  * @returns the parent node if found, undefined otherwise
  */
-export function nodeUpUntilType(node: SwfLsNode | undefined, nodeType: SwfLsNodeType): SwfLsNode | undefined {
+export function nodeUpUntilType(
+  node: SwfLsNode | undefined,
+  nodeType: SwfLsNodeType | SwfLsNodeType[]
+): SwfLsNode | undefined {
   if (!node) {
     return;
   }
 
-  if (node.type !== nodeType) {
+  if (!Array.isArray(nodeType)) {
+    return nodeUpUntilType(node, [nodeType]);
+  }
+
+  if (!nodeType.includes(node.type)) {
     return nodeUpUntilType(node.parent, nodeType);
   } else {
     return node;

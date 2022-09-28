@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
 
-const nodePath = require("path");
-const nodeFs = require("fs");
+import { ChartArea, ChartGroup, ChartScatter } from "@patternfly/react-charts";
+import { XYChart } from "./XYChart";
 
-module.exports = {
-  swEditorPath: () => {
-    const path = nodePath.resolve(__dirname, "dist", "sw");
-
-    if (!nodeFs.existsSync(path)) {
-      throw new Error(`Serverless Workflow Editor :: Serverless Editor path doesn't exist: ${path}`);
-    }
-
-    console.info(`Serverless Workflow Editor :: Serverless Editor path: ${path}`);
-
-    return path;
-  },
-};
+export class ScatterChart extends XYChart {
+  buildChartGroup(): any {
+    return (
+      <ChartGroup>
+        {this.dataSetToXYData()
+          .map((line) => this.seriesLines(line))
+          .map((lineData, i) => (
+            <ChartScatter key={i} data={lineData} />
+          ))}
+      </ChartGroup>
+    );
+  }
+}

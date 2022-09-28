@@ -44,7 +44,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate.Style;
 
 public class LayoutTemplateJSONMarshaller {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LayoutTemplateJSONMarshaller.class);
 
     private static final String PART_ID = "partId";
@@ -101,6 +101,8 @@ public class LayoutTemplateJSONMarshaller {
         return instance;
     }
 
+    private int pageCounter;
+
     public JsonObject toJson(LayoutTemplate lt) {
         var jsonObject = Json.createObject();
         jsonObject.set(STYLE, Json.create(lt.getStyle().name()));
@@ -123,7 +125,7 @@ public class LayoutTemplateJSONMarshaller {
         var name = object.getString(NAME);
         var rows = object.getArray(ROWS);
         var components = object.getArray(COMPONENTS);
-        template.setName(name == null ? "Page " + System.currentTimeMillis() : name);
+        template.setName(name == null ? "Page " + (++pageCounter) : name);
         template.setStyle(style == null ? Style.FLUID : Style.valueOf(style));
         extractProperties(object.getObject(LAYOUT_PROPERTIES), template::addLayoutProperty);
         extractProperties(object.getObject(PROPERTIES), template::addLayoutProperty);
@@ -218,7 +220,7 @@ public class LayoutTemplateJSONMarshaller {
         if (settings != null) {
             try {
                 component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
-            } catch(Exception e) {
+            } catch (Exception e) {
                 // just log the error and let displayers handle missing configuration
                 LOGGER.warn("Error reading component settings", e);
             }
@@ -392,6 +394,13 @@ public class LayoutTemplateJSONMarshaller {
             objectConsumer.accept(objectExtractor.apply(array.getObject(i), i + 1));
         }
 
+    }
+
+    /**
+     * Resets the page counter to generate numeric names
+     */
+    public void resetPageCounter() {
+        this.pageCounter = 0;
     }
 
 }

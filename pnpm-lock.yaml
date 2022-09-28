@@ -722,7 +722,7 @@ importers:
       "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
       "@kie-tools/serverless-workflow-text-editor": workspace:*
@@ -757,7 +757,7 @@ importers:
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
@@ -2789,6 +2789,7 @@ importers:
       "@kie-tools/pmml-editor-marshaller": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -2814,6 +2815,7 @@ importers:
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/pmml-editor-marshaller": link:../pmml-editor-marshaller
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
@@ -2957,7 +2959,7 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
       copyfiles: ^2.4.1
-      dexie: ^3.0.3
+      dexie: ^3.2.2
       isomorphic-textencoder: ^1.0.1
       just-debounce-it: ^3.0.1
       just-once: ^2.0.1
@@ -2978,7 +2980,7 @@ importers:
       typescript: ^4.4.2
     dependencies:
       "@isomorphic-git/idb-keyval": 3.3.2
-      dexie: 3.0.3
+      dexie: 3.2.2
       isomorphic-textencoder: 1.0.1
       just-debounce-it: 3.0.1
       just-once: 2.0.1
@@ -3568,7 +3570,7 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
@@ -3596,6 +3598,9 @@ importers:
       axios: ^0.27.2
       buffer: ^6.0.3
       copy-webpack-plugin: ^8.1.1
+      cypress: ^10.7.0
+      cypress-iframe: ^1.0.1
+      cypress-log-to-output: ^1.1.2
       history: ^4.9.0
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
@@ -3617,6 +3622,7 @@ importers:
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
       rimraf: ^3.0.2
+      start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       uuid: ^8.3.2
@@ -3641,7 +3647,7 @@ importers:
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
@@ -3697,6 +3703,9 @@ importers:
       "@types/react-router-dom": 5.1.7
       "@types/uuid": 8.3.0
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      cypress: 10.7.0
+      cypress-iframe: 1.0.1
+      cypress-log-to-output: 1.1.2
       html-replace-webpack-plugin: 2.6.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
@@ -3704,6 +3713,7 @@ importers:
       jest-when: 3.5.0_jest@26.6.3
       monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
       rimraf: 3.0.2
+      start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       webpack: 5.70.0_webpack-cli@4.7.0
@@ -3824,7 +3834,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
@@ -3873,7 +3883,7 @@ importers:
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
@@ -3936,6 +3946,16 @@ importers:
       rimraf: 3.0.2
       run-script-os: 1.1.6
       symlink-dir: 5.0.1
+
+  packages/serverless-workflow-diagram-editor-assets:
+    specifiers:
+      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      cpr: ^3.0.1
+      rimraf: ^3.0.2
+    devDependencies:
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      cpr: 3.0.1
+      rimraf: 3.0.2
 
   packages/serverless-workflow-diagram-editor-envelope:
     specifiers:
@@ -4075,6 +4095,7 @@ importers:
       "@types/svg-pan-zoom": ^3.4.0
       "@types/testing-library__jest-dom": ^5.9.1
       copy-webpack-plugin: ^8.1.1
+      copyfiles: ^2.4.1
       cypress: ^10.7.0
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
@@ -4082,7 +4103,7 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      mermaid: ^9.0.0
+      mermaid: ^9.1.7
       react: ^17.0.2
       react-dom: ^17.0.2
       rimraf: ^3.0.2
@@ -4106,7 +4127,7 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       "@severlessworkflow/sdk-typescript": 3.0.3
-      mermaid: 9.0.0_cypress@10.7.0+jest@26.6.3
+      mermaid: 9.1.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       svg-pan-zoom: 3.6.1
@@ -4126,6 +4147,7 @@ importers:
       "@types/svg-pan-zoom": 3.4.0
       "@types/testing-library__jest-dom": 5.9.5
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copyfiles: 2.4.1
       cypress: 10.7.0
       cypress-file-upload: 5.0.8_cypress@10.7.0
       cypress-iframe: 1.0.1
@@ -5222,7 +5244,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
@@ -5285,7 +5307,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/root-env": link:../root-env
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/chai": 4.2.18
       "@types/mocha": 8.2.2
@@ -11229,6 +11251,7 @@ packages:
     resolution:
       { integrity: sha512-TIGnTpdo+E3+pCyAluZvtED5p5wCqLdezCyhPZzKPcxvFplEt4i+W7OONCKgeZFT3+y5NZZfOOS/Bdcanm1MYA== }
     engines: { node: ">=0.10.0" }
+    dev: true
 
   /ansi-regex/3.0.1:
     resolution:
@@ -11257,6 +11280,7 @@ packages:
   /ansi-styles/2.2.1:
     resolution: { integrity: sha1-tDLdM1i2NM914eRmQ2gkBTPB3b4= }
     engines: { node: ">=0.10.0" }
+    dev: true
 
   /ansi-styles/3.2.1:
     resolution:
@@ -11264,6 +11288,7 @@ packages:
     engines: { node: ">=4" }
     dependencies:
       color-convert: 1.9.3
+    dev: true
 
   /ansi-styles/4.3.0:
     resolution:
@@ -11300,6 +11325,7 @@ packages:
     engines: { node: ">=8" }
     dependencies:
       execa: 1.0.0
+    dev: true
 
   /aproba/1.2.0:
     resolution:
@@ -13070,6 +13096,7 @@ packages:
       has-ansi: 2.0.0
       strip-ansi: 3.0.1
       supports-color: 2.0.0
+    dev: true
 
   /chalk/2.4.2:
     resolution:
@@ -13079,6 +13106,7 @@ packages:
       ansi-styles: 3.2.1
       escape-string-regexp: 1.0.5
       supports-color: 5.5.0
+    dev: true
 
   /chalk/3.0.0:
     resolution:
@@ -13445,6 +13473,7 @@ packages:
       { integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg== }
     dependencies:
       color-name: 1.1.3
+    dev: true
 
   /color-convert/2.0.1:
     resolution:
@@ -13456,6 +13485,7 @@ packages:
   /color-name/1.1.3:
     resolution:
       { integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw== }
+    dev: true
 
   /color-name/1.1.4:
     resolution:
@@ -13741,7 +13771,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -13909,6 +13939,7 @@ packages:
       semver: 5.7.1
       shebang-command: 1.2.0
       which: 1.3.1
+    dev: true
 
   /cross-spawn/7.0.3:
     resolution:
@@ -14170,6 +14201,7 @@ packages:
       term-img: 4.1.0
     transitivePeerDependencies:
       - jest
+    dev: true
 
   /cypress-log-to-output/1.1.2:
     resolution:
@@ -15287,9 +15319,9 @@ packages:
       - utf-8-validate
     dev: true
 
-  /dexie/3.0.3:
+  /dexie/3.2.2:
     resolution:
-      { integrity: sha512-BSFhGpngnCl1DOr+8YNwBDobRMH0ziJs2vts69VilwetHYOtEDcLqo7d/XiIphM0tJZ2rPPyAGd31lgH2Ln3nw== }
+      { integrity: sha512-q5dC3HPmir2DERlX+toCBbHQXW5MsyrFqPFcovkH9N2S/UW/H3H5AWAB6iEOExeraAu+j+zRDG+zg/D7YhH0qg== }
     engines: { node: ">=6.0" }
     dev: false
 
@@ -15427,9 +15459,9 @@ packages:
       domelementtype: 2.2.0
     dev: true
 
-  /dompurify/2.3.6:
+  /dompurify/2.4.0:
     resolution:
-      { integrity: sha512-OFP2u/3T1R5CEgWCEONuJ1a5+MFKnOYpkywpUSxv/dj1LeBT1erK+JwM7zK0ROy2BRhqVCf0LRw/kHqKuMkVGg== }
+      { integrity: sha512-Be9tbQMZds4a3C6xTmz68NlMfeONA//4dOavl/1rNw50E+/QO0KVpbcU0PcaW0nsQxurXls9ZocqFxk8R2mWEA== }
     dev: false
 
   /domutils/2.8.0:
@@ -16320,6 +16352,7 @@ packages:
       p-finally: 1.0.0
       signal-exit: 3.0.3
       strip-eof: 1.0.0
+    dev: true
 
   /execa/3.4.0:
     resolution:
@@ -16856,6 +16889,7 @@ packages:
     engines: { node: ">=6" }
     dependencies:
       locate-path: 3.0.0
+    dev: true
 
   /find-up/4.1.0:
     resolution:
@@ -17044,6 +17078,7 @@ packages:
       graceful-fs: 4.2.10
       jsonfile: 4.0.0
       universalify: 0.1.2
+    dev: true
 
   /fs-extra/8.1.0:
     resolution:
@@ -17088,6 +17123,7 @@ packages:
   /fs.realpath/1.0.0:
     resolution:
       { integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw== }
+    dev: true
 
   /fsevents/2.3.2:
     resolution:
@@ -17218,6 +17254,7 @@ packages:
   /get-stdin/5.0.1:
     resolution: { integrity: sha1-Ei4WFZHiH/TFJTAwVpPyDmOTo5g= }
     engines: { node: ">=0.12.0" }
+    dev: true
 
   /get-stream/2.3.1:
     resolution:
@@ -17319,6 +17356,7 @@ packages:
       minimatch: 3.0.5
       once: 1.4.0
       path-is-absolute: 1.0.1
+    dev: true
 
   /global-agent/2.2.0:
     resolution:
@@ -17430,6 +17468,7 @@ packages:
 
   /glur/1.1.2:
     resolution: { integrity: sha1-8g6jbbEDv8KSNDkh8fkeg8NGdok= }
+    dev: true
 
   /got/11.8.2:
     resolution:
@@ -17552,6 +17591,7 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       ansi-regex: 2.1.1
+    dev: true
 
   /has-bigints/1.0.1:
     resolution:
@@ -17562,6 +17602,7 @@ packages:
     resolution:
       { integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw== }
     engines: { node: ">=4" }
+    dev: true
 
   /has-flag/4.0.0:
     resolution:
@@ -18123,6 +18164,7 @@ packages:
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
+    dev: true
 
   /inherits/2.0.3:
     resolution:
@@ -18543,6 +18585,7 @@ packages:
     resolution:
       { integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ== }
     engines: { node: ">=0.10.0" }
+    dev: true
 
   /is-stream/2.0.0:
     resolution:
@@ -18631,6 +18674,7 @@ packages:
   /isexe/2.0.0:
     resolution:
       { integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw== }
+    dev: true
 
   /isobject/2.1.0:
     resolution:
@@ -18748,6 +18792,7 @@ packages:
     dependencies:
       app-path: 3.3.0
       plist: 3.0.5
+    dev: true
 
   /jasmine-core/3.99.0:
     resolution:
@@ -18933,6 +18978,7 @@ packages:
       pngjs: 3.4.0
       rimraf: 2.7.1
       ssim.js: 3.5.0
+    dev: true
 
   /jest-jasmine2/26.6.3:
     resolution:
@@ -19745,9 +19791,9 @@ packages:
       json-buffer: 3.0.1
     dev: true
 
-  /khroma/1.4.1:
+  /khroma/2.0.0:
     resolution:
-      { integrity: sha512-+GmxKvmiRuCcUYDgR7g5Ngo0JEDeOsGdNONdU2zsiBQaK4z19Y2NvXqfEDE0ZiIrg45GTZyAnPLVsLZZACYm3Q== }
+      { integrity: sha512-2J8rDNlQWbtiNYThZRvmMv5yt44ZakX+Tz5ZIp/mN1pt4snn+m030Va5Z4v8xA0cQFDXBwO/8i42xL4QPsVk3g== }
     dev: false
 
   /kind-of/3.2.2:
@@ -20091,6 +20137,7 @@ packages:
     dependencies:
       p-locate: 3.0.0
       path-exists: 3.0.0
+    dev: true
 
   /locate-path/5.0.0:
     resolution:
@@ -20507,23 +20554,19 @@ packages:
     engines: { node: ">= 8" }
     dev: true
 
-  /mermaid/9.0.0_cypress@10.7.0+jest@26.6.3:
+  /mermaid/9.1.7:
     resolution:
-      { integrity: sha512-HN0gHZ1+2RnyCR/7pS3ceRMGlt/2PpWAM5dUAzTEQ4nmMOM2Ix7XodcPkQbA7BradLQ5LwFhlH5jcMu1LARl1Q== }
+      { integrity: sha512-MRVHXy5FLjnUQUG7YS3UN9jEN6FXCJbFCXVGJQjVIbiR6Vhw0j/6pLIjqsiah9xoHmQU6DEaKOvB3S1g/1nBPA== }
     dependencies:
       "@braintree/sanitize-url": 6.0.0
-      cypress-image-snapshot: 4.0.1_cypress@10.7.0+jest@26.6.3
       d3: 7.3.0
       dagre: 0.8.5
       dagre-d3: 0.6.4
-      dompurify: 2.3.6
+      dompurify: 2.4.0
       graphlib: 2.1.8
-      khroma: 1.4.1
+      khroma: 2.0.0
       moment-mini: 2.24.0
       stylis: 4.0.13
-    transitivePeerDependencies:
-      - cypress
-      - jest
     dev: false
 
   /message-box/0.2.7:
@@ -21146,6 +21189,7 @@ packages:
   /nice-try/1.0.5:
     resolution:
       { integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ== }
+    dev: true
 
   /nise/5.1.0:
     resolution:
@@ -21482,6 +21526,7 @@ packages:
     engines: { node: ">=4" }
     dependencies:
       path-key: 2.0.1
+    dev: true
 
   /npm-run-path/4.0.1:
     resolution:
@@ -21816,6 +21861,7 @@ packages:
     resolution:
       { integrity: sha512-LICb2p9CB7FS+0eR1oqWnHhp0FljGLZCWBE9aix0Uye9W8LTQPwMTYVGWQWIw9RdQiDg4+epXQODwIYJtSJaow== }
     engines: { node: ">=4" }
+    dev: true
 
   /p-finally/2.0.1:
     resolution:
@@ -21843,6 +21889,7 @@ packages:
     engines: { node: ">=6" }
     dependencies:
       p-try: 2.2.0
+    dev: true
 
   /p-limit/3.1.0:
     resolution:
@@ -21866,6 +21913,7 @@ packages:
     engines: { node: ">=6" }
     dependencies:
       p-limit: 2.3.0
+    dev: true
 
   /p-locate/4.1.0:
     resolution:
@@ -21957,6 +22005,7 @@ packages:
     resolution:
       { integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ== }
     engines: { node: ">=6" }
+    dev: true
 
   /pacote/12.0.2:
     resolution:
@@ -22163,6 +22212,7 @@ packages:
   /path-exists/3.0.0:
     resolution: { integrity: sha1-zg6+ql94yxiSXqfYENe1mwEP1RU= }
     engines: { node: ">=4" }
+    dev: true
 
   /path-exists/4.0.0:
     resolution:
@@ -22174,11 +22224,13 @@ packages:
     resolution:
       { integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg== }
     engines: { node: ">=0.10.0" }
+    dev: true
 
   /path-key/2.0.1:
     resolution:
       { integrity: sha512-fEHGKCSmUSDPv4uoj8AlD+joPlq3peND+HRYyxFz4KPw4z926S/b8rIuFs2FYJg3BwsxJf6A9/3eIdLaYC+9Dw== }
     engines: { node: ">=4" }
+    dev: true
 
   /path-key/3.1.1:
     resolution:
@@ -22327,6 +22379,7 @@ packages:
     hasBin: true
     dependencies:
       pngjs: 4.0.1
+    dev: true
 
   /pkg-dir/3.0.0:
     resolution:
@@ -22334,6 +22387,7 @@ packages:
     engines: { node: ">=6" }
     dependencies:
       find-up: 3.0.0
+    dev: true
 
   /pkg-dir/4.2.0:
     resolution:
@@ -22450,6 +22504,7 @@ packages:
     dependencies:
       base64-js: 1.5.1
       xmlbuilder: 9.0.7
+    dev: true
 
   /pluralize/7.0.0:
     resolution:
@@ -22461,11 +22516,13 @@ packages:
     resolution:
       { integrity: sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w== }
     engines: { node: ">=4.0.0" }
+    dev: true
 
   /pngjs/4.0.1:
     resolution:
       { integrity: sha512-rf5+2/ioHeQxR6IxuYNYGFytUyG3lma/WW1nsmjeHlWwtb2aByla6dkVc8pmJ9nplzkTA0q2xx7mMWrOTqT4Gg== }
     engines: { node: ">=8.0.0" }
+    dev: true
 
   /pngjs/5.0.0:
     resolution:
@@ -23377,7 +23434,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0
     dev: true
 
   /rc/1.2.8:
@@ -24248,6 +24305,7 @@ packages:
     hasBin: true
     dependencies:
       glob: 7.2.0
+    dev: true
 
   /rimraf/3.0.2:
     resolution:
@@ -24554,6 +24612,7 @@ packages:
     resolution:
       { integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ== }
     hasBin: true
+    dev: true
 
   /semver/6.3.0:
     resolution:
@@ -24724,6 +24783,7 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       shebang-regex: 1.0.0
+    dev: true
 
   /shebang-command/2.0.0:
     resolution:
@@ -24737,6 +24797,7 @@ packages:
     resolution:
       { integrity: sha512-wpoSFAxys6b2a2wHZ1XpDSgD7N9iVjg29Ph9uV/uaP9Ex/KXlkTZTeddxDPSYQpgvzKLGJke2UU0AzoGCjNIvQ== }
     engines: { node: ">=0.10.0" }
+    dev: true
 
   /shebang-regex/3.0.0:
     resolution:
@@ -25206,6 +25267,7 @@ packages:
   /ssim.js/3.5.0:
     resolution:
       { integrity: sha512-Aj6Jl2z6oDmgYFFbQqK7fght19bXdOxY7Tj03nF+03M9gCBAjeIiO8/PlEGMfKDwYpw4q6iBqVq2YuREorGg/g== }
+    dev: true
 
   /ssri/8.0.1:
     resolution:
@@ -25415,6 +25477,7 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       ansi-regex: 2.1.1
+    dev: true
 
   /strip-ansi/6.0.1:
     resolution:
@@ -25454,6 +25517,7 @@ packages:
     resolution:
       { integrity: sha512-7FCwGGmx8mD5xQd3RPUvnSpUXHM3BWuzjtpD4TXsfcZ9EL4azvVVUscFYwD9nx8Kh+uCBC00XBtAykoMHwTh8Q== }
     engines: { node: ">=0.10.0" }
+    dev: true
 
   /strip-final-newline/2.0.0:
     resolution:
@@ -25559,6 +25623,7 @@ packages:
   /supports-color/2.0.0:
     resolution: { integrity: sha1-U10EXOa2Nj+kARcIRimZXp3zJMc= }
     engines: { node: ">=0.8.0" }
+    dev: true
 
   /supports-color/5.5.0:
     resolution:
@@ -25566,6 +25631,7 @@ packages:
     engines: { node: ">=4" }
     dependencies:
       has-flag: 3.0.0
+    dev: true
 
   /supports-color/7.2.0:
     resolution:
@@ -25765,6 +25831,7 @@ packages:
     dependencies:
       ansi-escapes: 4.3.2
       iterm2-version: 4.2.0
+    dev: true
 
   /terminal-link/2.1.1:
     resolution:
@@ -27651,6 +27718,7 @@ packages:
     hasBin: true
     dependencies:
       isexe: 2.0.0
+    dev: true
 
   /which/2.0.2:
     resolution:
@@ -27825,6 +27893,7 @@ packages:
   /xmlbuilder/9.0.7:
     resolution: { integrity: sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0= }
     engines: { node: ">=4.0" }
+    dev: true
 
   /xmlbuilder2/2.4.1:
     resolution:

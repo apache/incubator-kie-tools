@@ -45,7 +45,7 @@
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-serverless-workflow-editor" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
-      { "id": "@kie-tools/serverless-workflow-diagram-editor" },
+      { "id": "@kie-tools/serverless-workflow-diagram-editor-assets" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-mermaid-viewer" },
       { "id": "@kie-tools/serverless-workflow-text-editor" },
@@ -97,6 +97,7 @@
       { "id": "@kie-tools/serverless-logic-sandbox-base-image-env" },
       { "id": "@kie-tools/serverless-logic-sandbox-base-image" },
       { "id": "@kie-tools/serverless-logic-sandbox-deployment-webapp" },
+      { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "vscode-extension-backend" },
@@ -272,7 +273,7 @@
       },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
       {
@@ -291,11 +292,10 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-workflow-diagram-editor",
-        "target": "@kie-tools/maven-config-setup-helper",
+        "source": "@kie-tools/serverless-workflow-diagram-editor-assets",
+        "target": "@kie-tools/serverless-workflow-diagram-editor",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-diagram-editor-envelope",
         "target": "@kie-tools/kie-bc-editors",
@@ -588,6 +588,12 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-workflow-diagram-editor",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
+      {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/serverless-workflow-service-catalog",
         "weight": 1
@@ -676,7 +682,7 @@
       },
       {
         "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
       { "source": "vscode-extension-yard-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
@@ -763,6 +769,7 @@
     ["@kie-tools/serverless-logic-sandbox-deployment-webapp", "packages/serverless-logic-sandbox-deployment-webapp"],
     ["@kie-tools/serverless-workflow-combined-editor", "packages/serverless-workflow-combined-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
+    ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
     ["@kie-tools/serverless-workflow-mermaid-viewer", "packages/serverless-workflow-mermaid-viewer"],

@@ -81,16 +81,16 @@ public class DataSetContentListener {
 
     public void register(@Observes NewDataSetContentEvent newDataSetContentEvent) {
         runtimeModelDatasetContents.put(newDataSetContentEvent.getRuntimeModelId(),
-                                        newDataSetContentEvent.getContent()
-                                                              .stream()
-                                                              .map(DataSetContent::getId)
-                                                              .collect(Collectors.toList()));
+                newDataSetContentEvent.getContent()
+                        .stream()
+                        .map(DataSetContent::getId)
+                        .collect(Collectors.toList()));
         newDataSetContentEvent.getContent()
-                              .forEach(this::registerDataSetContent);
+                .forEach(this::registerDataSetContent);
     }
 
     public void unregister(@Observes RemovedRuntimeModelEvent removedRuntimeModelEvent) {
-        List<String> removedIds = runtimeModelDatasetContents.remove(removedRuntimeModelEvent.getRuntimeModelId());
+        var removedIds = runtimeModelDatasetContents.remove(removedRuntimeModelEvent.getRuntimeModelId());
         if (removedIds != null) {
             removedIds.forEach(id -> {
                 storage.deleteCSVFile(id);
@@ -128,9 +128,9 @@ public class DataSetContentListener {
         } catch (Exception e) {
             logger.warn("Ignoring Dataset {}: error parsing Json", content.getId());
             logger.debug("Error parsing dataset {}. Content: {}",
-                         content.getId(),
-                         content.getContent(),
-                         e);
+                    content.getId(),
+                    content.getContent(),
+                    e);
             return;
         }
 
@@ -150,7 +150,8 @@ public class DataSetContentListener {
 
     private void checkRemoteDataSetDef(RemoteDataSetDef remoteDef) {
         kieServerConnectionInfoProvider.get(remoteDef.getUUID(), remoteDef.getServerTemplateId())
-                                       .orElseThrow(() -> new RuntimeException("Configuration for remote dataset" + remoteDef.getName() + " not found"));
+                .orElseThrow(() -> new RuntimeException("Configuration for remote dataset" + remoteDef.getName() +
+                        " not found"));
 
     }
 

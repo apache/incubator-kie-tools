@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { DmnEditorChannelApi, DmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/dmn/api";
 import { DmnEditor, DmnEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/dmn/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 EditorEnvelope.initCustom<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
