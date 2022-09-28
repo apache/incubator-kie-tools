@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.image.JsImageBitmap;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.LinearGradient;
@@ -345,11 +346,23 @@ public class Context2D {
         m_jso.drawImage(image, x, y);
     }
 
+    public void drawImage(final JsImageBitmap image, final double x, final double y) {
+        m_jso.drawImage(image, x, y);
+    }
+
     public void drawImage(final HTMLImageElement image, final double x, final double y, final double w, final double h) {
         m_jso.drawImage(image, x, y, w, h);
     }
 
+    public void drawImage(final JsImageBitmap image, final double x, final double y, final double w, final double h) {
+        m_jso.drawImage(image, x, y, w, h);
+    }
+
     public void drawImage(final HTMLImageElement image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h) {
+        m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
+    }
+
+    public void drawImage(final JsImageBitmap image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h) {
         m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }
 

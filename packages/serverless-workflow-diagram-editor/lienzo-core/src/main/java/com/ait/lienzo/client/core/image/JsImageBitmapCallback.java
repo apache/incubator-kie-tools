@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package com.ait.lienzo.client.widget.panel;
+package com.ait.lienzo.client.core.image;
 
-import elemental2.dom.Element;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class ResizeObserver {
+@JsType(isNative = true, namespace = "<global>")
+public interface JsImageBitmapCallback {
 
-    public ResizeObserver(ResizeCallback callback) {
-    }
+    void onSuccess(JsImageBitmap image);
 
-    public native void observe(Element element);
-
-    public native void unobserve(Element element);
-
-    public native void disconnect();
+    void onError(Object error);
 }

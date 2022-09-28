@@ -18,41 +18,39 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.widget.RootPanel;
-import elemental2.dom.HTMLImageElement;
+import jsinterop.base.Js;
 
-public class ImageElementProxy {
+public class ImageBitmapProxy {
 
-    private HTMLImageElement imageElement;
+    private JsImageBitmap image;
 
-    public ImageElementProxy() {
+    public ImageBitmapProxy() {
     }
 
-    ImageElementProxy(HTMLImageElement imageElement) {
-        this.imageElement = imageElement;
+    ImageBitmapProxy(JsImageBitmap imageBitmap) {
+        this.image = imageBitmap;
     }
 
     public void load(final String url,
                      final Runnable callback) {
-        assert null == imageElement;
+        assert null == image;
 
-        new ImageLoader(url) {
-
+        JsImageBitmap.loadImageBitmap(url, new JsImageBitmapCallback() {
             @Override
-            public void onImageElementLoad(final HTMLImageElement image) {
-                ImageElementProxy.this.imageElement = image;
+            public void onSuccess(JsImageBitmap image) {
+                ImageBitmapProxy.this.image = Js.uncheckedCast(image);
                 callback.run();
             }
 
             @Override
-            public void onImageElementError(final String errorMessage) {
-                LienzoCore.get().error("Error loading Image. Message: [" + errorMessage + "]");
+            public void onError(Object error) {
+                LienzoCore.get().error("Error loading Image. Message: [" + error.toString() + "]");
             }
-        };
+        });
     }
 
     public void draw(final Context2D context) {
-        context.drawImage(imageElement, 0, 0);
+        context.drawImage(image, 0, 0);
     }
 
     public void draw(final Context2D context,
@@ -69,23 +67,22 @@ public class ImageElementProxy {
         final double destWide = _destWide > 0 ? _destWide : width;
         final double _destHigh = clipBounds.getDestHigh();
         final double destHigh = _destHigh > 0 ? _destHigh : height;
-        context.drawImage(imageElement, clipX, clipY, clipWide, clipHigh, 0, 0, destWide, destHigh);
+        context.drawImage(image, clipX, clipY, clipWide, clipHigh, 0, 0, destWide, destHigh);
     }
 
     public boolean isLoaded() {
-        return null != imageElement;
+        return null != image;
     }
 
     public int getWidth() {
-        return isLoaded() ? imageElement.width : 0;
+        return isLoaded() ? image.getWidth() : 0;
     }
 
     public int getHeight() {
-        return isLoaded() ? imageElement.height : 0;
+        return isLoaded() ? image.getHeight() : 0;
     }
 
     public void destroy() {
-        RootPanel.get().remove(imageElement);
-        imageElement = null;
+        image.close();
     }
 }
