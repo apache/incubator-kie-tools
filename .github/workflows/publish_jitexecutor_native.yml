@@ -130,7 +130,7 @@ jobs:
 
       - name: "Pack and publish"
         working-directory: ./.github/supporting-files/publish_jitexecutor_native
-        if: ${{ github.event.inputs.npm_version && github.event.inputs.kogito_runtime_version }}
+        if: github.event_name != 'pull_request'
         env:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
