@@ -1685,7 +1685,7 @@ states:
     });
 
     describe("functionRef arguments completion", () => {
-      test("without any function aruments to complete", async () => {
+      test("without any function arguments to complete", async () => {
         const testRelativeService1WithEmptyFunctionArgs = {
           ...testRelativeService1,
           functions: [{ ...testRelativeFunction1, arguments: {} }],
