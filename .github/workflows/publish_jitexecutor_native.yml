@@ -105,6 +105,7 @@ jobs:
 
   pack_and_publish:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     needs: [build_jitexecutor_native_binaries]
     steps:
       - name: "Checkout kie-tools"
@@ -130,7 +131,6 @@ jobs:
 
       - name: "Pack and publish"
         working-directory: ./.github/supporting-files/publish_jitexecutor_native
-        if: github.event_name != 'pull_request'
         env:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
