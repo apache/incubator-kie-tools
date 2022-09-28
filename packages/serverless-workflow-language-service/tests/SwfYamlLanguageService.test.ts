@@ -559,7 +559,7 @@ functions:
       const doc = TextDocument.create(documentUri, FileLanguage.YAML, 0, content);
       const cursorOffset = doc.offsetAt(cursorPosition);
 
-      return ls.isNodeUncompleted({
+      return isNodeUncompleted({
         content,
         uri: documentUri,
         rootNode: rootNode!,
@@ -1685,7 +1685,7 @@ states:
     });
 
     describe("functionRef arguments completion", () => {
-      test("without any function to complete", async () => {
+      test("without any function aruments to complete", async () => {
         const testRelativeService1WithEmptyFunctionArgs = {
           ...testRelativeService1,
           functions: [{ ...testRelativeFunction1, arguments: {} }],
