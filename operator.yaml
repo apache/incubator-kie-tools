@@ -11,6 +11,299 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
+  name: kogitoserverlessbuilds.sw.kogito.kie.org
+spec:
+  group: sw.kogito.kie.org
+  names:
+    kind: KogitoServerlessBuild
+    listKind: KogitoServerlessBuildList
+    plural: kogitoserverlessbuilds
+    singular: kogitoserverlessbuild
+  scope: Namespaced
+  versions:
+  - name: v08
+    schema:
+      openAPIV3Schema:
+        description: KogitoServerlessBuild is the Schema for the kogitoserverlessbuilds API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: KogitoServerlessBuildSpec defines the desired state of KogitoServerlessBuild
+            properties:
+              buildPhase:
+                description: BuildPhase --
+                type: string
+              dockerfile:
+                format: byte
+                type: string
+              imageName:
+                type: string
+              podMiddleName:
+                type: string
+              workflowId:
+                type: string
+            type: object
+          status:
+            description: KogitoServerlessBuildStatus defines the observed state of KogitoServerlessBuild
+            properties:
+              applied:
+                description: KogitoServerlessBuildSpec defines the desired state of KogitoServerlessBuild
+                properties:
+                  buildPhase:
+                    description: BuildPhase --
+                    type: string
+                  dockerfile:
+                    format: byte
+                    type: string
+                  imageName:
+                    type: string
+                  podMiddleName:
+                    type: string
+                  workflowId:
+                    type: string
+                type: object
+              buildPhase:
+                description: BuildPhase --
+                type: string
+              builder:
+                description: Build is the Schema for the builder API. Follows the Kubernetes resource structure, but it's not tied to it. Can be used in any environment.
+                properties:
+                  meta:
+                    description: ObjectReference is a subset of the kubernetes k8s.io/apimachinery/pkg/apis/meta/v1.Object interface. Objects in this API not necessarily represent Kubernetes objects, but this structure can help when needed.
+                    properties:
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                  spec:
+                    description: BuildSpec defines the Build operation to be executed
+                    properties:
+                      strategy:
+                        description: The strategy that should be used to perform the Build.
+                        enum:
+                        - routine
+                        - pod
+                        type: string
+                      tasks:
+                        description: The sequence of Build tasks to be performed as part of the Build execution.
+                        items:
+                          description: Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
+                          properties:
+                            kaniko:
+                              description: a KanikoTask, for Kaniko strategy
+                              properties:
+                                baseImage:
+                                  description: base image layer
+                                  type: string
+                                cache:
+                                  description: use a cache
+                                  properties:
+                                    enabled:
+                                      description: true if a cache is enabled
+                                      type: boolean
+                                    persistentVolumeClaim:
+                                      description: the PVC used to store the cache
+                                      type: string
+                                  type: object
+                                contextDir:
+                                  description: can be useful to share info with other tasks
+                                  type: string
+                                image:
+                                  description: final image name
+                                  type: string
+                                name:
+                                  description: name of the task
+                                  type: string
+                                registry:
+                                  description: where to publish the final image
+                                  properties:
+                                    address:
+                                      description: the URI to access
+                                      type: string
+                                    ca:
+                                      description: the configmap which stores the Certificate Authority
+                                      type: string
+                                    insecure:
+                                      description: if the container registry is insecure (ie, http only)
+                                      type: boolean
+                                    organization:
+                                      description: the registry organization
+                                      type: string
+                                    secret:
+                                      description: the secret where credentials are stored
+                                      type: string
+                                  type: object
+                                verbose:
+                                  description: log more information
+                                  type: boolean
+                              type: object
+                          type: object
+                        type: array
+                      timeout:
+                        description: Timeout defines the Build maximum execution duration. The Build deadline is set to the Build start time plus the Timeout duration. If the Build deadline is exceeded, the Build context is canceled, and its phase set to BuildPhaseFailed.
+                        format: duration
+                        type: string
+                    type: object
+                  status:
+                    description: BuildStatus defines the observed state of Build
+                    properties:
+                      baseImage:
+                        description: the base image used for this build
+                        type: string
+                      conditions:
+                        description: a list of conditions occurred during the build
+                        items:
+                          description: BuildCondition describes the state of a resource at a certain point.
+                          properties:
+                            lastTransitionTime:
+                              description: Last time the condition transitioned from one status to another.
+                              format: date-time
+                              type: string
+                            lastUpdateTime:
+                              description: The last time this condition was updated.
+                              format: date-time
+                              type: string
+                            message:
+                              description: A human-readable message indicating details about the transition.
+                              type: string
+                            reason:
+                              description: The reason for the condition's last transition.
+                              type: string
+                            status:
+                              description: Status of the condition, one of True, False, Unknown.
+                              type: string
+                            type:
+                              description: Type of integration condition.
+                              type: string
+                          required:
+                          - status
+                          - type
+                          type: object
+                        type: array
+                      digest:
+                        description: the digest from image
+                        type: string
+                      duration:
+                        description: how long it took for the build Change to Duration / ISO 8601 when CRD uses OpenAPI spec v3 https://github.com/OAI/OpenAPI-Specification/issues/845
+                        type: string
+                      error:
+                        description: the error description (if any)
+                        type: string
+                      failure:
+                        description: the reason of the failure (if any)
+                        properties:
+                          reason:
+                            description: a short text specifying the reason
+                            type: string
+                          recovery:
+                            description: the recovery attempted for this failure
+                            properties:
+                              attempt:
+                                description: attempt number
+                                type: integer
+                              attemptMax:
+                                description: maximum number of attempts
+                                type: integer
+                              attemptTime:
+                                description: time of the attempt execution
+                                format: date-time
+                                type: string
+                            required:
+                            - attempt
+                            - attemptMax
+                            type: object
+                          time:
+                            description: the time when the failure has happened
+                            format: date-time
+                            type: string
+                        required:
+                        - reason
+                        - recovery
+                        - time
+                        type: object
+                      image:
+                        description: the image name built
+                        type: string
+                      observedGeneration:
+                        description: ObservedGeneration is the most recent generation observed for this Build.
+                        format: int64
+                        type: integer
+                      phase:
+                        description: describes the phase
+                        type: string
+                      resourceVolume:
+                        description: reference to where the build resources are located
+                        properties:
+                          refName:
+                            description: ReferenceName name of the object holding the resources reference
+                            type: string
+                          refType:
+                            description: ReferenceType type of the resource holding the reference
+                            type: string
+                        required:
+                        - refName
+                        - refType
+                        type: object
+                      startedAt:
+                        description: the time when it started
+                        format: date-time
+                        type: string
+                    type: object
+                type: object
+              deployments:
+                properties:
+                  ready:
+                    description: Deployments are ready to serve requests
+                    items:
+                      type: string
+                    type: array
+                  starting:
+                    description: Deployments are starting, may or may not succeed
+                    items:
+                      type: string
+                    type: array
+                  stopped:
+                    description: Deployments are not starting, unclear what next step will be
+                    items:
+                      type: string
+                    type: array
+                type: object
+              phase:
+                description: ConditionType - type of condition
+                type: string
+              version:
+                type: string
+              workflowId:
+                type: string
+            required:
+            - deployments
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
   name: kogitoserverlessworkflows.sw.kogito.kie.org
 spec:
   group: sw.kogito.kie.org
@@ -775,10 +1068,7 @@ spec:
                     usedForCompensation:
                       type: boolean
                   required:
-                  - branches
-                  - duration
                   - name
-                  - onEvents
                   - type
                   type: object
                 type: array
@@ -1551,10 +1841,7 @@ spec:
                         usedForCompensation:
                           type: boolean
                       required:
-                      - branches
-                      - duration
                       - name
-                      - onEvents
                       - type
                       type: object
                     type: array
@@ -1692,6 +1979,32 @@ rules:
   - persistentvolumeclaims
   - secrets
   - events
+  - deployments
+  - nodes
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - configmaps
+  - pods
+  - pods/exec
+  - services
+  - services/finalizers
+  - namespaces
+  - serviceaccounts
+  - persistentvolumeclaims
+  - secrets
+  - events
+  - deployments
+  - nodes
   verbs:
   - create
   - delete
@@ -1708,6 +2021,32 @@ metadata:
   creationTimestamp: null
   name: kogito-serverless-operator-manager-role
 rules:
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - kogitoserverlessbuilds
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - kogitoserverlessbuilds/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - kogitoserverlessbuilds/status
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - sw.kogito.kie.org
   resources:
@@ -1734,6 +2073,14 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -1895,7 +2242,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: quay.io/dsalerno/kogito-serverless-operator:0.0.1
+        image: quay.io/mdessi/kogito-serverless-operator:0.0.1
         livenessProbe:
           httpGet:
             path: /healthz

@@ -1,0 +1,6 @@
+apiVersion: sw.kogito.kie.org/v08
+kind: KogitoServerlessBuild
+metadata:
+  name: kogitoserverlessbuild-sample
+spec:
+# TODO(user): Add fields here

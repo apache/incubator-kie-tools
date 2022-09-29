@@ -8,6 +8,26 @@ rules:
 - apiGroups:
   - sw.kogito.kie.org
   resources:
+  - kogitoserverlessbuilds
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - kogitoserverlessbuilds/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
   - kogitoserverlessworkflows
   verbs:
   - create
@@ -31,3 +51,11 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch

@@ -1,4 +1,5 @@
 ## Append samples you want in your CSV to this file as resources ##
 resources:
 - sw.kogito.kie.org__v08_kogitoserverlessworkflow.yaml
+- sw.kogito.kie.org_v08_kogitoserverlessbuild.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

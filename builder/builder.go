@@ -17,89 +17,132 @@ package builder
 
 import (
 	"context"
-	"fmt"
 	"github.com/davidesalerno/kogito-serverless-operator/constants"
 	"github.com/ricardozanini/kogito-builder/api"
 	"github.com/ricardozanini/kogito-builder/builder"
 	"github.com/ricardozanini/kogito-builder/client"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"os"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 	"time"
 )
 
 type Builder struct {
 	ctx context.Context
+	cm  corev1.ConfigMap
 }
 
-// NewBuilder ...
-func NewBuilder(contex context.Context) Builder {
-	return Builder{ctx: contex}
+func NewBuilder(contex context.Context, cm corev1.ConfigMap) Builder {
+	return Builder{ctx: contex, cm: cm}
 }
 
-func (b *Builder) BuildImageWithDefaults(sourceSwfName string, sourceSwf []byte) (*api.Build, error) {
-	wd, _ := os.Getwd()
-	dockerFile, _ := os.ReadFile(wd + "/builder/Dockerfile")
-	ib := NewImageBuilder(sourceSwfName, sourceSwf, dockerFile)
+func (b *Builder) getImageBuilder(workflowID string, workflowDefinition []byte) ImageBuilder {
+	dockerfile := b.cm.Data[constants.BUILDER_RESOURCE_NAME_DEFAULT]
+	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(dockerfile))
 	ib.OnNamespace(constants.BUILDER_NAMESPACE_DEFAULT)
 	ib.WithPodMiddleName(constants.BUILDER_IMG_NAME_DEFAULT)
 	ib.WithInsecureRegistry(false)
-	ib.WithImageName(sourceSwfName + ":latest")
-	ib.WithSecret(constants.DEFAULT_KANIKO_SECRET)
-	ib.WithRegistryAddress(constants.DEFAULT_REGISTRY_REPO)
+	ib.WithImageName(workflowID + constants.DEFAULT_IMAGES_TAG)
+	ib.WithSecret(b.cm.Data[constants.DEFAULT_KANIKO_SECRET_KEY])
+	ib.WithRegistryAddress(b.cm.Data[constants.DEFAULT_REGISTRY_REPO_KEY])
+	return ib
+}
+
+func (b *Builder) ScheduleNewBuildWithTimeout(workflowName string, workflowDefinition []byte, timeout time.Duration) (*api.Build, error) {
+	ib := b.getImageBuilder(workflowName, workflowDefinition)
+	ib.WithTimeout(timeout)
+	return b.BuildImage(ib.Build())
+}
+
+func (b *Builder) ScheduleNewBuild(workflowName string, workflowDefinition []byte) (*api.Build, error) {
+	ib := b.getImageBuilder(workflowName, workflowDefinition)
 	ib.WithTimeout(5 * time.Minute)
 	return b.BuildImage(ib.Build())
 }
 
-func (r *Builder) BuildImage(b KogitoBuilder) (*api.Build, error) {
-	log := ctrllog.FromContext(r.ctx)
+func (b *Builder) ScheduleNewBuildWithDockerFile(workflowName string, workflowDefinition []byte) (*api.Build, error) {
+	ib := b.getImageBuilder(workflowName, workflowDefinition)
+	ib.WithTimeout(5 * time.Minute)
+	return b.BuildImage(ib.Build())
+}
+
+func (b *Builder) ReconcileBuild(build *api.Build, cli client.Client) (*api.Build, error) {
+	result, err := builder.FromBuild(build).WithClient(cli).Reconcile()
+	return result, err
+}
+
+func (b *Builder) BuildImage(kb KogitoBuilder) (*api.Build, error) {
+	log := ctrllog.FromContext(b.ctx)
 	cli, err := client.NewClient(true)
 	platform := api.PlatformBuild{
 		ObjectReference: api.ObjectReference{
-			Namespace: b.Namespace,
-			Name:      b.PodMiddleName,
+			Namespace: kb.Namespace,
+			Name:      kb.PodMiddleName,
 		},
 		Spec: api.PlatformBuildSpec{
 			BuildStrategy:   api.BuildStrategyPod,
 			PublishStrategy: api.PlatformBuildPublishStrategyKaniko,
 			Registry: api.RegistrySpec{
-				Insecure: b.InsecureRegistry,
-				Address:  b.RegistryAddress,
-				Secret:   b.Secret,
+				Insecure: kb.InsecureRegistry,
+				Address:  kb.RegistryAddress,
+				Secret:   kb.Secret,
 			},
 			Timeout: &metav1.Duration{
-				Duration: b.Timeout,
+				Duration: kb.Timeout,
 			},
 		},
 	}
 
-	build, err := builder.NewBuild(platform, b.ImageName, b.PodMiddleName).
-		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, b.DockerFile).WithResource(b.SourceSwfName+".sw.json", b.SourceSwf).
+	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
+		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.DockerFile).
+		WithResource(kb.WorkflowID+b.cm.Data[constants.WORKFLOW_DEFAULT_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
 	if err != nil {
 		log.Error(err, err.Error())
 		return nil, err
 	}
-	//FIXME: Remove this  For loop as soon as the KogitoServerlessBuild CR will be availbable
-	// from now the Reconcile method can be called until the build is finished
-	for build.Status.Phase != api.BuildPhaseSucceeded &&
-		build.Status.Phase != api.BuildPhaseError &&
-		build.Status.Phase != api.BuildPhaseFailed {
-		log.Info("Build status is ", "status", build.Status.Phase)
-		build, err = builder.FromBuild(build).WithClient(cli).Reconcile()
-		if err != nil {
-			log.Info("Failed to build")
-			panic(fmt.Errorf("build %v just failed", build))
-		}
-		time.Sleep(10 * time.Second)
+	return build, err
+}
+
+func (b *Builder) ScheduleBuild(kb KogitoBuilder) (*api.Build, error) {
+	log := ctrllog.FromContext(b.ctx)
+	cli, err := client.NewClient(true)
+	platform := api.PlatformBuild{
+		ObjectReference: api.ObjectReference{
+			Namespace: kb.Namespace,
+			Name:      kb.PodMiddleName,
+		},
+		Spec: api.PlatformBuildSpec{
+			BuildStrategy:   api.BuildStrategyPod,
+			PublishStrategy: api.PlatformBuildPublishStrategyKaniko,
+			Registry: api.RegistrySpec{
+				Insecure: kb.InsecureRegistry,
+				Address:  kb.RegistryAddress,
+				Secret:   kb.Secret,
+			},
+			Timeout: &metav1.Duration{
+				Duration: kb.Timeout,
+			},
+		},
+	}
+
+	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
+		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.DockerFile).
+		WithResource(kb.WorkflowID+b.cm.Data[constants.WORKFLOW_DEFAULT_EXTENSION_KEY], kb.WorkflowDefinition).
+		WithClient(cli).
+		Schedule()
+	if err != nil {
+		log.Error(err, err.Error())
+		return nil, err
 	}
 	return build, err
 }
 
+// Fluent API section
 type KogitoBuilder struct {
-	SourceSwfName        string
-	SourceSwf            []byte
+	WorkflowID           string
+	WorkflowDefinition   []byte
 	DockerFile           []byte
 	Namespace            string
 	InsecureRegistry     bool
@@ -116,44 +159,44 @@ type ImageBuilder struct {
 }
 
 func NewImageBuilder(sourceSwfName string, sourceSwf []byte, dockerFile []byte) ImageBuilder {
-	return ImageBuilder{KogitoBuilder: &KogitoBuilder{SourceSwfName: sourceSwfName, SourceSwf: sourceSwf, DockerFile: dockerFile}}
+	return ImageBuilder{KogitoBuilder: &KogitoBuilder{WorkflowID: sourceSwfName, WorkflowDefinition: sourceSwf, DockerFile: dockerFile}}
 }
 
-func (b *ImageBuilder) OnNamespace(namespace string) *ImageBuilder {
-	b.KogitoBuilder.Namespace = namespace
-	return b
+func (ib *ImageBuilder) OnNamespace(namespace string) *ImageBuilder {
+	ib.KogitoBuilder.Namespace = namespace
+	return ib
 }
 
-func (b *ImageBuilder) WithTimeout(timeout time.Duration) *ImageBuilder {
-	b.KogitoBuilder.Timeout = timeout
-	return b
+func (ib *ImageBuilder) WithTimeout(timeout time.Duration) *ImageBuilder {
+	ib.KogitoBuilder.Timeout = timeout
+	return ib
 }
 
-func (b *ImageBuilder) WithSecret(secret string) *ImageBuilder {
-	b.KogitoBuilder.Secret = secret
-	return b
+func (ib *ImageBuilder) WithSecret(secret string) *ImageBuilder {
+	ib.KogitoBuilder.Secret = secret
+	return ib
 }
 
-func (b *ImageBuilder) WithRegistryAddress(registryAddress string) *ImageBuilder {
-	b.KogitoBuilder.RegistryAddress = registryAddress
-	return b
+func (ib *ImageBuilder) WithRegistryAddress(registryAddress string) *ImageBuilder {
+	ib.KogitoBuilder.RegistryAddress = registryAddress
+	return ib
 }
 
-func (b *ImageBuilder) WithInsecureRegistry(insecureRegistry bool) *ImageBuilder {
-	b.KogitoBuilder.InsecureRegistry = insecureRegistry
-	return b
+func (ib *ImageBuilder) WithInsecureRegistry(insecureRegistry bool) *ImageBuilder {
+	ib.KogitoBuilder.InsecureRegistry = insecureRegistry
+	return ib
 }
 
-func (b *ImageBuilder) WithPodMiddleName(buildName string) *ImageBuilder {
-	b.KogitoBuilder.PodMiddleName = buildName
-	return b
+func (ib *ImageBuilder) WithPodMiddleName(buildName string) *ImageBuilder {
+	ib.KogitoBuilder.PodMiddleName = buildName
+	return ib
 }
 
-func (b *ImageBuilder) WithImageName(imageName string) *ImageBuilder {
-	b.KogitoBuilder.ImageName = imageName
-	return b
+func (ib *ImageBuilder) WithImageName(imageName string) *ImageBuilder {
+	ib.KogitoBuilder.ImageName = imageName
+	return ib
 }
 
-func (b *ImageBuilder) Build() KogitoBuilder {
-	return *b.KogitoBuilder
+func (ib *ImageBuilder) Build() KogitoBuilder {
+	return *ib.KogitoBuilder
 }
