@@ -120,15 +120,16 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   );
 
   const diagramEditorEnvelopeLocator = useMemo(() => {
-    const diagramEnvelopeMappingConfig = featureToggle?.stunnerEnabled
-      ? {
-          resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
-          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
-        }
-      : {
-          resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
-          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
-        };
+    const diagramEnvelopeMappingConfig =
+      featureToggle && !featureToggle.stunnerEnabled
+        ? {
+            resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
+            envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
+          }
+        : {
+            resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
+            envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
+          };
     return new EditorEnvelopeLocator(targetOrigin, [
       new EnvelopeMapping({
         type: ENVELOPE_LOCATOR_TYPE,
