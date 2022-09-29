@@ -17,10 +17,12 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
+    "cy:open": "cypress open --project it-tests --config baseUrl=$(build-env serverlessLogicSandbox.dev.cypressUrl)",
+    "cy:run": "cypress run --headed -b chrome --project it-tests --config baseUrl=$(build-env serverlessLogicSandbox.dev.cypressUrl)",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"echo Nothing to do\""
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start https-get://0.0.0.0:$(build-env serverlessLogicSandbox.dev.port) cy:run\""
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
@@ -93,6 +95,9 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^8.1.1",
+    "cypress": "^10.7.0",
+    "cypress-iframe": "^1.0.1",
+    "cypress-log-to-output": "^1.1.2",
     "html-replace-webpack-plugin": "^2.6.0",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^26.6.3",
@@ -100,6 +105,7 @@
     "jest-when": "^3.5.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "rimraf": "^3.0.2",
+    "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.5.6",
     "typescript": "^4.4.2",
     "webpack": "^5.36.2",

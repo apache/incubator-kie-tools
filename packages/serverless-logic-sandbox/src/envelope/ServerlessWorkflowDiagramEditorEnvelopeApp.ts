@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { initCustom } from "@kie-tools-core/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import {
   ServerlessWorkflowDiagramEditorChannelApi,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
@@ -25,7 +25,7 @@ import {
   ServerlessWorkflowDiagramEditorFactory,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
 
-initCustom<
+EditorEnvelope.initCustom<
   ServerlessWorkflowDiagramEditor,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
   ServerlessWorkflowDiagramEditorChannelApi

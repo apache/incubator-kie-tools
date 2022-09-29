@@ -8,5 +8,6 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "target": "es6"
-  }
+  },
+  "include": ["src"]
 }
