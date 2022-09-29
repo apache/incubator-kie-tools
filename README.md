@@ -65,31 +65,36 @@ Follow these steps to create a container that you can than deploy as a Service o
 ```sh 
 minikube start --cpus 4 --memory 4096 --addons registry --insecure-registry "10.0.0.0/24"
 ```
+2. Create a namespace for the building phase
 
-2. Create a secret
 ```sh
-kubectl create secret docker-registry regcred --docker-server=<registry_url> --docker-username=<registry_username> --docker-password=<registry_password> --docker-email=<registry_email> -n kogito-serverless-operator-system
+kubectl create namespace kogito-builder
 ```
 
-3. Build and push your image to the location specified by `IMG`:
+3. Create a secret
+```sh
+kubectl create secret docker-registry regcred --docker-server=<registry_url> --docker-username=<registry_username> --docker-password=<registry_password> --docker-email=<registry_email> -n kogito-builder
+```
+
+4. Build and push your image to the location specified by `IMG`:
 
 ```sh
 make container-build container-push IMG=<some-registry>/kogito-serverless-operator:tag
 ```
 
-4. Deploy the controller to the cluster with the image specified by `IMG`:
+5. Deploy the controller to the cluster with the image specified by `IMG`:
 
 ```sh
 make deploy IMG=<some-registry>/kogito-serverless-operator:tag
 ```
 
-5. Create a dedicated Namespace for the test:
+6. Create a dedicated Namespace for the test:
 
 ```sh
 kubectl create namespace greeting-workflow
 ```
 
-6. Install Instances of Custom Resources:
+7. Install Instances of Custom Resources:
 
 ```sh
 kubectl apply -f config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.yaml -n greeting-workflow

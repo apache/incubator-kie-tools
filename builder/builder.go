@@ -28,7 +28,7 @@ import (
 
 func BuildImageWithDefaults(sourceSwfName string, sourceSwf []byte) (*api.Build, error) {
 	wd, _ := os.Getwd()
-	dockerFile, _ := os.ReadFile(wd + "/../builder/Dockerfile")
+	dockerFile, _ := os.ReadFile(wd + "/builder/Dockerfile")
 	ib := NewImageBuilder(sourceSwfName, sourceSwf, dockerFile)
 	ib.OnNamespace(constants.BUILDER_NAMESPACE_DEFAULT)
 	ib.WithPodMiddleName(constants.BUILDER_IMG_NAME_DEFAULT)
@@ -69,7 +69,19 @@ func BuildImage(b KogitoBuilder) (*api.Build, error) {
 		fmt.Println(err.Error())
 		return nil, err
 	}
-
+	//FIXME: Remove this  For loop as soon as the KogitoServerlessBuild CR will be availbable
+	// from now the Reconcile method can be called until the build is finished
+	for build.Status.Phase != api.BuildPhaseSucceeded &&
+		build.Status.Phase != api.BuildPhaseError &&
+		build.Status.Phase != api.BuildPhaseFailed {
+		fmt.Printf("\nBuild status is %s", build.Status.Phase)
+		build, err = builder.FromBuild(build).WithClient(cli).Reconcile()
+		if err != nil {
+			fmt.Println("Failed to run test")
+			panic(fmt.Errorf("build %v just failed", build))
+		}
+		time.Sleep(10 * time.Second)
+	}
 	return build, err
 }
 
