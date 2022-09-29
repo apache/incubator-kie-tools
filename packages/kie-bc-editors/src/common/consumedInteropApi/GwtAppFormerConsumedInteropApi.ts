@@ -44,7 +44,7 @@ export interface GwtEditor {
   setContent(path: string, content: string): Promise<void>;
   getPreview(): Promise<string | undefined>;
   validate(): Promise<Notification[]>;
-  selectNode(nodeName: string, path: string): Promise<void>;
+  selectStateByName(name: string): Promise<void>;
 }
 
 export class GwtAppFormerConsumedInteropApi {

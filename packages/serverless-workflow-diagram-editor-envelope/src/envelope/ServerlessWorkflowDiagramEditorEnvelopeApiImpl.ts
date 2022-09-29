@@ -91,7 +91,7 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     return this.getEditorOrThrowError().centerNode(uuid);
   }
 
-  public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string; documentUri: string }) {
-    return this.getEditorOrThrowError().selectNode(args.nodeName, args.documentUri);
+  public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string }) {
+    return this.getEditorOrThrowError().selectStateByName(args.nodeName);
   }
 }

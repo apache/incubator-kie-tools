@@ -64,8 +64,8 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     }
 
     @Override
-    public Promise<Void> selectNode(String nodeName, String path){
-        return realPresenter.selectNode(nodeName, path);
+    public Promise<Void> selectStateByName(String name){
+        return realPresenter.selectStateByName(name);
     }
 
     @Override
