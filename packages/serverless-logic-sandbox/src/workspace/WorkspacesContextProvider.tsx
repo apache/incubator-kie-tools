@@ -35,7 +35,7 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
+import { DEFAULT_ENV_VARS } from "../env/EnvContext";
 import { isModel, SupportedFileExtensions } from "../extension";
 import { useSettings } from "../settings/SettingsContext";
 import { decoder, encoder } from "./commonServices/BaseFile";
@@ -63,7 +63,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const gitService = useMemo(() => {
-    return new GitService(DEFAULT_CORS_PROXY_URL);
+    return new GitService(DEFAULT_ENV_VARS.CORS_PROXY_URL);
   }, []);
 
   const getAbsolutePath = useCallback(

@@ -36,7 +36,7 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { DEFAULT_CORS_PROXY_URL, useEnv } from "../env/EnvContext";
+import { DEFAULT_ENV_VARS, useEnv } from "../env/EnvContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
@@ -62,7 +62,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const gitService = useMemo(() => {
-    let envUrl = DEFAULT_CORS_PROXY_URL;
+    let envUrl = DEFAULT_ENV_VARS.CORS_PROXY_URL;
     if (envUrl !== env.vars.CORS_PROXY_URL) {
       try {
         new URL(env.vars.CORS_PROXY_URL);
