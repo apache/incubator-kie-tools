@@ -26,17 +26,24 @@ import (
 )
 
 func CreateDockerfile(dockerfileDirPath string, quarkusVersion string) (err error) {
-	if _, err := os.Stat(dockerfileDirPath); os.IsNotExist(err) {
-		if err := os.Mkdir(dockerfileDirPath, 0700); err != nil {
-			return fmt.Errorf("error creating dir in temp folder %s: %w", dockerfileDirPath, err)
+	if _, err = os.Stat(dockerfileDirPath); os.IsNotExist(err) {
+		if err = os.Mkdir(dockerfileDirPath, 0700); err != nil {
+			fmt.Printf("ERROR: creating dir in temp folder %s\n", dockerfileDirPath)
+			return
 		}
 		fmt.Printf("Created dir on %s \n", dockerfileDirPath)
 	}
 	// create Dockerfile
 	dockerfilePath := filepath.Join(dockerfileDirPath, common.WORKFLOW_DOCKERFILE)
+	if _, err = os.Stat(dockerfilePath); err == nil {
+		fmt.Printf("✅ %s already exists in %s \n", common.WORKFLOW_DOCKERFILE, dockerfileDirPath)
+		return
+	}
+
 	file, err := os.Create(dockerfilePath)
 	if err != nil {
-		return fmt.Errorf("error creating Dockerfile in temp folder %s: %w", dockerfilePath, err)
+		fmt.Printf("ERROR: creating Dockerfile in temp folder %s\n", dockerfilePath)
+		return
 	}
 	defer file.Close()
 
@@ -102,9 +109,9 @@ EXPOSE 8080
 CMD ["./mvnw", "quarkus:dev"]	
 `, quarkusVersion)
 	_, err = file.WriteString(dockerfile)
-
 	if err != nil {
-		return fmt.Errorf("error creating %s: %w", common.WORKFLOW_DOCKERFILE, err)
+		fmt.Printf("ERROR: writing in %s\n", common.WORKFLOW_DOCKERFILE)
+		return
 	}
 
 	fmt.Printf("✅ %s created on %s \n", common.WORKFLOW_DOCKERFILE, file.Name())

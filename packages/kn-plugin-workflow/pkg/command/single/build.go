@@ -218,10 +218,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	eg.Go(func() error {
-		// terminate session
-		defer func() {
-			session.Close()
-		}()
+		defer session.Close()
 
 		outputBuildOptions := types.ImageBuildOptions{
 			Target: "output-files",
@@ -235,7 +232,6 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			fmt.Println("ERROR: generating output files")
 			return err
 		}
-
 		runnerBuildOptions := types.ImageBuildOptions{
 			Tags:   []string{common.GetImage(registry, repository, name, tag)},
 			Target: "runner",
@@ -245,7 +241,6 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			fmt.Println("ERROR: generating runner image")
 			return err
 		}
-
 		return nil
 	})
 
