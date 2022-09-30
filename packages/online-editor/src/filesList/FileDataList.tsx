@@ -46,7 +46,7 @@ function FileName(props: { file: WorkspaceFile; isEditable: boolean }) {
     <>
       <Flex flexWrap={{ default: "nowrap" }}>
         <FlexItem style={{ minWidth: 0 /* This is to make the flex parent not overflow horizontally */ }}>
-          <Tooltip content={fileName}>
+          <Tooltip distance={5} position={"top-start"} content={fileName}>
             <TextContent>
               <Text
                 component={TextVariants.p}
@@ -65,20 +65,20 @@ function FileName(props: { file: WorkspaceFile; isEditable: boolean }) {
           <FileLabel extension={props.file.extension} />
         </FlexItem>
       </Flex>
-      <Tooltip content={fileDirPath}>
-        <TextContent>
-          <Text
-            component={TextVariants.small}
-            style={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {fileDirPath}
-          </Text>
-        </TextContent>
-      </Tooltip>
+      <TextContent>
+        <Text
+          component={TextVariants.small}
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          <Tooltip distance={5} position={"top-start"} content={fileDirPath}>
+            <span>{fileDirPath}</span>
+          </Tooltip>
+        </Text>
+      </TextContent>
     </>
   );
 }

@@ -135,9 +135,9 @@ export function HomePage() {
 
   return (
     <OnlineEditorPage>
-      <PageSection isFilled={false}>
-        <Grid hasGutter>
-          <GridItem sm={12} xl={6}>
+      <PageSection isFilled={false} sticky={"top"} hasOverflowScroll={false} style={{ overflowX: "scroll" }}>
+        <Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-c-page__main-section--PaddingTop)" }}>
+          <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
                 <Text component={TextVariants.h1}>Create</Text>
@@ -146,9 +146,9 @@ export function HomePage() {
               <Divider inset={{ default: "insetXl" }} />
               <Gallery
                 hasGutter={true}
-                // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
-                style={{ height: "calc(100% - 32px)" }}
+                // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
+                minWidths={{ default: "calc(33% - var(--pf-c-page__main-section--PaddingTop))" }}
+                style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
                 <NewModelCard
                   title={"Workflow"}
@@ -168,7 +168,7 @@ export function HomePage() {
               </Gallery>
             </PageSection>
           </GridItem>
-          <GridItem sm={12} xl={6}>
+          <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
                 <Text component={TextVariants.h1}>Import</Text>
@@ -177,9 +177,9 @@ export function HomePage() {
               <Divider inset={{ default: "insetXl" }} />
               <Gallery
                 hasGutter={true}
-                // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
-                style={{ height: "calc(100% - 32px)" }}
+                // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
+                minWidths={{ default: "calc(50% - var(--pf-c-page__main-section--PaddingTop))" }}
+                style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
                 <ImportFromUrlCard />
                 <UploadCard expandWorkspace={expandWorkspace} />

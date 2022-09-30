@@ -842,6 +842,7 @@ export function FileMenuItem(props: {
 }) {
   return (
     <MenuItem
+      component={props.isEditable ? undefined : "span"}
       onClick={props.onSelectFile}
       style={props.style}
       className={"kie-tools--file-switcher-no-padding-menu-item"}
