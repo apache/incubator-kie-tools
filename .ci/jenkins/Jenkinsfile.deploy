@@ -10,7 +10,7 @@ TEST_FAILED_IMAGES = []
 
 pipeline {
     agent {
-        label 'kogito-image-slave && !master'
+        label 'kogito-image-slave && !built-in'
     }
 
     // Needed for local build

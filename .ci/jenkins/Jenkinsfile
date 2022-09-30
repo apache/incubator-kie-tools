@@ -7,7 +7,7 @@ changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 BUILD_FAILED_IMAGES = []
 
 pipeline {
-    agent { label 'kogito-image-slave && !master' }
+    agent { label 'kogito-image-slave && !built-in' }
     tools {
         jdk 'kie-jdk11'
     }

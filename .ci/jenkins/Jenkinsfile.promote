@@ -5,7 +5,7 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        label 'kogito-image-slave && !master'
+        label 'kogito-image-slave && !built-in'
     }
 
     options {
