@@ -53,10 +53,10 @@ Runtime environment variables can be passed to the containerized KIE Sandbox.
 
 Currently, the following environment variables are supported:
 
-|                Name                 |                              Description                              | Default                                                                                                               |
-| :---------------------------------: | :-------------------------------------------------------------------: | --------------------------------------------------------------------------------------------------------------------- |
-| `KIE_SANDBOX_EXTENDED_SERVICES_URL` |       The URL that points to the KIE Sandbox Extended Services        | http://localhost:21345                                                                                                |
-|          `CORS_PROXY_URL`           | The URL that points to the cors-proxy for the interaction with GitHub | https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud |
+|                Name                 |                              Description                              | Default                         |
+| :---------------------------------: | :-------------------------------------------------------------------: | ------------------------------- |
+| `KIE_SANDBOX_EXTENDED_SERVICES_URL` |       The URL that points to the KIE Sandbox Extended Services        | http://localhost:21345          |
+|          `CORS_PROXY_URL`           | The URL that points to the cors-proxy for the interaction with GitHub | https://cors.isomorphic-git.org |
 
 There are three options to set custom values. Check out the examples below.
 
