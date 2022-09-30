@@ -13,6 +13,7 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedH
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 
 public class WiresConnectorLabel implements IDestroyable {
@@ -33,6 +34,9 @@ public class WiresConnectorLabel implements IDestroyable {
     private int rectangleOverOffsetY = 6;
     private boolean stopAtNCharacters = false;
     private int maxChars = 15;
+    private HandlerRegistration rectangleMouseEnterHandler;
+    private HandlerRegistration rectangleMouseExitHandler;
+    private static final String THREE_DOTS = "...";
 
     private final WiresConnectorPointsChangedHandler pointsUpdatedHandler = event -> {
         if (isVisible()) {
@@ -97,6 +101,8 @@ public class WiresConnectorLabel implements IDestroyable {
     @Override
     public void destroy() {
         m_registrationManager.destroy();
+        rectangleMouseEnterHandler.removeHandler();
+        rectangleMouseExitHandler.removeHandler();
         text.removeFromParent();
     }
 
@@ -105,25 +111,25 @@ public class WiresConnectorLabel implements IDestroyable {
         text.setDraggable(false);
         connector.getGroup().add(text);
         connector.getGroup().add(rectangle);
-        rectangle.addNodeMouseEnterHandler(event -> {
-                                               rectangle.setFillColor("blue");
-                                               rectangle.setStrokeColor("blue");
-                                               if (needsWrapping) {
-                                                   text.setText(fullText);
-                                               }
-                                               isMouseOver = true;
-                                               batch();
-                                           }
+        rectangleMouseEnterHandler = rectangle.addNodeMouseEnterHandler(event -> {
+                                                                            rectangle.setFillColor("blue");
+                                                                            rectangle.setStrokeColor("blue");
+                                                                            if (needsWrapping) {
+                                                                                text.setText(fullText);
+                                                                            }
+                                                                            isMouseOver = true;
+                                                                            batch();
+                                                                        }
         );
 
-        rectangle.addNodeMouseExitHandler(event -> {
-                                              paintRectangle(rectangleColor);
-                                              if (needsWrapping) {
-                                                  text.setText(minText);
-                                              }
-                                              isMouseOver = false;
-                                              batch();
-                                          }
+        rectangleMouseExitHandler = rectangle.addNodeMouseExitHandler(event -> {
+                                                                          paintRectangle(rectangleColor);
+                                                                          if (needsWrapping) {
+                                                                              text.setText(minText);
+                                                                          }
+                                                                          isMouseOver = false;
+                                                                          batch();
+                                                                      }
         );
 
         refresh();
@@ -149,6 +155,8 @@ public class WiresConnectorLabel implements IDestroyable {
                         fullText = fullText.substring(0, maxChars);
                     }
                     minText = calculateMinimumText(fullText, text, maxWidth);
+                    minText = minText.substring(0, minText.length() - 3) + THREE_DOTS;
+                    text.setText(minText);
                 }
 
                 WiresConnectorLabelFactory.Segment segment = getLargestSegment(connector);

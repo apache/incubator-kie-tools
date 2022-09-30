@@ -123,8 +123,6 @@ public class WiresConnectorViewExt<T>
                 .map(t -> label.map(l -> l.configure(text -> {
                                                          l.rectangle.setHeight(text.getBoundingBox().getHeight());
                                                          l.rectangle.setWidth(text.getBoundingBox().getWidth());
-                                                         l.rectangle.setHeight(10);
-                                                         l.rectangle.setWidth(10);
                                                          text.setFillColor("white");
                                                          text.setStrokeColor("white");
                                                          text.setFontFamily("Verdana");

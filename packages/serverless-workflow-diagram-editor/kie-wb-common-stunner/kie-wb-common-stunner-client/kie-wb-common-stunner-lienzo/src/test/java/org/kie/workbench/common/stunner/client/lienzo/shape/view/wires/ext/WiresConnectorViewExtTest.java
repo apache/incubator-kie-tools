@@ -66,7 +66,6 @@ public class WiresConnectorViewExtTest {
     @Mock
     private Rectangle rectangle;
 
-    @Mock
     private BoundingBox boundingBox;
 
     @Mock
@@ -102,6 +101,7 @@ public class WiresConnectorViewExtTest {
                 return Optional.of(WiresConnectorViewExtTest.this.label);
             }
         });
+        boundingBox = new BoundingBox();
         when(labelText.getBoundingBox()).thenReturn(boundingBox);
         label.rectangle = rectangle;
         tested.setControl(connectorControl);
