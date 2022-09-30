@@ -19,22 +19,33 @@ package single
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
-func GenerateDockerfile(dockerfilePath string) (err error) {
+func CreateDockerfile(dockerfileDir string, quarkusVersion string) (err error) {
+	tempPath := filepath.Join(os.TempDir(), dockerfileDir)
+	if _, err := os.Stat(tempPath); os.IsNotExist(err) {
+		if err := os.Mkdir(tempPath, 0700); err != nil {
+			return fmt.Errorf("error creating dir in temp folder %s: %w", dockerfileDir, err)
+		}
+		fmt.Printf("Created dir on %s \n", tempPath)
+	}
+	// create Dockerfile
+	dockerfilePath := filepath.Join(tempPath, common.WORKFLOW_DOCKERFILE)
 	file, err := os.Create(dockerfilePath)
 	if err != nil {
-		return fmt.Errorf("error creating Dockerfile: %w", err)
+		return fmt.Errorf("error creating Dockerfile in temp folder %s: %w", dockerfilePath, err)
 	}
-
 	defer file.Close()
 
 	dockerfile := fmt.Sprintf(`
 # true or false
 ARG extensions
 
+# TODO: quarkus-version and quarkus-platform-group-id
 FROM quay.io/lmotta/kn-workflow:%s as base
 WORKDIR /tmp/kn-plugin-workflow
 
@@ -90,13 +101,22 @@ WORKDIR /tmp/kn-plugin-workflow/
 EXPOSE 8080
 
 CMD ["./mvnw", "quarkus:dev"]	
-`, metadata.QuarkusVersion)
+`, quarkusVersion)
 	_, err = file.WriteString(dockerfile)
 
 	if err != nil {
-		return fmt.Errorf("error creating Dockerfile.workflow: %w", err)
+		return fmt.Errorf("error creating %s: %w", common.WORKFLOW_DOCKERFILE, err)
 	}
 
-	fmt.Printf("Dockerfile.workflow created on %s \n", dockerfilePath)
+	fmt.Printf("✅ %s created on %s \n", common.WORKFLOW_DOCKERFILE, file.Name())
 	return
+}
+
+func GetDockerfilePath(dependenciesVersion metadata.DependenciesVersion) string {
+	return fmt.Sprintf("%s-%s-%s-%s",
+		common.KN_WORKFLOW_NAME,
+		metadata.PluginVersion,
+		dependenciesVersion.QuarkusPlatformGroupId,
+		dependenciesVersion.QuarkusVersion,
+	)
 }

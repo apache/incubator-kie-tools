@@ -23,13 +23,15 @@ import (
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
 
 type CreateConfig struct {
 	// Quarkus project options
-	ProjectName string // Project name
+	ProjectName         string // Project name
+	DependenciesVersion metadata.DependenciesVersion
 }
 
 func NewCreateCommand() *cobra.Command {
@@ -39,47 +41,61 @@ func NewCreateCommand() *cobra.Command {
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name"),
+		PreRunE:    common.BindEnv("name", "quarkus-platform-group-id", "quarkus-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runCreate(cmd, args)
 	}
 
+	quarkusDepedencies := metadata.ResolveQuarkusDependencies()
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
+	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
+	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be set in the project.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
 
-func runCreate(cmd *cobra.Command, args []string) error {
+func runCreate(cmd *cobra.Command, args []string) (err error) {
 	start := time.Now()
+	fmt.Println("🔨 Creating workflow project")
 
 	cfg, err := runCreateConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("initializing create config: %w", err)
+		fmt.Println("ERROR: parsing flags")
+		return fmt.Errorf("Description: %w", err)
 	}
 
 	name := cfg.ProjectName
-
-	if err := os.Mkdir(name, os.ModePerm); err != nil {
-		return fmt.Errorf("error creating dir: %w", err)
+	if err = os.Mkdir(name, os.ModePerm); err != nil {
+		fmt.Println("ERROR: creating project with name", cfg.ProjectName)
+		return fmt.Errorf("Description: %w", err)
 	}
 
 	workflowPath := fmt.Sprintf("./%s/%s", name, common.WORKFLOW_SW_JSON)
-	command.CreateWorkflow(workflowPath)
+	if err = command.CreateWorkflow(workflowPath); err != nil {
+		fmt.Println("ERROR: creating workflow file")
+		return fmt.Errorf("Description: %w", err)
+	}
 
-	dockerfilePath := fmt.Sprintf("./%s/%s", name, common.WORKFLOW_DOCKERFILE)
-	GenerateDockerfile(dockerfilePath)
+	dockerfilePath := GetDockerfilePath(cfg.DependenciesVersion)
+	if err = CreateDockerfile(dockerfilePath, cfg.DependenciesVersion.QuarkusVersion); err != nil {
+		fmt.Println("ERROR: creating Dockerfile in temp folder")
+		return fmt.Errorf("Description: %w", err)
+	}
 
-	finish := time.Since(start)
-	fmt.Printf("🚀 Create workflow took: %s \n", finish)
+	fmt.Printf("🚀 Build took: %s \n", time.Since(start))
 	return nil
 }
 
 func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 	cfg = CreateConfig{
 		ProjectName: viper.GetString("name"),
+		DependenciesVersion: metadata.DependenciesVersion{
+			QuarkusPlatformGroupId: viper.GetString("quarkus-platform-group-id"),
+			QuarkusVersion:         viper.GetString("quarkus-version"),
+		},
 	}
 	return
 }

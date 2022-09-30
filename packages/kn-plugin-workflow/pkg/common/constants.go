@@ -31,6 +31,7 @@ const (
 	MAVEN_MINOR_VERSION = 8
 
 	// Default values
+	KN_WORKFLOW_NAME    string = "kn-workflow"
 	DEFAULT_TAG         string = "latest"
 	WORKFLOW_SW_JSON    string = "workflow.sw.json"
 	WORKFLOW_DOCKERFILE string = "Dockerfile.workflow"

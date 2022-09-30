@@ -63,15 +63,15 @@ func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
 func CreateWorkflow(workflowFilePath string) (err error) {
 	workflowFileData, err := getWorkflowTemplate()
 	if err != nil {
-		return err
+		return
 	}
 
 	err = ioutil.WriteFile(workflowFilePath, workflowFileData, 0644)
 	if err != nil {
 		fmt.Println("ERROR: writing the workflow json file.")
-		return err
+		return
 	}
 
-	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
+	fmt.Printf("✅ Workflow file created on %s \n", workflowFilePath)
 	return
 }

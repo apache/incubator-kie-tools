@@ -34,9 +34,11 @@ type RootCmdConfig struct {
 
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   cfg.Name,
-		Short: "Serverless Workflow",
-		Long:  "Manage Kogito Serverless Workflow projects",
+		Use:           cfg.Name,
+		Short:         "Serverless Workflow",
+		Long:          "Manage Kogito Serverless Workflow projects",
+		SilenceUsage:  true,
+		SilenceErrors: true,
 	}
 
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
