@@ -25,16 +25,15 @@ import (
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
-func CreateDockerfile(dockerfileDir string, quarkusVersion string) (err error) {
-	tempPath := filepath.Join(os.TempDir(), dockerfileDir)
-	if _, err := os.Stat(tempPath); os.IsNotExist(err) {
-		if err := os.Mkdir(tempPath, 0700); err != nil {
-			return fmt.Errorf("error creating dir in temp folder %s: %w", dockerfileDir, err)
+func CreateDockerfile(dockerfileDirPath string, quarkusVersion string) (err error) {
+	if _, err := os.Stat(dockerfileDirPath); os.IsNotExist(err) {
+		if err := os.Mkdir(dockerfileDirPath, 0700); err != nil {
+			return fmt.Errorf("error creating dir in temp folder %s: %w", dockerfileDirPath, err)
 		}
-		fmt.Printf("Created dir on %s \n", tempPath)
+		fmt.Printf("Created dir on %s \n", dockerfileDirPath)
 	}
 	// create Dockerfile
-	dockerfilePath := filepath.Join(tempPath, common.WORKFLOW_DOCKERFILE)
+	dockerfilePath := filepath.Join(dockerfileDirPath, common.WORKFLOW_DOCKERFILE)
 	file, err := os.Create(dockerfilePath)
 	if err != nil {
 		return fmt.Errorf("error creating Dockerfile in temp folder %s: %w", dockerfilePath, err)
@@ -113,10 +112,10 @@ CMD ["./mvnw", "quarkus:dev"]
 }
 
 func GetDockerfilePath(dependenciesVersion metadata.DependenciesVersion) string {
-	return fmt.Sprintf("%s-%s-%s-%s",
+	return filepath.Join(os.TempDir(), fmt.Sprintf("%s-%s-%s-%s",
 		common.KN_WORKFLOW_NAME,
 		metadata.PluginVersion,
 		dependenciesVersion.QuarkusPlatformGroupId,
 		dependenciesVersion.QuarkusVersion,
-	)
+	))
 }
