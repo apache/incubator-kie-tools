@@ -111,11 +111,15 @@ CMD ["./mvnw", "quarkus:dev"]
 	return
 }
 
-func GetDockerfilePath(dependenciesVersion metadata.DependenciesVersion) string {
+func GetDockerfileDir(dependenciesVersion metadata.DependenciesVersion) string {
 	return filepath.Join(os.TempDir(), fmt.Sprintf("%s-%s-%s-%s",
 		common.KN_WORKFLOW_NAME,
 		metadata.PluginVersion,
 		dependenciesVersion.QuarkusPlatformGroupId,
 		dependenciesVersion.QuarkusVersion,
 	))
+}
+
+func GetDockerfilePath(dependenciesVersion metadata.DependenciesVersion) string {
+	return filepath.Join(GetDockerfileDir(dependenciesVersion), common.WORKFLOW_DOCKERFILE)
 }

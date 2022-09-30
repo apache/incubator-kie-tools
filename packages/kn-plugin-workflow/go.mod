@@ -3,8 +3,8 @@ module github.com/kiegroup/kie-tools/packages/kn-plugin-workflow
 go 1.19
 
 require (
-	github.com/docker/cli v20.10.18+incompatible
 	github.com/docker/docker v20.10.18+incompatible
+	github.com/imdario/mergo v0.3.12
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
 	github.com/moby/buildkit v0.9.3
 	github.com/ory/viper v1.7.5
@@ -26,7 +26,6 @@ require (
 	github.com/containerd/typeurl v1.0.2 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/docker-credential-helpers v0.6.4 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect

@@ -17,23 +17,28 @@
 package single
 
 import (
+	"archive/tar"
 	"bufio"
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"io/ioutil"
 	"net"
+	"os"
 	"path/filepath"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/docker/docker/pkg/archive"
+	"github.com/imdario/mergo"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/moby/buildkit/session"
 	"github.com/moby/buildkit/session/filesync"
 	"github.com/ory/viper"
@@ -53,6 +58,9 @@ type BuildCmdConfig struct {
 	Repository string // image repository (overrides image name)
 	ImageName  string // image name (overrides image name)
 	Tag        string // image tag (overrides image name)
+
+	Path                string // project path
+	DependenciesVersion metadata.DependenciesVersion
 }
 
 // Client that panics when used after Close()
@@ -69,39 +77,49 @@ func NewBuildCommand() *cobra.Command {
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"biuld", "buidl", "built"},
-		PreRunE:    common.BindEnv("extension", "image", "image-registry", "image-repository", "image-name", "image-tag"),
+		PreRunE:    common.BindEnv("extension", "image", "image-registry", "image-repository", "image-name", "image-tag", "path", "quarkus-platform-group-id", "quarkus-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runBuild(cmd, args)
 	}
 
+	quarkusDepedencies := metadata.ResolveQuarkusDependencies()
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
 	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
 	cmd.Flags().String("image-registry", "", "Image registry, ex: quay.io, if the --image flag is in use this option overrides image [registry]")
 	cmd.Flags().String("image-repository", "", "Image repository, ex: registry-user or registry-project, if the --image flag is in use, this option overrides image [repository]")
 	cmd.Flags().String("image-name", "", "Image name, ex: new-project, if the --image flag is in use, this option overrides the image [name]")
 	cmd.Flags().String("image-tag", "", "Image tag, ex: 1.0, if the --image flag is in use, this option overrides the image [tag]")
-
+	cmd.Flags().StringP("path", "p", ".", "Path of project to be built")
+	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
+	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be set in the project.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string) error {
+func runBuild(cmd *cobra.Command, args []string) (err error) {
+	start := time.Now()
+	fmt.Println("🔨 Buildking workflow project")
+
 	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("initializing build config: %w", err)
+		fmt.Println("ERROR: parsing flags")
+		return
 	}
 
-	if err := common.CheckDocker(); err != nil {
-		return err
+	if err = common.CheckDocker(); err != nil {
+		fmt.Println("ERROR: checking docker")
+		return
 	}
 
-	if err := runBuildImage(cfg, cmd); err != nil {
-		return err
+	if err = runBuildImage(cfg, cmd); err != nil {
+		fmt.Println("ERROR: building image")
+		return
 	}
 
+	fmt.Printf("🚀 Build took: %s \n", time.Since(start))
 	return nil
 }
 
@@ -113,45 +131,55 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 		Repository: viper.GetString("repository"),
 		ImageName:  viper.GetString("name"),
 		Tag:        viper.GetString("tag"),
+		Path:       viper.GetString("path"),
+
+		DependenciesVersion: metadata.DependenciesVersion{
+			QuarkusPlatformGroupId: viper.GetString("quarkus-platform-group-id"),
+			QuarkusVersion:         viper.GetString("quarkus-version"),
+		},
 	}
+
 	if len(cfg.Image) == 0 && len(cfg.ImageName) == 0 {
 		fmt.Println("ERROR: either --image or --image-name should be used")
 		err = fmt.Errorf("missing flags")
 	}
-
 	return
 }
 func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	ctx := cmd.Context()
+
+	// create docker client
 	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		return fmt.Errorf(err.Error())
+		return
 	}
 
 	// creates a session for the dir
-	// TODO: path flag?
-	session, err := trySession(".", false)
+	session, err := trySession(cfg.Path, false)
 	if err != nil {
-		log.Fatal(err, " : failed session")
+		fmt.Println("ERROR: failed to create a new session")
+		return
 	}
 	if session == nil {
-		return fmt.Errorf("buildkit not supported by daemon")
+		fmt.Println("ERROR: session is not supported")
+		return fmt.Errorf("session is not supported")
 	}
 
-	// Adds the fs methods to the session
+	// adds fs sync providr to grpc server
 	session.Allow(filesync.NewFSSyncProvider([]filesync.SyncedDir{
 		{
 			Name: "context",
-			Dir:  ".",
+			Dir:  cfg.Path,
 			Map:  resetUIDAndGID,
 		},
 		{
 			Name: "dockerfile",
-			Dir:  ".",
+			Dir:  GetDockerfilePath(cfg.DependenciesVersion),
 		},
 	}))
-	session.Allow(filesync.NewFSSyncTargetDir("./kubernets"))
+	session.Allow(filesync.NewFSSyncTargetDir("./kubernetes"))
 
+	// creates a new errgroup
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return session.Run(context.TODO(), func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
@@ -165,7 +193,6 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	var workflowSwJson string = common.WORKFLOW_SW_JSON
-
 	buildArgs := map[string]*string{
 		common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
 		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY: &registry,
@@ -181,20 +208,42 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	if len(cfg.Extesions) > 0 {
 		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &cfg.Extesions
 	}
-	imageTag := common.GetImage(registry, repository, name, tag)
+
+	commomImageBuildOptions := types.ImageBuildOptions{
+		SessionID:   session.ID(),
+		Dockerfile:  common.WORKFLOW_DOCKERFILE,
+		BuildArgs:   buildArgs,
+		Version:     types.BuilderBuildKit,
+		NetworkMode: "default",
+	}
 
 	eg.Go(func() error {
-		// make sure the Status ends cleanly on build errors
+		// terminate session
 		defer func() {
 			session.Close()
 		}()
 
-		if err := generateOutputFiles(ctx, dockerCli, buildArgs, session.ID()); err != nil {
-			return fmt.Errorf("error output: %w", err)
+		outputBuildOptions := types.ImageBuildOptions{
+			Target: "output-files",
+			Outputs: []types.ImageBuildOutput{{
+				Type:  "local",
+				Attrs: map[string]string{},
+			}},
+		}
+		mergo.Merge(&outputBuildOptions, commomImageBuildOptions)
+		if err := runDockerImageBuild(ctx, cfg, dockerCli, outputBuildOptions); err != nil {
+			fmt.Println("ERROR: generating output files")
+			return err
 		}
 
-		if err := generateRunnerImage(ctx, dockerCli, buildArgs, imageTag, session.ID()); err != nil {
-			return fmt.Errorf("error runner: %w", err)
+		runnerBuildOptions := types.ImageBuildOptions{
+			Tags:   []string{common.GetImage(registry, repository, name, tag)},
+			Target: "runner",
+		}
+		mergo.Merge(&runnerBuildOptions, commomImageBuildOptions)
+		if err := runDockerImageBuild(ctx, cfg, dockerCli, runnerBuildOptions); err != nil {
+			fmt.Println("ERROR: generating runner image")
+			return err
 		}
 
 		return nil
@@ -205,87 +254,74 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	fmt.Println("✅ Build success")
-
 	return nil
 }
 
-func generateOutputFiles(
+func runDockerImageBuild(
 	ctx context.Context,
+	cfg BuildCmdConfig,
 	dockerCli client.CommonAPIClient,
-	buildArgs map[string]*string,
-	sessionId string,
+	imageBuildOptions types.ImageBuildOptions,
 ) (err error) {
-	tar, err := createTarFromDockerfile()
-	if err != nil {
-		return
-	}
-	defer tar.Close()
-
-	outputFilesOptions := types.ImageBuildOptions{
-		SessionID:   sessionId,
-		Dockerfile:  "Dockerfile.workflow",
-		BuildArgs:   buildArgs,
-		Version:     types.BuilderBuildKit,
-		Target:      "output-files",
-		NetworkMode: "default",
-		Outputs: []types.ImageBuildOutput{{
-			Type:  "local",
-			Attrs: map[string]string{},
-		}},
-	}
-
-	res, err := dockerCli.ImageBuild(ctx, tar, outputFilesOptions)
-	if err != nil {
-		return fmt.Errorf("cannot build the app image: %w", err)
-	}
-	defer res.Body.Close()
-
-	return print(res.Body)
-}
-
-func generateRunnerImage(
-	ctx context.Context,
-	dockerCli client.CommonAPIClient,
-	buildArgs map[string]*string,
-	imageTag string,
-	sessionId string,
-) (err error) {
-	tar, err := createTarFromDockerfile()
-	if err != nil {
-		return
-	}
-	defer tar.Close()
-
-	outputFilesOptions := types.ImageBuildOptions{
-		Dockerfile:  "Dockerfile.workflow",
-		SessionID:   sessionId,
-		Tags:        []string{imageTag},
-		BuildArgs:   buildArgs,
-		Version:     types.BuilderBuildKit,
-		Target:      "runner",
-		NetworkMode: "default",
-	}
-
-	res, err := dockerCli.ImageBuild(ctx, tar, outputFilesOptions)
-	if err != nil {
-		return fmt.Errorf("cannot build the app image: %w", err)
-	}
-	defer res.Body.Close()
-
-	return print(res.Body)
-}
-
-func createTarFromDockerfile() (tar io.ReadCloser, err error) {
 	// creates a tar with the Dockerfile and the workflow.sw.json
-	// TODO: path flag?
-	tar, err = archive.TarWithOptions("./", &archive.TarOptions{
-		IncludeFiles: []string{"Dockerfile.workflow", "workflow.sw.json"},
-	})
+	buf := new(bytes.Buffer)
+	tw := tar.NewWriter(buf)
+	defer tw.Close()
 
+	// adds dockerfile to tar
+	err = addFileToTar(tw, GetDockerfilePath(cfg.DependenciesVersion), common.WORKFLOW_DOCKERFILE)
 	if err != nil {
-		err = fmt.Errorf("%w :unable to open Dockerfile", err)
+		return
+	}
+	currentPath, err := os.Getwd()
+	if err != nil {
+		fmt.Println("ERROR: error getting current path")
+		return
 	}
 
+	// adds workflow.sw.json
+	err = addFileToTar(tw, filepath.Join(currentPath, common.WORKFLOW_SW_JSON), common.WORKFLOW_SW_JSON)
+	if err != nil {
+		return
+	}
+	dockerTar := bytes.NewReader(buf.Bytes())
+
+	// builds using options
+	res, err := dockerCli.ImageBuild(ctx, dockerTar, imageBuildOptions)
+	if err != nil {
+		fmt.Println("ERROR: error building, image options: %s", imageBuildOptions)
+		return
+	}
+	defer res.Body.Close()
+
+	return print(res.Body)
+}
+
+func addFileToTar(tw *tar.Writer, path string, fileName string) (err error) {
+	fileReader, err := os.Open(path)
+	if err != nil {
+		fmt.Printf("ERROR: opening %s\n", path)
+		return
+	}
+	readFile, err := ioutil.ReadAll(fileReader)
+	if err != nil {
+		fmt.Printf("ERROR: reading %s\n", path)
+		return
+	}
+	tarHeader := &tar.Header{
+		Name: fileName,
+		Size: int64(len(readFile)),
+	}
+	err = tw.WriteHeader(tarHeader)
+	if err != nil {
+		fmt.Printf("ERROR: unable to write tar header %s\n", path)
+		return
+	}
+	_, err = tw.Write(readFile)
+	if err != nil {
+		fmt.Printf("ERROR: unable to write tar body %s\n", path)
+		return
+	}
 	return
 }
 

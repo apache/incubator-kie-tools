@@ -26,9 +26,11 @@ const (
 	KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION = "kogito-addons-quarkus-knative-eventing"
 
 	// Versions
-	JAVA_VERSION        = 11
-	MAVEN_MAJOR_VERSION = 3
-	MAVEN_MINOR_VERSION = 8
+	JAVA_VERSION         = 11
+	MAVEN_MAJOR_VERSION  = 3
+	MAVEN_MINOR_VERSION  = 8
+	DOCKER_MAJOR_VERSION = 20
+	DOCKER_MINOR_VERSION = 10
 
 	// Default values
 	KN_WORKFLOW_NAME    string = "kn-workflow"

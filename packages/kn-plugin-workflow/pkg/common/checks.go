@@ -17,10 +17,13 @@
 package common
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/docker/docker/client"
 )
 
 func CheckJavaDependencies() error {
@@ -83,13 +86,28 @@ func checkMaven() error {
 
 func CheckDocker() error {
 	fmt.Println("✅ Checking if Docker is available...")
-	dockerCheck := ExecCommand("docker", "stats", "--no-stream")
-	if err := dockerCheck.Run(); err != nil {
+	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return err
+	}
+
+	_, err = dockerCli.Info(context.TODO())
+	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
 		fmt.Println("If it's already installed, check if the docker daemon is running")
 		return err
 	}
+
+	// splitedServerVersion := strings.Split(info.ServerVersion, ".")
+	// if major, err := strconv.ParseInt(splitedServerVersion[0], 10, 32); major < DOCKER_MAJOR_VERSION || err != nil {
+	// 	fmt.Printf("ERROR: Minimum Docker version is %d.%d\n", DOCKER_MAJOR_VERSION, DOCKER_MINOR_VERSION)
+	// 	return err
+	// }
+	// if minor, err := strconv.ParseInt(splitedServerVersion[1], 10, 32); minor < DOCKER_MINOR_VERSION || err != nil {
+	// 	fmt.Printf("ERROR: Minimum Docker version is %d.%d\n", DOCKER_MAJOR_VERSION, DOCKER_MINOR_VERSION)
+	// 	return err
+	// }
 
 	fmt.Println(" - Docker is running")
 	return nil
