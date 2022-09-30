@@ -25,21 +25,23 @@ const pmmlLabel: LabelColorType = { color: "purple", label: "Scorecard" };
 
 const labelColors = new Map<string, LabelColorType>([
   ["bpmn", bpmnLabel],
-  ["BPMN", bpmnLabel],
   ["bpmn2", bpmnLabel],
-  ["BPMN2", bpmnLabel],
   ["dmn", dmnLabel],
-  ["DMN", dmnLabel],
   ["pmml", pmmlLabel],
-  ["PMML", pmmlLabel],
 ]);
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {
+  const label = labelColors.get(props.extension.toLowerCase());
   return (
     <>
-      {props.extension && (
-        <Label style={props.style ?? {}} color={labelColors.get(props.extension)?.color ?? "grey"}>
-          {labelColors.get(props.extension)?.label ?? props.extension.toUpperCase()}
+      {(label && (
+        <Label style={props.style ?? {}} color={label.color ?? "grey"}>
+          {label.label}
+        </Label>
+      )) || (
+        <Label style={{ visibility: "hidden" }}>
+          {/* This is here to make the parent's height not variable. */}
+          {props.extension || "-"}
         </Label>
       )}
     </>
