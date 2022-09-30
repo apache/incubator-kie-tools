@@ -174,6 +174,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
     this.editor?.revealLineInCenter(targetPosition.lineNumber);
     this.editor?.setPosition(targetPosition);
+    this.editor?.focus();
   }
 
   public handleDidChangeCursorPosition(event: editor.ICursorPositionChangedEvent): void {
