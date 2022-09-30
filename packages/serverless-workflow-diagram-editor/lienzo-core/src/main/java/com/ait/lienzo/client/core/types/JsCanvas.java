@@ -15,7 +15,9 @@
  */
 package com.ait.lienzo.client.core.types;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.Context2D;
@@ -26,6 +28,8 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.types.JsWiresConnection;
+import com.ait.lienzo.client.core.shape.wires.types.JsWiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.types.JsWiresShape;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
@@ -37,18 +41,38 @@ import jsinterop.annotations.JsType;
 @JsType
 public class JsCanvas implements JsCanvasNodeLister {
 
-    LienzoPanel panel;
-    Layer layer;
-    protected JSShapeStateApplier stateApplier;
     public static JsCanvasEvents events;
     public static JsCanvasAnimations animations;
     public static JsCanvasLogger logger;
+    protected JSShapeStateApplier stateApplier;
+    LienzoPanel panel;
+    Layer layer;
 
     public JsCanvas(LienzoPanel panel, Layer layer, JSShapeStateApplier stateApplier) {
         this.panel = panel;
         this.layer = layer;
         this.stateApplier = stateApplier;
         this.events = null;
+    }
+
+    @SuppressWarnings("all")
+    private static IPrimitive<?> getShapeInContainer(String id, ContainerNode parent) {
+        NFastArrayList<IPrimitive<?>> shapes = parent.getChildNodes();
+        if (null != shapes) {
+            for (IPrimitive<?> shape : shapes.asList()) {
+                String shapeID = shape.getID();
+                if (id.equals(shapeID)) {
+                    return shape;
+                }
+                if (shape instanceof ContainerNode) {
+                    IPrimitive<?> shape1 = getShapeInContainer(id, (ContainerNode) shape);
+                    if (null != shape1) {
+                        return shape1;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public Layer getLayer() {
@@ -111,26 +135,6 @@ public class JsCanvas implements JsCanvasNodeLister {
 
     public IPrimitive<?> getShape(String id) {
         return getShapeInContainer(id, getLayer());
-    }
-
-    @SuppressWarnings("all")
-    private static IPrimitive<?> getShapeInContainer(String id, ContainerNode parent) {
-        NFastArrayList<IPrimitive<?>> shapes = parent.getChildNodes();
-        if (null != shapes) {
-            for (IPrimitive<?> shape : shapes.asList()) {
-                String shapeID = shape.getID();
-                if (id.equals(shapeID)) {
-                    return shape;
-                }
-                if (shape instanceof ContainerNode) {
-                    IPrimitive<?> shape1 = getShapeInContainer(id, (ContainerNode) shape);
-                    if (null != shape1) {
-                        return shape1;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     public WiresManager getWiresManager() {
@@ -273,6 +277,35 @@ public class JsCanvas implements JsCanvasNodeLister {
         if (UUID != null) {
             centerNode(UUID);
         }
+    }
+
+    private Map<String, String> getConnections(String uuid) {
+        JsWiresShape ws1 = getWiresShape(uuid);
+
+        Map<String, String> headAndTailsMap = new HashMap<>();
+        for (int i = 0; i < ws1.getMagnetsSize(); i++) {
+            JsWiresMagnet magnet = ws1.getMagnet(i);
+            for (int ii = 0; ii < magnet.getConnectionSize(); ii++) {
+                JsWiresConnection connection = magnet.getConnection(ii);
+                headAndTailsMap.put(connection.getConnector().getTailConnection().getControl().uuid(), connection.getConnector().getHeadConnection().getControl().uuid());
+            }
+        }
+
+        return headAndTailsMap;
+    }
+
+    public boolean isConnected(String uuid1, String uuid2) {
+        final Map<String, String> connections1 = getConnections(uuid1);
+        final Map<String, String> connections2 = getConnections(uuid2);
+
+        for (Map.Entry<String, String> entry : connections1.entrySet()) {
+            String tail = connections2.get(entry.getKey());
+            if (tail != null && tail.equals(entry.getValue())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void centerNode(String uuid) {
