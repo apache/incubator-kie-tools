@@ -67,6 +67,7 @@
       { "id": "@kie-tools/dashbuilder-editor" },
       { "id": "@kie-tools/dashbuilder-images" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
+      { "id": "@kie-tools/dashbuilder-viewer" },
       { "id": "@kie-tools/desktop" },
       { "id": "@kie-tools/dmn-dev-sandbox-deployment-base-image" },
       { "id": "@kie-tools/dmn-dev-sandbox-form-webapp" },
@@ -450,6 +451,8 @@
         "target": "@kie-tools/dashbuilder-client",
         "weight": 1
       },
+      { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools-core/editor", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
       { "source": "@kie-tools/desktop", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/desktop", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
@@ -722,6 +725,7 @@
     ["@kie-tools/dashbuilder-editor", "packages/dashbuilder-editor"],
     ["@kie-tools/dashbuilder-images", "packages/dashbuilder-images"],
     ["@kie-tools/dashbuilder-swf-monitoring-dashboard", "packages/dashbuilder-swf-monitoring-dashboard"],
+    ["@kie-tools/dashbuilder-viewer", "packages/dashbuilder-viewer"],
     ["@kie-tools/desktop", "packages/desktop"],
     ["@kie-tools/dmn-dev-sandbox-deployment-base-image", "packages/dmn-dev-sandbox-deployment-base-image"],
     ["@kie-tools/dmn-dev-sandbox-deployment-base-image-env", "packages/dmn-dev-sandbox-deployment-base-image-env"],

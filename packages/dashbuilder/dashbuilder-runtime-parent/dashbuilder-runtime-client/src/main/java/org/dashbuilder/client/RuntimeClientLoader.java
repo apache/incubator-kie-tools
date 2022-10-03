@@ -248,15 +248,19 @@ public class RuntimeClientLoader {
     }
 
     public void loadClientModel(String content) {
-        if (content == null || content.trim().isEmpty()) {
-            clientModel = null;
-            router.doRoute();
-        } else {
-            var parser = parserFactory.getEditorParser(content);
-            var runtimeModel = parser.parse(content);
-            registerModel(runtimeModel);
-            this.clientModel = runtimeModel;
-            updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
+        try {
+            if (content == null || content.trim().isEmpty()) {
+                clientModel = null;
+                router.doRoute();
+            } else {
+                var parser = parserFactory.getEditorParser(content);
+                var runtimeModel = parser.parse(content);
+                registerModel(runtimeModel);
+                this.clientModel = runtimeModel;
+                updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
+            }
+        } catch (Exception e) {
+            router.goToContentError(e);
         }
     }
 
