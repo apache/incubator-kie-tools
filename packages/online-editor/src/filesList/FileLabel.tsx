@@ -40,7 +40,7 @@ export function FileLabel(props: { style?: LabelProps["style"]; extension: strin
         </Label>
       )) || (
         <Label style={{ visibility: "hidden" }}>
-          {/* This is here to make the parent's height not variable. */}
+          {/* This is here to make this component's height constant and avoid UI jumps. */}
           {props.extension || "-"}
         </Label>
       )}

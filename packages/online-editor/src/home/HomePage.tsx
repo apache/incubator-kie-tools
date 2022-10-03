@@ -85,6 +85,7 @@ import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { FileDataList, getFileDataListHeight } from "../filesList/FileDataList";
+import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -427,14 +428,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 </CardActions>
               </CardHeader>
               <CardBody>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <b>{`Created: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
-                    <b>{`, Last updated: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
-                  </Text>
-                </TextContent>
+                <WorkspaceDescriptorDates workspaceDescriptor={workspacePromise.data?.descriptor} />
               </CardBody>
             </Card>
           )) || (

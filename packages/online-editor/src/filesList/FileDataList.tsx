@@ -29,14 +29,17 @@ import {
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { Link } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
+import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
 
-const heights = {
+const FILE_DATA_LIST_HEIGHTS = {
   atRoot: 53 + 24,
   atSubDir: 74 + 24,
 };
 
 export function getFileDataListHeight(file: WorkspaceFile) {
-  return file.relativePath.indexOf("/") >= 0 ? heights.atSubDir : heights.atRoot;
+  return file.relativePath.indexOf("/") >= 0 ? FILE_DATA_LIST_HEIGHTS.atSubDir : FILE_DATA_LIST_HEIGHTS.atRoot;
 }
 
 function FileName(props: { file: WorkspaceFile; isEditable: boolean }) {
@@ -117,6 +120,60 @@ export function FileDataList(props: { file: WorkspaceFile; isEditable: boolean; 
             <FileDataListItem file={props.file} isEditable={props.isEditable} />
           </Link>
         )}
+      </DataListItem>
+    </DataList>
+  );
+}
+
+export function SingleFileWorkspaceDataList(props: { workspaceDescriptor: WorkspaceDescriptor; file: WorkspaceFile }) {
+  const routes = useRoutes();
+
+  return (
+    <DataList aria-label="file-data-list">
+      <DataListItem style={{ border: 0 }}>
+        <Link
+          key={props.file.relativePath}
+          to={routes.workspaceWithFilePath.path({
+            workspaceId: props.file.workspaceId,
+            fileRelativePath: props.file.relativePathWithoutExtension,
+            extension: props.file.extension,
+          })}
+        >
+          <DataListItemRow>
+            <DataListItemCells
+              dataListCells={[
+                <DataListCell key="link" isFilled={false}>
+                  <>
+                    <Flex flexWrap={{ default: "nowrap" }}>
+                      <FlexItem style={{ minWidth: 0 /* This is to make the flex parent not overflow horizontally */ }}>
+                        <Tooltip distance={5} position={"top-start"} content={props.file.nameWithoutExtension}>
+                          <TextContent>
+                            <Text
+                              component={TextVariants.p}
+                              style={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              <TaskIcon />
+                              &nbsp;&nbsp;
+                              {props.file.nameWithoutExtension}
+                            </Text>
+                          </TextContent>
+                        </Tooltip>
+                      </FlexItem>
+                      <FlexItem>
+                        <FileLabel extension={props.file.extension} />
+                      </FlexItem>
+                    </Flex>
+                    <WorkspaceDescriptorDates workspaceDescriptor={props.workspaceDescriptor} />
+                  </>
+                </DataListCell>,
+              ]}
+            />
+          </DataListItemRow>
+        </Link>
       </DataListItem>
     </DataList>
   );

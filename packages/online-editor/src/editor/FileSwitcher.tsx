@@ -64,7 +64,7 @@ import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FileDataList, getFileDataListHeight } from "../filesList/FileDataList";
+import { FileDataList, getFileDataListHeight, SingleFileWorkspaceDataList } from "../filesList/FileDataList";
 import {
   DataList,
   DataListCell,
@@ -72,6 +72,7 @@ import {
   DataListItemCells,
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
+import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -81,7 +82,7 @@ enum FilesDropdownMode {
   CAROUSEL,
 }
 
-const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 400;
+const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 500;
 
 export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
@@ -323,7 +324,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                 boxShadow: "none",
                 minWidth:
                   activeMenu === ROOT_MENU_ID
-                    ? "400px"
+                    ? "500px"
                     : filesDropdownMode === FilesDropdownMode.CAROUSEL
                     ? "calc(100vw - 16px)"
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS
@@ -349,7 +350,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                 <MenuList>
                   <MenuItem
                     itemId={props.workspace.descriptor.workspaceId}
-                    description={"Current"}
                     direction={"down"}
                     drilldownMenu={
                       <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}`}>
@@ -365,7 +365,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                       </DrilldownMenu>
                     }
                   >
-                    <b>{props.workspace.descriptor.name}</b>
+                    Current
                   </MenuItem>
                   {workspacesMenuItems}
                 </MenuList>
@@ -421,12 +421,12 @@ export function WorkspacesMenuItems(props: {
               .map((descriptor) => (
                 <React.Fragment key={descriptor.workspaceId}>
                   {workspaceFiles.get(descriptor.workspaceId)!.length === 1 && (
-                    <FileMenuItem
-                      style={{}}
-                      file={workspaceFiles.get(descriptor.workspaceId)![0]}
-                      onSelectFile={props.onSelectFile}
-                      isEditable={true}
-                    />
+                    <MenuItem onClick={props.onSelectFile} className={"kie-tools--file-switcher-no-padding-menu-item"}>
+                      <SingleFileWorkspaceDataList
+                        workspaceDescriptor={descriptor}
+                        file={workspaceFiles.get(descriptor.workspaceId)![0]}
+                      />
+                    </MenuItem>
                   )}
                   {workspaceFiles.get(descriptor.workspaceId)!.length > 1 && (
                     <MenuItem
@@ -456,9 +456,25 @@ export function WorkspacesMenuItems(props: {
                             <DataListItemCells
                               dataListCells={[
                                 <DataListCell key="link" isFilled={false}>
-                                  <FolderIcon />
-                                  &nbsp;&nbsp;
-                                  <WorkspaceLabel descriptor={descriptor} />
+                                  <Flex>
+                                    <WorkspaceLabel descriptor={descriptor} />
+                                    <TextContent>
+                                      <Text
+                                        component={TextVariants.small}
+                                        style={{
+                                          whiteSpace: "nowrap",
+                                          overflow: "hidden",
+                                          textOverflow: "ellipsis",
+                                        }}
+                                      >
+                                        {`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
+                                          workspaceFiles
+                                            .get(descriptor.workspaceId)!
+                                            .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath)).length
+                                        } models`}
+                                      </Text>
+                                    </TextContent>
+                                  </Flex>
                                   <br />
                                   <TextContent>
                                     <Text
@@ -469,25 +485,12 @@ export function WorkspacesMenuItems(props: {
                                         textOverflow: "ellipsis",
                                       }}
                                     >
+                                      <FolderIcon />
+                                      &nbsp;&nbsp;
                                       {descriptor.name}
                                     </Text>
                                   </TextContent>
-                                  <TextContent>
-                                    <Text
-                                      component={TextVariants.small}
-                                      style={{
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                      }}
-                                    >
-                                      {`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
-                                        workspaceFiles
-                                          .get(descriptor.workspaceId)!
-                                          .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath)).length
-                                      } models`}
-                                    </Text>
-                                  </TextContent>
+                                  <WorkspaceDescriptorDates workspaceDescriptor={descriptor} />
                                 </DataListCell>,
                               ]}
                             />
@@ -575,9 +578,12 @@ export function SearchableFilesMenuGroup(props: {
 
   useEffect(() => {
     if (props.shouldFocusOnSearch) {
-      setTimeout(() => {
+      const task = setTimeout(() => {
         searchInputRef.current?.focus();
       }, 500);
+      return () => {
+        clearTimeout(task);
+      };
     }
   }, [props.shouldFocusOnSearch, props.filesDropdownMode]);
 
@@ -688,13 +694,14 @@ export function FilesMenuItems(props: {
                           width={width}
                         >
                           {({ index, style }) => (
-                            <FileMenuItem
+                            <MenuItem
                               key={filteredFiles[index].relativePath}
-                              file={filteredFiles[index]}
-                              onSelectFile={props.onSelectFile}
+                              onClick={props.onSelectFile}
                               style={style}
-                              isEditable={true}
-                            />
+                              className={"kie-tools--file-switcher-no-padding-menu-item"}
+                            >
+                              <FileDataList file={filteredFiles[index]} isEditable={true} />
+                            </MenuItem>
                           )}
                         </VariableSizeList>
                       )}
@@ -755,12 +762,14 @@ export function FilesMenuItems(props: {
                         width={width}
                       >
                         {({ index, style }) => (
-                          <FileMenuItem
-                            file={filteredFiles[index]}
-                            onSelectFile={() => {}}
+                          <MenuItem
+                            component={"span"}
+                            onClick={() => {}}
                             style={style}
-                            isEditable={false}
-                          />
+                            className={"kie-tools--file-switcher-no-padding-menu-item"}
+                          >
+                            <FileDataList file={filteredFiles[index]} isEditable={false} />
+                          </MenuItem>
                         )}
                       </VariableSizeList>
                     )}
@@ -831,24 +840,6 @@ export function FilesMenuItems(props: {
         )}
       </Split>
     </>
-  );
-}
-
-export function FileMenuItem(props: {
-  file: WorkspaceFile;
-  onSelectFile: () => void;
-  isEditable: boolean;
-  style: React.CSSProperties;
-}) {
-  return (
-    <MenuItem
-      component={props.isEditable ? undefined : "span"}
-      onClick={props.onSelectFile}
-      style={props.style}
-      className={"kie-tools--file-switcher-no-padding-menu-item"}
-    >
-      <FileDataList file={props.file} isEditable={props.isEditable} />
-    </MenuItem>
   );
 }
 
