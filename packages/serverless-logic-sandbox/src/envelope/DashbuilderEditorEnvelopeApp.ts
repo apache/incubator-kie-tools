@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { DashbuilderEditorFactory } from "@kie-tools/dashbuilder-editor";
 
-init({
+EditorEnvelope.init({
   container: document.getElementById("dashbuilder-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
   editorFactory: new DashbuilderEditorFactory(),

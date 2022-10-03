@@ -5,6 +5,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
   <div>
     <div
       class="kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"
+      data-ouia-component-id="keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
@@ -34,6 +35,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
   <div>
     <div
       class="kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"
+      data-ouia-component-id="keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
@@ -70,6 +72,7 @@ exports[`EditorEnvelopeView after set content 1`] = `
   <div>
     <div
       class="kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"
+      data-ouia-component-id="keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg

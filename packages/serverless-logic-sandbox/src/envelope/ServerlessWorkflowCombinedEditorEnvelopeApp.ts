@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
 import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
 
-init({
+EditorEnvelope.init({
   container: document.getElementById("swf-combined-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
   editorFactory: new ServerlessWorkflowCombinedEditorFactory(),

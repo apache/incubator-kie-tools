@@ -22,3 +22,4 @@ export * from "./findNodesAtLocation";
 export * from "./refValidation";
 export * from "./nodeUpUntilType";
 export * from "./types";
+export * from "./indentText";

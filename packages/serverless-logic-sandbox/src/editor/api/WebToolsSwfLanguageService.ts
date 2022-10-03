@@ -14,12 +14,34 @@
  * limitations under the License.
  */
 
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { FileLanguage, getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  SwfJsonLanguageService,
+  SwfLanguageServiceArgs,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
-export class SandboxSwfJsonLanguageService extends SwfJsonLanguageService {
-  constructor(private readonly catalogStore: SwfServiceCatalogStore) {
-    super({
+export class WebToolsSwfLanguageService {
+  constructor(private readonly catalogStore: SwfServiceCatalogStore) {}
+
+  public getLs(relativePath: string): SwfJsonLanguageService | SwfYamlLanguageService {
+    const swfLanguageLsArgs = this.getDefaultLsArgs({});
+
+    const fileLanguage = getFileLanguageOrThrow(relativePath);
+    if (fileLanguage === FileLanguage.YAML) {
+      return new SwfYamlLanguageService(swfLanguageLsArgs);
+    } else if (fileLanguage === FileLanguage.JSON) {
+      return new SwfJsonLanguageService(swfLanguageLsArgs);
+    } else {
+      throw new Error(`Could not determine LS for ${relativePath}`);
+    }
+  }
+
+  private getDefaultLsArgs(
+    configOverrides: Partial<SwfLanguageServiceArgs["config"]>
+  ): Omit<SwfLanguageServiceArgs, "lang"> {
+    return {
       fs: {},
       serviceCatalog: {
         global: {
@@ -44,7 +66,8 @@ export class SandboxSwfJsonLanguageService extends SwfJsonLanguageService {
         shouldConfigureServiceRegistries: () => false,
         shouldServiceRegistriesLogIn: () => false,
         canRefreshServices: () => true,
+        ...configOverrides,
       },
-    });
+    };
   }
 }

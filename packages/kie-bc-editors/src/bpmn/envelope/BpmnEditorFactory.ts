@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { BpmnEditor, BpmnEditorImpl } from "./BpmnEditor";
-import { BpmnEditorChannelApi, getBpmnLanguageData } from "../api";
 import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
+import { BpmnEditorChannelApi, getBpmnLanguageData } from "../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import { BpmnEditor, BpmnEditorImpl } from "./BpmnEditor";
 
 export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
