@@ -26,7 +26,7 @@ public class Edge {
     private final String source;
     private final String target;
     private final List<Point2D> bendingPoints;
-    private final String id;
+    private String id;
 
     public Edge(final String edgeId, final String source, final String target) {
         this.id = edgeId;
@@ -49,5 +49,9 @@ public class Edge {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
     }
 }

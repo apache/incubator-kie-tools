@@ -19,6 +19,9 @@ package org.kie.workbench.common.stunner.sw.autolayout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.layout.Layout;
 import com.ait.lienzo.client.core.layout.VertexPosition;
@@ -27,6 +30,7 @@ import com.ait.lienzo.client.core.layout.graph.Vertex;
 import com.ait.lienzo.client.core.types.Point2D;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -34,10 +38,12 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand;
+import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
@@ -71,7 +77,10 @@ public class AutoLayout {
 
                     final CompositeCommand.Builder layoutCommands = new CompositeCommand.Builder();
 
+                    updateEdgesDirection(layout, layoutCommands);
                     createControlPoints(layout, layoutCommands);
+                    hideNodeIfIsNotConnected(layout, startingNodeId, graph, parentNode);
+                    hideNodeIfIsNotConnected(layout, endingNodeId, graph, parentNode);
 
                     final CompositeCommand<GraphCommandExecutionContext, RuleViolation> all =
                             new CompositeCommand.Builder<>()
@@ -86,6 +95,115 @@ public class AutoLayout {
                     resolve.onInvoke(parentNode);
                     return null;
                 }));
+    }
+
+    static void hideNodeIfIsNotConnected(final Layout layout,
+                                         final String nodeId,
+                                         final Graph graph,
+                                         final Node parentNode) {
+
+        final Optional<VertexPosition> vertexPosition = layout.getVerticesPositions()
+                .stream()
+                .filter(p -> Objects.equals(p.getId(), nodeId)).findFirst();
+
+        if (!vertexPosition.isPresent()
+                || vertexPosition.get().getOutgoingEdges().isEmpty()
+                && !hasIncomingConnection(nodeId, layout)) {
+            deleteNode(parentNode, nodeId, graph);
+        }
+    }
+
+    private static void deleteNode(Node parentNode, String nodeId, Graph graph) {
+        final Optional outParent = parentNode.getOutEdges().stream()
+                .filter(outEdge -> Objects.equals(((Edge) outEdge).getTargetNode().getUUID(), nodeId))
+                .findFirst();
+        if (outParent.isPresent()) {
+            parentNode.getOutEdges().remove(outParent.get());
+        }
+        graph.removeNode(nodeId);
+    }
+
+    static boolean hasIncomingConnection(final String nodeId, final Layout layout) {
+
+        return layout.getVerticesPositions().stream()
+                .anyMatch(p -> p.getOutgoingEdges().stream().anyMatch(edge -> Objects.equals(edge.getTarget(), nodeId)));
+    }
+
+    static void updateEdgesDirection(final Layout layout,
+                                     final CompositeCommand.Builder layoutCommands) {
+
+        final Map<String, VertexPosition> index = layout.getVerticesPositions()
+                .stream()
+                .collect(Collectors.toMap(VertexPosition::getId, verticesPosition -> verticesPosition, (a, b) -> b));
+
+        for (final VertexPosition verticesPosition : layout.getVerticesPositions()) {
+            for (com.ait.lienzo.client.core.layout.Edge outgoingEdge : verticesPosition.getOutgoingEdges()) {
+
+                final Position position = getTargetPositionRelativeToSource(outgoingEdge, index);
+                final String edgeIUd = outgoingEdge.getId();
+                switch (position) {
+                    case ABOVE:
+                        updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 3);
+                        break;
+
+                    case LEFT:
+                        updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 2);
+                        break;
+
+                    case RIGHT:
+                        updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 4);
+                        break;
+
+                    case BELOW:
+                        // Do nothing because it's already in the right direction
+                        break;
+                }
+            }
+        }
+    }
+
+    private static void updateTargetMagnet(final CompositeCommand.Builder layoutCommands,
+                                           final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
+                                           final String edgeIUd,
+                                           final int magnetIndex) {
+        layoutCommands.addCommand(new SetConnectionTargetNodeCommand(outgoingEdge.getTarget(),
+                                                                     edgeIUd,
+                                                                     MagnetConnection.Builder.at(0, 0)) {
+            public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
+                final Node<? extends View<?>, Edge> targetNode = getTargetNode(context);
+                if (null != targetNode) {
+                    asMagnetConnection().setIndex(magnetIndex);
+                }
+                return super.execute(context);
+            }
+
+            private MagnetConnection asMagnetConnection() {
+                return (MagnetConnection) getConnection();
+            }
+        });
+    }
+
+    static Position getTargetPositionRelativeToSource(final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
+                                                      final Map<String, VertexPosition> index) {
+        final VertexPosition source = index.get(outgoingEdge.getSource());
+        final VertexPosition target = index.get(outgoingEdge.getTarget());
+        if (target.getY() < source.getY()) {
+            return Position.ABOVE;
+        }
+
+        if (target.getY() > source.getY()) {
+            return Position.BELOW;
+        }
+
+        if (target.getX() < source.getX()) {
+            return Position.LEFT;
+        }
+
+        if (target.getX() > source.getX()) {
+            return Position.RIGHT;
+        }
+
+        return Position.BELOW;
     }
 
     public static void createControlPoints(final Layout layout,
