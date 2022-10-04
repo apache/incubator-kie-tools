@@ -17,21 +17,88 @@
 package single
 
 import (
+	"bufio"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"io"
+	"path/filepath"
+	"strconv"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/moby/buildkit/session"
+	"github.com/pkg/errors"
+	fsutiltypes "github.com/tonistiigi/fsutil/types"
 )
 
-func getDockerBuildArgs(cfg BuildCmdConfig, imageRegistry string, imageRepository string, imageName string, imageTag string) []string {
-	dockerBuildArgs := []string{
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_FILE, common.WORKFLOW_SW_JSON),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_EXTENSIONS, cfg.Extesions),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_NAME, cfg.ImageName),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY, imageRegistry),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP, imageRepository),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME, imageName),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG, imageTag),
+func GetDockerBuildArgs(cfg BuildCmdConfig, registry string, repository string, name string, tag string) map[string]*string {
+	var workflowSwJson string = common.WORKFLOW_SW_JSON
+	buildArgs := map[string]*string{
+		common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY: &registry,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP:    &repository,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME:     &name,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG:      &tag,
+		common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &cfg.ImageName,
 	}
 
-	return dockerBuildArgs
+	existExtensions := strconv.FormatBool(len(cfg.Extesions) > 0)
+	buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS] = &existExtensions
+
+	if len(cfg.Extesions) > 0 {
+		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &cfg.Extesions
+	}
+
+	return buildArgs
+}
+
+// Creates a new session
+// A session is a grpc server that enables Docker sdk to have a longer connection with the daemon
+func CreateSession(contextDir string, forStream bool) (*session.Session, error) {
+	sessionHash := sha256.Sum256([]byte(fmt.Sprintf("%s", contextDir)))
+	sharedKey := hex.EncodeToString(sessionHash[:])
+	session, err := session.NewSession(context.Background(), filepath.Base(contextDir), sharedKey)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create session")
+	}
+	return session, nil
+}
+
+func ResetUIDAndGID(_ string, s *fsutiltypes.Stat) bool {
+	s.Uid = 0
+	s.Gid = 0
+	return true
+}
+
+type ErrorDetail struct {
+	Message string `json:"message"`
+}
+
+type ErrorLine struct {
+	Error       string      `json:"error"`
+	ErrorDetail ErrorDetail `json:"errorDetail"`
+}
+
+func Log(rd io.Reader) error {
+	var lastLine string
+
+	scanner := bufio.NewScanner(rd)
+	for scanner.Scan() {
+		lastLine = scanner.Text()
+		fmt.Println(scanner.Text())
+	}
+
+	errLine := &ErrorLine{}
+	json.Unmarshal([]byte(lastLine), errLine)
+	if errLine.Error != "" {
+		return errors.New(errLine.Error)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -24,6 +24,6 @@ func NewSingleCommand(cmd *cobra.Command) *cobra.Command {
 	cmd.AddCommand(NewBuildCommand())
 	cmd.AddCommand(NewCreateCommand())
 	cmd.AddCommand(NewDeployCommand())
-	cmd.AddCommand(NewRunCommand())
+	cmd.AddCommand(NewDevCommand())
 	return cmd
 }

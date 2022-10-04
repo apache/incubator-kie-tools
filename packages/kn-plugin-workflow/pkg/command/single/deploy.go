@@ -89,7 +89,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	}
 
 	finish := time.Since(start)
-	fmt.Printf("🚀 Deploy took: %s \n", finish)
+	fmt.Printf("🚀 Deploy command took: %s \n", finish)
 	return nil
 }
 

@@ -18,19 +18,13 @@ package single
 
 import (
 	"archive/tar"
-	"bufio"
 	"bytes"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
-	"strconv"
 	"sync"
 	"time"
 
@@ -39,12 +33,9 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/moby/buildkit/session"
 	"github.com/moby/buildkit/session/filesync"
 	"github.com/ory/viper"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	fsutiltypes "github.com/tonistiigi/fsutil/types"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -100,7 +91,7 @@ func NewBuildCommand() *cobra.Command {
 
 func runBuild(cmd *cobra.Command, args []string) (err error) {
 	start := time.Now()
-	fmt.Println("🔨 Buildking workflow project")
+	fmt.Println("🔨 Building workflow project")
 
 	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
@@ -118,7 +109,7 @@ func runBuild(cmd *cobra.Command, args []string) (err error) {
 		return
 	}
 
-	fmt.Printf("🚀 Build took: %s \n", time.Since(start))
+	fmt.Printf("🚀 Build command took: %s \n", time.Since(start))
 	return nil
 }
 
@@ -144,6 +135,7 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	}
 	return
 }
+
 func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	ctx := cmd.Context()
 
@@ -154,7 +146,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	// creates a session for the dir
-	session, err := trySession(cfg.Path, false)
+	session, err := CreateSession(cfg.Path, false)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a new session")
 		return
@@ -169,7 +161,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		{
 			Name: "context",
 			Dir:  cfg.Path,
-			Map:  resetUIDAndGID,
+			Map:  ResetUIDAndGID,
 		},
 		{
 			Name: "dockerfile",
@@ -190,23 +182,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
-
-	var workflowSwJson string = common.WORKFLOW_SW_JSON
-	buildArgs := map[string]*string{
-		common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY: &registry,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP:    &repository,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME:     &name,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG:      &tag,
-		common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &cfg.ImageName,
-	}
-
-	existExtensions := strconv.FormatBool(len(cfg.Extesions) > 0)
-	buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS] = &existExtensions
-
-	if len(cfg.Extesions) > 0 {
-		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &cfg.Extesions
-	}
+	buildArgs := GetDockerBuildArgs(cfg, registry, repository, name, tag)
 
 	commomImageBuildOptions := types.ImageBuildOptions{
 		SessionID:   session.ID(),
@@ -288,7 +264,7 @@ func runDockerImageBuild(
 	}
 	defer res.Body.Close()
 
-	return print(res.Body)
+	return Log(res.Body)
 }
 
 func addFileToTar(tw *tar.Writer, path string, fileName string) (err error) {
@@ -317,53 +293,4 @@ func addFileToTar(tw *tar.Writer, path string, fileName string) (err error) {
 		return
 	}
 	return
-}
-
-// Creates a new session
-// A session is a grpc server that enables the Docker sdk to have a longer connection
-func trySession(contextDir string, forStream bool) (*session.Session, error) {
-	sessionHash := sha256.Sum256([]byte(fmt.Sprintf("%s", contextDir)))
-	sharedKey := hex.EncodeToString(sessionHash[:])
-	session, err := session.NewSession(context.Background(), filepath.Base(contextDir), sharedKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create session")
-	}
-	return session, nil
-}
-
-func resetUIDAndGID(_ string, s *fsutiltypes.Stat) bool {
-	s.Uid = 0
-	s.Gid = 0
-	return true
-}
-
-type ErrorDetail struct {
-	Message string `json:"message"`
-}
-
-type ErrorLine struct {
-	Error       string      `json:"error"`
-	ErrorDetail ErrorDetail `json:"errorDetail"`
-}
-
-func print(rd io.Reader) error {
-	var lastLine string
-
-	scanner := bufio.NewScanner(rd)
-	for scanner.Scan() {
-		lastLine = scanner.Text()
-		fmt.Println(scanner.Text())
-	}
-
-	errLine := &ErrorLine{}
-	json.Unmarshal([]byte(lastLine), errLine)
-	if errLine.Error != "" {
-		return errors.New(errLine.Error)
-	}
-
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-
-	return nil
 }

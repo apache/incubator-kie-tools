@@ -28,8 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type CreateConfig struct {
-	// Quarkus project options
+type CreateCmdConfig struct {
 	ProjectName         string // Project name
 	DependenciesVersion metadata.DependenciesVersion
 }
@@ -85,12 +84,12 @@ func runCreate(cmd *cobra.Command, args []string) (err error) {
 		return fmt.Errorf("Description: %w", err)
 	}
 
-	fmt.Printf("🚀 Build took: %s \n", time.Since(start))
+	fmt.Printf("🚀 Create command took: %s \n", time.Since(start))
 	return nil
 }
 
-func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
-	cfg = CreateConfig{
+func runCreateConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
+	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: viper.GetString("quarkus-platform-group-id"),
