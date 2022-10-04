@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "license": "Apache-2.0",
   "scripts": {
-    "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages && prettier --write pnpm-lock.yaml",
+    "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages",
     "bootstrap:packages": "kie-tools--bootstrap",
     "bootstrap:root": "pnpm install --workspace-root --strict-peer-dependencies=false -F kie-tools-root...",
     "format": "prettier --write .",
