@@ -288,7 +288,7 @@ functions:
 - name: myFunc
   operation: "./specs/myService#myFunc"
   type: rest
-states:
+"states":
 - name: testState
   type: operation
   transition: end
@@ -304,11 +304,14 @@ states:
       expect(rootNode!.type).toBe("object");
       expect(rootNode!.children).toHaveLength(2);
       expect(rootNode!.children![0].type).toBe("property");
+      expect(rootNode!.children![0].colonOffset).toBe(13);
       expect(rootNode!.children![0].children).toHaveLength(2);
       expect(rootNode!.children![0].children![0]).not.toBeUndefined();
       expect(rootNode!.children![0].children![0].value).toBe("functions");
+      expect(rootNode!.children![0].children![0].colonOffset).toBeUndefined();
       expect(rootNode!.children![0].children![1]).not.toBeUndefined();
       expect(rootNode!.children![0].children![1].type).toBe("array");
+      expect(rootNode!.children![1].colonOffset).toBe(91);
       expect(rootNode!.children![1].children![1].children![0].children![0].children![1].value).toBe("testState");
 
       expect(rootNode).toMatchObject({
@@ -855,8 +858,63 @@ functions: []
     });
 
     describe("function completion", () => {
-      test("empty completion items", async () => {
-        const { completionItems } = await codeCompletionTester(
+      test.each([
+        ["empty completion items", "functions:\n-🎯"],
+        ["pointing before the array of functions", `functions:🎯 [] `],
+        ["pointing before the array of functions / with extra space after ':'", `functions: 🎯 [] `],
+        ["pointing after the array of functions", `functions: []🎯 `],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content);
+
+        expect(completionItems).toHaveLength(0);
+      });
+
+      test("using JSON format", async () => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `---
+functions: [🎯]`
+        );
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Reference,
+          label: "specs»testRelativeService1.yml#testRelativeFunction1",
+          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+          textEdit: {
+            range: { start: cursorPosition, end: cursorPosition },
+            newText: `{
+    "name": "\${1:testRelativeFunction1}",
+    "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "type": "rest"
+  }`,
+          },
+          snippet: true,
+          insertTextFormat: InsertTextFormat.Snippet,
+          command: {
+            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
+            title: "Import function from completion item",
+            arguments: [
+              {
+                documentUri,
+                containingService: {
+                  ...testRelativeService1,
+                  functions: [
+                    {
+                      ...testRelativeFunction1,
+                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        } as CompletionItem);
+      });
+
+      test("using JSON format / before a function", async () => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
           `---

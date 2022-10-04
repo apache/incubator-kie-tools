@@ -131,7 +131,11 @@ export const isNodeUncompleted = (args: {
 
   const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, args.cursorOffset - 1, true);
 
-  return nodeAtPrevOffset?.colonOffset === args.cursorOffset - 1;
+  if (!nodeAtPrevOffset) {
+    return false;
+  }
+
+  return nodeAtPrevOffset.offset + nodeAtPrevOffset.length === args.cursorOffset - 1;
 };
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
@@ -139,7 +143,6 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
     type: "object",
     offset: node.startPosition,
     length: node.endPosition - node.startPosition,
-    colonOffset: node.endPosition,
     parent: parentNode,
   };
 
@@ -159,6 +162,7 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
       ...(convertedNode.value ? [astConvert(yamlMapping.value, convertedNode)] : []),
     ];
     convertedNode.type = "property";
+    convertedNode.colonOffset = yamlMapping.key.endPosition;
   } else if (node.kind === Kind.SEQ) {
     convertedNode.children = (node as YAMLSequence).items
       .filter((item) => item)
