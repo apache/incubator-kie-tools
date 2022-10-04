@@ -27,6 +27,7 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
+import { getNodeFormat } from "./getNodeFormat";
 import { FileLanguage } from "../api";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
@@ -214,6 +215,17 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
+    if (
+      !args.root ||
+      !args.node ||
+      (["object", "array"].includes(args.node.type) && getNodeFormat(args.content, args.node) === FileLanguage.JSON) ||
+      (["string", "number", "boolean"].includes(args.node.type) &&
+        args.node.parent &&
+        getNodeFormat(args.content, args.node.parent) === FileLanguage.JSON)
+    ) {
+      return false;
+    }
+
     return matchNodeWithLocation(args.root, args.node, args.path);
   }
 }
