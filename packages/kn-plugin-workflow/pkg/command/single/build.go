@@ -46,7 +46,6 @@ import (
 	"github.com/spf13/cobra"
 	fsutiltypes "github.com/tonistiigi/fsutil/types"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 )
 
 type BuildCmdConfig struct {
@@ -318,18 +317,6 @@ func addFileToTar(tw *tar.Writer, path string, fileName string) (err error) {
 		return
 	}
 	return
-}
-
-// Session is a long running connection between client and a daemon
-type Session struct {
-	id         string
-	name       string
-	sharedKey  string
-	ctx        context.Context
-	cancelCtx  func()
-	done       chan struct{}
-	grpcServer *grpc.Server
-	conn       net.Conn
 }
 
 // Creates a new session
