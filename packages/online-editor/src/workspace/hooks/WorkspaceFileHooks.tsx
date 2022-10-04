@@ -18,8 +18,8 @@ import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { usePromiseState } from "./PromiseState";
-import { WorkspaceEvents } from "../worker/api/WorkspaceEvents";
-import { WorkspaceFileEvents } from "../worker/api/WorkspaceFileEvents";
+import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
+import { WorkspaceFileBroadcastEvents } from "../worker/api/WorkspaceFileBroadcastEvents";
 
 export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();
@@ -71,34 +71,34 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
           return;
         }
 
-        workspaces.getUniqueFileIdentifier({ workspaceId, relativePath }).then((uniqueId) => {
+        workspaces.getUniqueFileIdentifier({ workspaceId, relativePath }).then((uniqueFileIdentifier) => {
           if (canceled.get()) {
             return;
           }
 
-          console.debug("Subscribing to " + uniqueId);
-          const broadcastChannel = new BroadcastChannel(uniqueId);
-          broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
+          console.debug(`Subscribing to ${uniqueFileIdentifier}`);
+          const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
+          broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileBroadcastEvents>) => {
             console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
-            if (data.type === "MOVE" || data.type == "RENAME") {
+            if (data.type === "WSF_MOVE" || data.type == "WSF_RENAME") {
               refresh(workspaceId, data.newRelativePath, canceled);
             }
-            if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
+            if (data.type === "WSF_UPDATE" || data.type === "WSF_DELETE" || data.type === "WSF_ADD") {
               refresh(workspaceId, data.relativePath, canceled);
             }
           };
 
           console.debug("Subscribing to " + workspaceId);
           const broadcastChannel2 = new BroadcastChannel(workspaceId);
-          broadcastChannel2.onmessage = ({ data }: MessageEvent<WorkspaceEvents>) => {
+          broadcastChannel2.onmessage = ({ data }: MessageEvent<WorkspaceBroadcastEvents>) => {
             console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
-            if (data.type === "PULL") {
+            if (data.type === "WS_PULL") {
               refresh(workspaceId, relativePath, canceled);
             }
           };
 
           return () => {
-            console.debug("Unsubscribing to " + uniqueId);
+            console.debug(`Unsubscribing to ${uniqueFileIdentifier}`);
             broadcastChannel.close();
           };
         });

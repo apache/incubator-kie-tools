@@ -19,40 +19,16 @@ import { useCallback, useMemo } from "react";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { InputRow } from "@kie-tools/form-dmn";
-import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsContext";
-import { useCancelableEffect } from "../reactExt/Hooks";
-import { WORKSPACES_BROADCAST_CHANNEL } from "../workspace/worker/api/WorkspacesEvents";
-import { WorkspacesEvents } from "../workspace/worker/api/WorkspacesEvents";
+import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsDispatchContext";
 import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { useSyncedCompanionFs } from "../companionFs/CompanionFsHooks";
 
-export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}>) {
+export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChildren<{}>) {
   const dmnRunnerInputsService = useMemo(() => {
     return new DmnRunnerInputsService();
   }, []);
 
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        console.debug("Subscribing to " + WORKSPACES_BROADCAST_CHANNEL);
-        const broadcastChannel = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
-        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspacesEvents>) => {
-          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
-          if (data.type === "DELETE_WORKSPACE") {
-            if (canceled.get()) {
-              return;
-            }
-            dmnRunnerInputsService.delete(data.workspaceId);
-          }
-        };
-
-        return () => {
-          console.debug("Unsubscribing to " + WORKSPACES_BROADCAST_CHANNEL);
-          broadcastChannel.close();
-        };
-      },
-      [dmnRunnerInputsService]
-    )
-  );
+  useSyncedCompanionFs(dmnRunnerInputsService.companionFsService);
 
   const updatePersistedInputRows = useCallback(
     async (
@@ -60,17 +36,20 @@ export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}
       newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
     ) => {
       if (typeof newInputRows === "function") {
-        const inputs = await dmnRunnerInputsService.getDmnRunnerInputs(workspaceFile);
+        const inputs = await dmnRunnerInputsService.companionFsService.get({
+          workspaceId: workspaceFile.workspaceId,
+          workspaceFileRelativePath: workspaceFile.relativePath,
+        });
         const previousInputRows = await inputs
           ?.getFileContents()
           .then((content) => dmnRunnerInputsService.parseDmnRunnerInputs(decoder.decode(content)));
-        await dmnRunnerInputsService.updateDmnRunnerInputs(
-          workspaceFile,
+        await dmnRunnerInputsService.companionFsService.update(
+          { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
           dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows, previousInputRows)
         );
       } else {
-        await dmnRunnerInputsService.updateDmnRunnerInputs(
-          workspaceFile,
+        await dmnRunnerInputsService.companionFsService.update(
+          { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
           dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows)
         );
       }
@@ -80,19 +59,20 @@ export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}
 
   const deletePersistedInputRows = useCallback(
     async (workspaceFile: WorkspaceFile) => {
-      await dmnRunnerInputsService.deleteDmnRunnerInputs(workspaceFile);
+      await dmnRunnerInputsService.companionFsService.delete({
+        workspaceId: workspaceFile.workspaceId,
+        workspaceFileRelativePath: workspaceFile.relativePath,
+      });
     },
-    [dmnRunnerInputsService]
-  );
-
-  const getUniqueFileIdentifier = useCallback(
-    (args: { workspaceId: string; relativePath: string }) => dmnRunnerInputsService.getUniqueFileIdentifier(args),
     [dmnRunnerInputsService]
   );
 
   const getInputRowsForDownload = useCallback(
     async (workspaceFile: WorkspaceFile) => {
-      const inputs = await dmnRunnerInputsService.getDmnRunnerInputs(workspaceFile);
+      const inputs = await dmnRunnerInputsService.companionFsService.get({
+        workspaceId: workspaceFile.workspaceId,
+        workspaceFileRelativePath: workspaceFile.relativePath,
+      });
       return await inputs?.getFileContents().then((content) => new Blob([content], { type: "application/json" }));
     },
     [dmnRunnerInputsService]
@@ -105,7 +85,10 @@ export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}
         reader.onload = (event: ProgressEvent<FileReader>) => res(decoder.decode(event.target?.result as ArrayBuffer));
         reader.readAsArrayBuffer(file);
       });
-      await dmnRunnerInputsService.createOrOverwriteDmnRunnerInputs(workspaceFile, content);
+      await dmnRunnerInputsService.companionFsService.createOrOverwrite(
+        { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
+        content
+      );
     },
     [dmnRunnerInputsService]
   );
@@ -115,7 +98,6 @@ export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}
       value={{
         dmnRunnerInputsService,
         updatePersistedInputRows,
-        getUniqueFileIdentifier,
         deletePersistedInputRows,
         getInputRowsForDownload,
         uploadInputRows,

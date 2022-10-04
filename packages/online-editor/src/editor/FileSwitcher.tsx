@@ -45,7 +45,7 @@ import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
+import { PromiseStateWrapper, useCombinedPromiseState } from "../workspace/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
@@ -53,7 +53,6 @@ import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useCancelableEffect } from "../reactExt/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -72,6 +71,7 @@ import {
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
+import { usePreviewSvg } from "../previewSvgs/PreviewSvgHooks";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -481,40 +481,17 @@ export function WorkspacesMenuItems(props: {
 }
 
 export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
-  const workspaces = useWorkspaces();
   const imgRef = useRef<HTMLImageElement>(null);
-  const [svg, setSvg] = usePromiseState<string>();
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        // FIXME: Uncomment when working on KOGITO-7805
-        // Promise.resolve()
-        //   .then(async () => svgService.getSvg(props.workspaceFile))
-        //   .then(async (file) => {
-        //     if (canceled.get()) {
-        //       return;
-        //     }
-        //
-        //     if (file) {
-        //       setSvg({ data: decoder.decode(await file.getFileContents()) });
-        //     } else {
-        //       setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
-        //     }
-        //   });
-      },
-      [props.workspaceFile, workspaces, setSvg]
-    )
-  );
+  const { previewSvgString } = usePreviewSvg(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
 
   useEffect(() => {
-    if (svg.data) {
-      const blob = new Blob([svg.data], { type: "image/svg+xml" });
+    if (previewSvgString.data) {
+      const blob = new Blob([previewSvgString.data], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
       imgRef.current!.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
       imgRef.current!.src = url;
     }
-  }, [svg]);
+  }, [previewSvgString]);
 
   return (
     <>
@@ -527,7 +504,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
             </Bullseye>
           </div>
         )}
-        promise={svg}
+        promise={previewSvgString}
         resolved={() => (
           // for some reason, the CardBody adds an extra 6px after the image is loaded. 200 - 6 = 194px.
           <img style={{ height: "194px" }} ref={imgRef} alt={"SVG for " + props.workspaceFile.relativePath} />
@@ -632,14 +609,13 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        {/* FIXME: Uncomment when working on KOGITO-7805 */}
-        {/*<SplitItem>*/}
-        {/*  <FilesDropdownModeIcons*/}
-        {/*    filesDropdownMode={props.filesDropdownMode}*/}
-        {/*    setFilesDropdownMode={props.setFilesDropdownMode}*/}
-        {/*  />*/}
-        {/*  &nbsp; &nbsp;*/}
-        {/*</SplitItem>*/}
+        <SplitItem>
+          <FilesDropdownModeIcons
+            filesDropdownMode={props.filesDropdownMode}
+            setFilesDropdownMode={props.setFilesDropdownMode}
+          />
+          &nbsp; &nbsp;
+        </SplitItem>
       </Split>
       <Divider component={"li"} />
 
@@ -800,8 +776,7 @@ export function FilesMenuItems(props: {
                         </CardHeaderMain>
                       </CardHeader>
                       <CardBody style={{ padding: 0 }}>
-                        {/* FIXME: Uncomment when working on KOGITO-7805 */}
-                        {/* <FileSvg workspaceFile={file} />*/}
+                        <FileSvg workspaceFile={file} />
                       </CardBody>
                     </Card>
                   ))}

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-export const WORKSPACES_BROADCAST_CHANNEL = "workspaces";
-
-export type WorkspacesEvents =
-  | { type: "DELETE_ALL" }
-  | { type: "ADD_WORKSPACE"; workspaceId: string }
-  | { type: "RENAME_WORKSPACE"; workspaceId: string }
-  | { type: "DELETE_WORKSPACE"; workspaceId: string };
+export type WorkspaceFileBroadcastEvents =
+  | { type: "WSF_MOVE"; newRelativePath: string; oldRelativePath: string }
+  | { type: "WSF_RENAME"; newRelativePath: string; oldRelativePath: string }
+  | { type: "WSF_UPDATE"; relativePath: string }
+  | { type: "WSF_DELETE"; relativePath: string }
+  | { type: "WSF_ADD"; relativePath: string };

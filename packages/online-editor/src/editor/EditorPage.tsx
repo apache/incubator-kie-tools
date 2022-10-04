@@ -45,6 +45,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 
 export interface Props {
   workspaceId: string;
@@ -59,6 +60,7 @@ export function EditorPage(props: Props) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
+  const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
@@ -180,18 +182,11 @@ export function EditorPage(props: Props) {
     console.debug(`Saving @ new version (${saveVersion}).`);
 
     const content = await editor.getContent();
-    // FIXME: Uncomment when working on KOGITO-7805
-    // const svgString = await editor.getPreview();
-
     if (version + 1 < saveVersion) {
       console.debug(`Saving @ stale version (${version}); ignoring before writing.`);
       return;
     }
 
-    // FIXME: Uncomment when working on KOGITO-7805
-    // if (svgString) {
-    //   await svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
-    // }
     console.debug(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
 
@@ -224,8 +219,31 @@ export function EditorPage(props: Props) {
     ),
     { throttle: 200 }
   );
-
   // end (AUTO-SAVE)
+
+  // being (UPDATE SVG PREVIEWS)
+  const updatePreviewSvg = useCallback(() => {
+    editor?.getPreview().then((svgString) => {
+      if (!workspaceFilePromise.data || !svgString) {
+        return;
+      }
+
+      return previewSvgService.companionFsService.createOrOverwrite(
+        {
+          workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+          workspaceFileRelativePath: workspaceFilePromise.data.workspaceFile.relativePath,
+        },
+        svgString
+      );
+    });
+  }, [editor, previewSvgService, workspaceFilePromise.data]);
+
+  // Update the SVG
+  useStateControlSubscription(editor, updatePreviewSvg, { throttle: 200 });
+
+  // Save SVG when opening a file for the first time, even without changing it.
+  useEffect(updatePreviewSvg, [updatePreviewSvg]);
+  //end (UPDATE SVG PREVIEWS)
 
   useEffect(() => {
     alerts?.closeAll();

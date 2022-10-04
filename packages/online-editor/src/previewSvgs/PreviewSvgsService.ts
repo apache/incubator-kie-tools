@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-export type WorkspaceFileEvents =
-  | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
-  | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
-  | { type: "UPDATE"; relativePath: string }
-  | { type: "DELETE"; relativePath: string }
-  | { type: "ADD"; relativePath: string };
+import { CompanionFsService } from "../companionFs/CompanionFsService";
+
+export class PreviewSvgsService {
+  public readonly companionFsService = new CompanionFsService({
+    storeNameSuffix: "preview_svgs",
+    emptyFileContent: "",
+  });
+}
