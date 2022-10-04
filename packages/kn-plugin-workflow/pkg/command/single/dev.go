@@ -23,7 +23,9 @@ import (
 	"time"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/docker/go-connections/nat"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
@@ -36,6 +38,7 @@ type DevCmdConfig struct {
 	Run                 bool
 	Tag                 string
 	Extensions          string
+	Port                string
 	DependenciesVersion metadata.DependenciesVersion
 }
 
@@ -52,7 +55,7 @@ If you wish, you can run the development container using Docker directly:
 		-p 8080:8080 quay.io/lmotta/dev		
 `,
 		SuggestFor: []string{"dve", "start"},
-		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "quarkus-platform-group-id", "quarkus-version"),
+		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "port", "quarkus-platform-group-id", "quarkus-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -64,6 +67,7 @@ If you wish, you can run the development container using Docker directly:
 	cmd.Flags().BoolP("run", "r", true, "Start the development container.")
 	cmd.Flags().StringP("tag", "t", "dev", "Development tag.")
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
+	cmd.Flags().StringP("port", "p", "8080", "Port to be used.")
 	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
 	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be set in the project.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
@@ -77,6 +81,7 @@ func runDevCmdConfig(cmd *cobra.Command) (cfg DevCmdConfig, err error) {
 		Run:        viper.GetBool("run"),
 		Tag:        viper.GetString("tag"),
 		Extensions: viper.GetString("extension"),
+		Port:       viper.GetString("port"),
 
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: viper.GetString("quarkus-platform-group-id"),
@@ -113,9 +118,9 @@ func runDev(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	if cfg.Run {
-		fmt.Println("🔨 Running your development image")
+		fmt.Println("🔨 Starting your development container")
 		if err = runDevContainer(cfg, cmd); err != nil {
-			fmt.Println("ERROR: running dev image")
+			fmt.Println("ERROR: running dev container")
 			return
 		}
 	}
@@ -124,18 +129,6 @@ func runDev(cmd *cobra.Command, args []string) (err error) {
 	return nil
 }
 
-/*
-— dev
-docker build -f Dockerfile.workflow --target=dev \
---build-arg workflow_file=workflow.sw.json \
---build-arg extensions=quarkus-jsonp,quarkus-smallrye-openapi \
---build-arg workflow_name=my-project \
---build-arg container_registry=quay.io \
---build-arg container_group=lmotta \
---build-arg container_name=test \
---build-arg container_tag=0.0.1 \
--t quay.io/lmotta/dev .
-*/
 func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	ctx := cmd.Context()
 
@@ -164,26 +157,23 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		})
 	})
 
-	registry, repository, name, tag := common.GetImageConfig("", "dev.local", "", "kn-workflow-developement", cfg.Tag)
+	registry, repository, name, tag := common.GetImageConfig("", common.DEV_REPOSITORY, "", common.KN_WORKFLOW_DEVELOPMENT, cfg.Tag)
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
 	buildArgs := GetDockerBuildArgs(cfg.Extensions, registry, repository, name, tag)
 
-	developmentImageBuildOptions := types.ImageBuildOptions{
-		SessionID:   session.ID(),
-		Dockerfile:  common.WORKFLOW_DOCKERFILE,
-		BuildArgs:   buildArgs,
-		Version:     types.BuilderBuildKit,
-		NetworkMode: "default",
-		Tags:        []string{common.GetImage(registry, repository, name, tag)},
-		Target:      "dev",
-	}
-
 	eg.Go(func() error {
 		defer session.Close()
 
-		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, developmentImageBuildOptions); err != nil {
+		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, types.ImageBuildOptions{
+			SessionID:  session.ID(),
+			Dockerfile: common.WORKFLOW_DOCKERFILE,
+			BuildArgs:  buildArgs,
+			Version:    types.BuilderBuildKit,
+			Tags:       []string{common.GetImage(registry, repository, name, tag)},
+			Target:     "dev",
+		}); err != nil {
 			fmt.Println("ERROR: generating development image")
 			return err
 		}
@@ -201,8 +191,53 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 /*
 docker container run -it \
 --mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/src/main/resources \
--p 8080:8080 quay.io/lmotta/dev
+-p 8080:8080 dev.local/kn-workflow-development:dev
 */
 func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
+	ctx := cmd.Context()
+
+	// create docker client
+	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return
+	}
+
+	containerPort := nat.Port(fmt.Sprintf("8080/tcp"))
+	containerConfig := &container.Config{
+		Image:        fmt.Sprintf("%s/%s:%s", common.DEV_REPOSITORY, common.KN_WORKFLOW_DEVELOPMENT, cfg.Tag),
+		AttachStdin:  true,
+		AttachStdout: true,
+		AttachStderr: true,
+		Tty:          true,
+		ExposedPorts: nat.PortSet{
+			containerPort: struct{}{},
+		},
+	}
+
+	currentPath, err := common.GetCurrentPath()
+	if err != nil {
+		return
+	}
+
+	containerHostConfig := &container.HostConfig{
+		Binds: []string{
+			fmt.Sprintf("%s:/tmp/kn-plugin-workflow/src/main/resources", currentPath),
+		},
+		PortBindings: nat.PortMap{
+			containerPort: []nat.PortBinding{{HostIP: "localhost", HostPort: cfg.Port}},
+		},
+	}
+
+	devContainer, err := dockerCli.ContainerCreate(ctx, containerConfig, containerHostConfig, nil, nil, fmt.Sprintf("kn-workflow-%s", cfg.Tag))
+	if err != nil {
+		fmt.Println("ERROR: failed to create a developement container")
+		return
+	}
+
+	err = dockerCli.ContainerStart(ctx, devContainer.ID, types.ContainerStartOptions{})
+	if err != nil {
+		fmt.Println("ERROR: failed to start the developement container")
+		return
+	}
 	return
 }

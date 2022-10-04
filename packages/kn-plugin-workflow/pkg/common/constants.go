@@ -33,16 +33,18 @@ const (
 	DOCKER_MINOR_VERSION = 10
 
 	// Default values
-	KN_WORKFLOW_NAME    string = "kn-workflow"
-	DEFAULT_TAG         string = "latest"
-	WORKFLOW_SW_JSON    string = "workflow.sw.json"
-	WORKFLOW_DOCKERFILE string = "Dockerfile.workflow"
+	KN_WORKFLOW_NAME        string = "kn-workflow"
+	KN_WORKFLOW_DEVELOPMENT string = "kn-workflow-development"
+	DEFAULT_TAG             string = "latest"
+	WORKFLOW_SW_JSON        string = "workflow.sw.json"
+	WORKFLOW_DOCKERFILE     string = "Dockerfile.workflow"
+	DEV_REPOSITORY          string = "dev.local"
 
 	// Docker
 	// build-arg
 	DOCKER_BUILD_ARG_WORKFLOW_FILE            string = "workflow_file"
 	DOCKER_BUILD_ARG_EXTENSIONS               string = "extensions"
-	DOCKER_BUILD_ARG_EXTENSIONS_LIST          string = "extensions-list"
+	DOCKER_BUILD_ARG_EXTENSIONS_LIST          string = "extensions_list"
 	DOCKER_BUILD_ARG_WORKFLOW_NAME            string = "workflow_name"
 	DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY string = "container_registry"
 	DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP    string = "container_group"

@@ -19,6 +19,7 @@ package common
 import (
 	"fmt"
 	"html/template"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -135,4 +136,13 @@ func GetImage(registry string, repository string, name string, tag string) strin
 		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
 	}
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
+}
+
+func GetCurrentPath() (path string, err error) {
+	path, err = os.Getwd()
+	if err != nil {
+		fmt.Println("ERROR: error getting current path")
+		return
+	}
+	return
 }

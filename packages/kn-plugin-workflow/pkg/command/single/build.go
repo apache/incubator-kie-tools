@@ -17,12 +17,9 @@
 package single
 
 import (
-	"archive/tar"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net"
-	"os"
 	"sync"
 	"time"
 
@@ -223,32 +220,4 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 
 	fmt.Println("✅ Build success")
 	return nil
-}
-
-func addFileToTar(tw *tar.Writer, path string, fileName string) (err error) {
-	fileReader, err := os.Open(path)
-	if err != nil {
-		fmt.Printf("ERROR: opening %s\n", path)
-		return
-	}
-	readFile, err := ioutil.ReadAll(fileReader)
-	if err != nil {
-		fmt.Printf("ERROR: reading %s\n", path)
-		return
-	}
-	tarHeader := &tar.Header{
-		Name: fileName,
-		Size: int64(len(readFile)),
-	}
-	err = tw.WriteHeader(tarHeader)
-	if err != nil {
-		fmt.Printf("ERROR: unable to write tar header %s\n", path)
-		return
-	}
-	_, err = tw.Write(readFile)
-	if err != nil {
-		fmt.Printf("ERROR: unable to write tar body %s\n", path)
-		return
-	}
-	return
 }
