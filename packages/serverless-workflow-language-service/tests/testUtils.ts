@@ -40,8 +40,8 @@ export function getLineFromOffset(fullText: string, offset: number | undefined, 
 
 export type ContentWithCursor = `${string}🎯${string}`;
 
-export function treat(content: ContentWithCursor) {
-  const trimmedContent = content.trim();
+export function treat(content: ContentWithCursor, trimContent = true) {
+  const trimmedContent = trimContent ? content.trim() : content;
   const treatedContent = trimmedContent.replace("🎯", "");
   const doc = TextDocument.create("", "json", 0, trimmedContent);
   const cursorOffset = trimmedContent.indexOf("🎯");
