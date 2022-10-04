@@ -44,8 +44,6 @@ import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
-import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
-import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { FileLabel } from "../filesList/FileLabel";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
@@ -67,8 +65,6 @@ import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConf
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { RelativeDate } from "../dates/RelativeDate";
-import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
 import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
@@ -84,8 +80,8 @@ import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { FileDataList, getFileDataListHeight } from "../filesList/FileDataList";
-import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
+import { FileDataList, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
+import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -229,6 +225,7 @@ export function HomePage() {
                               </ErrorBoundary>
                             </StackItem>
                           ))}
+                        <br /> {/* Do not let bottom shadow be cut at the bottom*/}
                       </Stack>
                     )}
                     {workspaceDescriptors.length === 0 && (
@@ -385,54 +382,38 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                   })}
                 >
                   <CardHeaderMain style={{ width: "100%" }}>
-                    <Flex>
-                      <FlexItem>
-                        <CardTitle>
-                          <TextContent>
-                            <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                              <TaskIcon />
-                              &nbsp;&nbsp;
-                              {editableFiles[0].nameWithoutExtension}
-                            </Text>
-                          </TextContent>
-                        </CardTitle>
-                      </FlexItem>
-                      <FlexItem>
-                        <b>
-                          <FileLabel extension={editableFiles[0].extension} />
-                        </b>
-                      </FlexItem>
-                    </Flex>
+                    <SingleFileWorkspaceListItem
+                      isBig={true}
+                      file={editableFiles[0]}
+                      workspaceDescriptor={workspace.descriptor}
+                    />
                   </CardHeaderMain>
                 </Link>
-                <CardActions>
-                  {isHovered && (
-                    <DeleteDropdownWithConfirmation
-                      onDelete={() => {
-                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                      }}
-                      item={
-                        <Flex flexWrap={{ default: "nowrap" }}>
-                          <FlexItem>
-                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
-                          </FlexItem>
-                          <FlexItem>
-                            <b>
-                              <FileLabel extension={editableFiles[0].extension} />
-                            </b>
-                          </FlexItem>
-                        </Flex>
-                      }
-                    />
-                  )}
+                <CardActions style={{ visibility: isHovered ? "visible" : "hidden" }}>
+                  <DeleteDropdownWithConfirmation
+                    key={`${workspace.descriptor.workspaceId}-${isHovered}`}
+                    onDelete={() => {
+                      workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                    }}
+                    item={
+                      <Flex flexWrap={{ default: "nowrap" }}>
+                        <FlexItem>
+                          Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                        </FlexItem>
+                        <FlexItem>
+                          <b>
+                            <FileLabel extension={editableFiles[0].extension} />
+                          </b>
+                        </FlexItem>
+                      </Flex>
+                    }
+                  />
                 </CardActions>
               </CardHeader>
-              <CardBody>
-                <WorkspaceDescriptorDates workspaceDescriptor={workspacePromise.data?.descriptor} />
-              </CardBody>
             </Card>
           )) || (
             <Card
+              isExpanded={false}
               isSelected={props.isSelected}
               isSelectable={true}
               onMouseOver={() => setHovered(true)}
@@ -442,55 +423,29 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               style={{ cursor: "pointer" }}
               onClick={props.onSelect}
             >
-              <CardHeader>
+              <CardHeader isToggleRightAligned={true} onExpand={props.onSelect}>
                 <CardHeaderMain style={{ width: "100%" }}>
-                  <Flex>
-                    <FlexItem>
-                      <CardTitle>
-                        <TextContent>
-                          <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                            <FolderIcon />
-                            &nbsp;&nbsp;
-                            {workspaceName}
-                            &nbsp;&nbsp;
-                            <WorkspaceLabel descriptor={workspace.descriptor} />
-                          </Text>
-                        </TextContent>
-                      </CardTitle>
-                    </FlexItem>
-                    <FlexItem>
-                      <Text component={TextVariants.p}>
-                        {`${workspace.files.length} files, ${editableFiles?.length} models`}
-                      </Text>
-                    </FlexItem>
-                  </Flex>
+                  <WorkspaceListItem
+                    isBig={true}
+                    workspaceDescriptor={workspace.descriptor}
+                    allFiles={workspace.files}
+                    editableFiles={editableFiles}
+                  />
                 </CardHeaderMain>
-
-                <CardActions>
-                  {isHovered && (
-                    <DeleteDropdownWithConfirmation
-                      onDelete={() => {
-                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                      }}
-                      item={
-                        <>
-                          Delete <b>{`"${workspace.descriptor.name}"`}</b>
-                        </>
-                      }
-                    />
-                  )}
+                <CardActions style={{ visibility: isHovered ? "visible" : "hidden" }}>
+                  <DeleteDropdownWithConfirmation
+                    key={`${workspace.descriptor.workspaceId}-${isHovered}`}
+                    onDelete={() => {
+                      workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                    }}
+                    item={
+                      <>
+                        Delete <b>{`"${workspace.descriptor.name}"`}</b>
+                      </>
+                    }
+                  />
                 </CardActions>
               </CardHeader>
-              <CardBody>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <b>{`Created: `}</b>
-                    <RelativeDate date={new Date(workspace.descriptor.createdDateISO ?? "")} />
-                    <b>{`, Last updated: `}</b>
-                    <RelativeDate date={new Date(workspace.descriptor.lastUpdatedDateISO ?? "")} />
-                  </Text>
-                </TextContent>
-              </CardBody>
             </Card>
           )}
         </>

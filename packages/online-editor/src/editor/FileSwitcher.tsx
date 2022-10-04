@@ -60,7 +60,6 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
-import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -72,7 +71,7 @@ import {
   DataListItemCells,
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
-import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
+import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -456,41 +455,14 @@ export function WorkspacesMenuItems(props: {
                             <DataListItemCells
                               dataListCells={[
                                 <DataListCell key="link" isFilled={false}>
-                                  <Flex>
-                                    <WorkspaceLabel descriptor={descriptor} />
-                                    <TextContent>
-                                      <Text
-                                        component={TextVariants.small}
-                                        style={{
-                                          whiteSpace: "nowrap",
-                                          overflow: "hidden",
-                                          textOverflow: "ellipsis",
-                                        }}
-                                      >
-                                        {`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
-                                          workspaceFiles
-                                            .get(descriptor.workspaceId)!
-                                            .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath)).length
-                                        } models`}
-                                      </Text>
-                                    </TextContent>
-                                  </Flex>
-                                  <br />
-                                  <TextContent>
-                                    <Text
-                                      component={TextVariants.p}
-                                      style={{
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                      }}
-                                    >
-                                      <FolderIcon />
-                                      &nbsp;&nbsp;
-                                      {descriptor.name}
-                                    </Text>
-                                  </TextContent>
-                                  <WorkspaceDescriptorDates workspaceDescriptor={descriptor} />
+                                  <WorkspaceListItem
+                                    isBig={false}
+                                    workspaceDescriptor={descriptor}
+                                    allFiles={workspaceFiles.get(descriptor.workspaceId)!}
+                                    editableFiles={workspaceFiles
+                                      .get(descriptor.workspaceId)!
+                                      .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath))}
+                                  />
                                 </DataListCell>,
                               ]}
                             />

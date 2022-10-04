@@ -21,7 +21,7 @@ import { RelativeDate } from "../../dates/RelativeDate";
 
 export function WorkspaceDescriptorDates(props: { workspaceDescriptor: WorkspaceDescriptor | undefined }) {
   return (
-    <TextContent>
+    <TextContent style={{ marginTop: "6px" }}>
       <Text component={TextVariants.small}>
         <b>{`Created: `}</b>
         <RelativeDate date={new Date(props.workspaceDescriptor?.createdDateISO ?? "-")} />

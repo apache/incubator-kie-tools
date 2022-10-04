@@ -42,7 +42,7 @@ export function getFileDataListHeight(file: WorkspaceFile) {
   return file.relativePath.indexOf("/") >= 0 ? FILE_DATA_LIST_HEIGHTS.atSubDir : FILE_DATA_LIST_HEIGHTS.atRoot;
 }
 
-function FileName(props: { file: WorkspaceFile; isEditable: boolean }) {
+function FileListItem(props: { file: WorkspaceFile; isEditable: boolean }) {
   const fileDirPath = props.file.relativeDirPath.split("/").join(" > ");
   const fileName = props.isEditable ? props.file.nameWithoutExtension : props.file.name;
   return (
@@ -92,7 +92,7 @@ export function FileDataListItem(props: { file: WorkspaceFile; isEditable: boole
       <DataListItemCells
         dataListCells={[
           <DataListCell key="link" isFilled={false}>
-            <FileName file={props.file} isEditable={props.isEditable} />
+            <FileListItem file={props.file} isEditable={props.isEditable} />
           </DataListCell>,
         ]}
       />
@@ -143,32 +143,11 @@ export function SingleFileWorkspaceDataList(props: { workspaceDescriptor: Worksp
             <DataListItemCells
               dataListCells={[
                 <DataListCell key="link" isFilled={false}>
-                  <>
-                    <Flex flexWrap={{ default: "nowrap" }}>
-                      <FlexItem style={{ minWidth: 0 /* This is to make the flex parent not overflow horizontally */ }}>
-                        <Tooltip distance={5} position={"top-start"} content={props.file.nameWithoutExtension}>
-                          <TextContent>
-                            <Text
-                              component={TextVariants.p}
-                              style={{
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                              }}
-                            >
-                              <TaskIcon />
-                              &nbsp;&nbsp;
-                              {props.file.nameWithoutExtension}
-                            </Text>
-                          </TextContent>
-                        </Tooltip>
-                      </FlexItem>
-                      <FlexItem>
-                        <FileLabel extension={props.file.extension} />
-                      </FlexItem>
-                    </Flex>
-                    <WorkspaceDescriptorDates workspaceDescriptor={props.workspaceDescriptor} />
-                  </>
+                  <SingleFileWorkspaceListItem
+                    isBig={false}
+                    file={props.file}
+                    workspaceDescriptor={props.workspaceDescriptor}
+                  />
                 </DataListCell>,
               ]}
             />
@@ -176,5 +155,40 @@ export function SingleFileWorkspaceDataList(props: { workspaceDescriptor: Worksp
         </Link>
       </DataListItem>
     </DataList>
+  );
+}
+
+export function SingleFileWorkspaceListItem(props: {
+  isBig: boolean;
+  workspaceDescriptor: WorkspaceDescriptor;
+  file: WorkspaceFile;
+}) {
+  return (
+    <>
+      <Flex flexWrap={{ default: "nowrap" }}>
+        <FlexItem style={{ minWidth: 0 /* This is to make the flex parent not overflow horizontally */ }}>
+          <Tooltip distance={5} position={"top-start"} content={props.file.nameWithoutExtension}>
+            <TextContent>
+              <Text
+                component={props.isBig ? TextVariants.h3 : TextVariants.p}
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                <TaskIcon />
+                &nbsp;&nbsp;
+                {props.file.nameWithoutExtension}
+              </Text>
+            </TextContent>
+          </Tooltip>
+        </FlexItem>
+        <FlexItem>
+          <FileLabel extension={props.file.extension} />
+        </FlexItem>
+      </Flex>
+      <WorkspaceDescriptorDates workspaceDescriptor={props.workspaceDescriptor} />
+    </>
   );
 }
