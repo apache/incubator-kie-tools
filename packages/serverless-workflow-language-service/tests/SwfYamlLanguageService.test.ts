@@ -870,13 +870,6 @@ functions: []
           "pointing inside an object of the array of functions / using JSON format",
           `functions: [ {🎯 "name":"getGreetingFunction", "operation":"openapi.yml#getGreeting"}]`,
         ],
-      ])("%s", async (_description, content: ContentWithCursor) => {
-        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
-
-        expect(completionItems).toHaveLength(0);
-      });
-
-      test.each([
         ["using JSON format", `functions: [🎯]`],
         [
           "using JSON format / before a function",
@@ -887,42 +880,9 @@ functions: []
           `functions: [{ "name": "getGreetingFunction", "operation": "openapi.yml#getGreeting" },🎯]`,
         ],
       ])("%s", async (_description, content: ContentWithCursor) => {
-        let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `{
-    "name": "\${1:testRelativeFunction1}",
-    "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-    "type": "rest"
-  }`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems).toHaveLength(0);
       });
 
       test.each([
@@ -1013,6 +973,15 @@ functions:
 
     describe("operation completion", () => {
       test.each([
+        ["using JSON format", `functions: [{"name": "getGreetingFunction", "operation": 🎯 }]`],
+        ["using JSON format", `functions: [{\n      "name": "getGreetingFunction",\n      "operation": "🎯"\n      }]`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems).toHaveLength(0);
+      });
+
+      test.each([
         [
           "not in quotes / without space after property name",
           `functions:\n- name: testRelativeFunction1\n  operation: 🎯`,
@@ -1021,8 +990,6 @@ functions:
           "not in quotes / with same level content after",
           `functions:\n- name: testRelativeFunction1\n  operation: 🎯\n  type: rest`,
         ],
-        ["using JSON format", `functions: [{"name": "getGreetingFunction", "operation": 🎯 }]`],
-        ["using JSON format", `functions: [{\n      "name": "getGreetingFunction",\n      "operation": ""\n      }]`],
       ])("%s", async (_description, content: ContentWithCursor) => {
         let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
 

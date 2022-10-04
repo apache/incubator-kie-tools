@@ -63,9 +63,10 @@ export function trim(content: string) {
 export async function codeCompletionTester(
   ls: SwfJsonLanguageService | SwfYamlLanguageService,
   documentUri: DocumentUri,
-  contentToParse: ContentWithCursor
+  contentToParse: ContentWithCursor,
+  trimContent = true
 ): Promise<{ completionItems: CompletionItem[]; cursorPosition: Position }> {
-  const { content, cursorPosition } = treat(contentToParse);
+  const { content, cursorPosition } = treat(contentToParse, trimContent);
 
   return {
     completionItems: await ls.getCompletionItems({
