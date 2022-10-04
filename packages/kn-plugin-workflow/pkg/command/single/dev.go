@@ -17,18 +17,25 @@
 package single
 
 import (
+	"context"
 	"fmt"
+	"net"
 	"time"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
+	"golang.org/x/sync/errgroup"
 )
 
 type DevCmdConfig struct {
 	Build               bool
 	Run                 bool
+	Tag                 string
+	Extensions          string
 	DependenciesVersion metadata.DependenciesVersion
 }
 
@@ -45,7 +52,7 @@ If you wish, you can run the development container using Docker directly:
 		-p 8080:8080 quay.io/lmotta/dev		
 `,
 		SuggestFor: []string{"dve", "start"},
-		PreRunE:    common.BindEnv("build", "run", "quarkus-platform-group-id", "quarkus-version"),
+		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "quarkus-platform-group-id", "quarkus-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -55,6 +62,8 @@ If you wish, you can run the development container using Docker directly:
 	quarkusDepedencies := metadata.ResolveQuarkusDependencies()
 	cmd.Flags().BoolP("build", "b", true, "Build dev image.")
 	cmd.Flags().BoolP("run", "r", true, "Start the development container.")
+	cmd.Flags().StringP("tag", "t", "dev", "Development tag.")
+	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
 	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
 	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be set in the project.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
@@ -64,8 +73,10 @@ If you wish, you can run the development container using Docker directly:
 
 func runDevCmdConfig(cmd *cobra.Command) (cfg DevCmdConfig, err error) {
 	cfg = DevCmdConfig{
-		Build: viper.GetBool("build"),
-		Run:   viper.GetBool("run"),
+		Build:      viper.GetBool("build"),
+		Run:        viper.GetBool("run"),
+		Tag:        viper.GetString("tag"),
+		Extensions: viper.GetString("extension"),
 
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: viper.GetString("quarkus-platform-group-id"),
@@ -126,6 +137,64 @@ docker build -f Dockerfile.workflow --target=dev \
 -t quay.io/lmotta/dev .
 */
 func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
+	ctx := cmd.Context()
+
+	// create docker client
+	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return
+	}
+
+	// creates a session for the dir
+	session, err := CreateSession(".", false)
+	if err != nil {
+		fmt.Println("ERROR: failed to create a new session")
+		return
+	}
+	if session == nil {
+		fmt.Println("ERROR: session is not supported")
+		return fmt.Errorf("session is not supported")
+	}
+
+	// creates a new errgroup
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return session.Run(context.TODO(), func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
+			return dockerCli.DialHijack(ctx, "/session", proto, meta)
+		})
+	})
+
+	registry, repository, name, tag := common.GetImageConfig("", "dev.local", "", "kn-workflow-developement", cfg.Tag)
+	if err := common.CheckImageName(name); err != nil {
+		return err
+	}
+	buildArgs := GetDockerBuildArgs(cfg.Extensions, registry, repository, name, tag)
+
+	developmentImageBuildOptions := types.ImageBuildOptions{
+		SessionID:   session.ID(),
+		Dockerfile:  common.WORKFLOW_DOCKERFILE,
+		BuildArgs:   buildArgs,
+		Version:     types.BuilderBuildKit,
+		NetworkMode: "default",
+		Tags:        []string{common.GetImage(registry, repository, name, tag)},
+		Target:      "dev",
+	}
+
+	eg.Go(func() error {
+		defer session.Close()
+
+		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, developmentImageBuildOptions); err != nil {
+			fmt.Println("ERROR: generating development image")
+			return err
+		}
+		return nil
+	})
+
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	fmt.Println("✅ Development image build success")
 	return
 }
 

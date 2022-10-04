@@ -17,23 +17,29 @@
 package single
 
 import (
+	"archive/tar"
 	"bufio"
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"strconv"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/moby/buildkit/session"
 	"github.com/pkg/errors"
 	fsutiltypes "github.com/tonistiigi/fsutil/types"
 )
 
-func GetDockerBuildArgs(cfg BuildCmdConfig, registry string, repository string, name string, tag string) map[string]*string {
+func GetDockerBuildArgs(extensions string, registry string, repository string, name string, tag string) map[string]*string {
 	var workflowSwJson string = common.WORKFLOW_SW_JSON
 	buildArgs := map[string]*string{
 		common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
@@ -41,14 +47,14 @@ func GetDockerBuildArgs(cfg BuildCmdConfig, registry string, repository string, 
 		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP:    &repository,
 		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME:     &name,
 		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG:      &tag,
-		common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &cfg.ImageName,
+		common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &name,
 	}
 
-	existExtensions := strconv.FormatBool(len(cfg.Extesions) > 0)
+	existExtensions := strconv.FormatBool(len(extensions) > 0)
 	buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS] = &existExtensions
 
-	if len(cfg.Extesions) > 0 {
-		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &cfg.Extesions
+	if len(extensions) > 0 {
+		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &extensions
 	}
 
 	return buildArgs
@@ -81,7 +87,47 @@ type ErrorLine struct {
 	ErrorDetail ErrorDetail `json:"errorDetail"`
 }
 
-func Log(rd io.Reader) error {
+func BuildDockerImage(
+	ctx context.Context,
+	dependenciesVersion metadata.DependenciesVersion,
+	dockerCli client.CommonAPIClient,
+	imageBuildOptions types.ImageBuildOptions,
+) (err error) {
+	// creates a tar with the Dockerfile and the workflow.sw.json
+	buf := new(bytes.Buffer)
+	tw := tar.NewWriter(buf)
+	defer tw.Close()
+
+	// adds dockerfile to tar
+	err = addFileToTar(tw, GetDockerfilePath(dependenciesVersion), common.WORKFLOW_DOCKERFILE)
+	if err != nil {
+		return
+	}
+	currentPath, err := os.Getwd()
+	if err != nil {
+		fmt.Println("ERROR: error getting current path")
+		return
+	}
+
+	// adds workflow.sw.json
+	err = addFileToTar(tw, filepath.Join(currentPath, common.WORKFLOW_SW_JSON), common.WORKFLOW_SW_JSON)
+	if err != nil {
+		return
+	}
+	dockerTar := bytes.NewReader(buf.Bytes())
+
+	// builds using options
+	res, err := dockerCli.ImageBuild(ctx, dockerTar, imageBuildOptions)
+	if err != nil {
+		fmt.Println("ERROR: error building, image options: %s", imageBuildOptions)
+		return
+	}
+	defer res.Body.Close()
+
+	return dockerLog(res.Body)
+}
+
+func dockerLog(rd io.Reader) error {
 	var lastLine string
 
 	scanner := bufio.NewScanner(rd)

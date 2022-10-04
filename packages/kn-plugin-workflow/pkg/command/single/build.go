@@ -18,13 +18,11 @@ package single
 
 import (
 	"archive/tar"
-	"bytes"
 	"context"
 	"fmt"
 	"io/ioutil"
 	"net"
 	"os"
-	"path/filepath"
 	"sync"
 	"time"
 
@@ -182,7 +180,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
-	buildArgs := GetDockerBuildArgs(cfg, registry, repository, name, tag)
+	buildArgs := GetDockerBuildArgs(cfg.Extesions, registry, repository, name, tag)
 
 	commomImageBuildOptions := types.ImageBuildOptions{
 		SessionID:   session.ID(),
@@ -203,7 +201,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			}},
 		}
 		mergo.Merge(&outputBuildOptions, commomImageBuildOptions)
-		if err := runDockerImageBuild(ctx, cfg, dockerCli, outputBuildOptions); err != nil {
+		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, outputBuildOptions); err != nil {
 			fmt.Println("ERROR: generating output files")
 			return err
 		}
@@ -212,7 +210,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			Target: "runner",
 		}
 		mergo.Merge(&runnerBuildOptions, commomImageBuildOptions)
-		if err := runDockerImageBuild(ctx, cfg, dockerCli, runnerBuildOptions); err != nil {
+		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, runnerBuildOptions); err != nil {
 			fmt.Println("ERROR: generating runner image")
 			return err
 		}
@@ -225,46 +223,6 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 
 	fmt.Println("✅ Build success")
 	return nil
-}
-
-func runDockerImageBuild(
-	ctx context.Context,
-	cfg BuildCmdConfig,
-	dockerCli client.CommonAPIClient,
-	imageBuildOptions types.ImageBuildOptions,
-) (err error) {
-	// creates a tar with the Dockerfile and the workflow.sw.json
-	buf := new(bytes.Buffer)
-	tw := tar.NewWriter(buf)
-	defer tw.Close()
-
-	// adds dockerfile to tar
-	err = addFileToTar(tw, GetDockerfilePath(cfg.DependenciesVersion), common.WORKFLOW_DOCKERFILE)
-	if err != nil {
-		return
-	}
-	currentPath, err := os.Getwd()
-	if err != nil {
-		fmt.Println("ERROR: error getting current path")
-		return
-	}
-
-	// adds workflow.sw.json
-	err = addFileToTar(tw, filepath.Join(currentPath, common.WORKFLOW_SW_JSON), common.WORKFLOW_SW_JSON)
-	if err != nil {
-		return
-	}
-	dockerTar := bytes.NewReader(buf.Bytes())
-
-	// builds using options
-	res, err := dockerCli.ImageBuild(ctx, dockerTar, imageBuildOptions)
-	if err != nil {
-		fmt.Println("ERROR: error building, image options: %s", imageBuildOptions)
-		return
-	}
-	defer res.Body.Close()
-
-	return Log(res.Body)
 }
 
 func addFileToTar(tw *tar.Writer, path string, fileName string) (err error) {
