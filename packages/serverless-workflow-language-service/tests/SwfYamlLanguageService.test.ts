@@ -699,15 +699,7 @@ functions: [] `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(1);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
-        },
-      } as CodeLens);
+      expect(codeLenses).toHaveLength(0);
     });
 
     test("service registries integration disabled", async () => {
@@ -725,18 +717,18 @@ functions: [] `);
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
@@ -750,26 +742,26 @@ functions: []
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.LogInServiceRegistries",
           title: "↪ Log in Service Registries...",
-          arguments: [{ position: { character: 11, line: 1 } }],
+          arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
       expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
@@ -786,26 +778,26 @@ functions: []
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.OpenServiceRegistriesConfig",
           title: "↪ Setup Service Registries...",
-          arguments: [{ position: { character: 11, line: 1 } }],
+          arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
       expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
@@ -822,26 +814,26 @@ functions: []
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.RefreshServiceRegistries",
           title: "↺ Refresh Service Registries...",
-          arguments: [{ position: { character: 11, line: 1 } }],
+          arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
       expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });

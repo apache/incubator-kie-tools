@@ -32,7 +32,13 @@ import { FileLanguage } from "../api";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode, TranslateArgs } from "./types";
+import {
+  ShouldCreateCodelensArgs,
+  CodeCompletionStrategy,
+  ShouldCompleteArgs,
+  SwfLsNode,
+  TranslateArgs,
+} from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -227,5 +233,12 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
     }
 
     return matchNodeWithLocation(args.root, args.node, args.path);
+  }
+
+  public shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean {
+    return (
+      args.commandName !== "swf.ls.commands.OpenFunctionsCompletionItems" ||
+      getNodeFormat(args.content, args.node) !== FileLanguage.JSON
+    );
   }
 }
