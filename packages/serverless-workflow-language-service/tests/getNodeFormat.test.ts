@@ -21,7 +21,6 @@ import {
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { Position } from "vscode-languageserver-types";
 import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { ContentWithCursor, treat } from "./testUtils";
 
@@ -29,12 +28,12 @@ describe("getNodeFormat", () => {
   const getNodeFormatTester = (args: {
     content: ContentWithCursor;
     ls: SwfJsonLanguageService | SwfYamlLanguageService;
-  }): Position | undefined => {
+  }): FileLanguage | undefined => {
     const { content, cursorOffset } = treat(args.content);
     const root = args.ls.parseContent(content);
     const node = findNodeAtOffset(root!, cursorOffset);
 
-    return getNodeFormat(content, node);
+    return node ? getNodeFormat(content, node) : undefined;
   };
 
   describe("JSON format", () => {
