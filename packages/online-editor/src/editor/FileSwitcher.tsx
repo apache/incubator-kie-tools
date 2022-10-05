@@ -27,7 +27,7 @@ import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggl
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -51,7 +51,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -62,7 +62,13 @@ import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FileDataList, getFileDataListHeight, SingleFileWorkspaceDataList } from "../filesList/FileDataList";
+import {
+  FileDataList,
+  FileLink,
+  FileListItem,
+  getFileDataListHeight,
+  SingleFileWorkspaceDataList,
+} from "../filesList/FileDataList";
 import {
   DataList,
   DataListCell,
@@ -72,6 +78,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
 import { usePreviewSvg } from "../previewSvgs/PreviewSvgHooks";
+import { WorkspaceLoadingMenuItem } from "../workspace/components/WorkspaceLoadingCard";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -82,6 +89,7 @@ enum FilesDropdownMode {
 }
 
 const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 500;
+const MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN = 40;
 
 export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
@@ -398,19 +406,12 @@ export function WorkspacesMenuItems(props: {
       <PromiseStateWrapper
         promise={combined}
         pending={
-          <div style={{ padding: "8px" }}>
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-            <br />
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-            <br />
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-          </div>
+          <>
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+          </>
         }
         resolved={({ workspaceDescriptors, workspaceFiles }) => (
           <>
@@ -506,8 +507,13 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
         )}
         promise={previewSvgString}
         resolved={() => (
-          // for some reason, the CardBody adds an extra 6px after the image is loaded. 200 - 6 = 194px.
-          <img style={{ height: "194px" }} ref={imgRef} alt={"SVG for " + props.workspaceFile.relativePath} />
+          <Bullseye>
+            <img
+              style={{ height: "180px", margin: "10px" }}
+              ref={imgRef}
+              alt={"SVG for " + props.workspaceFile.relativePath}
+            />
+          </Bullseye>
         )}
       />
     </>
@@ -520,9 +526,10 @@ export function SearchableFilesMenuGroup(props: {
   filesDropdownMode: FilesDropdownMode;
   label: string;
   allFiles: WorkspaceFile[];
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
   children: (args: { filteredFiles: WorkspaceFile[] }) => React.ReactNode;
 }) {
-  const [search, setSearch] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -537,8 +544,8 @@ export function SearchableFilesMenuGroup(props: {
   }, [props.shouldFocusOnSearch, props.filesDropdownMode]);
 
   const filteredFiles = useMemo(
-    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(search.toLowerCase())),
-    [props.allFiles, search]
+    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(props.search.toLowerCase())),
+    [props.allFiles, props.search]
   );
 
   return (
@@ -546,25 +553,25 @@ export function SearchableFilesMenuGroup(props: {
       <MenuInput>
         <TextInput
           ref={searchInputRef}
-          value={search}
+          value={props.search}
           aria-label={"Other files menu items"}
           iconVariant={"search"}
           type={"search"}
-          onChange={(value) => setSearch(value)}
+          onChange={(value) => props.setSearch(value)}
         />
       </MenuInput>
-      {filteredFiles.length === 0 && search && (
-        <Bullseye>
-          <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {`No files match '${search}'.`}
-            </Title>
-          </EmptyState>
-        </Bullseye>
-      )}
       <div style={{ maxHeight: props.maxHeight, overflowY: "auto", height: props.maxHeight }}>
         {filteredFiles.length > 0 && props.children({ filteredFiles })}
+        {filteredFiles.length <= 0 && (
+          <Bullseye>
+            <EmptyState>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h4" size="lg">
+                {`No files match '${props.search}'.`}
+              </Title>
+            </EmptyState>
+          </Bullseye>
+        )}
       </div>
     </MenuGroup>
   );
@@ -601,6 +608,8 @@ export function FilesMenuItems(props: {
     [editorEnvelopeLocator, sortedAndFilteredFiles]
   );
 
+  const [search, setSearch] = useState("");
+
   return (
     <>
       <Split>
@@ -625,6 +634,8 @@ export function FilesMenuItems(props: {
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <>
               <SearchableFilesMenuGroup
+                search={search}
+                setSearch={setSearch}
                 maxHeight={"500px"}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
@@ -693,6 +704,8 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <SearchableFilesMenuGroup
+              search={search}
+              setSearch={setSearch}
               maxHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
@@ -731,6 +744,8 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
           <SplitItem isFilled={true}>
             <SearchableFilesMenuGroup
+              search={search}
+              setSearch={setSearch}
               maxHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
@@ -738,8 +753,8 @@ export function FilesMenuItems(props: {
               allFiles={models}
             >
               {({ filteredFiles }) => (
-                <Gallery hasGutter={true} style={{ padding: "8px" }}>
-                  {filteredFiles.map((file) => (
+                <Gallery hasGutter={true} style={{ padding: "8px", borderTop: "1px solid lightgray" }}>
+                  {filteredFiles.slice(0, MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN).map((file) => (
                     <Card
                       key={file.relativePath}
                       isSelectable={true}
@@ -759,27 +774,29 @@ export function FilesMenuItems(props: {
                         props.onSelectFile();
                       }}
                     >
-                      <CardHeader>
-                        <CardHeaderMain>
-                          <CardTitle>
-                            <Flex flexWrap={{ default: "nowrap" }}>
-                              <FlexItem>
-                                <TextContent>
-                                  <Text component={TextVariants.h4}>{file.nameWithoutExtension}</Text>
-                                </TextContent>
-                              </FlexItem>
-                              <FlexItem>
-                                <FileLabel extension={file.extension} />
-                              </FlexItem>
-                            </Flex>
-                          </CardTitle>
-                        </CardHeaderMain>
-                      </CardHeader>
+                      {/* The default display:flex makes the text overflow */}
+                      <FileLink file={file}>
+                        <CardHeader style={{ display: "block" }}>
+                          <CardHeaderMain>
+                            <FileListItem file={file} isEditable={true} />
+                          </CardHeaderMain>
+                        </CardHeader>
+                      </FileLink>
+                      <Divider inset={{ default: "insetMd" }} />
                       <CardBody style={{ padding: 0 }}>
                         <FileSvg workspaceFile={file} />
                       </CardBody>
                     </Card>
                   ))}
+                  {filteredFiles.length > MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN && (
+                    <Card style={{ border: 0 }}>
+                      <CardBody>
+                        <Bullseye>
+                          <div>...and {filteredFiles.length - MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN} more.</div>
+                        </Bullseye>
+                      </CardBody>
+                    </Card>
+                  )}
                 </Gallery>
               )}
             </SearchableFilesMenuGroup>

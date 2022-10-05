@@ -42,7 +42,7 @@ export function getFileDataListHeight(file: WorkspaceFile) {
   return file.relativePath.indexOf("/") >= 0 ? FILE_DATA_LIST_HEIGHTS.atSubDir : FILE_DATA_LIST_HEIGHTS.atRoot;
 }
 
-function FileListItem(props: { file: WorkspaceFile; isEditable: boolean }) {
+export function FileListItem(props: { file: WorkspaceFile; isEditable: boolean }) {
   const fileDirPath = props.file.relativeDirPath.split("/").join(" > ");
   const fileName = props.isEditable ? props.file.nameWithoutExtension : props.file.name;
   return (
@@ -101,44 +101,42 @@ export function FileDataListItem(props: { file: WorkspaceFile; isEditable: boole
 }
 
 export function FileDataList(props: { file: WorkspaceFile; isEditable: boolean; style?: React.CSSProperties }) {
-  const routes = useRoutes();
-
   return (
     <DataList aria-label="file-data-list" style={props.style}>
       <DataListItem style={{ border: 0 }}>
         {(!props.isEditable && (
           <FileDataListItem key={props.file.relativePath} file={props.file} isEditable={props.isEditable} />
         )) || (
-          <Link
-            key={props.file.relativePath}
-            to={routes.workspaceWithFilePath.path({
-              workspaceId: props.file.workspaceId,
-              fileRelativePath: props.file.relativePathWithoutExtension,
-              extension: props.file.extension,
-            })}
-          >
+          <FileLink file={props.file}>
             <FileDataListItem file={props.file} isEditable={props.isEditable} />
-          </Link>
+          </FileLink>
         )}
       </DataListItem>
     </DataList>
   );
 }
 
-export function SingleFileWorkspaceDataList(props: { workspaceDescriptor: WorkspaceDescriptor; file: WorkspaceFile }) {
+export function FileLink(props: React.PropsWithChildren<{ file: WorkspaceFile }>) {
   const routes = useRoutes();
+  return (
+    <Link
+      key={props.file.relativePath}
+      to={routes.workspaceWithFilePath.path({
+        workspaceId: props.file.workspaceId,
+        fileRelativePath: props.file.relativePathWithoutExtension,
+        extension: props.file.extension,
+      })}
+    >
+      {props.children}
+    </Link>
+  );
+}
 
+export function SingleFileWorkspaceDataList(props: { workspaceDescriptor: WorkspaceDescriptor; file: WorkspaceFile }) {
   return (
     <DataList aria-label="file-data-list">
       <DataListItem style={{ border: 0 }}>
-        <Link
-          key={props.file.relativePath}
-          to={routes.workspaceWithFilePath.path({
-            workspaceId: props.file.workspaceId,
-            fileRelativePath: props.file.relativePathWithoutExtension,
-            extension: props.file.extension,
-          })}
-        >
+        <FileLink file={props.file}>
           <DataListItemRow>
             <DataListItemCells
               dataListCells={[
@@ -152,7 +150,7 @@ export function SingleFileWorkspaceDataList(props: { workspaceDescriptor: Worksp
               ]}
             />
           </DataListItemRow>
-        </Link>
+        </FileLink>
       </DataListItem>
     </DataList>
   );

@@ -79,9 +79,9 @@ import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { FileDataList, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
+import { FileDataList, FileLink, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
+import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCard";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -255,45 +255,6 @@ export function HomePage() {
   );
 }
 
-export function WorkspaceLoadingCard() {
-  return (
-    <Card isHoverable={true} isCompact={true}>
-      <CardHeader>
-        <CardHeaderMain style={{ width: "100%" }}>
-          <Flex>
-            <FlexItem>
-              <CardTitle>
-                <TextContent>
-                  <Text
-                    component={TextVariants.h3}
-                    style={{ textOverflow: "ellipsis", overflow: "hidden", width: "200px" }}
-                  >
-                    <Skeleton width={"100%"} />
-                  </Text>
-                </TextContent>
-              </CardTitle>
-            </FlexItem>
-            <FlexItem>
-              <b>
-                <Label color={"grey"} style={{ width: "80px" }}>
-                  <Skeleton width={"100%"} />
-                </Label>
-              </b>
-            </FlexItem>
-          </Flex>
-        </CardHeaderMain>
-      </CardHeader>
-      <CardBody>
-        <TextContent>
-          <Text component={TextVariants.p}>
-            <Skeleton width={"50%"} />
-          </Text>
-        </TextContent>
-      </CardBody>
-    </Card>
-  );
-}
-
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
   return (
@@ -343,14 +304,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
     return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];
   }, [editorEnvelopeLocator, workspacePromise.data?.files]);
 
-  const workspaceName = useMemo(() => {
-    return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
-  }, [workspacePromise.data]);
-
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
-      pending={<WorkspaceLoadingCard />}
+      pending={<WorkspaceLoadingCard isBig={true} />}
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
@@ -374,13 +331,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               }}
             >
               <CardHeader>
-                <Link
-                  to={routes.workspaceWithFilePath.path({
-                    workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                    extension: editableFiles[0].extension,
-                  })}
-                >
+                <FileLink file={editableFiles[0]}>
                   <CardHeaderMain style={{ width: "100%" }}>
                     <SingleFileWorkspaceListItem
                       isBig={true}
@@ -388,7 +339,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                       workspaceDescriptor={workspace.descriptor}
                     />
                   </CardHeaderMain>
-                </Link>
+                </FileLink>
                 <CardActions style={{ visibility: isHovered ? "visible" : "hidden" }}>
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
