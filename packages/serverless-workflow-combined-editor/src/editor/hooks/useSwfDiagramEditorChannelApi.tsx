@@ -29,7 +29,7 @@ export function useSwfDiagramEditorChannelApi(args: {
   onEditorReady: () => void;
   swfTextEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>;
 }) {
-  const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
+  const stateControl = useMemo(() => new StateControl(), []);
 
   const channelApiImpl = useMemo(
     () =>

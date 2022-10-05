@@ -22,7 +22,7 @@ import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverles
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { useMemo } from "react";
-import { SwfServiceCatalogChannelApiImpl } from "../..";
+import { SwfServiceCatalogChannelApiImpl } from "../../impl";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../../api";
 import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../impl/ServerlessWorkflowTextEditorChannelApiImpl";
 
@@ -37,7 +37,7 @@ export function useSwfTextEditorChannelApi(args: {
   const [serviceRegistriesSettings] = useSharedValue(
     args.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistriesSettings
   );
-  const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
+  const stateControl = useMemo(() => new StateControl(), []);
 
   const channelApiImpl = useMemo(
     () =>
@@ -69,7 +69,7 @@ export function useSwfTextEditorChannelApi(args: {
         swfServiceCatalogChannelApiImpl,
         args.swfDiagramEditorEnvelopeApi
       ),
-    [channelApiImpl, args.channelApi, args.swfDiagramEditorEnvelopeApi]
+    [channelApiImpl, args.channelApi, args.swfDiagramEditorEnvelopeApi, swfServiceCatalogChannelApiImpl]
   );
 
   return {
