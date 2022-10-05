@@ -39,8 +39,12 @@ const (
 	WORKFLOW_SW_JSON        string = "workflow.sw.json"
 	WORKFLOW_DOCKERFILE     string = "Dockerfile.workflow"
 	DEV_REPOSITORY          string = "dev.local"
+	WORKFLOW_OUTPUT_FOLDER  string = "kubernetes"
+	WORKFLOW_RESOURCES_PATH string = "/tmp/kn-plugin-workflow/src/main/resources"
+	QUARKUS_DEV_PORT        string = "8080/tcp"
 
 	// Docker
+	DOCKER_SESSION_PATH string = "/session"
 	// build-arg
 	DOCKER_BUILD_ARG_WORKFLOW_FILE            string = "workflow_file"
 	DOCKER_BUILD_ARG_EXTENSIONS               string = "extensions"
@@ -50,4 +54,8 @@ const (
 	DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP    string = "container_group"
 	DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME     string = "container_name"
 	DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG      string = "container_tag"
+	// stages
+	DOCKER_BUILD_STAGE_OUTPUT string = "output-files"
+	DOCKER_BUILD_STAGE_RUNNER string = "runner"
+	DOCKER_BUILD_STAGE_DEV    string = "dev"
 )

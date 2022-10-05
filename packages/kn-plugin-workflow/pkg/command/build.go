@@ -164,13 +164,13 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			Dir:  docker.GetDockerfilePath(cfg.DependenciesVersion),
 		},
 	}))
-	session.Allow(filesync.NewFSSyncTargetDir("./kubernetes"))
+	session.Allow(filesync.NewFSSyncTargetDir(fmt.Sprintf("./%s", common.WORKFLOW_OUTPUT_FOLDER)))
 
 	// creates a new errgroup
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return session.Run(context.TODO(), func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
-			return dockerCli.DialHijack(ctx, "/session", proto, meta)
+			return dockerCli.DialHijack(ctx, common.DOCKER_SESSION_PATH, proto, meta)
 		})
 	})
 
@@ -181,18 +181,17 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	buildArgs := docker.GetDockerBuildArgs(cfg.Extesions, registry, repository, name, tag)
 
 	commomImageBuildOptions := types.ImageBuildOptions{
-		SessionID:   session.ID(),
-		Dockerfile:  common.WORKFLOW_DOCKERFILE,
-		BuildArgs:   buildArgs,
-		Version:     types.BuilderBuildKit,
-		NetworkMode: "default",
+		SessionID:  session.ID(),
+		Dockerfile: common.WORKFLOW_DOCKERFILE,
+		BuildArgs:  buildArgs,
+		Version:    types.BuilderBuildKit,
 	}
 
 	eg.Go(func() error {
 		defer session.Close()
 
 		outputBuildOptions := types.ImageBuildOptions{
-			Target: "output-files",
+			Target: common.DOCKER_BUILD_STAGE_OUTPUT,
 			Outputs: []types.ImageBuildOutput{{
 				Type:  "local",
 				Attrs: map[string]string{},
@@ -205,7 +204,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		}
 		runnerBuildOptions := types.ImageBuildOptions{
 			Tags:   []string{common.GetImage(registry, repository, name, tag)},
-			Target: "runner",
+			Target: common.DOCKER_BUILD_STAGE_RUNNER,
 		}
 		mergo.Merge(&runnerBuildOptions, commomImageBuildOptions)
 		if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, runnerBuildOptions); err != nil {

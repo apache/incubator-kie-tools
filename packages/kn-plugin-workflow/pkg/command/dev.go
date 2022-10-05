@@ -92,10 +92,6 @@ func runDevCmdConfig(cmd *cobra.Command) (cfg DevCmdConfig, err error) {
 	return
 }
 
-// should build and run a container using the dockerfile under the /tmp folder.
-// if already built, should only run.
-// build image
-// run container with buildt image
 func runDev(cmd *cobra.Command, args []string) (err error) {
 	start := time.Now()
 
@@ -154,7 +150,7 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return session.Run(context.TODO(), func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
-			return dockerCli.DialHijack(ctx, "/session", proto, meta)
+			return dockerCli.DialHijack(ctx, common.DOCKER_SESSION_PATH, proto, meta)
 		})
 	})
 
@@ -173,7 +169,7 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 			BuildArgs:  buildArgs,
 			Version:    types.BuilderBuildKit,
 			Tags:       []string{common.GetImage(registry, repository, name, tag)},
-			Target:     "dev",
+			Target:     common.DOCKER_BUILD_STAGE_DEV,
 		}); err != nil {
 			fmt.Println("ERROR: generating development image")
 			return err
@@ -198,7 +194,7 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		return
 	}
 
-	containerPort := nat.Port(fmt.Sprintf("8080/tcp"))
+	containerPort := nat.Port(common.QUARKUS_DEV_PORT)
 	containerConfig := &container.Config{
 		Image:        fmt.Sprintf("%s/%s:%s", common.DEV_REPOSITORY, common.KN_WORKFLOW_DEVELOPMENT, cfg.Tag),
 		AttachStdin:  true,
@@ -217,14 +213,14 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 
 	containerHostConfig := &container.HostConfig{
 		Binds: []string{
-			fmt.Sprintf("%s:/tmp/kn-plugin-workflow/src/main/resources", currentPath),
+			fmt.Sprintf("%s:%s", currentPath, common.WORKFLOW_RESOURCES_PATH),
 		},
 		PortBindings: nat.PortMap{
 			containerPort: []nat.PortBinding{{HostIP: "", HostPort: cfg.Port}},
 		},
 	}
 
-	containerName := fmt.Sprintf("kn-workflow-%s-%s", cfg.Tag, docker.RandString())
+	containerName := fmt.Sprintf("%s-%s-%s", common.KN_WORKFLOW_NAME, cfg.Tag, docker.RandString())
 	devContainer, err := dockerCli.ContainerCreate(ctx, containerConfig, containerHostConfig, nil, nil, containerName)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a developement container")
