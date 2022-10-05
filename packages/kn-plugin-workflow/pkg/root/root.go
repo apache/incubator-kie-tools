@@ -21,7 +21,6 @@ import (
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/single"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -49,10 +48,10 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 
 	cmd.AddCommand(quarkus.NewQuarkusCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
-	cmd.AddCommand(single.NewBuildCommand())
-	cmd.AddCommand(single.NewCreateCommand())
-	cmd.AddCommand(single.NewDeployCommand())
-	cmd.AddCommand(single.NewDevCommand())
+	cmd.AddCommand(command.NewBuildCommand())
+	cmd.AddCommand(command.NewCreateCommand())
+	cmd.AddCommand(command.NewDeployCommand())
+	cmd.AddCommand(command.NewDevCommand())
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

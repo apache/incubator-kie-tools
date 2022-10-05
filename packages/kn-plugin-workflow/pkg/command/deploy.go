@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package single
+package command
 
 import (
 	"fmt"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package single
+package command
 
 import (
 	"context"
@@ -27,6 +27,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/imdario/mergo"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/docker"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/moby/buildkit/session/filesync"
 	"github.com/ory/viper"
@@ -141,7 +142,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	// creates a session for the dir
-	session, err := CreateSession(cfg.Path, false)
+	session, err := docker.CreateSession(cfg.Path, false)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a new session")
 		return
@@ -156,11 +157,11 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		{
 			Name: "context",
 			Dir:  cfg.Path,
-			Map:  ResetUIDAndGID,
+			Map:  docker.ResetUIDAndGID,
 		},
 		{
 			Name: "dockerfile",
-			Dir:  GetDockerfilePath(cfg.DependenciesVersion),
+			Dir:  docker.GetDockerfilePath(cfg.DependenciesVersion),
 		},
 	}))
 	session.Allow(filesync.NewFSSyncTargetDir("./kubernetes"))
@@ -177,7 +178,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
-	buildArgs := GetDockerBuildArgs(cfg.Extesions, registry, repository, name, tag)
+	buildArgs := docker.GetDockerBuildArgs(cfg.Extesions, registry, repository, name, tag)
 
 	commomImageBuildOptions := types.ImageBuildOptions{
 		SessionID:   session.ID(),
@@ -198,7 +199,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			}},
 		}
 		mergo.Merge(&outputBuildOptions, commomImageBuildOptions)
-		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, outputBuildOptions); err != nil {
+		if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, outputBuildOptions); err != nil {
 			fmt.Println("ERROR: generating output files")
 			return err
 		}
@@ -207,7 +208,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			Target: "runner",
 		}
 		mergo.Merge(&runnerBuildOptions, commomImageBuildOptions)
-		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, runnerBuildOptions); err != nil {
+		if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, runnerBuildOptions); err != nil {
 			fmt.Println("ERROR: generating runner image")
 			return err
 		}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package single
+package command
 
 import (
 	"context"
@@ -27,6 +27,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/docker"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -50,9 +51,9 @@ func NewDevCommand() *cobra.Command {
 		Example: `
 
 If you wish, you can run the development container using Docker directly:
-		docker container run -it \
-		--mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/src/main/resources \
-		-p 8080:8080 quay.io/lmotta/dev		
+	docker container run -it \
+	--mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/src/main/resources \
+	-p 8080:8080 quay.io/lmotta/dev		
 `,
 		SuggestFor: []string{"dve", "start"},
 		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "port", "quarkus-platform-group-id", "quarkus-version"),
@@ -139,7 +140,7 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	// creates a session for the dir
-	session, err := CreateSession(".", false)
+	session, err := docker.CreateSession(".", false)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a new session")
 		return
@@ -161,12 +162,12 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
-	buildArgs := GetDockerBuildArgs(cfg.Extensions, registry, repository, name, tag)
+	buildArgs := docker.GetDockerBuildArgs(cfg.Extensions, registry, repository, name, tag)
 
 	eg.Go(func() error {
 		defer session.Close()
 
-		if err := BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, types.ImageBuildOptions{
+		if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, types.ImageBuildOptions{
 			SessionID:  session.ID(),
 			Dockerfile: common.WORKFLOW_DOCKERFILE,
 			BuildArgs:  buildArgs,
@@ -188,11 +189,6 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	return
 }
 
-/*
-docker container run -it \
---mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/src/main/resources \
--p 8080:8080 dev.local/kn-workflow-development:dev
-*/
 func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	ctx := cmd.Context()
 
@@ -228,7 +224,7 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		},
 	}
 
-	containerName := fmt.Sprintf("kn-workflow-%s-%s", cfg.Tag, common.RandString())
+	containerName := fmt.Sprintf("kn-workflow-%s-%s", cfg.Tag, docker.RandString())
 	devContainer, err := dockerCli.ContainerCreate(ctx, containerConfig, containerHostConfig, nil, nil, containerName)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a developement container")

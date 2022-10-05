@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package single
+package docker
 
 import (
 	"archive/tar"
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -292,4 +295,13 @@ func dockerLog(rd io.Reader) error {
 	}
 
 	return nil
+}
+
+func RandString() string {
+	var src = rand.NewSource(time.Now().UnixNano())
+	string := strconv.FormatInt(src.Int63(), 10)
+	h := sha1.New()
+	h.Write([]byte(string))
+	hash := hex.EncodeToString(h.Sum(nil))
+	return hash[:6]
 }

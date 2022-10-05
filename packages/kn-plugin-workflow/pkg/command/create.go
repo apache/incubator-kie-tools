@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package single
+package command
 
 import (
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/docker"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -73,13 +73,13 @@ func runCreate(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	workflowPath := fmt.Sprintf("./%s/%s", name, common.WORKFLOW_SW_JSON)
-	if err = command.CreateWorkflow(workflowPath); err != nil {
+	if err = CreateWorkflow(workflowPath); err != nil {
 		fmt.Println("ERROR: creating workflow file")
 		return fmt.Errorf("Description: %w", err)
 	}
 
-	dockerfilePath := GetDockerfileDir(cfg.DependenciesVersion)
-	if err = CreateDockerfile(dockerfilePath, cfg.DependenciesVersion.QuarkusVersion); err != nil {
+	dockerfilePath := docker.GetDockerfileDir(cfg.DependenciesVersion)
+	if err = docker.CreateDockerfile(dockerfilePath, cfg.DependenciesVersion.QuarkusVersion); err != nil {
 		fmt.Println("ERROR: creating Dockerfile in temp folder")
 		return fmt.Errorf("Description: %w", err)
 	}
