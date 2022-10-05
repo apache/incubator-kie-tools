@@ -93,9 +93,17 @@ type AuthProperties struct {
 	Oauth2 OAuth2Properties     `json:"oauth2,omitempty"`
 }
 
+type AuthScheme string
+
+const (
+	BasicAuthScheme  AuthScheme = "basic"
+	BearerAuthScheme AuthScheme = "bearer"
+	Oauth2AuthScheme AuthScheme = "oauth2"
+)
+
 type Auth struct {
 	Name       string         `json:"name"`
-	Scheme     string         `json:"scheme"`
+	Scheme     AuthScheme     `json:"scheme"`
 	Properties AuthProperties `json:"properties"`
 }
 
@@ -108,7 +116,7 @@ const (
 
 type EventCorrelationRule struct {
 	ContextAttributeName  string `json:"contextAttributeName"`
-	ContextAttributeValue string `json:"contextAttributeValue"`
+	ContextAttributeValue string `json:"contextAttributeValue, omitempty"`
 }
 
 type Metadata struct {
@@ -140,13 +148,14 @@ const (
 	GraphQLFunctionType    FunctionType = "graphql"
 	ODataFunctionType      FunctionType = "odata"
 	ExpressionFunctionType FunctionType = "expression"
+	CustomFunctionType     FunctionType = "custom"
 )
 
 type Function struct {
 	Name      string `json:"name"`
 	Operation string `json:"operation"`
 	// +optional
-	Type FunctionType `json:"type"`
+	Type FunctionType `json:"type,omitempty"`
 	// +optional
 	AuthRef *string `json:"authRef,omitempty"`
 	// +optional
@@ -179,6 +188,7 @@ const (
 	ParallelStateType  StateType = "parallel"
 	InjectStateType    StateType = "inject"
 	ForEachStateType   StateType = "foreach"
+	CallbackStateType  StateType = "callback"
 )
 
 type ActionMode string
@@ -188,11 +198,11 @@ const (
 	ParallelActionMode   ActionMode = "parallel"
 )
 
-type InvokeTye string
+type InvokeType string
 
 const (
-	SyncInvokeType  InvokeTye = "sync"
-	AsyncInvokeType InvokeTye = "async"
+	SyncInvokeType  InvokeType = "sync"
+	AsyncInvokeType InvokeType = "async"
 )
 
 type EventRef struct {
@@ -203,7 +213,7 @@ type EventRef struct {
 	Data                *string `json:"data,omitempty"`
 	//TODO Define a custom type for ContextAttribute
 	ContextAttributes *map[string]unstructured.Unstructured `json:"contextAttributes,omitempty"`
-	Invoke            *InvokeTye                            `json:"invoke,omitempty"`
+	Invoke            *InvokeType                           `json:"invoke,omitempty"`
 }
 
 type ActionDataFilter struct {
@@ -225,11 +235,11 @@ type FunctionRef struct {
 	RefName      string            `json:"refName"`
 	Arguments    map[string]string `json:"arguments,omitempty"`
 	SelectionSet *string           `json:"selectionSet,omitempty"`
-	Invoke       *InvokeTye        `json:"invoke,omitempty"`
+	Invoke       *InvokeType       `json:"invoke,omitempty"`
 }
 
 type Action struct {
-	Name               *string           `json:"name"`
+	Name               string           `json:"name,omitempty"`
 	FunctionRef        FunctionRef       `json:"functionRef,omitempty"`
 	EventRef           *EventRef         `json:"eventRef,omitempty"`
 	SubFlowRef         *string           `json:"subFlowRef,omitempty"`
@@ -241,27 +251,48 @@ type Action struct {
 	Condition          *bool             `json:"condition,omitempty"`
 }
 
-type CompletionType struct{}
+type CompletionType string
 
-//TODO: Define CompletionType values (Option types on how to complete branch execution. Default is "allOf")
+const (
+	AllOfCompletionType   CompletionType = "allOf"
+	AtLeastCompletionType CompletionType = "atLeast"
+)
 
-type IterationMode struct{}
+type IterationMode string
 
-//TODO: Define IterationMode values (Specifies how iterations are to be performed (sequentially or in parallel). Default is parallel)
+const (
+	SequentialIterationMode IterationMode = "sequential"
+	ParallelIterationMode   IterationMode = "parallel"
+)
 
-type EventDataFilter struct{}
-
-//TODO: Define EventDataFilter (Callback EventDataFilter definition)
+type EventDataFilter struct {
+	UseData     bool   `json:"useData,omitempty"`
+	Data        string `json:"data,omitempty"`
+	ToStateData string `json:"toStateData,omitempty"`
+}
 
 type Timeouts struct{}
 
 //TODO: Define Timeouts (State specific timeout settings)
 
-type StateDataFilter struct{}
+type StateDataFilter struct {
+	Input  string `json:"input,omitempty"`
+	Output string `json:"output,omitempty"`
+}
 
-//TODO: Define StateDataFilter (State data filter definition)
+type ErrorRef struct {
+	ErrorRef   string   `json:"errorRef"`
+	ErrorRefs  []string `json:"errorRefs"`
+	End        bool     `json:"end,omitempty"`
+	Transition string   `json:"transition,omitempty"`
+}
 
-type ProduceEvents struct{}
+type ProduceEvents struct {
+	EventRef string `json:"eventRef"`
+	Data     string `json:"data,omitempty"`
+	//TODO Define a custom type for ContextAttribute
+	ContextAttributes *map[string]unstructured.Unstructured `json:"contextAttributes,omitempty"`
+}
 
 type Transition struct {
 	ProduceEvents *[]ProduceEvents `json:"produceEvents,omitempty"`
@@ -274,29 +305,48 @@ type DataCondition struct {
 	Name       string     `json:"name,omitempty"`
 	Condition  string     `json:"condition"`
 	Transition string     `json:"transition,omitempty"`
-	End        string     `json:"end,omitempty"`
+	End        bool       `json:"end,omitempty"`
 	Metadata   []Metadata `json:"metadata,omitempty"`
+}
+
+type EventCondition struct {
+	Name            string          `json:"name,omitempty"`
+	EventRef        string          `json:"eventRef"`
+	Transition      string          `json:"transition,omitempty"`
+	End             bool            `json:"end,omitempty"`
+	EventDataFilter EventDataFilter `json:"eventDataFilter,omitempty"`
+	Metadata        []Metadata      `json:"metadata,omitempty"`
+}
+
+type OnEvent struct {
+	EventRefs       []EventRef      `json:"eventRefs"`
+	ActionMode      ActionMode      `json:"actionMode,omitempty"`
+	Actions         []Action        `json:"actions,omitempty"`
+	EventDataFilter EventDataFilter `json:"eventDataFilter,omitempty"`
+}
+
+type Branch struct {
+	Name     string   `json:"name"`
+	Actions  []Action `json:"actions"`
+	Timeouts Timeout  `json:"timeouts,omitempty"`
 }
 
 type State struct {
 	// +kubebuilder:validation:Required
 	Name string `json:"name"`
 	// +kubebuilder:validation:Enum:=event;operation;switch;sleep;parallel;inject;foreach
-	Type       StateType          `json:"type"`
-	Exclusive  *bool              `json:"exclusive,omitempty"`
-	ActionMode *ActionMode        `json:"actionMode,omitempty"`
-	Actions    *[]Action          `json:"actions,omitempty"`
-	Data       *map[string]string `json:"data,omitempty"`
-	//TODO: Define a type for DataCondition objects
-	DataConditions *[]DataCondition `json:"dataConditions,omitempty"`
-	//TODO: Define a type for EventContitions objects
-	EventConditions *[]string `json:"eventConditions,omitempty"`
+	Type            StateType          `json:"type"`
+	Exclusive       *bool              `json:"exclusive,omitempty"`
+	ActionMode      *ActionMode        `json:"actionMode,omitempty"`
+	Actions         *[]Action          `json:"actions,omitempty"`
+	Data            *map[string]string `json:"data,omitempty"`
+	DataConditions  *[]DataCondition   `json:"dataConditions,omitempty"`
+	EventConditions *[]EventCondition  `json:"eventConditions,omitempty"`
 	//TODO: Define a type for DefaultCondition object
-	DefaultCondition *string `json:"defaultCondition,omitempty"`
-	//TODO: Double-check that we can use the Event type here
-	OnEvents            *[]Event         `json:"onEvents,omitempty"`
-	Duration            *string          `json:"duration,omitempty"`
-	Branches            *[]string        `json:"branches,omitempty"`
+	DefaultCondition    *string          `json:"defaultCondition,omitempty"`
+	OnEvents            *[]OnEvent       `json:"onEvents"`
+	Duration            *string          `json:"duration"`
+	Branches            *[]Branch        `json:"branches"`
 	CompletionType      *CompletionType  `json:"completionType,omitempty"`
 	NumCompleted        *int             `json:"numCompleted,omitempty"`
 	InputCollection     *string          `json:"inputCollection,omitempty"`
@@ -306,10 +356,10 @@ type State struct {
 	Mode                *IterationMode   `json:"mode,omitempty"`
 	EventRef            *EventRef        `json:"eventRef,omitempty"`
 	EventDataFilter     *EventDataFilter `json:"eventDataFilter,omitempty"`
-	Timeouts            *Timeouts        `json:"timeouts,omitempty"`
+	Timeouts            *Timeout         `json:"timeouts,omitempty"`
 	StateDataFilter     *StateDataFilter `json:"stateDataFilter,omitempty"`
 	Transition          *string          `json:"transition,omitempty"`
-	OnErrors            *[]string        `json:"onErrors,omitempty"`
+	OnErrors            *[]ErrorRef      `json:"onErrors,omitempty"`
 	End                 bool             `json:"end,omitempty"`
 	CompensatedBy       *string          `json:"compensatedBy,omitempty"`
 	UsedForCompensation *bool            `json:"usedForCompensation,omitempty"`
