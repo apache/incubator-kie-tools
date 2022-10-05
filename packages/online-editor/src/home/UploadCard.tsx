@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { isAbsolute } from "path";
-import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { useDropzone } from "react-dropzone";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -29,6 +29,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { LocalFile } from "../workspace/worker/api/LocalFile";
 
 enum UploadType {
   NONE,
@@ -79,22 +80,25 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         );
       }, new Set<string>());
 
-      const localFiles: LocalFile[] = Array.from(acceptedFiles ?? []).map((file: File & { path?: string }) => {
-        const path = resolveRelativePath({
-          file,
-          keepRootDirs: uploadedRootDirs.size > 1,
-        });
+      const localFiles: LocalFile[] = await Promise.all(
+        Array.from(acceptedFiles ?? []).map(async (file: File & { path?: string }) => {
+          const path = resolveRelativePath({
+            file,
+            keepRootDirs: uploadedRootDirs.size > 1,
+          });
 
-        return {
-          path,
-          getFileContents: () =>
-            new Promise<Uint8Array>((res) => {
-              const reader = new FileReader();
-              reader.onload = (event: ProgressEvent<FileReader>) => res(event.target?.result as Uint8Array);
-              reader.readAsArrayBuffer(file);
-            }),
-        };
-      });
+          return {
+            path,
+            fileContents: await (async () =>
+              new Promise<Uint8Array>((res) => {
+                const reader = new FileReader();
+                reader.onload = (event: ProgressEvent<FileReader>) =>
+                  res(new Uint8Array(event.target?.result as ArrayBuffer));
+                reader.readAsArrayBuffer(file);
+              }))(),
+          };
+        })
+      );
 
       const preferredName =
         uploadedRootDirs.size !== 1
@@ -107,7 +111,6 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
 
       try {
         const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromLocal({
-          useInMemoryFs: true,
           localFiles,
           preferredName,
         });

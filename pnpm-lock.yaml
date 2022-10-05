@@ -3121,6 +3121,7 @@ importers:
       "@babel/preset-env": ^7.16.0
       "@babel/preset-react": ^7.16.0
       "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/guided-tour": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/keyboard-shortcuts": workspace:*
@@ -3132,6 +3133,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
+      "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/extended-services": workspace:*
       "@kie-tools/form": workspace:*
@@ -3163,6 +3165,7 @@ importers:
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
       "@types/uuid": ^8.3.0
+      bowser: ^2.10.0
       buffer: ^6.0.3
       copy-webpack-plugin: ^8.1.1
       cypress: ^10.7.0
@@ -3180,6 +3183,7 @@ importers:
       jszip: ^3.7.1
       minimatch: ^3.0.4
       moment: ^2.29.4
+      patch-package: ^6.4.7
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -3196,6 +3200,7 @@ importers:
       webpack-merge: ^5.7.3
     dependencies:
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
@@ -3205,6 +3210,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
+      "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
@@ -3218,6 +3224,7 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-tokens": 4.33.1
+      bowser: 2.11.0
       buffer: 6.0.3
       history: 4.10.1
       isomorphic-git: 1.11.1
@@ -3265,6 +3272,7 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
+      patch-package: 6.4.7
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
@@ -7903,6 +7911,11 @@ packages:
       { integrity: sha512-VPeQ7+wH0itvQxnG+lIzWgkysKIr3L9sslimFW55rHMdGu/qCQ5z5h9zq4gI8uBtqkpHhsF4Z/OwExufUCThew== }
     engines: { node: ">=6.0.0" }
     dev: true
+
+  /@kie-tools/emscripten-fs/0.0.2:
+    resolution:
+      { integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ== }
+    dev: false
 
   /@kie-tools/jitexecutor-native/1.12.0-Final:
     resolution:
@@ -12690,6 +12703,11 @@ packages:
     resolution:
       { integrity: sha512-5pyOr+w2LNN72F2mAq6J0ckHUfJYSgRKma7e/wlcMMhgOLV9OI0ERhERYXxUqo+dPyVxcbXKy9n+wg13+LpNnA== }
     optional: true
+
+  /bowser/2.11.0:
+    resolution:
+      { integrity: sha512-AlcaJBi/pqqJBIQ8U9Mcpc9i8Aqxn88Skv5d+xBX006BY5u8N3mGLHa5Lgppa7L/HfwgwLgZ6NYs+Ag6uUmJRA== }
+    dev: false
 
   /boxen/5.1.2:
     resolution:

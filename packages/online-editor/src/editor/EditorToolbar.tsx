@@ -50,7 +50,7 @@ import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
+import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
@@ -64,30 +64,37 @@ import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import { OutlinedHddIcon } from "@patternfly/react-icons/dist/js/icons/outlined-hdd-icon";
+import { DesktopIcon } from "@patternfly/react-icons/dist/js/icons/desktop-icon";
 import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
-import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import {
+  GIST_DEFAULT_BRANCH,
+  GIST_ORIGIN_REMOTE_NAME,
+  GIT_ORIGIN_REMOTE_NAME,
+} from "../workspace/constants/GitConstants";
+import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Location } from "history";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { useGitHubAuthInfo } from "../github/Hooks";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
+import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -150,6 +157,24 @@ export function EditorToolbar(props: Props) {
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
   const navigationBlockersBypass = useNavigationBlockersBypass();
+
+  const [flushes] = useSharedValue(workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes);
+
+  const isSaved = useMemo(() => {
+    return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));
+  }, [isEdited, flushes, props.workspaceFile.workspaceId]);
+
+  // Prevent from closing without flushing before.
+  useEffect(() => {
+    if (isSaved) {
+      return;
+    }
+
+    window.onbeforeunload = () => "Some changes are not written to disk yet.";
+    return () => {
+      window.onbeforeunload = null;
+    };
+  }, [isSaved]);
 
   useCancelableEffect(
     useCallback(
@@ -298,14 +323,13 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-    const zipBlob = await workspaces.prepareZip({ fs, workspaceId: props.workspaceFile.workspaceId });
+    const zipBlob = await workspaces.prepareZip({ workspaceId: props.workspaceFile.workspaceId });
     if (downloadAllRef.current) {
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
     }
     if (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL) {
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
+      await workspaces.createSavePoint({ workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
     }
   }, [props.editor, props.workspaceFile, workspaces, workspacePromise.data, githubAuthInfo]);
 
@@ -326,11 +350,9 @@ export function EditorToolbar(props: Props) {
       }
 
       setGitHubGistLoading(true);
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
-      await workspaces.gitService.push({
-        fs,
-        dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -339,7 +361,6 @@ export function EditorToolbar(props: Props) {
       });
 
       await workspaces.pull({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
@@ -390,18 +411,14 @@ export function EditorToolbar(props: Props) {
       }
 
       setGitHubGistLoading(true);
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const dir = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
       await workspaces.createSavePoint({
-        fs,
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
-      await workspaces.gitService.push({
-        fs,
-        dir,
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -410,7 +427,6 @@ export function EditorToolbar(props: Props) {
       });
 
       await workspaces.pull({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
@@ -452,35 +468,31 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         throw new Error("Gist creation failed.");
       }
 
-      await workspaces.descriptorService.turnIntoGist(props.workspaceFile.workspaceId, new URL(gist.data.git_push_url));
+      await workspaces.initGistOnWorkspace({
+        workspaceId: props.workspaceFile.workspaceId,
+        remoteUrl: new URL(gist.data.git_push_url),
+      });
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
-
-      await workspaces.gitService.addRemote({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.addRemote({
+        workspaceId: props.workspaceFile.workspaceId,
         url: gist.data.git_push_url,
         name: GIST_ORIGIN_REMOTE_NAME,
         force: true,
       });
 
-      await workspaces.gitService.branch({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.branch({
+        workspaceId: props.workspaceFile.workspaceId,
         checkout: true,
         name: GIST_DEFAULT_BRANCH,
       });
 
       await workspaces.createSavePoint({
-        fs: fs,
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -489,7 +501,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       });
 
       await workspaces.pull({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
@@ -525,15 +536,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         gist_id: gitHubGist.id,
       });
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
-
       const remoteName = gist.data.id;
 
       // Adds forked gist remote to current one
-      await workspaces.gitService.addRemote({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.addRemote({
+        workspaceId: props.workspaceFile.workspaceId,
         url: gist.data.git_push_url,
         name: remoteName,
         force: true,
@@ -541,15 +548,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
       // Commit
       await workspaces.createSavePoint({
-        fs: fs,
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
       // Push to forked gist remote
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: remoteName,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -800,7 +805,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       .pop();
 
     await workspaces.deleteFile({
-      fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
       file: props.workspaceFile,
     });
 
@@ -878,25 +882,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [deleteWorkspaceFile, props.workspaceFile]);
 
-  const createSavePointDropdownItem = useMemo(() => {
-    return (
-      <DropdownItem
-        key={"commit-dropdown-item"}
-        icon={<SaveIcon />}
-        onClick={async () =>
-          workspaces.createSavePoint({
-            fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-            workspaceId: props.workspaceFile.workspaceId,
-            gitConfig: githubAuthInfo,
-          })
-        }
-        description={"Create a save point"}
-      >
-        Commit
-      </DropdownItem>
-    );
-  }, [workspaces, props.workspaceFile, githubAuthInfo]);
-
   const pushingAlert = useAlert(
     props.alerts,
     useCallback(
@@ -920,6 +905,52 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       [workspacePromise]
     )
   );
+
+  const comittingAlert = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          variant="info"
+          title={
+            <>
+              <Spinner size={"sm"} />
+              &nbsp;&nbsp; {`Creating commit...`}
+            </>
+          }
+        />
+      );
+    }, [])
+  );
+
+  const commitSuccessAlert = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return <Alert variant="success" title={`Commit created.`} />;
+    }, []),
+    { durationInSeconds: 2 }
+  );
+
+  const createSavePointDropdownItem = useMemo(() => {
+    return (
+      <DropdownItem
+        key={"commit-dropdown-item"}
+        icon={<SaveIcon />}
+        onClick={async () => {
+          comittingAlert.show();
+          await workspaces.createSavePoint({
+            workspaceId: props.workspaceFile.workspaceId,
+            gitConfig: githubAuthInfo,
+          });
+          comittingAlert.close();
+          commitSuccessAlert.show();
+        }}
+        description={"Create a save point"}
+      >
+        Commit
+      </DropdownItem>
+    );
+  }, [workspaces, props.workspaceFile, githubAuthInfo, comittingAlert, commitSuccessAlert]);
 
   const pushSuccessAlert = useAlert(
     props.alerts,
@@ -1003,25 +1034,16 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
       try {
         pushingAlert.show();
-        const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-        const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
         await workspaces.createSavePoint({
-          fs: fs,
           workspaceId: props.workspaceFile.workspaceId,
           gitConfig: githubAuthInfo,
         });
 
-        await workspaces.gitService.branch({
-          fs,
-          dir: workspaceRootDirPath,
-          checkout: false,
-          name: newBranchName,
-        });
+        await workspaces.branch({ workspaceId: props.workspaceFile.workspaceId, checkout: false, name: newBranchName });
 
-        await workspaces.gitService.push({
-          fs: fs,
-          dir: workspaceRootDirPath,
+        await workspaces.push({
+          workspaceId: props.workspaceFile.workspaceId,
           remote: GIT_ORIGIN_REMOTE_NAME,
           remoteRef: `refs/heads/${newBranchName}`,
           ref: newBranchName,
@@ -1095,14 +1117,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         pullingAlert.show();
       }
       await workspaces.createSavePoint({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
       try {
         await workspaces.pull({
-          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
           workspaceId: props.workspaceFile.workspaceId,
           authInfo: githubAuthInfo,
         });
@@ -1147,15 +1167,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     try {
       const workspaceId = props.workspaceFile.workspaceId;
       await workspaces.createSavePoint({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
         workspaceId: workspaceId,
         gitConfig: githubAuthInfo,
       });
 
-      const workspace = await workspaces.descriptorService.get(workspaceId);
-      await workspaces.gitService.push({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
-        dir: await workspaces.service.getAbsolutePath({ workspaceId }),
+      const workspace = await workspaces.getWorkspace({ workspaceId });
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         ref: workspace.origin.branch,
         remote: GIST_ORIGIN_REMOTE_NAME,
         remoteRef: `refs/heads/${workspace.origin.branch}`,
@@ -1381,9 +1399,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 )}
                                 <DropdownItem
                                   href={`https://vscode.dev/github${
-                                    workspace.descriptor.origin.url.pathname.endsWith(".git")
-                                      ? workspace.descriptor.origin.url.pathname.replace(".git", "")
-                                      : workspace.descriptor.origin.url.pathname
+                                    new URL(workspace.descriptor.origin.url).pathname.endsWith(".git")
+                                      ? new URL(workspace.descriptor.origin.url).pathname.replace(".git", "")
+                                      : new URL(workspace.descriptor.origin.url).pathname
                                   }/tree/${workspace.descriptor.origin.branch}`}
                                   target={"_blank"}
                                   icon={<ExternalLinkAltIcon />}
@@ -1424,40 +1442,69 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </FlexItem>
                     <FlexItem>
                       {(isEdited && (
-                        <Tooltip content={"Saving file..."} position={"bottom"}>
+                        <Tooltip content={"Saving in memory..."} position={"bottom"}>
                           <TextContent
                             style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                           >
                             <Text
-                              aria-label={"Saving file..."}
-                              data-testid="is-saving-indicator"
+                              aria-label={"Saving in memory..."}
+                              data-testid="is-saving-in-memory-indicator"
                               component={TextVariants.small}
                             >
                               <span>
-                                <SyncIcon size={"sm"} />
+                                <OutlinedClockIcon size={"sm"} />
                               </span>
-                              &nbsp;
-                              <span>Saving...</span>
                             </Text>
                           </TextContent>
                         </Tooltip>
                       )) || (
-                        <Tooltip content={"File is saved"} position={"bottom"}>
+                        <Tooltip content={"File is in memory."} position={"bottom"}>
                           <TextContent
                             style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                           >
                             <Text
-                              aria-label={"File is saved"}
-                              data-testid="is-saved-indicator"
+                              aria-label={"File is in memory."}
+                              data-testid="is-saved-in-memory-indicator"
                               component={TextVariants.small}
                             >
                               <span>
-                                <CheckCircleIcon size={"sm"} />
+                                <DesktopIcon size={"sm"} />
                               </span>
-                              <ToolbarItem visibility={hideWhenTiny}>
-                                &nbsp;
-                                <span>Saved</span>
-                              </ToolbarItem>
+                            </Text>
+                          </TextContent>
+                        </Tooltip>
+                      )}
+                    </FlexItem>
+                    <FlexItem>
+                      {(!isSaved && (
+                        <Tooltip content={"Writing file..."} position={"bottom"}>
+                          <TextContent
+                            style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
+                          >
+                            <Text
+                              aria-label={"Writing file..."}
+                              data-testid="is-writing-indicator"
+                              component={TextVariants.small}
+                            >
+                              <span>
+                                <OutlinedClockIcon size={"sm"} />
+                              </span>
+                            </Text>
+                          </TextContent>
+                        </Tooltip>
+                      )) || (
+                        <Tooltip content={"File is written on disk."} position={"bottom"}>
+                          <TextContent
+                            style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
+                          >
+                            <Text
+                              aria-label={"File is written on disk."}
+                              data-testid="is-written-indicator"
+                              component={TextVariants.small}
+                            >
+                              <span>
+                                <OutlinedHddIcon size={"sm"} />
+                              </span>
                             </Text>
                           </TextContent>
                         </Tooltip>

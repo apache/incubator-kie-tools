@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { jsonParseWithDate, jsonParseWithUrl } from "../../json/JsonParse";
+import { jsonParseWithDate } from "../../json/JsonParse";
 
 describe("utils::jsonParseWithDate", () => {
   it("should parse JSON strings with dates properly", () => {
@@ -38,29 +38,5 @@ describe("utils::jsonParseWithDate", () => {
     const json = JSON.stringify(myObject);
     expect(JSON.parse(json)).not.toEqual(myObject);
     expect(jsonParseWithDate(json)).toEqual(myObject);
-  });
-});
-
-describe("utils::jsonParseWithUrl", () => {
-  it("should parse JSON strings with URLs properly", () => {
-    const myObject = {
-      myNumber: 1,
-      myString: "myValue",
-      myBoolean: false,
-      myUndefined: undefined,
-      myDate: Date.now(),
-      myObject: {
-        myNumber: 2,
-        myUrl: new URL("https://github.com/kiegroup/kie-tools"),
-      },
-      myUrlOne: new URL("https://www.example.com"),
-      myUrlTwo: new URL("http://www.example.com/path/to/file.txt"),
-      myUrlThree: new URL("https://www.example.com/path/to/file.txt?param1=value1&param2=value2"),
-      myUrlFour: new URL("http://www.example.com/path/to/file.txt#anchor"),
-      myUrlFive: new URL("https://www.example.com/path/to/file.txt?param1=value1&param2=value2#anchor"),
-    };
-    const json = JSON.stringify(myObject);
-    expect(JSON.parse(json)).not.toEqual(myObject);
-    expect(jsonParseWithUrl(json)).toEqual(myObject);
   });
 });

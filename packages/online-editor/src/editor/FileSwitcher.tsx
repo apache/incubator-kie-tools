@@ -15,7 +15,7 @@
  */
 
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -49,7 +49,7 @@ import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHoo
 import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -62,7 +62,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -101,7 +101,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       );
 
       const hasConflictingFileName = await workspaces.existsFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
@@ -127,7 +126,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       }
 
       await workspaces.renameFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
         newFileNameWithoutExtension: trimmedNewFileName.trim(),
       });
@@ -465,19 +463,20 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        Promise.resolve()
-          .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
-          .then(async (file) => {
-            if (canceled.get()) {
-              return;
-            }
-
-            if (file) {
-              setSvg({ data: decoder.decode(await file.getFileContents()) });
-            } else {
-              setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
-            }
-          });
+        // FIXME: Uncomment when working on KOGITO-7805
+        // Promise.resolve()
+        //   .then(async () => svgService.getSvg(props.workspaceFile))
+        //   .then(async (file) => {
+        //     if (canceled.get()) {
+        //       return;
+        //     }
+        //
+        //     if (file) {
+        //       setSvg({ data: decoder.decode(await file.getFileContents()) });
+        //     } else {
+        //       setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
+        //     }
+        //   });
       },
       [props.workspaceFile, workspaces, setSvg]
     )
@@ -605,7 +604,7 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        {/* FIXME: Uncomment when KOGITO-6181 is fixed */}
+        {/* FIXME: Uncomment when working on KOGITO-7805 */}
         {/*<SplitItem>*/}
         {/*  <FilesDropdownModeIcons*/}
         {/*    filesDropdownMode={props.filesDropdownMode}*/}
@@ -735,7 +734,8 @@ export function FilesMenuItems(props: {
                         </CardHeaderMain>
                       </CardHeader>
                       <CardBody style={{ padding: 0 }}>
-                        <FileSvg workspaceFile={file} />
+                        {/* FIXME: Uncomment when working on KOGITO-7805 */}
+                        {/* <FileSvg workspaceFile={file} />*/}
                       </CardBody>
                     </Card>
                   ))}
