@@ -18,10 +18,10 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
 	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	"github.com/davidesalerno/kogito-serverless-operator/builder"
 	"github.com/davidesalerno/kogito-serverless-operator/converters"
-	"github.com/ghodss/yaml"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -73,17 +73,21 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 		log.Error(err, "Failed converting KogitoServerlessWorkflow into Workflow")
 		return ctrl.Result{}, err
 	}
-	yamlWorkflow, err := yaml.Marshal(workflow)
+	jsonWorkflow, err := json.Marshal(workflow)
 	if err != nil {
-		log.Error(err, "Failed converting KogitoServerlessWorkflow into YAML")
+		log.Error(err, "Failed converting KogitoServerlessWorkflow into JSON")
 		return ctrl.Result{}, err
 	}
-	log.Info("Converted Workflow CR into Kogito Yaml Workflow", "workflow", yamlWorkflow)
+	log.Info("Converted Workflow CR into Kogito JSON Workflow", "workflow", jsonWorkflow)
 	//TODO Save into Shared Volume
 	//"greetings.sw.json"
 	//TODO KOGITO-7498 Kogito Serverless Workflow Builder Image
 	//[KOGITO-7899]-Integrate Kaniko into SWF Operator
-	builder.BuildImageWithDefaults(workflow.ID, yamlWorkflow)
+	builder := builder.NewBuilder(ctx)
+	_, err = builder.BuildImageWithDefaults(workflow.ID, jsonWorkflow)
+	if err != nil {
+		log.Info("Error building KogitoServerlessWorkflow into Workflow: ", "message", err.Error())
+	}
 	return ctrl.Result{}, nil
 }
 

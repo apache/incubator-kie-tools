@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"context"
 	"github.com/davidesalerno/kogito-serverless-operator/constants"
 	"github.com/stretchr/testify/assert"
 	"os"
@@ -31,7 +32,8 @@ func TestBuild(t *testing.T) {
 
 	ib.WithTimeout(5 * time.Minute)
 
-	build, error := BuildImage(ib.Build())
+	builder := NewBuilder(context.TODO())
+	build, error := builder.BuildImage(ib.Build())
 	// after some build minikube need more time for the schedule
 	time.Sleep(20 * time.Second)
 	assert.NotNilf(t, build, "Build  result")

@@ -63,9 +63,15 @@ func retrieveStates(incomingStates []apiv08.State) []model.State {
 	states := make([]model.State, len(incomingStates))
 	log.Info("States: ", "states", incomingStates)
 	for i, s := range incomingStates {
-		newBaseState := &model.BaseState{Name: s.Name}
+		stateT := model.StateType(s.Type.String())
+		newBaseState := &model.BaseState{Name: s.Name, Type: stateT}
 		if s.End {
 			newBaseState.End = &model.End{Terminate: true}
+		}
+		if s.Transition != nil {
+			newBaseState.Transition = &model.Transition{
+				NextState: *s.Transition,
+			}
 		}
 		switch sType := s.Type; sType {
 		case "switch":

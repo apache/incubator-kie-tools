@@ -18,6 +18,8 @@ spec:
           transition: GreetInEnglish
         - condition: "${ .language == \"Spanish\" }"
           transition: GreetInSpanish
+        - condition: "${ .language == \"Italian\" }"
+          transition: GreetInItalian
       defaultCondition: GreetInEnglish
     - name: GreetInEnglish
       type: inject
@@ -29,6 +31,11 @@ spec:
       data:
         greeting: "Saludos desde JSON Workflow, "
       transition: GreetPerson
+    - name: GreetInItalian
+      type: inject
+      data:
+        greeting: "Saluti dal JSON Workflow, "
+      transition: GreetPerson
     - name: GreetPerson
       type: operation
       actions:
@@ -36,5 +43,5 @@ spec:
           functionRef:
             refName: greetFunction
             arguments:
-              message:  ".greeting+.name"
+              message: ".greeting+.name"
       end: true
