@@ -224,11 +224,12 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 			fmt.Sprintf("%s:/tmp/kn-plugin-workflow/src/main/resources", currentPath),
 		},
 		PortBindings: nat.PortMap{
-			containerPort: []nat.PortBinding{{HostIP: "localhost", HostPort: cfg.Port}},
+			containerPort: []nat.PortBinding{{HostIP: "", HostPort: cfg.Port}},
 		},
 	}
 
-	devContainer, err := dockerCli.ContainerCreate(ctx, containerConfig, containerHostConfig, nil, nil, fmt.Sprintf("kn-workflow-%s", cfg.Tag))
+	containerName := fmt.Sprintf("kn-workflow-%s-%s", cfg.Tag, common.RandString())
+	devContainer, err := dockerCli.ContainerCreate(ctx, containerConfig, containerHostConfig, nil, nil, containerName)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a developement container")
 		return
@@ -239,5 +240,12 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		fmt.Println("ERROR: failed to start the developement container")
 		return
 	}
+
+	fmt.Println("✅ Development container started")
+	fmt.Printf("- Container name: %s\n", containerName)
+	fmt.Printf("- Listening on: localhost:%s", cfg.Port)
+	fmt.Printf(`
+- If you wish to stop your development container you can use Docker directly:
+docker container stop %s`, containerName)
 	return
 }

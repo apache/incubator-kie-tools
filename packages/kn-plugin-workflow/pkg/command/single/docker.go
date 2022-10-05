@@ -118,10 +118,10 @@ COPY --from=builder /root/.m2/ /root/.m2/
 COPY --from=builder /tmp/ /tmp/
 
 WORKDIR /tmp/kn-plugin-workflow/
-	
+
 EXPOSE 8080
 
-CMD ["./mvnw", "quarkus:dev"]	
+CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]	
 `, quarkusVersion)
 	_, err = file.WriteString(dockerfile)
 	if err != nil {
@@ -186,7 +186,6 @@ func BuildDockerImage(
 			fmt.Println("ERROR: creating Dockerfile in temp folder")
 			return fmt.Errorf("Description: %w", err)
 		}
-		fmt.Printf("✅ %s created on %s \n", common.WORKFLOW_DOCKERFILE, GetDockerfileDir(dependenciesVersion))
 	}
 
 	// adds dockerfile to tar

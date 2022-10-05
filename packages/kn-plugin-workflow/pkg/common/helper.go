@@ -17,12 +17,17 @@
 package common
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"html/template"
+	"math/rand"
 	"os"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -145,4 +150,13 @@ func GetCurrentPath() (path string, err error) {
 		return
 	}
 	return
+}
+
+func RandString() string {
+	var src = rand.NewSource(time.Now().UnixNano())
+	string := strconv.FormatInt(src.Int63(), 10)
+	h := sha1.New()
+	h.Write([]byte(string))
+	hash := hex.EncodeToString(h.Sum(nil))
+	return hash[:6]
 }
