@@ -110,7 +110,7 @@ func retrieveStates(incomingStates []apiv08.State) []model.State {
 				actions = make([]model.Action, len(*s.Actions))
 				for k, ac := range *s.Actions {
 					action := &model.Action{
-						Name:        *ac.Name,
+						Name:        ac.Name,
 						FunctionRef: model.FunctionRef{RefName: ac.FunctionRef.RefName},
 					}
 					if &ac.FunctionRef != nil {

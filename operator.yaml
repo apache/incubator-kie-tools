@@ -176,7 +176,6 @@ spec:
                             type: string
                         required:
                         - contextAttributeName
-                        - contextAttributeValue
                         type: object
                       type: array
                     dataOnly:
@@ -369,32 +368,125 @@ spec:
                             type: object
                           subFlowRef:
                             type: string
-                        required:
-                        - name
                         type: object
                       type: array
                     batchSize:
                       type: integer
                     branches:
                       items:
-                        type: string
+                        properties:
+                          actions:
+                            items:
+                              properties:
+                                actionDataFilter:
+                                  properties:
+                                    fromStateData:
+                                      type: string
+                                    results:
+                                      type: string
+                                    toStateData:
+                                      type: string
+                                    useResults:
+                                      type: boolean
+                                  type: object
+                                condition:
+                                  type: boolean
+                                eventRef:
+                                  properties:
+                                    consumeEventRef:
+                                      type: string
+                                    consumeEventTimeout:
+                                      type: string
+                                    contextAttributes:
+                                      additionalProperties:
+                                        type: object
+                                      description: TODO Define a custom type for ContextAttribute
+                                      type: object
+                                    data:
+                                      type: string
+                                    invoke:
+                                      type: string
+                                    produceEventRef:
+                                      type: string
+                                  required:
+                                  - produceEventRef
+                                  type: object
+                                functionRef:
+                                  properties:
+                                    arguments:
+                                      additionalProperties:
+                                        type: string
+                                      type: object
+                                    invoke:
+                                      type: string
+                                    refName:
+                                      type: string
+                                    selectionSet:
+                                      type: string
+                                  required:
+                                  - refName
+                                  type: object
+                                name:
+                                  type: string
+                                nonRetryableErrors:
+                                  items:
+                                    type: string
+                                  type: array
+                                retryRef:
+                                  type: string
+                                retryableErrors:
+                                  items:
+                                    type: string
+                                  type: array
+                                sleep:
+                                  description: Sleep ...
+                                  properties:
+                                    after:
+                                      description: After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                      type: string
+                                    before:
+                                      description: Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                      type: string
+                                  type: object
+                                subFlowRef:
+                                  type: string
+                              type: object
+                            type: array
+                          name:
+                            type: string
+                          timeouts:
+                            properties:
+                              actionExecTimeout:
+                                type: string
+                              branchExecTimeout:
+                                type: string
+                              eventTimeout:
+                                type: string
+                              stateExecTimeout:
+                                type: string
+                              workflowExecTimeout:
+                                type: string
+                            type: object
+                        required:
+                        - actions
+                        - name
+                        type: object
                       type: array
                     compensatedBy:
                       type: string
                     completionType:
-                      type: object
+                      type: string
                     data:
                       additionalProperties:
                         type: string
                       type: object
                     dataConditions:
-                      description: 'TODO: Define a type for DataCondition objects'
                       items:
                         properties:
                           condition:
                             type: string
                           end:
-                            type: string
+                            type: boolean
                           metadata:
                             items:
                               properties:
@@ -423,11 +515,49 @@ spec:
                     end:
                       type: boolean
                     eventConditions:
-                      description: 'TODO: Define a type for EventContitions objects'
                       items:
-                        type: string
+                        properties:
+                          end:
+                            type: boolean
+                          eventDataFilter:
+                            properties:
+                              data:
+                                type: string
+                              toStateData:
+                                type: string
+                              useData:
+                                type: boolean
+                            type: object
+                          eventRef:
+                            type: string
+                          metadata:
+                            items:
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - key
+                              - value
+                              type: object
+                            type: array
+                          name:
+                            type: string
+                          transition:
+                            type: string
+                        required:
+                        - eventRef
+                        type: object
                       type: array
                     eventDataFilter:
+                      properties:
+                        data:
+                          type: string
+                        toStateData:
+                          type: string
+                        useData:
+                          type: boolean
                       type: object
                     eventRef:
                       properties:
@@ -468,63 +598,167 @@ spec:
                         type: object
                       type: array
                     mode:
-                      type: object
+                      type: string
                     name:
                       type: string
                     numCompleted:
                       type: integer
                     onErrors:
                       items:
-                        type: string
-                      type: array
-                    onEvents:
-                      description: 'TODO: Double-check that we can use the Event type here'
-                      items:
                         properties:
-                          correlation:
-                            items:
-                              properties:
-                                contextAttributeName:
-                                  type: string
-                                contextAttributeValue:
-                                  type: string
-                              required:
-                              - contextAttributeName
-                              - contextAttributeValue
-                              type: object
-                            type: array
-                          dataOnly:
+                          end:
                             type: boolean
-                          kind:
+                          errorRef:
                             type: string
-                          metadata:
+                          errorRefs:
                             items:
-                              properties:
-                                key:
-                                  type: string
-                                value:
-                                  type: string
-                              required:
-                              - key
-                              - value
-                              type: object
+                              type: string
                             type: array
-                          name:
-                            type: string
-                          source:
-                            type: string
-                          type:
+                          transition:
                             type: string
                         required:
-                        - name
-                        - type
+                        - errorRef
+                        - errorRefs
+                        type: object
+                      type: array
+                    onEvents:
+                      items:
+                        properties:
+                          actionMode:
+                            type: string
+                          actions:
+                            items:
+                              properties:
+                                actionDataFilter:
+                                  properties:
+                                    fromStateData:
+                                      type: string
+                                    results:
+                                      type: string
+                                    toStateData:
+                                      type: string
+                                    useResults:
+                                      type: boolean
+                                  type: object
+                                condition:
+                                  type: boolean
+                                eventRef:
+                                  properties:
+                                    consumeEventRef:
+                                      type: string
+                                    consumeEventTimeout:
+                                      type: string
+                                    contextAttributes:
+                                      additionalProperties:
+                                        type: object
+                                      description: TODO Define a custom type for ContextAttribute
+                                      type: object
+                                    data:
+                                      type: string
+                                    invoke:
+                                      type: string
+                                    produceEventRef:
+                                      type: string
+                                  required:
+                                  - produceEventRef
+                                  type: object
+                                functionRef:
+                                  properties:
+                                    arguments:
+                                      additionalProperties:
+                                        type: string
+                                      type: object
+                                    invoke:
+                                      type: string
+                                    refName:
+                                      type: string
+                                    selectionSet:
+                                      type: string
+                                  required:
+                                  - refName
+                                  type: object
+                                name:
+                                  type: string
+                                nonRetryableErrors:
+                                  items:
+                                    type: string
+                                  type: array
+                                retryRef:
+                                  type: string
+                                retryableErrors:
+                                  items:
+                                    type: string
+                                  type: array
+                                sleep:
+                                  description: Sleep ...
+                                  properties:
+                                    after:
+                                      description: After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                      type: string
+                                    before:
+                                      description: Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                      type: string
+                                  type: object
+                                subFlowRef:
+                                  type: string
+                              type: object
+                            type: array
+                          eventDataFilter:
+                            properties:
+                              data:
+                                type: string
+                              toStateData:
+                                type: string
+                              useData:
+                                type: boolean
+                            type: object
+                          eventRefs:
+                            items:
+                              properties:
+                                consumeEventRef:
+                                  type: string
+                                consumeEventTimeout:
+                                  type: string
+                                contextAttributes:
+                                  additionalProperties:
+                                    type: object
+                                  description: TODO Define a custom type for ContextAttribute
+                                  type: object
+                                data:
+                                  type: string
+                                invoke:
+                                  type: string
+                                produceEventRef:
+                                  type: string
+                              required:
+                              - produceEventRef
+                              type: object
+                            type: array
+                        required:
+                        - eventRefs
                         type: object
                       type: array
                     outputCollection:
                       type: string
                     stateDataFilter:
+                      properties:
+                        input:
+                          type: string
+                        output:
+                          type: string
                       type: object
                     timeouts:
+                      properties:
+                        actionExecTimeout:
+                          type: string
+                        branchExecTimeout:
+                          type: string
+                        eventTimeout:
+                          type: string
+                        stateExecTimeout:
+                          type: string
+                        workflowExecTimeout:
+                          type: string
                       type: object
                     transition:
                       type: string
@@ -541,7 +775,10 @@ spec:
                     usedForCompensation:
                       type: boolean
                   required:
+                  - branches
+                  - duration
                   - name
+                  - onEvents
                   - type
                   type: object
                 type: array
@@ -715,7 +952,6 @@ spec:
                                 type: string
                             required:
                             - contextAttributeName
-                            - contextAttributeValue
                             type: object
                           type: array
                         dataOnly:
@@ -908,32 +1144,125 @@ spec:
                                 type: object
                               subFlowRef:
                                 type: string
-                            required:
-                            - name
                             type: object
                           type: array
                         batchSize:
                           type: integer
                         branches:
                           items:
-                            type: string
+                            properties:
+                              actions:
+                                items:
+                                  properties:
+                                    actionDataFilter:
+                                      properties:
+                                        fromStateData:
+                                          type: string
+                                        results:
+                                          type: string
+                                        toStateData:
+                                          type: string
+                                        useResults:
+                                          type: boolean
+                                      type: object
+                                    condition:
+                                      type: boolean
+                                    eventRef:
+                                      properties:
+                                        consumeEventRef:
+                                          type: string
+                                        consumeEventTimeout:
+                                          type: string
+                                        contextAttributes:
+                                          additionalProperties:
+                                            type: object
+                                          description: TODO Define a custom type for ContextAttribute
+                                          type: object
+                                        data:
+                                          type: string
+                                        invoke:
+                                          type: string
+                                        produceEventRef:
+                                          type: string
+                                      required:
+                                      - produceEventRef
+                                      type: object
+                                    functionRef:
+                                      properties:
+                                        arguments:
+                                          additionalProperties:
+                                            type: string
+                                          type: object
+                                        invoke:
+                                          type: string
+                                        refName:
+                                          type: string
+                                        selectionSet:
+                                          type: string
+                                      required:
+                                      - refName
+                                      type: object
+                                    name:
+                                      type: string
+                                    nonRetryableErrors:
+                                      items:
+                                        type: string
+                                      type: array
+                                    retryRef:
+                                      type: string
+                                    retryableErrors:
+                                      items:
+                                        type: string
+                                      type: array
+                                    sleep:
+                                      description: Sleep ...
+                                      properties:
+                                        after:
+                                          description: After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                          type: string
+                                        before:
+                                          description: Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                          type: string
+                                      type: object
+                                    subFlowRef:
+                                      type: string
+                                  type: object
+                                type: array
+                              name:
+                                type: string
+                              timeouts:
+                                properties:
+                                  actionExecTimeout:
+                                    type: string
+                                  branchExecTimeout:
+                                    type: string
+                                  eventTimeout:
+                                    type: string
+                                  stateExecTimeout:
+                                    type: string
+                                  workflowExecTimeout:
+                                    type: string
+                                type: object
+                            required:
+                            - actions
+                            - name
+                            type: object
                           type: array
                         compensatedBy:
                           type: string
                         completionType:
-                          type: object
+                          type: string
                         data:
                           additionalProperties:
                             type: string
                           type: object
                         dataConditions:
-                          description: 'TODO: Define a type for DataCondition objects'
                           items:
                             properties:
                               condition:
                                 type: string
                               end:
-                                type: string
+                                type: boolean
                               metadata:
                                 items:
                                   properties:
@@ -962,11 +1291,49 @@ spec:
                         end:
                           type: boolean
                         eventConditions:
-                          description: 'TODO: Define a type for EventContitions objects'
                           items:
-                            type: string
+                            properties:
+                              end:
+                                type: boolean
+                              eventDataFilter:
+                                properties:
+                                  data:
+                                    type: string
+                                  toStateData:
+                                    type: string
+                                  useData:
+                                    type: boolean
+                                type: object
+                              eventRef:
+                                type: string
+                              metadata:
+                                items:
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                  required:
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              name:
+                                type: string
+                              transition:
+                                type: string
+                            required:
+                            - eventRef
+                            type: object
                           type: array
                         eventDataFilter:
+                          properties:
+                            data:
+                              type: string
+                            toStateData:
+                              type: string
+                            useData:
+                              type: boolean
                           type: object
                         eventRef:
                           properties:
@@ -1007,63 +1374,167 @@ spec:
                             type: object
                           type: array
                         mode:
-                          type: object
+                          type: string
                         name:
                           type: string
                         numCompleted:
                           type: integer
                         onErrors:
                           items:
-                            type: string
-                          type: array
-                        onEvents:
-                          description: 'TODO: Double-check that we can use the Event type here'
-                          items:
                             properties:
-                              correlation:
-                                items:
-                                  properties:
-                                    contextAttributeName:
-                                      type: string
-                                    contextAttributeValue:
-                                      type: string
-                                  required:
-                                  - contextAttributeName
-                                  - contextAttributeValue
-                                  type: object
-                                type: array
-                              dataOnly:
+                              end:
                                 type: boolean
-                              kind:
+                              errorRef:
                                 type: string
-                              metadata:
+                              errorRefs:
                                 items:
-                                  properties:
-                                    key:
-                                      type: string
-                                    value:
-                                      type: string
-                                  required:
-                                  - key
-                                  - value
-                                  type: object
+                                  type: string
                                 type: array
-                              name:
-                                type: string
-                              source:
-                                type: string
-                              type:
+                              transition:
                                 type: string
                             required:
-                            - name
-                            - type
+                            - errorRef
+                            - errorRefs
+                            type: object
+                          type: array
+                        onEvents:
+                          items:
+                            properties:
+                              actionMode:
+                                type: string
+                              actions:
+                                items:
+                                  properties:
+                                    actionDataFilter:
+                                      properties:
+                                        fromStateData:
+                                          type: string
+                                        results:
+                                          type: string
+                                        toStateData:
+                                          type: string
+                                        useResults:
+                                          type: boolean
+                                      type: object
+                                    condition:
+                                      type: boolean
+                                    eventRef:
+                                      properties:
+                                        consumeEventRef:
+                                          type: string
+                                        consumeEventTimeout:
+                                          type: string
+                                        contextAttributes:
+                                          additionalProperties:
+                                            type: object
+                                          description: TODO Define a custom type for ContextAttribute
+                                          type: object
+                                        data:
+                                          type: string
+                                        invoke:
+                                          type: string
+                                        produceEventRef:
+                                          type: string
+                                      required:
+                                      - produceEventRef
+                                      type: object
+                                    functionRef:
+                                      properties:
+                                        arguments:
+                                          additionalProperties:
+                                            type: string
+                                          type: object
+                                        invoke:
+                                          type: string
+                                        refName:
+                                          type: string
+                                        selectionSet:
+                                          type: string
+                                      required:
+                                      - refName
+                                      type: object
+                                    name:
+                                      type: string
+                                    nonRetryableErrors:
+                                      items:
+                                        type: string
+                                      type: array
+                                    retryRef:
+                                      type: string
+                                    retryableErrors:
+                                      items:
+                                        type: string
+                                      type: array
+                                    sleep:
+                                      description: Sleep ...
+                                      properties:
+                                        after:
+                                          description: After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                          type: string
+                                        before:
+                                          description: Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                          type: string
+                                      type: object
+                                    subFlowRef:
+                                      type: string
+                                  type: object
+                                type: array
+                              eventDataFilter:
+                                properties:
+                                  data:
+                                    type: string
+                                  toStateData:
+                                    type: string
+                                  useData:
+                                    type: boolean
+                                type: object
+                              eventRefs:
+                                items:
+                                  properties:
+                                    consumeEventRef:
+                                      type: string
+                                    consumeEventTimeout:
+                                      type: string
+                                    contextAttributes:
+                                      additionalProperties:
+                                        type: object
+                                      description: TODO Define a custom type for ContextAttribute
+                                      type: object
+                                    data:
+                                      type: string
+                                    invoke:
+                                      type: string
+                                    produceEventRef:
+                                      type: string
+                                  required:
+                                  - produceEventRef
+                                  type: object
+                                type: array
+                            required:
+                            - eventRefs
                             type: object
                           type: array
                         outputCollection:
                           type: string
                         stateDataFilter:
+                          properties:
+                            input:
+                              type: string
+                            output:
+                              type: string
                           type: object
                         timeouts:
+                          properties:
+                            actionExecTimeout:
+                              type: string
+                            branchExecTimeout:
+                              type: string
+                            eventTimeout:
+                              type: string
+                            stateExecTimeout:
+                              type: string
+                            workflowExecTimeout:
+                              type: string
                           type: object
                         transition:
                           type: string
@@ -1080,7 +1551,10 @@ spec:
                         usedForCompensation:
                           type: boolean
                       required:
+                      - branches
+                      - duration
                       - name
+                      - onEvents
                       - type
                       type: object
                     type: array

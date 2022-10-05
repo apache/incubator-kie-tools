@@ -176,7 +176,6 @@ spec:
                             type: string
                         required:
                         - contextAttributeName
-                        - contextAttributeValue
                         type: object
                       type: array
                     dataOnly:
@@ -996,7 +995,6 @@ spec:
                                 type: string
                             required:
                             - contextAttributeName
-                            - contextAttributeValue
                             type: object
                           type: array
                         dataOnly:

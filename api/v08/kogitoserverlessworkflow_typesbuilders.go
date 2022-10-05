@@ -226,7 +226,7 @@ func (b *StateBuilder) WithInputCollection(inputCollection string) *StateBuilder
 	return b
 }
 
-func (b *StateBuilder) WithBranches(branches []string) *StateBuilder {
+func (b *StateBuilder) WithBranches(branches []Branch) *StateBuilder {
 	b.State.Branches = &branches
 	return b
 }
@@ -236,7 +236,7 @@ func (b *StateBuilder) WithDuration(duration string) *StateBuilder {
 	return b
 }
 
-func (b *StateBuilder) WithOnEvents(onEvents []Event) *StateBuilder {
+func (b *StateBuilder) WithOnEvents(onEvents []OnEvent) *StateBuilder {
 	b.State.OnEvents = &onEvents
 	return b
 }
@@ -301,7 +301,7 @@ func (b *StateBuilder) WithEventDataFilter(eventDataFilter EventDataFilter) *Sta
 	return b
 }
 
-func (b *StateBuilder) WithTimeouts(timeouts Timeouts) *StateBuilder {
+func (b *StateBuilder) WithTimeouts(timeouts Timeout) *StateBuilder {
 	b.State.Timeouts = &timeouts
 	return b
 }
@@ -316,7 +316,7 @@ func (b *StateBuilder) WithTransition(transition string) *StateBuilder {
 	return b
 }
 
-func (b *StateBuilder) WithOnErrors(onErrors []string) *StateBuilder {
+func (b *StateBuilder) WithOnErrors(onErrors []ErrorRef) *StateBuilder {
 	b.State.OnErrors = &onErrors
 	return b
 }

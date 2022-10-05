@@ -116,7 +116,7 @@ const (
 
 type EventCorrelationRule struct {
 	ContextAttributeName  string `json:"contextAttributeName"`
-	ContextAttributeValue string `json:"contextAttributeValue, omitempty"`
+	ContextAttributeValue string `json:"contextAttributeValue,omitempty"`
 }
 
 type Metadata struct {
@@ -239,7 +239,7 @@ type FunctionRef struct {
 }
 
 type Action struct {
-	Name               string           `json:"name,omitempty"`
+	Name               string            `json:"name,omitempty"`
 	FunctionRef        FunctionRef       `json:"functionRef,omitempty"`
 	EventRef           *EventRef         `json:"eventRef,omitempty"`
 	SubFlowRef         *string           `json:"subFlowRef,omitempty"`
