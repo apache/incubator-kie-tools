@@ -521,7 +521,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
 }
 
 export function SearchableFilesMenuGroup(props: {
-  maxHeight: string;
+  minHeight: string;
   shouldFocusOnSearch: boolean;
   filesDropdownMode: FilesDropdownMode;
   label: string;
@@ -560,7 +560,7 @@ export function SearchableFilesMenuGroup(props: {
           onChange={(value) => props.setSearch(value)}
         />
       </MenuInput>
-      <div style={{ maxHeight: props.maxHeight, overflowY: "auto", height: props.maxHeight }}>
+      <div style={{ minHeight: props.minHeight, overflowY: "auto" }}>
         {filteredFiles.length > 0 && props.children({ filteredFiles })}
         {filteredFiles.length <= 0 && (
           <Bullseye>
@@ -636,7 +636,7 @@ export function FilesMenuItems(props: {
               <SearchableFilesMenuGroup
                 search={search}
                 setSearch={setSearch}
-                maxHeight={"500px"}
+                minHeight={"500px"}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
                 label={`Models in '${props.workspaceDescriptor.name}'`}
@@ -706,7 +706,7 @@ export function FilesMenuItems(props: {
             <SearchableFilesMenuGroup
               search={search}
               setSearch={setSearch}
-              maxHeight={"500px"}
+              minHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Other files in '${props.workspaceDescriptor.name}'`}
@@ -746,7 +746,7 @@ export function FilesMenuItems(props: {
             <SearchableFilesMenuGroup
               search={search}
               setSearch={setSearch}
-              maxHeight={"500px"}
+              minHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Models in '${props.workspaceDescriptor.name}'`}
