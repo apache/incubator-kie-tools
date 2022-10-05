@@ -52,6 +52,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	cmd.AddCommand(command.NewCreateCommand())
 	cmd.AddCommand(command.NewDeployCommand())
 	cmd.AddCommand(command.NewDevCommand())
+	cmd.AddCommand(command.NewPruneCommand())
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)
