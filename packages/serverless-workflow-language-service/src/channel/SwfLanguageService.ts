@@ -344,19 +344,13 @@ export class SwfLanguageService {
       const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
       const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
-    }
-
-    //
-    else if (
+    } else if (
       (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
       containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
       func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
     ) {
       return `${containingService.source.url}#${func.name}`;
-    }
-
-    //
-    else if (
+    } else if (
       containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
       func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
     ) {
@@ -366,10 +360,7 @@ export class SwfLanguageService {
       );
       const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
-    }
-
-    //
-    else {
+    } else {
       throw new Error("Unknown Service Catalog function source type");
     }
   }
