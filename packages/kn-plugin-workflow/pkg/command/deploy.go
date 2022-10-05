@@ -53,33 +53,34 @@ func NewDeployCommand() *cobra.Command {
 	return cmd
 }
 
-func runDeploy(cmd *cobra.Command, args []string) error {
+func runDeploy(cmd *cobra.Command, args []string) (err error) {
 	start := time.Now()
 
 	cfg, err := runDeployCmdConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("initializing deploy config: %w", err)
+		fmt.Println("ERROR: parsing flags")
+		return
 	}
 
-	if _, err := exec.LookPath("kubectl"); err != nil {
+	if _, err = exec.LookPath("kubectl"); err != nil {
 		fmt.Println("ERROR: kubectl is required for deploy")
 		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
-		os.Exit(1)
+		return
 	}
 
 	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
-	if err := common.RunCommand(
+	if err = common.RunCommand(
 		createService,
 		"deploy",
 	); err != nil {
-		return err
+		return
 	}
 	fmt.Println("✅ Knative service sucessufully created")
 
 	// Check if kogito.yml file exists
 	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
 		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
-		if err := common.RunCommand(
+		if err = common.RunCommand(
 			deploy,
 			"deploy",
 		); err != nil {
