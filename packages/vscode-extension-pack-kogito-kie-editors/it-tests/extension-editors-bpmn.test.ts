@@ -39,7 +39,8 @@ import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutio
  * For scenarios with other editor consider adding it to a specific
  * file for the integration e.g. "extensions-editors-bpmn-dmn.test.ts"
  */
-describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
+// KOGITO-8072 - Flaky test - extension-editors-bpmn.test.ts
+describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
   const USER_TASK_BPMN: string = "UserTask.bpmn";
