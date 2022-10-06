@@ -238,6 +238,9 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	fmt.Printf("- Listening on: localhost:%s", cfg.Port)
 	fmt.Printf(`
 - If you wish to stop your development container you can use Docker directly:
-docker container stop %s`, containerName)
+
+docker container stop %s
+
+`, containerName)
 	return
 }

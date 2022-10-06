@@ -56,7 +56,7 @@ Deletes files located in the temporary folder.
 {{.Name}} prune
 		  `,
 		SuggestFor: []string{"prnue", "prneu"},
-		PreRunE:    common.BindEnv("dev-containers", "dev-images", "runner-images", "temp-files", "all"),
+		PreRunE:    common.BindEnv("dev-containers", "dev-images", "dev", "base-images", "temp-files", "all"),
 	}
 
 	cmd.Flags().BoolP("dev-containers", "", false, "Stop and delete all development containers.")
@@ -216,7 +216,7 @@ func removeDockerImages(ctx context.Context, dockerCli *client.Client, imageName
 		}
 
 		for _, image := range images {
-			fmt.Printf("- Removing: %s", image.ID)
+			fmt.Printf("- Removing: %s\n", image.ID)
 			_, err := dockerCli.ImageRemove(ctx, image.ID, types.ImageRemoveOptions{})
 			if err != nil {
 				fmt.Println("ERROR: check if you still have containers using the image.")
