@@ -4913,7 +4913,7 @@ importers:
       "@kie-tools/tsconfig": workspace:*
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
-      "@vscode/test-web": ^0.0.22
+      "@vscode/test-web": ^0.0.30
       copy-webpack-plugin: ^8.1.1
       rimraf: ^3.0.2
       vsce: ^2.6.5
@@ -4936,7 +4936,7 @@ importers:
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
-      "@vscode/test-web": 0.0.22
+      "@vscode/test-web": 0.0.30
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
@@ -4960,7 +4960,7 @@ importers:
       "@kie-tools/tsconfig": workspace:*
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
-      "@vscode/test-web": ^0.0.22
+      "@vscode/test-web": ^0.0.30
       copy-webpack-plugin: ^8.1.1
       rimraf: ^3.0.2
       vsce: ^2.6.5
@@ -4983,7 +4983,7 @@ importers:
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
-      "@vscode/test-web": 0.0.22
+      "@vscode/test-web": 0.0.30
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
@@ -5072,7 +5072,7 @@ importers:
       "@types/minimatch": ^3.0.4
       "@types/mocha": ^8.2.2
       "@types/vscode": ^1.66.0
-      "@vscode/test-web": ^0.0.22
+      "@vscode/test-web": ^0.0.30
       chai: ^4.3.4
       copy-webpack-plugin: ^8.1.1
       cpr: ^3.0.1
@@ -5126,7 +5126,7 @@ importers:
       "@types/minimatch": 3.0.4
       "@types/mocha": 8.2.2
       "@types/vscode": 1.66.0
-      "@vscode/test-web": 0.0.22
+      "@vscode/test-web": 0.0.30
       chai: 4.3.4
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       cpr: 3.0.1
@@ -5164,7 +5164,7 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@types/vscode": ^1.66.0
-      "@vscode/test-web": ^0.0.22
+      "@vscode/test-web": ^0.0.30
       file-loader: ^6.2.0
       rimraf: ^3.0.2
       vsce: ^2.6.5
@@ -5187,7 +5187,7 @@ importers:
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
-      "@vscode/test-web": 0.0.22
+      "@vscode/test-web": 0.0.30
       file-loader: 6.2.0_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
@@ -5249,7 +5249,7 @@ importers:
       "@types/mocha": ^8.2.2
       "@types/selenium-webdriver": ^4.1.1
       "@types/vscode": ^1.66.0
-      "@vscode/test-web": ^0.0.22
+      "@vscode/test-web": ^0.0.30
       chai: ^4.3.4
       copy-webpack-plugin: ^8.1.1
       cpr: ^3.0.1
@@ -5307,7 +5307,7 @@ importers:
       "@types/mocha": 8.2.2
       "@types/selenium-webdriver": 4.1.1
       "@types/vscode": 1.66.0
-      "@vscode/test-web": 0.0.22
+      "@vscode/test-web": 0.0.30
       chai: 4.3.4
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       cpr: 3.0.1
@@ -5348,7 +5348,7 @@ importers:
       "@types/mocha": ^8.2.2
       "@types/selenium-webdriver": ^4.1.1
       "@types/vscode": ^1.66.0
-      "@vscode/test-web": ^0.0.22
+      "@vscode/test-web": ^0.0.30
       chai: ^4.3.4
       cpr: ^3.0.1
       mocha: ^9.2.0
@@ -5399,7 +5399,7 @@ importers:
       "@types/mocha": 8.2.2
       "@types/selenium-webdriver": 4.1.1
       "@types/vscode": 1.66.0
-      "@vscode/test-web": 0.0.22
+      "@vscode/test-web": 0.0.30
       chai: 4.3.4
       cpr: 3.0.1
       mocha: 9.2.0
@@ -7908,6 +7908,14 @@ packages:
     resolution:
       { integrity: sha512-8mglRmsYN9cYlexjY7P/S4d/5zBTXyKIMJwGc19PNQoNKgphAQQ3V8htrSJaBAyOevnyHFDRi1qQ5Zu0rXA5VQ== }
     dev: false
+
+  /@koa/cors/3.4.1:
+    resolution:
+      { integrity: sha512-/sG9NlpGZ/aBpnRamIlGs+wX+C/IJ5DodNK7iPQIVCG4eUQdGeshGhWQ6JCi7tpnD9sCtFXcS04iTimuaJfh4Q== }
+    engines: { node: ">= 8.0.0" }
+    dependencies:
+      vary: 1.1.2
+    dev: true
 
   /@koa/router/10.1.1:
     resolution:
@@ -10554,28 +10562,28 @@ packages:
       { integrity: sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q== }
     dev: true
 
-  /@vscode/test-web/0.0.22:
+  /@vscode/test-web/0.0.30:
     resolution:
-      { integrity: sha512-sm4WYidw26eFb1AReC8w5y4aOMdBb5ma5x3ukRJcun9iUB1ajz2nM18rxiYAVimUzrIMQHr9WqC8HYBYP8aNKQ== }
+      { integrity: sha512-l1StjU5FINfgVrgaKxSrbh+wrpZiFqTT5uQ/r1qano2yn9zWYmZUczQjjzzcUI0m4/38IPkwwI3gezSwdkKtpQ== }
     engines: { node: ">=8.9.3" }
     hasBin: true
     dependencies:
+      "@koa/cors": 3.4.1
       "@koa/router": 10.1.1
       decompress: 4.2.1
       decompress-targz: 4.1.1
+      get-stream: 6.0.1
       http-proxy-agent: 5.0.0
-      https-proxy-agent: 5.0.0
+      https-proxy-agent: 5.0.1
       koa: 2.13.4
       koa-morgan: 1.0.1
       koa-mount: 4.0.0
       koa-static: 5.0.0
       minimist: 1.2.6
-      playwright: 1.18.1
+      playwright: 1.26.1
       vscode-uri: 3.0.3
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
-      - utf-8-validate
     dev: true
 
   /@wdio/config/6.12.1:
@@ -17999,6 +18007,17 @@ packages:
       - supports-color
     dev: true
 
+  /https-proxy-agent/5.0.1:
+    resolution:
+      { integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA== }
+    engines: { node: ">= 6" }
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.3.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /human-signals/1.1.1:
     resolution:
       { integrity: sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw== }
@@ -19318,11 +19337,6 @@ packages:
       "@sideway/address": 4.1.0
       "@sideway/formula": 3.0.0
       "@sideway/pinpoint": 2.0.0
-    dev: true
-
-  /jpeg-js/0.4.3:
-    resolution:
-      { integrity: sha512-ru1HWKek8octvUHFHvE5ZzQ1yAsJmIvRdGWvSoKV52XKyuyYA437QWDttXT8eZXDSbuMpHlLzPDZUPd6idIz+Q== }
     dev: true
 
   /js-tokens/3.0.2:
@@ -22451,46 +22465,21 @@ packages:
       ramda: /@pnpm/ramda/0.28.1
     dev: true
 
-  /playwright-core/1.18.1:
+  /playwright-core/1.26.1:
     resolution:
-      { integrity: sha512-NALGl8R1GHzGLlhUApmpmfh6M1rrrPcDTygWvhTbprxwGB9qd/j9DRwyn4HTQcUB6o0/VOpo46fH9ez3+D/Rog== }
-    engines: { node: ">=12" }
+      { integrity: sha512-hzFchhhxnEiPc4qVPs9q2ZR+5eKNifY2hQDHtg1HnTTUuphYCBP8ZRb2si+B1TR7BHirgXaPi48LIye5SgrLAA== }
+    engines: { node: ">=14" }
     hasBin: true
-    dependencies:
-      commander: 8.3.0
-      debug: 4.3.3
-      extract-zip: 2.0.1
-      https-proxy-agent: 5.0.0
-      jpeg-js: 0.4.3
-      mime: 2.6.0
-      pngjs: 5.0.0
-      progress: 2.0.3
-      proper-lockfile: 4.1.2
-      proxy-from-env: 1.1.0
-      rimraf: 3.0.2
-      socks-proxy-agent: 6.1.1
-      stack-utils: 2.0.4
-      ws: 7.5.6
-      yauzl: 2.10.0
-      yazl: 2.5.1
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
     dev: true
 
-  /playwright/1.18.1:
+  /playwright/1.26.1:
     resolution:
-      { integrity: sha512-8EaX9EtbtAoMq5tnzIsoA3b/V86V/6Mq2skuOU4qEw+5OVxs1lwesDwmjy/RVU1Qfx5UuwSQzhp45wyH22oa+A== }
-    engines: { node: ">=12" }
+      { integrity: sha512-WQmEdCgYYe8jOEkhkW9QLcK0PB+w1RZztBLYIT10MEEsENYg251cU0IzebDINreQsUt+HCwwRhtdz4weH9ICcQ== }
+    engines: { node: ">=14" }
     hasBin: true
     requiresBuild: true
     dependencies:
-      playwright-core: 1.18.1
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
+      playwright-core: 1.26.1
     dev: true
 
   /plist/3.0.5:
@@ -22518,12 +22507,6 @@ packages:
     resolution:
       { integrity: sha512-rf5+2/ioHeQxR6IxuYNYGFytUyG3lma/WW1nsmjeHlWwtb2aByla6dkVc8pmJ9nplzkTA0q2xx7mMWrOTqT4Gg== }
     engines: { node: ">=8.0.0" }
-    dev: true
-
-  /pngjs/5.0.0:
-    resolution:
-      { integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw== }
-    engines: { node: ">=10.13.0" }
     dev: true
 
   /popper.js/1.16.1:
@@ -23175,15 +23158,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-
-  /proper-lockfile/4.1.2:
-    resolution:
-      { integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA== }
-    dependencies:
-      graceful-fs: 4.2.10
-      retry: 0.12.0
-      signal-exit: 3.0.3
-    dev: true
 
   /proto-list/1.2.4:
     resolution:
