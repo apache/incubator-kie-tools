@@ -168,6 +168,15 @@ describe("getNodeFormat", () => {
       ).toBe(FileLanguage.YAML);
     });
 
+    test("string value / JSON format", async () => {
+      expect(
+        getNodeFormatTester({
+          content: `name: "🎯Greeting workflow"`,
+          ls,
+        })
+      ).toBe(FileLanguage.JSON);
+    });
+
     test("boolean value / JSON format", async () => {
       expect(
         getNodeFormatTester({
@@ -194,8 +203,10 @@ describe("getNodeFormat", () => {
       test("two lines declaration / JSON format", async () => {
         expect(
           getNodeFormatTester({
-            content: `functions: 
-            [🎯]`,
+            content: `functions: [🎯    {
+        "name": "getGreetingFunction",
+        "operation": "openapi.yml#getGreeting"
+      }]`,
             ls,
           })
         ).toBe(FileLanguage.JSON);
@@ -205,14 +216,14 @@ describe("getNodeFormat", () => {
         expect(
           getNodeFormatTester({
             content: `---
-            name: Greeting workflow
-            functions:
-            🎯- name: getGreetingFunction
-              operation: openapi.yml#getGreeting
-            - name: greetFunction
-              type: custom
-              operation: sysout
-            states: [] `,
+name: Greeting workflow
+functions:
+🎯- name: getGreetingFunction
+  operation: openapi.yml#getGreeting
+- name: greetFunction
+  type: custom
+  operation: sysout
+states: [] `,
             ls,
           })
         ).toBe(FileLanguage.YAML);
@@ -227,12 +238,8 @@ describe("getNodeFormat", () => {
       test("two lines declaration / JSON format", async () => {
         expect(
           getNodeFormatTester({
-            content: `{
-            data: 
-            {🎯
-              "language": "Portuguese"
-            }
-        }`,
+            content: `data: {🎯
+              "language": "Portuguese" }`,
             ls,
           })
         ).toBe(FileLanguage.JSON);
@@ -242,11 +249,11 @@ describe("getNodeFormat", () => {
         expect(
           getNodeFormatTester({
             content: `---
-            name: GreetInPortuguese
-            data:
-            🎯  language: Portuguese
-              message: Hello
-            transition: GetGreeting `,
+name: GreetInPortuguese
+data:
+🎯  language: Portuguese
+  message: Hello
+transition: GetGreeting `,
             ls,
           })
         ).toBe(FileLanguage.YAML);
