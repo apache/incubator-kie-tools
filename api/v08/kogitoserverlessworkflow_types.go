@@ -344,9 +344,9 @@ type State struct {
 	EventConditions *[]EventCondition  `json:"eventConditions,omitempty"`
 	//TODO: Define a type for DefaultCondition object
 	DefaultCondition    *string          `json:"defaultCondition,omitempty"`
-	OnEvents            *[]OnEvent       `json:"onEvents"`
-	Duration            *string          `json:"duration"`
-	Branches            *[]Branch        `json:"branches"`
+	OnEvents            *[]OnEvent       `json:"onEvents,omitempty"`
+	Duration            *string          `json:"duration,omitempty"`
+	Branches            *[]Branch        `json:"branches,omitempty"`
 	CompletionType      *CompletionType  `json:"completionType,omitempty"`
 	NumCompleted        *int             `json:"numCompleted,omitempty"`
 	InputCollection     *string          `json:"inputCollection,omitempty"`
