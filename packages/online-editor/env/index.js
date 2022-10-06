@@ -52,8 +52,7 @@ module.exports = composeEnv(
         description: "",
       },
       ONLINE_EDITOR__corsProxyUrl: {
-        default:
-          "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
+        default: "https://cors.isomorphic-git.org",
         description: "",
       },
       DMN_DEV_SANDBOX__baseImageTag: {

@@ -10,7 +10,7 @@ export function initJsonCodeLenses(
   commandIds: SwfLanguageServiceCommandIds,
   channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>
 ): monaco.IDisposable {
-  return monaco.languages.registerCodeLensProvider("json", {
+  return monaco.languages.registerCodeLensProvider(["json", "yaml"], {
     provideCodeLenses: async (model, cancellationToken) => {
       const lsCodeLenses = await channelApi.requests.kogitoSwfLanguageService__getCodeLenses({
         uri: model.uri.toString(),

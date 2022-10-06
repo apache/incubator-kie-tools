@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
@@ -30,7 +30,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
+import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useGitHubAuthInfo } from "../github/Hooks";
@@ -79,19 +79,14 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.workspaceId });
-
-      await workspaces.gitService.addRemote({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.addRemote({
+        workspaceId: props.workspace.workspaceId,
         url: cloneUrl,
         name: GIT_ORIGIN_REMOTE_NAME,
         force: true,
       });
 
       await workspaces.createSavePoint({
-        fs: fs,
         workspaceId: props.workspace.workspaceId,
         gitConfig: {
           name: githubAuthInfo.name,
@@ -99,9 +94,8 @@ export function CreateGitHubRepositoryModal(props: {
         },
       });
 
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
+      await workspaces.push({
+        workspaceId: props.workspace.workspaceId,
         remote: GIT_ORIGIN_REMOTE_NAME,
         ref: GIT_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIT_DEFAULT_BRANCH}`,
@@ -109,7 +103,11 @@ export function CreateGitHubRepositoryModal(props: {
         authInfo: githubAuthInfo,
       });
 
-      await workspaces.descriptorService.turnIntoGit(props.workspace.workspaceId, new URL(cloneUrl));
+      await workspaces.initGitOnWorkspace({
+        workspaceId: props.workspace.workspaceId,
+        remoteUrl: new URL(cloneUrl),
+      });
+
       await workspaces.renameWorkspace({
         workspaceId: props.workspace.workspaceId,
         newName: new URL(repo.data.html_url).pathname.substring(1),

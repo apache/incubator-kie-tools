@@ -15,7 +15,7 @@
   "types": "./dist/editor/index.d.ts",
   "main": "dist/editor/index.js",
   "files": [
-    "dist/editor"
+    "dist"
   ],
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
@@ -38,7 +38,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
-    "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
     "@kie-tools/serverless-workflow-language-service": "workspace:*",
     "@kie-tools/serverless-workflow-mermaid-viewer": "workspace:*",

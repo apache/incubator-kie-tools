@@ -16,20 +16,19 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { InputRow } from "@kie-tools/form-dmn";
 import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
-import { WORKSPACES_BROADCAST_CHANNEL } from "../workspace/services/WorkspaceService";
-import { WorkspacesEvents } from "../workspace/hooks/WorkspacesHooks";
+import { WORKSPACES_BROADCAST_CHANNEL } from "../workspace/worker/api/WorkspacesEvents";
+import { WorkspacesEvents } from "../workspace/worker/api/WorkspacesEvents";
+import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
 
 export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}>) {
-  const workspaces = useWorkspaces();
-
   const dmnRunnerInputsService = useMemo(() => {
-    return new DmnRunnerInputsService(workspaces.storageService);
-  }, [workspaces.storageService]);
+    return new DmnRunnerInputsService();
+  }, []);
 
   useCancelableEffect(
     useCallback(

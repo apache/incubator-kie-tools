@@ -1,0 +1,67 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch create/version",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build",
+      "postDebugTask": "clean",
+      "program": "${workspaceRoot}/${input:bin}",
+      "args": ["${input:command}", "${input:command-args}"]
+    },
+    {
+      "name": "Launch build",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build",
+      "postDebugTask": "clean image",
+      "program": "${workspaceRoot}/${input:bin}",
+      "cwd": "debug",
+      "args": ["build", "--image=kn-workflow:debug"]
+    },
+    {
+      "name": "Launch deploy",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build",
+      "program": "${workspaceRoot}/${input:bin}",
+      "cwd": "debug",
+      "args": ["deploy"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "bin",
+      "type": "pickString",
+      "default": "dist/kn-workflow-linux-amd64",
+      "description": "The binary",
+      "options": [
+        "dist/kn-workflow-linux-amd64",
+        "dist/kn-workflow-darwin-amd64",
+        "dist/kn-workflow-darwin-arm64",
+        "dist/kn-workflow-win32-amd64"
+      ]
+    },
+    {
+      "id": "command",
+      "type": "pickString",
+      "default": "version",
+      "description": "The command",
+      "options": ["create", "version"]
+    },
+    {
+      "id": "command-args",
+      "type": "pickString",
+      "default": "",
+      "description": "The command",
+      "options": ["", "--name=debug"]
+    }
+  ]
+}

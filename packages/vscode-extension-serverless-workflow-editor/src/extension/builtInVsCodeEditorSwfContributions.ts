@@ -15,6 +15,8 @@
  */
 
 import {
+  FileLanguage,
+  getFileLanguage,
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
@@ -145,7 +147,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCodeLensProvider(
-      { scheme: "file", pattern: "**/*.sw.json" },
+      { scheme: "file", pattern: "**/*.sw.{json,yaml,yml}" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
           const lsCodeLenses = await args.vsCodeSwfLanguageService.getLs(document).getCodeLenses({
@@ -177,7 +179,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCompletionItemProvider(
-      { scheme: "file", pattern: "**/*.sw.json" },
+      { scheme: "file", pattern: "**/*.sw.{json,yaml,yml}" },
       {
         provideCompletionItems: async (
           document: vscode.TextDocument,
@@ -185,7 +187,10 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
           token: vscode.CancellationToken,
           context: vscode.CompletionContext
         ) => {
-          const cursorWordRange = document.getWordRangeAtPosition(position);
+          const cursorWordRange =
+            getFileLanguage(document.uri.path) === FileLanguage.YAML
+              ? new vscode.Range(position, position)
+              : document.getWordRangeAtPosition(position);
 
           const lsCompletionItems = await args.vsCodeSwfLanguageService.getLs(document).getCompletionItems({
             uri: document.uri.toString(),

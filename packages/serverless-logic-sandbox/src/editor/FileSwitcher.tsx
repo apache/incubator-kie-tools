@@ -300,6 +300,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                             aria-label={"Edit file name"}
                             className={"kogito--editor__toolbar-title"}
                             onBlur={(e) => renameWorkspaceFile(e.target.value)}
+                            ouiaId="file-name-input"
                           />
                         </Tooltip>
                       </div>

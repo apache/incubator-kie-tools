@@ -53,9 +53,9 @@ func CreateDockerfile(dockerfileDirPath string, dependenciesVersion metadata.Dep
 		fmt.Printf("Created dir on %s \n", dockerfileDirPath)
 	}
 	// create Dockerfile
-	dockerfilePath := filepath.Join(dockerfileDirPath, common.WORKFLOW_DOCKERFILE)
+	dockerfilePath := filepath.Join(dockerfileDirPath, metadata.WORKFLOW_DOCKERFILE)
 	if _, err = os.Stat(dockerfilePath); err == nil {
-		fmt.Printf("✅ %s already exists in %s \n", common.WORKFLOW_DOCKERFILE, dockerfileDirPath)
+		fmt.Printf("✅ %s already exists in %s \n", metadata.WORKFLOW_DOCKERFILE, dockerfileDirPath)
 		return
 	}
 
@@ -126,20 +126,20 @@ WORKDIR /tmp/kn-plugin-workflow/
 EXPOSE 8080
 
 CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]	
-`, common.KN_WORKFLOW_BASE_IMAGE, dependenciesVersion.QuarkusPlatformGroupId, dependenciesVersion.QuarkusVersion)
+`, metadata.KN_WORKFLOW_BASE_IMAGE, dependenciesVersion.QuarkusPlatformGroupId, dependenciesVersion.QuarkusVersion)
 	_, err = file.WriteString(dockerfile)
 	if err != nil {
-		fmt.Printf("ERROR: writing in %s\n", common.WORKFLOW_DOCKERFILE)
+		fmt.Printf("ERROR: writing in %s\n", metadata.WORKFLOW_DOCKERFILE)
 		return
 	}
 
-	fmt.Printf("✅ %s created on %s \n", common.WORKFLOW_DOCKERFILE, file.Name())
+	fmt.Printf("✅ %s created on %s \n", metadata.WORKFLOW_DOCKERFILE, file.Name())
 	return
 }
 
 func GetDockerfileDir(dependenciesVersion metadata.DependenciesVersion) string {
 	return filepath.Join(os.TempDir(), fmt.Sprintf("%s-%s-%s-%s",
-		common.KN_WORKFLOW_NAME,
+		metadata.KN_WORKFLOW_NAME,
 		metadata.PluginVersion,
 		dependenciesVersion.QuarkusPlatformGroupId,
 		dependenciesVersion.QuarkusVersion,
@@ -147,25 +147,25 @@ func GetDockerfileDir(dependenciesVersion metadata.DependenciesVersion) string {
 }
 
 func GetDockerfilePath(dependenciesVersion metadata.DependenciesVersion) string {
-	return filepath.Join(GetDockerfileDir(dependenciesVersion), common.WORKFLOW_DOCKERFILE)
+	return filepath.Join(GetDockerfileDir(dependenciesVersion), metadata.WORKFLOW_DOCKERFILE)
 }
 
 func GetDockerBuildArgs(extensions string, registry string, repository string, name string, tag string) map[string]*string {
-	var workflowSwJson string = common.WORKFLOW_SW_JSON
+	var workflowSwJson string = metadata.WORKFLOW_SW_JSON
 	buildArgs := map[string]*string{
-		common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY: &registry,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP:    &repository,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME:     &name,
-		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG:      &tag,
-		common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &name,
+		metadata.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
+		metadata.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY: &registry,
+		metadata.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP:    &repository,
+		metadata.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME:     &name,
+		metadata.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG:      &tag,
+		metadata.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &name,
 	}
 
 	existExtensions := strconv.FormatBool(len(extensions) > 0)
-	buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS] = &existExtensions
+	buildArgs[metadata.DOCKER_BUILD_ARG_EXTENSIONS] = &existExtensions
 
 	if len(extensions) > 0 {
-		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &extensions
+		buildArgs[metadata.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &extensions
 	}
 
 	return buildArgs
@@ -185,8 +185,8 @@ func BuildDockerImage(
 
 	dockerfilePath := GetDockerfilePath(dependenciesVersion)
 	if _, err = os.Stat(dockerfilePath); err != nil {
-		fmt.Printf(" - Couldn't find %s in tmp folder \n", common.WORKFLOW_DOCKERFILE)
-		fmt.Printf(" - Creating a new %s \n", common.WORKFLOW_DOCKERFILE)
+		fmt.Printf(" - Couldn't find %s in tmp folder \n", metadata.WORKFLOW_DOCKERFILE)
+		fmt.Printf(" - Creating a new %s \n", metadata.WORKFLOW_DOCKERFILE)
 		if err = CreateDockerfile(GetDockerfileDir(dependenciesVersion), dependenciesVersion); err != nil {
 			fmt.Println("ERROR: creating Dockerfile in temp folder")
 			return fmt.Errorf("Description: %w", err)
@@ -194,7 +194,7 @@ func BuildDockerImage(
 	}
 
 	// adds dockerfile to tar
-	err = addFileToTar(tw, dockerfilePath, common.WORKFLOW_DOCKERFILE)
+	err = addFileToTar(tw, dockerfilePath, metadata.WORKFLOW_DOCKERFILE)
 	if err != nil {
 		return
 	}
@@ -205,7 +205,7 @@ func BuildDockerImage(
 	}
 
 	// adds workflow.sw.json
-	err = addFileToTar(tw, filepath.Join(currentPath, choosenPath, common.WORKFLOW_SW_JSON), common.WORKFLOW_SW_JSON)
+	err = addFileToTar(tw, filepath.Join(currentPath, choosenPath, metadata.WORKFLOW_SW_JSON), metadata.WORKFLOW_SW_JSON)
 	if err != nil {
 		return
 	}
@@ -311,11 +311,11 @@ func RandString() string {
 }
 
 func GetCmdLabel() map[string]string {
-	return map[string]string{"from": common.KN_WORKFLOW_NAME}
+	return map[string]string{"from": metadata.KN_WORKFLOW_NAME}
 }
 
 func GetFilter() filters.Args {
 	filter := filters.NewArgs()
-	filter.Add("label", fmt.Sprintf("from=%s", common.KN_WORKFLOW_NAME))
+	filter.Add("label", fmt.Sprintf("from=%s", metadata.KN_WORKFLOW_NAME))
 	return filter
 }

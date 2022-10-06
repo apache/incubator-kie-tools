@@ -29,6 +29,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
+
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
@@ -111,7 +112,7 @@ func runPrune(cmd *cobra.Command) (err error) {
 		}
 		fmt.Println("- Pruning temporary files")
 		pathToPrune := filepath.Join(os.TempDir(), fmt.Sprintf("%s-%s-*",
-			common.KN_WORKFLOW_NAME,
+			metadata.KN_WORKFLOW_NAME,
 			metadata.PluginVersion,
 		))
 

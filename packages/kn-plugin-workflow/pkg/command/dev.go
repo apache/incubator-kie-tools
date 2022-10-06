@@ -27,6 +27,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/docker"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
@@ -170,11 +171,11 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return session.Run(context.TODO(), func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
-			return dockerCli.DialHijack(ctx, common.DOCKER_SESSION_PATH, proto, meta)
+			return dockerCli.DialHijack(ctx, metadata.DOCKER_SESSION_PATH, proto, meta)
 		})
 	})
 
-	registry, repository, name, tag := common.GetImageConfig("", common.KN_WORKFLOW_DEV_REPOSITORY, "", common.KN_WORKFLOW_DEVELOPMENT, cfg.Tag)
+	registry, repository, name, tag := common.GetImageConfig("", metadata.KN_WORKFLOW_DEV_REPOSITORY, "", metadata.KN_WORKFLOW_DEVELOPMENT, cfg.Tag)
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
@@ -185,11 +186,11 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 
 		if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, types.ImageBuildOptions{
 			SessionID:  session.ID(),
-			Dockerfile: common.WORKFLOW_DOCKERFILE,
+			Dockerfile: metadata.WORKFLOW_DOCKERFILE,
 			BuildArgs:  buildArgs,
 			Version:    types.BuilderBuildKit,
 			Tags:       []string{common.GetImage(registry, repository, name, tag)},
-			Target:     common.DOCKER_BUILD_STAGE_DEV,
+			Target:     metadata.DOCKER_BUILD_STAGE_DEV,
 			Labels:     getCmdDevLabels(),
 		}, "."); err != nil {
 			fmt.Println("ERROR: generating development image")
@@ -215,9 +216,9 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		return
 	}
 
-	containerPort := nat.Port(common.QUARKUS_DEV_PORT)
+	containerPort := nat.Port(metadata.QUARKUS_DEV_PORT)
 	containerConfig := &container.Config{
-		Image:        fmt.Sprintf("%s:%s", common.KN_WORKFLOW_DEV_IMAGE, cfg.Tag),
+		Image:        fmt.Sprintf("%s:%s", metadata.KN_WORKFLOW_DEV_IMAGE, cfg.Tag),
 		AttachStdin:  true,
 		AttachStdout: true,
 		AttachStderr: true,
@@ -235,14 +236,14 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 
 	containerHostConfig := &container.HostConfig{
 		Binds: []string{
-			fmt.Sprintf("%s:%s", currentPath, common.WORKFLOW_RESOURCES_PATH),
+			fmt.Sprintf("%s:%s", currentPath, metadata.WORKFLOW_RESOURCES_PATH),
 		},
 		PortBindings: nat.PortMap{
 			containerPort: []nat.PortBinding{{HostIP: "", HostPort: cfg.Port}},
 		},
 	}
 
-	containerName := fmt.Sprintf("%s-%s", common.KN_WORKFLOW_DEV_CONTAINER, docker.RandString())
+	containerName := fmt.Sprintf("%s-%s", metadata.KN_WORKFLOW_DEV_CONTAINER, docker.RandString())
 	devContainer, err := dockerCli.ContainerCreate(ctx, containerConfig, containerHostConfig, nil, nil, containerName)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a developement container")

@@ -191,28 +191,27 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
             >
               As Table
             </DropdownItem>,
-            <>
+            <React.Fragment key={"dmn-runner-inputs"}>
               <Divider />
               <DropdownItem
-                key={"delete-inputs"}
                 component={"button"}
                 icon={<DownloadIcon />}
                 onClick={() => handleDmnRunnerInputsDownload()}
               >
                 Download inputs
               </DropdownItem>
-            </>,
+            </React.Fragment>,
             <DropdownItem
-              key={"delete-inputs"}
+              key={"dmn-runner--upload-inputs"}
               component={"button"}
               icon={<UploadIcon />}
               onClick={() => uploadDmnRunnerInputsRef.current?.click()}
             >
               Load inputs
             </DropdownItem>,
-            <>
+            <React.Fragment key={"dmn-runner--delete-inputs"}>
               <Divider />
-              <DropdownItem key={"delete-inputs"} component={"button"} style={{ padding: "4px" }}>
+              <DropdownItem component={"button"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
                   onDelete={() => workspacesDmnRunner.deletePersistedInputRows(props.workspaceFile)}
                   item={`Delete DMN Runner inputs`}
@@ -220,7 +219,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                   isHoverable={false}
                 />
               </DropdownItem>
-            </>,
+            </React.Fragment>,
           ]}
         />
       </FeatureDependentOnKieSandboxExtendedServices>

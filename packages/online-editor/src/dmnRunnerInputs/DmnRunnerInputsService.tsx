@@ -15,14 +15,16 @@
  */
 
 import { join } from "path";
-import { StorageFile, StorageService } from "../workspace/services/StorageService";
-import { FsCache } from "../workspace/services/FsCache";
-import { encoder, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
+import { LfsFsCache } from "../workspace/lfs/LfsFsCache";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
 import { InputRow } from "@kie-tools/form-dmn";
+import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
 
 export class DmnRunnerInputsService {
-  constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
+  private readonly storageService = new LfsStorageService();
+  private readonly fsCache = new LfsFsCache();
 
   public getDmnRunnerInputsFs(workspaceId: string) {
     return this.fsCache.getOrCreateFs(this.getDmnRunnerInputsStoreName(workspaceId));
@@ -48,7 +50,7 @@ export class DmnRunnerInputsService {
 
     await this.storageService.createOrOverwriteFile(
       await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      new StorageFile({
+      new LfsStorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(emptyDmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
       })
@@ -69,7 +71,7 @@ export class DmnRunnerInputsService {
   public async createOrOverwriteDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string) {
     await this.storageService.createOrOverwriteFile(
       this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      new StorageFile({
+      new LfsStorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
       })
@@ -90,7 +92,7 @@ export class DmnRunnerInputsService {
   public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string): Promise<void> {
     await this.storageService.updateFile(
       await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      new StorageFile({
+      new LfsStorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
       })

@@ -85,7 +85,7 @@ func runCreate(cmd *cobra.Command, args []string) (err error) {
 		return fmt.Errorf("Description: %w", err)
 	}
 
-	workflowPath := fmt.Sprintf("./%s/%s", name, common.WORKFLOW_SW_JSON)
+	workflowPath := fmt.Sprintf("./%s/%s", name, metadata.WORKFLOW_SW_JSON)
 	if err = CreateWorkflow(workflowPath); err != nil {
 		fmt.Println("ERROR: creating workflow file")
 		return fmt.Errorf("Description: %w", err)

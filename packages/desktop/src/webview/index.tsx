@@ -17,6 +17,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as electron from "electron";
+import "@patternfly/react-core/dist/styles/base.css";
 import { App } from "./App";
 
 document.addEventListener("DOMContentLoaded", () => {

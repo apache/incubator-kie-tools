@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { basename, dirname, extname, join, relative, resolve } from "path";
+import { basename, dirname, extname, join, relative } from "path";
+import { EmscriptenFs, KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { FsSchema } from "./FsCache";
 
-export class EagerStorageFile {
-  constructor(private readonly args: { path: string; content: Uint8Array }) {}
-
-  get path() {
-    return this.args.path;
-  }
-
-  get content() {
-    return this.args.content;
-  }
-}
+// comes from fsMain.fs
+declare let FS: EmscriptenFs;
 
 export class StorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
@@ -42,7 +34,7 @@ export class StorageFile {
 }
 
 export class StorageService {
-  public async createOrOverwriteFile(fs: KieSandboxFs, file: StorageFile) {
+  public async createOrOverwriteFile(fs: KieSandboxWorkspacesFs, file: StorageFile) {
     const contents = await file.getFileContents();
     try {
       await fs.promises.writeFile(file.path, contents);
@@ -52,36 +44,24 @@ export class StorageService {
     }
   }
 
-  public async createFiles(fs: KieSandboxFs, files: StorageFile[]) {
-    if (!fs.promises.writeFileBulk) {
-      throw new Error("Can't write bulk");
+  public async updateFile(
+    fs: KieSandboxWorkspacesFs,
+    path: string,
+    getFileContents: () => Promise<Uint8Array>
+  ): Promise<void> {
+    if (!(await this.exists(fs, path))) {
+      throw new Error(`File ${path} does not exist`);
     }
 
-    for (const file of files) {
-      await this.mkdirDeep(fs, dirname(file.path));
-    }
-
-    const filesArray = await Promise.all(
-      files.map(async (f) => [f.path, await f.getFileContents()] as [string, Uint8Array])
-    );
-
-    await fs.promises.writeFileBulk(filesArray);
+    const content = await getFileContents();
+    await fs.promises.writeFile(path, content);
   }
 
-  public async updateFile(fs: KieSandboxFs, file: StorageFile): Promise<void> {
-    if (!(await this.exists(fs, file.path))) {
-      throw new Error(`File ${file.path} does not exist`);
-    }
-
-    const content = await file.getFileContents();
-    await fs.promises.writeFile(file.path, content);
-  }
-
-  public async deleteFile(fs: KieSandboxFs, path: string): Promise<void> {
+  public async deleteFile(fs: KieSandboxWorkspacesFs, path: string): Promise<void> {
     await fs.promises.unlink(path);
   }
 
-  public async renameFile(fs: KieSandboxFs, file: StorageFile, newFileName: string): Promise<StorageFile> {
+  public async renameFile(fs: KieSandboxWorkspacesFs, file: StorageFile, newFileName: string): Promise<StorageFile> {
     if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -98,14 +78,15 @@ export class StorageService {
 
     const newFile = new StorageFile({
       path: newPath,
-      getFileContents: file.getFileContents,
+      getFileContents: () => this.getFileContent(fs, newPath),
     });
+
     await fs.promises.rename(file.path, newFile.path);
 
     return newFile;
   }
 
-  public async moveFile(fs: KieSandboxFs, file: StorageFile, newDirPath: string): Promise<StorageFile> {
+  public async moveFile(fs: KieSandboxWorkspacesFs, file: StorageFile, newDirPath: string): Promise<StorageFile> {
     if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -121,7 +102,11 @@ export class StorageService {
     return newFile;
   }
 
-  public async moveFiles(fs: KieSandboxFs, files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
+  public async moveFiles(
+    fs: KieSandboxWorkspacesFs,
+    files: StorageFile[],
+    newDirPath: string
+  ): Promise<Map<string, string>> {
     const paths = new Map<string, string>();
     for (const fileToMove of files) {
       const movedFile = await this.moveFile(fs, fileToMove, newDirPath);
@@ -130,32 +115,26 @@ export class StorageService {
     return paths;
   }
 
-  public async getFile(fs: KieSandboxFs, path: string): Promise<StorageFile | undefined> {
+  public async getFileContent(fs: KieSandboxWorkspacesFs, path: string): Promise<Uint8Array> {
+    if (!(await this.exists(fs, path))) {
+      throw new Error(`File '${path}' doesn't exist`);
+    }
+
+    return (await fs.promises.readFile(path)) as Uint8Array;
+  }
+
+  public async getFile(fs: KieSandboxWorkspacesFs, path: string): Promise<StorageFile | undefined> {
     if (!(await this.exists(fs, path))) {
       return;
     }
 
     return new StorageFile({
       path,
-      getFileContents: () => fs.promises.readFile(path),
+      getFileContents: () => fs.promises.readFile(path) as Promise<Uint8Array>,
     });
   }
 
-  public async getFiles(fs: KieSandboxFs, paths: string[]): Promise<EagerStorageFile[]> {
-    if (!fs.promises.readFileBulk) {
-      throw new Error("Can't read bulk");
-    }
-
-    const files = await fs.promises.readFileBulk(paths);
-    return files.map(([path, content]) => {
-      return new EagerStorageFile({
-        path,
-        content,
-      });
-    });
-  }
-
-  async mkdirDeep(fs: KieSandboxFs, dirPath: string, _selfCall = false) {
+  async mkdirDeep(fs: KieSandboxWorkspacesFs, dirPath: string, _selfCall = false) {
     try {
       await fs.promises.mkdir(dirPath);
       return;
@@ -191,7 +170,7 @@ export class StorageService {
     }
   }
 
-  public async exists(fs: KieSandboxFs, path: string): Promise<boolean> {
+  public async exists(fs: KieSandboxWorkspacesFs, path: string): Promise<boolean> {
     try {
       await fs.promises.stat(path);
       return true;
@@ -206,41 +185,27 @@ export class StorageService {
   }
 
   public async walk<T = string>(args: {
-    fs: KieSandboxFs;
-    startFromDirPath: string;
-    shouldExcludeDir: (dirPath: string) => boolean;
+    schema: FsSchema;
+    baseAbsolutePath: string;
+    shouldExcludeAbsolutePath: (dirPath: string) => boolean;
     onVisit: (args: { absolutePath: string; relativePath: string }) => Promise<T | undefined>;
-    originalStartingDirPath?: string;
   }): Promise<T[]> {
-    const subDirPaths = await args.fs.promises.readdir(args.startFromDirPath);
     const files = await Promise.all(
-      subDirPaths.map(async (subDirPath) => {
-        const absolutePath = resolve(args.startFromDirPath, subDirPath);
-        const relativePath = relative(args.originalStartingDirPath ?? args.startFromDirPath, absolutePath);
-        return !(await args.fs.promises.stat(absolutePath)).isDirectory()
-          ? args.onVisit({ absolutePath, relativePath })
-          : args.shouldExcludeDir(absolutePath)
-          ? []
-          : this.walk({
-              fs: args.fs,
-              startFromDirPath: absolutePath,
-              shouldExcludeDir: args.shouldExcludeDir,
-              onVisit: args.onVisit,
-              originalStartingDirPath: args.originalStartingDirPath ?? args.startFromDirPath,
-            });
+      [...args.schema.entries()].flatMap(async ([absolutePath, { ino, mode }]) => {
+        if (FS.isDir(mode)) {
+          return [];
+        }
+
+        if (args.shouldExcludeAbsolutePath(absolutePath)) {
+          return [];
+        }
+
+        const relativePath = relative(args.baseAbsolutePath, absolutePath);
+        const visit = await args.onVisit({ absolutePath, relativePath });
+        return visit ? [visit] : [];
       })
     );
 
-    return files.reduce((paths: T[], path) => {
-      return path ? paths.concat(path) : paths;
-    }, []) as T[];
-  }
-
-  async deleteFiles(fs: KieSandboxFs, paths: string[]) {
-    if (!fs.promises.unlinkBulk) {
-      throw new Error("Can't unlink bulk");
-    }
-
-    await fs.promises.unlinkBulk(paths);
+    return files.reduce((res: T[], acc) => (acc ? res.concat(acc) : res), []) as T[];
   }
 }

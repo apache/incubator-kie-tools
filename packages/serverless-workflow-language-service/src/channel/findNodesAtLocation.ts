@@ -16,15 +16,34 @@
 
 import { SwfLsNode } from "./types";
 
+export interface FindNodesAtLocationArgs {
+  /**
+   * root node
+   */
+  root: SwfLsNode | undefined;
+
+  /**
+   * the location of the node to search
+   */
+  path: any;
+
+  /**
+   * true to include uncomplete properties. eg: { parent: { child: }}
+   */
+  includeUncompleteProps?: boolean;
+}
+
 /**
  * This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
  * This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
  *
- * @param root root node
- * @param path the location of the node to search
  * @returns an array of nodes matching the path, empty array if no matches
  */
-export function findNodesAtLocation(root: SwfLsNode | undefined, path: any): SwfLsNode[] {
+export function findNodesAtLocation({
+  root,
+  path,
+  includeUncompleteProps = false,
+}: FindNodesAtLocationArgs): SwfLsNode[] {
   if (!root) {
     return [];
   }
@@ -56,8 +75,12 @@ export function findNodesAtLocation(root: SwfLsNode | undefined, path: any): Swf
 
         for (const prop of n.children) {
           if (Array.isArray(prop.children) && prop.children[0].value === segment) {
-            // if prop.children[1] doesn't exist, return prop.children[0].parent to have the same value of findNodeAtOffset()
-            return [prop.children[1] || prop.children[0].parent];
+            if (prop.children.length === 2) {
+              return [prop.children[1]];
+            }
+            if (includeUncompleteProps) {
+              return [prop];
+            }
           }
         }
 

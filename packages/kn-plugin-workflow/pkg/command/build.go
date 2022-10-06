@@ -197,14 +197,14 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			Dir:  docker.GetDockerfilePath(cfg.DependenciesVersion),
 		},
 	}))
-	outputFolder := filepath.Join(cfg.Path, common.WORKFLOW_OUTPUT_FOLDER)
+	outputFolder := filepath.Join(cfg.Path, metadata.WORKFLOW_OUTPUT_FOLDER)
 	session.Allow(filesync.NewFSSyncTargetDir(outputFolder))
 
 	// creates a new errgroup
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return session.Run(context.TODO(), func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
-			return dockerCli.DialHijack(ctx, common.DOCKER_SESSION_PATH, proto, meta)
+			return dockerCli.DialHijack(ctx, metadata.DOCKER_SESSION_PATH, proto, meta)
 		})
 	})
 
@@ -216,7 +216,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 
 	commomImageBuildOptions := types.ImageBuildOptions{
 		SessionID:  session.ID(),
-		Dockerfile: common.WORKFLOW_DOCKERFILE,
+		Dockerfile: metadata.WORKFLOW_DOCKERFILE,
 		BuildArgs:  buildArgs,
 		Version:    types.BuilderBuildKit,
 	}
@@ -225,7 +225,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		defer session.Close()
 
 		outputBuildOptions := types.ImageBuildOptions{
-			Target: common.DOCKER_BUILD_STAGE_OUTPUT,
+			Target: metadata.DOCKER_BUILD_STAGE_OUTPUT,
 			Outputs: []types.ImageBuildOutput{{
 				Type:  "local",
 				Attrs: map[string]string{},
@@ -241,7 +241,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 
 		runnerBuildOptions := types.ImageBuildOptions{
 			Tags:   []string{imageName},
-			Target: common.DOCKER_BUILD_STAGE_RUNNER,
+			Target: metadata.DOCKER_BUILD_STAGE_RUNNER,
 			Labels: getCmdBuildLabels(),
 		}
 		mergo.Merge(&runnerBuildOptions, commomImageBuildOptions)

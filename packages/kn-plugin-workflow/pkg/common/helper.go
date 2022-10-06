@@ -17,6 +17,7 @@
 package common
 
 import (
+	"bufio"
 	"fmt"
 	"html/template"
 	"os"
@@ -24,6 +25,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +38,17 @@ func RunCommand(command *exec.Cmd, commandName string) error {
 		return err
 	}
 
-	VerboseLog(stdout, stderr)
+	stdoutScanner := bufio.NewScanner(stdout)
+	for stdoutScanner.Scan() {
+		m := stdoutScanner.Text()
+		fmt.Println(m)
+	}
+
+	stderrScanner := bufio.NewScanner(stderr)
+	for stderrScanner.Scan() {
+		m := stderrScanner.Text()
+		fmt.Println(m)
+	}
 
 	if err := command.Wait(); err != nil {
 		fmt.Printf("ERROR: something went wrong during command \"%s\"\n", commandName)
@@ -117,7 +129,7 @@ func GetImageConfig(image string, registry string, repository string, imageName 
 		resultantName = imageArray[2]
 	}
 
-	var resultantTag = DEFAULT_TAG
+	var resultantTag = metadata.DEFAULT_TAG
 	if len(tag) > 0 {
 		resultantTag = tag
 	} else if len(imageTagArray) > 1 && len(imageTagArray[1]) > 0 {
