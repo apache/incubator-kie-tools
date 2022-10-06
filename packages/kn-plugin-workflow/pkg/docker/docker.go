@@ -35,6 +35,7 @@ import (
 	"time"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
@@ -175,6 +176,7 @@ func BuildDockerImage(
 	dependenciesVersion metadata.DependenciesVersion,
 	dockerCli client.CommonAPIClient,
 	imageBuildOptions types.ImageBuildOptions,
+	choosenPath string,
 ) (err error) {
 	// creates a tar with the Dockerfile and the workflow.sw.json
 	buf := new(bytes.Buffer)
@@ -203,7 +205,7 @@ func BuildDockerImage(
 	}
 
 	// adds workflow.sw.json
-	err = addFileToTar(tw, filepath.Join(currentPath, common.WORKFLOW_SW_JSON), common.WORKFLOW_SW_JSON)
+	err = addFileToTar(tw, filepath.Join(currentPath, choosenPath, common.WORKFLOW_SW_JSON), common.WORKFLOW_SW_JSON)
 	if err != nil {
 		return
 	}
@@ -306,4 +308,14 @@ func RandString() string {
 	h.Write([]byte(string))
 	hash := hex.EncodeToString(h.Sum(nil))
 	return hash[:6]
+}
+
+func GetCmdLabel() map[string]string {
+	return map[string]string{"from": common.KN_WORKFLOW_NAME}
+}
+
+func GetFilter() filters.Args {
+	filter := filters.NewArgs()
+	filter.Add("label", fmt.Sprintf("from=%s", common.KN_WORKFLOW_NAME))
+	return filter
 }

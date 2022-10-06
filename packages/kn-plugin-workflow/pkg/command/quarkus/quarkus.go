@@ -30,9 +30,8 @@ const (
 func NewQuarkusCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:        "quarkus",
-		Short:      "Manage Kogito Serverless Workflow projects",
-		Long:       ``,
-		Example:    ``,
+		Short:      "Manage Kogito Serverless Workflow built in Quarkus projects",
+		Long:       `Manage Kogito Serverless Workflow built in Quarkus projects`,
 		SuggestFor: []string{"quaks", "qarkus"},
 		PreRunE:    common.BindEnv(""),
 	}

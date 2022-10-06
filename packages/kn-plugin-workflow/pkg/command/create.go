@@ -35,10 +35,23 @@ type CreateCmdConfig struct {
 
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:        "create",
-		Short:      "Create a workflow project",
-		Long:       ``,
-		Example:    ``,
+		Use:   "create",
+		Short: "Creates a new single file Workflow project",
+		Long: `
+	Creates a Workflow file in the specified directory (new-project is the default).
+	It creates a Dockerfile.workflow in your temp folder to be used by the "dev" and "build" commands.
+	If you with to delete it, you can use the kn workflow prune command.
+	The generated project has a "hello world" workflow.sw.json located on the
+	./<project-name>/ directory.
+		`,
+		Example: `
+	# Create a project in the local directory
+	# By default the project is named "new-project"
+	{{.Name}} create
+
+	# Create a project with an specfic name
+	{{.Name}} create --name myproject
+		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
 		PreRunE:    common.BindEnv("name", "quarkus-platform-group-id", "quarkus-version"),
 	}

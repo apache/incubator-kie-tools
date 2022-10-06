@@ -24,6 +24,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -46,15 +47,34 @@ type DevCmdConfig struct {
 func NewDevCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "dev",
-		Short: "Run a workflow project in development mode",
-		Long:  ``,
-		Example: `
+		Short: "Build and run a workflow project in development mode",
+		Long: `
+	Builds a single file Workflow project in development mode in the current directory 
+	resulting in a container image and a running container.  
+	The resultant container image will have dev.local/kn-workflow-development name. Only the
+	tag can bem changed with the --tag flag. By default the used port is the 8080, but
+	it can be changed with the --port flag.
 
-If you wish, you can run the development container using Docker directly:
-	docker container run -it \
-	--mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/src/main/resources \
-	-p 8080:8080 dev.local/kn-plugin-workflow:dev
+	Also, it's possible to skip the build or start container step by using the --build=false
+	or --run=false repectivaly.
 `,
+		Example: `
+	# Build from the local directory and start the development container
+	{{.Name}} dev
+	
+	# Build from the local directory, and change the port of the application
+	{{.Name}} dev --port 7589
+	
+	# Build from the local directory, and change the tag of the resultant image
+	# Results in a dev.local/kn-workflow-development:my-test
+	{{.Name}} dev --tag my-test
+	
+	# Build from the local directory, adding extensions to the development application 
+	{{.Name}} dev --extension quarkus-jsonp,quarkus-smallrye-openapi
+
+	# Start the development container and skip the build
+	{{.Name}} dev --build=false
+	`,
 		SuggestFor: []string{"dve", "start"},
 		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "port", "quarkus-platform-group-id", "quarkus-version"),
 	}
@@ -170,7 +190,8 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 			Version:    types.BuilderBuildKit,
 			Tags:       []string{common.GetImage(registry, repository, name, tag)},
 			Target:     common.DOCKER_BUILD_STAGE_DEV,
-		}); err != nil {
+			Labels:     getCmdDevLabels(),
+		}, "."); err != nil {
 			fmt.Println("ERROR: generating development image")
 			return err
 		}
@@ -204,6 +225,7 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		ExposedPorts: nat.PortSet{
 			containerPort: struct{}{},
 		},
+		Labels: getCmdDevLabels(),
 	}
 
 	currentPath, err := common.GetCurrentPath()
@@ -243,4 +265,16 @@ docker container stop %s
 
 `, containerName)
 	return
+}
+
+func getCmdDevLabels() map[string]string {
+	label := docker.GetCmdLabel()
+	label["type"] = "dev"
+	return label
+}
+
+func GetDevFilter() filters.Args {
+	filter := docker.GetFilter()
+	filter.Add("label", "type=dev")
+	return filter
 }

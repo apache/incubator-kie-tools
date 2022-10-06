@@ -39,7 +39,7 @@ type PruneCmdConfig struct {
 	DevContainers bool
 	DevImages     bool
 	Dev           bool
-	BaseImages    bool
+	RunnerImages  bool
 	TempFiles     bool
 	All           bool
 }
@@ -47,22 +47,29 @@ type PruneCmdConfig struct {
 func NewPruneCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "prune",
-		Short: "Deletes temporary files",
+		Short: "Prune temporary files, containers and images",
 		Long: `
-Deletes files located in the temporary folder.
+Deletes files located in the temporary folder, running containers and images.
 		  `,
 		Example: `
-# Deletes all files located in the temporary folder
-{{.Name}} prune
+# Deletes all files located in the temporary folder.
+{{.Name}} prune --temp-files
+
+# Deletes all development container images. If you have a container using the image, it will not be possible to remove the image.
+# You should stop and remove the container or you can use the --dev-containers or --dev flag.
+{{.Name}} prune --dev-images
+
+# Deletes all files located in the temporary folder.
+{{.Name}} prune --all
 		  `,
 		SuggestFor: []string{"prnue", "prneu"},
-		PreRunE:    common.BindEnv("dev-containers", "dev-images", "dev", "base-images", "temp-files", "all"),
+		PreRunE:    common.BindEnv("dev-containers", "dev-images", "dev", "runner-images", "temp-files", "all"),
 	}
 
 	cmd.Flags().BoolP("dev-containers", "", false, "Stop and delete all development containers.")
 	cmd.Flags().BoolP("dev-images", "", false, "Delete all development images.")
 	cmd.Flags().BoolP("dev", "", false, "Delete all development container and images.")
-	cmd.Flags().BoolP("base-images", "", false, "Delete all base images.")
+	cmd.Flags().BoolP("runner-images", "", false, "Delete all runner images.")
 	cmd.Flags().BoolP("temp-files", "", false, "Delete all temporary files.")
 	cmd.Flags().BoolP("all", "", false, "Delete all")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
@@ -82,7 +89,7 @@ func runPruneConfig(cmd *cobra.Command) (cfg PruneCmdConfig, err error) {
 		DevContainers: viper.GetBool("dev-containers"),
 		DevImages:     viper.GetBool("dev-images"),
 		Dev:           viper.GetBool("dev"),
-		BaseImages:    viper.GetBool("base-images"),
+		RunnerImages:  viper.GetBool("runner-images"),
 		TempFiles:     viper.GetBool("temp-files"),
 		All:           viper.GetBool("all"),
 	}
@@ -124,7 +131,7 @@ func runPrune(cmd *cobra.Command) (err error) {
 		}
 	}
 
-	if cfg.All || cfg.Dev || cfg.DevContainers || cfg.DevImages || cfg.BaseImages {
+	if cfg.All || cfg.Dev || cfg.DevContainers || cfg.DevImages || cfg.RunnerImages {
 		ctx := cmd.Context()
 		dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 		if err != nil {
@@ -133,9 +140,7 @@ func runPrune(cmd *cobra.Command) (err error) {
 
 		if cfg.All || cfg.Dev || cfg.DevContainers {
 			fmt.Println("- Stopping development containers")
-			filter := filters.NewArgs()
-			filter.Add("name", common.KN_WORKFLOW_DEV_CONTAINER)
-			containers, err := dockerCli.ContainerList(ctx, types.ContainerListOptions{Filters: filter, All: true})
+			containers, err := dockerCli.ContainerList(ctx, types.ContainerListOptions{Filters: GetDevFilter(), All: true})
 			if err != nil {
 				return err
 			}
@@ -166,14 +171,14 @@ func runPrune(cmd *cobra.Command) (err error) {
 
 		if cfg.All || cfg.Dev || cfg.DevImages {
 			fmt.Println("- Removing development images")
-			if err := removeDockerImages(ctx, dockerCli, common.KN_WORKFLOW_DEV_IMAGE); err != nil {
+			if err := removeDockerImages(ctx, dockerCli, GetDevFilter()); err != nil {
 				return err
 			}
 		}
 
-		if cfg.All || cfg.BaseImages {
-			fmt.Println("- Removing base images")
-			if err := removeDockerImages(ctx, dockerCli, common.KN_WORKFLOW_BASE_IMAGE); err != nil {
+		if cfg.All || cfg.RunnerImages {
+			fmt.Println("- Removing runner images")
+			if err := removeDockerImages(ctx, dockerCli, GetBuildFilter()); err != nil {
 				return err
 			}
 		}
@@ -195,9 +200,7 @@ func confirm(s string) bool {
 	return strings.ToLower(strings.TrimSpace(res))[0] == 'y'
 }
 
-func removeDockerImages(ctx context.Context, dockerCli *client.Client, imageName string) (err error) {
-	filter := filters.NewArgs()
-	filter.Add("reference", imageName)
+func removeDockerImages(ctx context.Context, dockerCli *client.Client, filter filters.Args) (err error) {
 	images, err := dockerCli.ImageList(ctx, types.ImageListOptions{Filters: filter})
 	if err != nil {
 		return err

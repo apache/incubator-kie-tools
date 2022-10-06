@@ -34,10 +34,25 @@ type DeployCmdConfig struct {
 
 func NewDeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:        "deploy",
-		Short:      "Deploy a workflow project",
-		Long:       ``,
-		Example:    ``,
+		Use:   "deploy",
+		Short: "Deploy a Workflow project",
+		Long: `
+	Deploys a Kogito Serverless Workflow project in the current directory. 
+	By default, this command uses the ./kubernetes folder to find
+	the deployment files generated in the build process. The build step
+	is required before using the deploy command.
+
+	Before you use the deploy command, ensure that your cluster have 
+	access to the build output image.
+		`,
+		Example: `
+	# Deploy the workflow from the current directory's project. 
+	# Deploy as Knative service.
+	{{.Name}} deploy
+	
+	# Specify the path of the directory containing the "knative.yml" 
+	{{.Name}} deploy --path ./kubernetes
+		`,
 		SuggestFor: []string{"delpoy", "deplyo"},
 		PreRunE:    common.BindEnv("path"),
 	}
