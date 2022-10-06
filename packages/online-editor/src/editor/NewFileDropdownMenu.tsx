@@ -201,6 +201,7 @@ export function NewFileDropdownMenu(props: {
 
   return (
     <Menu
+      tabIndex={1}
       style={{ boxShadow: "none", minWidth: "400px" }}
       id="addFileRootMenu"
       containsDrilldown={true}
@@ -293,7 +294,7 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"importFromUrlMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
-                <MenuInput>
+                <MenuInput onKeyDown={(e) => e.stopPropagation()}>
                   <ImportFromUrlForm
                     importingError={importingError}
                     allowedTypes={[UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE]}

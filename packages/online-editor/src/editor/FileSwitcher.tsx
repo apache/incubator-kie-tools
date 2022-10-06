@@ -229,7 +229,11 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
 
   return (
     <>
-      <Flex alignItems={{ default: "alignItemsCenter" }} flexWrap={{ default: "nowrap" }}>
+      <Flex
+        alignItems={{ default: "alignItemsCenter" }}
+        flexWrap={{ default: "nowrap" }}
+        className={"kie-sandbox--file-switcher"}
+      >
         <FlexItem style={{ display: "flex", alignItems: "baseline", minWidth: 0 }}>
           <Dropdown
             style={{ position: "relative" }}
@@ -331,16 +335,8 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
             <Menu
               style={{
                 boxShadow: "none",
-                minWidth:
-                  activeMenu === ROOT_MENU_ID
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
-                    : filesDropdownMode === FilesDropdownMode.CAROUSEL
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
-                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
-                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2}px`
-                    : "",
+                minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`,
+                maxWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`,
               }}
               id={ROOT_MENU_ID}
               containsDrilldown={true}
@@ -584,7 +580,7 @@ export function SearchableFilesMenuGroup(props: {
 
   return (
     <MenuGroup label={props.label}>
-      <MenuInput>
+      <MenuInput onKeyDown={(e) => e.stopPropagation()}>
         <TextInput
           ref={searchInputRef}
           value={props.search}

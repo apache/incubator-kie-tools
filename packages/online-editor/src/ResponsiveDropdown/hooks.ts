@@ -3,7 +3,7 @@ import {
   Breakpoint,
   RelationToBreakpoint,
   responsiveBreakpoints,
-} from "../../responsiveBreakpoints/ResponsiveBreakpoints";
+} from "../responsiveBreakpoints/ResponsiveBreakpoints";
 
 function debounce(func: (...args: any) => any, timeout: number) {
   let ready = true;

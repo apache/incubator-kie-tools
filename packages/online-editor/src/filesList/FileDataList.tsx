@@ -116,7 +116,7 @@ export function FileDataList(props: { file: WorkspaceFile; isEditable: boolean; 
   );
 }
 
-export function FileLink(props: React.PropsWithChildren<{ file: WorkspaceFile }>) {
+export function FileLink(props: React.PropsWithChildren<{ file: WorkspaceFile; style?: React.CSSProperties }>) {
   const routes = useRoutes();
   return (
     <Link
@@ -126,6 +126,7 @@ export function FileLink(props: React.PropsWithChildren<{ file: WorkspaceFile }>
         fileRelativePath: props.file.relativePathWithoutExtension,
         extension: props.file.extension,
       })}
+      style={props.style}
     >
       {props.children}
     </Link>

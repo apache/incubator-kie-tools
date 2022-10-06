@@ -15,17 +15,12 @@
  */
 
 import React from "react";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownProps,
-  DropdownSeparator,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownProps } from "@patternfly/react-core/dist/js/components/Dropdown";
 
 import { useWindowSizeRelationToBreakpoint } from "./hooks";
 import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";
 import { ResponsiveDropdownModal } from "./ResponsiveDropdownModal";
-import { Breakpoint, RelationToBreakpoint } from "../../responsiveBreakpoints/ResponsiveBreakpoints";
+import { Breakpoint, RelationToBreakpoint } from "../responsiveBreakpoints/ResponsiveBreakpoints";
 
 export interface ResponsiveDropdownProps extends DropdownProps {
   /** Array of nodes that will be rendered in the dropdown Menu list */
@@ -35,7 +30,7 @@ export interface ResponsiveDropdownProps extends DropdownProps {
   /** Function callback to close the dropdown */
   onClose?: () => void;
   /** Dropdown/Modal title */
-  title: string;
+  title?: string;
 }
 
 export function ResponsiveDropdown(props: ResponsiveDropdownProps) {
@@ -46,21 +41,12 @@ export function ResponsiveDropdown(props: ResponsiveDropdownProps) {
       {isModal ? (
         <>
           {props.toggle}
-          <ResponsiveDropdownModal isOpen={props.isOpen} onClose={() => props.onClose?.()} title={props.title}>
+          <ResponsiveDropdownModal isOpen={props.isOpen} onClose={props.onClose} title={props.title}>
             <Dropdown {...props} isOpen={true} isFullHeight={true} toggle={<></>} style={{ width: "100%" }} />
           </ResponsiveDropdownModal>
         </>
       ) : (
-        <Dropdown
-          {...props}
-          dropdownItems={[
-            <DropdownItem isDisabled key="responsive-dropdown-title">
-              {props.title}
-            </DropdownItem>,
-            <DropdownSeparator key="responsive-dropdown-separator" />,
-            props.dropdownItems,
-          ]}
-        />
+        <Dropdown {...props} />
       )}
     </ResponsiveDropdownContext.Provider>
   );
