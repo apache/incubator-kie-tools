@@ -60,5 +60,5 @@ export interface CodeCompletionStrategy {
   formatLabel(label: string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;
   getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined;
-  shouldCreateCodelens(_args: ShouldCreateCodelensArgs): boolean;
+  shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean;
 }
