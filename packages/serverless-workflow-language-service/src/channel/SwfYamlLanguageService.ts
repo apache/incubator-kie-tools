@@ -50,6 +50,10 @@ export class SwfYamlLanguageService {
   }
 
   parseContent(content: string): SwfLsNode | undefined {
+    if (!content.trim()) {
+      return;
+    }
+
     const ast = load(content);
 
     // check if the yaml is not valid

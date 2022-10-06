@@ -18,14 +18,15 @@ import {
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat, Position } from "vscode-languageserver-types";
+import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
 import {
   defaultConfig,
   defaultServiceCatalogConfig,
   testRelativeFunction1,
   testRelativeService1,
 } from "./SwfLanguageServiceConfigs";
-import { codeCompletionTester, getStartNodeValuePositionTester, trim } from "./testUtils";
+import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, trim } from "./testUtils";
 
 const documentUri = "test.sw.json";
 
@@ -394,6 +395,40 @@ describe("SWF LS JSON", () => {
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+    });
+
+    describe("empty file completion", () => {
+      test.each([
+        ["empty object", `{🎯}`],
+        ["empty object / with cursor before the object", `🎯{}`],
+        ["empty object / with cursor after the object", `{}🎯`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems).toHaveLength(0);
+      });
+
+      test.each([
+        ["total empty file", `🎯`],
+        ["empty file with a newline before the cursor", `\n🎯`],
+        ["empty file with a newline after the cursor", `🎯\n`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+        let completionPosition = Position.create(0, 0);
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Reference,
+          label: "Create your first Serverless Workflow",
+          detail: "Start with a simple Serverless Workflow",
+          textEdit: {
+            range: { start: completionPosition, end: completionPosition },
+            newText: JSON.stringify(simpleTemplate),
+          },
+          insertTextFormat: InsertTextFormat.Snippet,
+        } as CompletionItem);
+      });
     });
 
     describe("function completion", () => {
