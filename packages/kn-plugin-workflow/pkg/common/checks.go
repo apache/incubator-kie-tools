@@ -54,7 +54,7 @@ func checkJava() error {
 	if userJavaVersion < metadata.JAVA_VERSION {
 		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", metadata.JAVA_VERSION)
 		fmt.Println("Installation stopped. Please upgrade Java and run again")
-		os.Exit(1)
+		return fmt.Errorf("incompatible Java version")
 	} else {
 		fmt.Println(" - Java version check.")
 	}
@@ -67,7 +67,7 @@ func checkMaven() error {
 	if err != nil {
 		fmt.Println("ERROR: Maven not found")
 		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", metadata.MAVEN_MAJOR_VERSION, metadata.MAVEN_MINOR_VERSION)
-		return err
+		return fmt.Errorf("incompatible Maven version")
 	}
 	major, minor, err := parseMavenVersion(string(version))
 	if err != nil {
@@ -77,7 +77,7 @@ func checkMaven() error {
 	if major < metadata.MAVEN_MAJOR_VERSION && minor < metadata.MAVEN_MINOR_VERSION {
 		fmt.Printf("ERROR: Please make sure you are using Maven version %d.%d.1 or later", major, minor)
 		fmt.Println("Installation stopped. Please upgrade Maven and run again")
-		os.Exit(1)
+		return fmt.Errorf("incompatible Maven version")
 	} else {
 		fmt.Println(" - Maven version check.")
 	}
@@ -92,7 +92,7 @@ func CheckDocker() error {
 		return err
 	}
 
-	_, err = dockerCli.Info(context.TODO())
+	dockerInfo, err := dockerCli.Info(context.TODO())
 	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
@@ -100,15 +100,24 @@ func CheckDocker() error {
 		return err
 	}
 
-	// splitedServerVersion := strings.Split(info.ServerVersion, ".")
-	// if major, err := strconv.ParseInt(splitedServerVersion[0], 10, 32); major < DOCKER_MAJOR_VERSION || err != nil {
-	// 	fmt.Printf("ERROR: Minimum Docker version is %d.%d\n", DOCKER_MAJOR_VERSION, DOCKER_MINOR_VERSION)
-	// 	return err
-	// }
-	// if minor, err := strconv.ParseInt(splitedServerVersion[1], 10, 32); minor < DOCKER_MINOR_VERSION || err != nil {
-	// 	fmt.Printf("ERROR: Minimum Docker version is %d.%d\n", DOCKER_MAJOR_VERSION, DOCKER_MINOR_VERSION)
-	// 	return err
-	// }
+	splitedServerVersion := strings.Split(dockerInfo.ServerVersion, ".")
+	major, err := strconv.ParseInt(splitedServerVersion[0], 10, 32)
+	if err != nil {
+		return err
+	}
+	if major < metadata.DOCKER_MAJOR_VERSION || err != nil {
+		fmt.Printf("ERROR: Minimum Docker version is %d.%d\n", metadata.DOCKER_MAJOR_VERSION, metadata.DOCKER_MINOR_VERSION)
+		return fmt.Errorf("incompatible Docker version")
+	}
+
+	minor, err := strconv.ParseInt(splitedServerVersion[1], 10, 32)
+	if err != nil {
+		return err
+	}
+	if minor < metadata.DOCKER_MINOR_VERSION {
+		fmt.Printf("ERROR: Minimum Docker version is %d.%d\n", metadata.DOCKER_MAJOR_VERSION, metadata.DOCKER_MINOR_VERSION)
+		return fmt.Errorf("incompatible Docker version")
+	}
 
 	fmt.Println(" - Docker is running")
 	return nil
