@@ -18,11 +18,11 @@ import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { useWorkspaceGitStatusPromise } from "../hooks/WorkspaceHooks";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { WorkspaceKind } from "../model/WorkspaceOrigin";
+import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../hooks/PromiseState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
+import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { usePrevious } from "../../reactExt/Hooks";
@@ -79,19 +79,6 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
     );
   }, [workspaceGitStatusPromise]);
 
-  // // Prevent from closing accidentally
-  // TODO: Enable this via env var.
-  // useEffect(() => {
-  //   if (isEverythingPersistedByTheUser) {
-  //     return;
-  //   }
-  //
-  //   window.onbeforeunload = () => "You have unsaved changes.";
-  //   return () => {
-  //     window.onbeforeunload = null;
-  //   };
-  // }, [props.workspace, isEverythingPersistedByTheUser]);
-
   // Prevent from navigating away
   useNavigationBlocker(
     `block-navigation-for-${props.workspace.descriptor.workspaceId}`,
@@ -103,7 +90,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
           sensitive: false,
           path: routes.workspaceWithFilePath.path({
             workspaceId: ":workspaceId",
-            fileRelativePath: ":fileRelativePath",
+            fileRelativePath: ":fileRelativePath*",
             extension: ":extension",
           }),
         });
@@ -136,7 +123,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
             <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
               <Tooltip content={"Checking status..."} position={"right"}>
                 <small>
-                  <SyncIcon color={"gray"} />
+                  <OutlinedClockIcon color={"gray"} />
                 </small>
               </Tooltip>
             </Title>

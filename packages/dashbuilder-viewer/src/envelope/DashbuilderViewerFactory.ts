@@ -29,6 +29,7 @@ export class DashbuilderViewerFactory implements EditorFactory<Editor, Dashbuild
   constructor(componentsServerUrl?: string) {
     this.componentServerUrl = componentsServerUrl;
   }
+
   public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
     initArgs: EditorInitArgs

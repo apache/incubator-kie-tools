@@ -16,6 +16,7 @@
 
 interface CustomWindow extends Window {
   componentServerUrl: string;
+
   setDashbuilderContent: (content: string) => void;
   dashbuilderReady: () => void;
 }

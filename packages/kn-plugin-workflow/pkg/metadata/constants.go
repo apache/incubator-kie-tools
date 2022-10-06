@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package common
+package metadata
 
 const (
 	QUARKUS_MAVEN_PLUGIN                             = "quarkus-maven-plugin"

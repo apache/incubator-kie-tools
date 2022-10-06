@@ -20,13 +20,3 @@ export function jsonParseWithDate(json: string): object {
     return typeof value === "string" && regexISO.test(value) ? new Date(value) : value;
   });
 }
-
-export function jsonParseWithUrl<T>(json: string): T {
-  return JSON.parse(json, (_key: string, value: any) => {
-    try {
-      return new URL(value);
-    } catch (e) {
-      return value;
-    }
-  }) as T;
-}

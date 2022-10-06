@@ -22,7 +22,8 @@ import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
-describe("Serverless workflow editor - autocompletion tests", () => {
+// KOGITO-8071 - Flaky test - serverless-workflow-editor-extension-autocompletion.test.ts
+describe.skip("Serverless workflow editor - autocompletion tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "autocompletion");
 
   let testHelper: VSCodeTestHelper;

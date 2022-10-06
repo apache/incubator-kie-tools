@@ -59,8 +59,7 @@ module.exports = composeEnv(
         description: "",
       },
       SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: {
-        default:
-          "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
+        default: "https://cors.isomorphic-git.org",
         description: "",
       },
       SERVERLESS_LOGIC_SANDBOX__cypressUrl: {
