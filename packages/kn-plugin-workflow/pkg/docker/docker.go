@@ -84,7 +84,7 @@ RUN echo "WITHOUT ADDITIONAL EXTENSIONS"
 FROM ${extensions}-extensions as builder
 # copy application.properties if exists
 ARG workflow_file
-COPY ${workflow_file} application.propertie[s] ./src/main/resources/
+COPY ${workflow_file} application.propertie[s] spec[s] ./src/main/resources/
 
 # image name
 ARG workflow_name
@@ -279,10 +279,12 @@ func dockerLog(rd io.Reader) error {
 	var lastLine string
 
 	scanner := bufio.NewScanner(rd)
+	fmt.Print("🔨 Loading")
 	for scanner.Scan() {
+		fmt.Print(".")
 		lastLine = scanner.Text()
-		fmt.Println(scanner.Text())
 	}
+	fmt.Print("\n")
 
 	errLine := &ErrorLine{}
 	json.Unmarshal([]byte(lastLine), errLine)
