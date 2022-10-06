@@ -20,7 +20,7 @@ import { SwfLsNode } from "./types";
 import { FileLanguage } from "../api";
 
 /**
- * Detected the format of a node's content.
+ * Detect the format of a node's content.
  * Note: for strings in double quotes and boolean values it's not able to distinguish between JSON and YAML. JSON will be returned in those cases.
  *
  * @param content the content
