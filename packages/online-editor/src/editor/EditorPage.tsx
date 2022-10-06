@@ -357,7 +357,7 @@ export function EditorPage(props: Props) {
         resolved={(file) => (
           <>
             <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-              <Page style={{ minWidth: responsiveBreakpoints.md }}>
+              <Page>
                 <EditorToolbar
                   workspaceFile={file.workspaceFile}
                   editor={editor}

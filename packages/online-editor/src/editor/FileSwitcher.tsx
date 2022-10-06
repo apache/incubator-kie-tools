@@ -333,9 +333,9 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                 boxShadow: "none",
                 minWidth:
                   activeMenu === ROOT_MENU_ID
-                    ? "500px"
+                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
                     : filesDropdownMode === FilesDropdownMode.CAROUSEL
-                    ? "calc(100vw - 16px)"
+                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS
                     ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
@@ -353,6 +353,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
             >
               <MenuContent
                 // MAGIC NUMBER ALERT
+                //
                 // 204px is the exact number that allows the menu to grow to
                 // the maximum size of the screen without adding scroll to the page.
                 maxMenuHeight={`calc(100vh - 204px)`}
@@ -526,7 +527,6 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
 }
 
 export function SearchableFilesMenuGroup(props: {
-  minHeight: string;
   shouldFocusOnSearch: boolean;
   filesDropdownMode: FilesDropdownMode;
   label: string;
@@ -553,6 +553,35 @@ export function SearchableFilesMenuGroup(props: {
     [props.allFiles, props.search]
   );
 
+  const height = useMemo(() => {
+    if (
+      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
+      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+    ) {
+      // No reason to know the exact size.
+      const sizeOfFirst50Elements = props.allFiles
+        .slice(0, 50)
+        .map((f) => getFileDataListHeight(f))
+        .reduce((a, b) => a + b, 0);
+
+      // MAGIC NUMBER ALERT
+      //
+      // 440px is the exact number that allows the menu to grow to the end of the screen without adding scroll  to the
+      // entire page, It includes the first menu item, the search bar and the "View other files" button at the bottom.
+      return `max(300px, min(calc(100vh - 440px), ${sizeOfFirst50Elements}px))`;
+    } else if (props.filesDropdownMode === FilesDropdownMode.CAROUSEL) {
+      // MAGIC NUMBER ALERT
+      //
+      // 384px is the exact number that allows the menu to grow to the end of the screen without
+      // adding a scroll to the entire page. It includes the first menu item and the search bar.
+      //
+      // 280px is the size of a File SVG card.
+      return `min(calc(100vh - 384px), calc(${props.allFiles.length} * 280px))`;
+    } else {
+      return "";
+    }
+  }, [props.allFiles, props.filesDropdownMode]);
+
   return (
     <MenuGroup label={props.label}>
       <MenuInput>
@@ -565,7 +594,7 @@ export function SearchableFilesMenuGroup(props: {
           onChange={(value) => props.setSearch(value)}
         />
       </MenuInput>
-      <div style={{ minHeight: props.minHeight, overflowY: "auto" }}>
+      <div style={{ overflowY: "auto", height }}>
         {filteredFiles.length > 0 && props.children({ filteredFiles })}
         {filteredFiles.length <= 0 && (
           <Bullseye>
@@ -641,7 +670,6 @@ export function FilesMenuItems(props: {
               <SearchableFilesMenuGroup
                 search={search}
                 setSearch={setSearch}
-                minHeight={"500px"}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
                 label={`Models in '${props.workspaceDescriptor.name}'`}
@@ -711,7 +739,6 @@ export function FilesMenuItems(props: {
             <SearchableFilesMenuGroup
               search={search}
               setSearch={setSearch}
-              minHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Other files in '${props.workspaceDescriptor.name}'`}
@@ -751,7 +778,6 @@ export function FilesMenuItems(props: {
             <SearchableFilesMenuGroup
               search={search}
               setSearch={setSearch}
-              minHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Models in '${props.workspaceDescriptor.name}'`}

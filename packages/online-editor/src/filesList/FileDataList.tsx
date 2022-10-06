@@ -34,7 +34,7 @@ import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor
 import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
 
 const FILE_DATA_LIST_HEIGHTS = {
-  atRoot: 53 + 24,
+  atRoot: 55 + 24,
   atSubDir: 74 + 24,
 };
 
