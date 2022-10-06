@@ -96,7 +96,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 
 	create := common.ExecCommand(
 		"mvn",
-		fmt.Sprintf("%s:%s:%s:create", cfg.DependenciesVersion.QuarkusPlatformGroupId, common.QUARKUS_MAVEN_PLUGIN, cfg.DependenciesVersion.QuarkusVersion),
+		fmt.Sprintf("%s:%s:%s:create", cfg.DependenciesVersion.QuarkusPlatformGroupId, metadata.QUARKUS_MAVEN_PLUGIN, cfg.DependenciesVersion.QuarkusVersion),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
 		fmt.Sprintf("-DplatformVersion=%s", cfg.DependenciesVersion.QuarkusVersion),
@@ -112,7 +112,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, common.WORKFLOW_SW_JSON)
+	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, metadata.WORKFLOW_SW_JSON)
 	CreateWorkflow(workflowFilePath)
 
 	finish := time.Since(start)
@@ -128,10 +128,10 @@ func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
 	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
 		Extesions: fmt.Sprintf("%s,%s,%s,%s,%s",
-			common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION,
-			common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION,
-			common.QUARKUS_KUBERNETES_EXTENSION,
-			common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION,
+			metadata.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION,
+			metadata.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION,
+			metadata.QUARKUS_KUBERNETES_EXTENSION,
+			metadata.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION,
 			viper.GetString("extension"),
 		),
 
