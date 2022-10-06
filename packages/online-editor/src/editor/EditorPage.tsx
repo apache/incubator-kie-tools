@@ -46,6 +46,7 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
+import { responsiveBreakpoints } from "../responsiveBreakpoints/ResponsiveBreakpoints";
 
 export interface Props {
   workspaceId: string;
@@ -356,7 +357,7 @@ export function EditorPage(props: Props) {
         resolved={(file) => (
           <>
             <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-              <Page>
+              <Page style={{ minWidth: responsiveBreakpoints.md }}>
                 <EditorToolbar
                   workspaceFile={file.workspaceFile}
                   editor={editor}

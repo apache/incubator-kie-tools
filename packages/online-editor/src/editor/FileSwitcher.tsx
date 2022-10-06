@@ -230,7 +230,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
   return (
     <>
       <Flex alignItems={{ default: "alignItemsCenter" }} flexWrap={{ default: "nowrap" }}>
-        <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
+        <FlexItem style={{ display: "flex", alignItems: "baseline", minWidth: 0 }}>
           <Dropdown
             style={{ position: "relative" }}
             position={"left"}
@@ -257,27 +257,29 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                       <FileLabel extension={props.workspaceFile.extension} />
                     </b>
                   </FlexItem>
-                  <Popover
-                    hasAutoWidth={true}
-                    distance={15}
-                    showClose={false}
-                    shouldClose={() => setPopoverVisible(false)}
-                    hideOnOutsideClick={true}
-                    enableFlip={false}
-                    withFocusTrap={false}
-                    bodyContent={
-                      <>
-                        <FolderIcon />
-                        &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
-                      </>
-                    }
-                    isVisible={isPopoverVisible}
-                    position={"bottom-start"}
-                  >
-                    <FlexItem>
+
+                  <FlexItem style={{ minWidth: 0 }}>
+                    <Popover
+                      hasAutoWidth={true}
+                      distance={15}
+                      showClose={false}
+                      shouldClose={() => setPopoverVisible(false)}
+                      hideOnOutsideClick={true}
+                      enableFlip={false}
+                      withFocusTrap={false}
+                      bodyContent={
+                        <>
+                          <FolderIcon />
+                          &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
+                        </>
+                      }
+                      isVisible={isPopoverVisible}
+                      position={"bottom-start"}
+                    >
                       <div
                         data-testid={"toolbar-title"}
                         className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
+                        style={{ width: "100%" }}
                       >
                         <Title
                           aria-label={"EmbeddedEditorFile name"}
@@ -317,8 +319,8 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                           />
                         </Tooltip>
                       </div>
-                    </FlexItem>
-                  </Popover>
+                    </Popover>
+                  </FlexItem>
                   <FlexItem>
                     <CaretDownIcon />
                   </FlexItem>
@@ -350,7 +352,10 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
               onGetMenuHeight={setHeight}
             >
               <MenuContent
-                maxMenuHeight={"800px"}
+                // MAGIC NUMBER ALERT
+                // 204px is the exact number that allows the menu to grow to
+                // the maximum size of the screen without adding scroll to the page.
+                maxMenuHeight={`calc(100vh - 204px)`}
                 menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
                 style={{ overflow: "hidden" }}
               >

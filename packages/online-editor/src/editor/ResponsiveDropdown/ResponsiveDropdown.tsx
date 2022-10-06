@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Dropdown,
-  DropdownProps,
   DropdownItem,
+  DropdownProps,
   DropdownSeparator,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 
-import { useWindowSizeRelationToBreakpoint, Breakpoint, RelationToBreakpoint } from "./hooks";
+import { useWindowSizeRelationToBreakpoint } from "./hooks";
 import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";
 import { ResponsiveDropdownModal } from "./ResponsiveDropdownModal";
+import { Breakpoint, RelationToBreakpoint } from "../../responsiveBreakpoints/ResponsiveBreakpoints";
 
 export interface ResponsiveDropdownProps extends DropdownProps {
   /** Array of nodes that will be rendered in the dropdown Menu list */

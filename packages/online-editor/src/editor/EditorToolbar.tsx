@@ -27,6 +27,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import {
   Toolbar,
   ToolbarContent,
+  ToolbarGroup,
   ToolbarItem,
   ToolbarItemProps,
 } from "@patternfly/react-core/dist/js/components/Toolbar";
@@ -1320,109 +1321,159 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           <Alerts ref={props.alertsRef} width={"500px"} />
           <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
             {workspace && canSeeWorkspaceToolbar && (
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                <FlexItem>
-                  <Button
-                    className={"kie-tools--masthead-hoverable"}
-                    variant={ButtonVariant.plain}
-                    onClick={() => history.push({ pathname: routes.home.path({}) })}
+              <Flex
+                justifyContent={{ default: "justifyContentSpaceBetween" }}
+                flexWrap={{ default: "nowrap" }}
+                spaceItems={{ default: "spaceItemsMd" }}
+              >
+                <FlexItem style={{ minWidth: 0 }}>
+                  <Flex
+                    justifyContent={{ default: "justifyContentFlexStart" }}
+                    flexWrap={{ default: "nowrap" }}
+                    spaceItems={{ default: "spaceItemsSm" }}
                   >
-                    <AngleLeftIcon />
-                  </Button>
-                  &nbsp;&nbsp;
-                  <WorkspaceLabel descriptor={workspace.descriptor} />
-                  &nbsp;&nbsp;
-                  <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
-                    <Title
-                      aria-label={"EmbeddedEditorFile name"}
-                      headingLevel={"h3"}
-                      size={"md"}
-                      style={{ fontStyle: "italic" }}
-                    >
-                      {workspace.descriptor.name}
-                    </Title>
-                    <TextInput
-                      ref={workspaceNameRef}
-                      type={"text"}
-                      aria-label={"Edit workspace name"}
-                      onKeyDown={onWorkspaceNameKeyDown}
-                      className={"kogito--editor__toolbar-subtitle"}
-                      onBlur={(e) => onRenameWorkspace(e.target.value)}
-                      style={{ fontStyle: "italic" }}
-                    />
-                  </div>
-                  <WorkspaceStatusIndicator workspace={workspace} />
+                    <FlexItem>
+                      <Button
+                        className={"kie-tools--masthead-hoverable"}
+                        variant={ButtonVariant.plain}
+                        onClick={() => history.push({ pathname: routes.home.path({}) })}
+                      >
+                        <AngleLeftIcon />
+                      </Button>
+                    </FlexItem>
+                    <FlexItem>
+                      <WorkspaceLabel descriptor={workspace.descriptor} />
+                    </FlexItem>
+                    <FlexItem style={{ minWidth: 0 }}>
+                      <div
+                        data-testid={"toolbar-title-workspace"}
+                        className={"kogito--editor__toolbar-name-container"}
+                        style={{ width: "100%" }}
+                      >
+                        <Title
+                          aria-label={"EmbeddedEditorFile name"}
+                          headingLevel={"h3"}
+                          size={"md"}
+                          style={{
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {workspace.descriptor.name}
+                        </Title>
+                        <TextInput
+                          ref={workspaceNameRef}
+                          type={"text"}
+                          aria-label={"Edit workspace name"}
+                          onKeyDown={onWorkspaceNameKeyDown}
+                          className={"kogito--editor__toolbar-subtitle"}
+                          onBlur={(e) => onRenameWorkspace(e.target.value)}
+                          style={{ fontStyle: "italic" }}
+                        />
+                      </div>
+                    </FlexItem>
+                    <FlexItem>
+                      <WorkspaceStatusIndicator workspace={workspace} />
+                    </FlexItem>
+                  </Flex>
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
                 {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&
                   workspaceImportableUrl.type === UrlType.GITHUB && (
-                    <FlexItem>
-                      <Toolbar style={{ padding: 0 }}>
-                        <ToolbarItem style={{ marginRight: 0 }}>
-                          <Dropdown
-                            isPlain={true}
-                            onSelect={() => setVsCodeDropdownOpen(false)}
-                            isOpen={isVsCodeDropdownOpen}
-                            toggle={
-                              <DropdownToggle toggleIndicator={null} onToggle={setVsCodeDropdownOpen}>
-                                <img
-                                  style={{ width: "14px" }}
-                                  alt="vscode-logo-blue"
-                                  src={routes.static.images.vscodeLogoBlue.path({})}
-                                />
-                                &nbsp; &nbsp;
-                                {`Open "${workspace.descriptor.name}"`}
-                                &nbsp; &nbsp;
-                                <CaretDownIcon />
-                              </DropdownToggle>
-                            }
-                            dropdownItems={[
-                              <DropdownGroup key={"open-in-vscode"}>
-                                {navigationStatus.shouldBlockNavigationTo({ pathname: "__external" }) && (
-                                  <>
-                                    <Alert
-                                      isInline={true}
-                                      variant={"warning"}
-                                      title={"You have new changes to push"}
-                                      actionLinks={
-                                        <PushToGitHubAlertActionLinks
-                                          canPush={canPushToGitRepository}
-                                          remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
-                                          onPush={pushToGitRepository}
-                                        />
-                                      }
+                    <FlexItem
+                      style={{
+                        minWidth: "137px",
+                      }}
+                    >
+                      <Dropdown
+                        isPlain={true}
+                        onSelect={() => setVsCodeDropdownOpen(false)}
+                        isOpen={isVsCodeDropdownOpen}
+                        position={"right"}
+                        toggle={
+                          <DropdownToggle toggleIndicator={null} onToggle={setVsCodeDropdownOpen}>
+                            <Flex flexWrap={{ default: "nowrap" }}>
+                              <FlexItem
+                                style={{
+                                  minWidth: 0 /* This is to make the flex parent not overflow horizontally */,
+                                }}
+                              >
+                                <Tooltip distance={5} position={"top-start"} content={workspace.descriptor.name}>
+                                  <TextContent>
+                                    <Text
+                                      component={TextVariants.small}
+                                      style={{
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                      }}
                                     >
-                                      {`Opening '${workspace.descriptor.name}' on vscode.dev won't show your latest changes.`}
-                                    </Alert>
-                                    <Divider />
-                                  </>
-                                )}
-                                <DropdownItem
-                                  href={`https://vscode.dev/github${
-                                    new URL(workspace.descriptor.origin.url).pathname.endsWith(".git")
-                                      ? new URL(workspace.descriptor.origin.url).pathname.replace(".git", "")
-                                      : new URL(workspace.descriptor.origin.url).pathname
-                                  }/tree/${workspace.descriptor.origin.branch}`}
-                                  target={"_blank"}
-                                  icon={<ExternalLinkAltIcon />}
-                                  description={`The '${workspace.descriptor.origin.branch}' branch will be opened.`}
+                                      <img
+                                        style={{
+                                          minWidth: "14px",
+                                          maxWidth: "14px",
+                                          marginTop: "-2px",
+                                          verticalAlign: "middle",
+                                        }}
+                                        alt="vscode-logo-blue"
+                                        src={routes.static.images.vscodeLogoBlue.path({})}
+                                      />
+                                      &nbsp;&nbsp;
+                                      {`Open "${workspace.descriptor.name}"`}
+                                    </Text>
+                                  </TextContent>
+                                </Tooltip>
+                              </FlexItem>
+                              <FlexItem>
+                                <CaretDownIcon />
+                              </FlexItem>
+                            </Flex>
+                          </DropdownToggle>
+                        }
+                        dropdownItems={[
+                          <DropdownGroup key={"open-in-vscode"}>
+                            {navigationStatus.shouldBlockNavigationTo({ pathname: "__external" }) && (
+                              <>
+                                <Alert
+                                  isInline={true}
+                                  variant={"warning"}
+                                  title={"You have new changes to push"}
+                                  actionLinks={
+                                    <PushToGitHubAlertActionLinks
+                                      canPush={canPushToGitRepository}
+                                      remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
+                                      onPush={pushToGitRepository}
+                                    />
+                                  }
                                 >
-                                  vscode.dev
-                                </DropdownItem>
+                                  {`Opening '${workspace.descriptor.name}' on vscode.dev won't show your latest changes.`}
+                                </Alert>
                                 <Divider />
-                                <DropdownItem
-                                  href={`vscode://vscode.git/clone?url=${workspace.descriptor.origin.url.toString()}`}
-                                  target={"_blank"}
-                                  icon={<ExternalLinkAltIcon />}
-                                  description={"The default branch will be opened."}
-                                >
-                                  VS Code Desktop
-                                </DropdownItem>
-                              </DropdownGroup>,
-                            ]}
-                          />
-                        </ToolbarItem>
-                      </Toolbar>
+                              </>
+                            )}
+                            <DropdownItem
+                              href={`https://vscode.dev/github${
+                                new URL(workspace.descriptor.origin.url).pathname.endsWith(".git")
+                                  ? new URL(workspace.descriptor.origin.url).pathname.replace(".git", "")
+                                  : new URL(workspace.descriptor.origin.url).pathname
+                              }/tree/${workspace.descriptor.origin.branch}`}
+                              target={"_blank"}
+                              icon={<ExternalLinkAltIcon />}
+                              description={`The '${workspace.descriptor.origin.branch}' branch will be opened.`}
+                            >
+                              vscode.dev
+                            </DropdownItem>
+                            <Divider />
+                            <DropdownItem
+                              href={`vscode://vscode.git/clone?url=${workspace.descriptor.origin.url.toString()}`}
+                              target={"_blank"}
+                              icon={<ExternalLinkAltIcon />}
+                              description={"The default branch will be opened."}
+                            >
+                              VS Code Desktop
+                            </DropdownItem>
+                          </DropdownGroup>,
+                        ]}
+                      />
                     </FlexItem>
                   )}
               </Flex>
@@ -1434,10 +1485,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
               alignItems={{ default: "alignItemsCenter" }}
               flexWrap={{ default: "nowrap" }}
             >
-              <FlexItem>
+              <FlexItem style={{ minWidth: 0 }}>
                 <PageHeaderToolsItem visibility={{ default: "visible" }}>
                   <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
-                    <FlexItem>
+                    <FlexItem style={{ minWidth: 0 }}>
                       <FileSwitcher workspace={workspace} workspaceFile={props.workspaceFile} />
                     </FlexItem>
                     <FlexItem>
@@ -1451,9 +1502,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               data-testid="is-saving-in-memory-indicator"
                               component={TextVariants.small}
                             >
-                              <span>
-                                <OutlinedClockIcon size={"sm"} />
-                              </span>
+                              <OutlinedClockIcon size={"sm"} style={{ margin: 0 }} />
                             </Text>
                           </TextContent>
                         </Tooltip>
@@ -1467,9 +1516,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               data-testid="is-saved-in-memory-indicator"
                               component={TextVariants.small}
                             >
-                              <span>
-                                <DesktopIcon size={"sm"} />
-                              </span>
+                              <DesktopIcon size={"sm"} style={{ margin: 0 }} />
                             </Text>
                           </TextContent>
                         </Tooltip>
@@ -1486,9 +1533,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               data-testid="is-writing-indicator"
                               component={TextVariants.small}
                             >
-                              <span>
-                                <OutlinedClockIcon size={"sm"} />
-                              </span>
+                              <OutlinedClockIcon size={"sm"} style={{ margin: 0 }} />
                             </Text>
                           </TextContent>
                         </Tooltip>
@@ -1502,9 +1547,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               data-testid="is-written-indicator"
                               component={TextVariants.small}
                             >
-                              <span>
-                                <OutlinedHddIcon size={"sm"} />
-                              </span>
+                              <OutlinedHddIcon size={"sm"} style={{ margin: 0 }} />
                             </Text>
                           </TextContent>
                         </Tooltip>
@@ -1516,226 +1559,230 @@ If you are, it means that creating this Gist failed and it can safely be deleted
               <FlexItem>
                 <Toolbar>
                   <ToolbarContent style={{ paddingRight: 0 }}>
-                    <ToolbarItem>
-                      <Dropdown
-                        position={"right"}
-                        isOpen={isNewFileDropdownMenuOpen}
-                        toggle={
-                          <DropdownToggle
-                            onToggle={setNewFileDropdownMenuOpen}
-                            isPrimary={true}
-                            toggleIndicator={CaretDownIcon}
-                          >
-                            <PlusIcon />
-                            &nbsp;&nbsp;New file
-                          </DropdownToggle>
-                        }
-                      >
-                        <NewFileDropdownMenu
-                          alerts={props.alerts}
-                          workspaceId={props.workspaceFile.workspaceId}
-                          destinationDirPath={props.workspaceFile.relativeDirPath}
-                          onAddFile={async (file) => {
-                            setNewFileDropdownMenuOpen(false);
-                            if (!file) {
-                              return;
-                            }
+                    <ToolbarGroup>
+                      <ToolbarItem>
+                        <Dropdown
+                          position={"right"}
+                          isOpen={isNewFileDropdownMenuOpen}
+                          toggle={
+                            <DropdownToggle
+                              onToggle={setNewFileDropdownMenuOpen}
+                              isPrimary={true}
+                              toggleIndicator={CaretDownIcon}
+                            >
+                              <PlusIcon />
+                              &nbsp;&nbsp;New file
+                            </DropdownToggle>
+                          }
+                        >
+                          <NewFileDropdownMenu
+                            alerts={props.alerts}
+                            workspaceId={props.workspaceFile.workspaceId}
+                            destinationDirPath={props.workspaceFile.relativeDirPath}
+                            onAddFile={async (file) => {
+                              setNewFileDropdownMenuOpen(false);
+                              if (!file) {
+                                return;
+                              }
 
-                            history.push({
-                              pathname: routes.workspaceWithFilePath.path({
-                                workspaceId: file.workspaceId,
-                                fileRelativePath: file.relativePathWithoutExtension,
-                                extension: file.extension,
-                              }),
-                            });
-                          }}
-                        />
-                      </Dropdown>
-                    </ToolbarItem>
-                    <ToolbarItem visibility={hideWhenSmall}>
-                      {props.workspaceFile.extension === "dmn" && (
-                        <KieSandboxExtendedServicesButtons
-                          workspace={workspace}
-                          workspaceFile={props.workspaceFile}
-                          editorPageDock={props.editorPageDock}
-                        />
-                      )}
-                    </ToolbarItem>
-                    {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
-                      <ToolbarItem>
-                        <Dropdown
-                          onSelect={() => setSyncGitHubGistDropdownOpen(false)}
-                          isOpen={isSyncGitHubGistDropdownOpen}
-                          position={DropdownPosition.right}
-                          toggle={
-                            <DropdownToggle
-                              id={"sync-dropdown"}
-                              data-testid={"sync-dropdown"}
-                              onToggle={(isOpen) => setSyncGitHubGistDropdownOpen(isOpen)}
-                            >
-                              Sync
-                            </DropdownToggle>
-                          }
-                          dropdownItems={[
-                            <DropdownGroup key={"sync-gist-dropdown-group"}>
-                              {canForkGitHubGist && (
-                                <>
-                                  <li role="menuitem">
-                                    <Alert
-                                      isInline={true}
-                                      variant={"info"}
-                                      title={
-                                        <span style={{ whiteSpace: "nowrap" }}>
-                                          {"Can't update Gists you don't own"}
-                                        </span>
-                                      }
-                                      actionLinks={
-                                        <AlertActionLink onClick={forkGitHubGist} style={{ fontWeight: "bold" }}>
-                                          {`Fork Gist`}
-                                        </AlertActionLink>
-                                      }
+                              history.push({
+                                pathname: routes.workspaceWithFilePath.path({
+                                  workspaceId: file.workspaceId,
+                                  fileRelativePath: file.relativePathWithoutExtension,
+                                  extension: file.extension,
+                                }),
+                              });
+                            }}
+                          />
+                        </Dropdown>
+                      </ToolbarItem>
+                      <ToolbarItem visibility={hideWhenSmall}>
+                        {props.workspaceFile.extension === "dmn" && (
+                          <ToolbarGroup>
+                            <KieSandboxExtendedServicesButtons
+                              workspace={workspace}
+                              workspaceFile={props.workspaceFile}
+                              editorPageDock={props.editorPageDock}
+                            />
+                          </ToolbarGroup>
+                        )}
+                      </ToolbarItem>
+                      {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
+                        <ToolbarItem>
+                          <Dropdown
+                            onSelect={() => setSyncGitHubGistDropdownOpen(false)}
+                            isOpen={isSyncGitHubGistDropdownOpen}
+                            position={DropdownPosition.right}
+                            toggle={
+                              <DropdownToggle
+                                id={"sync-dropdown"}
+                                data-testid={"sync-dropdown"}
+                                onToggle={(isOpen) => setSyncGitHubGistDropdownOpen(isOpen)}
+                              >
+                                Sync
+                              </DropdownToggle>
+                            }
+                            dropdownItems={[
+                              <DropdownGroup key={"sync-gist-dropdown-group"}>
+                                {canForkGitHubGist && (
+                                  <>
+                                    <li role="menuitem">
+                                      <Alert
+                                        isInline={true}
+                                        variant={"info"}
+                                        title={
+                                          <span style={{ whiteSpace: "nowrap" }}>
+                                            {"Can't update Gists you don't own"}
+                                          </span>
+                                        }
+                                        actionLinks={
+                                          <AlertActionLink onClick={forkGitHubGist} style={{ fontWeight: "bold" }}>
+                                            {`Fork Gist`}
+                                          </AlertActionLink>
+                                        }
+                                      >
+                                        {`You can create a fork of '${workspace.descriptor.name}' to save your updates.`}
+                                      </Alert>
+                                    </li>
+                                    <Divider />
+                                  </>
+                                )}
+                                <Tooltip
+                                  data-testid={"gist-it-tooltip"}
+                                  content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
+                                  trigger={!canUpdateGitHubGist ? "mouseenter click" : ""}
+                                  position="left"
+                                >
+                                  <>
+                                    <DropdownItem
+                                      icon={<GithubIcon />}
+                                      onClick={updateGitHubGist}
+                                      isDisabled={!canUpdateGitHubGist}
                                     >
-                                      {`You can create a fork of '${workspace.descriptor.name}' to save your updates.`}
-                                    </Alert>
-                                  </li>
-                                  <Divider />
-                                </>
-                              )}
-                              <Tooltip
-                                data-testid={"gist-it-tooltip"}
-                                content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
-                                trigger={!canUpdateGitHubGist ? "mouseenter click" : ""}
-                                position="left"
+                                      Update Gist
+                                    </DropdownItem>
+                                    {!canPushToGitRepository && (
+                                      <>
+                                        <Divider />
+                                        <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                          <Button isInline={true} variant={ButtonVariant.link}>
+                                            Configure GitHub token...
+                                          </Button>
+                                        </DropdownItem>
+                                      </>
+                                    )}
+                                  </>
+                                </Tooltip>
+                              </DropdownGroup>,
+                            ]}
+                          />
+                        </ToolbarItem>
+                      )}
+                      {workspace.descriptor.origin.kind === WorkspaceKind.GIT && (
+                        <ToolbarItem>
+                          <Dropdown
+                            onSelect={() => setSyncGitRepositoryDropdownOpen(false)}
+                            isOpen={isSyncGitRepositoryDropdownOpen}
+                            position={DropdownPosition.right}
+                            toggle={
+                              <DropdownToggle
+                                id={"sync-dropdown"}
+                                data-testid={"sync-dropdown"}
+                                onToggle={(isOpen) => setSyncGitRepositoryDropdownOpen(isOpen)}
                               >
-                                <>
-                                  <DropdownItem
-                                    icon={<GithubIcon />}
-                                    onClick={updateGitHubGist}
-                                    isDisabled={!canUpdateGitHubGist}
-                                  >
-                                    Update Gist
-                                  </DropdownItem>
-                                  {!canPushToGitRepository && (
-                                    <>
-                                      <Divider />
-                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
-                                        <Button isInline={true} variant={ButtonVariant.link}>
-                                          Configure GitHub token...
-                                        </Button>
-                                      </DropdownItem>
-                                    </>
-                                  )}
-                                </>
-                              </Tooltip>
-                            </DropdownGroup>,
-                          ]}
-                        />
-                      </ToolbarItem>
-                    )}
-                    {workspace.descriptor.origin.kind === WorkspaceKind.GIT && (
-                      <ToolbarItem>
+                                Sync
+                              </DropdownToggle>
+                            }
+                            dropdownItems={[
+                              <DropdownGroup key={"sync-gist-dropdown-group"}>
+                                <DropdownItem
+                                  icon={<SyncAltIcon />}
+                                  onClick={() => pullFromGitRepository({ showAlerts: true })}
+                                  description={`Get new changes made upstream at '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
+                                >
+                                  Pull
+                                </DropdownItem>
+                                <Tooltip
+                                  data-testid={"gist-it-tooltip"}
+                                  content={
+                                    <div>{`You need to be signed in with GitHub to push to this repository.`}</div>
+                                  }
+                                  trigger={!canPushToGitRepository ? "mouseenter click" : ""}
+                                  position="left"
+                                >
+                                  <>
+                                    <DropdownItem
+                                      icon={<ArrowCircleUpIcon />}
+                                      onClick={pushToGitRepository}
+                                      isDisabled={!canPushToGitRepository}
+                                      description={`Send your changes upstream to '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
+                                    >
+                                      Push
+                                    </DropdownItem>
+                                    {!canPushToGitRepository && (
+                                      <>
+                                        <Divider />
+                                        <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                          <Button isInline={true} variant={ButtonVariant.link}>
+                                            Configure GitHub token...
+                                          </Button>
+                                        </DropdownItem>
+                                      </>
+                                    )}
+                                  </>
+                                </Tooltip>
+                              </DropdownGroup>,
+                            ]}
+                          />
+                        </ToolbarItem>
+                      )}
+                      <ToolbarItem visibility={hideWhenSmall}>
                         <Dropdown
-                          onSelect={() => setSyncGitRepositoryDropdownOpen(false)}
-                          isOpen={isSyncGitRepositoryDropdownOpen}
+                          onSelect={() => setShareDropdownOpen(false)}
+                          isOpen={isShareDropdownOpen}
+                          dropdownItems={shareDropdownItems}
                           position={DropdownPosition.right}
                           toggle={
                             <DropdownToggle
-                              id={"sync-dropdown"}
-                              data-testid={"sync-dropdown"}
-                              onToggle={(isOpen) => setSyncGitRepositoryDropdownOpen(isOpen)}
+                              id={"share-dropdown"}
+                              data-testid={"share-dropdown"}
+                              onToggle={(isOpen) => setShareDropdownOpen(isOpen)}
                             >
-                              Sync
+                              {i18n.editorToolbar.share}
                             </DropdownToggle>
                           }
-                          dropdownItems={[
-                            <DropdownGroup key={"sync-gist-dropdown-group"}>
-                              <DropdownItem
-                                icon={<SyncAltIcon />}
-                                onClick={() => pullFromGitRepository({ showAlerts: true })}
-                                description={`Get new changes made upstream at '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
-                              >
-                                Pull
-                              </DropdownItem>
-                              <Tooltip
-                                data-testid={"gist-it-tooltip"}
-                                content={
-                                  <div>{`You need to be signed in with GitHub to push to this repository.`}</div>
-                                }
-                                trigger={!canPushToGitRepository ? "mouseenter click" : ""}
-                                position="left"
-                              >
-                                <>
-                                  <DropdownItem
-                                    icon={<ArrowCircleUpIcon />}
-                                    onClick={pushToGitRepository}
-                                    isDisabled={!canPushToGitRepository}
-                                    description={`Send your changes upstream to '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
-                                  >
-                                    Push
-                                  </DropdownItem>
-                                  {!canPushToGitRepository && (
-                                    <>
-                                      <Divider />
-                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
-                                        <Button isInline={true} variant={ButtonVariant.link}>
-                                          Configure GitHub token...
-                                        </Button>
-                                      </DropdownItem>
-                                    </>
-                                  )}
-                                </>
-                              </Tooltip>
-                            </DropdownGroup>,
+                        />
+                      </ToolbarItem>
+                      <ToolbarItem visibility={hideWhenSmall} style={{ marginRight: 0 }}>
+                        <KebabDropdown
+                          id={"kebab-lg"}
+                          state={[isLargeKebabOpen, setLargeKebabOpen]}
+                          items={[deleteFileDropdownItem, <Divider key={"divider-0"} />, createSavePointDropdownItem]}
+                        />
+                      </ToolbarItem>
+                      <ToolbarItem visibility={showWhenSmall} style={{ marginRight: 0 }}>
+                        <KebabDropdown
+                          id={"kebab-sm"}
+                          state={[isSmallKebabOpen, setSmallKebabOpen]}
+                          items={[
+                            deleteFileDropdownItem,
+                            <Divider key={"divider-0"} />,
+                            createSavePointDropdownItem,
+                            <Divider key={"divider-1"} />,
+                            ...shareDropdownItems,
+                            ...(props.workspaceFile.extension !== "dmn"
+                              ? []
+                              : [
+                                  <Divider key={"divider-2"} />,
+                                  <KieSandboxExtendedServicesDropdownGroup
+                                    workspace={workspace}
+                                    key="kie-sandbox-extended-services-group"
+                                  />,
+                                ]),
                           ]}
                         />
                       </ToolbarItem>
-                    )}
-                    <ToolbarItem visibility={hideWhenSmall}>
-                      <Dropdown
-                        onSelect={() => setShareDropdownOpen(false)}
-                        isOpen={isShareDropdownOpen}
-                        dropdownItems={shareDropdownItems}
-                        position={DropdownPosition.right}
-                        toggle={
-                          <DropdownToggle
-                            id={"share-dropdown"}
-                            data-testid={"share-dropdown"}
-                            onToggle={(isOpen) => setShareDropdownOpen(isOpen)}
-                          >
-                            {i18n.editorToolbar.share}
-                          </DropdownToggle>
-                        }
-                      />
-                    </ToolbarItem>
-                    <ToolbarItem visibility={hideWhenSmall} style={{ marginRight: 0 }}>
-                      <KebabDropdown
-                        id={"kebab-lg"}
-                        state={[isLargeKebabOpen, setLargeKebabOpen]}
-                        items={[deleteFileDropdownItem, <Divider key={"divider-0"} />, createSavePointDropdownItem]}
-                      />
-                    </ToolbarItem>
-                    <ToolbarItem visibility={showWhenSmall} style={{ marginRight: 0 }}>
-                      <KebabDropdown
-                        id={"kebab-sm"}
-                        state={[isSmallKebabOpen, setSmallKebabOpen]}
-                        items={[
-                          deleteFileDropdownItem,
-                          <Divider key={"divider-0"} />,
-                          createSavePointDropdownItem,
-                          <Divider key={"divider-1"} />,
-                          ...shareDropdownItems,
-                          ...(props.workspaceFile.extension !== "dmn"
-                            ? []
-                            : [
-                                <Divider key={"divider-2"} />,
-                                <KieSandboxExtendedServicesDropdownGroup
-                                  workspace={workspace}
-                                  key="kie-sandbox-extended-services-group"
-                                />,
-                              ]),
-                        ]}
-                      />
-                    </ToolbarItem>
+                    </ToolbarGroup>
                   </ToolbarContent>
                 </Toolbar>
               </FlexItem>
