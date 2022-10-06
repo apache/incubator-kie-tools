@@ -88,7 +88,7 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
             }
           };
 
-          console.debug("Subscribing to " + workspaceId);
+          console.debug(`Subscribing to ${workspaceId}`);
           const broadcastChannel2 = new BroadcastChannel(workspaceId);
           broadcastChannel2.onmessage = ({ data }: MessageEvent<WorkspaceBroadcastEvents>) => {
             console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);

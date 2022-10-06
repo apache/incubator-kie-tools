@@ -61,7 +61,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
           workspaceFileRelativePath: workspaceFile.relativePath,
         });
 
-        console.debug("Subscribing to " + dmnRunnerInputsFileUniqueId);
+        console.debug(`Subscribing to ${dmnRunnerInputsFileUniqueId}`);
         const broadcastChannel = new BroadcastChannel(dmnRunnerInputsFileUniqueId);
         broadcastChannel.onmessage = ({ data }: MessageEvent<CompanionFsServiceBroadcastEvents>) => {
           if (canceled.get()) {
@@ -84,7 +84,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
         };
 
         return () => {
-          console.debug("Unsubscribing to " + dmnRunnerInputsFileUniqueId);
+          console.debug(`Unsubscribing to ${dmnRunnerInputsFileUniqueId}`);
           broadcastChannel.close();
         };
       },

@@ -44,7 +44,7 @@ export function useSyncedCompanionFs(companionFsService: CompanionFsService) {
         };
 
         return () => {
-          console.debug("Unsubscribing to " + WORKSPACES_BROADCAST_CHANNEL);
+          console.debug(`Unsubscribing to ${WORKSPACES_BROADCAST_CHANNEL}`);
           broadcastChannel.close();
         };
       },
@@ -89,7 +89,7 @@ export function useSyncedCompanionFs(companionFsService: CompanionFsService) {
           } else if (data.type === "WSSFS_MOVE") {
             throw new Error("Moving not supported.");
           } else {
-            throw new Error("Impossible scenario for companion file." + JSON.stringify(data));
+            throw new Error(`Impossible scenario for companion file. ${JSON.stringify(data)}`);
           }
         };
 

@@ -517,7 +517,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
             <img
               style={{ height: "180px", margin: "10px" }}
               ref={imgRef}
-              alt={"SVG for " + props.workspaceFile.relativePath}
+              alt={`SVG for ${props.workspaceFile.relativePath}`}
             />
           </Bullseye>
         )}
