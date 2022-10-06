@@ -25,7 +25,7 @@ import { FileLanguage } from "../api";
  *
  * @param content the content
  * @param node the node
- * @returns the FileLanguage, null if unrecognized
+ * @returns the FileLanguage, undefined if unrecognized
  */
 export function getNodeFormat(content: string, node: SwfLsNode): FileLanguage | undefined {
   const nodeContent = content.slice(node.offset, node.offset + node.length);
