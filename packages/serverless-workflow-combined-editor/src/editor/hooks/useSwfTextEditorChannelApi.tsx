@@ -37,7 +37,9 @@ export function useSwfTextEditorChannelApi(args: {
   const [serviceRegistriesSettings] = useSharedValue(
     args.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistriesSettings
   );
-  const stateControl = useMemo(() => new StateControl(), []);
+
+  // Keep getFileContents in the dependency list to update the stateControl instance
+  const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
   const channelApiImpl = useMemo(
     () =>
