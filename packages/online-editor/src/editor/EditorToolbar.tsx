@@ -96,6 +96,8 @@ import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "
 import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
+import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
+import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -1561,18 +1563,20 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   <ToolbarContent style={{ paddingRight: 0 }}>
                     <ToolbarGroup>
                       <ToolbarItem>
-                        <Dropdown
+                        <ResponsiveDropdown
+                          title={"Add file"}
+                          onClose={() => setNewFileDropdownMenuOpen(false)}
                           position={"right"}
                           isOpen={isNewFileDropdownMenuOpen}
                           toggle={
-                            <DropdownToggle
-                              onToggle={setNewFileDropdownMenuOpen}
+                            <ResponsiveDropdownToggle
+                              onToggle={() => setNewFileDropdownMenuOpen((prev) => !prev)}
                               isPrimary={true}
                               toggleIndicator={CaretDownIcon}
                             >
                               <PlusIcon />
                               &nbsp;&nbsp;New file
-                            </DropdownToggle>
+                            </ResponsiveDropdownToggle>
                           }
                         >
                           <NewFileDropdownMenu
@@ -1594,7 +1598,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               });
                             }}
                           />
-                        </Dropdown>
+                        </ResponsiveDropdown>
                       </ToolbarItem>
                       <ToolbarItem visibility={hideWhenSmall}>
                         {props.workspaceFile.extension === "dmn" && (

@@ -336,7 +336,11 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
               style={{
                 boxShadow: "none",
                 minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`,
-                maxWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`,
+                width: `${
+                  filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+                    ? MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2
+                    : MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX
+                }px`,
               }}
               id={ROOT_MENU_ID}
               containsDrilldown={true}
@@ -639,6 +643,7 @@ export function FilesMenuItems(props: {
   );
 
   const [search, setSearch] = useState("");
+  const [otherFilesSearch, setOtherFilesSearch] = useState("");
 
   return (
     <>
@@ -733,8 +738,8 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <SearchableFilesMenuGroup
-              search={search}
-              setSearch={setSearch}
+              search={otherFilesSearch}
+              setSearch={setOtherFilesSearch}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Other files in '${props.workspaceDescriptor.name}'`}

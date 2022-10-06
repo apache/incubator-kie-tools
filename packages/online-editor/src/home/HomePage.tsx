@@ -277,7 +277,9 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
             </FlexItem>
           </Flex>
         </CardHeaderMain>
-        <CardActions>
+        <CardActions
+          onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+        >
           <DeleteDropdownWithConfirmation
             onDelete={() => {
               workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
@@ -342,7 +344,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     />
                   </CardHeaderMain>
                 </FileLink>
-                <CardActions style={{ visibility: isHovered ? "visible" : "hidden" }}>
+                <CardActions
+                  style={{ visibility: isHovered ? "visible" : "hidden" }}
+                  onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+                >
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
                     onDelete={() => {
@@ -387,7 +392,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 </CardHeaderMain>
                 <CardActions
                   style={{ visibility: isHovered ? "visible" : "hidden" }}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
                 >
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
