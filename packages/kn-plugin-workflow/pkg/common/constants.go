@@ -35,7 +35,7 @@ const (
 	// Default values
 	KN_WORKFLOW_NAME           string = "kn-workflow"
 	KN_WORKFLOW_DEVELOPMENT    string = "kn-workflow-development"
-	KN_WORKFLOW_BASE_IMAGE     string = "quay.io/lmotta/kn-workflow"
+	KN_WORKFLOW_BASE_IMAGE     string = "quay.io/kie-tools/kn-workflow"
 	KN_WORKFLOW_DEV_REPOSITORY string = "dev.local"
 	KN_WORKFLOW_DEV_IMAGE      string = "dev.local/kn-workflow-development"
 	KN_WORKFLOW_DEV_CONTAINER  string = "kn-workflow-dev"

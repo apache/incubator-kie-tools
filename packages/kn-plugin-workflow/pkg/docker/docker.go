@@ -44,7 +44,7 @@ import (
 	fsutiltypes "github.com/tonistiigi/fsutil/types"
 )
 
-func CreateDockerfile(dockerfileDirPath string, quarkusVersion string) (err error) {
+func CreateDockerfile(dockerfileDirPath string, dependenciesVersion metadata.DependenciesVersion) (err error) {
 	if _, err = os.Stat(dockerfileDirPath); os.IsNotExist(err) {
 		if err = os.Mkdir(dockerfileDirPath, 0700); err != nil {
 			fmt.Printf("ERROR: creating dir in temp folder %s\n", dockerfileDirPath)
@@ -71,7 +71,7 @@ func CreateDockerfile(dockerfileDirPath string, quarkusVersion string) (err erro
 ARG extensions
 
 # TODO: quarkus-version and quarkus-platform-group-id
-FROM %s:%s as base
+FROM %s:%s.%s as base
 WORKDIR /tmp/kn-plugin-workflow
 
 # add additional extensions
@@ -126,7 +126,7 @@ WORKDIR /tmp/kn-plugin-workflow/
 EXPOSE 8080
 
 CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]	
-`, common.KN_WORKFLOW_BASE_IMAGE, quarkusVersion)
+`, common.KN_WORKFLOW_BASE_IMAGE, dependenciesVersion.QuarkusPlatformGroupId, dependenciesVersion.QuarkusVersion)
 	_, err = file.WriteString(dockerfile)
 	if err != nil {
 		fmt.Printf("ERROR: writing in %s\n", common.WORKFLOW_DOCKERFILE)
@@ -187,7 +187,7 @@ func BuildDockerImage(
 	if _, err = os.Stat(dockerfilePath); err != nil {
 		fmt.Printf(" - Couldn't find %s in tmp folder \n", common.WORKFLOW_DOCKERFILE)
 		fmt.Printf(" - Creating a new %s \n", common.WORKFLOW_DOCKERFILE)
-		if err = CreateDockerfile(GetDockerfileDir(dependenciesVersion), dependenciesVersion.QuarkusVersion); err != nil {
+		if err = CreateDockerfile(GetDockerfileDir(dependenciesVersion), dependenciesVersion); err != nil {
 			fmt.Println("ERROR: creating Dockerfile in temp folder")
 			return fmt.Errorf("Description: %w", err)
 		}

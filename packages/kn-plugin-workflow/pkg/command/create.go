@@ -92,7 +92,7 @@ func runCreate(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	dockerfilePath := docker.GetDockerfileDir(cfg.DependenciesVersion)
-	if err = docker.CreateDockerfile(dockerfilePath, cfg.DependenciesVersion.QuarkusVersion); err != nil {
+	if err = docker.CreateDockerfile(dockerfilePath, cfg.DependenciesVersion); err != nil {
 		fmt.Println("ERROR: creating Dockerfile in temp folder")
 		return fmt.Errorf("Description: %w", err)
 	}

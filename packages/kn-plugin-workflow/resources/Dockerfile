@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# docker build --build-arg QUARKUS_PLATFORM_VERSION=2.13.0.Final -f Dockerfile -t quay.io/lmotta/kn-plugin-workflow:2.13.0.Final .
+# docker build --build-arg QUARKUS_PLATFORM_VERSION=2.13.0.Final -f Dockerfile -t quay.io/kie-tools/kn-workflow:io.quarkus.platform.2.13.0.Final .
 
 FROM maven:3.8.5-jdk-11 as create
 
