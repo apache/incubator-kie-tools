@@ -141,7 +141,7 @@ describe("getNodeFormat", () => {
             "name": "GreetInPortuguese",
             "data": {🎯
               "language": "Portuguese",
-              "message": "Hello"
+              "message": "Olá"
             },
             "transition": "GetGreeting"
         }`,
