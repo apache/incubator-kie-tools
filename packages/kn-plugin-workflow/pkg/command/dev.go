@@ -220,7 +220,7 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		},
 	}
 
-	containerName := fmt.Sprintf("%s-%s-%s", common.KN_WORKFLOW_NAME, cfg.Tag, docker.RandString())
+	containerName := fmt.Sprintf("%s-dev-%s", common.KN_WORKFLOW_NAME, docker.RandString())
 	devContainer, err := dockerCli.ContainerCreate(ctx, containerConfig, containerHostConfig, nil, nil, containerName)
 	if err != nil {
 		fmt.Println("ERROR: failed to create a developement container")

@@ -25,6 +25,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
@@ -32,11 +35,12 @@ import (
 )
 
 type PruneCmdConfig struct {
-	DevContainer bool
-	DevImage     bool
-	RunnerImage  bool
-	TempFiles    bool
-	All          bool
+	DevContainers bool
+	DevImages     bool
+	Dev           bool
+	BaseImages    bool
+	TempFiles     bool
+	All           bool
 }
 
 func NewPruneCommand() *cobra.Command {
@@ -51,17 +55,22 @@ Deletes files located in the temporary folder.
 {{.Name}} prune
 		  `,
 		SuggestFor: []string{"prnue", "prneu"},
+		PreRunE:    common.BindEnv("dev-containers", "dev-images", "runner-images", "temp-files", "all"),
 	}
 
-	cmd.Flags().BoolP("dev-container", "", false, "Stop and delete all development containers.")
-	cmd.Flags().BoolP("dev-image", "", false, "Delete all development images.")
-	cmd.Flags().BoolP("runner-image", "", false, "Delete all runner images.")
+	cmd.Flags().BoolP("dev-containers", "", false, "Stop and delete all development containers.")
+	cmd.Flags().BoolP("dev-images", "", false, "Delete all development images.")
+	cmd.Flags().BoolP("dev", "", false, "Delete all development container and images.")
+	cmd.Flags().BoolP("base-images", "", false, "Delete all base images.")
 	cmd.Flags().BoolP("temp-files", "", false, "Delete all temporary files.")
 	cmd.Flags().BoolP("all", "", false, "Delete all")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	cmd.Run = func(cmd *cobra.Command, args []string) {
-		runPrune(cmd)
+		err := runPrune(cmd)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	return cmd
@@ -69,21 +78,17 @@ Deletes files located in the temporary folder.
 
 func runPruneConfig(cmd *cobra.Command) (cfg PruneCmdConfig, err error) {
 	cfg = PruneCmdConfig{
-		DevContainer: viper.GetBool("dev-container"),
-		DevImage:     viper.GetBool("dev-image"),
-		RunnerImage:  viper.GetBool("runner-image"),
-		TempFiles:    viper.GetBool("temp-files"),
-		All:          viper.GetBool("all"),
+		DevContainers: viper.GetBool("dev-containers"),
+		DevImages:     viper.GetBool("dev-images"),
+		Dev:           viper.GetBool("dev"),
+		BaseImages:    viper.GetBool("base-images"),
+		TempFiles:     viper.GetBool("temp-files"),
+		All:           viper.GetBool("all"),
 	}
 	return
 }
 
 func runPrune(cmd *cobra.Command) (err error) {
-	confirmation := confirm("Are you sure?")
-	if !confirmation {
-		return
-	}
-
 	start := time.Now()
 	cfg, err := runPruneConfig(cmd)
 	if err != nil {
@@ -92,7 +97,11 @@ func runPrune(cmd *cobra.Command) (err error) {
 	}
 
 	if cfg.All || cfg.TempFiles {
-		fmt.Println("🗑️ Pruning temporary files")
+		confirmation := confirm("All files located in the temporary folder will be deleted. Are you sure?")
+		if !confirmation {
+			return
+		}
+		fmt.Println("- Pruning temporary files")
 		pathToPrune := filepath.Join(os.TempDir(), fmt.Sprintf("%s-%s-*",
 			common.KN_WORKFLOW_NAME,
 			metadata.PluginVersion,
@@ -114,16 +123,78 @@ func runPrune(cmd *cobra.Command) (err error) {
 		}
 	}
 
-	if cfg.All || cfg.DevContainer {
-		fmt.Println("🗑️ Stopping development containers")
-	}
+	if cfg.All || cfg.Dev || cfg.DevContainers || cfg.DevImages || cfg.BaseImages {
+		ctx := cmd.Context()
+		dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+		if err != nil {
+			return err
+		}
 
-	if cfg.All || cfg.DevImage {
-		fmt.Println("🗑️ Removing development images")
-	}
+		if cfg.All || cfg.Dev || cfg.DevContainers {
+			fmt.Println("- Stopping development containers")
+			filter := filters.NewArgs()
+			filter.Add("name", "kn-workflow-dev")
+			containers, err := dockerCli.ContainerList(ctx, types.ContainerListOptions{Filters: filter, All: true})
+			if err != nil {
+				return err
+			}
 
-	if cfg.All || cfg.RunnerImage {
-		fmt.Println("🗑️ Removing runner images")
+			if len(containers) > 0 {
+				fmt.Println("All the following containers are going to be removed:")
+				for _, container := range containers {
+					for _, name := range container.Names {
+						fmt.Println(name)
+					}
+				}
+				confirmation := confirm("Are you sure?")
+				if !confirmation {
+					return err
+				}
+
+				for _, container := range containers {
+					fmt.Printf("- Stopping and Removing %s\n", container.ID)
+					if err := dockerCli.ContainerStop(ctx, container.ID, nil); err != nil {
+						return err
+					}
+					if err := dockerCli.ContainerRemove(ctx, container.ID, types.ContainerRemoveOptions{}); err != nil {
+						return err
+					}
+				}
+			}
+		}
+
+		if cfg.All || cfg.Dev || cfg.DevImages {
+			fmt.Println("- Removing development images")
+			filter := filters.NewArgs()
+			filter.Add("reference", "dev.local/kn-workflow-development")
+			images, err := dockerCli.ImageList(ctx, types.ImageListOptions{Filters: filter})
+			if err != nil {
+				return err
+			}
+
+			if len(images) > 0 {
+				fmt.Println("All the following images are going to be removed:")
+				for _, image := range images {
+					for _, repoTag := range image.RepoTags {
+						fmt.Println(repoTag)
+					}
+				}
+				confirmation := confirm("Are you sure?")
+				if !confirmation {
+					return err
+				}
+
+				for _, image := range images {
+					fmt.Printf("- Removing: %s", image.ID)
+					_, err := dockerCli.ImageRemove(ctx, image.ID, types.ImageRemoveOptions{})
+					if err != nil {
+						fmt.Println(`ERROR: check if you still have containers using the image.
+You can try to use the --dev-containers flag to remove all dev containers`)
+						return err
+					}
+				}
+			}
+		}
 	}
 
 	fmt.Printf("🚀 Prune command took: %s \n", time.Since(start))
