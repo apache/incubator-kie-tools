@@ -26,6 +26,7 @@ import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());
@@ -60,46 +61,54 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   }, [props.descriptor, workspaceImportableUrl]);
 
   return (
-    <>
+    <Flex wrap={"nowrap"} style={{ display: "inline-flex" }}>
       {props.descriptor?.origin.kind === WorkspaceKind.GIT && (
-        <Tooltip
-          content={`'${
-            props.descriptor?.name
-          }' is linked to a Git Repository. ${props.descriptor?.origin.url.toString()}`}
-          position={"right"}
-        >
-          <>
-            {gitLabel}
-            &nbsp;&nbsp;
-            <Label>
-              <CodeBranchIcon />
-              &nbsp;&nbsp;{props.descriptor?.origin.branch}
-            </Label>
-          </>
-        </Tooltip>
+        <FlexItem>
+          <Tooltip
+            content={`'${
+              props.descriptor?.name
+            }' is linked to a Git Repository. ${props.descriptor?.origin.url.toString()}`}
+            position={"right"}
+          >
+            <>
+              {gitLabel}
+              &nbsp;&nbsp;
+              <Label>
+                <CodeBranchIcon />
+                &nbsp;&nbsp;{props.descriptor?.origin.branch}
+              </Label>
+            </>
+          </Tooltip>
+        </FlexItem>
       )}
       {props.descriptor?.origin.kind === WorkspaceKind.GITHUB_GIST && (
-        <Tooltip
-          content={`'${props.descriptor?.name}' is linked to a GitHub Gist. ${props.descriptor?.origin.url.toString()}`}
-          position={"right"}
-        >
-          <Label>
-            <GithubIcon />
-            &nbsp;&nbsp;Gist
-          </Label>
-        </Tooltip>
+        <FlexItem>
+          <Tooltip
+            content={`'${
+              props.descriptor?.name
+            }' is linked to a GitHub Gist. ${props.descriptor?.origin.url.toString()}`}
+            position={"right"}
+          >
+            <Label>
+              <GithubIcon />
+              &nbsp;&nbsp;Gist
+            </Label>
+          </Tooltip>
+        </FlexItem>
       )}
       {props.descriptor?.origin.kind === WorkspaceKind.LOCAL && (
-        <Tooltip
-          content={`'${props.descriptor?.name}' is saved directly in the browser. Incognito windows don't have access to it.`}
-          position={"right"}
-        >
-          <Label>
-            <PendingIcon />
-            &nbsp;&nbsp;Ephemeral
-          </Label>
-        </Tooltip>
+        <FlexItem>
+          <Tooltip
+            content={`'${props.descriptor?.name}' is saved directly in the browser. Incognito windows don't have access to it.`}
+            position={"right"}
+          >
+            <Label>
+              <PendingIcon />
+              &nbsp;&nbsp;Ephemeral
+            </Label>
+          </Tooltip>
+        </FlexItem>
       )}
-    </>
+    </Flex>
   );
 }

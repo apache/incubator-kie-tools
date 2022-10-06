@@ -62,7 +62,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { FileLabel } from "../workspace/components/FileLabel";
+import { FileLabel } from "../filesList/FileLabel";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { OutlinedHddIcon } from "@patternfly/react-icons/dist/js/icons/outlined-hdd-icon";
 import { DesktopIcon } from "@patternfly/react-icons/dist/js/icons/desktop-icon";

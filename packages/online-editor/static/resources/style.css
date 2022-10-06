@@ -674,3 +674,7 @@ section.kie-tools--settings-tab {
 .expression-container .expression-container-box {
   margin-top: -11px;
 }
+
+.kie-tools--file-switcher-no-padding-menu-item {
+  padding: 0;
+}
