@@ -5,14 +5,45 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch create/version",
+      "name": "Launch quarkus create",
       "type": "go",
       "request": "launch",
       "mode": "exec",
       "preLaunchTask": "build",
       "postDebugTask": "clean",
       "program": "${workspaceRoot}/${input:bin}",
-      "args": ["${input:command}", "${input:command-args}"]
+      "args": ["quarkus", "create", "${input:create-command-args}"]
+    },
+    {
+      "name": "Launch quarkus build",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build",
+      "postDebugTask": "clean image",
+      "program": "${workspaceRoot}/${input:bin}",
+      "cwd": "debug",
+      "args": ["quarkus", "build", "--image=kn-workflow:debug"]
+    },
+    {
+      "name": "Launch quarkus deploy",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build",
+      "program": "${workspaceRoot}/${input:bin}",
+      "cwd": "debug",
+      "args": ["quarkus", "deploy"]
+    },
+    {
+      "name": "Launch create/prune/version",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build",
+      "postDebugTask": "clean",
+      "program": "${workspaceRoot}/${input:bin}",
+      "args": ["${input:commands}", "${input:command-args}"]
     },
     {
       "name": "Launch build",
@@ -34,6 +65,16 @@
       "program": "${workspaceRoot}/${input:bin}",
       "cwd": "debug",
       "args": ["deploy"]
+    },
+    {
+      "name": "Launch dev",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build",
+      "program": "${workspaceRoot}/${input:bin}",
+      "cwd": "debug",
+      "args": ["dev"]
     }
   ],
   "inputs": [
@@ -50,14 +91,14 @@
       ]
     },
     {
-      "id": "command",
+      "id": "commands",
       "type": "pickString",
-      "default": "version",
+      "default": "",
       "description": "The command",
-      "options": ["create", "version"]
+      "options": ["create", "prune", "version"]
     },
     {
-      "id": "command-args",
+      "id": "create-command-args",
       "type": "pickString",
       "default": "",
       "description": "The command",
