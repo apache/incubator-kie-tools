@@ -53,7 +53,7 @@ func NewDevCommand() *cobra.Command {
 If you wish, you can run the development container using Docker directly:
 	docker container run -it \
 	--mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/src/main/resources \
-	-p 8080:8080 quay.io/lmotta/dev		
+	-p 8080:8080 dev.local/kn-plugin-workflow:dev
 `,
 		SuggestFor: []string{"dve", "start"},
 		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "port", "quarkus-platform-group-id", "quarkus-version"),
