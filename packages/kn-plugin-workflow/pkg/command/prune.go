@@ -18,6 +18,7 @@ package command
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -133,7 +134,7 @@ func runPrune(cmd *cobra.Command) (err error) {
 		if cfg.All || cfg.Dev || cfg.DevContainers {
 			fmt.Println("- Stopping development containers")
 			filter := filters.NewArgs()
-			filter.Add("name", "kn-workflow-dev")
+			filter.Add("name", common.KN_WORKFLOW_DEV_CONTAINER)
 			containers, err := dockerCli.ContainerList(ctx, types.ContainerListOptions{Filters: filter, All: true})
 			if err != nil {
 				return err
@@ -165,34 +166,15 @@ func runPrune(cmd *cobra.Command) (err error) {
 
 		if cfg.All || cfg.Dev || cfg.DevImages {
 			fmt.Println("- Removing development images")
-			filter := filters.NewArgs()
-			filter.Add("reference", "dev.local/kn-workflow-development")
-			images, err := dockerCli.ImageList(ctx, types.ImageListOptions{Filters: filter})
-			if err != nil {
+			if err := removeDockerImages(ctx, dockerCli, common.KN_WORKFLOW_DEV_IMAGE); err != nil {
 				return err
 			}
+		}
 
-			if len(images) > 0 {
-				fmt.Println("All the following images are going to be removed:")
-				for _, image := range images {
-					for _, repoTag := range image.RepoTags {
-						fmt.Println(repoTag)
-					}
-				}
-				confirmation := confirm("Are you sure?")
-				if !confirmation {
-					return err
-				}
-
-				for _, image := range images {
-					fmt.Printf("- Removing: %s", image.ID)
-					_, err := dockerCli.ImageRemove(ctx, image.ID, types.ImageRemoveOptions{})
-					if err != nil {
-						fmt.Println(`ERROR: check if you still have containers using the image.
-You can try to use the --dev-containers flag to remove all dev containers`)
-						return err
-					}
-				}
+		if cfg.All || cfg.BaseImages {
+			fmt.Println("- Removing base images")
+			if err := removeDockerImages(ctx, dockerCli, common.KN_WORKFLOW_BASE_IMAGE); err != nil {
+				return err
 			}
 		}
 	}
@@ -211,4 +193,36 @@ func confirm(s string) bool {
 	}
 
 	return strings.ToLower(strings.TrimSpace(res))[0] == 'y'
+}
+
+func removeDockerImages(ctx context.Context, dockerCli *client.Client, imageName string) (err error) {
+	filter := filters.NewArgs()
+	filter.Add("reference", imageName)
+	images, err := dockerCli.ImageList(ctx, types.ImageListOptions{Filters: filter})
+	if err != nil {
+		return err
+	}
+
+	if len(images) > 0 {
+		fmt.Println("All the following images are going to be removed:")
+		for _, image := range images {
+			for _, repoTag := range image.RepoTags {
+				fmt.Println(repoTag)
+			}
+		}
+		confirmation := confirm("Are you sure?")
+		if !confirmation {
+			return err
+		}
+
+		for _, image := range images {
+			fmt.Printf("- Removing: %s", image.ID)
+			_, err := dockerCli.ImageRemove(ctx, image.ID, types.ImageRemoveOptions{})
+			if err != nil {
+				fmt.Println("ERROR: check if you still have containers using the image.")
+				return err
+			}
+		}
+	}
+	return
 }

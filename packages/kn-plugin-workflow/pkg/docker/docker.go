@@ -70,7 +70,7 @@ func CreateDockerfile(dockerfileDirPath string, quarkusVersion string) (err erro
 ARG extensions
 
 # TODO: quarkus-version and quarkus-platform-group-id
-FROM quay.io/lmotta/kn-workflow:%s as base
+FROM %s:%s as base
 WORKDIR /tmp/kn-plugin-workflow
 
 # add additional extensions
@@ -125,7 +125,7 @@ WORKDIR /tmp/kn-plugin-workflow/
 EXPOSE 8080
 
 CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]	
-`, quarkusVersion)
+`, common.KN_WORKFLOW_BASE_IMAGE, quarkusVersion)
 	_, err = file.WriteString(dockerfile)
 	if err != nil {
 		fmt.Printf("ERROR: writing in %s\n", common.WORKFLOW_DOCKERFILE)

@@ -33,15 +33,18 @@ const (
 	DOCKER_MINOR_VERSION = 10
 
 	// Default values
-	KN_WORKFLOW_NAME        string = "kn-workflow"
-	KN_WORKFLOW_DEVELOPMENT string = "kn-workflow-development"
-	DEFAULT_TAG             string = "latest"
-	WORKFLOW_SW_JSON        string = "workflow.sw.json"
-	WORKFLOW_DOCKERFILE     string = "Dockerfile.workflow"
-	DEV_REPOSITORY          string = "dev.local"
-	WORKFLOW_OUTPUT_FOLDER  string = "kubernetes"
-	WORKFLOW_RESOURCES_PATH string = "/tmp/kn-plugin-workflow/src/main/resources"
-	QUARKUS_DEV_PORT        string = "8080/tcp"
+	KN_WORKFLOW_NAME           string = "kn-workflow"
+	KN_WORKFLOW_DEVELOPMENT    string = "kn-workflow-development"
+	KN_WORKFLOW_BASE_IMAGE     string = "quay.io/lmotta/kn-workflow"
+	KN_WORKFLOW_DEV_REPOSITORY string = "dev.local"
+	KN_WORKFLOW_DEV_IMAGE      string = "dev.local/kn-workflow-development"
+	KN_WORKFLOW_DEV_CONTAINER  string = "kn-workflow-dev"
+	DEFAULT_TAG                string = "latest"
+	WORKFLOW_SW_JSON           string = "workflow.sw.json"
+	WORKFLOW_DOCKERFILE        string = "Dockerfile.workflow"
+	WORKFLOW_OUTPUT_FOLDER     string = "kubernetes"
+	WORKFLOW_RESOURCES_PATH    string = "/tmp/kn-plugin-workflow/src/main/resources"
+	QUARKUS_DEV_PORT           string = "8080/tcp"
 
 	// Docker
 	DOCKER_SESSION_PATH string = "/session"
