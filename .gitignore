@@ -12,7 +12,6 @@
 **/target/
 **/.dashbuilder/
 **/out/
-**/vendor/
 **/.DS_Store
 *.log
 .classpath
