@@ -70,7 +70,6 @@ func CreateDockerfile(dockerfileDirPath string, dependenciesVersion metadata.Dep
 # true or false
 ARG extensions
 
-# TODO: quarkus-version and quarkus-platform-group-id
 FROM %s:%s.%s as base
 WORKDIR /tmp/kn-plugin-workflow
 
@@ -104,7 +103,6 @@ RUN ./mvnw package \
 FROM scratch as output-files
 COPY --from=builder /tmp/kn-plugin-workflow/target/kubernetes .
 
-# TODO: change to minimal image
 FROM openjdk:11 as runner
 
 COPY --from=builder /tmp/kn-plugin-workflow/target/quarkus-app/lib/ /runner/lib/
@@ -115,7 +113,6 @@ EXPOSE 8080
 
 CMD ["java", "-jar", "/deployments/quarkus-run.jar", "-Dquarkus.http.host=0.0.0.0"]
 
-# TODO: change to minimal image
 FROM openjdk:11 as dev
 
 COPY --from=builder /root/.m2/ /root/.m2/
