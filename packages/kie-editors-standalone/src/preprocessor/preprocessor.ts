@@ -19,9 +19,14 @@ import * as fs from "fs";
 import { DmnEditorResources } from "../dmn/DmnEditorResources";
 import { BpmnEditorResources } from "../bpmn/BpmnEditorResources";
 import { BaseEditorResources } from "../common/EditorResources";
+import { ServerlessworkflowEditorResources } from "../swf/SwfEditorResources";
 
 function main() {
-  const editorsResources: BaseEditorResources[] = [new DmnEditorResources(), new BpmnEditorResources()];
+  const editorsResources: BaseEditorResources[] = [
+    new DmnEditorResources(),
+    new BpmnEditorResources(),
+    new ServerlessworkflowEditorResources(),
+  ];
 
   editorsResources.forEach((editorResources) => {
     const template = _.template(fs.readFileSync(editorResources.getTemplatePath()).toString());

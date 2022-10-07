@@ -21,6 +21,8 @@
     "@kie-tools-examples/todo-list-view": "workspace:*",
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/kie-editors-standalone": "workspace:*",
+    "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
     "@patternfly/react-core": "^4.157.3",
     "monaco-editor": "^0.33.0",
     "react": "^17.0.2",

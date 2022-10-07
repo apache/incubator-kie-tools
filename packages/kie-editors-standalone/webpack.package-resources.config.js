@@ -19,6 +19,7 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const path = require("path");
 const { env } = require("./env");
 const buildEnv = env;
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -31,6 +32,10 @@ module.exports = (env) =>
     entry: {
       dmn: "./src/dmn/index.ts",
       bpmn: "./src/bpmn/index.ts",
+      swf: "./src/swf/index.ts",
+    },
+    module: {
+      rules: [...patternflyBase.webpackModuleRules],
     },
     devServer: {
       historyApiFallback: false,

@@ -31,6 +31,7 @@ import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandalone
 import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPongAngularIFrameViewsPage";
 import { PingPongMixedViewsPage } from "./Pages/PingPong/Mixed/PingPongMixedViewsPage";
 import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
+import { SwfStandaloneEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneEditorPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
@@ -42,7 +43,8 @@ enum Location {
   PING_PONG_ANGULAR_IFRAME_PAGES = "/page/ping-pong-angular/iframe-pages",
   PING_PONG_ANGULAR_DIV_PAGES = "/page/ping-pong-angular/div-pages",
   PING_PONG_MIXED_PAGES = "/page/ping-pong-mixed",
-  STANDALONE_EDITORS = "/page/standalone-editors",
+  STANDALONE_EDITORS_DMN = "/page/standalone-editors-dmn",
+  STANDALONE_EDITORS_SWF = "/page/standalone-editors-swf",
   HOME = "/",
 }
 
@@ -113,8 +115,17 @@ export function App() {
                   >
                     <Link to={Location.PING_PONG_MIXED_PAGES}>Ping-Pong Mixed Views</Link>
                   </NavItem>
-                  <NavItem itemId={Location.STANDALONE_EDITORS} isActive={location === Location.STANDALONE_EDITORS}>
-                    <Link to={Location.STANDALONE_EDITORS}>DMN Standalone Editor</Link>
+                  <NavItem
+                    itemId={Location.STANDALONE_EDITORS_DMN}
+                    isActive={location === Location.STANDALONE_EDITORS_DMN}
+                  >
+                    <Link to={Location.STANDALONE_EDITORS_DMN}>DMN Standalone Editor</Link>
+                  </NavItem>
+                  <NavItem
+                    itemId={Location.STANDALONE_EDITORS_SWF}
+                    isActive={location === Location.STANDALONE_EDITORS_SWF}
+                  >
+                    <Link to={Location.STANDALONE_EDITORS_SWF}>SWF Standalone Editor</Link>
                   </NavItem>
                 </NavList>
               </Nav>
@@ -153,8 +164,11 @@ export function App() {
           <Route path={Location.PING_PONG_MIXED_PAGES}>
             <PingPongMixedViewsPage />
           </Route>
-          <Route path={Location.STANDALONE_EDITORS}>
+          <Route path={Location.STANDALONE_EDITORS_DMN}>
             <DmnStandaloneEditorPage />
+          </Route>
+          <Route path={Location.STANDALONE_EDITORS_SWF}>
+            <SwfStandaloneEditorPage />
           </Route>
         </Switch>
       </Page>
