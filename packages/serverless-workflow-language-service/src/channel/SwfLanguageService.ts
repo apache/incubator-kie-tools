@@ -39,6 +39,7 @@ import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { doRefValidation } from "./refValidation";
 import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
+import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -85,7 +86,7 @@ export class SwfLanguageService {
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
-      return [];
+      return args.content.trim().length ? [] : getStartingSWFCodeCompletion(args);
     }
 
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
@@ -707,4 +708,24 @@ export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBo
 
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
   return `${namespace}»${resource}#${operation}`;
+}
+
+function getStartingSWFCodeCompletion(args: {
+  cursorPosition: Position;
+  codeCompletionStrategy: CodeCompletionStrategy;
+}) {
+  const kind = CompletionItemKind.Text;
+
+  return [
+    {
+      kind,
+      label: "Create your first Serverless Workflow",
+      detail: "Start with a simple Serverless Workflow",
+      textEdit: {
+        newText: args.codeCompletionStrategy.translate({ completion: simpleTemplate, completionItemKind: kind }),
+        range: Range.create(args.cursorPosition, args.cursorPosition),
+      },
+      insertTextFormat: InsertTextFormat.Snippet,
+    },
+  ];
 }

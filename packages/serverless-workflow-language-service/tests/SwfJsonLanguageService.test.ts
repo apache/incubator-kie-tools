@@ -19,7 +19,7 @@ import {
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat, Position } from "vscode-languageserver-types";
-import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
+import * as simpleTemplate from "@kie-tools/serverless-workflow-language-service/dist/assets/code-completion/simple-template.sw.json";
 import {
   defaultConfig,
   defaultServiceCatalogConfig,
@@ -413,18 +413,16 @@ describe("SWF LS JSON", () => {
         ["empty file with a newline before the cursor", `\n🎯`],
         ["empty file with a newline after the cursor", `🎯\n`],
       ])("%s", async (_description, content: ContentWithCursor) => {
-        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
-
-        let completionPosition = Position.create(0, 0);
+        let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
+          kind: CompletionItemKind.Text,
           label: "Create your first Serverless Workflow",
           detail: "Start with a simple Serverless Workflow",
           textEdit: {
-            range: { start: completionPosition, end: completionPosition },
-            newText: JSON.stringify(simpleTemplate),
+            range: { start: cursorPosition, end: cursorPosition },
+            newText: JSON.stringify(simpleTemplate, null, 2),
           },
           insertTextFormat: InsertTextFormat.Snippet,
         } as CompletionItem);

@@ -23,7 +23,7 @@ import {
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat, Position } from "vscode-languageserver-types";
 import { dump } from "yaml-language-server-parser";
-import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
+import * as simpleTemplate from "@kie-tools/serverless-workflow-language-service/dist/assets/code-completion/simple-template.sw.json";
 import {
   defaultConfig,
   defaultServiceCatalogConfig,
