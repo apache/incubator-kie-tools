@@ -19,15 +19,14 @@ import {
   GwtEditor,
 } from "@kie-tools/kie-bc-editors/dist/common/consumedInteropApi/GwtAppFormerConsumedInteropApi";
 import { DummyEditor } from "./DummyEditor";
-import { Editor } from "@kie-tools-core/editor/dist/api";
 
 class DummyGwtEditor {
-  private wrappedEditor: Editor;
+  private wrappedEditor: GwtEditor;
 
-  constructor(wrappedEditor: Editor) {
+  constructor(wrappedEditor: GwtEditor) {
     this.wrappedEditor = wrappedEditor;
   }
-  public get(): Editor {
+  public get(): GwtEditor {
     return this.wrappedEditor;
   }
 }

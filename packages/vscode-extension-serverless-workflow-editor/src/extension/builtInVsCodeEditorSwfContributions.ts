@@ -282,10 +282,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       return;
     }
 
-    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({
-      nodeName,
-      documentUri: uri.path,
-    });
+    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({ nodeName });
   });
 }
 

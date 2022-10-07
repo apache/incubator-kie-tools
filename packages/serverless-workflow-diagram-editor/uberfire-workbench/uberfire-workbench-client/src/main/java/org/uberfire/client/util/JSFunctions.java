@@ -30,6 +30,10 @@ public class JSFunctions {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::setContent(Ljava/lang/String;Ljava/lang/String;)(path, value);
         };
 
+        $wnd.GWTEditor.prototype.selectStateByName = function (name) {
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::selectStateByName(Ljava/lang/String;)(name);
+        };
+
         $wnd.GWTEditor.prototype.getContent = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getContent()();
         };

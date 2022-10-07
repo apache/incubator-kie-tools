@@ -29,6 +29,7 @@ const MockEditor = jest.fn(() => ({
   isDirty: jest.fn(),
   getPreview: jest.fn(),
   validate: jest.fn(),
+  selectStateByName: jest.fn(() => Promise.resolve()),
 }));
 
 const mockEditor = new MockEditor();
