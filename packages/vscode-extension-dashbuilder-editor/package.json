@@ -60,17 +60,35 @@
   },
   "displayName": "Dashbuilder Editor",
   "contributes": {
-    "activationEvents": [
-      "onCustomEditor:kieKogitoWebviewEditorsDashbuilder"
-    ],
     "capabilities": {
       "untrustedWorkspaces": {
         "supported": false
       }
     },
-    "commands": [],
+    "commands": [
+      {
+        "command": "extension.kogito.dashbuilder.setupAutomaticallyOpenDashboardEditorAlongsideTextEditor",
+        "title": "Dashbuilder: Setup automatically open Dashboard Editor alongside Text Editor"
+      },
+      {
+        "command": "extension.kogito.dashbuilder.openAsDashboard",
+        "icon": "$(open-preview)",
+        "title": "Dashbuilder: Open as Dashboard (to the side)"
+      }
+    ],
     "configuration": {
-      "properties": {},
+      "properties": {
+        "kogito.dashbuilder.automaticallyOpenDashboardEditorAlongsideTextEditor": {
+          "default": "Ask next time",
+          "enum": [
+            "Open automatically",
+            "Do not open",
+            "Ask next time"
+          ],
+          "markdownDescription": "When opening dashbuilder files, decide whether or not to open the Dashboard Editor alongside the text editor. Regardless of the configured option, you can always open the dashbuilder Dashboard Editor using the 'Open as Dashboard' button.",
+          "type": "string"
+        }
+      },
       "title": "Dashbuilder Editor"
     },
     "customEditors": [
@@ -86,22 +104,59 @@
     ],
     "icon": "icon.png",
     "javaExtensions": [],
+    "keybindings": [
+      {
+        "command": "extension.kogito.dashbuilder.openAsDashboard",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)$/"
+      }
+    ],
     "languages": [
       {
         "aliases": [
-          "dashbuilder",
-          "Dashbuilder"
+          "dashbuilder (JSON)",
+          "dash.json"
+        ],
+        "extensions": [
+          ".dash.json"
+        ],
+        "id": "dash-json"
+      },
+      {
+        "aliases": [
+          "dashbuilder (YAML)",
+          "dash.yaml",
+          "dash.yml"
         ],
         "extensions": [
           ".dash.yml",
-          ".dash.yaml",
-          ".dash.json"
+          ".dash.yaml"
         ],
-        "id": "dashbuilder"
+        "id": "dash-yaml"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "extension.kogito.dashbuilder.openAsDashboard",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)/"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "extension.kogito.dashbuilder.openAsDashboard",
+          "group": "navigation",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)/"
+        }
+      ]
+    }
   },
   "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:yaml",
+    "onLanguage:yard-json",
+    "onLanguage:yard-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsDashbuilder"
   ]
 }

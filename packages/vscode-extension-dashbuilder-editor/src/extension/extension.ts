@@ -22,10 +22,12 @@ import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { BackendManagerService } from "@kie-tools-core/backend/dist/api";
 import { ComponentServer } from "./ComponentsHttpServer";
+import { DashbuilderVsCodeExtensionConfiguration } from "./configuration";
+import { setupDashboardEditorControls } from "./setupDashboardEditorControls";
 
 let backendProxy: VsCodeBackendProxy;
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const componentsPath = context.extensionPath + "/dist/webview/dashbuilder/component/";
@@ -35,13 +37,21 @@ export function activate(context: vscode.ExtensionContext) {
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
   backendProxy.registerBackendManager(backendManager);
+  backendManager.start().catch((e) => {
+    console.info("Not able to start component server.");
+  });
 
-  KogitoVsCode.startExtension({
+  context.subscriptions.push(
+    new vscode.Disposable(() => {
+      return backendProxy.stopServices();
+    })
+  );
+
+  const kieEditorsStore = await KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-dashbuilder-editor",
     context: context,
+    editorDocumentType: "text",
     viewType: "kieKogitoWebviewEditorsDashbuilder",
-    generateSvgCommandId: "",
-    silentlyGenerateSvgCommandId: "",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "dashbuilder",
@@ -60,13 +70,12 @@ export function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
   });
 
-  backendManager.start().catch((e) => {
-    console.info("Not able to start component server.");
+  const configuration = new DashbuilderVsCodeExtensionConfiguration();
+  await setupDashboardEditorControls({
+    context,
+    configuration,
+    kieEditorsStore,
   });
 
   console.info("Extension is successfully setup.");
-}
-
-export function deactivate() {
-  backendProxy?.stopServices();
 }
