@@ -65,12 +65,12 @@ func NewBuildCommand() *cobra.Command {
 		Long: `
 	Builds a single file Workflow project in the current directory 
 	resulting in a container image and a kubernetes folder to be used by the deploy command.  
-	By default the resultant container image will have the project name. It can be 
-	overriten with the --image or with others image options, see help for more information.
+	By default, the resultant container image will have the project name. It can be 
+	overwritten with the --image or with other image options, see help for more information.
 
-	During the build, a knative.yml file will be generated on the ./kubernetes folder.
+	During the build, a knative.yml file will be generated in the ./kubernetes folder.
 	If your workflow uses eventing, an additional kogito.yml is also generated.
-	The deploy command uses both these files.
+	The deploy command uses both of these files.
 
 	Authentication is required if you want to push the resultant image to a private registry.
 	To authenticate to your registry, use "docker login" or any other equivalent method.
@@ -86,14 +86,17 @@ func NewBuildCommand() *cobra.Command {
 	
 	# Build from the local directory, specifying the full image name and pushing
 	# it to the remote registry (authentication can be necessary, use docker login)
-	# NOTE: If no registry is specfied in the image full name, quay.io will be used.
+	# NOTE: If no registry is specified in the image's full name, quay.io will be used.
 	{{.Name}} build --image quay.io/mysuer/myworkflow:1.0 --push
 	
 	# Build from the local directory, passing separately image options
 	{{.Name}} build --image-registry docker.io --image-repository myuser --image-name myworkflow --image-tag 1.0
 
 	# Build adding extensions to your generated container image
-	{{.Name}} extension=quarkus-jsonp,quarkus-smallrye-openapi
+	{{.Name}} build --extension=quarkus-jsonp,quarkus-smallrye-openapi
+
+	# Use a different Quarkus version to build your project
+	{{.Name}} build -V 2.13.0.Final
 	`,
 		SuggestFor: []string{"biuld", "buidl", "built"},
 		PreRunE:    common.BindEnv("extension", "image", "image-registry", "image-repository", "image-name", "image-tag", "path", "quarkus-platform-group-id", "quarkus-version"),

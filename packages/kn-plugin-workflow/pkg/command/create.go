@@ -22,15 +22,13 @@ import (
 	"time"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/docker"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
 
 type CreateCmdConfig struct {
-	ProjectName         string // Project name
-	DependenciesVersion metadata.DependenciesVersion
+	ProjectName string // Project name
 }
 
 func NewCreateCommand() *cobra.Command {
@@ -39,9 +37,9 @@ func NewCreateCommand() *cobra.Command {
 		Short: "Creates a new single file Workflow project",
 		Long: `
 	Creates a Workflow file in the specified directory (new-project is the default).
-	It creates a Dockerfile.workflow in your temp folder to be used by the "dev" and "build" commands.
-	If you with to delete it, you can use the kn workflow prune command.
-	The generated project has a "hello world" workflow.sw.json located on the
+	It creates a Dockerfile.workflow in your temporary folder to be used by the "dev" and "build" commands.
+	If you wish to delete it, you can use the prune command.
+	The generated project has a Hello World workflow.sw.json located on the
 	./<project-name>/ directory.
 		`,
 		Example: `
@@ -53,17 +51,14 @@ func NewCreateCommand() *cobra.Command {
 	{{.Name}} create --name myproject
 		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name", "quarkus-platform-group-id", "quarkus-version"),
+		PreRunE:    common.BindEnv("name"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runCreate(cmd, args)
 	}
 
-	quarkusDepedencies := metadata.ResolveQuarkusDependencies()
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
-	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
-	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be set in the project.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -91,12 +86,6 @@ func runCreate(cmd *cobra.Command, args []string) (err error) {
 		return fmt.Errorf("Description: %w", err)
 	}
 
-	dockerfilePath := docker.GetDockerfileDir(cfg.DependenciesVersion)
-	if err = docker.CreateDockerfile(dockerfilePath, cfg.DependenciesVersion); err != nil {
-		fmt.Println("ERROR: creating Dockerfile in temp folder")
-		return fmt.Errorf("Description: %w", err)
-	}
-
 	fmt.Printf("🚀 Create command took: %s \n", time.Since(start))
 	return nil
 }
@@ -104,10 +93,6 @@ func runCreate(cmd *cobra.Command, args []string) (err error) {
 func runCreateConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
 	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
-		DependenciesVersion: metadata.DependenciesVersion{
-			QuarkusPlatformGroupId: viper.GetString("quarkus-platform-group-id"),
-			QuarkusVersion:         viper.GetString("quarkus-version"),
-		},
 	}
 	return
 }

@@ -53,11 +53,11 @@ func NewDevCommand() *cobra.Command {
 	Builds a single file Workflow project in development mode in the current directory 
 	resulting in a container image and a running container.  
 	The resultant container image will have dev.local/kn-workflow-development name. Only the
-	tag can bem changed with the --tag flag. By default the used port is the 8080, but
+	tag can be changed with the --tag flag. By default, the used port is 8080, but
 	it can be changed with the --port flag.
 
 	Also, it's possible to skip the build or start container step by using the --build=false
-	or --run=false repectivaly.
+	or --run=false respectively.
 `,
 		Example: `
 	# Build from the local directory and start the development container
@@ -75,6 +75,9 @@ func NewDevCommand() *cobra.Command {
 
 	# Start the development container and skip the build
 	{{.Name}} dev --build=false
+
+	# Use a different Quarkus version to generate your development image
+	{{.Name}} build -V 2.13.0.Final
 	`,
 		SuggestFor: []string{"dve", "start"},
 		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "port", "quarkus-platform-group-id", "quarkus-version"),
@@ -85,13 +88,13 @@ func NewDevCommand() *cobra.Command {
 	}
 
 	quarkusDepedencies := metadata.ResolveQuarkusDependencies()
-	cmd.Flags().BoolP("build", "b", true, "Build dev image.")
+	cmd.Flags().BoolP("build", "b", true, "Build development image.")
 	cmd.Flags().BoolP("run", "r", true, "Start the development container.")
 	cmd.Flags().StringP("tag", "t", "dev", "Development tag.")
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
-	cmd.Flags().StringP("port", "p", "8080", "Port to be used.")
-	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
-	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be set in the project.")
+	cmd.Flags().StringP("port", "p", "8080", "Port to be used by the development application.")
+	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be used in the development application.")
+	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be used in the development application.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd

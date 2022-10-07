@@ -50,18 +50,18 @@ func NewPruneCommand() *cobra.Command {
 		Use:   "prune",
 		Short: "Prune temporary files, containers and images",
 		Long: `
-Deletes files located in the temporary folder, running containers and images.
+	Deletes files located in the temporary folder, running containers and images.
 		  `,
 		Example: `
-# Deletes all files located in the temporary folder.
-{{.Name}} prune --temp-files
+	# Deletes all files located in the temporary folder.
+	{{.Name}} prune --temp-files
 
-# Deletes all development container images. If you have a container using the image, it will not be possible to remove the image.
-# You should stop and remove the container or you can use the --dev-containers or --dev flag.
-{{.Name}} prune --dev-images
+	# Deletes all development container images. Remember, you can't remove the image if you have a container using it.
+	# You should stop and remove the container, or you can use the --dev-containers or --dev flag.
+	{{.Name}} prune --dev-images
 
-# Deletes all files located in the temporary folder.
-{{.Name}} prune --all
+	# Deletes all files located in the temporary folder.
+	{{.Name}} prune --all
 		  `,
 		SuggestFor: []string{"prnue", "prneu"},
 		PreRunE:    common.BindEnv("dev-containers", "dev-images", "dev", "runner-images", "temp-files", "all"),

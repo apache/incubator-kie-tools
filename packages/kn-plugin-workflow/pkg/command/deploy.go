@@ -42,7 +42,7 @@ func NewDeployCommand() *cobra.Command {
 	the deployment files generated in the build process. The build step
 	is required before using the deploy command.
 
-	Before you use the deploy command, ensure that your cluster have 
+	Before you use the deploy command, ensure that your cluster has 
 	access to the build output image.
 		`,
 		Example: `
