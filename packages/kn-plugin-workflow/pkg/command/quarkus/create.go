@@ -117,7 +117,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	command.CreateWorkflow(workflowFilePath)
 
 	finish := time.Since(start)
-	fmt.Printf("🚀 Project creation took: %s \n", finish)
+	fmt.Printf("🚀 Create command took: %s \n", finish)
 	return nil
 }
 

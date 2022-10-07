@@ -146,7 +146,7 @@ func runBuild(cmd *cobra.Command, args []string) (out string, err error) {
 	}
 
 	finish := time.Since(start)
-	fmt.Printf("🚀 Build took: %s \n", finish)
+	fmt.Printf("🚀 Build command took: %s \n", finish)
 	return
 }
 

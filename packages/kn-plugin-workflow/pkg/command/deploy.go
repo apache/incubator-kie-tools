@@ -58,7 +58,7 @@ func NewDeployCommand() *cobra.Command {
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runDeploy(cmd, args)
+		return RunDeploy(cmd, args)
 	}
 
 	cmd.Flags().StringP("path", "p", "./kubernetes", fmt.Sprintf("%s path to knative deployment files", cmd.Name()))
@@ -68,7 +68,7 @@ func NewDeployCommand() *cobra.Command {
 	return cmd
 }
 
-func runDeploy(cmd *cobra.Command, args []string) (err error) {
+func RunDeploy(cmd *cobra.Command, args []string) (err error) {
 	start := time.Now()
 
 	cfg, err := runDeployCmdConfig(cmd)
