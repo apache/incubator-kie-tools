@@ -31,7 +31,6 @@ import (
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/docker"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/moby/buildkit/session/filesync"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
@@ -180,28 +179,10 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	// creates a session for the dir
 	session, err := docker.CreateSession(cfg.Path, false)
 	if err != nil {
-		fmt.Println("ERROR: failed to create a new session")
 		return
 	}
-	if session == nil {
-		fmt.Println("ERROR: session is not supported")
-		return fmt.Errorf("session is not supported")
-	}
 
-	// adds fs sync providr to grpc server
-	session.Allow(filesync.NewFSSyncProvider([]filesync.SyncedDir{
-		{
-			Name: "context",
-			Dir:  cfg.Path,
-			Map:  docker.ResetUIDAndGID,
-		},
-		{
-			Name: "dockerfile",
-			Dir:  docker.GetDockerfilePath(cfg.DependenciesVersion),
-		},
-	}))
-	outputFolder := filepath.Join(cfg.Path, metadata.WORKFLOW_OUTPUT_FOLDER)
-	session.Allow(filesync.NewFSSyncTargetDir(outputFolder))
+	docker.AddFSSyncToSession(session, docker.GetDockerfilePath(cfg.DependenciesVersion), cfg.Path, metadata.WORKFLOW_OUTPUT_FOLDER)
 
 	// creates a new errgroup
 	eg, ctx := errgroup.WithContext(ctx)
@@ -239,9 +220,9 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 			fmt.Println("ERROR: generating output files")
 			return err
 		}
-		fmt.Printf("- Generated outputs at %s folder\n", outputFolder)
-		imageName := common.GetImage(registry, repository, name, tag)
+		fmt.Printf("- Generated outputs at %s folder\n", filepath.Join(cfg.Path, metadata.WORKFLOW_OUTPUT_FOLDER))
 
+		imageName := common.GetImage(registry, repository, name, tag)
 		runnerBuildOptions := types.ImageBuildOptions{
 			Tags:   []string{imageName},
 			Target: metadata.DOCKER_BUILD_STAGE_RUNNER,

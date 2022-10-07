@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"path/filepath"
 	"time"
 
 	"github.com/docker/docker/api/types"
@@ -27,6 +28,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	"github.com/imdario/mergo"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/docker"
@@ -39,9 +41,10 @@ import (
 type DevCmdConfig struct {
 	Build               bool
 	Run                 bool
-	Tag                 string
 	Extensions          string
 	Port                string
+	ImageName           string
+	OutputFiles         bool
 	DependenciesVersion metadata.DependenciesVersion
 }
 
@@ -80,7 +83,7 @@ func NewDevCommand() *cobra.Command {
 	{{.Name}} build -V 2.13.0.Final
 	`,
 		SuggestFor: []string{"dve", "start"},
-		PreRunE:    common.BindEnv("build", "run", "tag", "extension", "port", "quarkus-platform-group-id", "quarkus-version"),
+		PreRunE:    common.BindEnv("build", "run", "extension", "port", "image", "output-files", "quarkus-platform-group-id", "quarkus-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -90,9 +93,10 @@ func NewDevCommand() *cobra.Command {
 	quarkusDepedencies := metadata.ResolveQuarkusDependencies()
 	cmd.Flags().BoolP("build", "b", true, "Build development image.")
 	cmd.Flags().BoolP("run", "r", true, "Start the development container.")
-	cmd.Flags().StringP("tag", "t", "dev", "Development tag.")
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
 	cmd.Flags().StringP("port", "p", "8080", "Port to be used by the development application.")
+	cmd.Flags().StringP("image", "i", metadata.KN_WORKFLOW_DEV_IMAGE, "Full image name in the form of [registry]/[repository]/[name]:[tag]")
+	cmd.Flags().BoolP("output-files", "", false, "Generate folder containing files to be used by kubernetes.")
 	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be used in the development application.")
 	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be used in the development application.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
@@ -102,11 +106,12 @@ func NewDevCommand() *cobra.Command {
 
 func runDevCmdConfig(cmd *cobra.Command) (cfg DevCmdConfig, err error) {
 	cfg = DevCmdConfig{
-		Build:      viper.GetBool("build"),
-		Run:        viper.GetBool("run"),
-		Tag:        viper.GetString("tag"),
-		Extensions: viper.GetString("extension"),
-		Port:       viper.GetString("port"),
+		Build:       viper.GetBool("build"),
+		Run:         viper.GetBool("run"),
+		Extensions:  viper.GetString("extension"),
+		Port:        viper.GetString("port"),
+		ImageName:   viper.GetString("image"),
+		OutputFiles: viper.GetBool("output-files"),
 
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: viper.GetString("quarkus-platform-group-id"),
@@ -152,6 +157,7 @@ func runDev(cmd *cobra.Command, args []string) (err error) {
 
 func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	ctx := cmd.Context()
+	contextPath := "."
 
 	// create docker client
 	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -160,14 +166,13 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	// creates a session for the dir
-	session, err := docker.CreateSession(".", false)
+	session, err := docker.CreateSession(contextPath, false)
 	if err != nil {
-		fmt.Println("ERROR: failed to create a new session")
 		return
 	}
-	if session == nil {
-		fmt.Println("ERROR: session is not supported")
-		return fmt.Errorf("session is not supported")
+
+	if cfg.OutputFiles {
+		docker.AddFSSyncToSession(session, docker.GetDockerfilePath(cfg.DependenciesVersion), contextPath, metadata.WORKFLOW_OUTPUT_FOLDER+"-dev")
 	}
 
 	// creates a new errgroup
@@ -178,7 +183,7 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 		})
 	})
 
-	registry, repository, name, tag := common.GetImageConfig("", metadata.KN_WORKFLOW_DEV_REPOSITORY, "", metadata.KN_WORKFLOW_DEVELOPMENT, cfg.Tag)
+	registry, repository, name, tag := common.GetImageConfig(cfg.ImageName, "", "", "", "")
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
@@ -187,15 +192,37 @@ func buildDevImage(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 	eg.Go(func() error {
 		defer session.Close()
 
-		if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, types.ImageBuildOptions{
+		commomImageBuildOptions := types.ImageBuildOptions{
 			SessionID:  session.ID(),
 			Dockerfile: metadata.WORKFLOW_DOCKERFILE,
 			BuildArgs:  buildArgs,
 			Version:    types.BuilderBuildKit,
-			Tags:       []string{common.GetImage(registry, repository, name, tag)},
-			Target:     metadata.DOCKER_BUILD_STAGE_DEV,
-			Labels:     getCmdDevLabels(),
-		}, "."); err != nil {
+		}
+
+		if cfg.OutputFiles {
+			// adds fs sync providr to grpc server
+			outputBuildOptions := types.ImageBuildOptions{
+				Target: metadata.DOCKER_BUILD_STAGE_OUTPUT,
+				Outputs: []types.ImageBuildOutput{{
+					Type:  "local",
+					Attrs: map[string]string{},
+				}},
+			}
+			mergo.Merge(&outputBuildOptions, commomImageBuildOptions)
+			if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, outputBuildOptions, contextPath); err != nil {
+				fmt.Println("ERROR: generating output files")
+				return err
+			}
+			fmt.Printf("- Generated outputs at %s folder\n", filepath.Join(contextPath, metadata.WORKFLOW_OUTPUT_FOLDER+"-dev"))
+		}
+
+		devBuildOptions := types.ImageBuildOptions{
+			Tags:   []string{cfg.ImageName},
+			Target: metadata.DOCKER_BUILD_STAGE_DEV,
+			Labels: getCmdDevLabels(),
+		}
+		mergo.Merge(&devBuildOptions, commomImageBuildOptions)
+		if err := docker.BuildDockerImage(ctx, cfg.DependenciesVersion, dockerCli, devBuildOptions, contextPath); err != nil {
 			fmt.Println("ERROR: generating development image")
 			return err
 		}
@@ -221,7 +248,7 @@ func runDevContainer(cfg DevCmdConfig, cmd *cobra.Command) (err error) {
 
 	containerPort := nat.Port(metadata.QUARKUS_DEV_PORT)
 	containerConfig := &container.Config{
-		Image:        fmt.Sprintf("%s:%s", metadata.KN_WORKFLOW_DEV_IMAGE, cfg.Tag),
+		Image:        cfg.ImageName,
 		AttachStdin:  true,
 		AttachStdout: true,
 		AttachStderr: true,

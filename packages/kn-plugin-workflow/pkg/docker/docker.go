@@ -40,6 +40,7 @@ import (
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/moby/buildkit/session"
+	"github.com/moby/buildkit/session/filesync"
 	"github.com/pkg/errors"
 	fsutiltypes "github.com/tonistiigi/fsutil/types"
 )
@@ -254,12 +255,33 @@ func CreateSession(contextDir string, forStream bool) (*session.Session, error) 
 	sharedKey := hex.EncodeToString(sessionHash[:])
 	session, err := session.NewSession(context.Background(), filepath.Base(contextDir), sharedKey)
 	if err != nil {
+		fmt.Println("ERROR: failed to create a new session")
 		return nil, errors.Wrap(err, "failed to create session")
+	}
+	if session == nil {
+		fmt.Println("ERROR: session is not supported")
+		return nil, fmt.Errorf("session is not supported")
 	}
 	return session, nil
 }
 
-func ResetUIDAndGID(_ string, s *fsutiltypes.Stat) bool {
+// Adds fs sync providr to session
+func AddFSSyncToSession(session *session.Session, dockerfilePath string, contextPath string, outputDir string) {
+	session.Allow(filesync.NewFSSyncProvider([]filesync.SyncedDir{
+		{
+			Name: "context",
+			Dir:  contextPath,
+			Map:  resetUIDAndGID,
+		},
+		{
+			Name: "dockerfile",
+			Dir:  dockerfilePath,
+		},
+	}))
+	session.Allow(filesync.NewFSSyncTargetDir(filepath.Join(contextPath, outputDir)))
+}
+
+func resetUIDAndGID(_ string, s *fsutiltypes.Stat) bool {
 	s.Uid = 0
 	s.Gid = 0
 	return true
