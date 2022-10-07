@@ -112,7 +112,7 @@ COPY --from=builder /tmp/kn-plugin-workflow/target/quarkus-app/app/ /runner/app/
 COPY --from=builder /tmp/kn-plugin-workflow/target/quarkus-app/quarkus/ /runner/quarkus/
 EXPOSE 8080
 
-CMD ["java", "-jar", "/deployments/quarkus-run.jar", "-Dquarkus.http.host=0.0.0.0"]
+CMD ["java", "-jar", "/runner/quarkus-run.jar", "-Dquarkus.http.host=0.0.0.0"]
 
 FROM openjdk:11 as dev
 
