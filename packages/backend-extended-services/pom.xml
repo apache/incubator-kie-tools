@@ -62,7 +62,7 @@
 
     <jakarta.enterprise.cdi-api.version>2.0.2</jakarta.enterprise.cdi-api.version>
     <org.jboss.spec.javax.ws.rs.version>2.0.1.Final</org.jboss.spec.javax.ws.rs.version>
-    <quarkus-plugin.version>2.13.1.Final</quarkus-plugin.version>
+    <quarkus-plugin.version>2.13.0.Final</quarkus-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>2.13.1.Final</quarkus.platform.version>
