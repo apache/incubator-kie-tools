@@ -20,7 +20,7 @@ setupPrJob()
 setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 
 // Init branch
-setupInitBranchJob()
+createSetupBranchJob()
 
 // Nightly jobs
 setupDeployJob(Folder.NIGHTLY)
@@ -47,8 +47,8 @@ void setupPrJob() {
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
-void setupInitBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images', Folder.INIT_BRANCH, "${jenkins_path}/Jenkinsfile.init-branch", 'Kogito Images Init Branch')
+void createSetupBranchJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images', Folder.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Images Init Branch')
     jobParams.env.putAll([
         CI: true,
         REPO_NAME: 'kogito-images',
@@ -63,6 +63,8 @@ void setupInitBranchJob() {
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
 
         MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
