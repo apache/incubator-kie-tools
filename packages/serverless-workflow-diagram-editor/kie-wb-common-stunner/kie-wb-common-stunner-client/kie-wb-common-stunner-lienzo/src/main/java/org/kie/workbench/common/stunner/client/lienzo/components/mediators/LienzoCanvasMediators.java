@@ -23,6 +23,8 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.mediator.MousePanMediator;
+import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.mediators.PanelMediators;
 import org.appformer.client.context.EditorContextProvider;
@@ -46,10 +48,12 @@ import static org.kie.workbench.common.stunner.core.client.canvas.controls.keybo
 @Dependent
 public class LienzoCanvasMediators {
 
-    static final AbstractCanvas.Cursors CURSOR_ZOOM = AbstractCanvas.Cursors.ROW_RESIZE;
-    static final AbstractCanvas.Cursors CURSOR_PAN = AbstractCanvas.Cursors.POINTER;
-    static final AbstractCanvas.Cursors CURSOR_PREVIEW = AbstractCanvas.Cursors.CROSSHAIR;
     static final AbstractCanvas.Cursors CURSOR_DEFAULT = AbstractCanvas.Cursors.DEFAULT;
+    static final AbstractCanvas.Cursors CURSOR_GRAB = AbstractCanvas.Cursors.GRAB;
+    static final AbstractCanvas.Cursors CURSOR_GRABBING = AbstractCanvas.Cursors.GRABBING;
+    static final AbstractCanvas.Cursors CURSOR_PREVIEW = AbstractCanvas.Cursors.CROSSHAIR;
+    static final AbstractCanvas.Cursors CURSOR_ZOOM_IN = AbstractCanvas.Cursors.ZOOM_IN;
+    static final AbstractCanvas.Cursors CURSOR_ZOOM_OUT = AbstractCanvas.Cursors.ZOOM_OUT;
 
     private final KeyEventHandler keyEventHandler;
     private final ClientTranslationService translationService;
@@ -86,6 +90,7 @@ public class LienzoCanvasMediators {
     }
 
     public void init(final Supplier<LienzoCanvas> canvas) {
+        keyEventHandler.setEnabled(true);
         keyEventHandler.addKeyShortcutCallback(new KogitoKeyShortcutKeyDownThenUp(new Key[]{Key.ALT}, "Navigate | Hold and drag to Pan", this::enablePan, this::clear));
         keyEventHandler.addKeyShortcutCallback(new KogitoKeyShortcutKeyDownThenUp(new Key[]{Key.CONTROL}, "Navigate | Hold and scroll to Zoom", this::enableZoom, this::clear));
         keyEventHandler.addKeyShortcutCallback(new KogitoKeyShortcutKeyDownThenUp(new Key[]{Key.CONTROL, Key.ALT}, "Navigate | Hold to Preview", this::enablePreview, this::clear));
@@ -116,11 +121,56 @@ public class LienzoCanvasMediators {
                         clear();
                     }
                 });
+
         cursor = c -> canvas.get().getView().setCursor(c);
         final LienzoPanel panel = (LienzoPanel) canvas.get().getView().getPanel();
-        this.mediators = mediatorsBuilder.apply(panel.getView());
+
+        mediators = mediatorsBuilder.apply(panel.getView());
+        mediators.getZoomMediator().setCallback(new MouseWheelZoomMediator.Callback() {
+            @Override
+            public void onActivate() {
+                cursor.accept(CURSOR_DEFAULT);
+            }
+
+            @Override
+            public void onZoomIn() {
+                cursor.accept(CURSOR_ZOOM_IN);
+            }
+
+            @Override
+            public void onZoomOut() {
+                cursor.accept(CURSOR_ZOOM_OUT);
+            }
+
+            @Override
+            public void onDeactivate() {
+                cursor.accept(CURSOR_DEFAULT);
+            }
+        });
+        mediators.getPanMediator().setCallback(new MousePanMediator.Callback() {
+            @Override
+            public void onActivate() {
+                cursor.accept(CURSOR_GRAB);
+            }
+
+            @Override
+            public void onDragStart() {
+                cursor.accept(CURSOR_GRABBING);
+            }
+
+            @Override
+            public void onDragEnd() {
+                cursor.accept(CURSOR_GRAB);
+            }
+
+            @Override
+            public void onDeactivate() {
+                cursor.accept(CURSOR_DEFAULT);
+            }
+        });
+
         this.notification.init(() -> panel);
-        setScaleAboutPoint(false);
+        setScaleAboutPoint(true);
     }
 
     public void setMinScale(final double minScale) {
@@ -162,13 +212,19 @@ public class LienzoCanvasMediators {
 
     private void enableZoom() {
         if (null != mediators) {
-            cursor.accept(CURSOR_ZOOM);
+            MouseWheelZoomMediator mouseWheelZoomMediator = mediators.getZoomMediator();
+            if (null != mouseWheelZoomMediator) {
+                mouseWheelZoomMediator.attempt_deactivate();
+            }
         }
     }
 
     private void enablePan() {
         if (null != mediators) {
-            cursor.accept(CURSOR_PAN);
+            MousePanMediator mousePanMediator = mediators.getPanMediator();
+            if (null != mousePanMediator) {
+                mousePanMediator.attempt_activate();
+            }
         }
     }
 
@@ -181,6 +237,14 @@ public class LienzoCanvasMediators {
 
     private void clear() {
         if (null != mediators) {
+            MouseWheelZoomMediator mouseWheelZoomMediator = mediators.getZoomMediator();
+            if (null != mouseWheelZoomMediator) {
+                mouseWheelZoomMediator.attempt_activate();
+            }
+            MousePanMediator mousePanMediator = mediators.getPanMediator();
+            if (null != mousePanMediator) {
+                mousePanMediator.attempt_deactivate();
+            }
             cursor.accept(CURSOR_DEFAULT);
             mediators.disablePreview();
             notification.hide();

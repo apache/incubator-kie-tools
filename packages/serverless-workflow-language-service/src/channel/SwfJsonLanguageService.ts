@@ -19,7 +19,13 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode, TranslateArgs } from "./types";
+import {
+  ShouldCreateCodelensArgs,
+  CodeCompletionStrategy,
+  ShouldCompleteArgs,
+  SwfLsNode,
+  TranslateArgs,
+} from "./types";
 
 export class SwfJsonLanguageService {
   private readonly ls: SwfLanguageService;
@@ -93,5 +99,9 @@ export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
   public shouldComplete(args: ShouldCompleteArgs): boolean {
     const cursorJsonLocation = jsonc.getLocation(args.content, args.cursorOffset);
     return cursorJsonLocation.matches(args.path) && cursorJsonLocation.path.length === args.path.length;
+  }
+
+  public shouldCreateCodelens(_args: ShouldCreateCodelensArgs): boolean {
+    return true;
   }
 }

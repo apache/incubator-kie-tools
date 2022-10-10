@@ -22,5 +22,5 @@ export interface ServerlessWorkflowTextEditorChannelApi
   extends KogitoEditorChannelApi,
     SwfServiceCatalogChannelApi,
     SwfLanguageServiceChannelApi {
-  kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string; documentUri?: string }): void;
+  kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string }): void;
 }

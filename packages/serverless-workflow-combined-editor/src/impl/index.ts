@@ -18,3 +18,4 @@ export * from "./SwfCombinedEditorChannelApiImpl";
 export * from "./SwfFeatureToggleChannelApiImpl";
 export * from "./SwfLanguageServiceChannelApiImpl";
 export * from "./SwfServiceCatalogChannelApiImpl";
+export * from "./SwfPreviewOptionsChannelApiImpl";

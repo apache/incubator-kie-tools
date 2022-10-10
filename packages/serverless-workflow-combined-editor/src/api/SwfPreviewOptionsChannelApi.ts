@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-export * from "./ServerlessWorkflowCombinedEditorChannelApi";
-export * from "./SwfFeatureToggleChannelApi";
-export * from "./SwfPreviewOptionsChannelApi";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+
+export interface SwfPreviewOptions {
+  diagramDefaultWidth?: string;
+}
+
+export interface SwfPreviewOptionsChannelApi {
+  kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions>;
+}

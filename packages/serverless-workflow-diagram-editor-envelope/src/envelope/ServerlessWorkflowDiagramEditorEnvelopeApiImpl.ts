@@ -42,87 +42,55 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     super(serverlessWorkflowArgs, editorFactory);
   }
 
-  public async canvas_getNodeIds() {
+  private getEditorOrThrowError() {
     const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
-    return editor.getNodeIds();
+    return editor;
+  }
+
+  public async canvas_getNodeIds() {
+    return this.getEditorOrThrowError().getNodeIds();
   }
 
   public async canvas_getBackgroundColor(uuid: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.getBackgroundColor(uuid);
+    return this.getEditorOrThrowError().getBackgroundColor(uuid);
   }
 
   public async canvas_setBackgroundColor(uuid: string, backgroundColor: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.setBackgroundColor(uuid, backgroundColor);
+    return this.getEditorOrThrowError().setBackgroundColor(uuid, backgroundColor);
   }
 
   public async canvas_getBorderColor(uuid: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.getBorderColor(uuid);
+    return this.getEditorOrThrowError().getBorderColor(uuid);
   }
 
   public async canvas_setBorderColor(uuid: string, borderColor: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.setBorderColor(uuid, borderColor);
+    return this.getEditorOrThrowError().setBorderColor(uuid, borderColor);
   }
 
   public async canvas_getLocation(uuid: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.getLocation(uuid);
+    return this.getEditorOrThrowError().getLocation(uuid);
   }
 
   public async canvas_getAbsoluteLocation(uuid: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.getAbsoluteLocation(uuid);
+    return this.getEditorOrThrowError().getAbsoluteLocation(uuid);
   }
 
   public async canvas_getDimensions(uuid: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.getDimensions(uuid);
+    return this.getEditorOrThrowError().getDimensions(uuid);
   }
 
   public async canvas_applyState(uuid: string, state: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.applyState(uuid, state);
+    return this.getEditorOrThrowError().applyState(uuid, state);
   }
 
   public async canvas_centerNode(uuid: string) {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor.centerNode(uuid);
+    return this.getEditorOrThrowError().centerNode(uuid);
   }
 
-  public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string; documentUri?: string }) {
-    console.log("Received kogitoSwfDiagramEditor__highlightNode with args:", args);
+  public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string }) {
+    return this.getEditorOrThrowError().selectStateByName(args.nodeName);
   }
 }

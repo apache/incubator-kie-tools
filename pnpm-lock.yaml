@@ -3162,6 +3162,8 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
+      "@types/react-virtualized-auto-sizer": ^1.0.1
+      "@types/react-window": ^1.8.5
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
       "@types/uuid": ^8.3.0
@@ -3189,6 +3191,8 @@ importers:
       react-dropzone: ^11.4.2
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
+      react-virtualized-auto-sizer: ^1.0.7
+      react-window: ^1.3.1
       rimraf: ^3.0.2
       start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
@@ -3236,6 +3240,8 @@ importers:
       react-dropzone: 11.4.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
+      react-virtualized-auto-sizer: 1.0.7_sfoxds7t5ydpegc3knd667wn6m
+      react-window: 1.8.7_sfoxds7t5ydpegc3knd667wn6m
       uuid: 8.3.2
     devDependencies:
       "@babel/core": 7.16.12
@@ -3258,6 +3264,8 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
+      "@types/react-virtualized-auto-sizer": 1.0.1
+      "@types/react-window": 1.8.5
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
       "@types/uuid": 8.3.0
@@ -10323,6 +10331,20 @@ packages:
       "@types/react": 17.0.21
     dev: false
 
+  /@types/react-virtualized-auto-sizer/1.0.1:
+    resolution:
+      { integrity: sha512-GH8sAnBEM5GV9LTeiz56r4ZhMOUSrP43tAQNSRVxNexDjcNKLCEtnxusAItg1owFUFE6k0NslV26gqVClVvong== }
+    dependencies:
+      "@types/react": 17.0.21
+    dev: true
+
+  /@types/react-window/1.8.5:
+    resolution:
+      { integrity: sha512-V9q3CvhC9Jk9bWBOysPGaWy/Z0lxYcTXLtLipkt2cnRj1JOSFNF7wqGpkScSXMgBwC+fnVRg/7shwgddBG5ICw== }
+    dependencies:
+      "@types/react": 17.0.21
+    dev: true
+
   /@types/react/17.0.21:
     resolution:
       { integrity: sha512-GzzXCpOthOjXvrAUFQwU/svyxu658cwu00Q9ugujS4qc1zXgLFaO0kS2SLOaMWLt2Jik781yuHCWB7UcYdGAeQ== }
@@ -15947,7 +15969,7 @@ packages:
       { integrity: sha512-QCOllgZJtaUo9miYBcLChTUaHNjJF3PYs1VidD7AwiEj1kYxKeQTctLAezAOH5ZKRH0g2IgPn6KwB4IT8iRpvA== }
     engines: { node: ">= 0.4" }
     dependencies:
-      is-callable: 1.2.3
+      is-callable: 1.2.7
       is-date-object: 1.0.2
       is-symbol: 1.0.4
     dev: true
@@ -17328,7 +17350,16 @@ packages:
     dependencies:
       function-bind: 1.1.1
       has: 1.0.3
-      has-symbols: 1.0.2
+      has-symbols: 1.0.3
+    dev: true
+
+  /get-intrinsic/1.1.3:
+    resolution:
+      { integrity: sha512-QJVz1Tj7MS099PevUG5jvnt9tSkXN8K14dxQlikJuPt4uD9hHAHjLyLBiLR5zELelBdD9QNRAXZzsJx0WaDL9A== }
+    dependencies:
+      function-bind: 1.1.1
+      has: 1.0.3
+      has-symbols: 1.0.3
     dev: true
 
   /get-npm-tarball-url/2.0.3:
@@ -17726,12 +17757,18 @@ packages:
     engines: { node: ">= 0.4" }
     dev: true
 
+  /has-symbols/1.0.3:
+    resolution:
+      { integrity: sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A== }
+    engines: { node: ">= 0.4" }
+    dev: true
+
   /has-tostringtag/1.0.0:
     resolution:
       { integrity: sha512-kFjcSNhnlGV1kyoGk7OXKSawH5JOb/LzUc5w9B02hOTO0dfFRjbHQKvg1d6cf3HbeUmtU9VbbV3qzZ2Teh97WQ== }
     engines: { node: ">= 0.4" }
     dependencies:
-      has-symbols: 1.0.2
+      has-symbols: 1.0.3
     dev: true
 
   /has-unicode/2.0.1:
@@ -18333,7 +18370,7 @@ packages:
       { integrity: sha512-O0DB1JC/sPyZl7cIo78n5dR7eUSwwpYPiXRhTzNxZVAMUuB8vlnRFyLxdrVToks6XPLVnFfbzaVd5WLjhgg+vA== }
     engines: { node: ">= 0.4" }
     dependencies:
-      get-intrinsic: 1.1.1
+      get-intrinsic: 1.1.3
       has: 1.0.3
       side-channel: 1.0.4
     dev: true
@@ -18444,6 +18481,12 @@ packages:
   /is-callable/1.2.3:
     resolution:
       { integrity: sha512-J1DcMe8UYTBSrKezuIUTUwjXsho29693unXM2YhJUTR2txK/eG47bvNa/wipPFmZFgr/N6f1GA66dv0mEyTIyQ== }
+    engines: { node: ">= 0.4" }
+    dev: true
+
+  /is-callable/1.2.7:
+    resolution:
+      { integrity: sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA== }
     engines: { node: ">= 0.4" }
     dev: true
 
@@ -18723,6 +18766,14 @@ packages:
     engines: { node: ">= 0.4" }
     dev: true
 
+  /is-string/1.0.7:
+    resolution:
+      { integrity: sha512-tE2UXzivje6ofPW7l23cjDOMa09gb7xlAqG6jG5ej6uPV32TlWP3NKPigtaGeHNu9fohccRYvIiZMfOOnOYUtg== }
+    engines: { node: ">= 0.4" }
+    dependencies:
+      has-tostringtag: 1.0.0
+    dev: true
+
   /is-subdir/1.2.0:
     resolution:
       { integrity: sha512-2AT6j+gXe/1ueqbW6fLZJiIw3F8iXGJtt0yDrZaBhAZEG1raiTxKWU+IPqMCzQAXOUCKdA4UDMgacKH25XG2Cw== }
@@ -18736,7 +18787,7 @@ packages:
       { integrity: sha512-C/CPBqKWnvdcxqIARxyOh4v1UUEOCHpgDa0WYgpKDFMszcrPcffg5uhwSgPCLD2WWxmq6isisz87tzT01tuGhg== }
     engines: { node: ">= 0.4" }
     dependencies:
-      has-symbols: 1.0.2
+      has-symbols: 1.0.3
     dev: true
 
   /is-typedarray/1.0.0:
@@ -20657,6 +20708,11 @@ packages:
       fs-monkey: 1.0.3
     dev: true
 
+  /memoize-one/5.2.1:
+    resolution:
+      { integrity: sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q== }
+    dev: false
+
   /merge-descriptors/1.0.1:
     resolution:
       { integrity: sha512-cCi6g3/Zr1iqQi6ySbseM1Xvooa98N0w31jzUYrXPX2xqObmFGHJ0tQ5u74H3mVh7wLouTseZyYIq39g8cNp1w== }
@@ -21731,6 +21787,11 @@ packages:
       { integrity: sha512-e5mCJlSH7poANfC8z8S9s9S2IN5/4Zb3aZ33f5s8YqoazCFzNLloLU8r5VCG+G7WoqLvAAZoVMcy3tp/3X0Plw== }
     dev: true
 
+  /object-inspect/1.12.2:
+    resolution:
+      { integrity: sha512-z+cPxW0QGUp0mcqcsgQyLVRDoXFQbXOwBaqyF7VIgI4TWNQsDHrBpUQslRmIfAoYWdYzs6UlKJtB2XJpTaNSpQ== }
+    dev: true
+
   /object-is/1.0.2:
     resolution:
       { integrity: sha512-Epah+btZd5wrrfjkJZq1AOB9O6OxUQto45hzFd7lXGrpHPGE0W1k+426yrZV+k6NJOzLNNW/nVsmZdIWsAqoOQ== }
@@ -21923,7 +21984,8 @@ packages:
     dev: true
 
   /os-tmpdir/1.0.2:
-    resolution: { integrity: sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ= }
+    resolution:
+      { integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g== }
     engines: { node: ">=0.10.0" }
 
   /osenv/0.1.5:
@@ -23802,6 +23864,32 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
+  /react-virtualized-auto-sizer/1.0.7_sfoxds7t5ydpegc3knd667wn6m:
+    resolution:
+      { integrity: sha512-Mxi6lwOmjwIjC1X4gABXMJcKHsOo0xWl3E3ugOgufB8GJU+MqrtY35aBuvCYv/razQ1Vbp7h1gWJjGjoNN5pmA== }
+    engines: { node: ">8.0.0" }
+    peerDependencies:
+      react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
+      react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /react-window/1.8.7_sfoxds7t5ydpegc3knd667wn6m:
+    resolution:
+      { integrity: sha512-JHEZbPXBpKMmoNO1bNhoXOOLg/ujhL/BU4IqVU9r8eQPcy5KQnGHIHDRkJ0ns9IM5+Aq5LNwt3j8t3tIrePQzA== }
+    engines: { node: ">8.0.0" }
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      "@babel/runtime": 7.16.7
+      memoize-one: 5.2.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
   /react/17.0.2:
     resolution:
       { integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA== }
@@ -24917,8 +25005,8 @@ packages:
       { integrity: sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw== }
     dependencies:
       call-bind: 1.0.2
-      get-intrinsic: 1.1.1
-      object-inspect: 1.10.3
+      get-intrinsic: 1.1.3
+      object-inspect: 1.12.2
     dev: true
 
   /signal-exit/3.0.3:
@@ -26200,7 +26288,8 @@ packages:
     dev: true
 
   /tr46/0.0.3:
-    resolution: { integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o= }
+    resolution:
+      { integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw== }
 
   /tr46/2.0.2:
     resolution:
@@ -27805,7 +27894,7 @@ packages:
       is-bigint: 1.0.2
       is-boolean-object: 1.1.1
       is-number-object: 1.0.5
-      is-string: 1.0.6
+      is-string: 1.0.7
       is-symbol: 1.0.4
     dev: true
 
