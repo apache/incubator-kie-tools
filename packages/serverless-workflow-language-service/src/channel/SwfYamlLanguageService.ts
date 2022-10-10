@@ -75,18 +75,19 @@ export class SwfYamlLanguageService {
     const cursorOffset = doc.offsetAt(args.cursorPosition);
 
     if (
-      !rootNode ||
       args.content.slice(cursorOffset - 1, cursorOffset) === ":" ||
       args.content.slice(cursorOffset - 1, cursorOffset) === "-"
     ) {
       return [];
     }
 
-    const isCurrentNodeUncompleted = isNodeUncompleted({
-      ...args,
-      rootNode,
-      cursorOffset,
-    });
+    const isCurrentNodeUncompleted = rootNode
+      ? isNodeUncompleted({
+          ...args,
+          rootNode,
+          cursorOffset,
+        })
+      : false;
 
     if (isCurrentNodeUncompleted) {
       args.cursorPosition = Position.create(args.cursorPosition.line, args.cursorPosition.character - 1);
@@ -180,7 +181,7 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {
     const completionDump = dump(args.completion, {}).slice(0, -1);
 
-    if (["{}", "[]"].includes(completionDump)) {
+    if (["{}", "[]"].includes(completionDump) || args.completionItemKind === CompletionItemKind.Text) {
       return completionDump;
     }
 

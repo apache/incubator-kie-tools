@@ -419,6 +419,7 @@ describe("SWF LS JSON", () => {
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Text,
           label: "Create your first Serverless Workflow",
+          sortText: "100_Create your first Serverless Workflow",
           detail: "Start with a simple Serverless Workflow",
           textEdit: {
             range: { start: cursorPosition, end: cursorPosition },

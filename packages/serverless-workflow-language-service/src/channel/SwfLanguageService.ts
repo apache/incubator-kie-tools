@@ -86,7 +86,7 @@ export class SwfLanguageService {
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
-      return args.content.trim().length ? [] : getStartingSWFCodeCompletion(args);
+      return args.content.trim().length ? [] : [getStartingSWFCodeCompletion(args)];
     }
 
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
@@ -713,19 +713,19 @@ function toCompletionItemLabel(namespace: string, resource: string, operation: s
 function getStartingSWFCodeCompletion(args: {
   cursorPosition: Position;
   codeCompletionStrategy: CodeCompletionStrategy;
-}) {
+}): CompletionItem {
   const kind = CompletionItemKind.Text;
+  const label = "Create your first Serverless Workflow";
 
-  return [
-    {
-      kind,
-      label: "Create your first Serverless Workflow",
-      detail: "Start with a simple Serverless Workflow",
-      textEdit: {
-        newText: args.codeCompletionStrategy.translate({ completion: simpleTemplate, completionItemKind: kind }),
-        range: Range.create(args.cursorPosition, args.cursorPosition),
-      },
-      insertTextFormat: InsertTextFormat.Snippet,
+  return {
+    kind,
+    label,
+    detail: "Start with a simple Serverless Workflow",
+    sortText: `100_${label}`, //place the completion on top in the menu
+    textEdit: {
+      newText: args.codeCompletionStrategy.translate({ completion: simpleTemplate, completionItemKind: kind }),
+      range: Range.create(args.cursorPosition, args.cursorPosition),
     },
-  ];
+    insertTextFormat: InsertTextFormat.Snippet,
+  };
 }

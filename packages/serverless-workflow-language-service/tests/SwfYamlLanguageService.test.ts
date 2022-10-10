@@ -872,18 +872,17 @@ functions: []
         ["empty file with a newline before the cursor", `\n🎯`],
         ["empty file with a newline after the cursor", `🎯\n`],
       ])("%s", async (_description, content: ContentWithCursor) => {
-        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
-
-        let completionPosition = Position.create(0, 0);
+        let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
+          kind: CompletionItemKind.Text,
           label: "Create your first Serverless Workflow",
+          sortText: "100_Create your first Serverless Workflow",
           detail: "Start with a simple Serverless Workflow",
           textEdit: {
-            range: { start: completionPosition, end: completionPosition },
-            newText: dump(simpleTemplate, {}),
+            range: { start: cursorPosition, end: cursorPosition },
+            newText: dump(simpleTemplate, {}).slice(0, -1),
           },
           insertTextFormat: InsertTextFormat.Snippet,
         } as CompletionItem);
