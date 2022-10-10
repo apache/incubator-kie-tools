@@ -102,7 +102,7 @@ export function useSyncedCompanionFs(companionFsService: CompanionFsService) {
   );
 }
 
-export function useSyncedCompanionFsFile<T>(
+export function useCompanionFsFileSyncedWithWorkspaceFile<T>(
   companionFsService: CompanionFsService,
   workspaceId: string,
   workspaceFileRelativePath: string,
@@ -111,11 +111,11 @@ export function useSyncedCompanionFsFile<T>(
     workspaceFileEvent?: CompanionFsServiceBroadcastEvents
   ) => Promise<T | undefined>
 ) {
-  const [contentPromise, setContentPromise] = usePromiseState<T>();
+  const [promise, setPromise] = usePromiseState<T>();
 
   const refresh = useCallback(
     (cancellationToken: Holder<boolean>, companionFileEvent?: CompanionFsServiceBroadcastEvents) => {
-      setContentPromise({ loading: true });
+      setPromise({ loading: true });
       refreshCallback(cancellationToken, companionFileEvent)
         .then((newContent) => {
           if (cancellationToken.get()) {
@@ -123,16 +123,16 @@ export function useSyncedCompanionFsFile<T>(
           }
 
           if (newContent) {
-            setContentPromise({ data: newContent });
+            setPromise({ data: newContent });
           } else {
-            setContentPromise({ error: `Undefined content for companion file ${workspaceFileRelativePath}` });
+            setPromise({ error: `Undefined content for companion file ${workspaceFileRelativePath}` });
           }
         })
         .catch(() => {
-          setContentPromise({ error: `Error refreshing companion file ${workspaceFileRelativePath}` });
+          setPromise({ error: `Error refreshing companion file ${workspaceFileRelativePath}` });
         });
     },
-    [refreshCallback, setContentPromise, workspaceFileRelativePath]
+    [refreshCallback, setPromise, workspaceFileRelativePath]
   );
 
   // First time
@@ -182,5 +182,5 @@ export function useSyncedCompanionFsFile<T>(
     )
   );
 
-  return { contentPromise };
+  return { promise };
 }

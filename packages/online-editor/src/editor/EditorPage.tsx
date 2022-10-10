@@ -222,7 +222,7 @@ export function EditorPage(props: Props) {
   );
   // end (AUTO-SAVE)
 
-  // being (UPDATE SVG PREVIEWS)
+  // being (UPDATE PREVIEW SVGS)
   const updatePreviewSvg = useCallback(() => {
     editor?.getPreview().then((svgString) => {
       if (!workspaceFilePromise.data || !svgString) {
@@ -244,7 +244,7 @@ export function EditorPage(props: Props) {
 
   // Save SVG when opening a file for the first time, even without changing it.
   useEffect(updatePreviewSvg, [updatePreviewSvg]);
-  //end (UPDATE SVG PREVIEWS)
+  //end (UPDATE PREVIEW SVGS)
 
   useEffect(() => {
     alerts?.closeAll();

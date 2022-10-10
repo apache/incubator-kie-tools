@@ -294,6 +294,7 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"importFromUrlMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
+                {/* Allows for arrows to work when editing the text. */}
                 <MenuInput onKeyDown={(e) => e.stopPropagation()}>
                   <ImportFromUrlForm
                     importingError={importingError}
@@ -315,6 +316,7 @@ export function NewFileDropdownMenu(props: {
                   >
                     Import
                   </Button>
+                  ¸
                 </MenuInput>
               </DrilldownMenu>
             }

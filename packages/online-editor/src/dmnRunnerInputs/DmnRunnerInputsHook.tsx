@@ -43,10 +43,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   const [didUpdateInputRows, setDidUpdateInputRows] = useState<boolean>(false);
   const [didUpdateOutputRows, setDidUpdateOutputRows] = useState<boolean>(false);
 
-  // TODO: Use useSyncedCompanionFsFile for keeping the files synced.
-  //   I.e. When the DMN file is renamed, deleted, moved etc.
-
-  // TODO: Create useCompanionFsFile for keeping the `inputRows` up to date with updates made to it.
+  // TODO: Use useCompanionFsFile for keeping the `inputRows` up to date with updates made to it.
   //   I.e. When the DMN Runner Inputs file is changed
 
   useCancelableEffect(

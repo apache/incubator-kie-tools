@@ -17,13 +17,13 @@
 import { Holder } from "../reactExt/Hooks";
 import { useCallback } from "react";
 import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
-import { useSyncedCompanionFsFile } from "../companionFs/CompanionFsHooks";
+import { useCompanionFsFileSyncedWithWorkspaceFile } from "../companionFs/CompanionFsHooks";
 import { usePreviewSvgs } from "./PreviewSvgsContext";
 
 export function usePreviewSvg(workspaceId: string, workspaceFileRelativePath: string) {
   const { previewSvgService } = usePreviewSvgs();
 
-  const { contentPromise } = useSyncedCompanionFsFile(
+  const { promise: svgString } = useCompanionFsFileSyncedWithWorkspaceFile(
     previewSvgService.companionFsService,
     workspaceId,
     workspaceFileRelativePath,
@@ -45,5 +45,5 @@ export function usePreviewSvg(workspaceId: string, workspaceFileRelativePath: st
     )
   );
 
-  return { previewSvgString: contentPromise };
+  return { previewSvgString: svgString };
 }

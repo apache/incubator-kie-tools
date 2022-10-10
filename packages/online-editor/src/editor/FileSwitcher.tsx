@@ -584,6 +584,7 @@ export function SearchableFilesMenuGroup(props: {
 
   return (
     <MenuGroup label={props.label}>
+      {/* Allows for arrows to work when editing the text. */}
       <MenuInput onKeyDown={(e) => e.stopPropagation()}>
         <TextInput
           ref={searchInputRef}
@@ -785,7 +786,13 @@ export function FilesMenuItems(props: {
               allFiles={models}
             >
               {({ filteredFiles }) => (
-                <Gallery hasGutter={true} style={{ padding: "8px", borderTop: "1px solid lightgray" }}>
+                <Gallery
+                  hasGutter={true}
+                  style={{
+                    padding: "8px",
+                    borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+                  }}
+                >
                   {filteredFiles.slice(0, MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN).map((file) => (
                     <Card
                       key={file.relativePath}
@@ -806,8 +813,8 @@ export function FilesMenuItems(props: {
                         props.onSelectFile();
                       }}
                     >
-                      {/* The default display:flex makes the text overflow */}
                       <FileLink file={file}>
+                        {/* The default display:flex makes the text overflow */}
                         <CardHeader style={{ display: "block" }}>
                           <CardHeaderMain>
                             <FileListItem file={file} isEditable={true} />
