@@ -4957,11 +4957,13 @@ importers:
     specifiers:
       "@kie-tools-core/backend": workspace:*
       "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/guided-tour": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
@@ -4985,11 +4987,13 @@ importers:
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/vscode-extension": link:../vscode-extension
+      "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
       portfinder: 1.0.32
@@ -10634,6 +10638,28 @@ packages:
       { integrity: sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q== }
     dev: true
 
+  /@vscode/test-web/0.0.22:
+    resolution:
+      { integrity: sha512-sm4WYidw26eFb1AReC8w5y4aOMdBb5ma5x3ukRJcun9iUB1ajz2nM18rxiYAVimUzrIMQHr9WqC8HYBYP8aNKQ== }
+    engines: { node: ">=8.9.3" }
+    hasBin: true
+    dependencies:
+      "@koa/router": 10.1.1
+      decompress: 4.2.1
+      decompress-targz: 4.1.1
+      http-proxy-agent: 5.0.0
+      https-proxy-agent: 5.0.1
+      koa: 2.13.4
+      koa-morgan: 1.0.1
+      koa-mount: 4.0.0
+      koa-static: 5.0.0
+      minimist: 1.2.6
+      playwright: 1.26.1
+      vscode-uri: 3.0.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@vscode/test-web/0.0.30:
     resolution:
       { integrity: sha512-l1StjU5FINfgVrgaKxSrbh+wrpZiFqTT5uQ/r1qano2yn9zWYmZUczQjjzzcUI0m4/38IPkwwI3gezSwdkKtpQ== }
@@ -11729,7 +11755,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -11738,7 +11764,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -17049,7 +17075,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
+  /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -17058,6 +17084,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -18021,7 +18049,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug

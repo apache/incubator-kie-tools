@@ -19,10 +19,8 @@ import { DashbuilderViewerFactory } from "@kie-tools/dashbuilder-viewer";
 
 declare const acquireVsCodeApi: any;
 
-const componentsServerUrl = "http://localhost:8001";
-
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new DashbuilderViewerFactory(componentsServerUrl),
+  editorFactory: new DashbuilderViewerFactory(),
 });

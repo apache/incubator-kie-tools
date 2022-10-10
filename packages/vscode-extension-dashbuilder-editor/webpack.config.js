@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,13 @@ module.exports = async (env) => [
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
+    },
+    plugins: [],
+  }),
+  merge(commonConfig(env), {
+    target: "web",
+    entry: {
+      "browser/extension": "./src/browser/extension.ts",
     },
     plugins: [],
   }),

@@ -13,6 +13,7 @@ node('rhel8') {
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_dmn_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_pmml_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_serverless_workflow_editor_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_dashbuilder_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_red_hat_business_automation_bundle_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_kogito_bundle_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_kie_ba_bundle_$VERSION.vsix"'

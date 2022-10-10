@@ -24,12 +24,6 @@ import { DashbuilderViewerChannelApi } from "./DashbuilderViewerChannelApi";
 import { getDashbuilderLanguageData, Resource } from "../api/DashbuilderLanguageData";
 
 export class DashbuilderViewerFactory implements EditorFactory<Editor, DashbuilderViewerChannelApi> {
-  componentServerUrl?: string;
-
-  constructor(componentsServerUrl?: string) {
-    this.componentServerUrl = componentsServerUrl;
-  }
-
   public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
     initArgs: EditorInitArgs
@@ -37,8 +31,7 @@ export class DashbuilderViewerFactory implements EditorFactory<Editor, Dashbuild
     appendLoaderContainer();
     const langData = getDashbuilderLanguageData(initArgs.resourcesPathPrefix);
     langData.resources.forEach((resource) => loadResource(resource));
-
-    return new DashbuilderViewerView(ctx, initArgs, this.componentServerUrl);
+    return new DashbuilderViewerView(ctx, initArgs);
   }
 }
 

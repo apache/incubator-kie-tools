@@ -35,16 +35,17 @@ export class DashbuilderViewerView implements Editor {
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
-    private readonly initArgs: EditorInitArgs,
-    private componentServerUrl?: string
+    private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
-    this.dashbuilderWrapper = new DashbuilderWrapper(() =>
-      envelopeContext.channelApi.notifications.kogitoEditor_ready.send()
-    );
-    if (componentServerUrl) {
-      this.dashbuilderWrapper.setComponentServerUrl(componentServerUrl);
-    }
+    this.dashbuilderWrapper = new DashbuilderWrapper(() => {
+      envelopeContext.channelApi.requests.getComponentsServerUrl().then((componentServerUrl) => {
+        if (componentServerUrl) {
+          this.dashbuilderWrapper.setComponentServerUrl(componentServerUrl);
+        }
+      });
+      envelopeContext.channelApi.notifications.kogitoEditor_ready.send();
+    });
   }
 
   public async getElementPosition() {

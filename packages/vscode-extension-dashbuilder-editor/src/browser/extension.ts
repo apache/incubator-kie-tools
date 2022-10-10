@@ -20,29 +20,17 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import * as path from "path";
-import { BackendManagerService } from "@kie-tools-core/backend/dist/api";
-import { ComponentServer } from "./ComponentsHttpServer";
-import { DashbuilderVsCodeExtensionConfiguration } from "./configuration";
-import { setupDashboardEditorControls } from "./setupDashboardEditorControls";
+import { DashbuilderVsCodeExtensionConfiguration } from "../extension/configuration";
+import { setupDashboardEditorControls } from "../extension/setupDashboardEditorControls";
 import { DashbuilderViewerChannelApiProducer } from "../api/DashbuilderViewerChannelApiProducer";
 
-let backendProxy: VsCodeBackendProxy;
+const componentServerUrl = "https://start.kubesmarts.org/dashbuilder-client/dashbuilder/component";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
-  const componentsPath = path.join(context.extensionPath, "/dist/webview/dashbuilder/component/");
-  const componentServer = new ComponentServer(componentsPath);
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  const backendManager = new BackendManagerService({ localHttpServer: componentServer });
-  backendProxy = new VsCodeBackendProxy(context, backendI18n);
-
-  backendProxy.registerBackendManager(backendManager);
-
-  await backendManager.start().catch((e) => {
-    console.info("Not able to start component server.");
-  });
+  const backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
   context.subscriptions.push(
     new vscode.Disposable(() => {
@@ -69,12 +57,7 @@ export async function activate(context: vscode.ExtensionContext) {
         envelopePath: "dist/webview/DashbuilderEditorEnvelopeApp.js",
       }),
     ]),
-    channelApiProducer: new DashbuilderViewerChannelApiProducer(
-      new Promise((resolve) => {
-        const componentServerUrl = `http://localhost:${componentServer.getPort()}`;
-        resolve(componentServerUrl);
-      })
-    ),
+    channelApiProducer: new DashbuilderViewerChannelApiProducer(new Promise((resolve) => resolve(componentServerUrl))),
     backendProxy: backendProxy,
   });
 
