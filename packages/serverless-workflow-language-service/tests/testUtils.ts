@@ -40,8 +40,8 @@ export function getLineFromOffset(fullText: string, offset: number | undefined, 
 
 export type ContentWithCursor = `${string}🎯${string}`;
 
-export function treat(content: ContentWithCursor) {
-  const trimmedContent = content.trim();
+export function treat(content: ContentWithCursor, trimContent = true) {
+  const trimmedContent = trimContent ? content.trim() : content;
   const treatedContent = trimmedContent.replace("🎯", "");
   const doc = TextDocument.create("", "json", 0, trimmedContent);
   const cursorOffset = trimmedContent.indexOf("🎯");
@@ -63,9 +63,10 @@ export function trim(content: string) {
 export async function codeCompletionTester(
   ls: SwfJsonLanguageService | SwfYamlLanguageService,
   documentUri: DocumentUri,
-  contentToParse: ContentWithCursor
+  contentToParse: ContentWithCursor,
+  trimContent = true
 ): Promise<{ completionItems: CompletionItem[]; cursorPosition: Position }> {
-  const { content, cursorPosition } = treat(contentToParse);
+  const { content, cursorPosition } = treat(contentToParse, trimContent);
 
   return {
     completionItems: await ls.getCompletionItems({

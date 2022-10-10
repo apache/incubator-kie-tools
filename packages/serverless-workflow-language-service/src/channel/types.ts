@@ -16,6 +16,7 @@
 
 import { Position, TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItemKind, Range } from "vscode-languageserver-types";
+import { SwfLanguageServiceCommandTypes } from "../api";
 
 // types SwfJsonPath, SwfLsNode, SwfLsNodeType need to be compatible with jsonc types
 export declare type SwfJsonPath = (string | number)[];
@@ -42,6 +43,12 @@ export interface ShouldCompleteArgs {
   cursorOffset: number;
 }
 
+export interface ShouldCreateCodelensArgs {
+  content: string;
+  node: SwfLsNode;
+  commandName: SwfLanguageServiceCommandTypes;
+}
+
 export interface TranslateArgs {
   completion: object | string;
   completionItemKind: CompletionItemKind;
@@ -53,4 +60,5 @@ export interface CodeCompletionStrategy {
   formatLabel(label: string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;
   getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined;
+  shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean;
 }

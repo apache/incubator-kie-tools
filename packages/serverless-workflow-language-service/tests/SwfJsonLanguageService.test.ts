@@ -25,7 +25,7 @@ import {
   testRelativeFunction1,
   testRelativeService1,
 } from "./SwfLanguageServiceConfigs";
-import { codeCompletionTester, getStartNodeValuePositionTester, trim } from "./testUtils";
+import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, trim } from "./testUtils";
 
 const documentUri = "test.sw.json";
 
@@ -397,16 +397,13 @@ describe("SWF LS JSON", () => {
     });
 
     describe("function completion", () => {
-      test("empty completion items", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {🎯}
-  ]
-}`
-        );
+      test.each([
+        ["empty completion items", `{ "functions": [ {🎯} ] }`],
+        ["pointing before the array of functions", `{ "functions":🎯 [] }`],
+        ["pointing before the array of functions / with extra space after ':'", `{ "functions": 🎯 [] }`],
+        ["pointing after the array of functions", `{ "functions": []🎯 }`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems).toHaveLength(0);
       });
