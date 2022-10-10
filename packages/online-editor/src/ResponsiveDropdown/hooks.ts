@@ -5,28 +5,21 @@ import {
   responsiveBreakpoints,
 } from "../responsiveBreakpoints/ResponsiveBreakpoints";
 
-function debounce(func: (...args: any) => any, timeout: number) {
-  let ready = true;
-  return (...args: any) => {
-    if (!ready) {
-      return;
-    }
-
-    ready = false;
-    func(...args);
-    setTimeout(() => {
-      ready = true;
-    }, timeout);
-  };
-}
-
 export function useWindowWidth() {
   const [width, setWidth] = useState(() => window.innerWidth);
 
   useEffect(() => {
-    const getWidth = debounce(() => setWidth(window.innerWidth), 200);
-    window.addEventListener("resize", getWidth);
-    return () => window.removeEventListener("resize", getWidth);
+    let task: ReturnType<typeof setTimeout>;
+    const refreshWidth = () => {
+      clearTimeout(task);
+      task = setTimeout(() => setWidth(window.innerWidth), 100);
+    };
+
+    window.addEventListener("resize", refreshWidth);
+    return () => {
+      window.removeEventListener("resize", refreshWidth);
+      clearTimeout(task);
+    };
   }, []);
 
   return width;

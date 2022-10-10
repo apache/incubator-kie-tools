@@ -316,7 +316,6 @@ export function NewFileDropdownMenu(props: {
                   >
                     Import
                   </Button>
-                  ¸
                 </MenuInput>
               </DrilldownMenu>
             }
