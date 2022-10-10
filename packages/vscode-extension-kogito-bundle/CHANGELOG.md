@@ -1,3 +1,12 @@
+# 0.24.0 (alpha)
+
+- [KOGITO-7365](https://issues.redhat.com/browse/KOGITO-7365) - [SWF Editor] Defining an API to get the node name of text line selected
+- [KOGITO-7568](https://issues.redhat.com/browse/KOGITO-7568) - Use the YAML API in SWF Text editor and VSCode ext
+- [KOGITO-7912](https://issues.redhat.com/browse/KOGITO-7912) - [SWF Editor] Add YAML autocompletion to Serverless Logic Web Tools
+- [KOGITO-7366](https://issues.redhat.com/browse/KOGITO-7366) - [SWF Editor] Channel to GWT bridge to highlight a node
+- [KOGITO-8063](https://issues.redhat.com/browse/KOGITO-8063) - [SWF Editor] Disable cross-language autocompletion in YAML
+- [KOGITO-7199](https://issues.redhat.com/browse/KOGITO-7199) - SWF Viewer - Usability improvements for mediators (Mouse Pointers)
+
 # 0.23.0 (alpha)
 
 - [KOGITO-7663](https://issues.redhat.com/browse/KOGITO-7663) - Fix inconsistency in filename template description and default value
