@@ -1772,7 +1772,7 @@ importers:
       "@types/testing-library__react": ^9.1.2
       copy-webpack-plugin: ^8.1.1
       cross-var: ^1.1.0
-      electron: ^15.5.0
+      electron: ^15.5.7
       electron-packager: ^15.2.0
       electron-rebuild: ^2.3.5
       jest: ^26.6.3
