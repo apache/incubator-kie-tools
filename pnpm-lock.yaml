@@ -1772,7 +1772,7 @@ importers:
       "@types/testing-library__react": ^9.1.2
       copy-webpack-plugin: ^8.1.1
       cross-var: ^1.1.0
-      electron: ^12.0.11
+      electron: ^15.5.0
       electron-packager: ^15.2.0
       electron-rebuild: ^2.3.5
       jest: ^26.6.3
@@ -1800,7 +1800,7 @@ importers:
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      electron: 12.2.3
+      electron: 15.5.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
@@ -1831,7 +1831,7 @@ importers:
       jest-when: 3.5.0_jest@26.6.3
       rimraf: 3.0.2
       run-script-os: 1.1.6
-      spectron: 14.0.0_electron@12.2.3
+      spectron: 14.0.0_electron@15.5.7
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       webpack: 5.70.0_webpack-cli@4.7.0
@@ -7622,14 +7622,33 @@ packages:
       global-tunnel-ng: 2.7.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
-  /@electron/remote/1.1.0_electron@12.2.3:
+  /@electron/get/1.14.1:
+    resolution:
+      { integrity: sha512-BrZYyL/6m0ZXz/lDxy/nlVhQz+WF+iPS6qXolEU8atw7h6v1aYkjwJZ63m+bJMBTxDE66X+r2tPS4a/8C82sZw== }
+    engines: { node: ">=8.6" }
+    dependencies:
+      debug: 4.3.3
+      env-paths: 2.2.1
+      fs-extra: 8.1.0
+      got: 9.6.0
+      progress: 2.0.3
+      semver: 6.3.0
+      sumchecker: 3.0.1
+    optionalDependencies:
+      global-agent: 3.0.0
+      global-tunnel-ng: 2.7.1
+    transitivePeerDependencies:
+      - supports-color
+
+  /@electron/remote/1.1.0_electron@15.5.7:
     resolution:
       { integrity: sha512-yr8gZTkIgJYKbFqExI4QZqMSjn1kL/us9Dl46+TH1EZdhgRtsJ6HDfdsIxu0QEc6Hv+DMAXs69rgquH+8FDk4w== }
     peerDependencies:
       electron: ">= 10.0.0-beta.1"
     dependencies:
-      electron: 12.2.3
+      electron: 15.5.7
     dev: true
 
   /@eslint/eslintrc/0.4.1:
@@ -13856,6 +13875,7 @@ packages:
     resolution:
       { integrity: sha512-vVl8j8ph6tRS3B8qir40H7yw7voy17xL0piAjlbBUsH7WIfzoedL/ZOr1OV9FyZQLWXsayOJyV4tnRyXR85/ag== }
     requiresBuild: true
+    dev: true
 
   /core-util-is/1.0.2:
     resolution:
@@ -15015,7 +15035,8 @@ packages:
     dev: true
 
   /decompress-response/3.3.0:
-    resolution: { integrity: sha1-gKTdMjdIOEv6JICDYirt7Jgq3/M= }
+    resolution:
+      { integrity: sha512-BzRPQuY1ip+qDonAOz42gRm/pg9F768C+npV/4JOsxRC2sq+Rlk+Q4ZCAsOhnIaMrgarILY+RMUIvMmmX1qAEA== }
     engines: { node: ">=4" }
     dependencies:
       mimic-response: 1.0.1
@@ -15536,7 +15557,8 @@ packages:
     dev: true
 
   /duplexer3/0.1.4:
-    resolution: { integrity: sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI= }
+    resolution:
+      { integrity: sha512-CEj8FwwNA4cVH2uFCoHUrmojhYh1vmCdOaneKJXwkeY1i9jnlslVo9dx+hQ5Hl9GnH/Bwy/IjxAyOePyPKYnzA== }
 
   /duplexify/3.7.1:
     resolution:
@@ -15588,7 +15610,7 @@ packages:
     hasBin: true
     requiresBuild: true
     dependencies:
-      "@electron/get": 1.12.4
+      "@electron/get": 1.14.1
       extract-zip: 2.0.1
     transitivePeerDependencies:
       - supports-color
@@ -15673,14 +15695,14 @@ packages:
       { integrity: sha512-Huen6taaVrUrSy8o7mGStByba8PfOWWluHNxSHGBrCgEdFVLtvdQDBr9LBCF9Uci8SYxh28QNNMO0oC17wbGAg== }
     dev: true
 
-  /electron/12.2.3:
+  /electron/15.5.7:
     resolution:
-      { integrity: sha512-B27c7eqx1bC5kea6An8oVhk1pShNC4VGqWarHMhD47MDtmg54KepHO5AbAvmKKZK/jWN7NTC7wyCYTDElJNtQA== }
+      { integrity: sha512-n4mVlxoMc4eYx07wWFWGficL+iOMz5xZEf5dBtE/wwLm0fQpYVyW4AlknMFG9F8Css0MM0JSwNMOyRg5e1vDtg== }
     engines: { node: ">= 8.6" }
     hasBin: true
     requiresBuild: true
     dependencies:
-      "@electron/get": 1.12.4
+      "@electron/get": 1.14.1
       "@types/node": 14.17.0
       extract-zip: 1.7.0
     transitivePeerDependencies:
@@ -17422,7 +17444,22 @@ packages:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.4
-      semver: 7.3.5
+      semver: 7.3.7
+      serialize-error: 7.0.1
+    dev: true
+    optional: true
+
+  /global-agent/3.0.0:
+    resolution:
+      { integrity: sha512-PT6XReJ+D07JvGoxQMkT6qji/jVNfX/h364XHZOWeRzy64sSFr+xJ5OX7LI3b4MPQzdL4H8Y8M0xzPpsVMwA8Q== }
+    engines: { node: ">=10.0" }
+    requiresBuild: true
+    dependencies:
+      boolean: 3.0.4
+      es6-error: 4.1.1
+      matcher: 3.0.0
+      roarr: 2.15.4
+      semver: 7.3.7
       serialize-error: 7.0.1
     optional: true
 
@@ -19508,7 +19545,8 @@ packages:
     dev: true
 
   /json-buffer/3.0.0:
-    resolution: { integrity: sha1-Wx85evx11ne96Lz8Dkfh+aPZqJg= }
+    resolution:
+      { integrity: sha512-CuUqjv0FUZIdXkHPI8MezCnFCdaTAacej1TZYulLoAg1h/PhwkdXFN4V/gzY4g+fMBCOV2xF+rp7t2XD2ns/NQ== }
 
   /json-buffer/3.0.1:
     resolution:
@@ -19599,7 +19637,8 @@ packages:
       { integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA== }
 
   /jsonfile/4.0.0:
-    resolution: { integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss= }
+    resolution:
+      { integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg== }
     optionalDependencies:
       graceful-fs: 4.2.10
 
@@ -21361,7 +21400,7 @@ packages:
       npmlog: 4.1.2
       request: 2.88.2
       rimraf: 3.0.2
-      semver: 7.3.5
+      semver: 7.3.7
       tar: 6.1.11
       which: 2.0.2
     dev: true
@@ -22424,7 +22463,8 @@ packages:
     dev: true
 
   /pify/3.0.0:
-    resolution: { integrity: sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY= }
+    resolution:
+      { integrity: sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg== }
     engines: { node: ">=4" }
 
   /pify/4.0.1:
@@ -23075,7 +23115,8 @@ packages:
     dev: true
 
   /prepend-http/2.0.0:
-    resolution: { integrity: sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc= }
+    resolution:
+      { integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA== }
     engines: { node: ">=4" }
 
   /prettier/2.3.0:
@@ -24299,7 +24340,8 @@ packages:
     dev: true
 
   /responselike/1.0.2:
-    resolution: { integrity: sha1-kYcg7ztjHFZCvgaPFa3lpG9Loec= }
+    resolution:
+      { integrity: sha512-/Fpe5guzJk1gPqdJLJR5u7eG/gNY4nImjbRDaVWVMRhne55TCmj2i9Q+54PBRfatRC8v/rIiv9BN0pMd9OV5EQ== }
     dependencies:
       lowercase-keys: 1.0.1
 
@@ -24669,7 +24711,8 @@ packages:
     dev: true
 
   /semver-compare/1.0.0:
-    resolution: { integrity: sha1-De4hahyUGrN+nvsXiPavxf9VN/w= }
+    resolution:
+      { integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow== }
     optional: true
 
   /semver-range-intersect/0.3.1:
@@ -24718,7 +24761,6 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
-    dev: true
 
   /send/0.17.1:
     resolution:
@@ -25266,13 +25308,13 @@ packages:
       - supports-color
     dev: true
 
-  /spectron/14.0.0_electron@12.2.3:
+  /spectron/14.0.0_electron@15.5.7:
     resolution:
       { integrity: sha512-88GM7D1eLiTxjByjtY7lxU7CJcQ92kX1x0WfnADaIXqqYRLbI1KlIWxXz1Xm5UxuMJh5N847K0NONG49mvZtuw== }
     engines: { node: ">=10.12.0" }
     requiresBuild: true
     dependencies:
-      "@electron/remote": 1.1.0_electron@12.2.3
+      "@electron/remote": 1.1.0_electron@15.5.7
       dev-null: 0.1.1
       electron-chromedriver: 12.0.0
       got: 11.8.2
@@ -26763,7 +26805,8 @@ packages:
     dev: true
 
   /url-parse-lax/3.0.0:
-    resolution: { integrity: sha1-FrXK/Afb42dsGxmZF3gj1lA6yww= }
+    resolution:
+      { integrity: sha512-NjFKA0DidqPa5ciFcSrXnAltTtzz84ogy+NebPvfEgAck0+TNg4UJ4IN+fB7zRZfbgUf0syOo9MDxFkDSMuFaQ== }
     engines: { node: ">=4" }
     dependencies:
       prepend-http: 2.0.0
