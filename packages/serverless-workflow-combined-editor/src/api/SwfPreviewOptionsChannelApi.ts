@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package common
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
-import (
-	"bufio"
-	"fmt"
-	"io"
-)
+export interface SwfPreviewOptions {
+  diagramDefaultWidth?: string;
+}
 
-func VerboseLog(stdout io.Reader, stderr io.Reader) {
-	stdoutScanner := bufio.NewScanner(stdout)
-	for stdoutScanner.Scan() {
-		m := stdoutScanner.Text()
-		fmt.Println(m)
-	}
-
-	stderrScanner := bufio.NewScanner(stderr)
-	for stderrScanner.Scan() {
-		m := stderrScanner.Text()
-		fmt.Println(m)
-	}
+export interface SwfPreviewOptionsChannelApi {
+  kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions>;
 }

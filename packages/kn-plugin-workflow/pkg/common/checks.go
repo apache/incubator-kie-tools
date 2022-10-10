@@ -21,6 +21,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
 func CheckJavaDependencies() error {
@@ -39,7 +41,7 @@ func checkJava() error {
 	version, err := javaCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Java not found")
-		fmt.Printf("At least Java %.2d is required to use this command\n", JAVA_VERSION)
+		fmt.Printf("At least Java %.2d is required to use this command\n", metadata.JAVA_VERSION)
 		return err
 	}
 	userJavaVersion, err := parseJavaVersion(string(version))
@@ -47,8 +49,8 @@ func checkJava() error {
 		return fmt.Errorf("error while parsing Java version: %w", err)
 	}
 
-	if userJavaVersion < JAVA_VERSION {
-		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", JAVA_VERSION)
+	if userJavaVersion < metadata.JAVA_VERSION {
+		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", metadata.JAVA_VERSION)
 		fmt.Println("Installation stopped. Please upgrade Java and run again")
 		os.Exit(1)
 	} else {
@@ -62,7 +64,7 @@ func checkMaven() error {
 	version, err := mavenCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Maven not found")
-		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", MAVEN_MAJOR_VERSION, MAVEN_MINOR_VERSION)
+		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", metadata.MAVEN_MAJOR_VERSION, metadata.MAVEN_MINOR_VERSION)
 		return err
 	}
 	major, minor, err := parseMavenVersion(string(version))
@@ -70,7 +72,7 @@ func checkMaven() error {
 		return fmt.Errorf("error while parsing Maven version: %w", err)
 	}
 
-	if major < MAVEN_MAJOR_VERSION && minor < MAVEN_MINOR_VERSION {
+	if major < metadata.MAVEN_MAJOR_VERSION && minor < metadata.MAVEN_MINOR_VERSION {
 		fmt.Printf("ERROR: Please make sure you are using Maven version %d.%d.1 or later", major, minor)
 		fmt.Println("Installation stopped. Please upgrade Maven and run again")
 		os.Exit(1)

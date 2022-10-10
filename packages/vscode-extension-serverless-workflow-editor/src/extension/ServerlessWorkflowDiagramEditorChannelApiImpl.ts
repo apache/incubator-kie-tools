@@ -212,7 +212,7 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
   }
 
-  public kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string; documentUri?: string }): void {
+  public kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string }): void {
     this.diagramEditorEnvelopeApi?.notifications.kogitoSwfDiagramEditor__highlightNode.send(args);
   }
 
