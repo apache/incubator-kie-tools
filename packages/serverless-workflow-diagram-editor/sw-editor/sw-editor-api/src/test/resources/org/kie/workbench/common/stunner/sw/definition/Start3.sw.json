@@ -1,0 +1,29 @@
+{
+  "id": "start3Test",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "Start 3 Test Workflow",
+  "description": "Start 3 Test Workflow - Object Type - First State as Start",
+  "start": {
+    "stateName": "First State",
+    "schedule": "1983-12-25T22:00:00Z/PT2H"
+  },
+  "states": [
+    {
+      "name": "First State",
+      "type": "inject",
+      "data": {
+        "result": "First State!"
+      },
+      "end": true
+    },
+    {
+      "name": "Second State",
+      "type": "inject",
+      "data": {
+        "result": "Second State!"
+      },
+      "end": true
+    }
+  ]
+}
