@@ -32,7 +32,6 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
                    RequiresResize {
 
     public static final String CURSOR = "cursor";
-    public static final String CURSOR_NOT_ALLOWED = "not-allowed";
 
     private final ResizeFlowPanel mainPanel = new ResizeFlowPanel();
     private CanvasPanel canvasPanel;
@@ -64,18 +63,9 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
 
     @Override
     public V setCursor(final AbstractCanvas.Cursors cursor) {
-        if (AbstractCanvas.Cursors.NOT_ALLOWED.equals(cursor)) {
-            Style style = canvasPanel.asWidget().getElement().getStyle();
-            style.setProperty(CURSOR, CURSOR_NOT_ALLOWED);
-        } else {
-            setViewCursor(cursor);
-        }
-        return cast();
-    }
-
-    protected void setViewCursor(final AbstractCanvas.Cursors cursor) {
         final Style style = canvasPanel.asWidget().getElement().getStyle();
-        style.setCursor(toViewCursor(cursor));
+        style.setProperty(CURSOR, toLienzoCursorKey(cursor));
+        return cast();
     }
 
     @Override
@@ -118,6 +108,23 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
                 return Style.Cursor.COL_RESIZE;
         }
         return Style.Cursor.DEFAULT;
+    }
+
+    public static String toLienzoCursorKey(final AbstractCanvas.Cursors cursor) {
+        switch (cursor) {
+            default:
+                return toViewCursor(cursor).getCssName();
+            case NOT_ALLOWED:
+                return "not-allowed";
+            case ZOOM_IN:
+                return "zoom-in";
+            case ZOOM_OUT:
+                return "zoom-out";
+            case GRAB:
+                return "grab";
+            case GRABBING:
+                return "grabbing";
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -54,7 +54,11 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
         WAIT,
         CROSSHAIR,
         ROW_RESIZE,
-        COL_RESIZE;
+        COL_RESIZE,
+        ZOOM_IN,
+        ZOOM_OUT,
+        GRAB,
+        GRABBING
     }
 
     public interface CanvasView<C extends CanvasView> extends IsWidget {
