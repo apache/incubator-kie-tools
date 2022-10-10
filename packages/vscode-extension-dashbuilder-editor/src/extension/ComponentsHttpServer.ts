@@ -18,6 +18,7 @@ import { LocalHttpServer } from "@kie-tools-core/backend/dist/api";
 import { getPortPromise } from "portfinder";
 import * as http from "http";
 import * as fs from "fs";
+import * as path from "path";
 
 export class ComponentServer extends LocalHttpServer {
   private componentsPath: string;
@@ -30,8 +31,15 @@ export class ComponentServer extends LocalHttpServer {
       return;
     }
 
-    const filePath = this.componentsPath + request.url;
+    var userInput = path.normalize(request.url).replace(/^(\.\.(\/|\\|$))+/, "");
+    var filePath = path.join(this.componentsPath, userInput);
+    if (filePath.indexOf(this.componentsPath) !== 0) {
+      console.debug("Denying access to file " + filePath);
+      response.writeHead(403);
+      return;
+    }
     console.debug("Requesting file: " + filePath);
+
     fs.readFile(filePath, function (error, content) {
       if (error) {
         if (error.code == "ENOENT") {
