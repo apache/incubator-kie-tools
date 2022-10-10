@@ -82,7 +82,9 @@ public class PanelMediators {
         zoomMediator = new MouseWheelZoomMediator(eventFilterZoom)
                 .setMinScale(MIN_SCALE)
                 .setMaxScale(MAX_SCALE)
-                .setZoomFactor(ZOOM_FACTOR);
+                .setZoomFactor(ZOOM_FACTOR)
+                .setXConstrained(true)
+                .setYConstrained(true);
 
         panMediator = new MousePanMediator(eventFilterPan)
                 .setXConstrained(true)
