@@ -406,7 +406,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                         style={{ width: "100%" }}
                         spaceItems={{ default: "spaceItemsNone" }}
                       >
-                        <FlexItem>{`Delete` + " "}</FlexItem>
+                        <FlexItem>{"Delete "}</FlexItem>
                         <FlexItem style={{ minWidth: 0 }}>
                           <Tooltip distance={5} position={"top-start"} content={workspace.descriptor.name}>
                             <TextContent>

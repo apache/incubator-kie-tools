@@ -108,7 +108,7 @@ export class CompanionFsService {
       return;
     }
 
-    return this.storageService.renameFile(this.getFs(args.workspaceId), file, `${newFileNameWithoutExtension}`);
+    return this.storageService.renameFile(this.getFs(args.workspaceId), file, newFileNameWithoutExtension);
   }
 
   public deleteAll(workspaceId: string) {

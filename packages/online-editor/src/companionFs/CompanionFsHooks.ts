@@ -74,7 +74,7 @@ export function useSyncedCompanionFs(companionFsService: CompanionFsService) {
               .get({ workspaceId: data.workspaceId, workspaceFileRelativePath: data.oldRelativePath })
               .then(async (file) => {
                 const companionFileContentBeforeRenaming = await file?.getFileContents();
-                if (!companionFileContentBeforeRenaming) {
+                if (canceled.get() || !companionFileContentBeforeRenaming) {
                   return;
                 }
                 await companionFsService.createOrOverwrite(
@@ -169,7 +169,7 @@ export function useCompanionFsFileSyncedWithWorkspaceFile<T>(
           } else if (data.type === "CFSF_ADD" || data.type === "CFSF_UPDATE" || data.type === "CFSF_DELETE") {
             refresh(canceled, data);
           } else {
-            throw new Error("Impossible scenario for companion file." + JSON.stringify(data));
+            throw new Error(`Impossible scenario for companion file. ${JSON.stringify(data)}`);
           }
         };
 
