@@ -44,6 +44,7 @@ import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { doRefValidation } from "./refValidation";
 import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
+import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107

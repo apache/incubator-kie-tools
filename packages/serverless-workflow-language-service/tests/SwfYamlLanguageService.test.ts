@@ -719,169 +719,170 @@ states:
 functions: 
 - `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(1);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("add function - using JSON format", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
+        expect(codeLenses).toHaveLength(1);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("add function - using JSON format", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const { content } = trim(`
 ---
 functions: [] `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(0);
-    });
-
-    test("service registries integration disabled", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: {
-          ...defaultConfig,
-          shouldDisplayServiceRegistriesIntegration: async () => Promise.resolve(false),
-          shouldConfigureServiceRegistries: () => true,
-          shouldServiceRegistriesLogIn: () => true,
-          canRefreshServices: () => true,
-        },
+        expect(codeLenses).toHaveLength(0);
       });
 
-      const { content } = trim(`
+      test("service registries integration disabled", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: {
+            ...defaultConfig,
+            shouldDisplayServiceRegistriesIntegration: async () => Promise.resolve(false),
+            shouldConfigureServiceRegistries: () => true,
+            shouldServiceRegistriesLogIn: () => true,
+            canRefreshServices: () => true,
+          },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(1);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("login to service registries", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        expect(codeLenses).toHaveLength(1);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("login to service registries", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          command: "swf.ls.commands.LogInServiceRegistries",
-          title: "↪ Log in Service Registries...",
-          arguments: [{ position: { character: 0, line: 2 } }],
-        },
-      });
-      expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("setup service registries", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: {
-          ...defaultConfig,
-          shouldConfigureServiceRegistries: () => true,
-        },
+        expect(codeLenses).toHaveLength(2);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            command: "swf.ls.commands.LogInServiceRegistries",
+            title: "↪ Log in Service Registries...",
+            arguments: [{ position: { character: 0, line: 2 } }],
+          },
+        });
+        expect(codeLenses[1]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("setup service registries", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: {
+            ...defaultConfig,
+            shouldConfigureServiceRegistries: () => true,
+          },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          command: "swf.ls.commands.OpenServiceRegistriesConfig",
-          title: "↪ Setup Service Registries...",
-          arguments: [{ position: { character: 0, line: 2 } }],
-        },
-      });
-      expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("refresh service registries", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: {
-          ...defaultConfig,
-          canRefreshServices: () => true,
-        },
+        expect(codeLenses).toHaveLength(2);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            command: "swf.ls.commands.OpenServiceRegistriesConfig",
+            title: "↪ Setup Service Registries...",
+            arguments: [{ position: { character: 0, line: 2 } }],
+          },
+        });
+        expect(codeLenses[1]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("refresh service registries", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: {
+            ...defaultConfig,
+            canRefreshServices: () => true,
+          },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          command: "swf.ls.commands.RefreshServiceRegistries",
-          title: "↺ Refresh Service Registries...",
-          arguments: [{ position: { character: 0, line: 2 } }],
-        },
+        expect(codeLenses).toHaveLength(2);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            command: "swf.ls.commands.RefreshServiceRegistries",
+            title: "↺ Refresh Service Registries...",
+            arguments: [{ position: { character: 0, line: 2 } }],
+          },
+        });
+        expect(codeLenses[1]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
-      expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
     });
   });
 
