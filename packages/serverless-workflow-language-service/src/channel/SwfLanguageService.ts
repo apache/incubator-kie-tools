@@ -32,7 +32,12 @@ import {
   Position,
   Range,
 } from "vscode-languageserver-types";
-import { FileLanguage, SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
+import {
+  FileLanguage,
+  SwfLanguageServiceCommandArgs,
+  SwfLanguageServiceCommandExecution,
+  SwfLanguageServiceCommandTypes,
+} from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import * as swfModelQueries from "./modelQueries";
@@ -202,6 +207,29 @@ export class SwfLanguageService {
     rootNode: SwfLsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CodeLens[]> {
+    const createNewSWF = (): CodeLens[] => {
+      const position = Position.create(0, 0);
+      const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
+
+      return [
+        {
+          command: {
+            command,
+            title: "Create a Serverless Workflow",
+            arguments: [{ newCursorPosition: position } as SwfLanguageServiceCommandArgs[typeof command]],
+          },
+          range: {
+            start: position,
+            end: position,
+          },
+        },
+      ];
+    };
+
+    if (!args.content.trim().length) {
+      return createNewSWF();
+    }
+
     if (!args.rootNode) {
       return [];
     }
@@ -219,14 +247,13 @@ export class SwfLanguageService {
         }
 
         const newCursorPosition = args.codeCompletionStrategy.getStartNodeValuePosition(document, node);
+        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
 
         return [
           {
-            name: "swf.ls.commands.OpenFunctionsCompletionItems",
+            name: command,
             title: "+ Add function...",
-            args: [
-              { newCursorPosition } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenFunctionsCompletionItems"],
-            ],
+            args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs[typeof command]],
           },
         ];
       },
@@ -246,11 +273,13 @@ export class SwfLanguageService {
           return [];
         }
 
+        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenServiceRegistriesConfig";
+
         return [
           {
-            name: "swf.ls.commands.OpenServiceRegistriesConfig",
+            name: command,
             title: "↪ Setup Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenServiceRegistriesConfig"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs[typeof command]],
           },
         ];
       },
@@ -274,11 +303,13 @@ export class SwfLanguageService {
           return [];
         }
 
+        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.LogInServiceRegistries";
+
         return [
           {
-            name: "swf.ls.commands.LogInServiceRegistries",
+            name: command,
             title: "↪ Log in Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.LogInServiceRegistries"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs[typeof command]],
           },
         ];
       },
@@ -302,11 +333,13 @@ export class SwfLanguageService {
           return [];
         }
 
+        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.RefreshServiceRegistries";
+
         return [
           {
-            name: "swf.ls.commands.RefreshServiceRegistries",
+            name: command,
             title: "↺ Refresh Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceRegistries"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs[typeof command]],
           },
         ];
       },
