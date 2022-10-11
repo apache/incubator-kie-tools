@@ -36,7 +36,7 @@ import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { FileTypes, isSandboxAsset, resolveExtension, SupportedFileExtensions } from "../extension";
-import { decoder } from "../workspace/commonServices/BaseFile";
+import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -74,7 +74,6 @@ export function NewFileDropdownMenu(props: {
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
       const file = await workspaces.addEmptyFile({
-        fs: await workspaces.fsService.getFs(props.workspaceId),
         workspaceId: props.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
         extension,
@@ -119,7 +118,6 @@ export function NewFileDropdownMenu(props: {
         const content = await response.text();
 
         const file = await workspaces.addFile({
-          fs: await workspaces.fsService.getFs(props.workspaceId),
           workspaceId: props.workspaceId,
           name,
           extension,
@@ -183,7 +181,6 @@ export function NewFileDropdownMenu(props: {
           const extension = resolveExtension(file.path);
           const name = decodeURIComponent(basename(file.path, `.${extension}`));
           return workspaces.addFile({
-            fs: await workspaces.fsService.getFs(props.workspaceId),
             workspaceId: props.workspaceId,
             name: name,
             extension: extension,

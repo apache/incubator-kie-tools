@@ -28,8 +28,8 @@ import { VirtualServiceRegistryGroupService } from "./services/VirtualServiceReg
 import { VirtualServiceRegistryFsService } from "./services/VirtualServiceRegistryFsService";
 import { StorageService } from "../../commonServices/StorageService";
 import { VirtualServiceRegistryGroup } from "./models/VirtualServiceRegistry";
-import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
 import { ServiceRegistryFile } from "./models/ServiceRegistryFile";
+import { WorkspaceDescriptor } from "../../worker/api/WorkspaceDescriptor";
 
 export interface LocalFile {
   path: string;

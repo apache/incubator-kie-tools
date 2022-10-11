@@ -25,7 +25,7 @@ import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceA
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { encoder } from "../workspace/commonServices/BaseFile";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/services/WorkspaceDescriptorService";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import {
   createDockerfileContentForBaseJdk11MvnImage,
@@ -78,11 +78,9 @@ export function OpenShiftContextProvider(props: Props) {
       }
 
       try {
-        const descriptor = await workspaces.descriptorService.get(args.workspaceFile.workspaceId);
-        const fs = await workspaces.fsService.getFs(args.workspaceFile.workspaceId);
+        const descriptor = await workspaces.getWorkspace({ workspaceId: args.workspaceFile.workspaceId });
         const filesToBeDeployed = (
           await workspaces.getFiles({
-            fs,
             workspaceId: args.workspaceFile.workspaceId,
             globPattern: !args.shouldDeployAsProject ? GLOB_PATTERN.sw : undefined,
           })

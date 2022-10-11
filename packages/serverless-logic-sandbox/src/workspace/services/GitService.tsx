@@ -1,11 +1,11 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import git, { STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
-
-export const GIST_DEFAULT_BRANCH = "master";
-export const GIST_ORIGIN_REMOTE_NAME = "origin";
-export const GIT_ORIGIN_REMOTE_NAME = "origin";
-export const GIT_DEFAULT_BRANCH = "main";
+import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
+import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 
 export interface CloneArgs {
-  fs: KieSandboxFs;
+  fs: KieSandboxWorkspacesFs;
   repositoryUrl: URL;
   sourceBranch: string;
   dir: string;
@@ -39,7 +35,7 @@ export interface CloneArgs {
 }
 
 export interface CommitArgs {
-  fs: KieSandboxFs;
+  fs: KieSandboxWorkspacesFs;
   message: string;
   targetBranch: string;
   dir: string;
@@ -50,7 +46,7 @@ export interface CommitArgs {
 }
 
 export interface PushArgs {
-  fs: KieSandboxFs;
+  fs: KieSandboxWorkspacesFs;
   dir: string;
   ref: string;
   remoteRef?: string;
@@ -63,7 +59,7 @@ export interface PushArgs {
 }
 
 export interface RemoteRefArgs {
-  fs: KieSandboxFs;
+  fs: KieSandboxWorkspacesFs;
   dir: string;
   remoteRef?: string;
   authInfo?: {
@@ -73,14 +69,14 @@ export interface RemoteRefArgs {
 }
 
 export class GitService {
-  public constructor(private readonly corsProxy: string) {}
+  public constructor(private readonly corsProxy: Promise<string>) {}
 
   public async clone(args: CloneArgs): Promise<void> {
-    console.debug("GitService#clone--------begin");
+    console.time("GitService#clone");
     await git.clone({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       url: args.repositoryUrl.href,
       singleBranch: true,
@@ -93,9 +89,10 @@ export class GitService {
     if (args.gitConfig) {
       await this.setupGitConfig(args.fs, args.dir, args.gitConfig);
     }
+    console.timeEnd("GitService#clone");
   }
 
-  public async branch(args: { fs: KieSandboxFs; dir: string; name: string; checkout: boolean }) {
+  public async branch(args: { fs: KieSandboxWorkspacesFs; dir: string; name: string; checkout: boolean }) {
     await git.branch({
       fs: args.fs,
       dir: args.dir,
@@ -104,7 +101,7 @@ export class GitService {
     });
   }
 
-  public async addRemote(args: { fs: KieSandboxFs; dir: string; name: string; url: string; force: boolean }) {
+  public async addRemote(args: { fs: KieSandboxWorkspacesFs; dir: string; name: string; url: string; force: boolean }) {
     await git.addRemote({
       fs: args.fs,
       dir: args.dir,
@@ -114,7 +111,7 @@ export class GitService {
     });
   }
 
-  public async deleteRemote(args: { fs: KieSandboxFs; dir: string; name: string }) {
+  public async deleteRemote(args: { fs: KieSandboxWorkspacesFs; dir: string; name: string }) {
     await git.deleteRemote({
       fs: args.fs,
       dir: args.dir,
@@ -122,11 +119,11 @@ export class GitService {
     });
   }
 
-  public async fetch(args: { fs: KieSandboxFs; dir: string; remote: string; ref: string }): Promise<void> {
+  public async fetch(args: { fs: KieSandboxWorkspacesFs; dir: string; remote: string; ref: string }): Promise<void> {
     await git.fetch({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       remote: args.remote,
       ref: args.ref,
@@ -135,7 +132,7 @@ export class GitService {
     });
   }
 
-  public async checkout(args: { fs: KieSandboxFs; dir: string; ref: string; remote: string }) {
+  public async checkout(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string; remote: string }) {
     await git.checkout({
       fs: args.fs,
       dir: args.dir,
@@ -170,7 +167,7 @@ export class GitService {
   }
 
   public async pull(args: {
-    fs: KieSandboxFs;
+    fs: KieSandboxWorkspacesFs;
     dir: string;
     ref: string;
     author: {
@@ -185,7 +182,7 @@ export class GitService {
     await git.pull({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       ref: args.ref,
       singleBranch: true,
@@ -200,7 +197,7 @@ export class GitService {
     const serverRefs = await git.listServerRefs({
       http: http,
       url,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       onAuth: () => args.authInfo,
     });
 
@@ -232,7 +229,7 @@ export class GitService {
     await git.push({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       ref: args.ref,
       remoteRef: args.remoteRef,
@@ -242,7 +239,7 @@ export class GitService {
     });
   }
 
-  public async add(args: { fs: KieSandboxFs; dir: string; relativePath: string }) {
+  public async add(args: { fs: KieSandboxWorkspacesFs; dir: string; relativePath: string }) {
     await git.add({
       fs: args.fs,
       dir: args.dir,
@@ -250,7 +247,11 @@ export class GitService {
     });
   }
 
-  public async setupGitConfig(fs: KieSandboxFs, dir: string, config: { name: string; email: string }): Promise<void> {
+  public async setupGitConfig(
+    fs: KieSandboxWorkspacesFs,
+    dir: string,
+    config: { name: string; email: string }
+  ): Promise<void> {
     await git.setConfig({
       fs: fs,
       dir: dir,
@@ -266,7 +267,7 @@ export class GitService {
     });
   }
 
-  async init(args: { fs: KieSandboxFs; dir: string }) {
+  async init(args: { fs: KieSandboxWorkspacesFs; dir: string }) {
     await git.init({
       fs: args.fs,
       dir: args.dir,
@@ -275,15 +276,15 @@ export class GitService {
     });
   }
 
-  async isIgnored(args: { fs: KieSandboxFs; dir: string; filepath: string }) {
-    return await git.isIgnored({
+  async isIgnored(args: { fs: KieSandboxWorkspacesFs; dir: string; filepath: string }) {
+    return git.isIgnored({
       fs: args.fs,
       dir: args.dir,
       filepath: args.filepath,
     });
   }
 
-  async rm(args: { fs: KieSandboxFs; dir: string; relativePath: string }) {
+  async rm(args: { fs: KieSandboxWorkspacesFs; dir: string; relativePath: string }) {
     await git.remove({
       fs: args.fs,
       dir: args.dir,
@@ -291,15 +292,28 @@ export class GitService {
     });
   }
 
-  async hasLocalChanges(args: { fs: KieSandboxFs; dir: string }) {
+  async isModified(args: { fs: KieSandboxWorkspacesFs; dir: string; relativePath: string }) {
+    const status = await git.status({
+      fs: args.fs,
+      dir: args.dir,
+      filepath: args.relativePath,
+    });
+    return status !== "unmodified";
+  }
+
+  async hasLocalChanges(args: { fs: KieSandboxWorkspacesFs; dir: string; exclude: (filepath: string) => boolean }) {
     const files = await this.unstagedModifiedFileRelativePaths(args);
     return files.length > 0;
   }
 
-  public async unstagedModifiedFileRelativePaths(args: { fs: KieSandboxFs; dir: string }): Promise<string[]> {
-    const cache = {};
+  public async unstagedModifiedFileRelativePaths(args: {
+    fs: KieSandboxWorkspacesFs;
+    dir: string;
+    exclude: (filepath: string) => boolean;
+  }): Promise<string[]> {
+    const now = performance.now();
+    console.time(`${now}: hasLocalChanges`);
     const pseudoStatusMatrix = await git.walk({
-      cache,
       fs: args.fs,
       dir: args.dir,
       trees: [WORKDIR(), STAGE()],
@@ -312,6 +326,8 @@ export class GitService {
         if (filepath.startsWith(".git")) {
           return null;
         }
+
+        if (args.exclude(filepath)) return;
 
         // For now, just bail on directories
         const workdirType = workdir && (await workdir.type());
@@ -341,10 +357,12 @@ export class GitService {
     const _WORKDIR = 2;
     const _STAGE = 3;
     const _FILE = 0;
-    return pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
+    const ret = pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
+    console.timeEnd(`${now}: hasLocalChanges`);
+    return ret;
   }
 
-  public async resolveRef(args: { fs: KieSandboxFs; dir: string; ref: string }) {
+  public async resolveRef(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string }) {
     return git.resolveRef({
       fs: args.fs,
       dir: args.dir,

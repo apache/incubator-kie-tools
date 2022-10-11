@@ -15,8 +15,8 @@
  */
 import { VirtualServiceRegistryGroup } from "../models/VirtualServiceRegistry";
 import { ServiceRegistryFile } from "../models/ServiceRegistryFile";
-import { WorkspaceDescriptor } from "../../../model/WorkspaceDescriptor";
 import { BaseService, BaseServiceCreateProps, BaseServiceEvents } from "../../../commonServices/BaseService";
+import { WorkspaceDescriptor } from "../../../worker/api/WorkspaceDescriptor";
 
 export const VIRTUAL_SERVICE_REGISTRY_BROADCAST_CHANNEL = "virtualServiceRegistry";
 export const VIRTUAL_SERVICE_REGISTRY_GROUP_BROADCAST_CHANNEL = (groupId: string) =>

@@ -38,7 +38,6 @@ export function useUpdateWorkspaceRegistryGroupFile(args: { workspaceFile: Works
     const broadcastChannel = new BroadcastChannel(workspaceId);
     broadcastChannel.onmessage = async ({ data }) => {
       const file = await workspaces.getFile({
-        fs: await workspaces.fsService.getFs(workspaceId),
         workspaceId,
         relativePath: data.relativePath || data.newRelativePath,
       });

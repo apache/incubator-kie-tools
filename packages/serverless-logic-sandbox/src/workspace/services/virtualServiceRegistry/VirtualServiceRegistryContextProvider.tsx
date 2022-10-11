@@ -35,10 +35,10 @@ import {
   VirtualServiceRegistryGroup,
 } from "./models/VirtualServiceRegistry";
 import { ServiceRegistryFile } from "./models/ServiceRegistryFile";
-import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
 import { useWorkspaces } from "../../WorkspacesContext";
 import { isServerlessWorkflow, isSpec } from "../../../extension";
 import { decoder, encoder } from "../../commonServices/BaseFile";
+import { WorkspaceDescriptor } from "../../worker/api/WorkspaceDescriptor";
 
 type SupportedFileExtensions = ".yaml" | ".json";
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
@@ -94,7 +94,6 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
         workspaceDescriptor: args.workspaceDescriptor,
         storeRegistryFiles: async (fs: KieSandboxFs, vsrGroup: VirtualServiceRegistryGroup) => {
           const files = await workspaces.getFiles({
-            fs: await workspaces.fsService.getFs(vsrGroup.groupId),
             workspaceId: vsrGroup.groupId,
           });
 
@@ -185,7 +184,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
 
         const newFile = new ServiceRegistryFile({
           groupId: args.groupId,
-          getFileContents: () => Promise.resolve(args.content!),
+          getFileContents: () => Promise.resolve(args.content),
           relativePath: args.destinationDirRelativePath,
           needsWorkspaceDeploy: true,
         });
@@ -200,7 +199,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
 
   const existsFile = useCallback(
     async (args: { fs: KieSandboxFs; groupId: string; relativePath: string }) =>
-      await vsrService.existsFile({ descriptorId: args.groupId, ...args }),
+      vsrService.existsFile({ descriptorId: args.groupId, ...args }),
     [vsrService]
   );
 
@@ -254,14 +253,14 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
     const broadcastChannel = new BroadcastChannel("workspaces");
     broadcastChannel.onmessage = async ({ data }) => {
       if (data.type === "ADD_WORKSPACE") {
-        const workspaceDescriptor = await workspaces.descriptorService.get(data.workspaceId);
+        const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
         createServiceRegistryGroupFromWorkspace({ useInMemoryFs: false, workspaceDescriptor });
       }
       if (data.type === "DELETE_WORKSPACE") {
         deleteRegistryGroup({ groupId: data.workspaceId });
       }
       if (data.type === "RENAME_WORKSPACE") {
-        const workspaceDescriptor = await workspaces.descriptorService.get(data.workspaceId);
+        const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
         renameRegistryGroup({ groupId: data.workspaceId, newName: workspaceDescriptor.name });
       }
     };
@@ -269,7 +268,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
     return () => {
       broadcastChannel.close();
     };
-  }, [createServiceRegistryGroupFromWorkspace, deleteRegistryGroup, renameRegistryGroup, workspaces.descriptorService]);
+  }, [createServiceRegistryGroupFromWorkspace, deleteRegistryGroup, renameRegistryGroup]);
 
   const value = useMemo(
     () => ({

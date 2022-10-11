@@ -31,7 +31,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflow, isServerlessWorkflowJson, isServerlessWorkflowYaml } from "../extension";
+import { isSandboxAsset, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -55,11 +55,15 @@ import {
   SwfFeatureToggleChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
 import { WebToolsSwfLanguageService } from "./api/WebToolsSwfLanguageService";
+import { APP_NAME } from "../AppConstants";
 
 export interface Props {
   workspaceId: string;
   fileRelativePath: string;
 }
+
+let saveVersion = 1;
+let refreshVersion = 0;
 
 export function EditorPage(props: Props) {
   const settingsDispatch = useSettingsDispatch();
@@ -81,7 +85,16 @@ export function EditorPage(props: Props) {
   const queryParams = useQueryParams();
   const virtualServiceRegistry = useVirtualServiceRegistry();
 
-  useUpdateWorkspaceRegistryGroupFile({ workspaceFile: workspaceFilePromise.data });
+  const isSwf = useMemo(
+    () => workspaceFilePromise.data && isServerlessWorkflow(workspaceFilePromise.data.workspaceFile.name),
+    [workspaceFilePromise.data]
+  );
+
+  useUpdateWorkspaceRegistryGroupFile({ workspaceFile: workspaceFilePromise.data?.workspaceFile });
+
+  useEffect(() => {
+    document.title = `${APP_NAME} :: ${props.fileRelativePath}`;
+  }, [props.fileRelativePath]);
 
   // keep the page in sync with the name of `workspaceFilePromise`, even if changes
   useEffect(() => {
@@ -91,15 +104,18 @@ export function EditorPage(props: Props) {
 
     history.replace({
       pathname: routes.workspaceWithFilePath.path({
-        workspaceId: workspaceFilePromise.data.workspaceId,
-        fileRelativePath: workspaceFilePromise.data.relativePathWithoutExtension,
-        extension: workspaceFilePromise.data.extension,
+        workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+        fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePathWithoutExtension,
+        extension: workspaceFilePromise.data.workspaceFile.extension,
       }),
       search: queryParams.toString(),
     });
   }, [history, routes, workspaceFilePromise, queryParams]);
 
-  // update EmbeddedEditorFile, but only if content is different than what was saved
+  // begin (REFRESH)
+  // Update EmbeddedEditorFile, but only if content is different from what was saved
+  // This effect handles the case where a file was edited in another tab.
+  // It has its own version pointer to ignore stale executions.
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -107,38 +123,51 @@ export function EditorPage(props: Props) {
           return;
         }
 
-        workspaceFilePromise.data.getFileContentsAsString().then((content) => {
+        const version = refreshVersion++;
+        console.debug(`Refreshing @ new version (${refreshVersion}).`);
+
+        workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
           if (canceled.get()) {
+            console.debug(`Refreshing @ canceled; ignoring.`);
             return;
           }
 
           if (content === lastContent.current) {
+            console.debug(`Refreshing @ unchanged content; ignoring.`);
             return;
           }
 
+          if (version + 1 < saveVersion) {
+            console.debug(`Refreshing @ stale version (${version}); ignoring.`);
+            return;
+          }
+
+          console.debug(`Refreshing @ current version (${saveVersion}).`);
+          refreshVersion = saveVersion;
           lastContent.current = content;
 
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.relativePath,
+            path: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
-            isReadOnly: !isSandboxAsset(workspaceFilePromise.data.relativePath),
-            fileExtension: workspaceFilePromise.data.extension,
-            fileName: workspaceFilePromise.data.name,
+            isReadOnly: !isSandboxAsset(workspaceFilePromise.data.workspaceFile.relativePath),
+            fileExtension: workspaceFilePromise.data.workspaceFile.extension,
+            fileName: workspaceFilePromise.data.workspaceFile.name,
           });
         });
       },
       [workspaceFilePromise]
     )
   );
+  // end (REFRESH)
 
-  // auto-save
-  const uniqueFileId = workspaceFilePromise.data
-    ? workspaces.getUniqueFileIdentifier(workspaceFilePromise.data)
-    : undefined;
+  // begin (AUTO-SAVE)
+  const uniqueFileId = workspaceFilePromise.data?.uniqueId;
 
   const prevUniqueFileId = usePrevious(uniqueFileId);
   if (prevUniqueFileId !== uniqueFileId) {
     lastContent.current = undefined;
+    saveVersion = 1;
+    refreshVersion = 0;
   }
 
   const saveContent = useCallback(async () => {
@@ -146,29 +175,39 @@ export function EditorPage(props: Props) {
       return;
     }
 
+    const version = saveVersion++;
+    console.debug(`Saving @ new version (${saveVersion}).`);
+
     const content = await editor.getContent();
-    // FIXME: Uncomment when KOGITO-6181 is fixed
+    // FIXME: Uncomment when working on KOGITO-7805
     // const svgString = await editor.getPreview();
 
+    if (version + 1 < saveVersion) {
+      console.debug(`Saving @ stale version (${version}); ignoring before writing.`);
+      return;
+    }
+
+    // FIXME: Uncomment when working on KOGITO-7805
+    // if (svgString) {
+    //   await svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
+    // }
+    console.debug(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
 
-    // FIXME: Uncomment when KOGITO-6181 is fixed
-    // if (svgString) {
-    //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
-    // }
-
     await workspaces.updateFile({
-      fs: await workspaces.fsService.getFs(workspaceFilePromise.data.workspaceId),
-      file: workspaceFilePromise.data,
-      getNewContents: () => Promise.resolve(content),
+      workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+      relativePath: workspaceFilePromise.data.workspaceFile.relativePath,
+      newContent: content,
     });
+
+    if (version + 1 < saveVersion) {
+      console.debug(`Saving @ stale version (${version}); ignoring before marking as saved.`);
+      return;
+    }
+
+    console.debug(`Saving @ current version (${version}); marking as saved.`);
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
-
-  const isSwf = useMemo(
-    () => workspaceFilePromise.data && isServerlessWorkflow(workspaceFilePromise.data.name),
-    [workspaceFilePromise.data]
-  );
 
   useStateControlSubscription(
     editor,
@@ -184,6 +223,7 @@ export function EditorPage(props: Props) {
     ),
     { throttle: isSwf && swfFeatureToggle.stunnerEnabled ? 400 : 200 }
   );
+  // end (AUTO-SAVE)
 
   useEffect(() => {
     alerts?.closeAll();
@@ -204,12 +244,13 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     if (
-      !settingsDispatch.serviceRegistry.catalogStore.virtualServiceRegistry ||
-      settingsDispatch.serviceRegistry.catalogStore.currentFile !== workspaceFilePromise.data
+      workspaceFilePromise.data &&
+      (!settingsDispatch.serviceRegistry.catalogStore.virtualServiceRegistry ||
+        settingsDispatch.serviceRegistry.catalogStore.currentFile !== workspaceFilePromise.data.workspaceFile)
     ) {
       settingsDispatch.serviceRegistry.catalogStore.setVirtualServiceRegistry(
         virtualServiceRegistry,
-        workspaceFilePromise.data
+        workspaceFilePromise.data.workspaceFile
       );
     }
   }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, workspaceFilePromise.data]);
@@ -223,7 +264,7 @@ export function EditorPage(props: Props) {
 
     const webToolsSwfLanguageService = new WebToolsSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
 
-    return webToolsSwfLanguageService.getLs(workspaceFilePromise.data.relativePath);
+    return webToolsSwfLanguageService.getLs(workspaceFilePromise.data.workspaceFile.relativePath);
   }, [workspaceFilePromise.data, settingsDispatch.serviceRegistry.catalogStore]);
 
   const swfLanguageServiceChannelApiImpl = useMemo(
@@ -276,7 +317,7 @@ export function EditorPage(props: Props) {
     swfLanguageService
       .getDiagnostics({
         content: lastContent.current,
-        uriPath: workspaceFilePromise.data.relativePath,
+        uriPath: workspaceFilePromise.data.workspaceFile.relativePath,
       })
       .then((lsDiagnostics) => {
         const diagnostics = lsDiagnostics.map(
@@ -304,14 +345,18 @@ export function EditorPage(props: Props) {
           <>
             <Page>
               <EditorToolbar
-                workspaceFile={file}
+                workspaceFile={file.workspaceFile}
                 editor={editor}
                 alerts={alerts}
                 alertsRef={alertsRef}
                 editorPageDock={editorPageDock}
               />
               <Divider />
-              <EditorPageDockDrawer ref={editorPageDockRef} isEditorReady={editor?.isReady} workspaceFile={file}>
+              <EditorPageDockDrawer
+                ref={editorPageDockRef}
+                isEditorReady={editor?.isReady}
+                workspaceFile={file.workspaceFile}
+              >
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
                   <div style={{ height: "100%" }}>
                     {!isEditorReady && <LoadingSpinner />}
@@ -321,7 +366,7 @@ export function EditorPage(props: Props) {
                           /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
                            * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
                            */
-                          key={workspaces.getUniqueFileIdentifier(file)}
+                          key={uniqueFileId}
                           ref={editorRef}
                           file={embeddedEditorFile}
                           editorEnvelopeLocator={editorEnvelopeLocator}
