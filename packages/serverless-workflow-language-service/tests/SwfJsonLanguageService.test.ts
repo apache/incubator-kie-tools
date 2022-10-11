@@ -476,16 +476,13 @@ describe("SWF LS JSON", () => {
     });
 
     describe("function completion", () => {
-      test("empty completion items", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {🎯}
-  ]
-}`
-        );
+      test.each([
+        ["empty completion items", `{ "functions": [ {🎯} ] }`],
+        ["pointing before the array of functions", `{ "functions":🎯 [] }`],
+        ["pointing before the array of functions / with extra space after ':'", `{ "functions": 🎯 [] }`],
+        ["pointing after the array of functions", `{ "functions": []🎯 }`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems).toHaveLength(0);
       });

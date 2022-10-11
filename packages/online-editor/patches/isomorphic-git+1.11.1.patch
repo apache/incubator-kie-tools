@@ -4,7 +4,7 @@ index 97acbbe..747bf24 100644
 +++ b/node_modules/isomorphic-git/index.js
 @@ -1331,15 +1331,16 @@ function compareRefNames(a, b) {
  }
- 
+
  function normalizePath(path) {
 -  return path
 -    .replace(/\/\.\//g, '/') // Replace '/./' with '/'
@@ -24,7 +24,7 @@ index 97acbbe..747bf24 100644
 +      .replace(/\/\.$/, "") // Remove trailing '/.'
 +      // .replace(/(.+)\/$/, '$1') // Remove trailing '/'
 +      .replace(/^$/, "."); // if path === '' return '.'
-+  return normalizedPath.endsWith("/") ? normalizedPath.slice(0, -1) : normalizedPath;
++  return (normalizedPath.length > 1 && normalizedPath.endsWith("/")) ? normalizedPath.slice(0, -1) : normalizedPath;
  }
- 
+
  // For some reason path.posix.join is undefined in webpack

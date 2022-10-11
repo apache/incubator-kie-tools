@@ -27,11 +27,18 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
+import { getNodeFormat } from "./getNodeFormat";
 import { FileLanguage } from "../api";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode, TranslateArgs } from "./types";
+import {
+  ShouldCreateCodelensArgs,
+  CodeCompletionStrategy,
+  ShouldCompleteArgs,
+  SwfLsNode,
+  TranslateArgs,
+} from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -136,7 +143,11 @@ export const isNodeUncompleted = (args: {
 
   const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, args.cursorOffset - 1, true);
 
-  return nodeAtPrevOffset?.colonOffset === args.cursorOffset - 1;
+  if (!nodeAtPrevOffset) {
+    return false;
+  }
+
+  return nodeAtPrevOffset.offset + nodeAtPrevOffset.length === args.cursorOffset - 1;
 };
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
@@ -144,7 +155,6 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
     type: "object",
     offset: node.startPosition,
     length: node.endPosition - node.startPosition,
-    colonOffset: node.endPosition,
     parent: parentNode,
   };
 
@@ -164,6 +174,7 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
       ...(convertedNode.value ? [astConvert(yamlMapping.value, convertedNode)] : []),
     ];
     convertedNode.type = "property";
+    convertedNode.colonOffset = yamlMapping.key.endPosition;
   } else if (node.kind === Kind.SEQ) {
     convertedNode.children = (node as YAMLSequence).items
       .filter((item) => item)
@@ -215,6 +226,24 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
+    if (
+      !args.root ||
+      !args.node ||
+      (["object", "array"].includes(args.node.type) && getNodeFormat(args.content, args.node) === FileLanguage.JSON) ||
+      (["string", "number", "boolean"].includes(args.node.type) &&
+        args.node.parent &&
+        getNodeFormat(args.content, args.node.parent) === FileLanguage.JSON)
+    ) {
+      return false;
+    }
+
     return matchNodeWithLocation(args.root, args.node, args.path);
+  }
+
+  public shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean {
+    return (
+      args.commandName !== "swf.ls.commands.OpenFunctionsCompletionItems" ||
+      getNodeFormat(args.content, args.node) !== FileLanguage.JSON
+    );
   }
 }

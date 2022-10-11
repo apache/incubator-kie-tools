@@ -44,7 +44,6 @@ import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { doRefValidation } from "./refValidation";
 import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
-import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -242,18 +241,22 @@ export class SwfLanguageService {
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ node }) => {
-        if (node.type !== "array") {
+        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
+
+        if (
+          node.type !== "array" ||
+          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content })
+        ) {
           return [];
         }
 
         const newCursorPosition = args.codeCompletionStrategy.getStartNodeValuePosition(document, node);
-        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
 
         return [
           {
-            name: command,
+            name: commandName,
             title: "+ Add function...",
-            args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs[typeof command]],
+            args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs[typeof commandName]],
           },
         ];
       },
@@ -265,21 +268,21 @@ export class SwfLanguageService {
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ position, node }) => {
-        if (node.type !== "array") {
+        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenServiceRegistriesConfig";
+
+        if (
+          node.type !== "array" ||
+          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
+          !this.args.config.shouldConfigureServiceRegistries()
+        ) {
           return [];
         }
-
-        if (!this.args.config.shouldConfigureServiceRegistries()) {
-          return [];
-        }
-
-        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenServiceRegistriesConfig";
 
         return [
           {
-            name: command,
+            name: commandName,
             title: "↪ Setup Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof command]],
+            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
           },
         ];
       },
@@ -291,25 +294,22 @@ export class SwfLanguageService {
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ position, node }) => {
-        if (node.type !== "array") {
+        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.LogInServiceRegistries";
+
+        if (
+          node.type !== "array" ||
+          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
+          this.args.config.shouldConfigureServiceRegistries() ||
+          !this.args.config.shouldServiceRegistriesLogIn()
+        ) {
           return [];
         }
-
-        if (this.args.config.shouldConfigureServiceRegistries()) {
-          return [];
-        }
-
-        if (!this.args.config.shouldServiceRegistriesLogIn()) {
-          return [];
-        }
-
-        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.LogInServiceRegistries";
 
         return [
           {
-            name: command,
+            name: commandName,
             title: "↪ Log in Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof command]],
+            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
           },
         ];
       },
@@ -321,25 +321,22 @@ export class SwfLanguageService {
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ position, node }) => {
-        if (node.type !== "array") {
+        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.RefreshServiceRegistries";
+
+        if (
+          node.type !== "array" ||
+          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
+          this.args.config.shouldConfigureServiceRegistries() ||
+          !this.args.config.canRefreshServices()
+        ) {
           return [];
         }
-
-        if (this.args.config.shouldConfigureServiceRegistries()) {
-          return [];
-        }
-
-        if (!this.args.config.canRefreshServices()) {
-          return [];
-        }
-
-        const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.RefreshServiceRegistries";
 
         return [
           {
-            name: command,
+            name: commandName,
             title: "↺ Refresh Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof command]],
+            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
           },
         ];
       },
@@ -370,19 +367,13 @@ export class SwfLanguageService {
       const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
       const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
-    }
-
-    //
-    else if (
+    } else if (
       (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
       containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
       func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
     ) {
       return `${containingService.source.url}#${func.name}`;
-    }
-
-    //
-    else if (
+    } else if (
       containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
       func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
     ) {
@@ -392,10 +383,7 @@ export class SwfLanguageService {
       );
       const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
-    }
-
-    //
-    else {
+    } else {
       throw new Error("Unknown Service Catalog function source type");
     }
   }

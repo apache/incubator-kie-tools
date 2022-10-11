@@ -138,6 +138,31 @@ public class Style {
             public String getCssName() {
                 return "row-resize";
             }
+        },
+        NOT_ALLOWED {
+            public String getCssName() {
+                return "not-allowed";
+            }
+        },
+        ZOOM_IN {
+            public String getCssName() {
+                return "zoom-in";
+            }
+        },
+        ZOOM_OUT {
+            public String getCssName() {
+                return "zoom-out";
+            }
+        },
+        GRAB {
+            public String getCssName() {
+                return "grab";
+            }
+        },
+        GRABBING {
+            public String getCssName() {
+                return "grabbing";
+            }
         };
 
         public abstract String getCssName();

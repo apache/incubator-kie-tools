@@ -23,3 +23,4 @@ export * from "./refValidation";
 export * from "./nodeUpUntilType";
 export * from "./types";
 export * from "./indentText";
+export * from "./getNodeFormat";
