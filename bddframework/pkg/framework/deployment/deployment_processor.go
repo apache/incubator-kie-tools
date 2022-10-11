@@ -21,6 +21,8 @@ import (
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	v1 "k8s.io/api/apps/v1"
+	v12 "k8s.io/api/core/v1"
+	"k8s.io/utils/pointer"
 )
 
 // Processor ...
@@ -52,6 +54,9 @@ func (d *deploymentProcessor) Process() (err error) {
 		return err
 	}
 	if err = d.injectSupportingServiceEndpointIntoDeployment(); err != nil {
+		return err
+	}
+	if err = d.injectSecurityContextDefaults(); err != nil {
 		return err
 	}
 	return nil
@@ -87,6 +92,23 @@ func (d *deploymentProcessor) injectKogitoAnnotations() error {
 		}
 		d.deployment.Annotations[framework.KogitoOperatorVersionAnnotation] = d.Context.Version
 		d.deployment.Spec.Template.Annotations[framework.KogitoOperatorVersionAnnotation] = d.Context.Version
+	}
+	return nil
+}
+
+func (d *deploymentProcessor) injectSecurityContextDefaults() error {
+	d.deployment.Spec.Template.Spec.SecurityContext = &v12.PodSecurityContext{
+		RunAsNonRoot: pointer.Bool(true),
+	}
+	for index := range d.deployment.Spec.Template.Spec.Containers {
+		d.deployment.Spec.Template.Spec.Containers[index].SecurityContext = &v12.SecurityContext{
+			Capabilities: &v12.Capabilities{
+				Drop: []v12.Capability{"ALL"},
+			},
+			Privileged:               pointer.Bool(false),
+			RunAsNonRoot:             pointer.Bool(true),
+			AllowPrivilegeEscalation: pointer.Bool(false),
+		}
 	}
 	return nil
 }

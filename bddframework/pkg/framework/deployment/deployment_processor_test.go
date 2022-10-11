@@ -26,6 +26,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/utils/pointer"
 	"testing"
 )
 
@@ -94,6 +95,19 @@ func TestNewDeploymentProcessorTesting(t *testing.T) {
 	v[framework.KogitoOperatorVersionAnnotation] = "1.0-SNAPSHOT"
 	assert.Equal(t, v, runtimeDeployment.Annotations)
 	assert.Equal(t, v, runtimeDeployment.Spec.Template.Annotations)
+
+	specScc := &corev1.PodSecurityContext{RunAsNonRoot: pointer.Bool(true)}
+	assert.Equal(t, specScc, runtimeDeployment.Spec.Template.Spec.SecurityContext)
+
+	containerScc := &corev1.SecurityContext{
+		RunAsNonRoot:             pointer.Bool(true),
+		AllowPrivilegeEscalation: pointer.Bool(false),
+		Privileged:               pointer.Bool(false),
+		Capabilities: &corev1.Capabilities{
+			Drop: []corev1.Capability{"ALL"},
+		},
+	}
+	assert.Equal(t, containerScc, runtimeDeployment.Spec.Template.Spec.Containers[0].SecurityContext)
 }
 
 func createList(namespace string) *v1beta1.KogitoSupportingServiceList {
