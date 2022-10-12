@@ -36,6 +36,9 @@ app.on("before-quit", () => {
 });
 
 const createWindow = () => {
+  const remoteMain = require("@electron/remote/main");
+  remoteMain.initialize();
+
   mainWindow = new BrowserWindow({
     width: 1440,
     height: 900,
@@ -45,10 +48,11 @@ const createWindow = () => {
     icon: path.join(__dirname, "images/icon.png"),
     webPreferences: {
       contextIsolation: false,
-      enableRemoteModule: true,
       nodeIntegration: true, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
     },
   });
+
+  remoteMain.enable(mainWindow?.webContents);
 
   mainWindow
     .loadFile(path.join(__dirname, "index.html"))
