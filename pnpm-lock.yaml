@@ -1749,6 +1749,7 @@ importers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
       "@babel/preset-react": ^7.16.0
+      "@electron/remote": ^2.0.8
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
@@ -1792,6 +1793,7 @@ importers:
       webpack-dev-server: ^4.7.3
       webpack-merge: ^5.7.3
     dependencies:
+      "@electron/remote": 2.0.8_electron@15.5.7
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/monaco-editor": link:../monaco-editor
@@ -7650,6 +7652,15 @@ packages:
     dependencies:
       electron: 15.5.7
     dev: true
+
+  /@electron/remote/2.0.8_electron@15.5.7:
+    resolution:
+      { integrity: sha512-P10v3+iFCIvEPeYzTWWGwwHmqWnjoh8RYnbtZAb3RlQefy4guagzIwcWtfftABIfm6JJTNQf4WPSKWZOpLmHXw== }
+    peerDependencies:
+      electron: ">= 13.0.0"
+    dependencies:
+      electron: 15.5.7
+    dev: false
 
   /@eslint/eslintrc/0.4.1:
     resolution:

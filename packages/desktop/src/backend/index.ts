@@ -22,6 +22,7 @@ import { Files } from "../storage/core/Files";
 import { DesktopUserData } from "./DesktopUserData";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { desktopI18nDefaults, desktopI18nDictionaries } from "./i18n";
+import remoteMain = require("@electron/remote/main");
 
 let mainWindow: BrowserWindow | null = null;
 let forceQuit = false; // flag needed to keep app running on MacOS when the window is closed
@@ -36,7 +37,6 @@ app.on("before-quit", () => {
 });
 
 const createWindow = () => {
-  const remoteMain = require("@electron/remote/main");
   remoteMain.initialize();
 
   mainWindow = new BrowserWindow({

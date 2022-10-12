@@ -40,6 +40,7 @@
     "test:it:win32": "echo \"Not supported\""
   },
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
