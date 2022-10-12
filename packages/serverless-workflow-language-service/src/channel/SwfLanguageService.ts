@@ -32,19 +32,18 @@ import {
   Position,
   Range,
 } from "vscode-languageserver-types";
-import {
-  FileLanguage,
-  SwfLanguageServiceCommandArgs,
-  SwfLanguageServiceCommandExecution,
-  SwfLanguageServiceCommandTypes,
-} from "../api";
+import { FileLanguage, SwfLanguageServiceCommandExecution } from "../api";
+import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { doRefValidation } from "./refValidation";
+import {
+  SwfLanguageServiceCodeLenses,
+  SwfLanguageServiceCodeLensesFunctionsArgs,
+} from "./SwfLanguageServiceCodeLenses";
 import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
-import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -207,27 +206,8 @@ export class SwfLanguageService {
     rootNode: SwfLsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CodeLens[]> {
-    const createNewSWF = (): CodeLens[] => {
-      const position = Position.create(0, 0);
-      const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
-
-      return [
-        {
-          command: {
-            command,
-            title: "Create a Serverless Workflow",
-            arguments: [{ newCursorPosition: position } as SwfLanguageServiceCommandArgs[typeof command]],
-          },
-          range: {
-            start: position,
-            end: position,
-          },
-        },
-      ];
-    };
-
     if (!args.content.trim().length) {
-      return createNewSWF();
+      return SwfLanguageServiceCodeLenses.createNewSWF();
     }
 
     if (!args.rootNode) {
@@ -236,120 +216,22 @@ export class SwfLanguageService {
 
     const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
 
-    const addFunction = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
-
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content })
-        ) {
-          return [];
-        }
-
-        const newCursorPosition = args.codeCompletionStrategy.getStartNodeValuePosition(document, node);
-
-        return [
-          {
-            name: commandName,
-            title: "+ Add function...",
-            args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs[typeof commandName]],
-          },
-        ];
-      },
-    });
-
-    const setupServiceRegistries = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenServiceRegistriesConfig";
-
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
-          !this.args.config.shouldConfigureServiceRegistries()
-        ) {
-          return [];
-        }
-
-        return [
-          {
-            name: commandName,
-            title: "↪ Setup Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
-          },
-        ];
-      },
-    });
-
-    const logInServiceRegistries = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.LogInServiceRegistries";
-
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
-          this.args.config.shouldConfigureServiceRegistries() ||
-          !this.args.config.shouldServiceRegistriesLogIn()
-        ) {
-          return [];
-        }
-
-        return [
-          {
-            name: commandName,
-            title: "↪ Log in Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
-          },
-        ];
-      },
-    });
-
-    const refreshServiceRegistries = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.RefreshServiceRegistries";
-
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
-          this.args.config.shouldConfigureServiceRegistries() ||
-          !this.args.config.canRefreshServices()
-        ) {
-          return [];
-        }
-
-        return [
-          {
-            name: commandName,
-            title: "↺ Refresh Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
-          },
-        ];
-      },
-    });
-
     const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
+    const codeLensesFunctionsArgs: SwfLanguageServiceCodeLensesFunctionsArgs = {
+      config: this.args.config,
+      document,
+      content: args.content,
+      rootNode: args.rootNode,
+      codeCompletionStrategy: args.codeCompletionStrategy,
+    };
 
     return [
-      ...(displayRhhccIntegration ? setupServiceRegistries : []),
-      ...(displayRhhccIntegration ? logInServiceRegistries : []),
-      ...(displayRhhccIntegration ? refreshServiceRegistries : []),
-      ...addFunction,
+      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.setupServiceRegistries(codeLensesFunctionsArgs) : []),
+      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.logInServiceRegistries(codeLensesFunctionsArgs) : []),
+      ...(displayRhhccIntegration
+        ? SwfLanguageServiceCodeLenses.refreshServiceRegistries(codeLensesFunctionsArgs)
+        : []),
+      ...SwfLanguageServiceCodeLenses.addFunction(codeLensesFunctionsArgs),
     ];
   }
 
@@ -387,42 +269,6 @@ export class SwfLanguageService {
     } else {
       throw new Error("Unknown Service Catalog function source type");
     }
-  }
-
-  public createCodeLenses(args: {
-    document: TextDocument;
-    rootNode: SwfLsNode;
-    jsonPath: SwfJsonPath;
-    commandDelegates: (args: {
-      position: Position;
-      node: SwfLsNode;
-    }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
-    positionLensAt: "begin" | "end";
-  }): CodeLens[] {
-    const nodes = findNodesAtLocation({ root: args.rootNode, path: args.jsonPath });
-    const codeLenses = nodes.flatMap((node) => {
-      // Only position at the end if the type is object or array and has at least one child.
-      const position =
-        args.positionLensAt === "end" &&
-        (node.type === "object" || node.type === "array") &&
-        (node.children?.length ?? 0) > 0
-          ? args.document.positionAt(node.offset + node.length)
-          : args.document.positionAt(node.offset);
-
-      return args.commandDelegates({ position, node }).map((command) => ({
-        command: {
-          command: command.name,
-          title: command.title,
-          arguments: command.args,
-        },
-        range: {
-          start: position,
-          end: position,
-        },
-      }));
-    });
-
-    return codeLenses;
   }
 }
 
