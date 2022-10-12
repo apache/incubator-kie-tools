@@ -1005,14 +1005,18 @@ functions:
         } as CompletionItem);
       });
 
-      test("add at the beginning, using the code lenses", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-🎯- name: helloWorldFunction`
-        );
+      test.each([
+        ["add at the beginning, using the code lenses", `functions:\n🎯- name: helloWorldFunction`],
+        [
+          "add at the beginning / with extra indentation / using the code lenses",
+          `functions:\n  🎯- name: helloWorldFunction`,
+        ],
+        [
+          "add at the beginning / with double extra indentation / using the code lenses",
+          `functions:\n    🎯- name: helloWorldFunction`,
+        ],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content);
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({

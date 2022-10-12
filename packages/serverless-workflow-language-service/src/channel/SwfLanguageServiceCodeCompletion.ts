@@ -39,6 +39,7 @@ export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
   document: TextDocument;
   overwriteRange: Range;
   currentNode: SwfLsNode;
+  currentNodeRange: Range;
   rootNode: SwfLsNode;
   codeCompletionStrategy: CodeCompletionStrategy;
   swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
@@ -144,6 +145,7 @@ export namespace SwfLanguageServiceCodeCompletion {
                   completion: swfFunction,
                   completionItemKind: kind,
                   overwriteRange: args.overwriteRange,
+                  currentNodeRange: args.currentNodeRange,
                 }) + (args.currentNode.type === "object" ? "," : ""),
               range: args.overwriteRange,
             },

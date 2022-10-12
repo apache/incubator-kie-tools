@@ -202,7 +202,7 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
 
     return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
       args.completionItemKind
-    ) && args.overwriteRange?.end.character === 0
+    ) && args.overwriteRange?.start.character === args.currentNodeRange?.start.character
       ? `- ${completionText}\n`
       : completionText;
   }

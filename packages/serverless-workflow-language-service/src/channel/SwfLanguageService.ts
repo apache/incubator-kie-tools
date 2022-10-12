@@ -94,13 +94,13 @@ export class SwfLanguageService {
       return [];
     }
 
-    const currentNodePosition = {
+    const currentNodeRange: Range = {
       start: doc.positionAt(currentNode.offset),
       end: doc.positionAt(currentNode.offset + currentNode.length),
     };
 
     const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
-      ? Range.create(currentNodePosition.start, currentNodePosition.end)
+      ? currentNodeRange
       : args.cursorWordRange;
 
     const swfCompletionItemServiceCatalogServices = await Promise.all(
@@ -134,7 +134,7 @@ export class SwfLanguageService {
           document: doc,
           cursorPosition: args.cursorPosition,
           currentNode,
-          currentNodePosition,
+          currentNodeRange,
           rootNode: args.rootNode!,
           overwriteRange,
           swfCompletionItemServiceCatalogServices,
@@ -273,7 +273,7 @@ const completions = new Map<
     cursorPosition: Position;
     currentNode: SwfLsNode;
     overwriteRange: Range;
-    currentNodePosition: { start: Position; end: Position };
+    currentNodeRange: Range;
     rootNode: SwfLsNode;
     langServiceConfig: SwfLanguageServiceConfig;
     codeCompletionStrategy: CodeCompletionStrategy;
