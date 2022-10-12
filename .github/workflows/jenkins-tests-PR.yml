@@ -16,10 +16,6 @@ jobs:
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-      - name: Setup repo branch
-        run: git checkout -b ${{ github.head_ref }}
       - name: DSL tests
         uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
         with:
