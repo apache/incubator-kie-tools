@@ -19,6 +19,14 @@
     {
       "key": "selectable",
       "value": "truess"
+    },
+    {
+      "key": "linkColumn",
+      "value": "Country"
+    },
+    {
+      "key": "linkTemplate",
+      "value": "https://www.google.com/search?q=${value}"
     }
   ],
   "dataSet": {

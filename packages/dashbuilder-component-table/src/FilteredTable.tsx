@@ -21,6 +21,7 @@ import { Flex, FlexItem, Pagination, SearchInput } from "@patternfly/react-core"
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PER_PAGE = 10;
+const LINK_TEMPLATE_VALUE_KEY = "${value}";
 
 enum AlertColors {
   DANGER = "red",
@@ -34,12 +35,18 @@ export interface Alert {
   great: string;
 }
 
+export interface LinkColumn {
+  linkTemplate: string;
+  column: string;
+}
+
 interface Props {
   columns: string[];
   rows: any[][];
   onRowSelected?: (i: number) => void;
   selectable?: boolean;
   alerts?: Map<number, Alert>;
+  linkColumn?: LinkColumn;
 }
 
 interface Sort {
@@ -218,7 +225,14 @@ export const FilteredTable = (props: Props) => {
                   dataLabel={props.columns[cellIndex]}
                   style={{ color: cellColor(cell, cellIndex) }}
                 >
-                  {cell}
+                  {props.linkColumn && props.columns[cellIndex] == props.linkColumn.column ? (
+                    <a href={props.linkColumn.linkTemplate.replace(LINK_TEMPLATE_VALUE_KEY, cell)} target="_blank">
+                      {" "}
+                      {cell}{" "}
+                    </a>
+                  ) : (
+                    <>{cell}</>
+                  )}
                 </Td>
               ))}
             </Tr>
