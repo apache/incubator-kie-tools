@@ -4,10 +4,10 @@ name: Jenkins Tests
 on:
   pull_request:
     branches:
-    - main
-    paths: 
-    - '.ci/jenkins/**'
-    - '.github/workflows/jenkins-tests-PR.yml'
+      - "main"
+    paths:
+      - ".ci/jenkins/**"
+      - ".github/workflows/jenkins-tests-PR.yml"
 
 jobs:
   dsl-tests:
@@ -16,14 +16,13 @@ jobs:
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
-    - name: Setup repo branch
-      run: git checkout -b ${{ github.head_ref }}
-    - name: DSL tests
-      # uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
-      uses: radtriste/kogito-pipelines/.ci/actions/dsl-tests@correct_quarkus_gha
-      with:
-        main-config-file-repo: kiegroup/kogito-pipelines
-        main-config-file-ref: main
-        main-config-file-path: dsl/config/main.yaml
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup repo branch
+        run: git checkout -b ${{ github.head_ref }}
+      - name: DSL tests
+        uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
+        with:
+          main-config-file-repo: kiegroup/kogito-pipelines
+          main-config-file-ref: main
+          main-config-file-path: dsl/config/main.yaml
