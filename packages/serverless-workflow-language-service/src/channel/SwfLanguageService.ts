@@ -20,25 +20,18 @@ import {
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { Specification } from "@severlessworkflow/sdk-typescript";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import {
-  CodeLens,
-  CompletionItem,
-  CompletionItemKind,
-  InsertTextFormat,
-  Position,
-  Range,
-} from "vscode-languageserver-types";
-import { FileLanguage, SwfLanguageServiceCommandExecution } from "../api";
-import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { FileLanguage } from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import * as swfModelQueries from "./modelQueries";
-import { nodeUpUntilType } from "./nodeUpUntilType";
 import { doRefValidation } from "./refValidation";
+import {
+  SwfCompletionItemServiceCatalogService,
+  SwfLanguageServiceCodeCompletion,
+} from "./SwfLanguageServiceCodeCompletion";
 import {
   SwfLanguageServiceCodeLenses,
   SwfLanguageServiceCodeLensesFunctionsArgs,
@@ -90,7 +83,7 @@ export class SwfLanguageService {
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
-      return args.content.trim().length ? [] : [getStartingSWFCodeCompletion(args)];
+      return args.content.trim().length ? [] : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions(args);
     }
 
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
@@ -272,11 +265,6 @@ export class SwfLanguageService {
   }
 }
 
-type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
-type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
-  functions: SwfCompletionItemServiceCatalogFunction[];
-};
-
 const completions = new Map<
   SwfJsonPath,
   (args: {
@@ -291,280 +279,18 @@ const completions = new Map<
     codeCompletionStrategy: CodeCompletionStrategy;
   }) => Promise<CompletionItem[]>
 >([
-  [
-    ["functions", "*"],
-    async ({
-      currentNode,
-      rootNode,
-      overwriteRange,
-      swfCompletionItemServiceCatalogServices,
-      document,
-      langServiceConfig,
-      codeCompletionStrategy,
-    }) => {
-      const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
-
-      const specsDir = await langServiceConfig.getSpecsDirPosixPaths(document);
-
-      const result = swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) =>
-        swfServiceCatalogService.functions
-          .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
-          .map((swfServiceCatalogFunc) => {
-            const swfFunction: Omit<Specification.Function, "normalize"> = {
-              name: `$\{1:${swfServiceCatalogFunc.name}}`,
-              operation: swfServiceCatalogFunc.operation,
-              type: swfServiceCatalogFunc.type,
-            };
-
-            const command: SwfLanguageServiceCommandExecution<"swf.ls.commands.ImportFunctionFromCompletionItem"> = {
-              name: "swf.ls.commands.ImportFunctionFromCompletionItem",
-              args: {
-                containingService: swfServiceCatalogService,
-                documentUri: document.uri,
-              },
-            };
-
-            const kind =
-              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-                ? CompletionItemKind.Interface
-                : CompletionItemKind.Reference;
-
-            const label = codeCompletionStrategy.formatLabel(
-              toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
-              kind
-            );
-
-            return {
-              kind,
-              label,
-              detail:
-                swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
-                  ? swfServiceCatalogService.source.url
-                  : swfServiceCatalogFunc.operation,
-              textEdit: {
-                newText:
-                  codeCompletionStrategy.translate({
-                    completion: swfFunction,
-                    completionItemKind: kind,
-                    overwriteRange,
-                  }) + (currentNode.type === "object" ? "," : ""),
-                range: overwriteRange,
-              },
-              snippet: true,
-              insertTextFormat: InsertTextFormat.Snippet,
-              command: {
-                command: command.name,
-                title: "Import function from completion item",
-                arguments: [command.args],
-              },
-            };
-          })
-      );
-      return Promise.resolve(result);
-    },
-  ],
-  [
-    ["functions", "*", "operation"],
-    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
-      if (!currentNode.parent?.parent) {
-        return Promise.resolve([]);
-      }
-
-      // As "rest" is the default, if the value is undefined, it's a rest function too.
-      const isRestFunction = (findNodeAtLocation(currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
-      if (!isRestFunction) {
-        return Promise.resolve([]);
-      }
-
-      const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
-
-      const result = swfCompletionItemServiceCatalogServices
-        .flatMap((s) => s.functions)
-        .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
-        .map((swfServiceCatalogFunc) => {
-          const kind =
-            swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-              ? CompletionItemKind.Function
-              : CompletionItemKind.Folder;
-
-          const label = codeCompletionStrategy.formatLabel(swfServiceCatalogFunc.operation, kind);
-
-          return {
-            kind,
-            label,
-            detail: label,
-            filterText: label,
-            textEdit: {
-              newText: codeCompletionStrategy.translate({
-                completion: `${swfServiceCatalogFunc.operation}`,
-                completionItemKind: kind,
-              }),
-              range: overwriteRange,
-            },
-            insertTextFormat: InsertTextFormat.Snippet,
-          };
-        });
-      return Promise.resolve(result);
-    },
-  ],
-  [
-    ["states", "*", "actions", "*", "functionRef"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
-      if (currentNode.type !== "property") {
-        console.debug("Cannot autocomplete: functionRef should be a property.");
-        return Promise.resolve([]);
-      }
-
-      const result = swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        const swfServiceCatalogFunc = swfCompletionItemServiceCatalogServices
-          .flatMap((f) => f.functions)
-          .filter((f) => f.operation === swfFunction.operation)
-          .pop()!;
-        if (!swfServiceCatalogFunc) {
-          return [];
-        }
-
-        let argIndex = 1;
-        const swfFunctionRefArgs: Record<string, string> = {};
-        Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
-          swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
-        });
-
-        const swfFunctionRef: Omit<Specification.Functionref, "normalize"> = {
-          refName: swfFunction.name,
-          arguments: swfFunctionRefArgs,
-        };
-
-        const kind = CompletionItemKind.Module;
-        const label = codeCompletionStrategy.formatLabel(swfFunctionRef.refName, kind);
-
-        return [
-          {
-            kind,
-            label,
-            sortText: label,
-            detail: `${swfServiceCatalogFunc.operation}`,
-            textEdit: {
-              newText: codeCompletionStrategy.translate({ completion: swfFunctionRef, completionItemKind: kind }),
-              range: overwriteRange,
-            },
-            insertTextFormat: InsertTextFormat.Snippet,
-          },
-        ];
-      });
-
-      return Promise.resolve(result);
-    },
-  ],
+  [["functions", "*"], SwfLanguageServiceCodeCompletion.getFunctionCompletions],
+  [["functions", "*", "operation"], SwfLanguageServiceCodeCompletion.getFunctionOperationCompletions],
+  [["states", "*", "actions", "*", "functionRef"], SwfLanguageServiceCodeCompletion.getFunctionRefCompletions],
   [
     ["states", "*", "actions", "*", "functionRef", "refName"],
-    ({ overwriteRange, rootNode, codeCompletionStrategy }) => {
-      const result = swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        const kind = CompletionItemKind.Value;
-        const label = codeCompletionStrategy.formatLabel(swfFunction.name, kind);
-
-        return [
-          {
-            kind,
-            label,
-            sortText: label,
-            detail: `"${swfFunction.name}"`,
-            filterText: label,
-            textEdit: {
-              newText: codeCompletionStrategy.translate({
-                completion: `${swfFunction.name}`,
-                completionItemKind: kind,
-              }),
-              range: overwriteRange,
-            },
-            insertTextFormat: InsertTextFormat.Snippet,
-          },
-        ];
-      });
-      return Promise.resolve(result);
-    },
+    SwfLanguageServiceCodeCompletion.getFunctionRefRefnameCompletions,
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "arguments"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
-      if (currentNode.type !== "property" && currentNode.type !== "string") {
-        console.debug("Cannot autocomplete: arguments should be a property.");
-        return Promise.resolve([]);
-      }
-
-      const startNode = nodeUpUntilType(currentNode, "object");
-
-      if (!startNode) {
-        return Promise.resolve([]);
-      }
-
-      const swfFunctionRefName: string = findNodeAtLocation(startNode, ["refName"])?.value;
-      if (!swfFunctionRefName) {
-        return Promise.resolve([]);
-      }
-
-      const swfFunction = swfModelQueries
-        .getFunctions(rootNode)
-        ?.filter((f) => f.name === swfFunctionRefName)
-        .pop();
-      if (!swfFunction) {
-        return Promise.resolve([]);
-      }
-
-      const swfServiceCatalogFunc = swfCompletionItemServiceCatalogServices
-        .flatMap((f) => f.functions)
-        .filter((f) => f.operation === swfFunction.operation)
-        .pop()!;
-      if (!swfServiceCatalogFunc) {
-        return Promise.resolve([]);
-      }
-
-      let argIndex = 1;
-      const swfFunctionRefArgs: Record<string, string> = {};
-      Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
-        swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
-      });
-
-      const kind = CompletionItemKind.Module;
-      const label = `'${swfFunctionRefName}' arguments`;
-
-      return Promise.resolve([
-        {
-          kind,
-          label,
-          sortText: label,
-          detail: swfFunction.operation,
-          textEdit: {
-            newText: codeCompletionStrategy.translate({ completion: swfFunctionRefArgs, completionItemKind: kind }),
-            range: overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        },
-      ]);
-    },
+    SwfLanguageServiceCodeCompletion.getFunctionRefArgumentsCompletions,
   ],
 ]);
-
-function toCompletionItemLabelPrefix(
-  swfServiceCatalogFunction: SwfServiceCatalogFunction,
-  specsDirRelativePosixPath: string
-) {
-  switch (swfServiceCatalogFunction.source.type) {
-    case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
-      const fileName =
-        swfServiceCatalogFunction.source.serviceFileAbsolutePath.split("/").pop() ??
-        swfServiceCatalogFunction.source.serviceFileAbsolutePath;
-      return toCompletionItemLabel(specsDirRelativePosixPath, fileName, swfServiceCatalogFunction.name);
-    case SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY:
-      return toCompletionItemLabel(
-        swfServiceCatalogFunction.source.registry,
-        swfServiceCatalogFunction.source.serviceId,
-        swfServiceCatalogFunction.name
-      );
-    default:
-      return "";
-  }
-}
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
   return findNodesAtLocation({ root, path })[0];
@@ -572,28 +298,4 @@ export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNod
 
 export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {
   return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLsNode;
-}
-
-function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
-  return `${namespace}»${resource}#${operation}`;
-}
-
-function getStartingSWFCodeCompletion(args: {
-  cursorPosition: Position;
-  codeCompletionStrategy: CodeCompletionStrategy;
-}): CompletionItem {
-  const kind = CompletionItemKind.Text;
-  const label = "Create your first Serverless Workflow";
-
-  return {
-    kind,
-    label,
-    detail: "Start with a simple Serverless Workflow",
-    sortText: `100_${label}`, //place the completion on top in the menu
-    textEdit: {
-      newText: args.codeCompletionStrategy.translate({ completion: simpleTemplate, completionItemKind: kind }),
-      range: Range.create(args.cursorPosition, args.cursorPosition),
-    },
-    insertTextFormat: InsertTextFormat.Snippet,
-  };
 }
