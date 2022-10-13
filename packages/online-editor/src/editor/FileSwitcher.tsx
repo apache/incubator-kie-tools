@@ -27,7 +27,7 @@ import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggl
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -45,15 +45,14 @@ import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
+import { PromiseStateWrapper, useCombinedPromiseState } from "../workspace/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useCancelableEffect } from "../reactExt/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -63,7 +62,13 @@ import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FileDataList, getFileDataListHeight, SingleFileWorkspaceDataList } from "../filesList/FileDataList";
+import {
+  FileDataList,
+  FileLink,
+  FileListItem,
+  getFileDataListHeight,
+  SingleFileWorkspaceDataList,
+} from "../filesList/FileDataList";
 import {
   DataList,
   DataListCell,
@@ -72,6 +77,8 @@ import {
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
+import { usePreviewSvg } from "../previewSvgs/PreviewSvgHooks";
+import { WorkspaceLoadingMenuItem } from "../workspace/components/WorkspaceLoadingCard";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -82,6 +89,7 @@ enum FilesDropdownMode {
 }
 
 const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 500;
+const MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN = 40;
 
 export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
@@ -221,8 +229,12 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
 
   return (
     <>
-      <Flex alignItems={{ default: "alignItemsCenter" }} flexWrap={{ default: "nowrap" }}>
-        <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
+      <Flex
+        alignItems={{ default: "alignItemsCenter" }}
+        flexWrap={{ default: "nowrap" }}
+        className={"kie-sandbox--file-switcher"}
+      >
+        <FlexItem style={{ display: "flex", alignItems: "baseline", minWidth: 0 }}>
           <Dropdown
             style={{ position: "relative" }}
             position={"left"}
@@ -249,27 +261,29 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                       <FileLabel extension={props.workspaceFile.extension} />
                     </b>
                   </FlexItem>
-                  <Popover
-                    hasAutoWidth={true}
-                    distance={15}
-                    showClose={false}
-                    shouldClose={() => setPopoverVisible(false)}
-                    hideOnOutsideClick={true}
-                    enableFlip={false}
-                    withFocusTrap={false}
-                    bodyContent={
-                      <>
-                        <FolderIcon />
-                        &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
-                      </>
-                    }
-                    isVisible={isPopoverVisible}
-                    position={"bottom-start"}
-                  >
-                    <FlexItem>
+
+                  <FlexItem style={{ minWidth: 0 }}>
+                    <Popover
+                      hasAutoWidth={true}
+                      distance={15}
+                      showClose={false}
+                      shouldClose={() => setPopoverVisible(false)}
+                      hideOnOutsideClick={true}
+                      enableFlip={false}
+                      withFocusTrap={false}
+                      bodyContent={
+                        <>
+                          <FolderIcon />
+                          &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
+                        </>
+                      }
+                      isVisible={isPopoverVisible}
+                      position={"bottom-start"}
+                    >
                       <div
                         data-testid={"toolbar-title"}
                         className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
+                        style={{ width: "100%" }}
                       >
                         <Title
                           aria-label={"EmbeddedEditorFile name"}
@@ -309,8 +323,8 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                           />
                         </Tooltip>
                       </div>
-                    </FlexItem>
-                  </Popover>
+                    </Popover>
+                  </FlexItem>
                   <FlexItem>
                     <CaretDownIcon />
                   </FlexItem>
@@ -321,16 +335,12 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
             <Menu
               style={{
                 boxShadow: "none",
-                minWidth:
-                  activeMenu === ROOT_MENU_ID
-                    ? "500px"
-                    : filesDropdownMode === FilesDropdownMode.CAROUSEL
-                    ? "calc(100vw - 16px)"
-                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
-                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2}px`
-                    : "",
+                minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`,
+                width: `${
+                  filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+                    ? MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2
+                    : MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX
+                }px`,
               }}
               id={ROOT_MENU_ID}
               containsDrilldown={true}
@@ -342,7 +352,11 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
               onGetMenuHeight={setHeight}
             >
               <MenuContent
-                maxMenuHeight={"800px"}
+                // MAGIC NUMBER ALERT
+                //
+                // 204px is the exact number that allows the menu to grow to
+                // the maximum size of the screen without adding scroll to the page.
+                maxMenuHeight={`calc(100vh - 204px)`}
                 menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
                 style={{ overflow: "hidden" }}
               >
@@ -398,19 +412,12 @@ export function WorkspacesMenuItems(props: {
       <PromiseStateWrapper
         promise={combined}
         pending={
-          <div style={{ padding: "8px" }}>
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-            <br />
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-            <br />
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-          </div>
+          <>
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+          </>
         }
         resolved={({ workspaceDescriptors, workspaceFiles }) => (
           <>
@@ -481,40 +488,17 @@ export function WorkspacesMenuItems(props: {
 }
 
 export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
-  const workspaces = useWorkspaces();
   const imgRef = useRef<HTMLImageElement>(null);
-  const [svg, setSvg] = usePromiseState<string>();
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        // FIXME: Uncomment when working on KOGITO-7805
-        // Promise.resolve()
-        //   .then(async () => svgService.getSvg(props.workspaceFile))
-        //   .then(async (file) => {
-        //     if (canceled.get()) {
-        //       return;
-        //     }
-        //
-        //     if (file) {
-        //       setSvg({ data: decoder.decode(await file.getFileContents()) });
-        //     } else {
-        //       setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
-        //     }
-        //   });
-      },
-      [props.workspaceFile, workspaces, setSvg]
-    )
-  );
+  const { previewSvgString } = usePreviewSvg(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
 
   useEffect(() => {
-    if (svg.data) {
-      const blob = new Blob([svg.data], { type: "image/svg+xml" });
+    if (previewSvgString.data) {
+      const blob = new Blob([previewSvgString.data], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
       imgRef.current!.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
       imgRef.current!.src = url;
     }
-  }, [svg]);
+  }, [previewSvgString]);
 
   return (
     <>
@@ -527,10 +511,15 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
             </Bullseye>
           </div>
         )}
-        promise={svg}
+        promise={previewSvgString}
         resolved={() => (
-          // for some reason, the CardBody adds an extra 6px after the image is loaded. 200 - 6 = 194px.
-          <img style={{ height: "194px" }} ref={imgRef} alt={"SVG for " + props.workspaceFile.relativePath} />
+          <Bullseye>
+            <img
+              style={{ height: "180px", margin: "10px" }}
+              ref={imgRef}
+              alt={`SVG for ${props.workspaceFile.relativePath}`}
+            />
+          </Bullseye>
         )}
       />
     </>
@@ -538,14 +527,14 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
 }
 
 export function SearchableFilesMenuGroup(props: {
-  maxHeight: string;
   shouldFocusOnSearch: boolean;
   filesDropdownMode: FilesDropdownMode;
   label: string;
   allFiles: WorkspaceFile[];
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
   children: (args: { filteredFiles: WorkspaceFile[] }) => React.ReactNode;
 }) {
-  const [search, setSearch] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -560,34 +549,64 @@ export function SearchableFilesMenuGroup(props: {
   }, [props.shouldFocusOnSearch, props.filesDropdownMode]);
 
   const filteredFiles = useMemo(
-    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(search.toLowerCase())),
-    [props.allFiles, search]
+    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(props.search.toLowerCase())),
+    [props.allFiles, props.search]
   );
+
+  const height = useMemo(() => {
+    if (
+      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
+      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+    ) {
+      // No reason to know the exact size.
+      const sizeOfFirst50Elements = props.allFiles
+        .slice(0, 50)
+        .map((f) => getFileDataListHeight(f))
+        .reduce((a, b) => a + b, 0);
+
+      // MAGIC NUMBER ALERT
+      //
+      // 440px is the exact number that allows the menu to grow to the end of the screen without adding scroll  to the
+      // entire page, It includes the first menu item, the search bar and the "View other files" button at the bottom.
+      return `max(300px, min(calc(100vh - 440px), ${sizeOfFirst50Elements}px))`;
+    } else if (props.filesDropdownMode === FilesDropdownMode.CAROUSEL) {
+      // MAGIC NUMBER ALERT
+      //
+      // 384px is the exact number that allows the menu to grow to the end of the screen without
+      // adding a scroll to the entire page. It includes the first menu item and the search bar.
+      //
+      // 280px is the size of a File SVG card.
+      return `min(calc(100vh - 384px), calc(${props.allFiles.length} * 280px))`;
+    } else {
+      return "";
+    }
+  }, [props.allFiles, props.filesDropdownMode]);
 
   return (
     <MenuGroup label={props.label}>
-      <MenuInput>
+      {/* Allows for arrows to work when editing the text. */}
+      <MenuInput onKeyDown={(e) => e.stopPropagation()}>
         <TextInput
           ref={searchInputRef}
-          value={search}
+          value={props.search}
           aria-label={"Other files menu items"}
           iconVariant={"search"}
           type={"search"}
-          onChange={(value) => setSearch(value)}
+          onChange={(value) => props.setSearch(value)}
         />
       </MenuInput>
-      {filteredFiles.length === 0 && search && (
-        <Bullseye>
-          <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {`No files match '${search}'.`}
-            </Title>
-          </EmptyState>
-        </Bullseye>
-      )}
-      <div style={{ maxHeight: props.maxHeight, overflowY: "auto", height: props.maxHeight }}>
+      <div style={{ overflowY: "auto", height }}>
         {filteredFiles.length > 0 && props.children({ filteredFiles })}
+        {filteredFiles.length <= 0 && (
+          <Bullseye>
+            <EmptyState>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h4" size="lg">
+                {`No files match '${props.search}'.`}
+              </Title>
+            </EmptyState>
+          </Bullseye>
+        )}
       </div>
     </MenuGroup>
   );
@@ -624,6 +643,9 @@ export function FilesMenuItems(props: {
     [editorEnvelopeLocator, sortedAndFilteredFiles]
   );
 
+  const [search, setSearch] = useState("");
+  const [otherFilesSearch, setOtherFilesSearch] = useState("");
+
   return (
     <>
       <Split>
@@ -632,14 +654,13 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        {/* FIXME: Uncomment when working on KOGITO-7805 */}
-        {/*<SplitItem>*/}
-        {/*  <FilesDropdownModeIcons*/}
-        {/*    filesDropdownMode={props.filesDropdownMode}*/}
-        {/*    setFilesDropdownMode={props.setFilesDropdownMode}*/}
-        {/*  />*/}
-        {/*  &nbsp; &nbsp;*/}
-        {/*</SplitItem>*/}
+        <SplitItem>
+          <FilesDropdownModeIcons
+            filesDropdownMode={props.filesDropdownMode}
+            setFilesDropdownMode={props.setFilesDropdownMode}
+          />
+          &nbsp; &nbsp;
+        </SplitItem>
       </Split>
       <Divider component={"li"} />
 
@@ -649,7 +670,8 @@ export function FilesMenuItems(props: {
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <>
               <SearchableFilesMenuGroup
-                maxHeight={"500px"}
+                search={search}
+                setSearch={setSearch}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
                 label={`Models in '${props.workspaceDescriptor.name}'`}
@@ -717,7 +739,8 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <SearchableFilesMenuGroup
-              maxHeight={"500px"}
+              search={otherFilesSearch}
+              setSearch={setOtherFilesSearch}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Other files in '${props.workspaceDescriptor.name}'`}
@@ -755,15 +778,22 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
           <SplitItem isFilled={true}>
             <SearchableFilesMenuGroup
-              maxHeight={"500px"}
+              search={search}
+              setSearch={setSearch}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Models in '${props.workspaceDescriptor.name}'`}
               allFiles={models}
             >
               {({ filteredFiles }) => (
-                <Gallery hasGutter={true} style={{ padding: "8px" }}>
-                  {filteredFiles.map((file) => (
+                <Gallery
+                  hasGutter={true}
+                  style={{
+                    padding: "8px",
+                    borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+                  }}
+                >
+                  {filteredFiles.slice(0, MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN).map((file) => (
                     <Card
                       key={file.relativePath}
                       isSelectable={true}
@@ -783,28 +813,29 @@ export function FilesMenuItems(props: {
                         props.onSelectFile();
                       }}
                     >
-                      <CardHeader>
-                        <CardHeaderMain>
-                          <CardTitle>
-                            <Flex flexWrap={{ default: "nowrap" }}>
-                              <FlexItem>
-                                <TextContent>
-                                  <Text component={TextVariants.h4}>{file.nameWithoutExtension}</Text>
-                                </TextContent>
-                              </FlexItem>
-                              <FlexItem>
-                                <FileLabel extension={file.extension} />
-                              </FlexItem>
-                            </Flex>
-                          </CardTitle>
-                        </CardHeaderMain>
-                      </CardHeader>
+                      <FileLink file={file}>
+                        {/* The default display:flex makes the text overflow */}
+                        <CardHeader style={{ display: "block" }}>
+                          <CardHeaderMain>
+                            <FileListItem file={file} isEditable={true} />
+                          </CardHeaderMain>
+                        </CardHeader>
+                      </FileLink>
+                      <Divider inset={{ default: "insetMd" }} />
                       <CardBody style={{ padding: 0 }}>
-                        {/* FIXME: Uncomment when working on KOGITO-7805 */}
-                        {/* <FileSvg workspaceFile={file} />*/}
+                        <FileSvg workspaceFile={file} />
                       </CardBody>
                     </Card>
                   ))}
+                  {filteredFiles.length > MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN && (
+                    <Card style={{ border: 0 }}>
+                      <CardBody>
+                        <Bullseye>
+                          <div>...and {filteredFiles.length - MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN} more.</div>
+                        </Bullseye>
+                      </CardBody>
+                    </Card>
+                  )}
                 </Gallery>
               )}
             </SearchableFilesMenuGroup>

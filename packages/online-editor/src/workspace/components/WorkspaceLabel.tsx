@@ -61,25 +61,31 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   }, [props.descriptor, workspaceImportableUrl]);
 
   return (
-    <Flex wrap={"nowrap"} style={{ display: "inline-flex" }}>
+    <Flex
+      flexWrap={{ default: "nowrap" }}
+      justifyContent={{ default: "justifyContentFlexStart" }}
+      spaceItems={{ default: "spaceItemsSm" }}
+      style={{ display: "inline-flex" }}
+    >
       {props.descriptor?.origin.kind === WorkspaceKind.GIT && (
-        <FlexItem>
-          <Tooltip
-            content={`'${
-              props.descriptor?.name
-            }' is linked to a Git Repository. ${props.descriptor?.origin.url.toString()}`}
-            position={"right"}
-          >
-            <>
+        <>
+          <FlexItem>
+            <Tooltip
+              content={`'${
+                props.descriptor?.name
+              }' is linked to a Git Repository. ${props.descriptor?.origin.url.toString()}`}
+              position={"right"}
+            >
               {gitLabel}
-              &nbsp;&nbsp;
-              <Label>
-                <CodeBranchIcon />
-                &nbsp;&nbsp;{props.descriptor?.origin.branch}
-              </Label>
-            </>
-          </Tooltip>
-        </FlexItem>
+            </Tooltip>
+          </FlexItem>
+          <FlexItem>
+            <Label>
+              <CodeBranchIcon />
+              &nbsp;&nbsp;{props.descriptor?.origin.branch}
+            </Label>
+          </FlexItem>
+        </>
       )}
       {props.descriptor?.origin.kind === WorkspaceKind.GITHUB_GIST && (
         <FlexItem>

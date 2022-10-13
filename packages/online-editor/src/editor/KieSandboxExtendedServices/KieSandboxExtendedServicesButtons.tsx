@@ -45,7 +45,7 @@ import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
-import { useDmnRunnerInputsDispatch } from "../../dmnRunnerInputs/DmnRunnerInputsContext";
+import { useDmnRunnerInputsDispatch } from "../../dmnRunnerInputs/DmnRunnerInputsDispatchContext";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;

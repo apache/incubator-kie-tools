@@ -28,24 +28,25 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { usePrevious } from "../../reactExt/Hooks";
 import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
 import { matchPath } from "react-router";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 function Indicator(props: { workspace: ActiveWorkspace; isSynced: boolean; hasLocalChanges: boolean }) {
   return (
-    <>
+    <Flex flexWrap={{ default: "nowrap" }} spaceItems={{ default: "spaceItemsMd" }}>
       {(props.workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
         props.workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
         <>
           {(!props.isSynced && (
-            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-              <Tooltip content={`There are new changes since your last sync.`} position={"right"}>
+            <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
+              <Tooltip content={`There are new changes since your last sync.`} position={"bottom"}>
                 <small>
                   <SecurityIcon color={"gray"} />
                 </small>
               </Tooltip>
             </Title>
           )) || (
-            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-              <Tooltip content={`All files are synced.`} position={"right"}>
+            <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
+              <Tooltip content={`All files are synced.`} position={"bottom"}>
                 <small>
                   <CheckCircleIcon color={"green"} />
                 </small>
@@ -55,15 +56,15 @@ function Indicator(props: { workspace: ActiveWorkspace; isSynced: boolean; hasLo
         </>
       )}
       {props.hasLocalChanges && (
-        <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-          <Tooltip content={"You have local changes."} position={"right"}>
+        <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
+          <Tooltip content={"You have local changes."} position={"bottom"}>
             <small>
               <i>M</i>
             </small>
           </Tooltip>
         </Title>
       )}
-    </>
+    </Flex>
   );
 }
 
@@ -120,13 +121,15 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
               isSynced={prev.data.isSynced}
             />
           )) || (
-            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-              <Tooltip content={"Checking status..."} position={"right"}>
-                <small>
-                  <OutlinedClockIcon color={"gray"} />
-                </small>
-              </Tooltip>
-            </Title>
+            <Flex flexWrap={{ default: "nowrap" }} spaceItems={{ default: "spaceItemsNone" }}>
+              <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
+                <Tooltip content={"Checking status..."} position={"right"}>
+                  <small>
+                    <OutlinedClockIcon color={"gray"} />
+                  </small>
+                </Tooltip>
+              </Title>
+            </Flex>
           )}
         </>
       }
