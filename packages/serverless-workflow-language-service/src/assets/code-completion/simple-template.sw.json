@@ -1,33 +1,33 @@
 {
-  "id": "Workflow unique identifier",
-  "version": "0.1",
-  "specVersion": "0.1",
-  "name": "Workflow name",
-  "description": "Workflow description",
-  "start": "StartState",
+  "id": "${1:Workflow unique identifier}",
+  "version": "${2:0.1}",
+  "specVersion": "${3:0.1}",
+  "name": "${4:Workflow name}",
+  "description": "${5:Workflow description}",
+  "start": "${13}",
   "functions": [
     {
-      "name": "uniqueFunctionName",
-      "operation": "localhost#operation",
-      "type": "rest"
+      "name": "${7:uniqueFunctionName}",
+      "operation": "${8:localhost#operation}",
+      "type": "${9:rest}"
     }
   ],
   "events": [
     {
-      "name": "Unique event name",
-      "source": "CloudEvent source",
-      "type": "CloudEvent type"
+      "name": "${10:Unique event name}",
+      "source": "${11:CloudEvent source}",
+      "type": "${12:CloudEvent type}"
     }
   ],
   "states": [
     {
-      "name": "StartState",
-      "type": "operation",
+      "name": "${13:StartState}",
+      "type": "${14:operation}",
       "actions": [
         {
-          "name": "uniqueActionName",
+          "name": "${15:uniqueActionName}",
           "functionRef": {
-            "refName": "uniqueFunctionName",
+            "refName": "${7}",
             "arguments": {
               "firstArgument": "",
               "secondArgument": ""
