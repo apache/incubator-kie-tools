@@ -401,7 +401,7 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      portfinder: ^1.0.27
+      portfinder: ^1.0.32
       rimraf: ^3.0.2
       semver: ^7.3.5
       sinon: ^11.1.1
@@ -414,7 +414,7 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       axios: 0.27.2
       fast-xml-parser: 3.17.4
-      portfinder: 1.0.28
+      portfinder: 1.0.32
       semver: 7.3.5
       sinon: 11.1.1
     devDependencies:
@@ -4981,11 +4981,9 @@ importers:
       "@kie-tools/tsconfig": workspace:*
       "@types/react": ^17.0.6
       "@types/vscode": ^1.66.0
-      "@vscode/test-web": ^0.0.22
+      "@vscode/test-web": ^0.0.30
       copy-webpack-plugin: ^8.1.1
       portfinder: ^1.0.32
-      react: ^17.0.2
-      react-dom: ^17.0.2
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
@@ -5005,8 +5003,6 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
       portfinder: 1.0.32
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
@@ -5015,7 +5011,7 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/react": 17.0.21
       "@types/vscode": 1.66.0
-      "@vscode/test-web": 0.0.22
+      "@vscode/test-web": 0.0.30
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
@@ -10660,28 +10656,6 @@ packages:
       { integrity: sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q== }
     dev: true
 
-  /@vscode/test-web/0.0.22:
-    resolution:
-      { integrity: sha512-sm4WYidw26eFb1AReC8w5y4aOMdBb5ma5x3ukRJcun9iUB1ajz2nM18rxiYAVimUzrIMQHr9WqC8HYBYP8aNKQ== }
-    engines: { node: ">=8.9.3" }
-    hasBin: true
-    dependencies:
-      "@koa/router": 10.1.1
-      decompress: 4.2.1
-      decompress-targz: 4.1.1
-      http-proxy-agent: 5.0.0
-      https-proxy-agent: 5.0.1
-      koa: 2.13.4
-      koa-morgan: 1.0.1
-      koa-mount: 4.0.0
-      koa-static: 5.0.0
-      minimist: 1.2.6
-      playwright: 1.26.1
-      vscode-uri: 3.0.3
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@vscode/test-web/0.0.30:
     resolution:
       { integrity: sha512-l1StjU5FINfgVrgaKxSrbh+wrpZiFqTT5uQ/r1qano2yn9zWYmZUczQjjzzcUI0m4/38IPkwwI3gezSwdkKtpQ== }
@@ -13900,7 +13874,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -22695,16 +22669,6 @@ packages:
     resolution:
       { integrity: sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ== }
     deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
-    dev: false
-
-  /portfinder/1.0.28:
-    resolution:
-      { integrity: sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA== }
-    engines: { node: ">= 0.12.0" }
-    dependencies:
-      async: 2.6.4
-      debug: 3.2.7
-      mkdirp: 0.5.5
     dev: false
 
   /portfinder/1.0.32:

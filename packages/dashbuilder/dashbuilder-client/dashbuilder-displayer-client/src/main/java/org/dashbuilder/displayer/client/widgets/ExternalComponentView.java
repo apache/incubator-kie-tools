@@ -65,7 +65,7 @@ public class ExternalComponentView extends Composite implements ExternalComponen
 
     @Override
     public void setComponentURL(String url) {
-        externalComponentIFrame.src = url;        
+        externalComponentIFrame.src = url;
         componentLoaded = false;
         externalComponentIFrame.onload = this::onInvoke;
     }

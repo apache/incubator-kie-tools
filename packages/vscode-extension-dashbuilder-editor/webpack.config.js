@@ -42,7 +42,7 @@ module.exports = async (env) => [
     plugins: [],
   }),
   merge(commonConfig(env), {
-    target: "web",
+    target: "webworker",
     entry: {
       "browser/extension": "./src/browser/extension.ts",
     },

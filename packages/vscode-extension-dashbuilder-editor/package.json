@@ -36,9 +36,7 @@
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/dashbuilder-viewer": "workspace:*",
-    "portfinder": "^1.0.32",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "portfinder": "^1.0.32"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -48,7 +46,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/react": "^17.0.6",
     "@types/vscode": "^1.66.0",
-    "@vscode/test-web": "^0.0.22",
+    "@vscode/test-web": "^0.0.30",
     "copy-webpack-plugin": "^8.1.1",
     "rimraf": "^3.0.2",
     "vsce": "^2.6.5",
@@ -87,7 +85,7 @@
             "Do not open",
             "Ask next time"
           ],
-          "markdownDescription": "When opening dashbuilder files, decide whether or not to open the Dashboard Editor alongside the text editor. Regardless of the configured option, you can always open the dashbuilder Dashboard Editor using the 'Open as Dashboard' button.",
+          "markdownDescription": "When opening Dashbuilder files, decide whether or not to open the Dashboard Editor alongside the text editor. Regardless of the configured option, you can always open the dashbuilder Dashboard Editor using the 'Open as Dashboard' button.",
           "type": "string"
         }
       },
@@ -104,7 +102,6 @@
         "viewType": "kieKogitoWebviewEditorsDashbuilder"
       }
     ],
-    "icon": "icon.png",
     "javaExtensions": [],
     "keybindings": [
       {
@@ -160,5 +157,6 @@
     "onLanguage:dash-json",
     "onLanguage:dash-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsDashbuilder"
-  ]
+  ],
+  "icon": "icon.png"
 }

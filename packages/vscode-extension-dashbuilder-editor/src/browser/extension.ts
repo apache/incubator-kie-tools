@@ -46,13 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "dashbuilder",
-        filePathGlob: "**/*.dash.+(yaml|yml)",
-        resourcesPathPrefix: "dist/webview/",
-        envelopePath: "dist/webview/DashbuilderEditorEnvelopeApp.js",
-      }),
-      new EnvelopeMapping({
-        type: "dashbuilder",
-        filePathGlob: "**/*.dash.json",
+        filePathGlob: "**/*.dash.+(yaml|yml|json)",
         resourcesPathPrefix: "dist/webview/",
         envelopePath: "dist/webview/DashbuilderEditorEnvelopeApp.js",
       }),

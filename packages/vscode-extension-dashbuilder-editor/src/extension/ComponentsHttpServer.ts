@@ -21,11 +21,10 @@ import * as fs from "fs";
 import * as path from "path";
 
 export class ComponentServer extends LocalHttpServer {
-  private componentsPath: string;
   private server: http.Server;
 
   requestListener = (request: any, response: any) => {
-    if (request.url == "/" || request.url == "" || request.url == "index.html") {
+    if (["/", "", "index.html"].includes(request.url)) {
       response.writeHead(200);
       response.end("Components server is alive! Base path is " + this.componentsPath);
       return;
@@ -56,9 +55,8 @@ export class ComponentServer extends LocalHttpServer {
     });
   };
 
-  constructor(componentsPath: string) {
+  constructor(private readonly componentsPath: string) {
     super();
-    this.componentsPath = componentsPath;
   }
 
   identify(): string {
