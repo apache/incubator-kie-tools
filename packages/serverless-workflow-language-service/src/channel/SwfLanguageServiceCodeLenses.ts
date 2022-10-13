@@ -72,8 +72,8 @@ const createCodeLenses = (args: {
 /**
  * Functions to create CodeLenses
  */
-export namespace SwfLanguageServiceCodeLenses {
-  export const createNewSWF = (): CodeLens[] => {
+export const SwfLanguageServiceCodeLenses = {
+  createNewSWF: (): CodeLens[] => {
     const position = Position.create(0, 0);
     const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
 
@@ -90,9 +90,9 @@ export namespace SwfLanguageServiceCodeLenses {
         },
       },
     ];
-  };
+  },
 
-  export const addFunction = (args: SwfLanguageServiceCodeLensesFunctionsArgs) =>
+  addFunction: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
     createCodeLenses({
       document: args.document,
       rootNode: args.rootNode,
@@ -118,9 +118,9 @@ export namespace SwfLanguageServiceCodeLenses {
           },
         ];
       },
-    });
+    }),
 
-  export const setupServiceRegistries = (args: SwfLanguageServiceCodeLensesFunctionsArgs) =>
+  setupServiceRegistries: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
     createCodeLenses({
       document: args.document,
       rootNode: args.rootNode,
@@ -145,9 +145,9 @@ export namespace SwfLanguageServiceCodeLenses {
           },
         ];
       },
-    });
+    }),
 
-  export const logInServiceRegistries = (args: SwfLanguageServiceCodeLensesFunctionsArgs) =>
+  logInServiceRegistries: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
     createCodeLenses({
       document: args.document,
       rootNode: args.rootNode,
@@ -173,9 +173,9 @@ export namespace SwfLanguageServiceCodeLenses {
           },
         ];
       },
-    });
+    }),
 
-  export const refreshServiceRegistries = (args: SwfLanguageServiceCodeLensesFunctionsArgs) =>
+  refreshServiceRegistries: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
     createCodeLenses({
       document: args.document,
       rootNode: args.rootNode,
@@ -201,5 +201,5 @@ export namespace SwfLanguageServiceCodeLenses {
           },
         ];
       },
-    });
-}
+    }),
+};

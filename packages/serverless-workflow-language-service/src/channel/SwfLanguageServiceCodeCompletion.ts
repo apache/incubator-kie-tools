@@ -74,8 +74,8 @@ function toCompletionItemLabelPrefix(
 /**
  * SwfLanguageService CodeCompletion functions
  */
-export namespace SwfLanguageServiceCodeCompletion {
-  export function getEmptyFileCodeCompletions(args: {
+export const SwfLanguageServiceCodeCompletion = {
+  getEmptyFileCodeCompletions(args: {
     cursorPosition: Position;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): CompletionItem[] {
@@ -95,11 +95,9 @@ export namespace SwfLanguageServiceCodeCompletion {
         insertTextFormat: InsertTextFormat.Snippet,
       },
     ];
-  }
+  },
 
-  export async function getFunctionCompletions(
-    args: SwfLanguageServiceCodeCompletionFunctionsArgs
-  ): Promise<CompletionItem[]> {
+  getFunctionCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
     const existingFunctionOperations = swfModelQueries.getFunctions(args.rootNode).map((f) => f.operation);
 
     const specsDir = await args.langServiceConfig.getSpecsDirPosixPaths(args.document);
@@ -160,11 +158,9 @@ export namespace SwfLanguageServiceCodeCompletion {
         })
     );
     return Promise.resolve(result);
-  }
+  },
 
-  export async function getFunctionOperationCompletions(
-    args: SwfLanguageServiceCodeCompletionFunctionsArgs
-  ): Promise<CompletionItem[]> {
+  getFunctionOperationCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
     if (!args.currentNode.parent?.parent) {
       return Promise.resolve([]);
     }
@@ -204,11 +200,9 @@ export namespace SwfLanguageServiceCodeCompletion {
         };
       });
     return Promise.resolve(result);
-  }
+  },
 
-  export async function getFunctionRefCompletions(
-    args: SwfLanguageServiceCodeCompletionFunctionsArgs
-  ): Promise<CompletionItem[]> {
+  getFunctionRefCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
     if (args.currentNode.type !== "property") {
       console.debug("Cannot autocomplete: functionRef should be a property.");
       return Promise.resolve([]);
@@ -253,11 +247,11 @@ export namespace SwfLanguageServiceCodeCompletion {
     });
 
     return Promise.resolve(result);
-  }
+  },
 
-  export async function getFunctionRefRefnameCompletions(
+  getFunctionRefRefnameCompletions: (
     args: SwfLanguageServiceCodeCompletionFunctionsArgs
-  ): Promise<CompletionItem[]> {
+  ): Promise<CompletionItem[]> => {
     const result = swfModelQueries.getFunctions(args.rootNode).flatMap((swfFunction) => {
       const kind = CompletionItemKind.Value;
       const label = args.codeCompletionStrategy.formatLabel(swfFunction.name, kind);
@@ -281,11 +275,11 @@ export namespace SwfLanguageServiceCodeCompletion {
       ];
     });
     return Promise.resolve(result);
-  }
+  },
 
-  export async function getFunctionRefArgumentsCompletions(
+  getFunctionRefArgumentsCompletions: (
     args: SwfLanguageServiceCodeCompletionFunctionsArgs
-  ): Promise<CompletionItem[]> {
+  ): Promise<CompletionItem[]> => {
     if (args.currentNode.type !== "property" && args.currentNode.type !== "string") {
       console.debug("Cannot autocomplete: arguments should be a property.");
       return Promise.resolve([]);
@@ -340,5 +334,5 @@ export namespace SwfLanguageServiceCodeCompletion {
         insertTextFormat: InsertTextFormat.Snippet,
       },
     ]);
-  }
-}
+  },
+};
