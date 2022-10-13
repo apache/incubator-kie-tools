@@ -24,7 +24,7 @@ import { NavigationContextProvider } from "./navigation/NavigationContextProvide
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
 import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
-import { VirtualServiceRegistryContextProvider } from "./workspace/services/virtualServiceRegistry/VirtualServiceRegistryContextProvider";
+import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 
 export const App = () => (

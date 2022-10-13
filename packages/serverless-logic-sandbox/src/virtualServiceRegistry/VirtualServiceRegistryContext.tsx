@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { WorkspaceDescriptor } from "../../worker/api/WorkspaceDescriptor";
-import { WorkspaceFile } from "../../WorkspacesContext";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 
 export interface VirtualServiceRegistryContextType {
   listVsrWorkspaces(): Promise<WorkspaceDescriptor[]>;

@@ -16,9 +16,9 @@
 
 import { basename } from "path";
 import { useEffect } from "react";
-import { isServerlessWorkflow, isSpec, resolveExtension } from "../../../../extension";
-import { WorkspaceEvents } from "../../../worker/api/WorkspaceEvents";
-import { useWorkspaces, WorkspaceFile } from "../../../WorkspacesContext";
+import { isServerlessWorkflow, isSpec, resolveExtension } from "../../extension";
+import { WorkspaceEvents } from "../../workspace/worker/api/WorkspaceEvents";
+import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { VirtualServiceRegistryFunction } from "../models/VirtualServiceRegistryFunction";
 import { useVirtualServiceRegistry } from "../VirtualServiceRegistryContext";
 

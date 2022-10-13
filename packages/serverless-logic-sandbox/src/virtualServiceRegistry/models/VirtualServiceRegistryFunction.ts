@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { isJson, isSpec } from "../../../../extension";
-import { WorkspaceFile } from "../../../WorkspacesContext";
+import { isJson, isSpec } from "../../extension";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { generateOpenApiSpec } from "./BaseOpenApiSpec";
 import * as yaml from "yaml";
-import { decoder } from "../../../encoderdecoder/EncoderDecoder";
+import { decoder } from "../../workspace/encoderdecoder/EncoderDecoder";
 
 export class VirtualServiceRegistryFunction {
   public name: string;

@@ -25,12 +25,12 @@ import { SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
-import { VirtualServiceRegistryContextType } from "../../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContext";
+import { VirtualServiceRegistryContextType } from "../../virtualServiceRegistry/VirtualServiceRegistryContext";
 import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/ServiceAccountConfig";
 import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { ExtendedServicesConfig } from "../../settings/SettingsContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContextProvider";
+import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 
 export const VIRTUAL_SERVICE_REGISTRY_NAME = "Sandbox";
 export const ARTIFACT_TAGS = {

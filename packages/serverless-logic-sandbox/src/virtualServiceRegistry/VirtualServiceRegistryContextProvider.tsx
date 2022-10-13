@@ -18,20 +18,20 @@ import * as React from "react";
 import { useCallback, useMemo, useEffect } from "react";
 import { VirtualServiceRegistryContext } from "./VirtualServiceRegistryContext";
 import { VirtualServiceRegistryFunction } from "./models/VirtualServiceRegistryFunction";
-import { useWorkspaces, WorkspaceFile } from "../../WorkspacesContext";
-import { isServerlessWorkflow, isSpec } from "../../../extension";
-import { WorkspaceDescriptor } from "../../worker/api/WorkspaceDescriptor";
-import { LfsStorageFile, LfsStorageService } from "../../lfs/LfsStorageService";
-import { encoder } from "../../encoderdecoder/EncoderDecoder";
-import { LfsWorkspaceDescriptorService } from "../../lfs/LfsWorkspaceDescriptorService";
-import { LfsWorkspaceService } from "../../lfs/LfsWorkspaceService";
-import { WorkspacesEvents, WORKSPACES_BROADCAST_CHANNEL } from "../../worker/api/WorkspacesEvents";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { isServerlessWorkflow, isSpec } from "../extension";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
+import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { LfsWorkspaceDescriptorService } from "../workspace/lfs/LfsWorkspaceDescriptorService";
+import { LfsWorkspaceService } from "../workspace/lfs/LfsWorkspaceService";
+import { WorkspacesEvents, WORKSPACES_BROADCAST_CHANNEL } from "../workspace/worker/api/WorkspacesEvents";
 import {
   toVsrFunctionPathFromFunctionName,
   toVsrFunctionPathFromWorkspaceFilePath,
   toVsrWorkspacePath,
 } from "./VirtualServiceRegistryPathConverter";
-import { LfsWorkspaceFsService } from "../../lfs/LfsWorkspaceFsService";
+import { LfsWorkspaceFsService } from "../workspace/lfs/LfsWorkspaceFsService";
 
 export const VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX = "sandbox::";
 const VIRTUAL_SERVICE_REGISTRY_DESCRIPTOR_DATABASE_NAME = "registryGroup";

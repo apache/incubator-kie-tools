@@ -16,8 +16,8 @@
 
 import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "./VirtualServiceRegistryContextProvider";
 
-export function toVsrWorkspacePath(workspaceId: string): string {
-  return `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${workspaceId}`;
+export function toVsrWorkspacePath(vsrWorkspaceId: string): string {
+  return `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${vsrWorkspaceId}`;
 }
 
 export function toVsrFunctionPathFromFunctionName(args: { vsrWorkspaceId: string; vsrFunctionName: string }): string {
