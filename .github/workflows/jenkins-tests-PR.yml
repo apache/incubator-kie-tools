@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: DSL tests
-        uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
+        # uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
+        uses: radtriste/kogito-pipelines/.ci/actions/dsl-tests@correct_quarkus_gha
         with:
           main-config-file-repo: kiegroup/kogito-pipelines
           main-config-file-ref: main
