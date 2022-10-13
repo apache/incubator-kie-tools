@@ -14,31 +14,16 @@
  * limitations under the License.
  */
 
-import { BaseFile, BaseFileProps } from "../../../commonServices/BaseFile";
+import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "./VirtualServiceRegistryContextProvider";
 
-export interface ServiceRegistryFileProps extends BaseFileProps {
-  groupId: string;
-  needsWorkspaceDeploy: boolean;
+export function toVsrWorkspacePath(workspaceId: string): string {
+  return `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${workspaceId}`;
 }
 
-export class ServiceRegistryFile extends BaseFile {
-  constructor(protected readonly args: ServiceRegistryFileProps) {
-    super(args);
-  }
+export function toVsrFunctionPathFromFunctionName(args: { vsrWorkspaceId: string; vsrFunctionName: string }): string {
+  return `${toVsrWorkspacePath(args.vsrWorkspaceId)}/${args.vsrFunctionName}`;
+}
 
-  get groupId() {
-    return this.args.groupId;
-  }
-
-  get relatedWorkspaceId() {
-    return this.args.groupId;
-  }
-
-  get needsWorkspaceDeploy() {
-    return this.args.needsWorkspaceDeploy;
-  }
-
-  get parentId() {
-    return this.groupId;
-  }
+export function toVsrFunctionPathFromWorkspaceFilePath(args: { vsrWorkspaceId: string; relativePath: string }) {
+  return `${toVsrWorkspacePath(args.vsrWorkspaceId)}/${args.relativePath}`;
 }

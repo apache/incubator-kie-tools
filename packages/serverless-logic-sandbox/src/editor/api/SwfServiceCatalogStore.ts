@@ -29,8 +29,8 @@ import { VirtualServiceRegistryContextType } from "../../workspace/services/virt
 import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/ServiceAccountConfig";
 import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { ExtendedServicesConfig } from "../../settings/SettingsContext";
-import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../workspace/services/virtualServiceRegistry/models/VirtualServiceRegistry";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 
 export const VIRTUAL_SERVICE_REGISTRY_NAME = "Sandbox";
 export const ARTIFACT_TAGS = {
@@ -132,14 +132,13 @@ export class SwfServiceCatalogStore {
     let virtualRegistry: ArtifactWithContent[] = [];
 
     if (this.virtualServiceRegistry && this.currentFile) {
-      const virtualServiceRegistryGroups = await this.virtualServiceRegistry.vsrGroupService.listAll();
+      const virtualServiceRegistryGroups = await this.virtualServiceRegistry.listVsrWorkspaces();
       const virtualServiceRegistryGroupsFiles = await Promise.all(
         virtualServiceRegistryGroups.map(async (registryGroup) => {
           return {
             registryGroup,
-            files: await this.virtualServiceRegistry!.getFiles({
-              fs: await this.virtualServiceRegistry!.vsrFsService.getFs(registryGroup.groupId),
-              groupId: registryGroup.groupId,
+            files: await this.virtualServiceRegistry!.getVsrFiles({
+              vsrWorkspaceId: registryGroup.workspaceId,
             }),
           };
         })
@@ -147,10 +146,10 @@ export class SwfServiceCatalogStore {
 
       const virtualServiceRegistryGroupsFilesWithContent = await Promise.all(
         virtualServiceRegistryGroupsFiles.map(async (groupFiles) => {
-          return await Promise.all(
+          return Promise.all(
             groupFiles.files.map(async (file) => ({
               metadata: {
-                groupId: groupFiles.registryGroup.groupId,
+                groupId: groupFiles.registryGroup.workspaceId,
                 id: file.relativePath,
                 type: "OPENAPI",
                 labels: [ARTIFACT_TAGS.IS_VIRTUAL_SERVICE_REGISTRY],

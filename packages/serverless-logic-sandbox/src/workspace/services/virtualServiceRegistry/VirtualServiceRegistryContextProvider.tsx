@@ -14,33 +14,27 @@
  * limitations under the License.
  */
 
-import {
-  ContentType,
-  ResourceContent,
-  ResourceContentOptions,
-  ResourcesList,
-} from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { useCallback, useMemo, useEffect } from "react";
-import { Buffer } from "buffer";
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { VirtualServiceRegistryContext } from "./VirtualServiceRegistryContext";
-import { VirtualServiceRegistryGroupService } from "./services/VirtualServiceRegistryGroupService";
-import { VirtualServiceRegistryFsService } from "./services/VirtualServiceRegistryFsService";
-import { VirtualServiceRegistryService } from "./services/VirtualServiceRegistryService";
-import { StorageFile, StorageService } from "../../commonServices/StorageService";
-import {
-  functionPath,
-  VirtualServiceRegistryFunction,
-  VirtualServiceRegistryGroup,
-} from "./models/VirtualServiceRegistry";
-import { ServiceRegistryFile } from "./models/ServiceRegistryFile";
-import { useWorkspaces } from "../../WorkspacesContext";
+import { VirtualServiceRegistryFunction } from "./models/VirtualServiceRegistryFunction";
+import { useWorkspaces, WorkspaceFile } from "../../WorkspacesContext";
 import { isServerlessWorkflow, isSpec } from "../../../extension";
-import { decoder, encoder } from "../../commonServices/BaseFile";
 import { WorkspaceDescriptor } from "../../worker/api/WorkspaceDescriptor";
+import { LfsStorageFile, LfsStorageService } from "../../lfs/LfsStorageService";
+import { encoder } from "../../encoderdecoder/EncoderDecoder";
+import { LfsWorkspaceDescriptorService } from "../../lfs/LfsWorkspaceDescriptorService";
+import { LfsWorkspaceService } from "../../lfs/LfsWorkspaceService";
+import { WorkspacesEvents, WORKSPACES_BROADCAST_CHANNEL } from "../../worker/api/WorkspacesEvents";
+import {
+  toVsrFunctionPathFromFunctionName,
+  toVsrFunctionPathFromWorkspaceFilePath,
+  toVsrWorkspacePath,
+} from "./VirtualServiceRegistryPathConverter";
+import { LfsWorkspaceFsService } from "../../lfs/LfsWorkspaceFsService";
 
-type SupportedFileExtensions = ".yaml" | ".json";
+export const VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX = "sandbox::";
+const VIRTUAL_SERVICE_REGISTRY_DESCRIPTOR_DATABASE_NAME = "registryGroup";
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 
 interface Props {
@@ -48,271 +42,175 @@ interface Props {
 }
 
 export function VirtualServiceRegistryContextProvider(props: Props) {
-  const storageService = useMemo(() => new StorageService(), []);
-  const vsrGroupService = useMemo(() => new VirtualServiceRegistryGroupService(storageService), [storageService]);
-  const vsrFsService = useMemo(() => new VirtualServiceRegistryFsService(vsrGroupService), [vsrGroupService]);
-  const vsrService = useMemo(
-    () => new VirtualServiceRegistryService(storageService, vsrGroupService, vsrFsService),
-    [storageService, vsrGroupService, vsrFsService]
-  );
   const workspaces = useWorkspaces();
-
-  const getAbsolutePath = useCallback(
-    (args: { groupId: string; relativePath?: string }) =>
-      vsrService.getAbsolutePath({ descriptorId: args.groupId, ...args }),
-    [vsrService]
+  const vsrStorageService = useMemo(() => new LfsStorageService(), []);
+  const vsrDescriptorService = useMemo(
+    () => new LfsWorkspaceDescriptorService(VIRTUAL_SERVICE_REGISTRY_DESCRIPTOR_DATABASE_NAME, vsrStorageService),
+    [vsrStorageService]
   );
-
-  const getUniqueFileIdentifier = useCallback(
-    (args: { groupId: string; relativePath: string }) =>
-      vsrService.getUniqueFileIdentifier({ descriptorId: args.groupId, ...args }),
-    [vsrService]
+  const vsrService = useMemo(
+    () => new LfsWorkspaceService(vsrStorageService, vsrDescriptorService, VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX),
+    [vsrStorageService, vsrDescriptorService]
   );
+  const vsrFsService = useMemo(() => new LfsWorkspaceFsService(vsrDescriptorService, toVsrWorkspacePath), []);
 
-  const createServiceRegistryGroup = useCallback(
-    async (args: {
-      useInMemoryFs: boolean;
-      storeRegistryFiles: (fs: KieSandboxFs, vsrGroup: VirtualServiceRegistryGroup) => Promise<ServiceRegistryFile[]>;
-      workspaceDescriptor: WorkspaceDescriptor;
-    }) => {
-      const { descriptor: vsrGroup, files } = await vsrService.create({
-        useInMemoryFs: args.useInMemoryFs,
-        storeFiles: args.storeRegistryFiles,
-        workspaceDescriptor: args.workspaceDescriptor,
-        broadcastArgs: { broadcast: true },
-      });
+  const listVsrWorkspaces = useCallback(async () => vsrDescriptorService.listAll(), [vsrDescriptorService]);
 
-      return { vsrGroup, files };
-    },
-    [vsrService]
-  );
-
-  const createServiceRegistryGroupFromWorkspace = useCallback(
-    async (args: { useInMemoryFs: boolean; workspaceDescriptor: WorkspaceDescriptor }) => {
-      return createServiceRegistryGroup({
-        useInMemoryFs: args.useInMemoryFs,
-        workspaceDescriptor: args.workspaceDescriptor,
-        storeRegistryFiles: async (fs: KieSandboxFs, vsrGroup: VirtualServiceRegistryGroup) => {
-          const files = await workspaces.getFiles({
-            workspaceId: vsrGroup.groupId,
-          });
-
-          const workflowFiles = files.filter(
-            (file) => isServerlessWorkflow(file.relativePath) || isSpec(file.relativePath)
-          );
-
-          const filesSpecs = workflowFiles.map((file) => {
-            const vsrFunction = new VirtualServiceRegistryFunction(file);
-            return new StorageFile({
-              path: `/${functionPath(vsrGroup, vsrFunction)}`,
-              getFileContents: () => vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
-            });
-          });
-
-          await storageService.createFiles(fs, filesSpecs);
-
-          return vsrService.getFilesWithLazyContent(fs, vsrGroup.groupId);
-        },
-      });
-    },
-    [createServiceRegistryGroup, workspaces, storageService, vsrService]
-  );
-
-  const renameFile = useCallback(
-    async (args: { fs: KieSandboxFs; file: ServiceRegistryFile; newFileNameWithoutExtension: string }) => {
+  const renameVsrFile = useCallback(
+    async (args: { vsrFile: WorkspaceFile; newFileNameWithoutExtension: string }) => {
       const newFile = await vsrService.renameFile({
-        fs: args.fs,
-        file: args.file,
-        newFileNameWithoutExtension: args.newFileNameWithoutExtension,
-        broadcastArgs: { broadcast: true },
+        fs: await vsrFsService.getFs(args.vsrFile.workspaceId),
+        file: args.vsrFile,
+        ...args,
       });
       return newFile;
     },
-    [vsrService]
+    [vsrService, vsrFsService]
   );
 
-  const getFiles = useCallback(
-    async (args: { fs: KieSandboxFs; groupId: string; globPattern?: string }) => {
-      return vsrService.getFilesWithLazyContent(args.fs, args.groupId, args.globPattern);
-    },
-    [vsrService]
-  );
-
-  const getFile = useCallback(
-    async (args: { fs: KieSandboxFs; groupId: string; relativePath: string }) => {
-      return vsrService.getFile({
+  const getVsrFiles = useCallback(
+    async (args: { vsrWorkspaceId: string; globPattern?: string }) => {
+      return vsrService.getFilesWithLazyContent({
+        fs: await vsrFsService.getFs(args.vsrWorkspaceId),
+        workspaceId: args.vsrWorkspaceId,
         ...args,
-        descriptorId: args.groupId,
       });
     },
-    [vsrService]
+    [vsrService, vsrFsService]
   );
 
-  const deleteFile = useCallback(
-    async (args: { fs: KieSandboxFs; file: ServiceRegistryFile }) => {
-      await vsrService.deleteFile(args.fs, args.file, { broadcast: true });
+  const getVsrFile = useCallback(
+    async (args: { vsrWorkspaceId: string; relativePath: string }) => {
+      return vsrService.getFile({
+        fs: await vsrFsService.getFs(args.vsrWorkspaceId),
+        relativePath: toVsrFunctionPathFromWorkspaceFilePath({
+          vsrWorkspaceId: args.vsrWorkspaceId,
+          relativePath: args.relativePath,
+        }),
+        workspaceId: args.vsrWorkspaceId,
+      });
     },
-    [vsrService]
+    [vsrService, vsrFsService]
   );
 
-  const updateFile = useCallback(
-    async (args: { fs: KieSandboxFs; file: ServiceRegistryFile; getNewContents: () => Promise<string> }) => {
-      await vsrService.updateFile(args.fs, args.file, args.getNewContents, { broadcast: true });
+  const deleteVsrFile = useCallback(
+    async (args: { vsrFile: WorkspaceFile }) => {
+      await vsrService.deleteFile({ fs: await vsrFsService.getFs(args.vsrFile.workspaceId), file: args.vsrFile });
     },
-    [vsrService]
+    [vsrService, vsrFsService]
   );
 
-  const addFile = useCallback(
-    async (args: {
-      fs: KieSandboxFs;
-      groupId: string;
-      name: string;
-      destinationDirRelativePath: string;
-      content: Uint8Array;
-      extension: SupportedFileExtensions;
-    }) => {
+  const updateVsrFile = useCallback(
+    async (args: { vsrFile: WorkspaceFile; getNewContents: () => Promise<string> }) => {
+      await vsrService.updateFile({
+        fs: await vsrFsService.getFs(args.vsrFile.workspaceId),
+        file: args.vsrFile,
+        ...args,
+      });
+    },
+    [vsrService, vsrFsService]
+  );
+
+  const addVsrFileForWorkspaceFile = useCallback(
+    async (workspaceFile: WorkspaceFile) => {
+      const workspaceId = workspaceFile.workspaceId;
+      const vsrFunction = new VirtualServiceRegistryFunction(workspaceFile);
+      const vsrFunctionPath = toVsrFunctionPathFromFunctionName({
+        vsrWorkspaceId: workspaceId,
+        vsrFunctionName: vsrFunction.name,
+      });
+      const vsrFunctionContent = await vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content));
+
+      const fs = await vsrFsService.getFs(workspaceId);
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         if (
           await vsrService.existsFile({
-            fs: args.fs,
-            descriptorId: args.groupId,
-            relativePath: args.destinationDirRelativePath,
+            fs,
+            workspaceId,
+            relativePath: vsrFunctionPath,
           })
         ) {
           continue;
         }
 
-        const newFile = new ServiceRegistryFile({
-          groupId: args.groupId,
-          getFileContents: () => Promise.resolve(args.content),
-          relativePath: args.destinationDirRelativePath,
-          needsWorkspaceDeploy: true,
+        const newFile = new WorkspaceFile({
+          workspaceId,
+          relativePath: vsrFunctionPath,
+          getFileContents: () => Promise.resolve(vsrFunctionContent),
         });
-        await vsrService.createOrOverwriteFile(args.fs, newFile, { broadcast: true });
+        await vsrService.createOrOverwriteFile({ fs, file: newFile });
         return newFile;
       }
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [vsrService]
-  );
-
-  const existsFile = useCallback(
-    async (args: { fs: KieSandboxFs; groupId: string; relativePath: string }) =>
-      vsrService.existsFile({ descriptorId: args.groupId, ...args }),
-    [vsrService]
-  );
-
-  const resourceContentGet = useCallback(
-    async (args: { fs: KieSandboxFs; groupId: string; relativePath: string; opts?: ResourceContentOptions }) => {
-      const file = await vsrService.getFile({ descriptorId: args.groupId, ...args });
-      if (!file) {
-        throw new Error(`File '${args.relativePath}' not found in Workspace ${args.groupId}`);
-      }
-
-      try {
-        const content = await file.getFileContents();
-        if (args.opts?.type === "binary") {
-          return new ResourceContent(args.relativePath, Buffer.from(content).toString("base64"), ContentType.BINARY);
-        }
-
-        // "text" is the default
-        return new ResourceContent(args.relativePath, decoder.decode(content), ContentType.TEXT);
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
-    },
-    [vsrService]
-  );
-
-  const resourceContentList = useCallback(
-    async (args: { fs: KieSandboxFs; groupId: string; globPattern: string }) => {
-      const files = await vsrService.getFilesWithLazyContent(args.fs, args.groupId, args.globPattern);
-      const matchingPaths = files.map((file) => file.relativePath);
-      return new ResourcesList(args.globPattern, matchingPaths);
-    },
-    [vsrService]
-  );
-
-  const deleteRegistryGroup = useCallback(
-    async (args: { groupId: string }) => {
-      await vsrService.delete(args.groupId, { broadcast: true });
-    },
-    [vsrService]
-  );
-
-  const renameRegistryGroup = useCallback(
-    async (args: { groupId: string; newName: string }) => {
-      await vsrService.rename(args.groupId, args.newName, { broadcast: true });
-    },
-    [vsrService]
+    [vsrFsService, vsrService]
   );
 
   useEffect(() => {
-    const broadcastChannel = new BroadcastChannel("workspaces");
-    broadcastChannel.onmessage = async ({ data }) => {
+    const workspacesBroadcastChannel = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
+
+    workspacesBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
       if (data.type === "ADD_WORKSPACE") {
         const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
-        createServiceRegistryGroupFromWorkspace({ useInMemoryFs: false, workspaceDescriptor });
-      }
-      if (data.type === "DELETE_WORKSPACE") {
-        deleteRegistryGroup({ groupId: data.workspaceId });
-      }
-      if (data.type === "RENAME_WORKSPACE") {
+        const storeRegistryFiles = async (vsrDescriptor: WorkspaceDescriptor) => {
+          const workflowFiles = (
+            await workspaces.getFiles({
+              workspaceId: vsrDescriptor.workspaceId,
+            })
+          ).filter((file) => isServerlessWorkflow(file.relativePath) || isSpec(file.relativePath));
+
+          const filesSpecs = workflowFiles.map((file) => {
+            const vsrFunction = new VirtualServiceRegistryFunction(file);
+            return new LfsStorageFile({
+              path: `/${toVsrFunctionPathFromFunctionName({
+                vsrWorkspaceId: data.workspaceId,
+                vsrFunctionName: vsrFunction.name,
+              })}`,
+              getFileContents: () => vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
+            });
+          });
+
+          const fs = await vsrFsService.getFs(vsrDescriptor.workspaceId);
+          await vsrStorageService.createFiles(fs, filesSpecs);
+          return vsrService.getFilesWithLazyContent({ fs, workspaceId: vsrDescriptor.workspaceId });
+        };
+
+        await vsrService.create({
+          storeFiles: storeRegistryFiles,
+          workspaceDescriptor,
+        });
+      } else if (data.type === "DELETE_WORKSPACE") {
+        vsrService.delete(data.workspaceId);
+      } else if (data.type === "RENAME_WORKSPACE") {
         const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
-        renameRegistryGroup({ groupId: data.workspaceId, newName: workspaceDescriptor.name });
+        vsrService.rename({ workspaceId: data.workspaceId, newName: workspaceDescriptor.name });
       }
     };
 
     return () => {
-      broadcastChannel.close();
+      workspacesBroadcastChannel.close();
     };
-  }, [createServiceRegistryGroupFromWorkspace, deleteRegistryGroup, renameRegistryGroup]);
+  }, [vsrService, vsrFsService]);
 
   const value = useMemo(
     () => ({
-      storageService,
-      vsrService,
-      vsrGroupService,
-      vsrFsService,
-      //
-      resourceContentGet,
-      resourceContentList,
-      //
-      createServiceRegistryGroupFromWorkspace,
-      renameRegistryGroup,
-      deleteRegistryGroup,
-      getAbsolutePath,
-      getUniqueFileIdentifier,
-      getFiles,
-      //
-      addFile,
-      existsFile,
-      renameFile,
-      updateFile,
-      deleteFile,
-      getFile,
+      listVsrWorkspaces,
+      addVsrFileForWorkspaceFile,
+      deleteVsrFile,
+      renameVsrFile,
+      updateVsrFile,
+      getVsrFiles,
+      getVsrFile,
     }),
     [
-      storageService,
-      vsrService,
-      vsrGroupService,
-      vsrFsService,
-      resourceContentGet,
-      resourceContentList,
-      createServiceRegistryGroupFromWorkspace,
-      renameRegistryGroup,
-      deleteRegistryGroup,
-      getAbsolutePath,
-      getUniqueFileIdentifier,
-      getFiles,
-      addFile,
-      existsFile,
-      renameFile,
-      updateFile,
-      deleteFile,
-      getFile,
+      listVsrWorkspaces,
+      addVsrFileForWorkspaceFile,
+      deleteVsrFile,
+      renameVsrFile,
+      updateVsrFile,
+      getVsrFiles,
+      getVsrFile,
     ]
   );
 

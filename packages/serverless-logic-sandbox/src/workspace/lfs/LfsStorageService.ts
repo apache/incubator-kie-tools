@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 
 import type KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, join, relative, resolve } from "path";
+import { resolveExtension } from "../../extension";
 
 export class LfsStorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
@@ -62,7 +63,8 @@ export class LfsStorageService {
       return file;
     }
 
-    const newPath = join(dirname(file.path), `${newFileName}${extname(file.path)}`);
+    const extension = resolveExtension(file.path);
+    const newPath = join(dirname(file.path), `${newFileName}${extension ? "." + extension : ""}`);
 
     if (await this.exists(fs, newPath)) {
       throw new Error(`File ${newPath} already exists`);
@@ -137,5 +139,66 @@ export class LfsStorageService {
         throw err;
       }
     }
+  }
+
+  public async createFiles(fs: KieSandboxFs, files: LfsStorageFile[]) {
+    if (!fs.promises.writeFileBulk) {
+      throw new Error("Can't write bulk");
+    }
+
+    for (const file of files) {
+      await this.mkdirDeep(fs, dirname(file.path));
+    }
+
+    const filesArray = await Promise.all(
+      files.map(async (f) => [f.path, await f.getFileContents()] as [string, Uint8Array])
+    );
+
+    await fs.promises.writeFileBulk(filesArray);
+  }
+
+  public async walk<T = string>(args: {
+    fs: KieSandboxFs;
+    startFromDirPath: string;
+    shouldExcludeDir: (dirPath: string) => boolean;
+    onVisit: (args: { absolutePath: string; relativePath: string }) => Promise<T | undefined>;
+    originalStartingDirPath?: string;
+  }): Promise<T[]> {
+    const subDirPaths = await args.fs.promises.readdir(args.startFromDirPath);
+    const files = await Promise.all(
+      subDirPaths.map(async (subDirPath) => {
+        const absolutePath = resolve(args.startFromDirPath, subDirPath);
+        const relativePath = relative(args.originalStartingDirPath ?? args.startFromDirPath, absolutePath);
+        return !(await args.fs.promises.stat(absolutePath)).isDirectory()
+          ? args.onVisit({ absolutePath, relativePath })
+          : args.shouldExcludeDir(absolutePath)
+          ? []
+          : this.walk({
+              fs: args.fs,
+              startFromDirPath: absolutePath,
+              shouldExcludeDir: args.shouldExcludeDir,
+              onVisit: args.onVisit,
+              originalStartingDirPath: args.originalStartingDirPath ?? args.startFromDirPath,
+            });
+      })
+    );
+
+    return files.reduce((paths: T[], path) => {
+      return path ? paths.concat(path) : paths;
+    }, []) as T[];
+  }
+
+  public async getFiles(fs: KieSandboxFs, paths: string[]): Promise<LfsStorageFile[]> {
+    if (!fs.promises.readFileBulk) {
+      throw new Error("Can't read bulk");
+    }
+
+    const files = await fs.promises.readFileBulk(paths);
+    return files.map(([path, content]) => {
+      return new LfsStorageFile({
+        path,
+        getFileContents: async () => content,
+      });
+    });
   }
 }

@@ -46,7 +46,7 @@ import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelA
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
-import { useUpdateWorkspaceRegistryGroupFile } from "../workspace/services/virtualServiceRegistry/hooks/useUpdateWorkspaceRegistryGroupFile";
+import { useUpdateVirtualServiceRegistryOnWorkspaceFileEvents } from "../workspace/services/virtualServiceRegistry/hooks/useUpdateVirtualServiceRegistry";
 import { useVirtualServiceRegistry } from "../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContext";
 import { DiagnosticSeverity } from "vscode-languageserver-types";
 import { useSwfFeatureToggle } from "./hooks/useSwfFeatureToggle";
@@ -90,7 +90,7 @@ export function EditorPage(props: Props) {
     [workspaceFilePromise.data]
   );
 
-  useUpdateWorkspaceRegistryGroupFile({ workspaceFile: workspaceFilePromise.data?.workspaceFile });
+  useUpdateVirtualServiceRegistryOnWorkspaceFileEvents({ workspaceFile: workspaceFilePromise.data?.workspaceFile });
 
   useEffect(() => {
     document.title = `${APP_NAME} :: ${props.fileRelativePath}`;

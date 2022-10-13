@@ -24,7 +24,7 @@ import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsC
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { encoder } from "../workspace/commonServices/BaseFile";
+import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import {

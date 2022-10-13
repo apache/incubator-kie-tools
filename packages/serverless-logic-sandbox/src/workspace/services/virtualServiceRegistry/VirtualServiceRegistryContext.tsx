@@ -14,87 +14,25 @@
  * limitations under the License.
  */
 
-import {
-  ResourceContent,
-  ResourceContentOptions,
-  ResourceListOptions,
-  ResourcesList,
-} from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { VirtualServiceRegistryService } from "./services/VirtualServiceRegistryService";
-import { VirtualServiceRegistryGroupService } from "./services/VirtualServiceRegistryGroupService";
-import { VirtualServiceRegistryFsService } from "./services/VirtualServiceRegistryFsService";
-import { StorageService } from "../../commonServices/StorageService";
-import { VirtualServiceRegistryGroup } from "./models/VirtualServiceRegistry";
-import { ServiceRegistryFile } from "./models/ServiceRegistryFile";
 import { WorkspaceDescriptor } from "../../worker/api/WorkspaceDescriptor";
-
-export interface LocalFile {
-  path: string;
-  getFileContents: () => Promise<Uint8Array>;
-}
+import { WorkspaceFile } from "../../WorkspacesContext";
 
 export interface VirtualServiceRegistryContextType {
-  storageService: StorageService;
-  vsrService: VirtualServiceRegistryService;
-  vsrGroupService: VirtualServiceRegistryGroupService;
-  vsrFsService: VirtualServiceRegistryFsService;
+  listVsrWorkspaces(): Promise<WorkspaceDescriptor[]>;
 
-  // create
-  createServiceRegistryGroupFromWorkspace: (args: {
-    useInMemoryFs: boolean;
-    workspaceDescriptor: WorkspaceDescriptor;
-  }) => Promise<{ vsrGroup: VirtualServiceRegistryGroup; files: ServiceRegistryFile[] }>;
+  addVsrFileForWorkspaceFile(workspaceFile: WorkspaceFile): Promise<WorkspaceFile>;
 
-  // edit service registry group
-  getFiles(args: { fs: KieSandboxFs; groupId: string; globPattern?: string }): Promise<ServiceRegistryFile[]>;
-  getAbsolutePath(args: { groupId: string; relativePath?: string }): string;
-  getUniqueFileIdentifier(args: { groupId: string; relativePath: string }): string;
-  deleteRegistryGroup(args: { groupId: string }): Promise<void>;
-  renameRegistryGroup(args: { groupId: string; newName: string }): Promise<void>;
+  deleteVsrFile(args: { vsrFile: WorkspaceFile }): Promise<void>;
 
-  resourceContentList: (args: {
-    fs: KieSandboxFs;
-    groupId: string;
-    globPattern: string;
-    opts?: ResourceListOptions;
-  }) => Promise<ResourcesList>;
+  renameVsrFile(args: { vsrFile: WorkspaceFile; newFileNameWithoutExtension: string }): Promise<WorkspaceFile>;
 
-  resourceContentGet: (args: {
-    fs: KieSandboxFs;
-    groupId: string;
-    relativePath: string;
-    opts?: ResourceContentOptions;
-  }) => Promise<ResourceContent | undefined>;
+  updateVsrFile(args: { vsrFile: WorkspaceFile; getNewContents: () => Promise<string> }): Promise<void>;
 
-  getFile(args: { fs: KieSandboxFs; groupId: string; relativePath: string }): Promise<ServiceRegistryFile | undefined>;
+  getVsrFiles(args: { vsrWorkspaceId: string; globPattern?: string }): Promise<WorkspaceFile[]>;
 
-  renameFile(args: {
-    fs: KieSandboxFs;
-    file: ServiceRegistryFile;
-    newFileNameWithoutExtension: string;
-  }): Promise<ServiceRegistryFile>;
-
-  updateFile(args: {
-    fs: KieSandboxFs;
-    file: ServiceRegistryFile;
-    getNewContents: () => Promise<string>;
-  }): Promise<void>;
-
-  deleteFile(args: { fs: KieSandboxFs; file: ServiceRegistryFile }): Promise<void>;
-
-  addFile(args: {
-    fs: KieSandboxFs;
-    groupId: string;
-    name: string;
-    destinationDirRelativePath: string;
-    content: Uint8Array;
-    extension: string;
-  }): Promise<ServiceRegistryFile>;
-
-  existsFile(args: { fs: KieSandboxFs; groupId: string; relativePath: string }): Promise<boolean>;
+  getVsrFile(args: { vsrWorkspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
 }
 
 export const VirtualServiceRegistryContext = createContext<VirtualServiceRegistryContextType>({} as any);
