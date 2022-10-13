@@ -23,7 +23,7 @@ Feature: kogito-s2i-builder image tests
     And file /home/kogito/.m2/settings.xml should not contain <url>https://maven.repository.redhat.com/techpreview/all</url>
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using 2.0.0-snapshot and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value         |
       | NATIVE            | false         |
       | RUNTIME_TYPE      | quarkus       |
@@ -33,7 +33,7 @@ Feature: kogito-s2i-builder image tests
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
 
   Scenario: Verify if the s2i build is finished as expected with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example using 2.0.0-snapshot and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value         |
       | MAVEN_ARGS_APPEND | -Ppersistence |
       | RUNTIME_TYPE      | springboot    |
@@ -42,11 +42,11 @@ Feature: kogito-s2i-builder image tests
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
-    Given s2i build /tmp/kogito-examples from dmn-example using 2.0.0-snapshot and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable       | value          |
       | RUNTIME_TYPE   | quarkus        |
       | NATIVE         | false          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT | 
+      | KOGITO_VERSION | 2.0.0-SNAPSHOT |  
     Then file /home/kogito/bin/quarkus-run.jar should exist
     And s2i build log should contain Generating quarkus project structure for project...
     And s2i build log should contain Using Quarkus io.quarkus:quarkus-maven-plugin:
@@ -70,11 +70,11 @@ Feature: kogito-s2i-builder image tests
 
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly with custom group id, archetype & version
-    Given s2i build /tmp/kogito-examples from dmn-example using 2.0.0-snapshot and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable            | value          |
       | RUNTIME_TYPE        | quarkus        |
       | NATIVE              | false          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT | 
+      | KOGITO_VERSION | 2.0.0-SNAPSHOT |  
       | PROJECT_GROUP_ID    | com.mycompany  |
       | PROJECT_ARTIFACT_ID | myproject      |
       | PROJECT_VERSION     | 2.0-SNAPSHOT   |
@@ -91,11 +91,11 @@ Feature: kogito-s2i-builder image tests
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
   Scenario: Verify that the Kogito Quarkus Serverless Workflow Extension is building the service properly
-    Given s2i build /tmp/kogito-examples from serverless-workflow-examples/serverless-workflow-order-processing/src/main/resources using 2.0.0-snapshot and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build /tmp/kogito-examples from serverless-workflow-examples/serverless-workflow-order-processing/src/main/resources using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable                 | value                                                 |
       | RUNTIME_TYPE             | quarkus                                               |
       | NATIVE                   | false                                                 |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT | 
+      | KOGITO_VERSION | 2.0.0-SNAPSHOT |  
       | PROJECT_GROUP_ID         | com.mycompany                                         |
       | PROJECT_ARTIFACT_ID      | myproject                                             |
       | PROJECT_VERSION          | 2.0-SNAPSHOT                                          |
@@ -117,9 +117,9 @@ Feature: kogito-s2i-builder image tests
 #### SpringBoot Scenarios
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly when runtime is springboot
-    Given s2i build /tmp/kogito-examples from dmn-example using 2.0.0-snapshot and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable       | value          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT | 
+      | KOGITO_VERSION | 2.0.0-SNAPSHOT |  
       | RUNTIME_TYPE   | springboot     |
     Then file /home/kogito/bin/project-1.0-SNAPSHOT.jar should exist
     And s2i build log should contain Generating springboot project structure for project...
