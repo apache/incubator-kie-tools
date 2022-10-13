@@ -408,7 +408,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
         await broadcaster.broadcast({
           channel: args.workspaceId,
           message: async () => ({
-            type: "CREATE_SAVE_POINT",
+            type: "WS_CREATE_SAVE_POINT",
             workspaceId: args.workspaceId,
           }),
         });
@@ -516,7 +516,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
         await broadcaster.broadcast({
           channel: args.workspaceId,
           message: async () => ({
-            type: "PULL",
+            type: "WS_PULL",
             workspaceId: args.workspaceId,
           }),
         });

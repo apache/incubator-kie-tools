@@ -615,13 +615,10 @@ section.kie-tools--settings-tab {
   }
 }
 
-.kogito--editor__responsive-dropdown-container {
-  margin: var(--pf-global--spacer--lg) 0 0 0;
-}
-
 .kogito--editor__responsive-dropdown-container .pf-c-dropdown__menu {
   position: relative;
   min-width: 100%;
+  box-shadow: none;
 }
 
 .kie-tools--dmn-runner-loading-screen {
@@ -677,4 +674,8 @@ section.kie-tools--settings-tab {
 
 .kie-tools--file-switcher-no-padding-menu-item {
   padding: 0;
+}
+
+.kie-sandbox--file-switcher .pf-c-dropdown__menu {
+  min-width: 0;
 }

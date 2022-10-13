@@ -14,144 +14,23 @@
  * limitations under the License.
  */
 
-import { join } from "path";
-import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
-import { LfsFsCache } from "../workspace/lfs/LfsFsCache";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
-import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
 import { InputRow } from "@kie-tools/form-dmn";
-import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { CompanionFsService } from "../companionFs/CompanionFsService";
+
+export const EMPTY_DMN_RUNNER_INPUTS = [{}];
 
 export class DmnRunnerInputsService {
-  private readonly storageService = new LfsStorageService();
-  private readonly fsCache = new LfsFsCache();
-
-  public getDmnRunnerInputsFs(workspaceId: string) {
-    return this.fsCache.getOrCreateFs(this.getDmnRunnerInputsStoreName(workspaceId));
-  }
-
-  public async getDmnRunnerInputs(workspaceFile: WorkspaceFile) {
-    return this.storageService.getFile(
-      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      `/${workspaceFile.relativePath}`
-    );
-  }
-
-  public async deleteDmnRunnerInputs(workspaceFile: WorkspaceFile) {
-    const dmnRunnerInputsFile = await this.getDmnRunnerInputs(workspaceFile);
-    if (!dmnRunnerInputsFile) {
-      console.debug(
-        `Can't delete DMN Runner inputs, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
-      );
-      return;
-    }
-
-    const emptyDmnRunnerInputs = JSON.stringify([{}]);
-
-    await this.storageService.createOrOverwriteFile(
-      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      new LfsStorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(emptyDmnRunnerInputs)),
-        path: `/${workspaceFile.relativePath}`,
-      })
-    );
-
-    const broadcastChannel = new BroadcastChannel(
-      this.getUniqueFileIdentifier({
-        workspaceId: workspaceFile.workspaceId,
-        relativePath: workspaceFile.relativePath,
-      })
-    );
-    broadcastChannel.postMessage({
-      type: "DELETE",
-      dmnRunnerInputs: emptyDmnRunnerInputs,
-    } as DmnRunnerInputsEvents);
-  }
-
-  public async createOrOverwriteDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string) {
-    await this.storageService.createOrOverwriteFile(
-      this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      new LfsStorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
-        path: `/${workspaceFile.relativePath}`,
-      })
-    );
-    const broadcastChannel = new BroadcastChannel(
-      this.getUniqueFileIdentifier({
-        workspaceId: workspaceFile.workspaceId,
-        relativePath: workspaceFile.relativePath,
-      })
-    );
-    broadcastChannel.postMessage({
-      type: "ADD",
-      dmnRunnerInputs,
-      relativePath: workspaceFile.relativePath,
-    } as DmnRunnerInputsEvents);
-  }
-
-  public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string): Promise<void> {
-    await this.storageService.updateFile(
-      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      new LfsStorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
-        path: `/${workspaceFile.relativePath}`,
-      })
-    );
-
-    const broadcastChannel = new BroadcastChannel(
-      this.getUniqueFileIdentifier({
-        workspaceId: workspaceFile.workspaceId,
-        relativePath: workspaceFile.relativePath,
-      })
-    );
-    broadcastChannel.postMessage({
-      type: "UPDATE",
-      dmnRunnerInputs,
-    } as DmnRunnerInputsEvents);
-  }
-
-  public async renameDmnRunnerInputs(workspaceFile: WorkspaceFile, newFileNameWithoutExtension: string) {
-    const dmnRunnerInputsFile = await this.getDmnRunnerInputs(workspaceFile);
-    if (!dmnRunnerInputsFile) {
-      console.debug(
-        `Can't rename DMN Runner inputs, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
-      );
-      return;
-    }
-
-    return this.storageService.renameFile(
-      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      dmnRunnerInputsFile,
-      `${newFileNameWithoutExtension}`
-    );
-  }
-
-  public async delete(workspaceId: string) {
-    indexedDB.deleteDatabase(this.getDmnRunnerInputsStoreName(workspaceId));
-  }
-
-  public getDmnRunnerInputsLabel() {
-    return "__dmn_runner_inputs";
-  }
-
-  public getDmnRunnerInputsStoreName(workspaceId: string) {
-    return `${workspaceId}${this.getDmnRunnerInputsLabel()}`;
-  }
-
-  public getAbsolutePath(args: { workspaceId: string; relativePath?: string }) {
-    return join("/", args.relativePath ?? "");
-  }
-
-  public getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
-    return args.workspaceId + this.getDmnRunnerInputsLabel() + this.getAbsolutePath(args);
-  }
+  public readonly companionFsService = new CompanionFsService({
+    storeNameSuffix: "dmn_runner_inputs",
+    emptyFileContent: JSON.stringify(EMPTY_DMN_RUNNER_INPUTS),
+  });
 
   public stringifyDmnRunnerInputs(
     inputs: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>),
     previous?: Array<InputRow>
   ) {
     if (typeof inputs === "function") {
-      return JSON.stringify(inputs(previous ?? [{}]));
+      return JSON.stringify(inputs(previous ?? EMPTY_DMN_RUNNER_INPUTS));
     }
     return JSON.stringify(inputs);
   }

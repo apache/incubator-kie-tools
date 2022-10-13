@@ -23,19 +23,22 @@ import {
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./worker/api/WorkspaceDescriptor";
-import { basename, extname, parse } from "path";
 import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
 import { LocalFile } from "./worker/api/LocalFile";
 import { decoder } from "./encoderdecoder/EncoderDecoder";
+import { parseWorkspaceFileRelativePath } from "./relativePath/WorkspaceFileRelativePathParser";
 
 export class WorkspaceFile {
+  private readonly parsedRelativePath;
   constructor(
     private readonly args: {
       workspaceId: string;
       relativePath: string;
       getFileContents: () => Promise<Uint8Array>;
     }
-  ) {}
+  ) {
+    this.parsedRelativePath = parseWorkspaceFileRelativePath(this.relativePath);
+  }
 
   get getFileContentsAsString() {
     return () => this.getFileContents().then((c) => decoder.decode(c));
@@ -54,23 +57,23 @@ export class WorkspaceFile {
   }
 
   get relativePathWithoutExtension() {
-    return this.relativePath.split(".").slice(0, -1).join(".");
+    return this.parsedRelativePath.relativePathWithoutExtension;
   }
 
   get relativeDirPath() {
-    return parse(this.relativePath).dir;
+    return this.parsedRelativePath.relativeDirPath;
   }
 
   get extension() {
-    return extname(this.relativePath).replace(".", "");
+    return this.parsedRelativePath.extension;
   }
 
   get nameWithoutExtension() {
-    return basename(this.relativePath, `.${this.extension}`);
+    return this.parsedRelativePath.nameWithoutExtension;
   }
 
   get name() {
-    return basename(this.relativePath);
+    return this.parsedRelativePath.name;
   }
 }
 

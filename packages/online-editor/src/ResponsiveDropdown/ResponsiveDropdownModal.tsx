@@ -16,11 +16,12 @@
 
 import React, { ReactNode } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export type ResponsiveDropdownModalProps = {
   isOpen?: boolean;
   className?: string;
-  title: string;
+  title?: string;
   onClose?: () => void;
   children?: ReactNode;
 };
@@ -28,15 +29,25 @@ export type ResponsiveDropdownModalProps = {
 export function ResponsiveDropdownModal({ isOpen, onClose, title, children }: ResponsiveDropdownModalProps) {
   return (
     <Modal
+      appendTo={document.body}
       isOpen={isOpen ?? false}
+      showClose={!!title}
       onClose={onClose}
       hasNoBodyWrapper={true}
       variant={ModalVariant.small}
       title={title}
-      aria-label={title}
+      aria-label={title ?? " "}
       className="kogito--editor__responsive-dropdown-modal"
     >
-      <div className="kogito--editor__responsive-dropdown-container">{children}</div>
+      {!!title && (
+        <>
+          <br />
+          <Divider inset={{ default: "insetMd" }} />
+        </>
+      )}
+      <div aria-label={" "} className="kogito--editor__responsive-dropdown-container">
+        {children}
+      </div>
     </Modal>
   );
 }

@@ -35,7 +35,8 @@ import { NavigationContextProvider } from "./navigation/NavigationContextProvide
 import { useRoutes } from "./navigation/Hooks";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
-import { DmnRunnerInputsContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsContextProvider";
+import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
+import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 
 export function App() {
   return (
@@ -47,9 +48,10 @@ export function App() {
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
-        [DmnRunnerInputsContextProvider, {}],
+        [DmnRunnerInputsDispatchContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
         [NavigationContextProvider, {}],
+        [PreviewSvgsContextProvider, {}],
         [RoutesSwitch, {}]
       )}
     </HashRouter>
