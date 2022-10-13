@@ -18,8 +18,7 @@ require (
 )
 
 require (
-	github.com/ghodss/yaml v1.0.0
-	github.com/serverlessworkflow/sdk-go/v2 v2.1.2
+	github.com/serverlessworkflow/sdk-go/v2 v2.1.3-0.20221010134200-b9db1ddbffb2
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	knative.dev/pkg v0.0.0-20220921024409-d1d5c849073b
 )
@@ -76,6 +75,7 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
+	github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect

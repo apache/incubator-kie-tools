@@ -93,7 +93,7 @@ func retrieveStates(incomingStates []apiv08.State) []model.State {
 				if s.DefaultCondition != nil {
 					// Since at the moment we are not able yet to manage default condition that can be end or transition
 					// let's use Transition
-					newSwitchState.DefaultCondition = model.DefaultCondition{Transition: model.Transition{
+					newSwitchState.DefaultCondition = model.DefaultCondition{Transition: &model.Transition{
 						NextState: *s.DefaultCondition,
 					}}
 				}
@@ -111,10 +111,10 @@ func retrieveStates(incomingStates []apiv08.State) []model.State {
 				for k, ac := range *s.Actions {
 					action := &model.Action{
 						Name:        ac.Name,
-						FunctionRef: model.FunctionRef{RefName: ac.FunctionRef.RefName},
+						FunctionRef: &model.FunctionRef{RefName: ac.FunctionRef.RefName},
 					}
 					if &ac.FunctionRef != nil {
-						action.FunctionRef = model.FunctionRef{RefName: ac.FunctionRef.RefName}
+						action.FunctionRef = &model.FunctionRef{RefName: ac.FunctionRef.RefName}
 						if ac.FunctionRef.Arguments != nil {
 							action.FunctionRef.Arguments = getArguments(ac.FunctionRef.Arguments)
 						}

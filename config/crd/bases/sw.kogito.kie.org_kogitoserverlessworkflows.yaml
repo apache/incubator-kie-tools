@@ -812,10 +812,7 @@ spec:
                     usedForCompensation:
                       type: boolean
                   required:
-                  - branches
-                  - duration
                   - name
-                  - onEvents
                   - type
                   type: object
                 type: array
@@ -1633,10 +1630,7 @@ spec:
                         usedForCompensation:
                           type: boolean
                       required:
-                      - branches
-                      - duration
                       - name
-                      - onEvents
                       - type
                       type: object
                     type: array
