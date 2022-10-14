@@ -23,23 +23,23 @@ import (
 
 // KogitoServerlessBuildSpec defines the desired state of KogitoServerlessBuild
 type KogitoServerlessBuildSpec struct {
-	//Workflow's unique identifier
+	// Workflow's unique identifier
 	WorkflowId string `json:"workflowId,omitempty"`
-	//Image name
+	// Image name
 	ImageName string `json:"imageName,omitempty"`
 	// Middlename of the pod
 	PodMiddleName string `json:"podMiddleName,omitempty"`
-	//Dockerfile content used for the build @TODO load from configmap
-	Dockerfile []byte `json:"dockerfile,omitempty"`
+	// ContainerFile content used for the build
+	ContainerFile []byte `json:"containerFile,omitempty"`
 }
 
 // KogitoServerlessBuildStatus defines the observed state of KogitoServerlessBuild
 type KogitoServerlessBuildStatus struct {
-	//Workflow's unique identifier
+	// Workflow's unique identifier
 	WorkflowId string `json:"workflowId,omitempty"`
-	//Current kaniko buildphase
+	// Current kaniko buildphase
 	BuildPhase api.BuildPhase `json:"buildPhase,omitempty"`
-	//Kaniko's build, used to ping the build to update the buildphase
+	// Kaniko's build, used to ping the build to update the buildphase
 	Builder api.Build `json:"builder,omitempty"`
 }
 

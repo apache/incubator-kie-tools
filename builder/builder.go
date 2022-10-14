@@ -37,8 +37,8 @@ func NewBuilder(contex context.Context, cm corev1.ConfigMap) Builder {
 }
 
 func (b *Builder) getImageBuilder(workflowID string, workflowDefinition []byte) ImageBuilder {
-	dockerfile := b.cm.Data[constants.BUILDER_RESOURCE_NAME_DEFAULT]
-	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(dockerfile))
+	containerFile := b.cm.Data[constants.BUILDER_RESOURCE_NAME_DEFAULT]
+	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
 	ib.OnNamespace(constants.BUILDER_NAMESPACE_DEFAULT)
 	ib.WithPodMiddleName(constants.BUILDER_IMG_NAME_DEFAULT)
 	ib.WithInsecureRegistry(false)
@@ -60,7 +60,7 @@ func (b *Builder) ScheduleNewBuild(workflowName string, workflowDefinition []byt
 	return b.BuildImage(ib.Build())
 }
 
-func (b *Builder) ScheduleNewBuildWithDockerFile(workflowName string, workflowDefinition []byte) (*api.Build, error) {
+func (b *Builder) ScheduleNewBuildWithContainerFile(workflowName string, workflowDefinition []byte) (*api.Build, error) {
 	ib := b.getImageBuilder(workflowName, workflowDefinition)
 	ib.WithTimeout(5 * time.Minute)
 	return b.BuildImage(ib.Build())
@@ -94,7 +94,7 @@ func (b *Builder) BuildImage(kb KogitoBuilder) (*api.Build, error) {
 	}
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
-		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.DockerFile).
+		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
 		WithResource(kb.WorkflowID+b.cm.Data[constants.WORKFLOW_DEFAULT_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
@@ -128,7 +128,7 @@ func (b *Builder) ScheduleBuild(kb KogitoBuilder) (*api.Build, error) {
 	}
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
-		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.DockerFile).
+		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
 		WithResource(kb.WorkflowID+b.cm.Data[constants.WORKFLOW_DEFAULT_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
@@ -143,7 +143,7 @@ func (b *Builder) ScheduleBuild(kb KogitoBuilder) (*api.Build, error) {
 type KogitoBuilder struct {
 	WorkflowID           string
 	WorkflowDefinition   []byte
-	DockerFile           []byte
+	ContainerFile        []byte
 	Namespace            string
 	InsecureRegistry     bool
 	Timeout              time.Duration
@@ -158,8 +158,8 @@ type ImageBuilder struct {
 	KogitoBuilder *KogitoBuilder
 }
 
-func NewImageBuilder(sourceSwfName string, sourceSwf []byte, dockerFile []byte) ImageBuilder {
-	return ImageBuilder{KogitoBuilder: &KogitoBuilder{WorkflowID: sourceSwfName, WorkflowDefinition: sourceSwf, DockerFile: dockerFile}}
+func NewImageBuilder(sourceSwfName string, sourceSwf []byte, containerFile []byte) ImageBuilder {
+	return ImageBuilder{KogitoBuilder: &KogitoBuilder{WorkflowID: sourceSwfName, WorkflowDefinition: sourceSwf, ContainerFile: containerFile}}
 }
 
 func (ib *ImageBuilder) OnNamespace(namespace string) *ImageBuilder {

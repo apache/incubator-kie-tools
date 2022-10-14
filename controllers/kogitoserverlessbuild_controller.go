@@ -67,7 +67,7 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 		if phase == api.BuildPhaseNone {
 			workflow, err := r.retrieveWorkflowFromCR(instance.Spec.WorkflowId, ctx, req)
 			if err == nil {
-				build, err := builder.ScheduleNewBuildWithDockerFile(instance.Spec.WorkflowId, workflow)
+				build, err := builder.ScheduleNewBuildWithContainerFile(instance.Spec.WorkflowId, workflow)
 				if err == nil {
 					manageStatusUpdate(ctx, build, instance, r, log)
 					return ctrl.Result{RequeueAfter: 1 * time.Second}, nil
