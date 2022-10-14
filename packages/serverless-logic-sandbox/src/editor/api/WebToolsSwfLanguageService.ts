@@ -56,7 +56,7 @@ export class WebToolsSwfLanguageService {
         ) => `${registryName}__${swfServiceCatalogServiceId}__latest.yaml`,
       },
       config: {
-        shouldDisplayServiceRegistriesIntegration: async () => true,
+        shouldDisplayServiceRegistriesIntegration: async () => false,
         shouldIncludeJsonSchemaDiagnostics: async () => true,
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => true,
         getSpecsDirPosixPaths: async (_textDocument) => ({

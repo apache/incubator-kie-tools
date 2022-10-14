@@ -26,8 +26,14 @@ import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
 import { VirtualServiceRegistryContextType } from "../../virtualServiceRegistry/VirtualServiceRegistryContext";
-import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/ServiceAccountConfig";
-import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
+import {
+  isServiceAccountConfigValid,
+  ServiceAccountSettingsConfig,
+} from "../../settings/serviceAccount/ServiceAccountConfig";
+import {
+  isServiceRegistryConfigValid,
+  ServiceRegistrySettingsConfig,
+} from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { ExtendedServicesConfig } from "../../settings/SettingsContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../virtualServiceRegistry/VirtualServiceRegistryContextProvider";
@@ -94,21 +100,30 @@ export class SwfServiceCatalogStore {
     this.refresh();
   }
 
+  private isConfigValid(): boolean {
+    return (
+      isServiceAccountConfigValid(this.configs.serviceAccount) &&
+      isServiceRegistryConfigValid(this.configs.serviceRegistry)
+    );
+  }
+
   public async refresh() {
     let artifacts: SearchedArtifact[] = [];
     let artifactsWithContent: ArtifactWithContent[] = [];
 
-    try {
-      artifacts = (
-        await axios.get(this.PROXY_ENDPOINT, {
-          headers: {
-            ...this.COMMON_HEADERS,
-            "Target-Url": this.SERVICE_REGISTRY_API.getArtifactsUrl(),
-          },
-        })
-      ).data.artifacts;
-    } catch (e) {
-      console.error(e);
+    if (this.isConfigValid()) {
+      try {
+        artifacts = (
+          await axios.get(this.PROXY_ENDPOINT, {
+            headers: {
+              ...this.COMMON_HEADERS,
+              "Target-Url": this.SERVICE_REGISTRY_API.getArtifactsUrl(),
+            },
+          })
+        ).data.artifacts;
+      } catch (e) {
+        console.debug(e);
+      }
     }
 
     if (artifacts.length) {
@@ -209,6 +224,10 @@ export class SwfServiceCatalogStore {
   }
 
   public async uploadArtifact(args: { groupId: string; artifactId: string; content: string }): Promise<void> {
+    if (!this.isConfigValid()) {
+      return;
+    }
+
     await axios.post(this.PROXY_ENDPOINT, args.content, {
       headers: {
         ...this.COMMON_HEADERS,

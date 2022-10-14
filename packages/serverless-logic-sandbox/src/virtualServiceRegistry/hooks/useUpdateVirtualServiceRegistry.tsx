@@ -16,7 +16,7 @@
 
 import { basename } from "path";
 import { useEffect } from "react";
-import { isServerlessWorkflow, isSpec, resolveExtension } from "../../extension";
+import { isSupportedByVirtualServiceRegistry, resolveExtension } from "../../extension";
 import { WorkspaceEvents } from "../../workspace/worker/api/WorkspaceEvents";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { VirtualServiceRegistryFunction } from "../models/VirtualServiceRegistryFunction";
@@ -33,30 +33,38 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
       return;
     }
 
-    const workspaceId = args.workspaceFile.workspaceId;
-    const uniqueWorkspaceBroadcastChannel = new BroadcastChannel(workspaceId);
+    const vsrWorkspaceId = args.workspaceFile.workspaceId; // both are mapped to the same value
+    const uniqueWorkspaceBroadcastChannel = new BroadcastChannel(vsrWorkspaceId);
 
     uniqueWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
       if (data.type === "DELETE_FILE") {
+        if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
+          return;
+        }
+
         const vsrFile = await virtualServiceRegistry.getVsrFile({
-          vsrWorkspaceId: workspaceId,
+          vsrWorkspaceId,
           relativePath: data.relativePath,
         });
         if (!vsrFile) {
           return;
         }
 
-        virtualServiceRegistry.deleteVsrFile({ vsrFile });
+        await virtualServiceRegistry.deleteVsrFile({ vsrFile });
       } else if (data.type === "RENAME_FILE") {
+        if (!isSupportedByVirtualServiceRegistry(data.oldRelativePath)) {
+          return;
+        }
+
         const vsrFile = await virtualServiceRegistry.getVsrFile({
-          vsrWorkspaceId: workspaceId,
+          vsrWorkspaceId,
           relativePath: data.oldRelativePath,
         });
         if (!vsrFile) {
           return;
         }
 
-        virtualServiceRegistry.renameVsrFile({
+        await virtualServiceRegistry.renameVsrFile({
           vsrFile,
           newFileNameWithoutExtension: basename(data.newRelativePath).replace(
             `.${resolveExtension(data.newRelativePath)}`,
@@ -64,11 +72,19 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
           ),
         });
       } else if (data.type === "UPDATE_FILE") {
-        const workspaceFile = await workspaces.getFile({ workspaceId, relativePath: data.relativePath });
-        const vsrFile = await virtualServiceRegistry.getVsrFile({
-          vsrWorkspaceId: workspaceId,
+        if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
+          return;
+        }
+
+        const workspaceFile = await workspaces.getFile({
+          workspaceId: vsrWorkspaceId,
           relativePath: data.relativePath,
         });
+        const vsrFile = await virtualServiceRegistry.getVsrFile({
+          vsrWorkspaceId,
+          relativePath: data.relativePath,
+        });
+
         if (!workspaceFile || !vsrFile) {
           return;
         }
@@ -79,12 +95,24 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
           getNewContents: async () => Promise.resolve(await vsrFunction.getOpenApiSpec()),
         });
       } else if (data.type === "ADD_FILE") {
-        if (!isServerlessWorkflow(data.relativePath) && !isSpec(data.relativePath)) {
+        if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
           return;
         }
 
-        const workspaceFile = await workspaces.getFile({ workspaceId, relativePath: data.relativePath });
+        const workspaceFile = await workspaces.getFile({
+          workspaceId: vsrWorkspaceId,
+          relativePath: data.relativePath,
+        });
         if (!workspaceFile) {
+          return;
+        }
+
+        const vsrFile = await virtualServiceRegistry.getVsrFile({
+          vsrWorkspaceId,
+          relativePath: data.relativePath,
+        });
+
+        if (vsrFile) {
           return;
         }
 

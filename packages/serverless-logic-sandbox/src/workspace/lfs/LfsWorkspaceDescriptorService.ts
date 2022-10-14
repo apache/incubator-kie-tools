@@ -23,7 +23,7 @@ import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { LfsStorageFile, LfsStorageService } from "./LfsStorageService";
 
 export class LfsWorkspaceDescriptorService {
-  private descriptorFs: KieSandboxFs;
+  private readonly descriptorFs: KieSandboxFs;
 
   constructor(databaseName: string, private readonly storageService: LfsStorageService) {
     this.descriptorFs = new KieSandboxFs(databaseName, {
@@ -53,6 +53,10 @@ export class LfsWorkspaceDescriptorService {
         lastUpdatedDateISO: new Date().toISOString(),
       })
     );
+  }
+
+  public async exists(workspaceId: string): Promise<boolean> {
+    return (await this.storageService.getFile(this.descriptorFs, this.getAbsolutePath(workspaceId))) != undefined;
   }
 
   public async get(workspaceId: string): Promise<WorkspaceDescriptor> {

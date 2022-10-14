@@ -98,6 +98,10 @@ export function isSandboxAsset(path: string): boolean {
   return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path));
 }
 
+export function isSupportedByVirtualServiceRegistry(path: string): boolean {
+  return isServerlessWorkflow(path) || isSpec(path);
+}
+
 export function isSpec(path: string): boolean {
   return REGEX.spec.test(path);
 }

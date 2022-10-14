@@ -38,13 +38,14 @@ export class VirtualServiceRegistryFunction {
     const decodedContent = decoder.decode(content);
     try {
       const parsedContent = isJson(this.file.relativePath) ? JSON.parse(decodedContent) : yaml.parse(decodedContent);
-      if (!parsedContent["id"]) {
-        throw new Error("No workflow ID!");
+      if (parsedContent["id"]) {
+        return generateOpenApiSpec(parsedContent["id"]);
+      } else {
+        console.debug("No workflow ID!");
       }
-      return generateOpenApiSpec(parsedContent["id"]);
     } catch (e) {
-      console.error(e);
-      return "";
+      console.debug(e);
     }
+    return "";
   }
 }
