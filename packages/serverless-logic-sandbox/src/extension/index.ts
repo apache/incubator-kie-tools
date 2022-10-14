@@ -36,6 +36,8 @@ export const GLOB_PATTERN = {
   sw: "**/*.sw.+(json|yml|yaml)",
   yard: "**/*.yard.+(json|yml|yaml)",
   dash: "**/*.dash.+(yml|yaml)",
+  spec: "**/*.spec.+(yml|yaml|json)",
+  sw_spec: "**/*.+(sw|spec).+(yml|yaml|json)",
 };
 
 export enum FileTypes {

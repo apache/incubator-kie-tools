@@ -19,7 +19,7 @@ import { useCallback, useMemo, useEffect } from "react";
 import { VirtualServiceRegistryContext } from "./VirtualServiceRegistryContext";
 import { VirtualServiceRegistryFunction } from "./models/VirtualServiceRegistryFunction";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { isSupportedByVirtualServiceRegistry } from "../extension";
+import { GLOB_PATTERN } from "../extension";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
 import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
@@ -168,11 +168,10 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
         }
         const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
         const storeRegistryFiles = async (vsrDescriptor: WorkspaceDescriptor) => {
-          const workflowFiles = (
-            await workspaces.getFiles({
-              workspaceId: vsrDescriptor.workspaceId,
-            })
-          ).filter((file) => isSupportedByVirtualServiceRegistry(file.relativePath));
+          const workflowFiles = await workspaces.getFiles({
+            workspaceId: vsrDescriptor.workspaceId,
+            globPattern: GLOB_PATTERN.sw_spec,
+          });
 
           const filesSpecs = workflowFiles.map((file) => {
             const vsrFunction = new VirtualServiceRegistryFunction(file);

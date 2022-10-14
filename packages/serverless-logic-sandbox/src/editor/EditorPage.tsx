@@ -257,6 +257,12 @@ export function EditorPage(props: Props) {
 
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
+  useEffect(() => {
+    if (isSwf && isReady) {
+      settingsDispatch.serviceRegistry.catalogStore.refresh();
+    }
+  }, [isSwf, isReady]);
+
   const swfLanguageService = useMemo(() => {
     if (!isSwf || !workspaceFilePromise.data) {
       return;

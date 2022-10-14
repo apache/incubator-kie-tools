@@ -197,7 +197,7 @@ export function WorkspacesContextProvider(props: Props) {
     return toWorkspaceFile(wwfd);
   }, []);
 
-  const getFiles = useCallback(async (args: { workspaceId: string }) => {
+  const getFiles = useCallback(async (args: { workspaceId: string; globPattern?: string }) => {
     await ready;
     const wwfds = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFiles(args);
     return wwfds.map((wwfd) => toWorkspaceFile(wwfd));

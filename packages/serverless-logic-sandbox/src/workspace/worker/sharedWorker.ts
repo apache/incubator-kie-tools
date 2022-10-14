@@ -269,9 +269,10 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
     },
     kieSandboxWorkspacesStorage_getFiles: async function (args: {
       workspaceId: string;
+      globPattern?: string;
     }): Promise<WorkspaceWorkerFileDescriptor[]> {
       return fsService.withReadonlyFsSchema(args.workspaceId, async ({ schema }) => {
-        return service.getFilteredWorkspaceFileDescriptors(schema, args.workspaceId);
+        return service.getFilteredWorkspaceFileDescriptors(schema, args.workspaceId, args.globPattern);
       });
     },
     async kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
