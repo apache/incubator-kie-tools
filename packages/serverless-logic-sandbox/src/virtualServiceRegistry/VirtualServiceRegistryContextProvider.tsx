@@ -72,7 +72,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
       vsrService.renameFile({
         fs: await vsrFsService.getFs(args.vsrFile.workspaceId),
         file: args.vsrFile,
-        broadcastArgs: { broadcast: false },
+        broadcastArgs: { broadcast: true },
         ...args,
       }),
     [vsrFsService, vsrService]
@@ -106,7 +106,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
       vsrService.deleteFile({
         fs: await vsrFsService.getFs(args.vsrFile.workspaceId),
         file: args.vsrFile,
-        broadcastArgs: { broadcast: false },
+        broadcastArgs: { broadcast: true },
       }),
     [vsrService, vsrFsService]
   );
@@ -149,7 +149,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
           relativePath: vsrFunctionPath,
           getFileContents: () => Promise.resolve(vsrFunctionContent),
         });
-        await vsrService.createOrOverwriteFile({ fs, file: newFile, broadcastArgs: { broadcast: false } });
+        await vsrService.createOrOverwriteFile({ fs, file: newFile, broadcastArgs: { broadcast: true } });
         return newFile;
       }
 
@@ -192,11 +192,11 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
         await vsrService.create({
           storeFiles: storeRegistryFiles,
           workspaceDescriptor,
-          broadcastArgs: { broadcast: false },
+          broadcastArgs: { broadcast: true },
         });
       } else if (data.type === "DELETE_WORKSPACE") {
         if (await vsrDescriptorService.exists(data.workspaceId)) {
-          await vsrService.delete({ workspaceId: data.workspaceId, broadcastArgs: { broadcast: false } });
+          await vsrService.delete({ workspaceId: data.workspaceId, broadcastArgs: { broadcast: true } });
         }
       } else if (data.type === "RENAME_WORKSPACE") {
         const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
@@ -207,7 +207,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
         await vsrService.rename({
           workspaceId: data.workspaceId,
           newName: workspaceDescriptor.name,
-          broadcastArgs: { broadcast: false },
+          broadcastArgs: { broadcast: true },
         });
       }
     };

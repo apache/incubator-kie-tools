@@ -16,11 +16,18 @@
 
 import { basename } from "path";
 import { useEffect } from "react";
+import { SwfServiceCatalogStore } from "../../editor/api/SwfServiceCatalogStore";
 import { isSupportedByVirtualServiceRegistry, resolveExtension } from "../../extension";
+import {
+  buildUniqueWorkspaceBroadcastChannelName,
+  buildWorkspacesBroadcastChannelName,
+} from "../../workspace/lfs/LfsWorkspaceEvents";
 import { WorkspaceEvents } from "../../workspace/worker/api/WorkspaceEvents";
+import { WorkspacesEvents } from "../../workspace/worker/api/WorkspacesEvents";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { VirtualServiceRegistryFunction } from "../models/VirtualServiceRegistryFunction";
 import { useVirtualServiceRegistry } from "../VirtualServiceRegistryContext";
+import { VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX } from "../VirtualServiceRegistryContextProvider";
 
 export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
   workspaceFile: WorkspaceFile | undefined;
@@ -124,4 +131,46 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
       uniqueWorkspaceBroadcastChannel.close();
     };
   }, [virtualServiceRegistry, args.workspaceFile, workspaces]);
+}
+
+export function useUpdateVirtualServiceRegistryOnVsrFileEvent(args: {
+  workspaceId: string;
+  catalogStore: SwfServiceCatalogStore;
+}) {
+  useEffect(() => {
+    const uniqueVsrWorkspaceBroadcastChannel = new BroadcastChannel(
+      buildUniqueWorkspaceBroadcastChannelName({
+        workspaceId: args.workspaceId,
+        prefix: VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX,
+      })
+    );
+
+    uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
+      if (["ADD_FILE", "DELETE_FILE", "RENAME_FILE"].includes(data.type)) {
+        await args.catalogStore.refresh();
+      }
+    };
+
+    return () => {
+      uniqueVsrWorkspaceBroadcastChannel.close();
+    };
+  }, [args.workspaceId, args.catalogStore]);
+}
+
+export function useUpdateVirtualServiceRegistryOnVsrWorkspaceEvent(args: { catalogStore: SwfServiceCatalogStore }) {
+  useEffect(() => {
+    const uniqueVsrWorkspaceBroadcastChannel = new BroadcastChannel(
+      buildWorkspacesBroadcastChannelName(VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX)
+    );
+
+    uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
+      if (["ADD_WORKSPACE", "DELETE_WORKSPACE"].includes(data.type)) {
+        await args.catalogStore.refresh();
+      }
+    };
+
+    return () => {
+      uniqueVsrWorkspaceBroadcastChannel.close();
+    };
+  }, [args.catalogStore]);
 }

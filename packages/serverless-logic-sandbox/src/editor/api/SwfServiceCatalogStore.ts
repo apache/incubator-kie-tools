@@ -45,7 +45,7 @@ export const ARTIFACT_TAGS = {
 
 type ArtifactWithContent = {
   metadata: SearchedArtifact;
-  content: OpenAPIV3.Document<{}>;
+  content: OpenAPIV3.Document;
 };
 
 export class SwfServiceCatalogStore {
@@ -94,10 +94,13 @@ export class SwfServiceCatalogStore {
     return this.storedServices;
   }
 
-  public setVirtualServiceRegistry(virtualServiceRegistry: VirtualServiceRegistryContextType, file?: WorkspaceFile) {
+  public async setVirtualServiceRegistry(
+    virtualServiceRegistry: VirtualServiceRegistryContextType,
+    file?: WorkspaceFile
+  ): Promise<void> {
     this.virtualServiceRegistry = virtualServiceRegistry;
     this.currentFile = file;
-    this.refresh();
+    await this.refresh();
   }
 
   private isConfigValid(): boolean {
@@ -247,6 +250,6 @@ export class SwfServiceCatalogStore {
         )}/artifacts`,
       },
     });
-    this.refresh();
+    await this.refresh();
   }
 }
