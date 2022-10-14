@@ -10,6 +10,12 @@ spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
+    - description: KogitoServerlessBuild is the Schema for the kogitoserverlessbuilds
+        API
+      displayName: Kogito Serverless Build
+      kind: KogitoServerlessBuild
+      name: kogitoserverlessbuilds.sw.kogito.kie.org
+      version: v08
     - description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows
         API
       displayName: Kogito Serverless Workflow

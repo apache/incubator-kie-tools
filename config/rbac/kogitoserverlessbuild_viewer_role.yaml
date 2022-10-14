@@ -1,0 +1,20 @@
+# permissions for end users to view kogitoserverlessworkflowbuilds.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kogitoserverlessbuild-viewer-role
+rules:
+  - apiGroups:
+      - sw.kogito.kie.org
+    resources:
+      - kogitoserverlessbuilds
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - sw.kogito.kie.org
+    resources:
+      - kogitoserverlessbuilds/status
+    verbs:
+      - get

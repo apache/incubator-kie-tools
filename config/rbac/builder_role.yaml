@@ -18,6 +18,8 @@ rules:
   - persistentvolumeclaims
   - secrets
   - events
+  - deployments
+  - nodes
   verbs:
   - create
   - delete
@@ -27,3 +29,27 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+    - apps
+  resources:
+    - configmaps
+    - pods
+    - pods/exec
+    - services
+    - services/finalizers
+    - namespaces
+    - serviceaccounts
+    - persistentvolumeclaims
+    - secrets
+    - events
+    - deployments
+    - nodes
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch

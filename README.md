@@ -5,10 +5,11 @@ Kubernetes/Knative/OpenShift a service based on Kogito that it will be able to e
 
 The CustomResources defined and managed by this operator are the following:
 - Workflow 
+- Build
 
 # PreRequisites
 
-operator-sdk-v1.22.2
+operator-sdk-v1.24.0
 
 Go 1.19
 
@@ -99,6 +100,18 @@ kubectl create namespace greeting-workflow
 ```sh
 kubectl apply -f config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.yaml -n greeting-workflow
 ```
+
+8. Default configuration
+
+A configmap called kogito-builder-config will be created under the kogito-builder namespace at the first application of a workflow, it contains:
+  
+- BUILDER_RESOURCE_DEFAULT = Dockerfile
+- WORKFLOW_DEFAULT_EXTENSION = .sw.json
+- DEFAULT_KANIKO_SECRET_DEFAULT = regcred
+- DEFAULT_REGISTRY_REPO =  quay.io/kiegroup
+- Dockerfile = dockerfile content
+
+For the local development the DEFAULT_REGISTRY_REPO must be changed
 
 ## Contributing
 // TODO(user): Add detailed information on how you would like others to contribute to this project

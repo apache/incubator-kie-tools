@@ -50,7 +50,7 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 		cl := fake.NewFakeClient(objs...)
 
 		// Create a KogitoServerlessWorkflowReconciler object with the scheme and fake client.
-		r := &KogitoServerlessWorkflowReconciler{cl, s}
+		r := &KogitoServerlessWorkflowReconciler{cl, s, nil}
 
 		// Mock request to simulate Reconcile() being called on an event for a
 		// watched resource .
