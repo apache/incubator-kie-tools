@@ -462,7 +462,7 @@ jobs:
         run: |
           echo "Reset deployment dir"
           shopt -s extglob
-          rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|"swf-chrome-extension"|".nojekyll"|"CNAME")
+          rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|"swf-chrome-extension"|".nojekyll"|"CNAME"|"0.23.0")
 
           echo "Copy Editor resources"
           rm -rf $EDITORS_DIR
