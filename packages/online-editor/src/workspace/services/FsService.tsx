@@ -19,24 +19,47 @@ import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { FsFlushManager } from "./FsFlushManager";
 import { FsUsageCounter } from "./FsUsageCounter";
 import { FsUnloadManager } from "./FsUnloadManager";
-import { WorkspaceEvents } from "../worker/api/WorkspaceEvents";
-import { WorkspaceFileEvents } from "../worker/api/WorkspaceFileEvents";
-import { WorkspacesEvents } from "../worker/api/WorkspacesEvents";
+import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
+import { WorkspaceFileBroadcastEvents } from "../worker/api/WorkspaceFileBroadcastEvents";
+import {
+  WORKSPACES_BROADCAST_CHANNEL,
+  WORKSPACES_FILES_BROADCAST_CHANNEL,
+  WorkspacesBroadcastEvents,
+  WorkspacesFilesBroadcastEvents,
+} from "../worker/api/WorkspacesBroadcastEvents";
 
-export interface BroadcasterWatchEvent {
-  channel: string;
-  onMessage: (message: WorkspacesEvents | WorkspaceEvents | WorkspaceFileEvents) => void;
-}
+export type BroadcasterWatchEvent =
+  | {
+      channel: typeof WORKSPACES_BROADCAST_CHANNEL;
+      onMessage: (message: WorkspacesBroadcastEvents) => void;
+    }
+  | {
+      channel: typeof WORKSPACES_FILES_BROADCAST_CHANNEL;
+      onMessage: (message: WorkspacesFilesBroadcastEvents) => void;
+    }
+  | {
+      channel: string;
+      onMessage: (message: WorkspaceBroadcastEvents | WorkspaceFileBroadcastEvents) => void;
+    };
 
 export class Broadcastee {
   watch(args: BroadcasterWatchEvent): void {}
   dispose() {}
 }
 
-export interface BroadcasterEvent {
-  channel: string;
-  message: () => Promise<WorkspacesEvents | WorkspaceEvents | WorkspaceFileEvents>;
-}
+export type BroadcasterEvent =
+  | {
+      channel: typeof WORKSPACES_BROADCAST_CHANNEL;
+      message: () => Promise<WorkspacesBroadcastEvents>;
+    }
+  | {
+      channel: typeof WORKSPACES_FILES_BROADCAST_CHANNEL;
+      message: () => Promise<WorkspacesFilesBroadcastEvents>;
+    }
+  | {
+      channel: string;
+      message: () => Promise<WorkspaceBroadcastEvents | WorkspaceFileBroadcastEvents>;
+    };
 
 export interface BroadcasterDispatch {
   broadcast(args: BroadcasterEvent): void;

@@ -68,7 +68,6 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
 import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
 import { Alerts, AlertsController } from "../alerts/Alerts";
@@ -79,9 +78,12 @@ import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { FileDataList, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
+import { FileDataList, FileLink, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
+import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCard";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
+import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -255,45 +257,6 @@ export function HomePage() {
   );
 }
 
-export function WorkspaceLoadingCard() {
-  return (
-    <Card isHoverable={true} isCompact={true}>
-      <CardHeader>
-        <CardHeaderMain style={{ width: "100%" }}>
-          <Flex>
-            <FlexItem>
-              <CardTitle>
-                <TextContent>
-                  <Text
-                    component={TextVariants.h3}
-                    style={{ textOverflow: "ellipsis", overflow: "hidden", width: "200px" }}
-                  >
-                    <Skeleton width={"100%"} />
-                  </Text>
-                </TextContent>
-              </CardTitle>
-            </FlexItem>
-            <FlexItem>
-              <b>
-                <Label color={"grey"} style={{ width: "80px" }}>
-                  <Skeleton width={"100%"} />
-                </Label>
-              </b>
-            </FlexItem>
-          </Flex>
-        </CardHeaderMain>
-      </CardHeader>
-      <CardBody>
-        <TextContent>
-          <Text component={TextVariants.p}>
-            <Skeleton width={"50%"} />
-          </Text>
-        </TextContent>
-      </CardBody>
-    </Card>
-  );
-}
-
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
   return (
@@ -314,7 +277,9 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
             </FlexItem>
           </Flex>
         </CardHeaderMain>
-        <CardActions>
+        <CardActions
+          onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+        >
           <DeleteDropdownWithConfirmation
             onDelete={() => {
               workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
@@ -343,14 +308,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
     return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];
   }, [editorEnvelopeLocator, workspacePromise.data?.files]);
 
-  const workspaceName = useMemo(() => {
-    return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
-  }, [workspacePromise.data]);
-
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
-      pending={<WorkspaceLoadingCard />}
+      pending={<WorkspaceLoadingCard isBig={true} />}
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
@@ -374,13 +335,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               }}
             >
               <CardHeader>
-                <Link
-                  to={routes.workspaceWithFilePath.path({
-                    workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                    extension: editableFiles[0].extension,
-                  })}
-                >
+                <FileLink file={editableFiles[0]} style={{ width: "100%", minWidth: 0 }}>
                   <CardHeaderMain style={{ width: "100%" }}>
                     <SingleFileWorkspaceListItem
                       isBig={true}
@@ -388,8 +343,11 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                       workspaceDescriptor={workspace.descriptor}
                     />
                   </CardHeaderMain>
-                </Link>
-                <CardActions style={{ visibility: isHovered ? "visible" : "hidden" }}>
+                </FileLink>
+                <CardActions
+                  style={{ visibility: isHovered ? "visible" : "hidden" }}
+                  onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+                >
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
                     onDelete={() => {
@@ -424,7 +382,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               onClick={props.onSelect}
             >
               <CardHeader isToggleRightAligned={true} onExpand={props.onSelect}>
-                <CardHeaderMain style={{ width: "100%" }}>
+                <CardHeaderMain style={{ width: "100%", minWidth: 0 }}>
                   <WorkspaceListItem
                     isBig={true}
                     workspaceDescriptor={workspace.descriptor}
@@ -432,16 +390,40 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     editableFiles={editableFiles}
                   />
                 </CardHeaderMain>
-                <CardActions style={{ visibility: isHovered ? "visible" : "hidden" }}>
+                <CardActions
+                  style={{ visibility: isHovered ? "visible" : "hidden" }}
+                  onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+                >
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
                     onDelete={() => {
                       workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
                     }}
                     item={
-                      <>
-                        Delete <b>{`"${workspace.descriptor.name}"`}</b>
-                      </>
+                      <Flex
+                        flexWrap={{ default: "nowrap" }}
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        style={{ width: "100%" }}
+                        spaceItems={{ default: "spaceItemsNone" }}
+                      >
+                        <FlexItem>{"Delete "}</FlexItem>
+                        <FlexItem style={{ minWidth: 0 }}>
+                          <Tooltip distance={5} position={"top-start"} content={workspace.descriptor.name}>
+                            <TextContent>
+                              <Text
+                                component={TextVariants.p}
+                                style={{
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                <b>{`"${workspace.descriptor.name}"`}</b>
+                              </Text>
+                            </TextContent>
+                          </Tooltip>
+                        </FlexItem>
+                      </Flex>
                     }
                   />
                 </CardActions>
@@ -546,18 +528,20 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                 </TextContent>
               </FlexItem>
               <FlexItem>
-                <Dropdown
+                <ResponsiveDropdown
                   isPlain={true}
                   position={"left"}
                   isOpen={isNewFileDropdownMenuOpen}
+                  onClose={() => setNewFileDropdownMenuOpen(false)}
+                  title={"Add file"}
                   toggle={
-                    <DropdownToggle
+                    <ResponsiveDropdownToggle
                       className={"kie-tools--masthead-hoverable"}
                       toggleIndicator={null}
-                      onToggle={setNewFileDropdownMenuOpen}
+                      onToggle={() => setNewFileDropdownMenuOpen((prev) => !prev)}
                     >
                       <PlusIcon />
-                    </DropdownToggle>
+                    </ResponsiveDropdownToggle>
                   }
                 >
                   <NewFileDropdownMenu
@@ -566,7 +550,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                     destinationDirPath={""}
                     onAddFile={async () => setNewFileDropdownMenuOpen(false)}
                   />
-                </Dropdown>
+                </ResponsiveDropdown>
               </FlexItem>
             </Flex>
             {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
