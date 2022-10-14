@@ -1285,5 +1285,26 @@ describe("SWF LS JSON", () => {
         } as CompletionItem);
       });
     });
+
+    describe("state completion", () => {
+      test.each([
+        ["pointing inside an object of the array", `{ "states": [ {🎯} ] }`],
+        ["pointing before the array", `{ "states":🎯 [] }`],
+        ["pointing before the array", `{ "states": 🎯 [] }`],
+        ["pointing after the array", `{ "states": []🎯 }`],
+        ["add into empty array", `{ "states": [🎯] }`],
+        ["add at the beginning of the array", `{ "states": [🎯 {}] }`],
+        ["add at the end of the array", `{ "states": [{}, 🎯 ] }`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+        const expectedResult = fs.readFileSync(
+          path.resolve(EXPECTED_RESULTS_PROJECT_FOLDER, "emptyfile_autocompletion.sw.json.result"),
+          "utf-8"
+        );
+
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
   });
 });

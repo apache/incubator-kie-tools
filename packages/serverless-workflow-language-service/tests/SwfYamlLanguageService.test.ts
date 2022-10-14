@@ -1666,5 +1666,42 @@ states:
         expect(completionItems).toHaveLength(0);
       });
     });
+
+    describe("state completion", () => {
+      describe("using JSON format", () => {
+        test.each([
+          ["using JSON format", `states: [🎯]`],
+          ["using JSON format / before a state", `states: [🎯{ }]`],
+          ["using JSON format / after a state", `states: [{  },🎯]`],
+          ["pointing before the array of states / using JSON format", `states: 🎯[] `],
+          ["pointing before the array of states / with extra space after ':' / using JSON format", `states: 🎯 [] `],
+          ["pointing after the array of states / using JSON format", `states: []🎯 `],
+          ["pointing inside an object of the array of states / using JSON format", `states: [ {🎯 }]`],
+        ])("%s", async (_description, content: ContentWithCursor) => {
+          const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems).toHaveLength(0);
+        });
+      });
+
+      test.each([
+        ["empty completion items", "states:\n-🎯"],
+        ["empty completion items / with extra space", "states:\n- 🎯"],
+        ["add at the end", `functions:\n- name: itemName\n- 🎯`],
+        ["add at the beginning", `functions:\n- 🎯\n- name: itemName`],
+        ["add in the middle", `functions:\n- name: itemName1\n- 🎯\n- name: itemName2`],
+        ["add at the beginning, using the code lenses", `functions:\n🎯- name: itemName`],
+        ["add at the beginning / with extra indentation / using the code lenses", `functions:\n  🎯- name: itemName`],
+        [
+          "add at the beginning / with double extra indentation / using the code lenses",
+          `functions:\n    🎯- name: itemName`,
+        ],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
   });
 });

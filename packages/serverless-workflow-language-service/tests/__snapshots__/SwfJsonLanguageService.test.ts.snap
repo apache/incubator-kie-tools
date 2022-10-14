@@ -1,0 +1,401 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SWF LS JSON code completion state completion add at the beginning of the array 1`] = `4`;
+
+exports[`SWF LS JSON code completion state completion add at the beginning of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": [],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion state completion add at the end of the array 1`] = `4`;
+
+exports[`SWF LS JSON code completion state completion add at the end of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": [],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion state completion add into empty array 1`] = `4`;
+
+exports[`SWF LS JSON code completion state completion add into empty array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": [],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion state completion pointing after the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion state completion pointing after the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion state completion pointing before the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion state completion pointing before the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion state completion pointing before the array 3`] = `0`;
+
+exports[`SWF LS JSON code completion state completion pointing before the array 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion state completion pointing inside an object of the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion state completion pointing inside an object of the array 2`] = `Array []`;

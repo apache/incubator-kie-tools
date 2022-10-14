@@ -281,6 +281,7 @@ const completions = new Map<
 >([
   [["functions", "*"], SwfLanguageServiceCodeCompletion.getFunctionCompletions],
   [["functions", "*", "operation"], SwfLanguageServiceCodeCompletion.getFunctionOperationCompletions],
+  [["states", "*"], SwfLanguageServiceCodeCompletion.getStatesCompletions],
   [["states", "*", "actions", "*", "functionRef"], SwfLanguageServiceCodeCompletion.getFunctionRefCompletions],
   [
     ["states", "*", "actions", "*", "functionRef", "refName"],

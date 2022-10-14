@@ -71,6 +71,33 @@ function toCompletionItemLabelPrefix(
   }
 }
 
+function createCompletionItem(args: {
+  overwriteRange: Range;
+  currentNodeRange: Range;
+  codeCompletionStrategy: CodeCompletionStrategy;
+  completion: object | string;
+  kind: CompletionItemKind;
+  label: string;
+  detail: string;
+}): CompletionItem {
+  return {
+    kind: args.kind,
+    label: args.label,
+    sortText: `100_${args.label}`, //place the completion on top in the menu
+    detail: args.detail,
+    textEdit: {
+      newText: args.codeCompletionStrategy.translate({
+        completion: args.completion,
+        completionItemKind: args.kind,
+        overwriteRange: args.overwriteRange,
+        currentNodeRange: args.currentNodeRange,
+      }),
+      range: args.overwriteRange,
+    },
+    insertTextFormat: InsertTextFormat.Snippet,
+  };
+}
+
 /**
  * SwfLanguageService CodeCompletion functions
  */
@@ -95,6 +122,93 @@ export const SwfLanguageServiceCodeCompletion = {
         insertTextFormat: InsertTextFormat.Snippet,
       },
     ];
+  },
+
+  getStatesCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const kind = CompletionItemKind.Interface;
+
+    const genericStateCompletion = {
+      name: "${1:Unique State name}",
+      transition: "${10:Next transition of the workflow}",
+    };
+
+    const operationStateCompletion = {
+      name: genericStateCompletion.name,
+      type: "operation",
+      actions: [
+        {
+          name: "${5:Unique Action name}",
+          functionRef: {},
+        },
+      ],
+      transition: genericStateCompletion.transition,
+      end: false,
+    };
+
+    const eventStateCompletion = {
+      name: genericStateCompletion.name,
+      type: "event",
+      onEvents: [
+        {
+          eventRefs: ["${5:Unique event names}"],
+        },
+      ],
+      transition: genericStateCompletion.transition,
+      end: false,
+    };
+
+    const switchStateCompletion = {
+      name: genericStateCompletion.name,
+      type: "switch",
+      dataConditions: [
+        {
+          condition: "${5:Workflow expression evaluated against state data}",
+          transition: "${6:Transition to another state if condition is true}",
+        },
+      ],
+      defaultCondition: {
+        transition: "${7:Default transition of the workflow}",
+      },
+    };
+
+    const injectStateCompletion = {
+      name: genericStateCompletion.name,
+      type: "inject",
+      data: [],
+      transition: genericStateCompletion.transition,
+      end: false,
+    };
+
+    return Promise.resolve([
+      createCompletionItem({
+        ...args,
+        completion: operationStateCompletion,
+        kind,
+        label: "New operation state",
+        detail: "Add a new operation state",
+      }),
+      createCompletionItem({
+        ...args,
+        completion: eventStateCompletion,
+        kind,
+        label: "New event state",
+        detail: "Add a new event state",
+      }),
+      createCompletionItem({
+        ...args,
+        completion: switchStateCompletion,
+        kind,
+        label: "New switch state",
+        detail: "Add a new switch state",
+      }),
+      createCompletionItem({
+        ...args,
+        completion: injectStateCompletion,
+        kind,
+        label: "New inject state",
+        detail: "Add a new inject state",
+      }),
+    ]);
   },
 
   getFunctionCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
