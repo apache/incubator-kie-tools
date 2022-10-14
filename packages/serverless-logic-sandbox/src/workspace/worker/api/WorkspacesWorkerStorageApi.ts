@@ -43,11 +43,6 @@ export interface WorkspacesWorkerStorageApi {
 
   kieSandboxWorkspacesStorage_prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
 
-  kieSandboxWorkspacesStorage_prepareZipWithFiles(args: {
-    workspaceId: string;
-    wwfds: WorkspaceWorkerFileDescriptor[];
-  }): Promise<Blob>;
-
   kieSandboxWorkspacesStorage_resourceContentList(args: {
     workspaceId: string;
     globPattern: string;

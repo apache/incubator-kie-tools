@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import JSZip from "jszip";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GLOB_PATTERN } from "../extension";
@@ -113,10 +114,19 @@ export function OpenShiftContextProvider(props: Props) {
 
         filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile);
 
-        const zipBlob = await workspaces.prepareZipWithFiles({
-          workspaceId: args.workspaceFile.workspaceId,
-          files: filesToBeDeployed,
-        });
+        const filesToZip = await Promise.all(
+          filesToBeDeployed.map(async (file) => ({
+            relativePath: file.relativePath,
+            content: await file.getFileContentsAsString(),
+          }))
+        );
+
+        const zip = new JSZip();
+        for (const file of filesToZip) {
+          zip.file(file.relativePath, file.content);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
 
         return settingsDispatch.openshift.service.deploy({
           workspaceName: workspaceName,
@@ -167,7 +177,7 @@ export function OpenShiftContextProvider(props: Props) {
         throw new Error("Invalid service registry config");
       }
 
-      settingsDispatch.serviceRegistry.catalogStore.uploadArtifact({
+      await settingsDispatch.serviceRegistry.catalogStore.uploadArtifact({
         artifactId: artifactId,
         groupId: DEFAULT_GROUP_ID,
         content: content,

@@ -151,19 +151,15 @@ export class WorkspaceService {
     workspaceId: string,
     onlyExtensions?: string[]
   ): Promise<Blob> {
-    const wwfds = (await this.getFilteredWorkspaceFileDescriptors(schema, workspaceId)).filter(
-      (wwfd) => !onlyExtensions || onlyExtensions.includes(extname(wwfd.relativePath).slice(1))
-    );
+    const wwfds = await this.getFilteredWorkspaceFileDescriptors(schema, workspaceId);
 
-    return this.prepareZipWithFiles(fs, wwfds);
-  }
-
-  public async prepareZipWithFiles(fs: KieSandboxWorkspacesFs, wwfds: WorkspaceWorkerFileDescriptor[]): Promise<Blob> {
     const filesToZip = await Promise.all(
-      wwfds.map(async (wwfd) => ({
-        relativePath: wwfd.relativePath,
-        content: await this.storageService.getFileContent(fs, this.getAbsolutePath(wwfd)),
-      }))
+      wwfds
+        .filter((wwfd) => !onlyExtensions || onlyExtensions.includes(extname(wwfd.relativePath).slice(1)))
+        .map(async (wwfd) => ({
+          relativePath: wwfd.relativePath,
+          content: await this.storageService.getFileContent(fs, this.getAbsolutePath(wwfd)),
+        }))
     );
 
     const zip = new JSZip();

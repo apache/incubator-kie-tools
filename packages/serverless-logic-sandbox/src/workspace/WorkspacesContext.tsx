@@ -151,8 +151,6 @@ export interface WorkspacesContextType {
 
   prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
 
-  prepareZipWithFiles(args: { workspaceId: string; files: WorkspaceFile[] }): Promise<Blob>;
-
   getFiles(args: { workspaceId: string; globPattern?: string }): Promise<WorkspaceFile[]>;
 
   deleteWorkspace(args: { workspaceId: string }): Promise<void>;

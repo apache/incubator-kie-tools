@@ -286,14 +286,6 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
         return service.prepareZip(fs, schema, args.workspaceId, args.onlyExtensions);
       });
     },
-    async kieSandboxWorkspacesStorage_prepareZipWithFiles(args: {
-      workspaceId: string;
-      wwfds: WorkspaceWorkerFileDescriptor[];
-    }): Promise<Blob> {
-      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs, schema }) => {
-        return service.prepareZipWithFiles(fs, args.wwfds);
-      });
-    },
 
     async kieSandboxWorkspacesStorage_renameFile(args: {
       wwfd: WorkspaceWorkerFileDescriptor;

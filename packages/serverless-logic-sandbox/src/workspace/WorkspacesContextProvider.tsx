@@ -275,18 +275,6 @@ export function WorkspacesContextProvider(props: Props) {
     return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_prepareZip(args);
   }, []);
 
-  const prepareZipWithFiles = useCallback(async (args: { workspaceId: string; files: WorkspaceFile[] }) => {
-    await ready;
-    const wwfds = args.files.map((f) => ({
-      workspaceId: f.workspaceId,
-      relativePath: f.relativePath,
-    }));
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_prepareZipWithFiles({
-      workspaceId: args.workspaceId,
-      wwfds,
-    });
-  }, []);
-
   const resourceContentGet = useCallback(
     async (args: { workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
       await ready;
@@ -352,7 +340,6 @@ export function WorkspacesContextProvider(props: Props) {
       renameWorkspace,
       deleteWorkspace,
       prepareZip,
-      prepareZipWithFiles,
       getUniqueFileIdentifier,
       createSavePoint,
       pull,
@@ -397,7 +384,6 @@ export function WorkspacesContextProvider(props: Props) {
       hasLocalChanges,
       moveFile,
       prepareZip,
-      prepareZipWithFiles,
       pull,
       addRemote,
       deleteRemote,
