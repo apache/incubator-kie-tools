@@ -107,13 +107,12 @@ func InitConfigMap(client client.Client, namespace string, log logr.Logger) (cm 
 
 		_, errx := CreateConfigMap(client, constants.BUILDER_NAMESPACE_DEFAULT, cmData, log)
 		if errx != nil {
-			log.Error(err, "configmap error:")
+			log.Error(err, "configmap error ")
 		} else {
 			log.Info(constants.BUILDER_CM_NAME+" created", "")
 		}
 		return GetConfigMap(client, namespace)
 	} else {
-		log.Info("initconfigmap conigmap found")
 		return configMap, err
 	}
 }
