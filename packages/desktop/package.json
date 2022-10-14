@@ -81,7 +81,7 @@
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
-    "spectron": "^14.0.0",
+    "spectron": "^17.0.0",
     "ts-jest": "^26.5.6",
     "typescript": "^4.4.2",
     "webpack": "^5.36.2",
