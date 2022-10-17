@@ -70,11 +70,6 @@
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-svg-client</artifactId>
-    </dependency>
-
     <!-- GWT and GWT Extensions -->
 
     <dependency>
