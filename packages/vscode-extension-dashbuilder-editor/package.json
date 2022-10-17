@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Edit Dashbuilder files",
   "license": "Apache-2.0",
-  "publisher": "Red Hat",
+  "publisher": "redhat",
   "keywords": [],
   "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
@@ -63,9 +63,9 @@
     "capabilities": {
       "configurationDefaults": {
         "files.associations": {
-          "*.sw.json": "json",
-          "*.sw.yaml": "yaml",
-          "*.sw.yml": "yaml"
+          "*.dash.json": "json",
+          "*.dash.yaml": "yaml",
+          "*.dash.yml": "yaml"
         }
       },
       "untrustedWorkspaces": {
