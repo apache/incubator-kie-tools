@@ -52,8 +52,9 @@ export interface ShouldCreateCodelensArgs {
 export interface TranslateArgs {
   completion: object | string;
   completionItemKind: CompletionItemKind;
-  overwriteRange?: Range;
+  currentNode?: SwfLsNode;
   currentNodeRange?: Range;
+  overwriteRange?: Range;
 }
 
 export interface CodeCompletionStrategy {

@@ -79,7 +79,9 @@ export class SwfJsonLanguageService {
 
 export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {
-    return JSON.stringify(args.completion, null, 2);
+    return (
+      JSON.stringify(args.completion, null, 2) + (args.currentNode && args.currentNode.type === "object" ? "," : "")
+    );
   }
 
   public formatLabel(label: string, completionItemKind: CompletionItemKind): string {

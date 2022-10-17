@@ -197,7 +197,6 @@ Array [
     "insertTextFormat": 2,
     "kind": 18,
     "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
     "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
     "textEdit": Object {
       "newText": "- name: '\${1:testRelativeFunction1}'
@@ -263,7 +262,6 @@ Array [
     "insertTextFormat": 2,
     "kind": 18,
     "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
     "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
     "textEdit": Object {
       "newText": "- name: '\${1:testRelativeFunction1}'
@@ -329,7 +327,6 @@ Array [
     "insertTextFormat": 2,
     "kind": 18,
     "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
     "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
     "textEdit": Object {
       "newText": "name: '\${1:testRelativeFunction1}'
@@ -394,7 +391,6 @@ Array [
     "insertTextFormat": 2,
     "kind": 18,
     "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
     "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
     "textEdit": Object {
       "newText": "- name: '\${1:testRelativeFunction1}'
@@ -460,7 +456,6 @@ Array [
     "insertTextFormat": 2,
     "kind": 18,
     "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
     "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
     "textEdit": Object {
       "newText": "name: '\${1:testRelativeFunction1}'
@@ -525,7 +520,6 @@ Array [
     "insertTextFormat": 2,
     "kind": 18,
     "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
     "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
     "textEdit": Object {
       "newText": "name: '\${1:testRelativeFunction1}'
@@ -590,7 +584,6 @@ Array [
     "insertTextFormat": 2,
     "kind": 18,
     "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
     "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
     "textEdit": Object {
       "newText": "name: '\${1:testRelativeFunction1}'

@@ -89,13 +89,13 @@ function createCompletionItem(args: {
     filterText: args.label,
     detail: args.detail,
     textEdit: {
-      newText:
-        args.codeCompletionStrategy.translate({
-          completion: args.completion,
-          completionItemKind: args.kind,
-          overwriteRange: args.overwriteRange,
-          currentNodeRange: args.currentNodeRange,
-        }) + (args.currentNode.type === "object" ? "," : ""),
+      newText: args.codeCompletionStrategy.translate({
+        completion: args.completion,
+        completionItemKind: args.kind,
+        overwriteRange: args.overwriteRange,
+        currentNodeRange: args.currentNodeRange,
+        currentNode: args.currentNode,
+      }),
       range: args.overwriteRange,
     },
     insertTextFormat: InsertTextFormat.Snippet,
@@ -264,7 +264,6 @@ export const SwfLanguageServiceCodeCompletion = {
                 title: "Import function from completion item",
                 arguments: [command.args],
               },
-              snippet: true,
             },
           });
         })
