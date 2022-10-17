@@ -11,6 +11,10 @@ Create and edit Dashbuilder dashboards files (\*.dash.json, \*.dash.yaml, \*.das
 - Real-time dashboards preview rendering
 - Run dashboards as they were in production
 
+### Editing a Dashbuilder file
+
+![alt](./gifs/dashbuilder.gif?raw=true)
+
 ### Commands
 
 | Command                                                                  | Description                                                                                                       |
