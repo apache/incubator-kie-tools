@@ -1,5 +1,73 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SWF LS JSON code completion functionRef completion with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef completion with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "testRelativeFunction1",
+    "sortText": "100_testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"refName\\": \\"testRelativeFunction1\\",
+  \\"arguments\\": {
+    \\"argString\\": \\"\${1:}\\",
+    \\"argNumber\\": \\"\${2:}\\",
+    \\"argBoolean\\": \\"\${3:}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 15,
+        },
+        "start": Object {
+          "character": 25,
+          "line": 15,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef completion without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef completion without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "testRelativeFunction1",
+    "sortText": "100_testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"refName\\": \\"testRelativeFunction1\\",
+  \\"arguments\\": {
+    \\"argString\\": \\"\${1:}\\",
+    \\"argNumber\\": \\"\${2:}\\",
+    \\"argBoolean\\": \\"\${3:}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 16,
+        },
+        "start": Object {
+          "character": 25,
+          "line": 16,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS JSON code completion state completion add at the beginning of the array 1`] = `4`;
 
 exports[`SWF LS JSON code completion state completion add at the beginning of the array 2`] = `

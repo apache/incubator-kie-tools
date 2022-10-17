@@ -1178,23 +1178,8 @@ states:
     functionRef: 🎯`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: "testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1",
-          textEdit: {
-            newText: `
-  refName: 'testRelativeFunction1'
-  arguments:
-    argString: '\${1:}'
-    argNumber: '\${2:}'
-    argBoolean: '\${3:}'`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("with same level content after", async () => {
@@ -1216,23 +1201,8 @@ states:
           `
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: "testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1",
-          textEdit: {
-            newText: `
-  refName: 'testRelativeFunction1'
-  arguments:
-    argString: '\${1:}'
-    argNumber: '\${2:}'
-    argBoolean: '\${3:}'`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("using JSON format", async () => {

@@ -346,17 +346,13 @@ export const SwfLanguageServiceCodeCompletion = {
       const label = args.codeCompletionStrategy.formatLabel(swfFunctionRef.refName, kind);
 
       return [
-        {
+        createCompletionItem({
+          ...args,
+          completion: swfFunctionRef,
           kind,
           label,
-          sortText: label,
           detail: `${swfServiceCatalogFunc.operation}`,
-          textEdit: {
-            newText: args.codeCompletionStrategy.translate({ completion: swfFunctionRef, completionItemKind: kind }),
-            range: args.overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        },
+        }),
       ];
     });
 

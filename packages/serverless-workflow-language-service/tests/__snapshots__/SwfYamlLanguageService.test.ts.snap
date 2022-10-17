@@ -1,5 +1,69 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SWF LS YAML code completion functionRef completion with same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef completion with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "testRelativeFunction1",
+    "sortText": "100_testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "
+  refName: 'testRelativeFunction1'
+  arguments:
+    argString: '\${1:}'
+    argNumber: '\${2:}'
+    argBoolean: '\${3:}'",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 10,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 10,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef completion without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef completion without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "testRelativeFunction1",
+    "sortText": "100_testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "
+  refName: 'testRelativeFunction1'
+  arguments:
+    argString: '\${1:}'
+    argNumber: '\${2:}'
+    argBoolean: '\${3:}'",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 11,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 11,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS YAML code completion state completion add at the beginning / with double extra indentation / using the code lenses 1`] = `1`;
 
 exports[`SWF LS YAML code completion state completion add at the beginning / with double extra indentation / using the code lenses 2`] = `
