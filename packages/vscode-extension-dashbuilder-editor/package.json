@@ -61,13 +61,6 @@
   "displayName": "Dashbuilder Editor",
   "contributes": {
     "capabilities": {
-      "configurationDefaults": {
-        "files.associations": {
-          "*.dash.json": "json",
-          "*.dash.yaml": "yaml",
-          "*.dash.yml": "yaml"
-        }
-      },
       "untrustedWorkspaces": {
         "supported": false
       }
@@ -97,6 +90,13 @@
         }
       },
       "title": "Dashbuilder Editor"
+    },
+    "configurationDefaults": {
+      "files.associations": {
+        "*.dash.json": "json",
+        "*.dash.yaml": "yaml",
+        "*.dash.yml": "yaml"
+      }
     },
     "customEditors": [
       {
