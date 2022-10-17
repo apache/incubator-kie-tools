@@ -226,7 +226,11 @@ export const FilteredTable = (props: Props) => {
                   style={{ color: cellColor(cell, cellIndex) }}
                 >
                   {props.linkColumn && props.columns[cellIndex] == props.linkColumn.column ? (
-                    <a href={props.linkColumn.linkTemplate.replace(LINK_TEMPLATE_VALUE_KEY, cell)} target="_blank">
+                    <a
+                      href={props.linkColumn.linkTemplate.replace(LINK_TEMPLATE_VALUE_KEY, cell)}
+                      target="_blank"
+                      rel={"noopener noreferrer"}
+                    >
                       {" "}
                       {cell}{" "}
                     </a>
