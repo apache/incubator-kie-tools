@@ -36,9 +36,8 @@ spec:
           spec:
             description: KogitoServerlessBuildSpec defines the desired state of KogitoServerlessBuild
             properties:
-              dockerfile:
-                description: Dockerfile content used for the build @TODO load from
-                  configmap
+              containerFile:
+                description: ContainerFile content used for the build
                 format: byte
                 type: string
               imageName:

@@ -37,7 +37,7 @@ func NewBuilder(contex context.Context, cm corev1.ConfigMap) Builder {
 }
 
 func (b *Builder) getImageBuilder(workflowID string, workflowDefinition []byte) ImageBuilder {
-	containerFile := b.cm.Data[constants.BUILDER_RESOURCE_NAME_DEFAULT]
+	containerFile := b.cm.Data[b.cm.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]
 	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
 	ib.OnNamespace(constants.BUILDER_NAMESPACE_DEFAULT)
 	ib.WithPodMiddleName(constants.BUILDER_IMG_NAME_DEFAULT)
@@ -95,7 +95,7 @@ func (b *Builder) BuildImage(kb KogitoBuilder) (*api.Build, error) {
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
 		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
-		WithResource(kb.WorkflowID+b.cm.Data[constants.WORKFLOW_DEFAULT_EXTENSION_KEY], kb.WorkflowDefinition).
+		WithResource(kb.WorkflowID+b.cm.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
 	if err != nil {
@@ -129,7 +129,7 @@ func (b *Builder) ScheduleBuild(kb KogitoBuilder) (*api.Build, error) {
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
 		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
-		WithResource(kb.WorkflowID+b.cm.Data[constants.WORKFLOW_DEFAULT_EXTENSION_KEY], kb.WorkflowDefinition).
+		WithResource(kb.WorkflowID+b.cm.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
 	if err != nil {

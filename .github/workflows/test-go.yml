@@ -1,6 +1,9 @@
 name: go
 on:
-  pull_request: {}
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - main
 
 jobs:
   unit:
@@ -11,7 +14,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.18
+          go-version: 1.19
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0

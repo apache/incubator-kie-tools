@@ -24,7 +24,9 @@ import (
 	"github.com/ricardozanini/kogito-builder/api"
 	clientr "github.com/ricardozanini/kogito-builder/client"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -36,8 +38,9 @@ import (
 // KogitoServerlessBuildReconciler reconciles a KogitoServerlessBuild object
 type KogitoServerlessBuildReconciler struct {
 	client.Client
-	Scheme   *runtime.Scheme
-	Recorder record.EventRecorder
+	Scheme           *runtime.Scheme
+	Recorder         record.EventRecorder
+	defaultBuildConf corev1.ConfigMap
 }
 
 //+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds,verbs=get;list;watch;create;update;patch;delete
@@ -57,12 +60,17 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 	err := r.Client.Get(ctx, req.NamespacedName, instance)
 	if err == nil {
 		phase := instance.Status.BuildPhase
-		configMap, _ := utils.GetConfigMap(r.Client, constants.BUILDER_NAMESPACE_DEFAULT)
-		if len(configMap.Data[constants.BUILDER_RESOURCE_NAME_DEFAULT]) == 0 {
-			return ctrl.Result{}, nil
+		if r.defaultBuildConf.Data == nil {
+			r.defaultBuildConf, err = utils.GetConfigMap(r.Client)
 		}
 
-		builder := builder.NewBuilder(ctx, configMap)
+		if err != nil || len(r.defaultBuildConf.Data[r.defaultBuildConf.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]) == 0 {
+			return ctrl.Result{}, errors.NewNotFound(schema.GroupResource{
+				Resource: "ConfigMap",
+			}, "builder-config")
+		}
+
+		builder := builder.NewBuilder(ctx, r.defaultBuildConf)
 
 		if phase == api.BuildPhaseNone {
 			workflow, err := r.retrieveWorkflowFromCR(instance.Spec.WorkflowId, ctx, req)

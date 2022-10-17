@@ -18,12 +18,11 @@ package utils
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	"github.com/davidesalerno/kogito-serverless-operator/constants"
 	"github.com/davidesalerno/kogito-serverless-operator/converters"
-	"github.com/go-logr/logr"
 	"github.com/ricardozanini/kogito-builder/util/log"
-	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -48,7 +47,13 @@ func GetWorkflowFromCR(workflowCR *apiv08.KogitoServerlessWorkflow, ctx context.
 	return jsonWorkflow, nil
 }
 
-func GetConfigMap(client client.Client, namespace string) (corev1.ConfigMap, error) {
+func GetConfigMap(client client.Client) (corev1.ConfigMap, error) {
+
+	namespace, found := os.LookupEnv("POD_NAMESPACE")
+
+	if !found {
+		return corev1.ConfigMap{}, errors.New("ConfigMap not found")
+	}
 
 	existingConfigMap := corev1.ConfigMap{
 		TypeMeta: metav1.TypeMeta{
@@ -68,51 +73,5 @@ func GetConfigMap(client client.Client, namespace string) (corev1.ConfigMap, err
 		return corev1.ConfigMap{}, err
 	} else {
 		return existingConfigMap, nil
-	}
-}
-
-func CreateConfigMap(client client.Client, namespace string, cmData map[string]string, log logr.Logger) (cm corev1.ConfigMap, error error) {
-	myDep := &appsv1.Deployment{}
-	error = client.Get(context.TODO(), types.NamespacedName{Namespace: namespace, Name: constants.BUILDER_CM_NAME}, myDep)
-
-	cm = corev1.ConfigMap{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "ConfigMap",
-			APIVersion: "v1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      constants.BUILDER_CM_NAME,
-			Namespace: namespace,
-		},
-		Data: cmData,
-	}
-	cm.SetGroupVersionKind(corev1.SchemeGroupVersion.WithKind("ConfigMap"))
-	cm.SetOwnerReferences(myDep.GetOwnerReferences())
-	error = client.Create(context.TODO(), &cm)
-	if error != nil {
-		log.Error(error, "configmap create error")
-		return cm, error
-	} else {
-		return cm, nil
-	}
-}
-
-func InitConfigMap(client client.Client, namespace string, log logr.Logger) (cm corev1.ConfigMap, error error) {
-	configMap, err := GetConfigMap(client, namespace)
-	if err != nil {
-		wd, _ := os.Getwd()
-		dockerFile, _ := os.ReadFile(wd + "/builder/Dockerfile")
-		cmData := constants.GetKogitoBuilderConfigMap()
-		cmData[constants.BUILDER_RESOURCE_NAME_DEFAULT] = string(dockerFile)
-
-		_, errx := CreateConfigMap(client, constants.BUILDER_NAMESPACE_DEFAULT, cmData, log)
-		if errx != nil {
-			log.Error(err, "configmap error ")
-		} else {
-			log.Info(constants.BUILDER_CM_NAME+" created", "")
-		}
-		return GetConfigMap(client, namespace)
-	} else {
-		return configMap, err
 	}
 }

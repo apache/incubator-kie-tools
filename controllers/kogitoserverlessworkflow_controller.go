@@ -20,8 +20,6 @@ import (
 	"context"
 	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	"github.com/davidesalerno/kogito-serverless-operator/builder"
-	"github.com/davidesalerno/kogito-serverless-operator/constants"
-	"github.com/davidesalerno/kogito-serverless-operator/utils"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
@@ -52,7 +50,6 @@ type KogitoServerlessWorkflowReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.2/pkg/reconcile
 func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := ctrllog.FromContext(ctx)
-	utils.InitConfigMap(r.Client, constants.BUILDER_NAMESPACE_DEFAULT, log)
 	instance := &apiv08.KogitoServerlessWorkflow{}
 	err := r.Client.Get(ctx, req.NamespacedName, instance)
 	if err != nil {

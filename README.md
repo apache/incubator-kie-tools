@@ -103,13 +103,14 @@ kubectl apply -f config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.
 
 8. Default configuration
 
-A configmap called kogito-builder-config will be created under the kogito-builder namespace at the first application of a workflow, it contains:
+A configmap called kogito-serverless-operator-builder-config will be created under the kogito-serverless-operator-system 
+namespace when the Operator will be installer and it contains:
   
-- BUILDER_RESOURCE_DEFAULT = Dockerfile
-- WORKFLOW_DEFAULT_EXTENSION = .sw.json
+- DEFAULT_BUILDER_RESOURCE = kogito_builder_dockerfile.yaml
+- DEFAULT_WORKFLOW_DEXTENSION = .sw.json
 - DEFAULT_KANIKO_SECRET_DEFAULT = regcred
-- DEFAULT_REGISTRY_REPO =  quay.io/kiegroup
-- Dockerfile = dockerfile content
+- DEFAULT_REGISTRY_REPO = quay.io/kiegroup
+- kogito_builder_dockerfile.yaml = dockerfile content
 
 For the local development the DEFAULT_REGISTRY_REPO must be changed
 
