@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export const LATEST_VERSION_COMPATIBLE_WITH_LFS = "0.24.0";
+export const LATEST_VERSION_COMPATIBLE_WITH_LFS = "0.25.0";
