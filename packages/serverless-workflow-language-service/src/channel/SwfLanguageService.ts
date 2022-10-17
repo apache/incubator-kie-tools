@@ -120,11 +120,12 @@ export class SwfLanguageService {
 
     const matchedCompletions = Array.from(completions.entries()).filter(([path, _]) =>
       args.codeCompletionStrategy.shouldComplete({
-        root: args.rootNode,
-        node: currentNode,
-        path: path,
         content: args.content,
         cursorOffset: cursorOffset,
+        cursorPosition: args.cursorPosition,
+        node: currentNode,
+        path: path,
+        root: args.rootNode,
       })
     );
 
@@ -300,3 +301,14 @@ export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNod
 export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {
   return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLsNode;
 }
+
+/**
+ * Test if position `a` equals position `b`.
+ * This function is compatible with https://microsoft.github.io/monaco-editor/api/classes/monaco.Position.html#equals-1
+ *
+ * @param a -
+ * @param b -
+ * @returns true if the positions are equal, false otherwise
+ */
+export const positions_equals = (a: Position | null, b: Position | null): boolean =>
+  a?.line === b?.line && a?.character == b?.character;

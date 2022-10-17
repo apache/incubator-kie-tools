@@ -36,11 +36,12 @@ export type SwfLsNode = {
 };
 
 export interface ShouldCompleteArgs {
-  root: SwfLsNode | undefined;
-  node: SwfLsNode | undefined;
-  path: SwfJsonPath;
   content: string;
   cursorOffset: number;
+  cursorPosition: Position;
+  node: SwfLsNode | undefined;
+  path: SwfJsonPath;
+  root: SwfLsNode | undefined;
 }
 
 export interface ShouldCreateCodelensArgs {

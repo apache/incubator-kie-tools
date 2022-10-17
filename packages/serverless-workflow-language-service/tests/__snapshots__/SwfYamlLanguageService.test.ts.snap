@@ -1617,6 +1617,10 @@ Array [
 ]
 `;
 
+exports[`SWF LS YAML code completion state completion add in the middle / without dash character 1`] = `0`;
+
+exports[`SWF LS YAML code completion state completion add in the middle / without dash character 2`] = `Array []`;
+
 exports[`SWF LS YAML code completion state completion add in the middle 1`] = `4`;
 
 exports[`SWF LS YAML code completion state completion add in the middle 2`] = `

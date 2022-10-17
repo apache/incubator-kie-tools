@@ -1416,6 +1416,7 @@ states:
         ["add at the end", `states:\n- name: itemName\n- 🎯`],
         ["add at the beginning", `states:\n- 🎯\n- name: itemName`],
         ["add in the middle", `states:\n- name: itemName1\n- 🎯\n- name: itemName2`],
+        ["add in the middle / without dash character", `states:\n- name: itemName1\n🎯\n- name: itemName2`],
         ["add at the beginning, using the code lenses", `states:\n🎯- name: itemName`],
         ["add at the beginning / with extra indentation / using the code lenses", `states:\n  🎯- name: itemName`],
         [

@@ -31,7 +31,7 @@ import { getNodeFormat } from "./getNodeFormat";
 import { FileLanguage } from "../api";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
-import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { findNodeAtOffset, positions_equals, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import {
   ShouldCreateCodelensArgs,
   CodeCompletionStrategy,
@@ -202,7 +202,7 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
 
     return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
       args.completionItemKind
-    ) && args.overwriteRange?.start.character === args.currentNodeRange?.start.character
+    ) && positions_equals(args.overwriteRange?.start ?? null, args.currentNodeRange?.start ?? null)
       ? `- ${completionText}\n`
       : completionText;
   }
@@ -226,13 +226,18 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
+    //this manage the test case: "state completion › add in the middle / without dash character"
+    const isCursorInWrongArrayPosition =
+      args.node?.type === "array" && args.cursorPosition.character <= 1 && args.cursorOffset !== args.node.offset;
+
     if (
       !args.root ||
       !args.node ||
       (["object", "array"].includes(args.node.type) && getNodeFormat(args.content, args.node) === FileLanguage.JSON) ||
       (["string", "number", "boolean"].includes(args.node.type) &&
         args.node.parent &&
-        getNodeFormat(args.content, args.node.parent) === FileLanguage.JSON)
+        getNodeFormat(args.content, args.node.parent) === FileLanguage.JSON) ||
+      isCursorInWrongArrayPosition
     ) {
       return false;
     }
