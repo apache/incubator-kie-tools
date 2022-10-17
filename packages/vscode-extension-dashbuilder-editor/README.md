@@ -1,4 +1,4 @@
-## Kogito Serverless Workflow Editor
+## Kogito Dashbuilder Editor
 
 ![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.66.0+-blue.svg)
 ![github-ci](https://github.com/kiegroup/kie-tools/actions/workflows/monorepo_pr_ci_full.yml/badge.svg)
