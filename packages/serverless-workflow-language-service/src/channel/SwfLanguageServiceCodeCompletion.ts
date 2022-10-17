@@ -299,20 +299,13 @@ export const SwfLanguageServiceCodeCompletion = {
 
         const label = args.codeCompletionStrategy.formatLabel(swfServiceCatalogFunc.operation, kind);
 
-        return {
+        return createCompletionItem({
+          ...args,
+          completion: `${swfServiceCatalogFunc.operation}`,
           kind,
           label,
           detail: label,
-          filterText: label,
-          textEdit: {
-            newText: args.codeCompletionStrategy.translate({
-              completion: `${swfServiceCatalogFunc.operation}`,
-              completionItemKind: kind,
-            }),
-            range: args.overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        };
+        });
       });
     return Promise.resolve(result);
   },

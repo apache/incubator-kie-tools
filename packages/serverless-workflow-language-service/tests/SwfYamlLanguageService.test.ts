@@ -1075,27 +1075,8 @@ functions:
       ])("%s", async (_description, content: ContentWithCursor) => {
         let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          textEdit: {
-            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        });
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test.each([
@@ -1114,27 +1095,8 @@ functions:
       ])("%s", async (_description, content: ContentWithCursor) => {
         let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          textEdit: {
-            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
 

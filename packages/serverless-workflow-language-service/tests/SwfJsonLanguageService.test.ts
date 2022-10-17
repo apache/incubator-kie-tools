@@ -737,27 +737,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          textEdit: {
-            newText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("not in quotes / with same level content after", async () => {
@@ -775,27 +756,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          textEdit: {
-            newText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("inside double quotes / without same level content after", async () => {
@@ -812,27 +774,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          textEdit: {
-            newText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("inside double quotes / with same level content after", async () => {
@@ -850,27 +793,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          textEdit: {
-            newText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
 

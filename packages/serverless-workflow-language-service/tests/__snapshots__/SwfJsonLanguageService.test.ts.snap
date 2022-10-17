@@ -246,6 +246,118 @@ Array [
 ]
 `;
 
+exports[`SWF LS JSON code completion operation completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 21,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion operation completion inside double quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion inside double quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 21,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 19,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 19,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS JSON code completion state completion add at the beginning of the array 1`] = `4`;
 
 exports[`SWF LS JSON code completion state completion add at the beginning of the array 2`] = `
