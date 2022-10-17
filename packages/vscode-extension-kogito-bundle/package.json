@@ -47,7 +47,7 @@
     "redhat.vscode-extension-bpmn-editor",
     "redhat.vscode-extension-dmn-editor",
     "redhat.vscode-extension-serverless-workflow-editor",
-    "redhat.vscode-extension-dashbuilder"
+    "redhat.vscode-extension-dashbuilder-editor"
   ],
   "icon": "icon.png",
   "capabilities": {
