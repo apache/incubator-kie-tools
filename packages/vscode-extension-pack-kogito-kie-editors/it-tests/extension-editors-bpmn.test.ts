@@ -31,6 +31,7 @@ import {
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
 import Correlation from "./helpers/bpmn/Correlation";
 import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutionHelper";
+import { doesNotMatch } from "assert";
 
 /**
  * BPMN editor vscode integration test suite, add any acceptance tests,
@@ -40,7 +41,7 @@ import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutio
  * file for the integration e.g. "extensions-editors-bpmn-dmn.test.ts"
  */
 // KOGITO-8072 - Flaky test - extension-editors-bpmn.test.ts
-describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
+describe("KIE Editors Integration Test Suite - BPMN Editor", function () {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
   const USER_TASK_BPMN: string = "UserTask.bpmn";
@@ -49,6 +50,8 @@ describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
   let testHelper: VSCodeTestHelper;
   let webview: WebView;
   let folderView: SideBarView;
+
+  this.timeout(3000);
 
   before(async function () {
     this.timeout(60000);
@@ -243,7 +246,7 @@ describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
   });
 
   it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
     webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -273,6 +276,8 @@ describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
 
     // Asserts
+    onExitActionSection = await propertiesPanel.getProperty("On Exit Action", "div");
+    await bpmnEditorTester.scrollElementIntoView(onExitActionSection);
     await propertiesPanel.assertWidgetedPropertyValue("On Entry Action", newOnEntryAction, "textarea");
     await propertiesPanel.assertWidgetedPropertyValue("On Entry Action", newOnEntryLanguage, "select");
     await propertiesPanel.assertWidgetedPropertyValue("On Exit Action", newOnExitAction, "textarea");
