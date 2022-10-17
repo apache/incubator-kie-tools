@@ -971,38 +971,8 @@ functions:
       ])("%s", async (_description, content: ContentWithCursor) => {
         let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test.each([
@@ -1018,38 +988,8 @@ functions:
       ])("%s", async (_description, content: ContentWithCursor) => {
         const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `- name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest\n`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
 
@@ -1483,14 +1423,14 @@ states:
       test.each([
         ["empty completion items", "states:\n-🎯"],
         ["empty completion items / with extra space", "states:\n- 🎯"],
-        ["add at the end", `functions:\n- name: itemName\n- 🎯`],
-        ["add at the beginning", `functions:\n- 🎯\n- name: itemName`],
-        ["add in the middle", `functions:\n- name: itemName1\n- 🎯\n- name: itemName2`],
-        ["add at the beginning, using the code lenses", `functions:\n🎯- name: itemName`],
-        ["add at the beginning / with extra indentation / using the code lenses", `functions:\n  🎯- name: itemName`],
+        ["add at the end", `states:\n- name: itemName\n- 🎯`],
+        ["add at the beginning", `states:\n- 🎯\n- name: itemName`],
+        ["add in the middle", `states:\n- name: itemName1\n- 🎯\n- name: itemName2`],
+        ["add at the beginning, using the code lenses", `states:\n🎯- name: itemName`],
+        ["add at the beginning / with extra indentation / using the code lenses", `states:\n  🎯- name: itemName`],
         [
           "add at the beginning / with double extra indentation / using the code lenses",
-          `functions:\n    🎯- name: itemName`,
+          `states:\n    🎯- name: itemName`,
         ],
       ])("%s", async (_description, content: ContentWithCursor) => {
         const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);

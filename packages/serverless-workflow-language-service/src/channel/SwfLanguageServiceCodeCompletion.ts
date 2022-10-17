@@ -72,13 +72,15 @@ function toCompletionItemLabelPrefix(
 }
 
 function createCompletionItem(args: {
-  overwriteRange: Range;
-  currentNodeRange: Range;
   codeCompletionStrategy: CodeCompletionStrategy;
   completion: object | string;
+  currentNode: SwfLsNode;
+  currentNodeRange: Range;
+  detail: string;
+  extraOptions?: object;
   kind: CompletionItemKind;
   label: string;
-  detail: string;
+  overwriteRange: Range;
 }): CompletionItem {
   return {
     kind: args.kind,
@@ -87,15 +89,17 @@ function createCompletionItem(args: {
     filterText: args.label,
     detail: args.detail,
     textEdit: {
-      newText: args.codeCompletionStrategy.translate({
-        completion: args.completion,
-        completionItemKind: args.kind,
-        overwriteRange: args.overwriteRange,
-        currentNodeRange: args.currentNodeRange,
-      }),
+      newText:
+        args.codeCompletionStrategy.translate({
+          completion: args.completion,
+          completionItemKind: args.kind,
+          overwriteRange: args.overwriteRange,
+          currentNodeRange: args.currentNodeRange,
+        }) + (args.currentNode.type === "object" ? "," : ""),
       range: args.overwriteRange,
     },
     insertTextFormat: InsertTextFormat.Snippet,
+    ...args.extraOptions,
   };
 }
 
@@ -245,31 +249,24 @@ export const SwfLanguageServiceCodeCompletion = {
             kind
           );
 
-          return {
+          return createCompletionItem({
+            ...args,
+            completion: swfFunction,
             kind,
             label,
             detail:
               swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
                 ? swfServiceCatalogService.source.url
                 : swfServiceCatalogFunc.operation,
-            textEdit: {
-              newText:
-                args.codeCompletionStrategy.translate({
-                  completion: swfFunction,
-                  completionItemKind: kind,
-                  overwriteRange: args.overwriteRange,
-                  currentNodeRange: args.currentNodeRange,
-                }) + (args.currentNode.type === "object" ? "," : ""),
-              range: args.overwriteRange,
+            extraOptions: {
+              command: {
+                command: command.name,
+                title: "Import function from completion item",
+                arguments: [command.args],
+              },
+              snippet: true,
             },
-            snippet: true,
-            insertTextFormat: InsertTextFormat.Snippet,
-            command: {
-              command: command.name,
-              title: "Import function from completion item",
-              arguments: [command.args],
-            },
-          };
+          });
         })
     );
     return Promise.resolve(result);

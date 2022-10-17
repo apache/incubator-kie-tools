@@ -1,5 +1,463 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SWF LS YAML code completion function completion add at the beginning / with double extra indentation / using the code lenses 1`] = `1`;
+
+exports[`SWF LS YAML code completion function completion add at the beginning / with double extra indentation / using the code lenses 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.yaml",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "snippet": true,
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "- name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest
+",
+      "range": Object {
+        "end": Object {
+          "character": 4,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 4,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion function completion add at the beginning / with extra indentation / using the code lenses 1`] = `1`;
+
+exports[`SWF LS YAML code completion function completion add at the beginning / with extra indentation / using the code lenses 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.yaml",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "snippet": true,
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "- name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest
+",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion function completion add at the beginning 1`] = `1`;
+
+exports[`SWF LS YAML code completion function completion add at the beginning 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.yaml",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "snippet": true,
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion function completion add at the beginning, using the code lenses 1`] = `1`;
+
+exports[`SWF LS YAML code completion function completion add at the beginning, using the code lenses 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.yaml",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "snippet": true,
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "- name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest
+",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion function completion add at the end 1`] = `1`;
+
+exports[`SWF LS YAML code completion function completion add at the end 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.yaml",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "snippet": true,
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion function completion add in a new line 1`] = `1`;
+
+exports[`SWF LS YAML code completion function completion add in a new line 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.yaml",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "snippet": true,
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion function completion add in the middle 1`] = `1`;
+
+exports[`SWF LS YAML code completion function completion add in the middle 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.yaml",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "snippet": true,
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS YAML code completion functionRef arguments completion with same level content after 1`] = `1`;
 
 exports[`SWF LS YAML code completion functionRef arguments completion with same level content after 2`] = `
@@ -436,54 +894,107 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion state completion add at the beginning / with double extra indentation / using the code lenses 1`] = `1`;
+exports[`SWF LS YAML code completion state completion add at the beginning / with double extra indentation / using the code lenses 1`] = `4`;
 
 exports[`SWF LS YAML code completion state completion add at the beginning / with double extra indentation / using the code lenses 2`] = `
 Array [
   Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "containingService": Object {
-            "functions": Array [
-              Object {
-                "arguments": Object {
-                  "argBoolean": "boolean",
-                  "argNumber": "number",
-                  "argString": "string",
-                },
-                "name": "testRelativeFunction1",
-                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-                "source": Object {
-                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
-                },
-                "type": "rest",
-              },
-            ],
-            "name": "testRelativeService1",
-            "rawContent": "",
-            "source": Object {
-              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
-            },
-            "type": "rest",
-          },
-          "documentUri": "test.sw.yaml",
-        },
-      ],
-      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
-      "title": "Import function from completion item",
-    },
-    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
     "insertTextFormat": 2,
-    "kind": 18,
-    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
     "textEdit": Object {
-      "newText": "- name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest
+      "newText": "- name: '\${1:Unique State name}'
+  type: operation
+  actions:
+    - name: '\${5:Unique Action name}'
+      functionRef: {}
+  transition: '\${10:Next transition of the workflow}'
+  end: false
+",
+      "range": Object {
+        "end": Object {
+          "character": 4,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 4,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: event
+  onEvents:
+    - eventRefs:
+        - '\${5:Unique event names}'
+  transition: '\${10:Next transition of the workflow}'
+  end: false
+",
+      "range": Object {
+        "end": Object {
+          "character": 4,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 4,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: switch
+  dataConditions:
+    - condition: '\${5:Workflow expression evaluated against state data}'
+      transition: '\${6:Transition to another state if condition is true}'
+  defaultCondition:
+    transition: '\${7:Default transition of the workflow}'
+",
+      "range": Object {
+        "end": Object {
+          "character": 4,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 4,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: inject
+  data: []
+  transition: '\${10:Next transition of the workflow}'
+  end: false
 ",
       "range": Object {
         "end": Object {
@@ -500,54 +1011,107 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion state completion add at the beginning / with extra indentation / using the code lenses 1`] = `1`;
+exports[`SWF LS YAML code completion state completion add at the beginning / with extra indentation / using the code lenses 1`] = `4`;
 
 exports[`SWF LS YAML code completion state completion add at the beginning / with extra indentation / using the code lenses 2`] = `
 Array [
   Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "containingService": Object {
-            "functions": Array [
-              Object {
-                "arguments": Object {
-                  "argBoolean": "boolean",
-                  "argNumber": "number",
-                  "argString": "string",
-                },
-                "name": "testRelativeFunction1",
-                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-                "source": Object {
-                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
-                },
-                "type": "rest",
-              },
-            ],
-            "name": "testRelativeService1",
-            "rawContent": "",
-            "source": Object {
-              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
-            },
-            "type": "rest",
-          },
-          "documentUri": "test.sw.yaml",
-        },
-      ],
-      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
-      "title": "Import function from completion item",
-    },
-    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
     "insertTextFormat": 2,
-    "kind": 18,
-    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
     "textEdit": Object {
-      "newText": "- name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest
+      "newText": "- name: '\${1:Unique State name}'
+  type: operation
+  actions:
+    - name: '\${5:Unique Action name}'
+      functionRef: {}
+  transition: '\${10:Next transition of the workflow}'
+  end: false
+",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: event
+  onEvents:
+    - eventRefs:
+        - '\${5:Unique event names}'
+  transition: '\${10:Next transition of the workflow}'
+  end: false
+",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: switch
+  dataConditions:
+    - condition: '\${5:Workflow expression evaluated against state data}'
+      transition: '\${6:Transition to another state if condition is true}'
+  defaultCondition:
+    transition: '\${7:Default transition of the workflow}'
+",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: inject
+  data: []
+  transition: '\${10:Next transition of the workflow}'
+  end: false
 ",
       "range": Object {
         "end": Object {
@@ -564,54 +1128,104 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion state completion add at the beginning 1`] = `1`;
+exports[`SWF LS YAML code completion state completion add at the beginning 1`] = `4`;
 
 exports[`SWF LS YAML code completion state completion add at the beginning 2`] = `
 Array [
   Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "containingService": Object {
-            "functions": Array [
-              Object {
-                "arguments": Object {
-                  "argBoolean": "boolean",
-                  "argNumber": "number",
-                  "argString": "string",
-                },
-                "name": "testRelativeFunction1",
-                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-                "source": Object {
-                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
-                },
-                "type": "rest",
-              },
-            ],
-            "name": "testRelativeService1",
-            "rawContent": "",
-            "source": Object {
-              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
-            },
-            "type": "rest",
-          },
-          "documentUri": "test.sw.yaml",
-        },
-      ],
-      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
-      "title": "Import function from completion item",
-    },
-    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
     "insertTextFormat": 2,
-    "kind": 18,
-    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
     "textEdit": Object {
-      "newText": "name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest",
+      "newText": "name: '\${1:Unique State name}'
+  type: operation
+  actions:
+    - name: '\${5:Unique Action name}'
+      functionRef: {}
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: event
+  onEvents:
+    - eventRefs:
+        - '\${5:Unique event names}'
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: switch
+  dataConditions:
+    - condition: '\${5:Workflow expression evaluated against state data}'
+      transition: '\${6:Transition to another state if condition is true}'
+  defaultCondition:
+    transition: '\${7:Default transition of the workflow}'",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: inject
+  data: []
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
       "range": Object {
         "end": Object {
           "character": 2,
@@ -627,54 +1241,107 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion state completion add at the beginning, using the code lenses 1`] = `1`;
+exports[`SWF LS YAML code completion state completion add at the beginning, using the code lenses 1`] = `4`;
 
 exports[`SWF LS YAML code completion state completion add at the beginning, using the code lenses 2`] = `
 Array [
   Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "containingService": Object {
-            "functions": Array [
-              Object {
-                "arguments": Object {
-                  "argBoolean": "boolean",
-                  "argNumber": "number",
-                  "argString": "string",
-                },
-                "name": "testRelativeFunction1",
-                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-                "source": Object {
-                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
-                },
-                "type": "rest",
-              },
-            ],
-            "name": "testRelativeService1",
-            "rawContent": "",
-            "source": Object {
-              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
-            },
-            "type": "rest",
-          },
-          "documentUri": "test.sw.yaml",
-        },
-      ],
-      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
-      "title": "Import function from completion item",
-    },
-    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
     "insertTextFormat": 2,
-    "kind": 18,
-    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
     "textEdit": Object {
-      "newText": "- name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest
+      "newText": "- name: '\${1:Unique State name}'
+  type: operation
+  actions:
+    - name: '\${5:Unique Action name}'
+      functionRef: {}
+  transition: '\${10:Next transition of the workflow}'
+  end: false
+",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: event
+  onEvents:
+    - eventRefs:
+        - '\${5:Unique event names}'
+  transition: '\${10:Next transition of the workflow}'
+  end: false
+",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: switch
+  dataConditions:
+    - condition: '\${5:Workflow expression evaluated against state data}'
+      transition: '\${6:Transition to another state if condition is true}'
+  defaultCondition:
+    transition: '\${7:Default transition of the workflow}'
+",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique State name}'
+  type: inject
+  data: []
+  transition: '\${10:Next transition of the workflow}'
+  end: false
 ",
       "range": Object {
         "end": Object {
@@ -691,54 +1358,104 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion state completion add at the end 1`] = `1`;
+exports[`SWF LS YAML code completion state completion add at the end 1`] = `4`;
 
 exports[`SWF LS YAML code completion state completion add at the end 2`] = `
 Array [
   Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "containingService": Object {
-            "functions": Array [
-              Object {
-                "arguments": Object {
-                  "argBoolean": "boolean",
-                  "argNumber": "number",
-                  "argString": "string",
-                },
-                "name": "testRelativeFunction1",
-                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-                "source": Object {
-                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
-                },
-                "type": "rest",
-              },
-            ],
-            "name": "testRelativeService1",
-            "rawContent": "",
-            "source": Object {
-              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
-            },
-            "type": "rest",
-          },
-          "documentUri": "test.sw.yaml",
-        },
-      ],
-      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
-      "title": "Import function from completion item",
-    },
-    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
     "insertTextFormat": 2,
-    "kind": 18,
-    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
     "textEdit": Object {
-      "newText": "name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest",
+      "newText": "name: '\${1:Unique State name}'
+  type: operation
+  actions:
+    - name: '\${5:Unique Action name}'
+      functionRef: {}
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: event
+  onEvents:
+    - eventRefs:
+        - '\${5:Unique event names}'
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: switch
+  dataConditions:
+    - condition: '\${5:Workflow expression evaluated against state data}'
+      transition: '\${6:Transition to another state if condition is true}'
+  defaultCondition:
+    transition: '\${7:Default transition of the workflow}'",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: inject
+  data: []
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
       "range": Object {
         "end": Object {
           "character": 2,
@@ -754,54 +1471,104 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion state completion add in the middle 1`] = `1`;
+exports[`SWF LS YAML code completion state completion add in the middle 1`] = `4`;
 
 exports[`SWF LS YAML code completion state completion add in the middle 2`] = `
 Array [
   Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "containingService": Object {
-            "functions": Array [
-              Object {
-                "arguments": Object {
-                  "argBoolean": "boolean",
-                  "argNumber": "number",
-                  "argString": "string",
-                },
-                "name": "testRelativeFunction1",
-                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-                "source": Object {
-                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
-                },
-                "type": "rest",
-              },
-            ],
-            "name": "testRelativeService1",
-            "rawContent": "",
-            "source": Object {
-              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
-            },
-            "type": "rest",
-          },
-          "documentUri": "test.sw.yaml",
-        },
-      ],
-      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
-      "title": "Import function from completion item",
-    },
-    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
     "insertTextFormat": 2,
-    "kind": 18,
-    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
-    "snippet": true,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
     "textEdit": Object {
-      "newText": "name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest",
+      "newText": "name: '\${1:Unique State name}'
+  type: operation
+  actions:
+    - name: '\${5:Unique Action name}'
+      functionRef: {}
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: event
+  onEvents:
+    - eventRefs:
+        - '\${5:Unique event names}'
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: switch
+  dataConditions:
+    - condition: '\${5:Workflow expression evaluated against state data}'
+      transition: '\${6:Transition to another state if condition is true}'
+  defaultCondition:
+    transition: '\${7:Default transition of the workflow}'",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique State name}'
+  type: inject
+  data: []
+  transition: '\${10:Next transition of the workflow}'
+  end: false",
       "range": Object {
         "end": Object {
           "character": 2,

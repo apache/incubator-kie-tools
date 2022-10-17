@@ -502,40 +502,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `{
-  "name": "\${1:testRelativeFunction1}",
-  "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-  "type": "rest"
-}`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri: documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("add at the end", async () => {
@@ -548,40 +516,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `{
-  "name": "\${1:testRelativeFunction1}",
-  "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-  "type": "rest"
-}`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri: documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("add at the beginning", async () => {
@@ -593,40 +529,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `{
-  "name": "\${1:testRelativeFunction1}",
-  "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-  "type": "rest"
-},`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri: documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("add in the middle", async () => {
@@ -638,40 +542,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `{
-  "name": "\${1:testRelativeFunction1}",
-  "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-  "type": "rest"
-},`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri: documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("add in a new line", async () => {
@@ -685,40 +557,8 @@ describe("SWF LS JSON", () => {
 }`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `{
-  "name": "\${1:testRelativeFunction1}",
-  "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-  "type": "rest"
-}`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri: documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
 
