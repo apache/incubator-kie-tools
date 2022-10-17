@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand;
+import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
@@ -144,14 +145,17 @@ public class AutoLayout {
                 switch (position) {
                     case ABOVE:
                         updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 3);
+                        updateSourceMagnet(layoutCommands, outgoingEdge, edgeIUd, 1);
                         break;
 
                     case LEFT:
                         updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 2);
+                        updateSourceMagnet(layoutCommands, outgoingEdge, edgeIUd, 4);
                         break;
 
                     case RIGHT:
                         updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 4);
+                        updateSourceMagnet(layoutCommands, outgoingEdge, edgeIUd, 2);
                         break;
 
                     case BELOW:
@@ -172,6 +176,27 @@ public class AutoLayout {
             public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
                 final Node<? extends View<?>, Edge> targetNode = getTargetNode(context);
                 if (null != targetNode) {
+                    asMagnetConnection().setIndex(magnetIndex);
+                }
+                return super.execute(context);
+            }
+
+            private MagnetConnection asMagnetConnection() {
+                return (MagnetConnection) getConnection();
+            }
+        });
+    }
+
+    private static void updateSourceMagnet(final CompositeCommand.Builder layoutCommands,
+                                           final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
+                                           final String edgeIUd,
+                                           final int magnetIndex) {
+        layoutCommands.addCommand(new SetConnectionSourceNodeCommand(outgoingEdge.getSource(),
+                                                                     edgeIUd,
+                                                                     MagnetConnection.Builder.at(0, 0)) {
+            public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
+                final Node<? extends View<?>, Edge> sourceNode = getSourceNode(context);
+                if (null != sourceNode) {
                     asMagnetConnection().setIndex(magnetIndex);
                 }
                 return super.execute(context);
