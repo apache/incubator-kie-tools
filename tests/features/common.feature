@@ -17,6 +17,7 @@
 @quay.io/kiegroup/kogito-jobs-service-postgresql
 @quay.io/kiegroup/kogito-management-console
 @quay.io/kiegroup/kogito-task-console
+@quay.io/kiegroup/kogito-swf-builder
 @rhpam-7/rhpam-kogito-runtime-jvm-rhel8
 @rhpam-7/rhpam-kogito-builder-rhel8
 @rhpam-7/rhpam-kogito-runtime-native-rhel8

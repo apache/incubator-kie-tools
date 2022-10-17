@@ -1,0 +1,4 @@
+schema_version: 1
+name: org.kie.kogito.base.builder
+version: "2.0.0-snapshot"
+description: "Kogito base builder"

@@ -144,15 +144,27 @@ Those are described bellow.
 The Kogito Builder Images are responsible for building the project with Apache Maven and generating the binary that will 
 be used by the Kogito Runtime images to run the Kogito application.
 
-The current available Kogito Builder image is:
+There are three builder images available:
+
+
+* [quay.io/kiegroup/kogito-base-builder](https://quay.io/kiegroup/kogito-base-builder)  
+The Kogito base Builder Image is equipped with the following components:
+  * OpenJDK 11.0.6
+  * Maven 3.8.6
+
+* [quay.io/kiegroup/kogito-swf-builder](https://quay.io/kiegroup/kogito-swf-builder)  
+  The Kogito SWF Builder Image extends the kogito-base-builder is equipped with the following components for faster builds:
+    * Quarkus dependencies
+    * kogito-quarkus-serverless-workflow extension dependencies
+    * kogito-addons-quarkus-knative-eventing extension dependencies
 
 * [quay.io/kiegroup/kogito-s2i-builder](https://quay.io/kiegroup/kogito-s2i-builder)
 
-The builder image supports building applications based on Spring Boot and Quarkus. To define your runtime, specify the `RUNTIME_TYPE` environment variable. If var is not defined, it defaults to `quarkus`.
+Former name: `quay.io/kiegroup/kogito-builder`  
+The Kogito s2i builder image supports building applications based on Spring Boot and Quarkus. To define your runtime, specify the `RUNTIME_TYPE` environment variable. If var is not defined, it defaults to `quarkus`.
 When `RUNTIME_TYPE` quarkus is chosen, the Builder Image allows you to create a native image using GraalVM, which allows you to have lightweight and fast applications ready to run in the Cloud.
 
-
-The Kogito Builder Image is equipped with the following components:
+The Kogito s2i Builder Image is equipped with the following components:
 
  * GraalVM 21.3.1-java11
  * OpenJDK 11.0.6
@@ -161,7 +173,33 @@ The Kogito Builder Image is equipped with the following components:
 For more information about what is installed on this image, take a look [here](kogito-s2i-builder-overrides.yaml) in the
 **modules.install** section. 
 
-#### Kogito Builder Image usage
+#### Kogito swf Builder Image usage
+
+The main purpose is the use in the Kogito Serverless operator as a builder
+
+```bash
+FROM quay.io/kiegroup/kogito-swf-builder:latest AS builder
+
+# Copy from build context to resources directory
+COPY * ./resources/
+
+# Build app with given resources
+RUN "${KOGITO_HOME}"/launch/build-app.sh './resources'
+#=============================
+# Runtime Run
+#=============================
+...
+```
+but obvioulsy can be used to create other swf "flavours" images installing the org.kie.kogito.swf.builder and 
+adding in the configure script the addition of other extensions
+to reuse the scaffolding and the pom created byt the swf builder
+
+```bash
+"${MAVEN_HOME}"/bin/mvn -Dmaven.repo.local="${KOGITO_HOME}"/.m2/repository -U -B -s "${MAVEN_SETTINGS_PATH:-/home/kogito/.m2/settings.xml}" \
+quarkus:add-extension -Dextensions="${QUARKUS_EXTENSIONS:-my-other-kogito-quarkus-extension,my-custom-kogito-addons-quarkus-extension}"
+```
+
+#### Kogito s2i Builder Image usage
 
 This image contains a helper option to better understand how to use it:
 
@@ -174,9 +212,9 @@ By default, quarkus is selected as runtime, and a normal java build will be perf
 See the next topic for an example.
  
 
-#### Kogito Builder Image example
+#### Kogito s2i Builder Image example
 
-##### Builder Image Example with Quarkus
+##### S2i Builder Image Example with Quarkus
 In this example, let's use a simple application based on Quarkus that is available in the [Kogito Examples](https://github.com/kiegroup/kogito-examples)
 repository: the *rules-quarkus-helloworld* example, with native compilation disabled.
 
@@ -224,7 +262,7 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"strings":["hello"]}' ht
 
 
 
-##### Builder Image Example with Springboot
+##### S2i Builder Image Example with Springboot
 In this example, let's use a simple application based on Spring Boot that is available in the [Kogito Examples](https://github.com/kiegroup/kogito-examples)
 repository: the *process-springboot-example*.
 

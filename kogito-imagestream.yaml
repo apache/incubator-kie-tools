@@ -72,6 +72,48 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
+      name: kogito-swf-builder
+      annotations:
+        openshift.io/display-name: Kogito Serverless Workflow builder with basic Quarkus SWF extensions preinstalled
+        openshift.io/provider-display-name: KIE Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Kogito Serverless Workflow builder with minimum Quarkus extensions libraries preinstalled
+            iconClass: icon-jbpm
+            tags: kogito,quarkus,swf,maven
+            supports: quarkus
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-swf-builder:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-base-builder
+      annotations:
+        openshift.io/display-name: Kogito base builder
+        openshift.io/provider-display-name: KIE Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Kogito base builder
+            iconClass: icon-jbpm
+            tags: kogito,jdk,maven
+            supports: quarkus
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-base-builder:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
       name: kogito-data-index-infinispan
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Data Index Service for Infinispan persistence provider
