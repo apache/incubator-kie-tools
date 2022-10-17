@@ -61,6 +61,13 @@
   "displayName": "Dashbuilder Editor",
   "contributes": {
     "capabilities": {
+      "configurationDefaults": {
+        "files.associations": {
+          "*.sw.json": "json",
+          "*.sw.yaml": "yaml",
+          "*.sw.yml": "yaml"
+        }
+      },
       "untrustedWorkspaces": {
         "supported": false
       }
@@ -157,6 +164,9 @@
     "onLanguage:dash-json",
     "onLanguage:dash-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsDashbuilder"
+  ],
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
   ],
   "icon": "icon.png"
 }
