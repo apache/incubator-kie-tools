@@ -1,5 +1,158 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SWF LS YAML code completion empty file completion empty file with a newline after the cursor 1`] = `1`;
+
+exports[`SWF LS YAML code completion empty file completion empty file with a newline after the cursor 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple Serverless Workflow",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first Serverless Workflow",
+    "sortText": "100_Create your first Serverless Workflow",
+    "textEdit": Object {
+      "newText": "id: '\${1:Workflow unique identifier}'
+version: '\${2:0.1}'
+specVersion: '\${3:0.1}'
+name: '\${4:Workflow name}'
+description: '\${5:Workflow description}'
+start: '\${13}'
+functions:
+  - name: '\${7:uniqueFunctionName}'
+    operation: '\${8:localhost#operation}'
+    type: '\${9:rest}'
+events:
+  - name: '\${10:Unique event name}'
+    source: '\${11:CloudEvent source}'
+    type: '\${12:CloudEvent type}'
+states:
+  - name: '\${13:StartState}'
+    type: '\${14:operation}'
+    actions:
+      - name: '\${15:uniqueActionName}'
+        functionRef:
+          refName: '\${7}'
+          arguments:
+            firstArgument: ''
+            secondArgument: ''
+    end: true",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion empty file completion empty file with a newline before the cursor 1`] = `1`;
+
+exports[`SWF LS YAML code completion empty file completion empty file with a newline before the cursor 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple Serverless Workflow",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first Serverless Workflow",
+    "sortText": "100_Create your first Serverless Workflow",
+    "textEdit": Object {
+      "newText": "id: '\${1:Workflow unique identifier}'
+version: '\${2:0.1}'
+specVersion: '\${3:0.1}'
+name: '\${4:Workflow name}'
+description: '\${5:Workflow description}'
+start: '\${13}'
+functions:
+  - name: '\${7:uniqueFunctionName}'
+    operation: '\${8:localhost#operation}'
+    type: '\${9:rest}'
+events:
+  - name: '\${10:Unique event name}'
+    source: '\${11:CloudEvent source}'
+    type: '\${12:CloudEvent type}'
+states:
+  - name: '\${13:StartState}'
+    type: '\${14:operation}'
+    actions:
+      - name: '\${15:uniqueActionName}'
+        functionRef:
+          refName: '\${7}'
+          arguments:
+            firstArgument: ''
+            secondArgument: ''
+    end: true",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion empty file completion total empty file 1`] = `1`;
+
+exports[`SWF LS YAML code completion empty file completion total empty file 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple Serverless Workflow",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first Serverless Workflow",
+    "sortText": "100_Create your first Serverless Workflow",
+    "textEdit": Object {
+      "newText": "id: '\${1:Workflow unique identifier}'
+version: '\${2:0.1}'
+specVersion: '\${3:0.1}'
+name: '\${4:Workflow name}'
+description: '\${5:Workflow description}'
+start: '\${13}'
+functions:
+  - name: '\${7:uniqueFunctionName}'
+    operation: '\${8:localhost#operation}'
+    type: '\${9:rest}'
+events:
+  - name: '\${10:Unique event name}'
+    source: '\${11:CloudEvent source}'
+    type: '\${12:CloudEvent type}'
+states:
+  - name: '\${13:StartState}'
+    type: '\${14:operation}'
+    actions:
+      - name: '\${15:uniqueActionName}'
+        functionRef:
+          refName: '\${7}'
+          arguments:
+            firstArgument: ''
+            secondArgument: ''
+    end: true",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS YAML code completion function completion add at the beginning / with double extra indentation / using the code lenses 1`] = `1`;
 
 exports[`SWF LS YAML code completion function completion add at the beginning / with double extra indentation / using the code lenses 2`] = `

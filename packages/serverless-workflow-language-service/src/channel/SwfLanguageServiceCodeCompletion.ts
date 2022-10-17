@@ -36,14 +36,14 @@ export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogServi
 };
 
 export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
-  document: TextDocument;
-  overwriteRange: Range;
+  codeCompletionStrategy: CodeCompletionStrategy;
   currentNode: SwfLsNode;
   currentNodeRange: Range;
-  rootNode: SwfLsNode;
-  codeCompletionStrategy: CodeCompletionStrategy;
-  swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
+  document: TextDocument;
   langServiceConfig: SwfLanguageServiceConfig;
+  overwriteRange: Range;
+  rootNode: SwfLsNode;
+  swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
 };
 
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
@@ -77,7 +77,7 @@ function createCompletionItem(args: {
   currentNode: SwfLsNode;
   currentNodeRange: Range;
   detail: string;
-  extraOptions?: object;
+  extraOptions?: Partial<CompletionItem>;
   kind: CompletionItemKind;
   label: string;
   overwriteRange: Range;
