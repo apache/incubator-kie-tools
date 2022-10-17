@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { v4 as uuid } from "uuid";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import DefaultBackend from "@kie-tools/kie-sandbox-fs/dist/DefaultBackend";
 import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
@@ -21,6 +22,11 @@ import { join } from "path";
 import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { LfsStorageFile, LfsStorageService } from "./LfsStorageService";
+import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
+import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
+
+export type CreateDescriptorArgs = Partial<Pick<WorkspaceDescriptor, "workspaceId" | "origin">> &
+  Pick<WorkspaceDescriptor, "name">;
 
 export class LfsWorkspaceDescriptorService {
   private readonly descriptorFs: KieSandboxFs;
@@ -67,11 +73,11 @@ export class LfsWorkspaceDescriptorService {
     return JSON.parse(decoder.decode(await descriptorFile.getFileContents()));
   }
 
-  public async create(args: { workspaceDescriptor: WorkspaceDescriptor }): Promise<WorkspaceDescriptor> {
+  public async create(args: CreateDescriptorArgs): Promise<WorkspaceDescriptor> {
     const descriptor: WorkspaceDescriptor = {
-      workspaceId: args.workspaceDescriptor.workspaceId,
-      name: args.workspaceDescriptor.name,
-      origin: args.workspaceDescriptor.origin,
+      workspaceId: args.workspaceId ?? this.newWorkspaceId(),
+      name: args.name,
+      origin: args.origin ?? { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
     };
@@ -96,11 +102,15 @@ export class LfsWorkspaceDescriptorService {
   private toStorageFile(descriptor: WorkspaceDescriptor) {
     return new LfsStorageFile({
       path: this.getAbsolutePath(descriptor.workspaceId),
-      getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(descriptor))),
+      getFileContents: async () => encoder.encode(JSON.stringify(descriptor)),
     });
   }
 
   private getAbsolutePath(relativePath: string) {
     return join("/", relativePath ?? "");
+  }
+
+  private newWorkspaceId(): string {
+    return uuid();
   }
 }

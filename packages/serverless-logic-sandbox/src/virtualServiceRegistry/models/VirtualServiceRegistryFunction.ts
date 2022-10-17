@@ -21,25 +21,23 @@ import * as yaml from "yaml";
 import { decoder } from "../../workspace/encoderdecoder/EncoderDecoder";
 
 export class VirtualServiceRegistryFunction {
-  public name: string;
-  public isSpec: boolean;
+  constructor(private readonly file: WorkspaceFile) {}
 
-  constructor(private readonly file: WorkspaceFile) {
-    this.name = file.relativePath;
-    this.isSpec = isSpec(file.relativePath);
+  get relativePath() {
+    return this.file.relativePath;
   }
 
   public async getOpenApiSpec(): Promise<string> {
     const content = await this.file.getFileContents();
-    if (this.isSpec) {
+    if (isSpec(this.relativePath)) {
       return decoder.decode(content);
     }
 
     const decodedContent = decoder.decode(content);
     try {
       const parsedContent = isJson(this.file.relativePath) ? JSON.parse(decodedContent) : yaml.parse(decodedContent);
-      if (parsedContent["id"]) {
-        return generateOpenApiSpec(parsedContent["id"]);
+      if (parsedContent.id) {
+        return generateOpenApiSpec(parsedContent.id);
       } else {
         console.debug("No workflow ID!");
       }

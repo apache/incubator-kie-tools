@@ -15,27 +15,26 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useEffect } from "react";
-import { VirtualServiceRegistryContext } from "./VirtualServiceRegistryContext";
-import { VirtualServiceRegistryFunction } from "./models/VirtualServiceRegistryFunction";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useCallback, useMemo } from "react";
 import { GLOB_PATTERN } from "../extension";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
-import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
+import { useCancelableEffect } from "../reactExt/Hooks";
 import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
 import { LfsWorkspaceDescriptorService } from "../workspace/lfs/LfsWorkspaceDescriptorService";
-import { LfsWorkspaceService } from "../workspace/lfs/LfsWorkspaceService";
-import { WorkspacesEvents, WORKSPACES_BROADCAST_CHANNEL } from "../workspace/worker/api/WorkspacesEvents";
-import {
-  toVsrFunctionPathFromFunctionName,
-  toVsrFunctionPathFromWorkspaceFilePath,
-  toVsrWorkspacePath,
-} from "./VirtualServiceRegistryPathConverter";
 import { LfsWorkspaceFsService } from "../workspace/lfs/LfsWorkspaceFsService";
+import { LfsWorkspaceService } from "../workspace/lfs/LfsWorkspaceService";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { WorkspacesEvents, WORKSPACES_BROADCAST_CHANNEL } from "../workspace/worker/api/WorkspacesEvents";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { VirtualServiceRegistryFunction } from "./models/VirtualServiceRegistryFunction";
+import {
+  VIRTUAL_SERVICE_REGISTRY_DESCRIPTOR_DATABASE_NAME,
+  VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX,
+  VIRTUAL_SERVICE_REGISTRY_MOUNT_POINT,
+} from "./VirtualServiceRegistryConstants";
+import { VirtualServiceRegistryContext } from "./VirtualServiceRegistryContext";
+import { toVsrFunctionPathFromWorkspaceFilePath, toVsrMountPoint } from "./VirtualServiceRegistryPathConverter";
 
-export const VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX = "sandbox::";
-export const VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX = "VSR";
-const VIRTUAL_SERVICE_REGISTRY_DESCRIPTOR_DATABASE_NAME = "registryGroup";
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 
 interface Props {
@@ -55,13 +54,13 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
       new LfsWorkspaceService({
         storageService: vsrStorageService,
         descriptorService: vsrDescriptorService,
-        fsMountPoint: VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX,
-        broadcastChannelPrefix: VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX,
+        fsMountPoint: VIRTUAL_SERVICE_REGISTRY_MOUNT_POINT,
+        eventNamePrefix: VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX,
       }),
     [vsrStorageService, vsrDescriptorService]
   );
   const vsrFsService = useMemo(
-    () => new LfsWorkspaceFsService(vsrDescriptorService, toVsrWorkspacePath),
+    () => new LfsWorkspaceFsService(vsrDescriptorService, toVsrMountPoint),
     [vsrDescriptorService]
   );
 
@@ -126,9 +125,9 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
     async (workspaceFile: WorkspaceFile) => {
       const workspaceId = workspaceFile.workspaceId;
       const vsrFunction = new VirtualServiceRegistryFunction(workspaceFile);
-      const vsrFunctionPath = toVsrFunctionPathFromFunctionName({
+      const vsrFunctionPath = toVsrFunctionPathFromWorkspaceFilePath({
         vsrWorkspaceId: workspaceId,
-        vsrFunctionName: vsrFunction.name,
+        relativePath: vsrFunction.relativePath,
       });
       const vsrFunctionContent = await vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content));
 
@@ -147,7 +146,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
         const newFile = new WorkspaceFile({
           workspaceId,
           relativePath: vsrFunctionPath,
-          getFileContents: () => Promise.resolve(vsrFunctionContent),
+          getFileContents: async () => vsrFunctionContent,
         });
         await vsrService.createOrOverwriteFile({ fs, file: newFile, broadcastArgs: { broadcast: true } });
         return newFile;
@@ -158,64 +157,72 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
     [vsrFsService, vsrService]
   );
 
-  useEffect(() => {
-    const workspacesBroadcastChannel = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        const workspacesBroadcastChannel = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
 
-    workspacesBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
-      if (data.type === "ADD_WORKSPACE") {
-        if (await vsrDescriptorService.exists(data.workspaceId)) {
-          return;
-        }
-        const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
-        const storeRegistryFiles = async (vsrDescriptor: WorkspaceDescriptor) => {
-          const workflowFiles = await workspaces.getFiles({
-            workspaceId: vsrDescriptor.workspaceId,
-            globPattern: GLOB_PATTERN.sw_spec,
-          });
+        workspacesBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
+          if (canceled.get()) {
+            return;
+          }
+          if (data.type === "ADD_WORKSPACE") {
+            if (await vsrDescriptorService.exists(data.workspaceId)) {
+              return;
+            }
+            const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
+            const storeRegistryFiles = async (vsrDescriptor: WorkspaceDescriptor) => {
+              const workflowFiles = await workspaces.getFiles({
+                workspaceId: vsrDescriptor.workspaceId,
+                globPattern: GLOB_PATTERN.sw_spec,
+              });
 
-          const filesSpecs = workflowFiles.map((file) => {
-            const vsrFunction = new VirtualServiceRegistryFunction(file);
-            return new LfsStorageFile({
-              path: `/${toVsrFunctionPathFromFunctionName({
-                vsrWorkspaceId: data.workspaceId,
-                vsrFunctionName: vsrFunction.name,
-              })}`,
-              getFileContents: () => vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
+              const filesSpecs = workflowFiles.map((file) => {
+                const vsrFunction = new VirtualServiceRegistryFunction(file);
+                return new LfsStorageFile({
+                  path: `/${toVsrFunctionPathFromWorkspaceFilePath({
+                    vsrWorkspaceId: data.workspaceId,
+                    relativePath: vsrFunction.relativePath,
+                  })}`,
+                  getFileContents: () => vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
+                });
+              });
+
+              const fs = await vsrFsService.getFs(vsrDescriptor.workspaceId);
+              await vsrStorageService.createFiles(fs, filesSpecs);
+              return vsrService.getFilesWithLazyContent({ fs, workspaceId: vsrDescriptor.workspaceId });
+            };
+
+            await vsrService.create({
+              storeFiles: storeRegistryFiles,
+              descriptorArgs: workspaceDescriptor,
+              broadcastArgs: { broadcast: true },
             });
-          });
-
-          const fs = await vsrFsService.getFs(vsrDescriptor.workspaceId);
-          await vsrStorageService.createFiles(fs, filesSpecs);
-          return vsrService.getFilesWithLazyContent({ fs, workspaceId: vsrDescriptor.workspaceId });
+          } else if (data.type === "DELETE_WORKSPACE") {
+            if (await vsrDescriptorService.exists(data.workspaceId)) {
+              await vsrService.delete({ workspaceId: data.workspaceId, broadcastArgs: { broadcast: true } });
+            }
+          } else if (data.type === "RENAME_WORKSPACE") {
+            const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
+            const vsrDescriptor = await vsrDescriptorService.get(data.workspaceId);
+            if (vsrDescriptor.name === workspaceDescriptor.name) {
+              return;
+            }
+            await vsrService.rename({
+              workspaceId: data.workspaceId,
+              newName: workspaceDescriptor.name,
+              broadcastArgs: { broadcast: true },
+            });
+          }
         };
 
-        await vsrService.create({
-          storeFiles: storeRegistryFiles,
-          workspaceDescriptor,
-          broadcastArgs: { broadcast: true },
-        });
-      } else if (data.type === "DELETE_WORKSPACE") {
-        if (await vsrDescriptorService.exists(data.workspaceId)) {
-          await vsrService.delete({ workspaceId: data.workspaceId, broadcastArgs: { broadcast: true } });
-        }
-      } else if (data.type === "RENAME_WORKSPACE") {
-        const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
-        const vsrDescriptor = await vsrDescriptorService.get(data.workspaceId);
-        if (vsrDescriptor.name === workspaceDescriptor.name) {
-          return;
-        }
-        await vsrService.rename({
-          workspaceId: data.workspaceId,
-          newName: workspaceDescriptor.name,
-          broadcastArgs: { broadcast: true },
-        });
-      }
-    };
-
-    return () => {
-      workspacesBroadcastChannel.close();
-    };
-  }, [vsrService, vsrFsService, vsrDescriptorService, workspaces, vsrStorageService]);
+        return () => {
+          workspacesBroadcastChannel.close();
+        };
+      },
+      [vsrDescriptorService, vsrFsService, vsrService, vsrStorageService, workspaces]
+    )
+  );
 
   const value = useMemo(
     () => ({

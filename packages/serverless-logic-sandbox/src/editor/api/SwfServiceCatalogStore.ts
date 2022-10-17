@@ -22,10 +22,8 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import { ArtifactType, SearchedArtifact } from "@rhoas/registry-instance-sdk";
-import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
-import { VirtualServiceRegistryContextType } from "../../virtualServiceRegistry/VirtualServiceRegistryContext";
 import {
   isServiceAccountConfigValid,
   ServiceAccountSettingsConfig,
@@ -35,36 +33,15 @@ import {
   ServiceRegistrySettingsConfig,
 } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { ExtendedServicesConfig } from "../../settings/SettingsContext";
+import {
+  VIRTUAL_SERVICE_REGISTRY_NAME,
+  VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX,
+} from "../../virtualServiceRegistry/VirtualServiceRegistryConstants";
+import { VirtualServiceRegistryContextType } from "../../virtualServiceRegistry/VirtualServiceRegistryContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../virtualServiceRegistry/VirtualServiceRegistryContextProvider";
-
-export const VIRTUAL_SERVICE_REGISTRY_NAME = "Sandbox";
-export const ARTIFACT_TAGS = {
-  IS_VIRTUAL_SERVICE_REGISTRY: "isVirtualServiceRegistry",
-};
-
-type ArtifactWithContent = {
-  metadata: SearchedArtifact;
-  content: OpenAPIV3.Document;
-};
+import { ArtifactWithContent, RemoteArtifactCatalogApi, UploadArtifactArgs } from "./RemoteServiceRegistryCatalogApi";
 
 export class SwfServiceCatalogStore {
-  private readonly PROXY_ENDPOINT = `${this.configs.extendedServicesConfig.buildUrl()}/devsandbox`;
-
-  private readonly COMMON_HEADERS = {
-    // We are facing a 401 Error when using oauth, let's use Basic auth for now.
-    Authorization:
-      "Basic " + btoa(`${this.configs.serviceAccount.clientId}:${this.configs.serviceAccount.clientSecret}`),
-    "Content-Type": "application/json",
-  };
-
-  private readonly SERVICE_REGISTRY_API = {
-    getArtifactContentUrl: (artifact: SearchedArtifact) =>
-      `${this.configs.serviceRegistry.coreRegistryApi}/groups/${artifact.groupId}/artifacts/${artifact.id}`,
-    getArtifactsUrl: () => `${this.configs.serviceRegistry.coreRegistryApi}/search/artifacts`,
-    getServiceId: (artifact: SearchedArtifact) => artifact.id,
-  };
-
   private readonly VIRTUAL_SERVICE_REGISTRY_API = {
     getArtifactContentUrl: (artifact: SearchedArtifact) => artifact.id,
     getServiceId: (artifact: SearchedArtifact) => artifact.id.replace(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX, ""),
@@ -77,6 +54,7 @@ export class SwfServiceCatalogStore {
       artifact.id.replace(`${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${artifact.groupId}`, ""),
   };
 
+  private remoteArtifactCatalogApi: RemoteArtifactCatalogApi;
   private storedServices: SwfServiceCatalogService[] = [];
 
   public virtualServiceRegistry?: VirtualServiceRegistryContextType;
@@ -88,7 +66,16 @@ export class SwfServiceCatalogStore {
       serviceRegistry: ServiceRegistrySettingsConfig;
       extendedServicesConfig: ExtendedServicesConfig;
     }
-  ) {}
+  ) {
+    this.remoteArtifactCatalogApi = new RemoteArtifactCatalogApi({
+      proxyEndpoint: `${configs.extendedServicesConfig.buildUrl()}/devsandbox`,
+      baseUrl: configs.serviceRegistry.coreRegistryApi,
+      auth: {
+        clientId: configs.serviceAccount.clientId,
+        clientSecret: configs.serviceAccount.clientSecret,
+      },
+    });
+  }
 
   get services(): SwfServiceCatalogService[] {
     return this.storedServices;
@@ -100,6 +87,15 @@ export class SwfServiceCatalogStore {
   ): Promise<void> {
     this.virtualServiceRegistry = virtualServiceRegistry;
     this.currentFile = file;
+    await this.refresh();
+  }
+
+  public async uploadArtifact(args: UploadArtifactArgs): Promise<void> {
+    if (!this.isConfigValid()) {
+      return;
+    }
+
+    await this.remoteArtifactCatalogApi.uploadArtifact(args);
     await this.refresh();
   }
 
@@ -116,32 +112,8 @@ export class SwfServiceCatalogStore {
     }
 
     try {
-      const artifacts = (
-        await axios.get(this.PROXY_ENDPOINT, {
-          headers: {
-            ...this.COMMON_HEADERS,
-            "Target-Url": this.SERVICE_REGISTRY_API.getArtifactsUrl(),
-          },
-        })
-      ).data.artifacts;
-
-      if (artifacts.length > 0) {
-        return Promise.all(
-          artifacts
-            .filter((artifact: SearchedArtifact) => artifact.type === ArtifactType.Openapi)
-            .map(async (artifact: SearchedArtifact) => ({
-              metadata: artifact,
-              content: (
-                await axios.get(this.PROXY_ENDPOINT, {
-                  headers: {
-                    ...this.COMMON_HEADERS,
-                    "Target-Url": this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifact),
-                  },
-                })
-              ).data as OpenAPIV3.Document,
-            }))
-        );
-      }
+      const artifactsSearchResult = await this.remoteArtifactCatalogApi.fetchArtifacts();
+      return this.remoteArtifactCatalogApi.fetchArtifactsWithContent(artifactsSearchResult);
     } catch (e) {
       console.debug(e);
     }
@@ -172,7 +144,6 @@ export class SwfServiceCatalogStore {
               groupId: vsrWorkspaceWithFiles.vsrWorkspace.workspaceId,
               id: vsrFile.relativePath,
               type: ArtifactType.Openapi,
-              labels: [ARTIFACT_TAGS.IS_VIRTUAL_SERVICE_REGISTRY],
             } as SearchedArtifact,
             content: yaml.parse(await vsrFile.getFileContentsAsString()) as OpenAPIV3.Document,
           }))
@@ -195,61 +166,68 @@ export class SwfServiceCatalogStore {
       this.buildVirtualArtifacts(),
     ]);
 
-    this.storedServices = [...remoteArtifacts, ...virtualArtifacts]
+    const remoteServices = remoteArtifacts
       .filter((artifact) => artifact.content.openapi)
       .map((artifact) => {
-        const isVirtualServiceRegistry = artifact.metadata.labels?.includes(ARTIFACT_TAGS.IS_VIRTUAL_SERVICE_REGISTRY);
-        const isFromSameWorkspace =
-          isVirtualServiceRegistry && artifact.metadata.groupId === this.currentFile?.workspaceId;
+        const registry = this.configs.serviceRegistry.name;
+        const serviceId = this.remoteArtifactCatalogApi.resolveServiceId(artifact);
+        const url = this.remoteArtifactCatalogApi.resolveArtifactEndpoint(artifact);
 
-        const registry = isVirtualServiceRegistry ? VIRTUAL_SERVICE_REGISTRY_NAME : this.configs.serviceRegistry.name;
-        const serviceId = isVirtualServiceRegistry
-          ? isFromSameWorkspace
-            ? this.SAME_WORKSPACE_REGISTRY_API.getServiceId(artifact.metadata)
-            : this.VIRTUAL_SERVICE_REGISTRY_API.getServiceId(artifact.metadata)
-          : this.SERVICE_REGISTRY_API.getServiceId(artifact.metadata);
-
-        const url = isVirtualServiceRegistry
-          ? isFromSameWorkspace
-            ? this.SAME_WORKSPACE_REGISTRY_API.getArtifactContentUrl(artifact.metadata)
-            : this.VIRTUAL_SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata)
-          : this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata);
-
-        const swfFunctions = extractFunctions(artifact.content, {
-          type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+        return this.buildSwfServiceCatalogService({
+          artifact,
           registry,
           serviceId,
+          url,
         });
-
-        return {
-          name: artifact.metadata.id,
-          rawContent: yaml.stringify(artifact.content),
-          type: SwfServiceCatalogServiceType.rest,
-          functions: swfFunctions,
-          source: {
-            url,
-            id: serviceId,
-            registry,
-            type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
-          },
-        };
       });
+
+    const virtualServices = virtualArtifacts
+      .filter((artifact) => artifact.content.openapi)
+      .map((artifact) => {
+        const isFromSameWorkspace = artifact.metadata.groupId === this.currentFile?.workspaceId;
+
+        const serviceId = isFromSameWorkspace
+          ? this.SAME_WORKSPACE_REGISTRY_API.getServiceId(artifact.metadata)
+          : this.VIRTUAL_SERVICE_REGISTRY_API.getServiceId(artifact.metadata);
+
+        const url = isFromSameWorkspace
+          ? this.SAME_WORKSPACE_REGISTRY_API.getArtifactContentUrl(artifact.metadata)
+          : this.VIRTUAL_SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata);
+
+        return this.buildSwfServiceCatalogService({
+          artifact,
+          registry: VIRTUAL_SERVICE_REGISTRY_NAME,
+          serviceId,
+          url,
+        });
+      });
+
+    this.storedServices = [...remoteServices, ...virtualServices];
   }
 
-  public async uploadArtifact(args: { groupId: string; artifactId: string; content: string }): Promise<void> {
-    if (!this.isConfigValid()) {
-      return;
-    }
-
-    await axios.post(this.PROXY_ENDPOINT, args.content, {
-      headers: {
-        ...this.COMMON_HEADERS,
-        "X-Registry-ArtifactId": args.artifactId.replace(/\s|\//g, "_"),
-        "Target-Url": `${this.configs.serviceRegistry.coreRegistryApi}/groups/${encodeURIComponent(
-          args.groupId
-        )}/artifacts`,
-      },
+  private buildSwfServiceCatalogService(args: {
+    artifact: ArtifactWithContent;
+    registry: string;
+    serviceId: string;
+    url: string;
+  }): SwfServiceCatalogService {
+    const functions = extractFunctions(args.artifact.content, {
+      type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+      registry: args.registry,
+      serviceId: args.serviceId,
     });
-    await this.refresh();
+
+    return {
+      name: args.artifact.metadata.id,
+      rawContent: yaml.stringify(args.artifact.content),
+      type: SwfServiceCatalogServiceType.rest,
+      functions: functions,
+      source: {
+        url: args.url,
+        id: args.serviceId,
+        registry: args.registry,
+        type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+      },
+    };
   }
 }

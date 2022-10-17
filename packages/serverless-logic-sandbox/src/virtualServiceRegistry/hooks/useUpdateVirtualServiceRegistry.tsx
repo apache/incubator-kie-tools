@@ -15,9 +15,10 @@
  */
 
 import { basename } from "path";
-import { useEffect } from "react";
+import { useCallback } from "react";
 import { SwfServiceCatalogStore } from "../../editor/api/SwfServiceCatalogStore";
 import { isSupportedByVirtualServiceRegistry, resolveExtension } from "../../extension";
+import { useCancelableEffect } from "../../reactExt/Hooks";
 import {
   buildUniqueWorkspaceBroadcastChannelName,
   buildWorkspacesBroadcastChannelName,
@@ -26,8 +27,8 @@ import { WorkspaceEvents } from "../../workspace/worker/api/WorkspaceEvents";
 import { WorkspacesEvents } from "../../workspace/worker/api/WorkspacesEvents";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { VirtualServiceRegistryFunction } from "../models/VirtualServiceRegistryFunction";
+import { VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX } from "../VirtualServiceRegistryConstants";
 import { useVirtualServiceRegistry } from "../VirtualServiceRegistryContext";
-import { VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX } from "../VirtualServiceRegistryContextProvider";
 
 export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
   workspaceFile: WorkspaceFile | undefined;
@@ -35,142 +36,169 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
   const virtualServiceRegistry = useVirtualServiceRegistry();
   const workspaces = useWorkspaces();
 
-  useEffect(() => {
-    if (!args.workspaceFile) {
-      return;
-    }
-
-    const vsrWorkspaceId = args.workspaceFile.workspaceId; // both are mapped to the same value
-    const uniqueWorkspaceBroadcastChannel = new BroadcastChannel(vsrWorkspaceId);
-
-    uniqueWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
-      if (data.type === "DELETE_FILE") {
-        if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!args.workspaceFile) {
           return;
         }
 
-        const vsrFile = await virtualServiceRegistry.getVsrFile({
-          vsrWorkspaceId,
-          relativePath: data.relativePath,
-        });
-        if (!vsrFile) {
-          return;
-        }
+        const vsrWorkspaceId = args.workspaceFile.workspaceId; // both are mapped to the same value
+        const uniqueWorkspaceBroadcastChannel = new BroadcastChannel(vsrWorkspaceId);
 
-        await virtualServiceRegistry.deleteVsrFile({ vsrFile });
-      } else if (data.type === "RENAME_FILE") {
-        if (!isSupportedByVirtualServiceRegistry(data.oldRelativePath)) {
-          return;
-        }
+        uniqueWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
+          if (canceled.get()) {
+            return;
+          }
 
-        const vsrFile = await virtualServiceRegistry.getVsrFile({
-          vsrWorkspaceId,
-          relativePath: data.oldRelativePath,
-        });
-        if (!vsrFile) {
-          return;
-        }
+          if (data.type === "DELETE_FILE") {
+            if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
+              return;
+            }
 
-        await virtualServiceRegistry.renameVsrFile({
-          vsrFile,
-          newFileNameWithoutExtension: basename(data.newRelativePath).replace(
-            `.${resolveExtension(data.newRelativePath)}`,
-            ""
-          ),
-        });
-      } else if (data.type === "UPDATE_FILE") {
-        if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
-          return;
-        }
+            const vsrFile = await virtualServiceRegistry.getVsrFile({
+              vsrWorkspaceId,
+              relativePath: data.relativePath,
+            });
+            if (!vsrFile) {
+              return;
+            }
 
-        const workspaceFile = await workspaces.getFile({
-          workspaceId: vsrWorkspaceId,
-          relativePath: data.relativePath,
-        });
-        const vsrFile = await virtualServiceRegistry.getVsrFile({
-          vsrWorkspaceId,
-          relativePath: data.relativePath,
-        });
+            await virtualServiceRegistry.deleteVsrFile({ vsrFile });
+          } else if (data.type === "RENAME_FILE") {
+            if (!isSupportedByVirtualServiceRegistry(data.oldRelativePath)) {
+              return;
+            }
 
-        if (!workspaceFile || !vsrFile) {
-          return;
-        }
+            const vsrFile = await virtualServiceRegistry.getVsrFile({
+              vsrWorkspaceId,
+              relativePath: data.oldRelativePath,
+            });
+            if (!vsrFile) {
+              return;
+            }
 
-        const vsrFunction = new VirtualServiceRegistryFunction(workspaceFile);
-        await virtualServiceRegistry.updateVsrFile({
-          vsrFile,
-          getNewContents: async () => Promise.resolve(await vsrFunction.getOpenApiSpec()),
-        });
-      } else if (data.type === "ADD_FILE") {
-        if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
-          return;
-        }
+            await virtualServiceRegistry.renameVsrFile({
+              vsrFile,
+              newFileNameWithoutExtension: basename(data.newRelativePath).replace(
+                `.${resolveExtension(data.newRelativePath)}`,
+                ""
+              ),
+            });
+          } else if (data.type === "UPDATE_FILE") {
+            if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
+              return;
+            }
 
-        const workspaceFile = await workspaces.getFile({
-          workspaceId: vsrWorkspaceId,
-          relativePath: data.relativePath,
-        });
-        if (!workspaceFile) {
-          return;
-        }
+            const workspaceFile = await workspaces.getFile({
+              workspaceId: vsrWorkspaceId,
+              relativePath: data.relativePath,
+            });
+            const vsrFile = await virtualServiceRegistry.getVsrFile({
+              vsrWorkspaceId,
+              relativePath: data.relativePath,
+            });
 
-        const vsrFile = await virtualServiceRegistry.getVsrFile({
-          vsrWorkspaceId,
-          relativePath: data.relativePath,
-        });
+            if (!workspaceFile || !vsrFile) {
+              return;
+            }
 
-        if (vsrFile) {
-          return;
-        }
+            const vsrFunction = new VirtualServiceRegistryFunction(workspaceFile);
+            await virtualServiceRegistry.updateVsrFile({
+              vsrFile,
+              getNewContents: async () => vsrFunction.getOpenApiSpec(),
+            });
+          } else if (data.type === "ADD_FILE") {
+            if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
+              return;
+            }
 
-        await virtualServiceRegistry.addVsrFileForWorkspaceFile(workspaceFile);
-      }
-    };
+            const workspaceFile = await workspaces.getFile({
+              workspaceId: vsrWorkspaceId,
+              relativePath: data.relativePath,
+            });
+            if (!workspaceFile) {
+              return;
+            }
 
-    return () => {
-      uniqueWorkspaceBroadcastChannel.close();
-    };
-  }, [virtualServiceRegistry, args.workspaceFile, workspaces]);
+            const vsrFile = await virtualServiceRegistry.getVsrFile({
+              vsrWorkspaceId,
+              relativePath: data.relativePath,
+            });
+
+            if (vsrFile) {
+              return;
+            }
+
+            await virtualServiceRegistry.addVsrFileForWorkspaceFile(workspaceFile);
+          }
+        };
+
+        return () => {
+          uniqueWorkspaceBroadcastChannel.close();
+        };
+      },
+      [args.workspaceFile, virtualServiceRegistry, workspaces]
+    )
+  );
 }
 
 export function useUpdateVirtualServiceRegistryOnVsrFileEvent(args: {
   workspaceId: string;
   catalogStore: SwfServiceCatalogStore;
 }) {
-  useEffect(() => {
-    const uniqueVsrWorkspaceBroadcastChannel = new BroadcastChannel(
-      buildUniqueWorkspaceBroadcastChannelName({
-        workspaceId: args.workspaceId,
-        prefix: VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX,
-      })
-    );
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        const uniqueVsrWorkspaceBroadcastChannel = new BroadcastChannel(
+          buildUniqueWorkspaceBroadcastChannelName({
+            workspaceId: args.workspaceId,
+            prefix: VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX,
+          })
+        );
 
-    uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
-      if (["ADD_FILE", "DELETE_FILE", "RENAME_FILE"].includes(data.type)) {
-        await args.catalogStore.refresh();
-      }
-    };
+        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
+          if (canceled.get()) {
+            return;
+          }
 
-    return () => {
-      uniqueVsrWorkspaceBroadcastChannel.close();
-    };
-  }, [args.workspaceId, args.catalogStore]);
+          if (["ADD_FILE", "DELETE_FILE", "RENAME_FILE"].includes(data.type)) {
+            await args.catalogStore.refresh();
+          }
+        };
+
+        return () => {
+          uniqueVsrWorkspaceBroadcastChannel.close();
+        };
+      },
+      [args.catalogStore, args.workspaceId]
+    )
+  );
 }
 
 export function useUpdateVirtualServiceRegistryOnVsrWorkspaceEvent(args: { catalogStore: SwfServiceCatalogStore }) {
-  useEffect(() => {
-    const uniqueVsrWorkspaceBroadcastChannel = new BroadcastChannel(
-      buildWorkspacesBroadcastChannelName(VIRTUAL_SERVICE_REGISTRY_EVENTS_PREFIX)
-    );
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        const uniqueVsrWorkspaceBroadcastChannel = new BroadcastChannel(
+          buildWorkspacesBroadcastChannelName(VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX)
+        );
 
-    uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
-      if (["ADD_WORKSPACE", "DELETE_WORKSPACE"].includes(data.type)) {
-        await args.catalogStore.refresh();
-      }
-    };
+        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
+          if (canceled.get()) {
+            return;
+          }
 
-    return () => {
-      uniqueVsrWorkspaceBroadcastChannel.close();
-    };
-  }, [args.catalogStore]);
+          if (["ADD_WORKSPACE", "DELETE_WORKSPACE"].includes(data.type)) {
+            await args.catalogStore.refresh();
+          }
+        };
+
+        return () => {
+          uniqueVsrWorkspaceBroadcastChannel.close();
+        };
+      },
+      [args.catalogStore]
+    )
+  );
 }

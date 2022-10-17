@@ -131,7 +131,7 @@ export class WorkspaceDescriptorService {
   private toStorageFile(descriptor: WorkspaceDescriptor) {
     return new StorageFile({
       path: this.getAbsolutePath(descriptor.workspaceId),
-      getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(descriptor))),
+      getFileContents: async () => encoder.encode(JSON.stringify(descriptor)),
     });
   }
 

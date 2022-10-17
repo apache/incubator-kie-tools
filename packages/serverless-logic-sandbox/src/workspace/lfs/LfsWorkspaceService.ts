@@ -23,45 +23,52 @@ import { WorkspaceEvents } from "../worker/api/WorkspaceEvents";
 import { WorkspacesEvents } from "../worker/api/WorkspacesEvents";
 import { WorkspaceFile } from "../WorkspacesContext";
 import { LfsStorageFile, LfsStorageService } from "./LfsStorageService";
-import { LfsWorkspaceDescriptorService } from "./LfsWorkspaceDescriptorService";
+import { CreateDescriptorArgs, LfsWorkspaceDescriptorService } from "./LfsWorkspaceDescriptorService";
 import { buildUniqueWorkspaceBroadcastChannelName, buildWorkspacesBroadcastChannelName } from "./LfsWorkspaceEvents";
 
+interface BroadcastArgs {
+  broadcast: boolean;
+}
+
+const broadcastChannel__postMessage = (channel: string, message: WorkspacesEvents | WorkspaceEvents) => {
+  new BroadcastChannel(channel).postMessage(message);
+};
+
 export class LfsWorkspaceService {
-  private readonly WORKSPACES_BROADCAST_CHANNEL_NAME = buildWorkspacesBroadcastChannelName(
-    this.args.broadcastChannelPrefix
-  );
+  private readonly WORKSPACES_BROADCAST_CHANNEL_NAME = buildWorkspacesBroadcastChannelName(this.args.eventNamePrefix);
 
   public constructor(
     private readonly args: {
       storageService: LfsStorageService;
       descriptorService: LfsWorkspaceDescriptorService;
       fsMountPoint: string;
-      broadcastChannelPrefix: string;
+      eventNamePrefix: string;
     }
   ) {}
 
   public async create(args: {
     storeFiles: (descriptor: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
-    broadcastArgs: { broadcast: boolean };
-    workspaceDescriptor: WorkspaceDescriptor;
+    broadcastArgs: BroadcastArgs;
+    descriptorArgs: CreateDescriptorArgs;
   }) {
-    const descriptor = await this.args.descriptorService.create({ workspaceDescriptor: args.workspaceDescriptor });
+    const descriptor = await this.args.descriptorService.create(args.descriptorArgs);
 
     try {
       const files = await args.storeFiles(descriptor);
 
       if (args.broadcastArgs.broadcast) {
-        new BroadcastChannel(this.WORKSPACES_BROADCAST_CHANNEL_NAME).postMessage({
+        broadcastChannel__postMessage(this.WORKSPACES_BROADCAST_CHANNEL_NAME, {
           type: "ADD_WORKSPACE",
           workspaceId: descriptor.workspaceId,
-        } as WorkspacesEvents);
+        });
 
-        new BroadcastChannel(
+        broadcastChannel__postMessage(
           buildUniqueWorkspaceBroadcastChannelName({
-            prefix: this.args.broadcastChannelPrefix,
+            prefix: this.args.eventNamePrefix,
             workspaceId: descriptor.workspaceId,
-          })
-        ).postMessage({ type: "ADD", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
+          }),
+          { type: "ADD", workspaceId: descriptor.workspaceId }
+        );
       }
 
       return { descriptor, files };
@@ -100,66 +107,65 @@ export class LfsWorkspaceService {
     });
   }
 
-  public async delete(args: { workspaceId: string; broadcastArgs: { broadcast: boolean } }): Promise<void> {
+  public async delete(args: { workspaceId: string; broadcastArgs: BroadcastArgs }): Promise<void> {
     await this.args.descriptorService.delete(args.workspaceId);
     indexedDB.deleteDatabase(`${this.args.fsMountPoint}${args.workspaceId}`);
 
     if (args.broadcastArgs.broadcast) {
-      new BroadcastChannel(this.WORKSPACES_BROADCAST_CHANNEL_NAME).postMessage({
+      broadcastChannel__postMessage(this.WORKSPACES_BROADCAST_CHANNEL_NAME, {
         type: "DELETE_WORKSPACE",
         workspaceId: args.workspaceId,
-      } as WorkspacesEvents);
+      });
 
-      new BroadcastChannel(
+      broadcastChannel__postMessage(
         buildUniqueWorkspaceBroadcastChannelName({
-          prefix: this.args.broadcastChannelPrefix,
+          prefix: this.args.eventNamePrefix,
           workspaceId: args.workspaceId,
-        })
-      ).postMessage({ type: "DELETE", workspaceId: args.workspaceId } as WorkspaceEvents);
+        }),
+        { type: "DELETE", workspaceId: args.workspaceId }
+      );
     }
   }
 
-  public async rename(args: {
-    workspaceId: string;
-    newName: string;
-    broadcastArgs: { broadcast: boolean };
-  }): Promise<void> {
+  public async rename(args: { workspaceId: string; newName: string; broadcastArgs: BroadcastArgs }): Promise<void> {
     await this.args.descriptorService.rename(args.workspaceId, args.newName);
     await this.args.descriptorService.bumpLastUpdatedDate(args.workspaceId);
 
     if (args.broadcastArgs.broadcast) {
-      new BroadcastChannel(this.WORKSPACES_BROADCAST_CHANNEL_NAME).postMessage({
+      broadcastChannel__postMessage(this.WORKSPACES_BROADCAST_CHANNEL_NAME, {
         type: "RENAME_WORKSPACE",
         workspaceId: args.workspaceId,
-      } as WorkspacesEvents);
+      });
 
-      new BroadcastChannel(
+      broadcastChannel__postMessage(
         buildUniqueWorkspaceBroadcastChannelName({
-          prefix: this.args.broadcastChannelPrefix,
+          prefix: this.args.eventNamePrefix,
           workspaceId: args.workspaceId,
-        })
-      ).postMessage({ type: "RENAME", workspaceId: args.workspaceId } as WorkspaceEvents);
+        }),
+        { type: "RENAME", workspaceId: args.workspaceId }
+      );
     }
   }
 
   public async createOrOverwriteFile(args: {
     fs: KieSandboxFs;
     file: WorkspaceFile;
-    broadcastArgs: { broadcast: boolean };
+    broadcastArgs: BroadcastArgs;
   }): Promise<void> {
     await this.args.storageService.createOrOverwriteFile(args.fs, this.toStorageFile(args.file));
     await this.args.descriptorService.bumpLastUpdatedDate(args.file.workspaceId);
 
     if (args.broadcastArgs.broadcast) {
-      new BroadcastChannel(
+      broadcastChannel__postMessage(
         buildUniqueWorkspaceBroadcastChannelName({
-          prefix: this.args.broadcastChannelPrefix,
+          prefix: this.args.eventNamePrefix,
           workspaceId: args.file.workspaceId,
-        })
-      ).postMessage({
-        type: "ADD_FILE",
-        relativePath: args.file.relativePath,
-      } as WorkspaceEvents);
+        }),
+        {
+          type: "ADD_FILE",
+          relativePath: args.file.relativePath,
+        }
+      );
     }
   }
 
@@ -180,7 +186,7 @@ export class LfsWorkspaceService {
     fs: KieSandboxFs;
     file: WorkspaceFile;
     getNewContents: () => Promise<string>;
-    broadcastArgs: { broadcast: boolean };
+    broadcastArgs: BroadcastArgs;
   }): Promise<void> {
     await this.args.storageService.updateFile(
       args.fs,
@@ -195,36 +201,38 @@ export class LfsWorkspaceService {
     await this.args.descriptorService.bumpLastUpdatedDate(args.file.workspaceId);
 
     if (args.broadcastArgs.broadcast) {
-      new BroadcastChannel(
+      broadcastChannel__postMessage(
         buildUniqueWorkspaceBroadcastChannelName({
-          prefix: this.args.broadcastChannelPrefix,
+          prefix: this.args.eventNamePrefix,
           workspaceId: args.file.workspaceId,
-        })
-      ).postMessage({
-        type: "UPDATE_FILE",
-        relativePath: args.file.relativePath,
-      } as WorkspaceEvents);
+        }),
+        {
+          type: "UPDATE_FILE",
+          relativePath: args.file.relativePath,
+        }
+      );
     }
   }
 
   public async deleteFile(args: {
     fs: KieSandboxFs;
     file: WorkspaceFile;
-    broadcastArgs: { broadcast: boolean };
+    broadcastArgs: BroadcastArgs;
   }): Promise<void> {
     await this.args.storageService.deleteFile(args.fs, this.toStorageFile(args.file).path);
     await this.args.descriptorService.bumpLastUpdatedDate(args.file.workspaceId);
 
     if (args.broadcastArgs.broadcast) {
-      new BroadcastChannel(
+      broadcastChannel__postMessage(
         buildUniqueWorkspaceBroadcastChannelName({
-          prefix: this.args.broadcastChannelPrefix,
+          prefix: this.args.eventNamePrefix,
           workspaceId: args.file.workspaceId,
-        })
-      ).postMessage({
-        type: "DELETE_FILE",
-        relativePath: args.file.relativePath,
-      } as WorkspaceEvents);
+        }),
+        {
+          type: "DELETE_FILE",
+          relativePath: args.file.relativePath,
+        }
+      );
     }
   }
 
@@ -232,7 +240,7 @@ export class LfsWorkspaceService {
     fs: KieSandboxFs;
     file: WorkspaceFile;
     newFileNameWithoutExtension: string;
-    broadcastArgs: { broadcast: boolean };
+    broadcastArgs: BroadcastArgs;
   }): Promise<WorkspaceFile> {
     const renamedStorageFile = await this.args.storageService.renameFile(
       args.fs,
@@ -243,16 +251,17 @@ export class LfsWorkspaceService {
     await this.args.descriptorService.bumpLastUpdatedDate(args.file.workspaceId);
 
     if (args.broadcastArgs.broadcast) {
-      new BroadcastChannel(
+      broadcastChannel__postMessage(
         buildUniqueWorkspaceBroadcastChannelName({
-          prefix: this.args.broadcastChannelPrefix,
+          prefix: this.args.eventNamePrefix,
           workspaceId: args.file.workspaceId,
-        })
-      ).postMessage({
-        type: "RENAME_FILE",
-        oldRelativePath: args.file.relativePath,
-        newRelativePath: renamedWorkspaceFile.relativePath,
-      } as WorkspaceEvents);
+        }),
+        {
+          type: "RENAME_FILE",
+          oldRelativePath: args.file.relativePath,
+          newRelativePath: renamedWorkspaceFile.relativePath,
+        }
+      );
     }
 
     return renamedWorkspaceFile;

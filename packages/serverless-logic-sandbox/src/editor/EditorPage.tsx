@@ -270,7 +270,7 @@ export function EditorPage(props: Props) {
     if (isSwf && isReady) {
       settingsDispatch.serviceRegistry.catalogStore.refresh();
     }
-  }, [isSwf, isReady]);
+  }, [isSwf, isReady, settingsDispatch.serviceRegistry.catalogStore]);
 
   const swfLanguageService = useMemo(() => {
     if (!isSwf || !workspaceFilePromise.data) {
@@ -280,7 +280,7 @@ export function EditorPage(props: Props) {
     const webToolsSwfLanguageService = new WebToolsSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
 
     return webToolsSwfLanguageService.getLs(workspaceFilePromise.data.workspaceFile.relativePath);
-  }, [workspaceFilePromise.data, settingsDispatch.serviceRegistry.catalogStore]);
+  }, [isSwf, workspaceFilePromise.data, settingsDispatch.serviceRegistry.catalogStore]);
 
   const swfLanguageServiceChannelApiImpl = useMemo(
     () => swfLanguageService && new SwfLanguageServiceChannelApiImpl(swfLanguageService),

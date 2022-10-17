@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-import {
-  VIRTUAL_SERVICE_REGISTRY_MOUNT_POINT,
-  VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX,
-} from "./VirtualServiceRegistryConstants";
+import { toVsrMountPoint } from "./VirtualServiceRegistryPathConverter";
 
-export function toVsrMountPoint(id: string): string {
-  return `${VIRTUAL_SERVICE_REGISTRY_MOUNT_POINT}${id}`;
-}
-
-export function toVsrFunctionPathFromWorkspaceFilePath(args: { vsrWorkspaceId: string; relativePath: string }) {
-  return `${toVsrWorkspacePath(args.vsrWorkspaceId)}/${args.relativePath}`;
-}
-
-function toVsrWorkspacePath(vsrWorkspaceId: string): string {
-  return `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${vsrWorkspaceId}`;
-}
+export const VIRTUAL_SERVICE_REGISTRY_NAME = "Virtual";
+export const VIRTUAL_SERVICE_REGISTRY_MOUNT_POINT = "lfs_v1__vsr__";
+export const VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX = "virtual::";
+export const VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX = "VSR";
+export const VIRTUAL_SERVICE_REGISTRY_DESCRIPTOR_DATABASE_NAME = toVsrMountPoint("registries");

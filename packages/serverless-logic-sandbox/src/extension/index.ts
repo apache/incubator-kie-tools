@@ -28,7 +28,7 @@ const REGEX = {
   dash: /^.*\.dash\.(yml|yaml)$/i,
   json: /^.*\.json$/i,
   yaml: /^.*\.(yml|yaml)$/i,
-  spec: /^.*(spec|specs)\/.*(.json|.yml|.yaml)$/i,
+  spec: /^.*(\.spec|\.specs|spec|specs)\.(json|yml|yaml)$/i,
 };
 
 export const GLOB_PATTERN = {
@@ -36,8 +36,8 @@ export const GLOB_PATTERN = {
   sw: "**/*.sw.+(json|yml|yaml)",
   yard: "**/*.yard.+(json|yml|yaml)",
   dash: "**/*.dash.+(yml|yaml)",
-  spec: "**/*.spec.+(yml|yaml|json)",
-  sw_spec: "**/*.+(sw|spec).+(yml|yaml|json)",
+  spec: "**/+(*.spec?(s)|spec?(s)).+(yml|yaml|json)",
+  sw_spec: "**/+(*.sw|*.spec?(s)|spec?(s)).+(yml|yaml|json)",
 };
 
 export enum FileTypes {
