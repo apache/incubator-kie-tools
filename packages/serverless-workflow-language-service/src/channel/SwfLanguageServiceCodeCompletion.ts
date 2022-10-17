@@ -84,6 +84,7 @@ function createCompletionItem(args: {
     kind: args.kind,
     label: args.label,
     sortText: `100_${args.label}`, //place the completion on top in the menu
+    filterText: args.label,
     detail: args.detail,
     textEdit: {
       newText: args.codeCompletionStrategy.translate({
@@ -367,21 +368,13 @@ export const SwfLanguageServiceCodeCompletion = {
       const label = args.codeCompletionStrategy.formatLabel(swfFunction.name, kind);
 
       return [
-        {
+        createCompletionItem({
+          ...args,
+          completion: `${swfFunction.name}`,
           kind,
           label,
-          sortText: label,
           detail: `"${swfFunction.name}"`,
-          filterText: label,
-          textEdit: {
-            newText: args.codeCompletionStrategy.translate({
-              completion: `${swfFunction.name}`,
-              completionItemKind: kind,
-            }),
-            range: args.overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        },
+        }),
       ];
     });
     return Promise.resolve(result);

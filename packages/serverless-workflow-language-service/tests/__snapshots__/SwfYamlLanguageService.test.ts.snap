@@ -6,6 +6,7 @@ exports[`SWF LS YAML code completion functionRef completion with same level cont
 Array [
   Object {
     "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "testRelativeFunction1",
     "insertTextFormat": 2,
     "kind": 9,
     "label": "testRelativeFunction1",
@@ -38,6 +39,7 @@ exports[`SWF LS YAML code completion functionRef completion without same level c
 Array [
   Object {
     "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "testRelativeFunction1",
     "insertTextFormat": 2,
     "kind": 9,
     "label": "testRelativeFunction1",
@@ -57,6 +59,146 @@ Array [
         "start": Object {
           "character": 17,
           "line": 11,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef refName completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef refName completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "myFunc",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "myFunc",
+    "sortText": "100_myFunc",
+    "textEdit": Object {
+      "newText": "myFunc",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 12,
+        },
+        "start": Object {
+          "character": 15,
+          "line": 12,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef refName completion inside double quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef refName completion inside double quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "myFunc",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "myFunc",
+    "sortText": "100_myFunc",
+    "textEdit": Object {
+      "newText": "myFunc",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 12,
+        },
+        "start": Object {
+          "character": 15,
+          "line": 12,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef refName completion inside single quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef refName completion inside single quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "myFunc",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "myFunc",
+    "sortText": "100_myFunc",
+    "textEdit": Object {
+      "newText": "myFunc",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 12,
+        },
+        "start": Object {
+          "character": 15,
+          "line": 12,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef refName completion not in quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef refName completion not in quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "myFunc",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "myFunc",
+    "sortText": "100_myFunc",
+    "textEdit": Object {
+      "newText": "myFunc",
+      "range": Object {
+        "end": Object {
+          "character": 15,
+          "line": 12,
+        },
+        "start": Object {
+          "character": 15,
+          "line": 12,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef refName completion not in quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef refName completion not in quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "myFunc",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "myFunc",
+    "sortText": "100_myFunc",
+    "textEdit": Object {
+      "newText": "myFunc",
+      "range": Object {
+        "end": Object {
+          "character": 15,
+          "line": 12,
+        },
+        "start": Object {
+          "character": 15,
+          "line": 12,
         },
       },
     },
@@ -451,6 +593,7 @@ exports[`SWF LS YAML code completion state completion empty completion items / w
 Array [
   Object {
     "detail": "Add a new operation state",
+    "filterText": "New operation state",
     "insertTextFormat": 2,
     "kind": 8,
     "label": "New operation state",
@@ -477,6 +620,7 @@ Array [
   },
   Object {
     "detail": "Add a new event state",
+    "filterText": "New event state",
     "insertTextFormat": 2,
     "kind": 8,
     "label": "New event state",
@@ -503,6 +647,7 @@ Array [
   },
   Object {
     "detail": "Add a new switch state",
+    "filterText": "New switch state",
     "insertTextFormat": 2,
     "kind": 8,
     "label": "New switch state",
@@ -529,6 +674,7 @@ Array [
   },
   Object {
     "detail": "Add a new inject state",
+    "filterText": "New inject state",
     "insertTextFormat": 2,
     "kind": 8,
     "label": "New inject state",
