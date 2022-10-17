@@ -425,17 +425,13 @@ export const SwfLanguageServiceCodeCompletion = {
     const label = `'${swfFunctionRefName}' arguments`;
 
     return Promise.resolve([
-      {
+      createCompletionItem({
+        ...args,
+        completion: swfFunctionRefArgs,
         kind,
         label,
-        sortText: label,
         detail: swfFunction.operation,
-        textEdit: {
-          newText: args.codeCompletionStrategy.translate({ completion: swfFunctionRefArgs, completionItemKind: kind }),
-          range: args.overwriteRange,
-        },
-        insertTextFormat: InsertTextFormat.Snippet,
-      },
+      }),
     ]);
   },
 };

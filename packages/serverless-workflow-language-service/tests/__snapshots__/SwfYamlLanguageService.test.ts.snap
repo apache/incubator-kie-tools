@@ -1,5 +1,95 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SWF LS YAML code completion functionRef arguments completion with same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "'testRelativeFunction1' arguments",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "'testRelativeFunction1' arguments",
+    "sortText": "100_'testRelativeFunction1' arguments",
+    "textEdit": Object {
+      "newText": "
+  argString: '\${1:}'
+  argNumber: '\${2:}'
+  argBoolean: '\${3:}'",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 12,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 12,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without any function arguments to complete 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without any function arguments to complete 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "'testRelativeFunction1' arguments",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "'testRelativeFunction1' arguments",
+    "sortText": "100_'testRelativeFunction1' arguments",
+    "textEdit": Object {
+      "newText": "{}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 13,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 13,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "'testRelativeFunction1' arguments",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "'testRelativeFunction1' arguments",
+    "sortText": "100_'testRelativeFunction1' arguments",
+    "textEdit": Object {
+      "newText": "
+  argString: '\${1:}'
+  argNumber: '\${2:}'
+  argBoolean: '\${3:}'",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 13,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 13,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS YAML code completion functionRef completion with same level content after 1`] = `1`;
 
 exports[`SWF LS YAML code completion functionRef completion with same level content after 2`] = `

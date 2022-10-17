@@ -1,5 +1,69 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SWF LS JSON code completion functionRef arguments completion with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef arguments completion with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "'testRelativeFunction1' arguments",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "'testRelativeFunction1' arguments",
+    "sortText": "100_'testRelativeFunction1' arguments",
+    "textEdit": Object {
+      "newText": "{
+  \\"argString\\": \\"\${1:}\\",
+  \\"argNumber\\": \\"\${2:}\\",
+  \\"argBoolean\\": \\"\${3:}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 37,
+          "line": 17,
+        },
+        "start": Object {
+          "character": 37,
+          "line": 17,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef arguments completion without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef arguments completion without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "'testRelativeFunction1' arguments",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "'testRelativeFunction1' arguments",
+    "sortText": "100_'testRelativeFunction1' arguments",
+    "textEdit": Object {
+      "newText": "{
+  \\"argString\\": \\"\${1:}\\",
+  \\"argNumber\\": \\"\${2:}\\",
+  \\"argBoolean\\": \\"\${3:}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 18,
+        },
+        "start": Object {
+          "character": 25,
+          "line": 18,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS JSON code completion functionRef completion with same level content after 1`] = `1`;
 
 exports[`SWF LS JSON code completion functionRef completion with same level content after 2`] = `
