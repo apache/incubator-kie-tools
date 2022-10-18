@@ -48,14 +48,14 @@ export function initAugmentationCommands(
         channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
       }
     )!,
-    "swf.ls.commands.OpenFunctionsCompletionItems": editorInstance.addCommand(
+    "swf.ls.commands.OpenCompletionItems": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenFunctionsCompletionItems"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenCompletionItems"]) => {
         editorInstance.setPosition({
           lineNumber: args.newCursorPosition.line + 1,
           column: args.newCursorPosition.character + 1,
         });
-        editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
+        editorInstance.trigger("OpenCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
       }
     )!,
     "swf.ls.commands.OpenFunctionsWidget": editorInstance.addCommand(

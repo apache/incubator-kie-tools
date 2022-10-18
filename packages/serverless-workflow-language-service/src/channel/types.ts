@@ -53,6 +53,7 @@ export interface TranslateArgs {
   completion: object | string;
   completionItemKind: CompletionItemKind;
   overwriteRange?: Range;
+  currentNodeRange?: Range;
 }
 
 export interface CodeCompletionStrategy {
