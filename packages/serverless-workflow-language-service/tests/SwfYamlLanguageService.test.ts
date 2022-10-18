@@ -21,7 +21,10 @@ import {
   isNodeUncompleted,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat, Position } from "vscode-languageserver-types";
+import { dump } from "yaml-language-server-parser";
+import * as path from "path";
+import * as fs from "fs";
 import {
   defaultConfig,
   defaultServiceCatalogConfig,
@@ -30,6 +33,7 @@ import {
 } from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
+const EXPECTED_RESULTS_PROJECT_FOLDER: string = path.resolve("tests", "expectedResults");
 const documentUri = "test.sw.yaml";
 
 describe("YamlCodeCompletionStrategy", () => {
@@ -660,182 +664,227 @@ states:
     expect(codeLenses).toStrictEqual([]);
   });
 
-  describe("functions code lenses", () => {
-    test("add function", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
+  describe("code lenses", () => {
+    describe("emtpy file code lenses", () => {
+      test.each([
+        ["empty object / using JSON format", `{}`],
+        ["empty object / with cursor before the object / using JSON format", `{}`],
+        ["empty object / with cursor after the object / using JSON format", `{}`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+        expect(codeLenses).toHaveLength(0);
       });
 
-      const { content } = trim(`
+      test.each([
+        ["total empty file", ``],
+        ["empty file with a newline before the cursor", `\n`],
+        ["empty file with a newline after the cursor", `\n`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const position = Position.create(0, 0);
+
+        expect(codeLenses).toHaveLength(1);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: position, end: position },
+          command: {
+            title: "Create a Serverless Workflow",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: position }],
+          },
+        } as CodeLens);
+      });
+    });
+
+    describe("functions code lenses", () => {
+      test("add function", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(1);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("add function - using JSON format", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
+        expect(codeLenses).toHaveLength(1);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("add function - using JSON format", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const { content } = trim(`
 ---
 functions: [] `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(0);
-    });
-
-    test("service registries integration disabled", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: {
-          ...defaultConfig,
-          shouldDisplayServiceRegistriesIntegration: async () => Promise.resolve(false),
-          shouldConfigureServiceRegistries: () => true,
-          shouldServiceRegistriesLogIn: () => true,
-          canRefreshServices: () => true,
-        },
+        expect(codeLenses).toHaveLength(0);
       });
 
-      const { content } = trim(`
+      test("service registries integration disabled", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: {
+            ...defaultConfig,
+            shouldDisplayServiceRegistriesIntegration: async () => Promise.resolve(false),
+            shouldConfigureServiceRegistries: () => true,
+            shouldServiceRegistriesLogIn: () => true,
+            canRefreshServices: () => true,
+          },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(1);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("login to service registries", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        expect(codeLenses).toHaveLength(1);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("login to service registries", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          command: "swf.ls.commands.LogInServiceRegistries",
-          title: "↪ Log in Service Registries...",
-          arguments: [{ position: { character: 0, line: 2 } }],
-        },
-      });
-      expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("setup service registries", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: {
-          ...defaultConfig,
-          shouldConfigureServiceRegistries: () => true,
-        },
+        expect(codeLenses).toHaveLength(2);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            command: "swf.ls.commands.LogInServiceRegistries",
+            title: "↪ Log in Service Registries...",
+            arguments: [{ position: { character: 0, line: 2 } }],
+          },
+        });
+        expect(codeLenses[1]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("setup service registries", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: {
+            ...defaultConfig,
+            shouldConfigureServiceRegistries: () => true,
+          },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          command: "swf.ls.commands.OpenServiceRegistriesConfig",
-          title: "↪ Setup Service Registries...",
-          arguments: [{ position: { character: 0, line: 2 } }],
-        },
-      });
-      expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
-    });
-
-    test("refresh service registries", async () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: {
-          ...defaultConfig,
-          canRefreshServices: () => true,
-        },
+        expect(codeLenses).toHaveLength(2);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            command: "swf.ls.commands.OpenServiceRegistriesConfig",
+            title: "↪ Setup Service Registries...",
+            arguments: [{ position: { character: 0, line: 2 } }],
+          },
+        });
+        expect(codeLenses[1]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
 
-      const { content } = trim(`
+      test("refresh service registries", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: {
+            ...defaultConfig,
+            canRefreshServices: () => true,
+          },
+        });
+
+        const { content } = trim(`
 ---
 functions: 
 - name: getGreetingFunction `);
 
-      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-      expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          command: "swf.ls.commands.RefreshServiceRegistries",
-          title: "↺ Refresh Service Registries...",
-          arguments: [{ position: { character: 0, line: 2 } }],
-        },
+        expect(codeLenses).toHaveLength(2);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            command: "swf.ls.commands.RefreshServiceRegistries",
+            title: "↺ Refresh Service Registries...",
+            arguments: [{ position: { character: 0, line: 2 } }],
+          },
+        });
+        expect(codeLenses[1]).toStrictEqual({
+          range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          },
+        } as CodeLens);
       });
-      expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
-        command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
-        },
-      } as CodeLens);
     });
   });
 
@@ -847,6 +896,43 @@ functions:
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+    });
+
+    describe("empty file completion", () => {
+      test.each([
+        ["empty object / using JSON format", `{🎯}`],
+        ["empty object / with cursor before the object / using JSON format", `🎯{}`],
+        ["empty object / with cursor after the object / using JSON format", `{}🎯`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems).toHaveLength(0);
+      });
+
+      test.each([
+        ["total empty file", `🎯`],
+        ["empty file with a newline before the cursor", `\n🎯`],
+        ["empty file with a newline after the cursor", `🎯\n`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+        const expectedResult = fs.readFileSync(
+          path.resolve(EXPECTED_RESULTS_PROJECT_FOLDER, "emptyfile_autocompletion.sw.yaml.result"),
+          "utf-8"
+        );
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Text,
+          label: "Create your first Serverless Workflow",
+          sortText: "100_Create your first Serverless Workflow",
+          detail: "Start with a simple Serverless Workflow",
+          textEdit: {
+            range: { start: cursorPosition, end: cursorPosition },
+            newText: expectedResult,
+          },
+          insertTextFormat: InsertTextFormat.Snippet,
+        } as CompletionItem);
+      });
     });
 
     describe("function completion", () => {
@@ -919,14 +1005,18 @@ functions:
         } as CompletionItem);
       });
 
-      test("add at the beginning, using the code lenses", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-🎯- name: helloWorldFunction`
-        );
+      test.each([
+        ["add at the beginning, using the code lenses", `functions:\n🎯- name: helloWorldFunction`],
+        [
+          "add at the beginning / with extra indentation / using the code lenses",
+          `functions:\n  🎯- name: helloWorldFunction`,
+        ],
+        [
+          "add at the beginning / with double extra indentation / using the code lenses",
+          `functions:\n    🎯- name: helloWorldFunction`,
+        ],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content);
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({

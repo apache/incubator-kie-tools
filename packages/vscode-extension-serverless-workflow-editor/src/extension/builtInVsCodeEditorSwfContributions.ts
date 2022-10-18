@@ -65,7 +65,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
       args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(cmdArgs);
     },
-    "swf.ls.commands.OpenFunctionsCompletionItems": (cmdArgs) => {
+    "swf.ls.commands.OpenCompletionItems": (cmdArgs) => {
       if (!vscode.window.activeTextEditor) {
         return;
       }
