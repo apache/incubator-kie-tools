@@ -401,7 +401,7 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      portfinder: ^1.0.27
+      portfinder: ^1.0.32
       rimraf: ^3.0.2
       semver: ^7.3.5
       sinon: ^11.1.1
@@ -414,7 +414,7 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       axios: 0.27.2
       fast-xml-parser: 3.17.4
-      portfinder: 1.0.28
+      portfinder: 1.0.32
       semver: 7.3.5
       sinon: 11.1.1
     devDependencies:
@@ -4951,6 +4951,65 @@ importers:
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig
+      "@types/vscode": 1.66.0
+      "@vscode/test-web": 0.0.30
+      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      rimraf: 3.0.2
+      vsce: 2.6.5
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack-merge: 5.8.0
+
+  packages/vscode-extension-dashbuilder-editor:
+    specifiers:
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/dashbuilder-viewer": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@types/react": ^17.0.6
+      "@types/vscode": ^1.66.0
+      "@vscode/test-web": ^0.0.30
+      copy-webpack-plugin: ^8.1.1
+      portfinder: ^1.0.32
+      rimraf: ^3.0.2
+      vsce: ^2.6.5
+      webpack: ^5.36.2
+      webpack-cli: ^4.7.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.7.3
+    dependencies:
+      "@kie-tools-core/backend": link:../backend
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/vscode-extension": link:../vscode-extension
+      "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
+      portfinder: 1.0.32
+    devDependencies:
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@types/react": 17.0.21
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
@@ -13492,7 +13551,8 @@ packages:
     dev: false
 
   /code-point-at/1.1.0:
-    resolution: { integrity: sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c= }
+    resolution:
+      { integrity: sha512-RpAVKQA5T63xEj6/giIbUEtZwJ4UFIc3ZtvEkiaUERylqe8xb5IvqcgOurZLahv93CLKfxcw5YI+DZcUBRyLXA== }
     engines: { node: ">=0.10.0" }
     dev: true
 
@@ -13720,7 +13780,8 @@ packages:
     dev: true
 
   /console-control-strings/1.1.0:
-    resolution: { integrity: sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4= }
+    resolution:
+      { integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ== }
     dev: true
 
   /content-disposition/0.5.3:
@@ -15241,7 +15302,8 @@ packages:
     engines: { node: ">=0.4.0" }
 
   /delegates/1.0.0:
-    resolution: { integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o= }
+    resolution:
+      { integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ== }
     dev: true
 
   /depd/1.1.1:
@@ -17211,7 +17273,8 @@ packages:
     dev: true
 
   /gauge/2.7.4:
-    resolution: { integrity: sha1-LANAXHU4w51+s3sxcCLjJfsBi/c= }
+    resolution:
+      { integrity: sha512-14x4kjc6lkD3ltw589k0NrPD6cCNTD6CWoVUNpB85+DrtONoZn+Rug6xZU5RvSC4+TZPxA5AnBibQYAvZn41Hg== }
     dependencies:
       aproba: 1.2.0
       console-control-strings: 1.1.0
@@ -17683,7 +17746,8 @@ packages:
     dev: true
 
   /has-unicode/2.0.1:
-    resolution: { integrity: sha1-4Ob+aijPUROIVeCG0Wkedx3iqLk= }
+    resolution:
+      { integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ== }
     dev: true
 
   /has-value/0.3.1:
@@ -18504,7 +18568,8 @@ packages:
     dev: true
 
   /is-fullwidth-code-point/1.0.0:
-    resolution: { integrity: sha1-754xOG8DGn8NZDr4L95QxFfvAMs= }
+    resolution:
+      { integrity: sha512-1pqUqRjkhPJ9miNq9SwMfdvi6lBJcd6eFxvfaivQhaH3SgisfiuudvFntdKOmxuee/77l+FPjKrQjWvmPjWrRw== }
     engines: { node: ">=0.10.0" }
     dependencies:
       number-is-nan: 1.0.1
@@ -20947,6 +21012,13 @@ packages:
     dependencies:
       minimist: 1.2.6
 
+  /mkdirp/0.5.6:
+    resolution:
+      { integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw== }
+    hasBin: true
+    dependencies:
+      minimist: 1.2.6
+
   /mkdirp/1.0.4:
     resolution:
       { integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw== }
@@ -21649,7 +21721,8 @@ packages:
     dev: true
 
   /number-is-nan/1.0.1:
-    resolution: { integrity: sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0= }
+    resolution:
+      { integrity: sha512-4jbtZXNAsfZbAHiiqjLPBiCl16dES1zI4Hpzzxw61Tk+loF+sBDBKx1ICKKKwIqQ7M0mFn1TmkN7euSncWgHiQ== }
     engines: { node: ">=0.10.0" }
     dev: true
 
@@ -22424,7 +22497,8 @@ packages:
     dev: true
 
   /pify/3.0.0:
-    resolution: { integrity: sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY= }
+    resolution:
+      { integrity: sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg== }
     engines: { node: ">=4" }
 
   /pify/4.0.1:
@@ -22597,14 +22671,14 @@ packages:
     deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
     dev: false
 
-  /portfinder/1.0.28:
+  /portfinder/1.0.32:
     resolution:
-      { integrity: sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA== }
+      { integrity: sha512-on2ZJVVDXRADWE6jnQaX0ioEylzgBpQk8r55NE4wjXW1ZxO+BgDlY6DXwj20i0V8eB4SenDQ00WEaxfiIQPcxg== }
     engines: { node: ">= 0.12.0" }
     dependencies:
       async: 2.6.4
       debug: 3.2.7
-      mkdirp: 0.5.5
+      mkdirp: 0.5.6
 
   /posix-character-classes/0.1.1:
     resolution:
@@ -24332,7 +24406,8 @@ packages:
     dev: true
 
   /retry/0.12.0:
-    resolution: { integrity: sha1-G0KmJmoh8HQh0bC1S33BZ7AcATs= }
+    resolution:
+      { integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow== }
     engines: { node: ">= 4" }
     dev: true
 
@@ -25486,7 +25561,8 @@ packages:
     dev: true
 
   /string-width/1.0.2:
-    resolution: { integrity: sha1-EYvfW4zcUaKn5w0hHgfisLmxB9M= }
+    resolution:
+      { integrity: sha512-0XsVpQLnVCXHJfyEs8tC0zpTVIr5PKKsQtkT29IwupnPTjtPmQ3xT/4yCREF9hYkV/3M3kzcUTSAZT6a6h81tw== }
     engines: { node: ">=0.10.0" }
     dependencies:
       code-point-at: 1.1.0
@@ -27495,7 +27571,7 @@ packages:
       ipaddr.js: 2.0.1
       open: 8.4.0
       p-retry: 4.6.1
-      portfinder: 1.0.28
+      portfinder: 1.0.32
       schema-utils: 4.0.0
       selfsigned: 2.0.0
       serve-index: 1.9.1
@@ -27546,7 +27622,7 @@ packages:
       ipaddr.js: 2.0.1
       open: 8.4.0
       p-retry: 4.6.1
-      portfinder: 1.0.28
+      portfinder: 1.0.32
       schema-utils: 4.0.0
       selfsigned: 2.0.0
       serve-index: 1.9.1

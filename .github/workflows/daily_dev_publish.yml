@@ -231,6 +231,13 @@ jobs:
           name: vscode-extension-serverless-workflow-editor
           path: kie-tools/packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ steps.version.outputs.version }}.vsix
 
+      - name: "Upload Dashbuilder VS Code Extension (Ubuntu only)"
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-dashbuilder-editor
+          path: kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${{ steps.version.outputs.version }}.vsix
+
       - name: "Upload VS Code Extension (dev) (Ubuntu only)"
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v1

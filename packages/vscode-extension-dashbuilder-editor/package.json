@@ -1,0 +1,172 @@
+{
+  "name": "vscode-extension-dashbuilder-editor",
+  "version": "0.0.0",
+  "description": "Edit Dashbuilder files",
+  "license": "Apache-2.0",
+  "publisher": "redhat",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "browser": "./dist/browser/extension.js",
+  "main": "dist/extension/extension.js",
+  "scripts": {
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "compile": "webpack",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_dashbuilder_editor_$npm_package_version.vsix",
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
+    "watch": "webpack"
+  },
+  "dependencies": {
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools-core/vscode-java-code-completion": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/dashbuilder-viewer": "workspace:*",
+    "portfinder": "^1.0.32"
+  },
+  "devDependencies": {
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/dashbuilder-client": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/react": "^17.0.6",
+    "@types/vscode": "^1.66.0",
+    "@vscode/test-web": "^0.0.30",
+    "copy-webpack-plugin": "^8.1.1",
+    "rimraf": "^3.0.2",
+    "vsce": "^2.6.5",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.7.3"
+  },
+  "engines": {
+    "vscode": "^1.66.0"
+  },
+  "displayName": "Dashbuilder Editor",
+  "contributes": {
+    "capabilities": {
+      "untrustedWorkspaces": {
+        "supported": false
+      }
+    },
+    "commands": [
+      {
+        "command": "extension.kogito.dashbuilder.setupAutomaticallyOpenDashboardEditorAlongsideTextEditor",
+        "title": "Dashbuilder: Setup automatically open Dashboard Editor alongside Text Editor"
+      },
+      {
+        "command": "extension.kogito.dashbuilder.openAsDashboard",
+        "icon": "$(open-preview)",
+        "title": "Dashbuilder: Open as Dashboard (to the side)"
+      }
+    ],
+    "configuration": {
+      "properties": {
+        "kogito.dashbuilder.automaticallyOpenDashboardEditorAlongsideTextEditor": {
+          "default": "Ask next time",
+          "enum": [
+            "Open automatically",
+            "Do not open",
+            "Ask next time"
+          ],
+          "markdownDescription": "When opening Dashbuilder files, decide whether or not to open the Dashboard Editor alongside the text editor. Regardless of the configured option, you can always open the dashbuilder Dashboard Editor using the 'Open as Dashboard' button.",
+          "type": "string"
+        }
+      },
+      "title": "Dashbuilder Editor"
+    },
+    "configurationDefaults": {
+      "files.associations": {
+        "*.dash.json": "json",
+        "*.dash.yaml": "yaml",
+        "*.dash.yml": "yaml"
+      }
+    },
+    "customEditors": [
+      {
+        "displayName": "Dashbuilder Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.{dash.yml,dash.yaml,dash.json}"
+          }
+        ],
+        "viewType": "kieKogitoWebviewEditorsDashbuilder"
+      }
+    ],
+    "javaExtensions": [],
+    "keybindings": [
+      {
+        "command": "extension.kogito.dashbuilder.openAsDashboard",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)$/"
+      }
+    ],
+    "languages": [
+      {
+        "aliases": [
+          "dashbuilder (JSON)",
+          "dash.json"
+        ],
+        "extensions": [
+          ".dash.json"
+        ],
+        "id": "dash-json"
+      },
+      {
+        "aliases": [
+          "dashbuilder (YAML)",
+          "dash.yaml",
+          "dash.yml"
+        ],
+        "extensions": [
+          ".dash.yml",
+          ".dash.yaml"
+        ],
+        "id": "dash-yaml"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "extension.kogito.dashbuilder.openAsDashboard",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)/"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "extension.kogito.dashbuilder.openAsDashboard",
+          "group": "navigation",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)/"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:yaml",
+    "onLanguage:dash-json",
+    "onLanguage:dash-yaml",
+    "onCustomEditor:kieKogitoWebviewEditorsDashbuilder"
+  ],
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
+  ],
+  "icon": "icon.png"
+}
