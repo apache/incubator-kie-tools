@@ -670,7 +670,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion functions completion add at the beginning / with double extra indentation / using the code lenses 1`] = `1`;
+exports[`SWF LS YAML code completion functions completion add at the beginning / with double extra indentation / using the code lenses 1`] = `2`;
 
 exports[`SWF LS YAML code completion functions completion add at the beginning / with double extra indentation / using the code lenses 2`] = `
 Array [
@@ -732,10 +732,34 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique function name}'
+  operation: '\${2:localhost#operation}'
+  type: '\${3:CloudEvent type}'
+",
+      "range": Object {
+        "end": Object {
+          "character": 4,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 4,
+          "line": 1,
+        },
+      },
+    },
+  },
 ]
 `;
 
-exports[`SWF LS YAML code completion functions completion add at the beginning / with extra indentation / using the code lenses 1`] = `1`;
+exports[`SWF LS YAML code completion functions completion add at the beginning / with extra indentation / using the code lenses 1`] = `2`;
 
 exports[`SWF LS YAML code completion functions completion add at the beginning / with extra indentation / using the code lenses 2`] = `
 Array [
@@ -797,10 +821,34 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique function name}'
+  operation: '\${2:localhost#operation}'
+  type: '\${3:CloudEvent type}'
+",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
 ]
 `;
 
-exports[`SWF LS YAML code completion functions completion add at the beginning 1`] = `1`;
+exports[`SWF LS YAML code completion functions completion add at the beginning 1`] = `2`;
 
 exports[`SWF LS YAML code completion functions completion add at the beginning 2`] = `
 Array [
@@ -861,10 +909,33 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique function name}'
+  operation: '\${2:localhost#operation}'
+  type: '\${3:CloudEvent type}'",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
 ]
 `;
 
-exports[`SWF LS YAML code completion functions completion add at the beginning, using the code lenses 1`] = `1`;
+exports[`SWF LS YAML code completion functions completion add at the beginning, using the code lenses 1`] = `2`;
 
 exports[`SWF LS YAML code completion functions completion add at the beginning, using the code lenses 2`] = `
 Array [
@@ -926,10 +997,34 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "- name: '\${1:Unique function name}'
+  operation: '\${2:localhost#operation}'
+  type: '\${3:CloudEvent type}'
+",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
 ]
 `;
 
-exports[`SWF LS YAML code completion functions completion add at the end 1`] = `1`;
+exports[`SWF LS YAML code completion functions completion add at the end 1`] = `2`;
 
 exports[`SWF LS YAML code completion functions completion add at the end 2`] = `
 Array [
@@ -990,6 +1085,29 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique function name}'
+  operation: '\${2:localhost#operation}'
+  type: '\${3:CloudEvent type}'",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
 ]
 `;
 
@@ -997,7 +1115,7 @@ exports[`SWF LS YAML code completion functions completion add in the middle / wi
 
 exports[`SWF LS YAML code completion functions completion add in the middle / without dash character 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion functions completion add in the middle 1`] = `1`;
+exports[`SWF LS YAML code completion functions completion add in the middle 1`] = `2`;
 
 exports[`SWF LS YAML code completion functions completion add in the middle 2`] = `
 Array [
@@ -1058,10 +1176,33 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique function name}'
+  operation: '\${2:localhost#operation}'
+  type: '\${3:CloudEvent type}'",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+    },
+  },
 ]
 `;
 
-exports[`SWF LS YAML code completion functions completion empty completion items / with extra space 1`] = `1`;
+exports[`SWF LS YAML code completion functions completion empty completion items / with extra space 1`] = `2`;
 
 exports[`SWF LS YAML code completion functions completion empty completion items / with extra space 2`] = `
 Array [
@@ -1110,6 +1251,29 @@ Array [
       "newText": "name: '\${1:testRelativeFunction1}'
   operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
   type: rest",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "name: '\${1:Unique function name}'
+  operation: '\${2:localhost#operation}'
+  type: '\${3:CloudEvent type}'",
       "range": Object {
         "end": Object {
           "character": 2,

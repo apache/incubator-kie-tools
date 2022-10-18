@@ -559,7 +559,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion functions completion add at the beginning of the array 1`] = `1`;
+exports[`SWF LS JSON code completion functions completion add at the beginning of the array 1`] = `2`;
 
 exports[`SWF LS JSON code completion functions completion add at the beginning of the array 2`] = `
 Array [
@@ -622,10 +622,35 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 0,
+        },
+      },
+    },
+  },
 ]
 `;
 
-exports[`SWF LS JSON code completion functions completion add at the end of the array 1`] = `1`;
+exports[`SWF LS JSON code completion functions completion add at the end of the array 1`] = `2`;
 
 exports[`SWF LS JSON code completion functions completion add at the end of the array 2`] = `
 Array [
@@ -688,10 +713,35 @@ Array [
       },
     },
   },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 0,
+        },
+      },
+    },
+  },
 ]
 `;
 
-exports[`SWF LS JSON code completion functions completion add into empty array 1`] = `1`;
+exports[`SWF LS JSON code completion functions completion add into empty array 1`] = `2`;
 
 exports[`SWF LS JSON code completion functions completion add into empty array 2`] = `
 Array [
@@ -741,6 +791,31 @@ Array [
   \\"name\\": \\"\${1:testRelativeFunction1}\\",
   \\"operation\\": \\"specs/testRelativeService1.yml#testRelativeFunction1\\",
   \\"type\\": \\"rest\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
 }",
       "range": Object {
         "end": Object {

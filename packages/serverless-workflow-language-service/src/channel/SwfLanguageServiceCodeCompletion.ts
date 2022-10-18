@@ -27,6 +27,7 @@ import { SwfLanguageServiceCommandExecution } from "../api";
 import {
   eventCompletion,
   eventStateCompletion,
+  functionCompletion,
   injectStateCompletion,
   operationStateCompletion,
   switchStateCompletion,
@@ -237,7 +238,16 @@ export const SwfLanguageServiceCodeCompletion = {
           });
         })
     );
-    return Promise.resolve(result);
+
+    const genericFunctionCompletion = createCompletionItem({
+      ...args,
+      completion: functionCompletion,
+      kind: CompletionItemKind.Interface,
+      label: "New function",
+      detail: "Add a new function",
+    });
+
+    return Promise.resolve([...result, genericFunctionCompletion]);
   },
 
   getFunctionOperationCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {

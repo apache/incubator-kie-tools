@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from "./workflow-completions";
-export * from "./states-completions";
-export * from "./events-completions";
-export * from "./functions-completions";
+import { Specification } from "@severlessworkflow/sdk-typescript";
+
+export const functionCompletion: Omit<Specification.Function, "normalize"> = {
+  name: "${1:Unique function name}",
+  operation: "${2:localhost#operation}",
+  // @ts-expect-error not using the original type to use CodeCompletions placeholder
+  type: "${3:CloudEvent type}",
+};
