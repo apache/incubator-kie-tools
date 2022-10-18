@@ -122,7 +122,12 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
     public void withComponentBaseUrlIdAndPartition(String baseUrl, String componentId, String partition) {
         var url = "";
         if (baseUrl == null) {
-            url = buildUrl(hostPageUrl, COMPONENT_SERVER_PATH, componentId, partition);
+            var customComponentServerUrl = getComponentServerUrl();
+            if (customComponentServerUrl == null || customComponentServerUrl.trim().isEmpty()) {
+                url = buildUrl(hostPageUrl, COMPONENT_SERVER_PATH, componentId, partition);
+            } else {
+                url = buildUrl(customComponentServerUrl, "", componentId, partition);
+            }
         } else {
             url = buildUrl(baseUrl, null, componentId, partition);
         }
@@ -166,5 +171,9 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
         url += componentId + URL_SEPARATOR + "index.html";
         return url.toLowerCase();
     }
+
+    private static native String getComponentServerUrl() /*-{
+        return $wnd.componentServerUrl;
+    }-*/;
 
 }

@@ -812,6 +812,17 @@ jobs:
           asset_name: vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
+      - name: "Upload VS Code Extension - Dashbuilder Editor (prod)"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_dashbuilder_editor_${{ inputs.tag }}.vsix
+          asset_content_type: application/zip
+
   desktop:
     if: ${{ needs.extract_runners.outputs.desktop == 'true' }}
     runs-on: ${{ matrix.os }}
