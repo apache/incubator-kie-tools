@@ -31,7 +31,6 @@ import {
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
 import Correlation from "./helpers/bpmn/Correlation";
 import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutionHelper";
-import { doesNotMatch } from "assert";
 
 /**
  * BPMN editor vscode integration test suite, add any acceptance tests,
