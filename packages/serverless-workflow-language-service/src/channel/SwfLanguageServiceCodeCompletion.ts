@@ -24,11 +24,17 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { TextDocument } from "vscode-json-languageservice";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandExecution } from "../api";
-import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
+import {
+  eventStateCompletion,
+  injectStateCompletion,
+  operationStateCompletion,
+  switchStateCompletion,
+  workflowCompletion,
+} from "../assets/code-completions";
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, OmitRecursively, SwfLsNode } from "./types";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
@@ -121,7 +127,7 @@ export const SwfLanguageServiceCodeCompletion = {
         detail: "Start with a simple Serverless Workflow",
         sortText: `100_${label}`, //place the completion on top in the menu
         textEdit: {
-          newText: args.codeCompletionStrategy.translate({ completion: simpleTemplate, completionItemKind: kind }),
+          newText: args.codeCompletionStrategy.translate({ completion: workflowCompletion, completionItemKind: kind }),
           range: Range.create(args.cursorPosition, args.cursorPosition),
         },
         insertTextFormat: InsertTextFormat.Snippet,
@@ -131,58 +137,6 @@ export const SwfLanguageServiceCodeCompletion = {
 
   getStatesCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
     const kind = CompletionItemKind.Interface;
-
-    const genericStateCompletion = {
-      name: "${1:Unique State name}",
-      transition: "${10:Next transition of the workflow}",
-    };
-
-    const operationStateCompletion = {
-      name: genericStateCompletion.name,
-      type: "operation",
-      actions: [
-        {
-          name: "${5:Unique Action name}",
-          functionRef: {},
-        },
-      ],
-      transition: genericStateCompletion.transition,
-      end: false,
-    };
-
-    const eventStateCompletion = {
-      name: genericStateCompletion.name,
-      type: "event",
-      onEvents: [
-        {
-          eventRefs: ["${5:Unique event names}"],
-        },
-      ],
-      transition: genericStateCompletion.transition,
-      end: false,
-    };
-
-    const switchStateCompletion = {
-      name: genericStateCompletion.name,
-      type: "switch",
-      dataConditions: [
-        {
-          condition: "${5:Workflow expression evaluated against state data}",
-          transition: "${6:Transition to another state if condition is true}",
-        },
-      ],
-      defaultCondition: {
-        transition: "${7:Default transition of the workflow}",
-      },
-    };
-
-    const injectStateCompletion = {
-      name: genericStateCompletion.name,
-      type: "inject",
-      data: [],
-      transition: genericStateCompletion.transition,
-      end: false,
-    };
 
     return Promise.resolve([
       createCompletionItem({
