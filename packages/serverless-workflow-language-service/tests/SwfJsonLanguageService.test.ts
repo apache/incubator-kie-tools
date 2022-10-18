@@ -18,15 +18,10 @@ import {
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import * as path from "path";
 import * as fs from "fs";
-import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat, Position } from "vscode-languageserver-types";
-import {
-  defaultConfig,
-  defaultServiceCatalogConfig,
-  testRelativeFunction1,
-  testRelativeService1,
-} from "./SwfLanguageServiceConfigs";
+import * as path from "path";
+import { CodeLens, Position } from "vscode-languageserver-types";
+import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, trim } from "./testUtils";
 
 const EXPECTED_RESULTS_PROJECT_FOLDER: string = path.resolve("tests", "expectedResults");
@@ -471,87 +466,6 @@ describe("SWF LS JSON", () => {
       });
     });
 
-    describe("function completion", () => {
-      test.each([
-        ["empty completion items", `{ "functions": [ {🎯} ] }`],
-        ["pointing before the array of functions", `{ "functions":🎯 [] }`],
-        ["pointing before the array of functions / with extra space after ':'", `{ "functions": 🎯 [] }`],
-        ["pointing after the array of functions", `{ "functions": []🎯 }`],
-      ])("%s", async (_description, content: ContentWithCursor) => {
-        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
-
-        expect(completionItems).toHaveLength(0);
-      });
-
-      test("add into empty functions array", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [🎯]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("add at the end", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `
-{
-  "functions": [{...},🎯]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("add at the beginning", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [🎯{...}]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("add in the middle", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [{...},🎯{...}]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("add in a new line", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    🎯
-  ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-    });
-
     describe("operation completion", () => {
       test("not in quotes / without same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
@@ -906,21 +820,17 @@ describe("SWF LS JSON", () => {
       });
     });
 
-    describe("state completion", () => {
+    describe.each([["functions"], ["events"], ["states"]])(`%s completion`, (nodeName: string) => {
       test.each([
-        ["pointing inside an object of the array", `{ "states": [ {🎯} ] }`],
-        ["pointing before the array", `{ "states":🎯 [] }`],
-        ["pointing before the array", `{ "states": 🎯 [] }`],
-        ["pointing after the array", `{ "states": []🎯 }`],
-        ["add into empty array", `{ "states": [🎯] }`],
-        ["add at the beginning of the array", `{ "states": [🎯 {}] }`],
-        ["add at the end of the array", `{ "states": [{}, 🎯 ] }`],
+        ["pointing inside an object of the array", `{ "${nodeName}": [ {🎯} ] }`],
+        ["pointing before the array", `{ "${nodeName}":🎯 [] }`],
+        ["pointing before the array", `{ "${nodeName}": 🎯 [] }`],
+        ["pointing after the array", `{ "${nodeName}": []🎯 }`],
+        ["add into empty array", `{ "${nodeName}": [🎯] }`],
+        ["add at the beginning of the array", `{ "${nodeName}": [🎯 {}] }`],
+        ["add at the end of the array", `{ "${nodeName}": [{}, 🎯 ] }`],
       ])("%s", async (_description, content: ContentWithCursor) => {
         const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
-        const expectedResult = fs.readFileSync(
-          path.resolve(EXPECTED_RESULTS_PROJECT_FOLDER, "emptyfile_autocompletion.sw.json.result"),
-          "utf-8"
-        );
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();

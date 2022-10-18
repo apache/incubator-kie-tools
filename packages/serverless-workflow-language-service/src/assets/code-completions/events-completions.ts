@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from "./workflow-completions";
-export * from "./states-completions";
-export * from "./events-completions";
+import { Specification } from "@severlessworkflow/sdk-typescript";
+
+export const eventCompletion: Omit<Specification.Eventdef, "normalize"> = {
+  name: "${1:Unique event name}",
+  source: "${2:CloudEvent source}",
+  type: "${3:CloudEvent type}",
+};

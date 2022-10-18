@@ -925,64 +925,6 @@ functions:
       });
     });
 
-    describe("function completion", () => {
-      test.each([
-        ["empty completion items", "functions:\n-🎯"],
-        ["pointing before the array of functions / using JSON format", `functions: 🎯[] `],
-        [
-          "pointing before the array of functions / with extra space after ':' / using JSON format",
-          `functions: 🎯 [] `,
-        ],
-        ["pointing after the array of functions / using JSON format", `functions: []🎯 `],
-        [
-          "pointing inside an object of the array of functions / using JSON format",
-          `functions: [ {🎯 "name":"getGreetingFunction", "operation":"openapi.yml#getGreeting"}]`,
-        ],
-        ["using JSON format", `functions: [🎯]`],
-        [
-          "using JSON format / before a function",
-          `functions: [🎯{ "name": "getGreetingFunction", "operation": "openapi.yml#getGreeting" }]`,
-        ],
-        [
-          "using JSON format / after a function",
-          `functions: [{ "name": "getGreetingFunction", "operation": "openapi.yml#getGreeting" },🎯]`,
-        ],
-      ])("%s", async (_description, content: ContentWithCursor) => {
-        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
-
-        expect(completionItems).toHaveLength(0);
-      });
-
-      test.each([
-        ["add at the end", `functions:\n- name: getGreetingFunction\n- 🎯`],
-        ["add at the beginning", `functions:\n- 🎯\n- name: getGreetingFunction`],
-        ["add in the middle", `functions:\n- name: getGreetingFunction\n- 🎯\n- name: helloWorldFunction`],
-        ["add in a new line", `functions: \n- 🎯`],
-      ])("%s", async (_description, content: ContentWithCursor) => {
-        let { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test.each([
-        ["add at the beginning, using the code lenses", `functions:\n🎯- name: helloWorldFunction`],
-        [
-          "add at the beginning / with extra indentation / using the code lenses",
-          `functions:\n  🎯- name: helloWorldFunction`,
-        ],
-        [
-          "add at the beginning / with double extra indentation / using the code lenses",
-          `functions:\n    🎯- name: helloWorldFunction`,
-        ],
-      ])("%s", async (_description, content: ContentWithCursor) => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content);
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-    });
-
     describe("operation completion", () => {
       test.each([
         ["using JSON format", `functions: [{"name": "getGreetingFunction", "operation": 🎯 }]`],
@@ -1393,17 +1335,20 @@ states:
       });
     });
 
-    describe("state completion", () => {
+    describe.each([["functions"], ["events"], ["states"]])(`%s completion`, (nodeName: string) => {
       describe("using JSON format", () => {
         test.each([
-          ["using JSON format", `states: [🎯]`],
-          ["using JSON format / before a state", `states: [🎯{ }]`],
-          ["using JSON format / after a state", `states: [{  },🎯]`],
-          ["pointing before the array of states / using JSON format", `states: 🎯[] `],
-          ["pointing before the array of states / with extra space after ':' / using JSON format", `states: 🎯 [] `],
-          ["pointing after the array of states / using JSON format", `states: []🎯 `],
-          ["pointing inside an object of the array of states / using JSON format", `states: [ {🎯 }]`],
-        ])("%s", async (_description, content: ContentWithCursor) => {
+          [`using JSON format`, `${nodeName}: [🎯]`],
+          [`using JSON format / before a ${nodeName}`, `${nodeName}: [🎯{ }]`],
+          [`using JSON format / after a ${nodeName}`, `${nodeName}: [{  },🎯]`],
+          [`pointing before the array of ${nodeName} / using JSON format`, `${nodeName}: 🎯[] `],
+          [
+            `pointing before the array of ${nodeName} / with extra space after ':' / using JSON format`,
+            `${nodeName}: 🎯 [] `,
+          ],
+          [`pointing after the array of ${nodeName} / using JSON format`, `${nodeName}: []🎯 `],
+          [`pointing inside an object of the array of ${nodeName} / using JSON format`, `${nodeName}: [ {🎯 }]`],
+        ])(`%s`, async (_description, content: ContentWithCursor) => {
           const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
 
           expect(completionItems).toHaveLength(0);
@@ -1411,17 +1356,17 @@ states:
       });
 
       test.each([
-        ["empty completion items", "states:\n-🎯"],
-        ["empty completion items / with extra space", "states:\n- 🎯"],
-        ["add at the end", `states:\n- name: itemName\n- 🎯`],
-        ["add at the beginning", `states:\n- 🎯\n- name: itemName`],
-        ["add in the middle", `states:\n- name: itemName1\n- 🎯\n- name: itemName2`],
-        ["add in the middle / without dash character", `states:\n- name: itemName1\n🎯\n- name: itemName2`],
-        ["add at the beginning, using the code lenses", `states:\n🎯- name: itemName`],
-        ["add at the beginning / with extra indentation / using the code lenses", `states:\n  🎯- name: itemName`],
+        [`empty completion items`, `${nodeName}:\n-🎯`],
+        [`empty completion items / with extra space`, `${nodeName}:\n- 🎯`],
+        [`add at the end`, `${nodeName}:\n- name: itemName\n- 🎯`],
+        [`add at the beginning`, `${nodeName}:\n- 🎯\n- name: itemName`],
+        [`add in the middle`, `${nodeName}:\n- name: itemName1\n- 🎯\n- name: itemName2`],
+        [`add in the middle / without dash character`, `${nodeName}:\n- name: itemName1\n🎯\n- name: itemName2`],
+        [`add at the beginning, using the code lenses`, `${nodeName}:\n🎯- name: itemName`],
+        [`add at the beginning / with extra indentation / using the code lenses`, `${nodeName}:\n  🎯- name: itemName`],
         [
-          "add at the beginning / with double extra indentation / using the code lenses",
-          `states:\n    🎯- name: itemName`,
+          `add at the beginning / with double extra indentation / using the code lenses`,
+          `${nodeName}:\n    🎯- name: itemName`,
         ],
       ])("%s", async (_description, content: ContentWithCursor) => {
         const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);

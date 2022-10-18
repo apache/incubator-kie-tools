@@ -25,6 +25,7 @@ import { TextDocument } from "vscode-json-languageservice";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandExecution } from "../api";
 import {
+  eventCompletion,
   eventStateCompletion,
   injectStateCompletion,
   operationStateCompletion,
@@ -34,7 +35,7 @@ import {
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, OmitRecursively, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, SwfLsNode } from "./types";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
@@ -133,6 +134,20 @@ export const SwfLanguageServiceCodeCompletion = {
         insertTextFormat: InsertTextFormat.Snippet,
       },
     ];
+  },
+
+  getEventsCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const kind = CompletionItemKind.Interface;
+
+    return Promise.resolve([
+      createCompletionItem({
+        ...args,
+        completion: eventCompletion,
+        kind,
+        label: "New event",
+        detail: "Add a new event",
+      }),
+    ]);
   },
 
   getStatesCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
