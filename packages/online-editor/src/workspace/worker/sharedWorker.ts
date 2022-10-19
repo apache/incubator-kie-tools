@@ -44,6 +44,7 @@ import { LocalFile } from "./api/LocalFile";
 import { FsFlushManager } from "../services/FsFlushManager";
 import { WorkspacesWorkerChannelApi } from "./api/WorkspacesWorkerChannelApi";
 import { FsSchema } from "../services/FsCache";
+import { GitServerRef } from "./api/GitServerRef";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -58,9 +59,10 @@ const GIT_USER_DEFAULT = {
 };
 
 async function corsProxyUrl() {
-  const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
-  const env = await (await fetch(envFilePath)).json();
-  return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
+  // const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
+  // const env = await (await fetch(envFilePath)).json();
+  // return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
+  return "http://localhost:8080";
 }
 
 const fsFlushManager = new FsFlushManager();
@@ -326,6 +328,15 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
           ...args,
         });
       });
+    },
+    async kieSandboxWorkspacesGit_getGitServerRefs(args: {
+      url: string;
+      authInfo?: {
+        username: string;
+        password: string;
+      };
+    }): Promise<GitServerRef[]> {
+      return await gitService.listServerRefs(args);
     },
     async kieSandboxWorkspacesGit_clone(args: {
       origin: GistOrigin | GitHubOrigin;

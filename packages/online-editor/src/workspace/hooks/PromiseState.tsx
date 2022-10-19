@@ -91,7 +91,7 @@ export function usePromiseState<T>(): [
       } else if (ns.loading) {
         return { status: PromiseStateStatus.PENDING };
       } else {
-        throw new Error("Invalid state");
+        throw new Error("Invalid promise state");
       }
     });
   }, []);

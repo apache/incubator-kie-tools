@@ -182,7 +182,7 @@ export function EditorToolbar(props: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST) {
+        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST_DOT_GITHUB_DOT_COM) {
           return;
         }
 
@@ -1380,7 +1380,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
                 {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&
-                  workspaceImportableUrl.type === UrlType.GITHUB && (
+                  workspaceImportableUrl.type === UrlType.GITHUB_DOT_COM && (
                     <FlexItem
                       style={{
                         minWidth: "137px",

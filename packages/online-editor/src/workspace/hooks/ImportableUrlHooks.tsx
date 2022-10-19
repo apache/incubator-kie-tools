@@ -20,22 +20,39 @@ import { useMemo } from "react";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export enum UrlType {
+  //git
   GIT,
-  GITHUB,
-  GIST,
-  GIST_FILE,
-  GITHUB_FILE,
+  GITHUB_DOT_COM,
+  GIST_DOT_GITHUB_DOT_COM,
+
+  //single file
+  GIST_DOT_GITHUB_DOT_COM_FILE,
+  GITHUB_DOT_COM_FILE,
   FILE,
-  ZIP,
+
+  //other
+  UNKNOWN,
+  NOT_SUPPORTED,
   INVALID,
 }
 
+export function isCertainlyGit(urlType: UrlType) {
+  return urlType === UrlType.GIT || urlType === UrlType.GITHUB_DOT_COM || urlType === UrlType.GIST_DOT_GITHUB_DOT_COM;
+}
+
+export function isPotentiallyGit(urlType: UrlType) {
+  return isCertainlyGit(urlType) || urlType === UrlType.UNKNOWN;
+}
+
+export function isSingleFile(urlType: UrlType) {
+  return (
+    urlType === UrlType.FILE ||
+    urlType === UrlType.GIST_DOT_GITHUB_DOT_COM_FILE ||
+    urlType === UrlType.GITHUB_DOT_COM_FILE
+  );
+}
+
 export type ImportableUrl =
-  | {
-      type: UrlType.ZIP;
-      error?: undefined;
-      url: URL;
-    }
   | {
       type: UrlType.FILE;
       error?: undefined;
@@ -47,20 +64,20 @@ export type ImportableUrl =
       url: URL;
     }
   | {
-      type: UrlType.GIST;
+      type: UrlType.GIST_DOT_GITHUB_DOT_COM;
       error?: undefined;
       gistId?: string;
       url: URL;
     }
   | {
-      type: UrlType.GIST_FILE;
+      type: UrlType.GIST_DOT_GITHUB_DOT_COM_FILE;
       error?: undefined;
       url: URL;
       gistId: string;
       fileName: string;
     }
   | {
-      type: UrlType.GITHUB_FILE;
+      type: UrlType.GITHUB_DOT_COM_FILE;
       error?: undefined;
       url: URL;
       org: string;
@@ -69,10 +86,20 @@ export type ImportableUrl =
       filePath: string;
     }
   | {
-      type: UrlType.GITHUB;
+      type: UrlType.GITHUB_DOT_COM;
       error?: undefined;
       url: URL;
       branch?: string;
+    }
+  | {
+      type: UrlType.NOT_SUPPORTED;
+      error: string;
+      url: URL;
+    }
+  | {
+      type: UrlType.UNKNOWN;
+      error?: string;
+      url: URL;
     }
   | {
       type: UrlType.INVALID;
@@ -85,8 +112,8 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
   return useMemo(() => {
     const ifAllowed = (url: ImportableUrl): ImportableUrl => {
-      if (allowedUrlTypes && !allowedUrlTypes.includes(url.type)) {
-        return { type: UrlType.INVALID, error: "URL not allowed", url: url.url.toString() };
+      if (allowedUrlTypes && !allowedUrlTypes.includes(url.type) && url.type !== UrlType.INVALID) {
+        return { type: UrlType.NOT_SUPPORTED, error: `URL type not allowed (${url.type})`, url: url.url };
       }
 
       return url;
@@ -119,14 +146,14 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       });
 
       if (defaultBranchMatch) {
-        return ifAllowed({ type: UrlType.GITHUB, url });
+        return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url });
       }
 
       if (customBranchMatch) {
         const branch = customBranchMatch.params.tree;
         const customBranchUrl = new URL(urlString);
         customBranchUrl.pathname = customBranchUrl.pathname.replace(`/tree/${branch}`, "");
-        return ifAllowed({ type: UrlType.GITHUB, url: customBranchUrl, branch });
+        return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url: customBranchUrl, branch });
       }
 
       const gitHubFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
@@ -138,7 +165,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
       if (gitHubFileMatch) {
         return ifAllowed({
-          type: UrlType.GITHUB_FILE,
+          type: UrlType.GITHUB_DOT_COM_FILE,
           url: url,
           org: gitHubFileMatch.params.org,
           repo: gitHubFileMatch.params.repo,
@@ -156,7 +183,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
       if (gitHubRawFileMatch) {
         return ifAllowed({
-          type: UrlType.GITHUB_FILE,
+          type: UrlType.GITHUB_DOT_COM_FILE,
           url: url,
           org: gitHubRawFileMatch.params.org,
           repo: gitHubRawFileMatch.params.repo,
@@ -165,7 +192,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         });
       }
 
-      return { type: UrlType.INVALID, error: "Unsupported GitHub URL", url: urlString };
+      return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub URL", url };
     }
 
     if (url.host === "gist.github.com" || url.host === "gist.githubusercontent.com") {
@@ -188,12 +215,12 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       });
 
       if (!gistMatch && !rawGistMatch && !directGistMatch) {
-        return { type: UrlType.INVALID, error: "Unsupported Gist URL", url: urlString };
+        return { type: UrlType.NOT_SUPPORTED, error: "Unsupported Gist URL", url };
       }
 
       if (gistMatch && url.hash) {
         return ifAllowed({
-          type: UrlType.GIST_FILE,
+          type: UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
           url: url,
           gistId: gistMatch.params.gistId,
           fileName: url.hash.replace("#file-", "").replace(/-([^-]*)$/, ".$1"),
@@ -202,7 +229,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
       if (rawGistMatch) {
         return ifAllowed({
-          type: UrlType.GIST_FILE,
+          type: UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
           url: url,
           gistId: rawGistMatch.params.gistId,
           fileName: rawGistMatch.params.fileName,
@@ -210,29 +237,25 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       }
 
       return ifAllowed({
-        type: UrlType.GIST,
+        type: UrlType.GIST_DOT_GITHUB_DOT_COM,
         url,
         gistId: (gistMatch ?? directGistMatch)?.params.gistId.replace(".git", ""),
       });
     }
 
     const extension = extname(url.pathname).replace(".", "");
-    if (!extension) {
-      return { type: UrlType.INVALID, error: `Can't determine file extension from URL`, url: urlString };
+    if (extension) {
+      if (extension === "git") {
+        return ifAllowed({ type: UrlType.GIT, url });
+      }
+
+      if (!editorEnvelopeLocator.hasMappingFor(url.pathname)) {
+        return { type: UrlType.NOT_SUPPORTED, error: `Unsupported extension for '${url.pathname}'`, url };
+      }
+
+      return ifAllowed({ type: UrlType.FILE, url });
     }
 
-    // if (extension === "zip") {
-    //   return ifAllowed({ type: UrlType.ZIP, url });
-    // }
-
-    if (extension === "git") {
-      return ifAllowed({ type: UrlType.GIT, url });
-    }
-
-    if (!editorEnvelopeLocator.hasMappingFor(url.pathname)) {
-      return { type: UrlType.INVALID, error: `Unsupported extension for '${url.pathname}'`, url: urlString };
-    }
-
-    return ifAllowed({ type: UrlType.FILE, url });
+    return { type: UrlType.UNKNOWN, url };
   }, [editorEnvelopeLocator, urlString, allowedUrlTypes]);
 }

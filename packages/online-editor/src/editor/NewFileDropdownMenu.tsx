@@ -38,7 +38,7 @@ import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
-import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
+import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
 
@@ -199,6 +199,12 @@ export function NewFileDropdownMenu(props: {
 
   const [url, setUrl] = useState("");
 
+  const importableUrl = useImportableUrl(url, [
+    UrlType.FILE,
+    UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
+    UrlType.GITHUB_DOT_COM_FILE,
+  ]);
+
   return (
     <Menu
       tabIndex={1}
@@ -298,7 +304,7 @@ export function NewFileDropdownMenu(props: {
                 <MenuInput onKeyDown={(e) => e.stopPropagation()}>
                   <ImportFromUrlForm
                     importingError={importingError}
-                    allowedTypes={[UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE]}
+                    importableUrl={importableUrl}
                     urlInputRef={urlInputRef}
                     url={url}
                     onChange={(url) => {

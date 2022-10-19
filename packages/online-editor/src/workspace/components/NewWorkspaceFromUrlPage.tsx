@@ -109,8 +109,11 @@ export function NewWorkspaceFromUrlPage() {
 
   useEffect(() => {
     async function run() {
-      const singleFile = [UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE].includes(importableUrl.type);
-      const shouldAttemptImportingAsGitRepository = !singleFile && importableUrl.type !== UrlType.GIST;
+      const singleFile = [UrlType.FILE, UrlType.GIST_DOT_GITHUB_DOT_COM_FILE, UrlType.GITHUB_DOT_COM_FILE].includes(
+        importableUrl.type
+      );
+      const shouldAttemptImportingAsGitRepository =
+        !singleFile && importableUrl.type !== UrlType.GIST_DOT_GITHUB_DOT_COM;
 
       if (shouldAttemptImportingAsGitRepository) {
         // try to import the URL as a git repository first
@@ -144,7 +147,7 @@ export function NewWorkspaceFromUrlPage() {
         }
 
         // github
-        if (importableUrl.type === UrlType.GITHUB) {
+        if (importableUrl.type === UrlType.GITHUB_DOT_COM) {
           await importGitWorkspace({
             origin: {
               kind: WorkspaceKind.GIT,
@@ -166,7 +169,7 @@ export function NewWorkspaceFromUrlPage() {
         }
 
         // gist
-        else if (importableUrl.type === UrlType.GIST) {
+        else if (importableUrl.type === UrlType.GIST_DOT_GITHUB_DOT_COM) {
           importableUrl.url.hash = "";
 
           const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
@@ -191,7 +194,7 @@ export function NewWorkspaceFromUrlPage() {
         else if (singleFile) {
           let rawUrl = importableUrl.url as URL;
 
-          if (importableUrl.type === UrlType.GITHUB_FILE) {
+          if (importableUrl.type === UrlType.GITHUB_DOT_COM_FILE) {
             const res = await settingsDispatch.github.octokit.repos.getContent({
               repo: importableUrl.repo,
               owner: importableUrl.org,
@@ -204,7 +207,7 @@ export function NewWorkspaceFromUrlPage() {
             rawUrl = new URL((res.data as any).download_url);
           }
 
-          if (importableUrl.type === UrlType.GIST_FILE) {
+          if (importableUrl.type === UrlType.GIST_DOT_GITHUB_DOT_COM_FILE) {
             const { data } = await settingsDispatch.github.octokit.gists.get({ gist_id: importableUrl.gistId });
             const fileName =
               Object.keys(data.files!).find((k) => k.toLowerCase() === importableUrl.fileName.toLowerCase()) ??
@@ -224,11 +227,6 @@ export function NewWorkspaceFromUrlPage() {
             path: basename(decodeURIComponent(rawUrl.pathname)),
             fileContents: encoder.encode(content),
           });
-        }
-
-        // zip
-        else if (importableUrl.type === UrlType.ZIP) {
-          throw new Error("Importing ZIPs is not supported yet.");
         }
 
         // invalid
