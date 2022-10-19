@@ -290,142 +290,186 @@ describe("SWF LS JSON", () => {
           },
         } as CodeLens);
       });
+    });
 
-      test("service registries integration disabled", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: {
-            ...defaultConfig,
-            shouldDisplayServiceRegistriesIntegration: async () => Promise.resolve(false),
-            shouldConfigureServiceRegistries: () => true,
-            shouldServiceRegistriesLogIn: () => true,
-            canRefreshServices: () => true,
-          },
-        });
+    test("add event - unformatted", async () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
 
-        const { content } = trim(`
+      const { content } = trim(`{"events":[]}`);
+
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+      expect(codeLenses).toHaveLength(1);
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 0, character: 10 }, end: { line: 0, character: 10 } },
+        command: {
+          title: "+ Add event...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 11, line: 0 } }],
+        },
+      } as CodeLens);
+    });
+
+    test("add state - unformatted", async () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+
+      const { content } = trim(`{"states":[]}`);
+
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+      expect(codeLenses).toHaveLength(1);
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 0, character: 10 }, end: { line: 0, character: 10 } },
+        command: {
+          title: "+ Add state...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 11, line: 0 } }],
+        },
+      } as CodeLens);
+    });
+
+    test("service registries integration disabled", async () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: {
+          ...defaultConfig,
+          shouldDisplayServiceRegistriesIntegration: async () => Promise.resolve(false),
+          shouldConfigureServiceRegistries: () => true,
+          shouldServiceRegistriesLogIn: () => true,
+          canRefreshServices: () => true,
+        },
+      });
+
+      const { content } = trim(`
 {
   "functions": []
 }`);
 
-        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-        expect(codeLenses).toHaveLength(1);
-        expect(codeLenses[0]).toStrictEqual({
-          range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
-          command: {
-            title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
-            arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
-          },
-        } as CodeLens);
+      expect(codeLenses).toHaveLength(1);
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+        command: {
+          title: "+ Add function...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        },
+      } as CodeLens);
+    });
+
+    test("login to service registries", async () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
       });
 
-      test("login to service registries", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
-        });
-
-        const { content } = trim(`
+      const { content } = trim(`
 {
   "functions": []
 }`);
 
-        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-        expect(codeLenses).toHaveLength(2);
-        expect(codeLenses[0]).toStrictEqual({
-          range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
-          command: {
-            command: "swf.ls.commands.LogInServiceRegistries",
-            title: "↪ Log in Service Registries...",
-            arguments: [{ position: { character: 15, line: 1 } }],
-          },
-        });
-        expect(codeLenses[1]).toStrictEqual({
-          range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
-          command: {
-            title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
-            arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
-          },
-        } as CodeLens);
+      expect(codeLenses).toHaveLength(2);
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+        command: {
+          command: "swf.ls.commands.LogInServiceRegistries",
+          title: "↪ Log in Service Registries...",
+          arguments: [{ position: { character: 15, line: 1 } }],
+        },
+      });
+      expect(codeLenses[1]).toStrictEqual({
+        range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+        command: {
+          title: "+ Add function...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        },
+      } as CodeLens);
+    });
+
+    test("setup service registries", async () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: {
+          ...defaultConfig,
+          shouldConfigureServiceRegistries: () => true,
+        },
       });
 
-      test("setup service registries", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: {
-            ...defaultConfig,
-            shouldConfigureServiceRegistries: () => true,
-          },
-        });
-
-        const { content } = trim(`
+      const { content } = trim(`
 {
   "functions": []
 }`);
 
-        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-        expect(codeLenses).toHaveLength(2);
-        expect(codeLenses[0]).toStrictEqual({
-          range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
-          command: {
-            command: "swf.ls.commands.OpenServiceRegistriesConfig",
-            title: "↪ Setup Service Registries...",
-            arguments: [{ position: { character: 15, line: 1 } }],
-          },
-        });
-        expect(codeLenses[1]).toStrictEqual({
-          range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
-          command: {
-            title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
-            arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
-          },
-        } as CodeLens);
+      expect(codeLenses).toHaveLength(2);
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+        command: {
+          command: "swf.ls.commands.OpenServiceRegistriesConfig",
+          title: "↪ Setup Service Registries...",
+          arguments: [{ position: { character: 15, line: 1 } }],
+        },
+      });
+      expect(codeLenses[1]).toStrictEqual({
+        range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+        command: {
+          title: "+ Add function...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        },
+      } as CodeLens);
+    });
+
+    test("refresh service registries", async () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: {
+          ...defaultConfig,
+          canRefreshServices: () => true,
+        },
       });
 
-      test("refresh service registries", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: {
-            ...defaultConfig,
-            canRefreshServices: () => true,
-          },
-        });
-
-        const { content } = trim(`
+      const { content } = trim(`
 {
   "functions": []
 }`);
 
-        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
-        expect(codeLenses).toHaveLength(2);
-        expect(codeLenses[0]).toStrictEqual({
-          range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
-          command: {
-            command: "swf.ls.commands.RefreshServiceRegistries",
-            title: "↺ Refresh Service Registries...",
-            arguments: [{ position: { character: 15, line: 1 } }],
-          },
-        });
-        expect(codeLenses[1]).toStrictEqual({
-          range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
-          command: {
-            title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
-            arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
-          },
-        } as CodeLens);
+      expect(codeLenses).toHaveLength(2);
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+        command: {
+          command: "swf.ls.commands.RefreshServiceRegistries",
+          title: "↺ Refresh Service Registries...",
+          arguments: [{ position: { character: 15, line: 1 } }],
+        },
       });
+      expect(codeLenses[1]).toStrictEqual({
+        range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+        command: {
+          title: "+ Add function...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        },
+      } as CodeLens);
     });
   });
 
@@ -455,7 +499,7 @@ describe("SWF LS JSON", () => {
         ["empty file with a newline before the cursor", `\n🎯`],
         ["empty file with a newline after the cursor", `🎯\n`],
       ])("%s", async (_description, content: ContentWithCursor) => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
         const expectedResult = fs.readFileSync(
           path.resolve(EXPECTED_RESULTS_PROJECT_FOLDER, "emptyfile_autocompletion.sw.json.result"),
           "utf-8"
@@ -468,7 +512,7 @@ describe("SWF LS JSON", () => {
 
     describe("operation completion", () => {
       test("not in quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -486,7 +530,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("not in quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -505,7 +549,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside double quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -523,7 +567,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside double quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -544,7 +588,7 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef completion", () => {
       test("without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -576,7 +620,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -610,7 +654,7 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef refName completion", () => {
       test("not in quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -644,7 +688,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("not in quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -679,7 +723,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside double quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -713,7 +757,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside double quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -750,7 +794,7 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef arguments completion", () => {
       test("without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -785,7 +829,7 @@ describe("SWF LS JSON", () => {
       });
 
       test("with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `{
@@ -827,10 +871,41 @@ describe("SWF LS JSON", () => {
         ["pointing before the array", `{ "${nodeName}": 🎯 [] }`],
         ["pointing after the array", `{ "${nodeName}": []🎯 }`],
         ["add into empty array", `{ "${nodeName}": [🎯] }`],
-        ["add at the beginning of the array", `{ "${nodeName}": [🎯 {}] }`],
+        ["add at the beginning of the array", `{ "${nodeName}": [🎯, {}] }`],
         ["add at the end of the array", `{ "${nodeName}": [{}, 🎯 ] }`],
       ])("%s", async (_description, content: ContentWithCursor) => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(ls, documentUri, content, false);
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
+
+    describe("eventRefs completion", () => {
+      test.each([
+        ["pointing inside an object of the array", ` [ "🎯" ]`],
+        ["pointing before the array", `🎯 []`],
+        ["pointing before the array", ` 🎯 []`],
+        ["pointing after the array", ` []🎯`],
+        ["add into empty array", ` [🎯]`],
+        ["add at the beginning of the array", ` [🎯, ""]`],
+        ["add at the end of the array", ` ["", 🎯 ]`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `{
+  "events": [
+    {
+      "name": "GreetEvent"
+    }
+  ],
+  "states": [{
+    "onEvents": [
+      {
+        "eventRefs":${nodeValue}
+      }
+    ]
+  }]
+}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();

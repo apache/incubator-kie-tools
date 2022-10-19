@@ -226,6 +226,8 @@ export class SwfLanguageService {
         ? SwfLanguageServiceCodeLenses.refreshServiceRegistries(codeLensesFunctionsArgs)
         : []),
       ...SwfLanguageServiceCodeLenses.addFunction(codeLensesFunctionsArgs),
+      ...SwfLanguageServiceCodeLenses.addEvent(codeLensesFunctionsArgs),
+      ...SwfLanguageServiceCodeLenses.addState(codeLensesFunctionsArgs),
     ];
   }
 
@@ -293,6 +295,7 @@ const completions = new Map<
     ["states", "*", "actions", "*", "functionRef", "arguments"],
     SwfLanguageServiceCodeCompletion.getFunctionRefArgumentsCompletions,
   ],
+  [["states", "*", "onEvents", "*", "eventRefs", "*"], SwfLanguageServiceCodeCompletion.getEventRefsCompletions],
 ]);
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {

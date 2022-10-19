@@ -19,5 +19,5 @@ export const functionCompletion: Omit<Specification.Function, "normalize"> = {
   name: "${1:Unique function name}",
   operation: "${2:localhost#operation}",
   // @ts-expect-error not using the original type to use CodeCompletions placeholder
-  type: "${3:CloudEvent type}",
+  type: "${3:Function type}",
 };

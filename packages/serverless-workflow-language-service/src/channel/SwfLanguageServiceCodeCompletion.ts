@@ -402,4 +402,22 @@ export const SwfLanguageServiceCodeCompletion = {
       }),
     ]);
   },
+
+  getEventRefsCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const result = swfModelQueries.getEvents(args.rootNode).flatMap((event) => {
+      const kind = CompletionItemKind.Value;
+      const label = args.codeCompletionStrategy.formatLabel(event.name!, kind);
+
+      return [
+        createCompletionItem({
+          ...args,
+          completion: `${event.name}`,
+          kind,
+          label,
+          detail: `"${event.name}"`,
+        }),
+      ];
+    });
+    return Promise.resolve(result);
+  },
 };

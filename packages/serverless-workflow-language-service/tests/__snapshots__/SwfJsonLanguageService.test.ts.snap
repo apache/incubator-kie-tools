@@ -201,6 +201,130 @@ Array [
 ]
 `;
 
+exports[`SWF LS JSON code completion eventRefs completion add at the beginning of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion add at the beginning of the array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion eventRefs completion add at the end of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion add at the end of the array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 26,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 26,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion eventRefs completion add into empty array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion add into empty array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing after the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing after the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 3`] = `0`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing inside an object of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing inside an object of the array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 23,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS JSON code completion events completion add at the beginning of the array 1`] = `1`;
 
 exports[`SWF LS JSON code completion events completion add at the beginning of the array 2`] = `
@@ -633,7 +757,7 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique function name}\\",
   \\"operation\\": \\"\${2:localhost#operation}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:Function type}\\"
 }",
       "range": Object {
         "end": Object {
@@ -724,7 +848,7 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique function name}\\",
   \\"operation\\": \\"\${2:localhost#operation}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:Function type}\\"
 }",
       "range": Object {
         "end": Object {
@@ -815,7 +939,7 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique function name}\\",
   \\"operation\\": \\"\${2:localhost#operation}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:Function type}\\"
 }",
       "range": Object {
         "end": Object {
