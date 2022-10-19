@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonLanguageService";
-export * from "./SwfLanguageService";
-export * from "./SwfYamlLanguageService";
-export * from "./matchNodeWithLocation";
-export * from "./findNodesAtLocation";
-export * from "./refValidation";
-export * from "./nodeUpUntilType";
-export * from "./types";
-export * from "./indentText";
-export * from "./getNodeFormat";
-export * from "./getLineContentFromOffset";
+/**
+ * Get a line in a content from offset.
+ *
+ * @param content -
+ * @param offset -
+ * @returns the line's content
+ */
+export function getLineContentFromOffset(content: string, offset: number): string {
+  const eol = /\r?\n/;
+
+  if (!content || !offset || content.length < offset) {
+    return "";
+  }
+
+  const partialContent = content.slice(0, offset).split(eol);
+
+  return content.split(eol)[partialContent.length - 1];
+}

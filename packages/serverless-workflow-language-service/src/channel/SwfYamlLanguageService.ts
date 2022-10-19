@@ -39,6 +39,7 @@ import {
   SwfLsNode,
   TranslateArgs,
 } from "./types";
+import { getLineContentFromOffset } from "./getLineContentFromOffset";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -226,20 +227,25 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
-    //this manage the test case: "state completion › add in the middle / without dash character"
-    const isCursorInWrongArrayPosition =
-      args.node?.type === "array" && args.cursorPosition.character <= 1 && args.cursorOffset !== args.node.offset;
-
     if (
       !args.root ||
       !args.node ||
       (["object", "array"].includes(args.node.type) && getNodeFormat(args.content, args.node) === FileLanguage.JSON) ||
       (["string", "number", "boolean"].includes(args.node.type) &&
         args.node.parent &&
-        getNodeFormat(args.content, args.node.parent) === FileLanguage.JSON) ||
-      isCursorInWrongArrayPosition
+        getNodeFormat(args.content, args.node.parent) === FileLanguage.JSON)
     ) {
       return false;
+    }
+
+    //this manage the test case: "completion › add in the middle / without dash character"
+    if (args.node?.type === "array" && args.cursorOffset !== args.node.offset) {
+      const lineContent = getLineContentFromOffset(args.content, args.cursorOffset);
+      const lineContentStartsWithDash = /^\s*- /.test(lineContent);
+
+      if (!lineContentStartsWithDash) {
+        return false;
+      }
     }
 
     return matchNodeWithLocation(args.root, args.node, args.path);
