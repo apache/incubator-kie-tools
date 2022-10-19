@@ -103,6 +103,7 @@ digraph G {
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -323,6 +324,8 @@ digraph G {
   "vscode-extension-bpmn-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "vscode-extension-bpmn-editor" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];
   "vscode-extension-bpmn-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
+  "vscode-extension-dashbuilder-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
+  "vscode-extension-dashbuilder-editor" -> "@kie-tools/dashbuilder-viewer" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];

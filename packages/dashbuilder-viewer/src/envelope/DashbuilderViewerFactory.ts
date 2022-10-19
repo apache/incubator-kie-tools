@@ -31,7 +31,6 @@ export class DashbuilderViewerFactory implements EditorFactory<Editor, Dashbuild
     appendLoaderContainer();
     const langData = getDashbuilderLanguageData(initArgs.resourcesPathPrefix);
     langData.resources.forEach((resource) => loadResource(resource));
-
     return new DashbuilderViewerView(ctx, initArgs);
   }
 }

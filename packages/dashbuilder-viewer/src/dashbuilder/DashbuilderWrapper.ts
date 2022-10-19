@@ -15,6 +15,8 @@
  */
 
 interface CustomWindow extends Window {
+  componentServerUrl: string;
+
   setDashbuilderContent: (content: string) => void;
   dashbuilderReady: () => void;
 }
@@ -39,5 +41,9 @@ export class DashbuilderWrapper {
 
   public getContent(): string {
     return this.content;
+  }
+
+  public setComponentServerUrl(componentServerUrl: string) {
+    window.componentServerUrl = componentServerUrl;
   }
 }
