@@ -20,55 +20,32 @@ import { useCallback, useMemo } from "react";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { LocalFile } from "./worker/api/LocalFile";
 import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
-import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
-import { WorkspacesWorkerApi } from "./worker/api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFileDescriptor } from "./worker/api/WorkspaceWorkerFileDescriptor";
-import { WorkspacesWorkerChannelApi } from "./worker/api/WorkspacesWorkerChannelApi";
 import { SupportedFileExtensions } from "../extension";
+import { WorkspacesSharedWorker } from "./worker/WorkspacesSharedWorker";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const workspacesWorker = new SharedWorker("workspace/worker/sharedWorker.js", "workspaces-shared-worker");
-workspacesWorker.port.start();
-
-export const workspacesWorkerBus = new EnvelopeBusMessageManager<WorkspacesWorkerChannelApi, WorkspacesWorkerApi>(
-  (m) => {
-    workspacesWorker.port.postMessage(m);
-  }
-);
-
-const ready = new Promise<void>((res) => {
-  console.debug("workspaces-shared-worker is ready.");
-
-  workspacesWorker.port.onmessage = (m) => {
-    workspacesWorkerBus.server.receive(m.data, {
-      kieToolsWorkspacesWorker_ready() {
-        res();
-      },
-      async kieToolsWorkspacesWorker_ping() {
-        return "pong";
-      },
-    });
-  };
-});
-
 export function WorkspacesContextProvider(props: Props) {
-  const hasLocalChanges = useCallback(async (args: { workspaceId: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_hasLocalChanges(args);
-  }, []);
+  const hasLocalChanges = useCallback(
+    async (args: { workspaceId: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_hasLocalChanges(args)
+      ),
+    []
+  );
 
   const pull = useCallback(
     async (args: {
       workspaceId: string;
       gitConfig?: { name: string; email: string };
       authInfo?: { username: string; password: string };
-    }) => {
-      await ready;
-      return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_pull(args);
-    },
+    }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_pull(args)
+      ),
     []
   );
 
@@ -83,61 +60,81 @@ export function WorkspacesContextProvider(props: Props) {
         username: string;
         password: string;
       };
-    }) => {
-      await ready;
-      return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_push(args);
-    },
+    }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_push(args)
+      ),
     []
   );
 
-  const addRemote = useCallback(async (args: { workspaceId: string; name: string; url: string; force: boolean }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_addRemote(args);
-  }, []);
+  const addRemote = useCallback(
+    async (args: { workspaceId: string; name: string; url: string; force: boolean }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_addRemote(args)
+      ),
+    []
+  );
 
-  const deleteRemote = useCallback(async (args: { workspaceId: string; name: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_deleteRemote(args);
-  }, []);
+  const deleteRemote = useCallback(
+    async (args: { workspaceId: string; name: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_deleteRemote(args)
+      ),
+    []
+  );
 
-  const branch = useCallback(async (args: { workspaceId: string; name: string; checkout: boolean }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_branch(args);
-  }, []);
+  const branch = useCallback(
+    async (args: { workspaceId: string; name: string; checkout: boolean }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_branch(args)
+      ),
+    []
+  );
 
-  const checkout = useCallback(async (args: { workspaceId: string; ref: string; remote: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_checkout(args);
-  }, []);
+  const checkout = useCallback(
+    async (args: { workspaceId: string; ref: string; remote: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_checkout(args)
+      ),
+    []
+  );
 
-  const resolveRef = useCallback(async (args: { workspaceId: string; ref: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_resolveRef(args);
-  }, []);
+  const resolveRef = useCallback(
+    async (args: { workspaceId: string; ref: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_resolveRef(args)
+      ),
+    []
+  );
 
   const createSavePoint = useCallback(
-    async (args: { workspaceId: string; gitConfig?: { email: string; name: string } }) => {
-      await ready;
-      return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args);
-    },
+    async (args: { workspaceId: string; gitConfig?: { email: string; name: string } }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
+      ),
     []
   );
 
-  const fetch = useCallback(async (args: { workspaceId: string; remote: string; ref: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_fetch(args);
-  }, []);
+  const fetch = useCallback(
+    async (args: { workspaceId: string; remote: string; ref: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_fetch(args)
+      ),
+    []
+  );
 
   const getFile = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
-    await ready;
-    const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFile(args);
+    const wwfd = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+      workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFile(args)
+    );
     return wwfd ? toWorkspaceFile(wwfd) : undefined;
   }, []);
 
   const createWorkspaceFromLocal = useCallback(
     async (args: { localFiles: LocalFile[]; preferredName?: string; gitConfig?: { email: string; name: string } }) => {
-      await ready;
-      const workspaceInit = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args);
+      const workspaceInit = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args)
+      );
 
       return {
         workspace: workspaceInit.workspace,
@@ -161,8 +158,9 @@ export function WorkspacesContextProvider(props: Props) {
         password: string;
       };
     }) => {
-      await ready;
-      const workspaceClone = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_clone(args);
+      const workspaceClone = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_clone(args)
+      );
       return {
         workspace: workspaceClone.workspace,
         suggestedFirstFile: workspaceClone.suggestedFirstFile
@@ -176,70 +174,87 @@ export function WorkspacesContextProvider(props: Props) {
     [getFile]
   );
 
-  const isFileModified = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_isModified(args);
-  }, []);
+  const isFileModified = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_isModified(args)
+      ),
+    []
+  );
 
-  const getUniqueFileIdentifier = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args);
-  }, []);
+  const getUniqueFileIdentifier = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args)
+      ),
+    []
+  );
 
   const renameFile = useCallback(async (args: { file: WorkspaceFile; newFileNameWithoutExtension: string }) => {
-    await ready;
-    const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_renameFile({
-      wwfd: {
-        workspaceId: args.file.workspaceId,
-        relativePath: args.file.relativePath,
-      },
-      newFileNameWithoutExtension: args.newFileNameWithoutExtension,
-    });
+    const wwfd = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+      workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_renameFile({
+        wwfd: {
+          workspaceId: args.file.workspaceId,
+          relativePath: args.file.relativePath,
+        },
+        newFileNameWithoutExtension: args.newFileNameWithoutExtension,
+      })
+    );
     return toWorkspaceFile(wwfd);
   }, []);
 
   const getFiles = useCallback(async (args: { workspaceId: string; globPattern?: string }) => {
-    await ready;
-    const wwfds = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFiles(args);
+    const wwfds = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+      workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFiles(args)
+    );
     return wwfds.map((wwfd) => toWorkspaceFile(wwfd));
   }, []);
 
-  const getFileContent = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFileContent(args);
-  }, []);
+  const getFileContent = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFileContent(args)
+      ),
+    []
+  );
 
   const deleteFile = useCallback(async (args: { file: WorkspaceFile }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_deleteFile({
-      wwfd: {
-        workspaceId: args.file.workspaceId,
-        relativePath: args.file.relativePath,
-      },
-    });
+    return WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+      workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_deleteFile({
+        wwfd: {
+          workspaceId: args.file.workspaceId,
+          relativePath: args.file.relativePath,
+        },
+      })
+    );
   }, []);
 
   const moveFile = useCallback(async (args: { file: WorkspaceFile; newDirPath: string }) => {
-    await ready;
-    const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_moveFile({
-      wwfd: {
-        workspaceId: args.file.workspaceId,
-        relativePath: args.file.relativePath,
-      },
-      newDirPath: args.newDirPath,
-    });
+    const wwfd = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+      workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_moveFile({
+        wwfd: {
+          workspaceId: args.file.workspaceId,
+          relativePath: args.file.relativePath,
+        },
+        newDirPath: args.newDirPath,
+      })
+    );
     return toWorkspaceFile(wwfd);
   }, []);
 
-  const updateFile = useCallback(async (args: { workspaceId: string; relativePath: string; newContent: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_updateFile({
-      wwfd: {
-        workspaceId: args.workspaceId,
-        relativePath: args.relativePath,
-      },
-      newContent: args.newContent,
-    });
-  }, []);
+  const updateFile = useCallback(
+    async (args: { workspaceId: string; relativePath: string; newContent: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_updateFile({
+          wwfd: {
+            workspaceId: args.workspaceId,
+            relativePath: args.relativePath,
+          },
+          newContent: args.newContent,
+        })
+      ),
+    []
+  );
 
   const addFile = useCallback(
     async (args: {
@@ -249,87 +264,119 @@ export function WorkspacesContextProvider(props: Props) {
       content: string;
       extension: SupportedFileExtensions;
     }) => {
-      await ready;
-      const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_addFile(args);
+      const wwfd = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_addFile(args)
+      );
       return toWorkspaceFile(wwfd);
     },
     []
   );
 
-  const existsFile = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_existsFile(args);
-  }, []);
+  const existsFile = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_existsFile(args)
+      ),
+    []
+  );
 
   const addEmptyFile = useCallback(
     async (args: { workspaceId: string; destinationDirRelativePath: string; extension: SupportedFileExtensions }) => {
-      await ready;
-      const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_addEmptyFile(args);
+      const wwfd = await WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_addEmptyFile(args)
+      );
       return toWorkspaceFile(wwfd);
     },
     []
   );
 
-  const prepareZip = useCallback(async (args: { workspaceId: string; onlyExtensions?: string[] }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_prepareZip(args);
-  }, []);
-
-  const resourceContentGet = useCallback(
-    async (args: { workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
-      await ready;
-      return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_resourceContentGet(args);
-    },
+  const prepareZip = useCallback(
+    async (args: { workspaceId: string; onlyExtensions?: string[] }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_prepareZip(args)
+      ),
     []
   );
 
-  const resourceContentList = useCallback(async (args: { workspaceId: string; globPattern: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_resourceContentList(args);
-  }, []);
+  const resourceContentGet = useCallback(
+    async (args: { workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_resourceContentGet(args)
+      ),
+    []
+  );
 
-  const deleteWorkspace = useCallback(async (args: { workspaceId: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_deleteWorkspace(args);
-  }, []);
+  const resourceContentList = useCallback(
+    async (args: { workspaceId: string; globPattern: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_resourceContentList(args)
+      ),
+    []
+  );
 
-  const renameWorkspace = useCallback(async (args: { workspaceId: string; newName: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_renameWorkspace(args);
-  }, []);
+  const deleteWorkspace = useCallback(
+    async (args: { workspaceId: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_deleteWorkspace(args)
+      ),
+    []
+  );
 
-  const listAllWorkspaces = useCallback(async () => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_listAllWorkspaces();
-  }, []);
+  const renameWorkspace = useCallback(
+    async (args: { workspaceId: string; newName: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_renameWorkspace(args)
+      ),
+    []
+  );
 
-  const getWorkspace = useCallback(async (args: { workspaceId: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getWorkspace(args);
-  }, []);
+  const listAllWorkspaces = useCallback(
+    async () =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_listAllWorkspaces()
+      ),
+    []
+  );
 
-  const initGitOnWorkspace = useCallback(async (args: { workspaceId: string; remoteUrl: URL }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitOnExistingWorkspace({
-      workspaceId: args.workspaceId,
-      remoteUrl: args.remoteUrl.toString(),
-    });
-  }, []);
+  const getWorkspace = useCallback(
+    async (args: { workspaceId: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getWorkspace(args)
+      ),
+    []
+  );
 
-  const initGistOnWorkspace = useCallback(async (args: { workspaceId: string; remoteUrl: URL }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
-      workspaceId: args.workspaceId,
-      remoteUrl: args.remoteUrl.toString(),
-    });
-  }, []);
+  const initGitOnWorkspace = useCallback(
+    async (args: { workspaceId: string; remoteUrl: URL }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitOnExistingWorkspace({
+          workspaceId: args.workspaceId,
+          remoteUrl: args.remoteUrl.toString(),
+        })
+      ),
+    []
+  );
 
-  const initLocalOnWorkspace = useCallback(async (args: { workspaceId: string }) => {
-    await ready;
-    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initLocalOnExistingWorkspace({
-      workspaceId: args.workspaceId,
-    });
-  }, []);
+  const initGistOnWorkspace = useCallback(
+    async (args: { workspaceId: string; remoteUrl: URL }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
+          workspaceId: args.workspaceId,
+          remoteUrl: args.remoteUrl.toString(),
+        })
+      ),
+    []
+  );
+
+  const initLocalOnWorkspace = useCallback(
+    async (args: { workspaceId: string }) =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initLocalOnExistingWorkspace({
+          workspaceId: args.workspaceId,
+        })
+      ),
+    []
+  );
 
   const value = useMemo(
     () => ({
@@ -413,6 +460,9 @@ function toWorkspaceFile(wwfd: WorkspaceWorkerFileDescriptor) {
   return new WorkspaceFile({
     workspaceId: wwfd.workspaceId,
     relativePath: wwfd.relativePath,
-    getFileContents: () => workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFileContent(wwfd),
+    getFileContents: () =>
+      WorkspacesSharedWorker.getInstance().withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFileContent(wwfd)
+      ),
   });
 }

@@ -65,7 +65,7 @@ export function Component() {
         <TextContent>
           <Text component={TextVariants.p}>Compatible browsers are:</Text>
           <List>
-            <ListItem>Chromium-based</ListItem>
+            <ListItem>Desktop Chromium-based</ListItem>
             <ListItem>Safari 16 or newer</ListItem>
           </List>
         </TextContent>

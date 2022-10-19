@@ -90,10 +90,10 @@ import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
-import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
+import { WorkspacesSharedWorker } from "../workspace/worker/WorkspacesSharedWorker";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -155,7 +155,9 @@ export function EditorToolbar(props: Props) {
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
-  const [flushes] = useSharedValue(workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes);
+  const [flushes] = useSharedValue(
+    WorkspacesSharedWorker.getInstance().workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes
+  );
 
   const isSaved = useMemo(() => {
     return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));
