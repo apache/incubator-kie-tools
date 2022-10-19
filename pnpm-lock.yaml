@@ -123,7 +123,7 @@ importers:
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
       typescript: ^4.4.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -142,7 +142,7 @@ importers:
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
       typescript: 4.5.4
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -290,7 +290,7 @@ importers:
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
       typescript: ^4.4.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -307,7 +307,7 @@ importers:
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
       typescript: 4.5.4
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -4881,7 +4881,7 @@ importers:
       rimraf: ^3.0.2
       run-script-os: ^1.1.6
       ts-jest: ^26.5.6
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -4908,7 +4908,7 @@ importers:
       rimraf: 3.0.2
       run-script-os: 1.1.6
       ts-jest: 26.5.6_jest@26.6.3
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -4932,7 +4932,7 @@ importers:
       "@vscode/test-web": ^0.0.30
       copy-webpack-plugin: ^8.1.1
       rimraf: ^3.0.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -4955,7 +4955,7 @@ importers:
       "@vscode/test-web": 0.0.30
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       rimraf: 3.0.2
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -4985,7 +4985,7 @@ importers:
       copy-webpack-plugin: ^8.1.1
       portfinder: ^1.0.32
       rimraf: ^3.0.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -5014,7 +5014,7 @@ importers:
       "@vscode/test-web": 0.0.30
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       rimraf: 3.0.2
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -5038,7 +5038,7 @@ importers:
       "@vscode/test-web": ^0.0.30
       copy-webpack-plugin: ^8.1.1
       rimraf: ^3.0.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -5061,7 +5061,7 @@ importers:
       "@vscode/test-web": 0.0.30
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       rimraf: 3.0.2
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -5075,7 +5075,7 @@ importers:
       "@kie-tools/tsconfig": workspace:*
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -5087,7 +5087,7 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -5101,7 +5101,7 @@ importers:
       "@kie-tools/tsconfig": workspace:*
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -5113,7 +5113,7 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -5164,8 +5164,8 @@ importers:
       rimraf: ^3.0.2
       ts-jest: ^26.5.6
       typescript: ^4.4.2
-      vsce: ^2.6.5
-      vscode-extension-tester: ^4.4.0
+      vsce: ^2.11.0
+      vscode-extension-tester: ^5.0.0
       vscode-test: ^1.6.1
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
@@ -5216,8 +5216,8 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      vsce: 2.6.5
-      vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
+      vsce: 2.11.0
+      vscode-extension-tester: 5.0.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -5242,7 +5242,7 @@ importers:
       "@vscode/test-web": ^0.0.30
       file-loader: ^6.2.0
       rimraf: ^3.0.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -5265,7 +5265,7 @@ importers:
       "@vscode/test-web": 0.0.30
       file-loader: 6.2.0_webpack@5.70.0
       rimraf: 3.0.2
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -5279,7 +5279,7 @@ importers:
       "@kie-tools/tsconfig": workspace:*
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
-      vsce: ^2.6.5
+      vsce: ^2.11.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -5291,7 +5291,7 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
-      vsce: 2.6.5
+      vsce: 2.11.0
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
@@ -5339,8 +5339,8 @@ importers:
       rimraf: ^3.0.2
       selenium-webdriver: ^4.2.0
       typescript: ^4.4.2
-      vsce: ^2.6.5
-      vscode-extension-tester: ^4.4.0
+      vsce: ^2.11.0
+      vscode-extension-tester: ^5.0.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -5394,8 +5394,8 @@ importers:
       rimraf: 3.0.2
       selenium-webdriver: 4.2.0
       typescript: 4.5.4
-      vsce: 2.6.5
-      vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
+      vsce: 2.11.0
+      vscode-extension-tester: 5.0.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -5437,8 +5437,8 @@ importers:
       rimraf: ^3.0.2
       selenium-webdriver: ^4.2.0
       typescript: ^4.4.2
-      vsce: ^2.6.5
-      vscode-extension-tester: ^4.4.0
+      vsce: ^2.11.0
+      vscode-extension-tester: ^5.0.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -5485,8 +5485,8 @@ importers:
       rimraf: 3.0.2
       selenium-webdriver: 4.2.0
       typescript: 4.5.4
-      vsce: 2.6.5
-      vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
+      vsce: 2.11.0
+      vscode-extension-tester: 5.0.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -13102,7 +13102,7 @@ packages:
       { integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA== }
     dependencies:
       function-bind: 1.1.1
-      get-intrinsic: 1.1.1
+      get-intrinsic: 1.1.3
     dev: true
 
   /callsites/3.1.0:
@@ -13731,7 +13731,8 @@ packages:
     dev: true
 
   /concat-map/0.0.1:
-    resolution: { integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s= }
+    resolution:
+      { integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg== }
 
   /concat-stream/1.6.2:
     resolution:
@@ -13874,7 +13875,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -21134,9 +21135,9 @@ packages:
     dependencies:
       monaco-editor: 0.33.0
 
-  /monaco-page-objects/2.0.1_rbm5onw4rdv3wixpn2nzow77om:
+  /monaco-page-objects/3.0.0_rbm5onw4rdv3wixpn2nzow77om:
     resolution:
-      { integrity: sha512-OL2vzqA0YkKozdEEwj3fBYyJsv2jWZrG8nlKfho5epe//FQ7sY7QzaJ8OtfBD5mYGT7mwV1O649A/E33D5H6kA== }
+      { integrity: sha512-WD1T7SM55IlS3RuGgeYvd0PqRcFOUIZt551ecQZmSmwLapM0wNTfYfFOCstRKs+Yg+eHgSkyYYKBb1GTb7qaCQ== }
     peerDependencies:
       selenium-webdriver: ^4.2.0
     dependencies:
@@ -25891,7 +25892,7 @@ packages:
       { integrity: sha512-NvCeXpYx7OsmOh8zIOP/ebG55zZmxLE0etfWRbWok+q2Qo8x/vOR/IJT1taADXPe+jsiu9axDb3X4B+iIgNlKw== }
     dependencies:
       chownr: 1.1.4
-      mkdirp: 0.5.5
+      mkdirp: 0.5.6
       pump: 1.0.3
       tar-stream: 1.6.2
     dev: true
@@ -26768,7 +26769,7 @@ packages:
       { integrity: sha512-RzaGXLNt+CW+T41h1zl6pGz3EaeVhYlK+rdAap+7DxW5kqsqePO8kRtWPaCiVqdhZc86EctSPVYNix30YOMzmw== }
     dependencies:
       binary: 0.3.0
-      mkdirp: 0.5.5
+      mkdirp: 0.5.6
     dev: true
 
   /unzipper/0.10.11:
@@ -27257,9 +27258,9 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vsce/2.6.5:
+  /vsce/2.11.0:
     resolution:
-      { integrity: sha512-KB3m0CDlWZCKwjQx2oSg35vWgTNrcOPcL6DGLVGewKhadwbL2OWGRoMRKUUFFtPFKwp3BwuTvEM5fENG/AQ5Lg== }
+      { integrity: sha512-pr9Y0va/HCer0tTifeqaUrK24JJSpRd6oLeF/PY6FtrY41e+lwxiAq6jfMXx4ShAZglYg2rFKoKROwa7E7SEqQ== }
     engines: { node: ">= 14" }
     hasBin: true
     dependencies:
@@ -27285,20 +27286,20 @@ packages:
       yazl: 2.5.1
     dev: true
 
-  /vscode-extension-tester-locators/2.0.0_c7mgiu2dpachgxdixrrvzoaz2i:
+  /vscode-extension-tester-locators/3.0.0_x22iy6bf5rk7v7q36oyg33alvi:
     resolution:
-      { integrity: sha512-ljmevi7R1K5uCiMpstKydh/sCA9TEiohxLmzX30ZZU5qE/ZNWz/5oLrxTdqN3EcSVW9ZXhExvrQFvHoYZxy9Ng== }
+      { integrity: sha512-O5RPfGALjzqEqY9J3RfyqzKWMjFSI+BmZGPpHP3zVVvtvXYTVzDZXij1dM2xGEQpkdfqOj+FXvEw+/acnUN7lQ== }
     peerDependencies:
-      monaco-page-objects: ^2.0.0
+      monaco-page-objects: ^3.0.0
       selenium-webdriver: ^4.2.0
     dependencies:
-      monaco-page-objects: 2.0.1_rbm5onw4rdv3wixpn2nzow77om
+      monaco-page-objects: 3.0.0_rbm5onw4rdv3wixpn2nzow77om
       selenium-webdriver: 4.2.0
     dev: true
 
-  /vscode-extension-tester/4.4.1_jvempbdbjtvhoodinnen4jiyly:
+  /vscode-extension-tester/5.0.0_jvempbdbjtvhoodinnen4jiyly:
     resolution:
-      { integrity: sha512-CaxWk41sX1Q9rycFCN6GRmNzjY3DJl5dxVknbLxVbjeR9g0Qam+dIajVQIeHsdUVEKJdfPCA8xbpJOyl/bUFnA== }
+      { integrity: sha512-Lv2PBgbJsm0TzLX/sXSU+uZq50TAEoHHxI7Aynsiawx6gEeRvigcFduQf18TGgwH6WZsT77Z7wzDD42RkmfshQ== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
@@ -27312,13 +27313,13 @@ packages:
       hpagent: 0.1.2
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 2.0.1_rbm5onw4rdv3wixpn2nzow77om
+      monaco-page-objects: 3.0.0_rbm5onw4rdv3wixpn2nzow77om
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.2.0
       targz: 1.0.1
       unzip-stream: 0.3.1
-      vsce: 2.6.5
-      vscode-extension-tester-locators: 2.0.0_c7mgiu2dpachgxdixrrvzoaz2i
+      vsce: 2.11.0
+      vscode-extension-tester-locators: 3.0.0_x22iy6bf5rk7v7q36oyg33alvi
     transitivePeerDependencies:
       - bufferutil
       - typescript
