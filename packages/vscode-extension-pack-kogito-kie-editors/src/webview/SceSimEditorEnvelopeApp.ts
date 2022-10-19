@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
+import { SceSimEditorFactory } from "@kie-tools/kie-bc-editors/dist/scesim/envelope";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { SceSimEditorChannelApi, SceSimEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/scesim/api";
-import { SceSimEditor, SceSimEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/scesim/envelope";
 
-EditorEnvelope.initCustom<SceSimEditor, SceSimEditorEnvelopeApi, SceSimEditorChannelApi>({
+declare const acquireVsCodeApi: any;
+
+EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  apiImplFactory: { create: (args) => new SceSimEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
+  editorFactory: new SceSimEditorFactory({ shouldLoadResourcesDynamically: true }),
 });
-
-declare global {
-  export const acquireVsCodeApi: any;
-}

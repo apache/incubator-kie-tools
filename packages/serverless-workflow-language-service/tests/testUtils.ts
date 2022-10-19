@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  findNodeAtLocation,
+  JsonCodeCompletionStrategy,
+  SwfJsonLanguageService,
+  SwfJsonPath,
+  SwfYamlLanguageService,
+  YamlCodeCompletionStrategy,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { CompletionItem, DocumentUri, Position } from "vscode-languageserver-types";
 
 /**
  * Gets the corresponding line from an offset.
@@ -30,8 +40,8 @@ export function getLineFromOffset(fullText: string, offset: number | undefined, 
 
 export type ContentWithCursor = `${string}🎯${string}`;
 
-export function treat(content: ContentWithCursor) {
-  const trimmedContent = content.trim();
+export function treat(content: ContentWithCursor, trimContent = true) {
+  const trimmedContent = trimContent ? content.trim() : content;
   const treatedContent = trimmedContent.replace("🎯", "");
   const doc = TextDocument.create("", "json", 0, trimmedContent);
   const cursorOffset = trimmedContent.indexOf("🎯");
@@ -40,4 +50,49 @@ export function treat(content: ContentWithCursor) {
 
 export function trim(content: string) {
   return { content: content.trim() };
+}
+
+/**
+ * Gets the CompletionItem and the cursorPosition for a content with cursor
+ *
+ * @param ls -
+ * @param documentUri -
+ * @param contentToParse -
+ * @returns
+ */
+export async function codeCompletionTester(
+  ls: SwfJsonLanguageService | SwfYamlLanguageService,
+  documentUri: DocumentUri,
+  contentToParse: ContentWithCursor,
+  trimContent = true
+): Promise<{ completionItems: CompletionItem[]; cursorPosition: Position }> {
+  const { content, cursorPosition } = treat(contentToParse, trimContent);
+
+  return {
+    completionItems: await ls.getCompletionItems({
+      uri: documentUri,
+      content,
+      cursorPosition,
+      cursorWordRange: { start: cursorPosition, end: cursorPosition },
+    }),
+    cursorPosition,
+  };
+}
+
+/**
+ * Get the returned position from getStartNodeValuePosition().
+ *
+ * @param args -
+ */
+export function getStartNodeValuePositionTester(args: {
+  content: string;
+  path: SwfJsonPath;
+  codeCompletionStrategy: JsonCodeCompletionStrategy | YamlCodeCompletionStrategy;
+  documentUri: string;
+  ls: SwfJsonLanguageService | SwfYamlLanguageService;
+}): Position | undefined {
+  const rootNode = args.ls.parseContent(args.content);
+  const doc = TextDocument.create(args.documentUri, FileLanguage.YAML, 0, args.content);
+  const node = findNodeAtLocation(rootNode!, args.path);
+  return args.codeCompletionStrategy.getStartNodeValuePosition(doc, node!);
 }

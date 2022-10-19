@@ -24,7 +24,7 @@ const { ProvidePlugin } = require("webpack");
 const { EnvironmentPlugin } = require("webpack");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env } = require("./env");
 const buildEnv = env;
 

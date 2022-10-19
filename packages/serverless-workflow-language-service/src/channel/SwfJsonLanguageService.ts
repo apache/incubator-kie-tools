@@ -15,10 +15,17 @@
  */
 
 import * as jsonc from "jsonc-parser";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { SwfLsNode, CodeCompletionStrategy, ShouldCompleteArgs } from "./types";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
+import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import {
+  ShouldCreateCodelensArgs,
+  CodeCompletionStrategy,
+  ShouldCompleteArgs,
+  SwfLsNode,
+  TranslateArgs,
+} from "./types";
 
 export class SwfJsonLanguageService {
   private readonly ls: SwfLanguageService;
@@ -54,7 +61,11 @@ export class SwfJsonLanguageService {
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    return this.ls.getCodeLenses({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCodeLenses({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
@@ -66,13 +77,31 @@ export class SwfJsonLanguageService {
   }
 }
 
-class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
-  public translate(completion: object | string): string {
-    return JSON.stringify(completion, null, 2);
+export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
+  public translate(args: TranslateArgs): string {
+    return JSON.stringify(args.completion, null, 2);
+  }
+
+  public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
+    return (
+      [CompletionItemKind.Value, CompletionItemKind.Function, CompletionItemKind.Folder] as CompletionItemKind[]
+    ).includes(completionItemKind)
+      ? `"${label}"`
+      : label;
+  }
+
+  public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
+    const position = document.positionAt(node.offset);
+    const nextPosition = document.positionAt(node.offset + 1);
+    return node.type === "boolean" ? position : nextPosition;
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
     const cursorJsonLocation = jsonc.getLocation(args.content, args.cursorOffset);
     return cursorJsonLocation.matches(args.path) && cursorJsonLocation.path.length === args.path.length;
+  }
+
+  public shouldCreateCodelens(_args: ShouldCreateCodelensArgs): boolean {
+    return true;
   }
 }

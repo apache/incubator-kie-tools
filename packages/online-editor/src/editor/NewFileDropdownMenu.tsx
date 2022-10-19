@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { FileLabel } from "../workspace/components/FileLabel";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { FileLabel } from "../filesList/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -29,7 +29,10 @@ import {
   MenuItem,
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
-import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import {
+  SupportedFileExtensions,
+  useEditorEnvelopeLocator,
+} from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
@@ -37,6 +40,7 @@ import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
+import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -75,7 +79,6 @@ export function NewFileDropdownMenu(props: {
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
       const file = await workspaces.addEmptyFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
         extension,
@@ -120,7 +123,6 @@ export function NewFileDropdownMenu(props: {
         const content = await response.text();
 
         const file = await workspaces.addFile({
-          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
           workspaceId: props.workspaceId,
           name,
           extension,
@@ -178,9 +180,8 @@ export function NewFileDropdownMenu(props: {
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (file) => {
           return workspaces.addFile({
-            fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
             workspaceId: props.workspaceId,
-            name: file.path,
+            name: basename(file.path, extname(file.path)),
             extension: extname(file.path).replace(".", ""),
             content: file.content,
             destinationDirRelativePath: props.destinationDirPath,
@@ -200,6 +201,7 @@ export function NewFileDropdownMenu(props: {
 
   return (
     <Menu
+      tabIndex={1}
       style={{ boxShadow: "none", minWidth: "400px" }}
       id="addFileRootMenu"
       containsDrilldown={true}
@@ -292,7 +294,8 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"importFromUrlMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
-                <MenuInput>
+                {/* Allows for arrows to work when editing the text. */}
+                <MenuInput onKeyDown={(e) => e.stopPropagation()}>
                   <ImportFromUrlForm
                     importingError={importingError}
                     allowedTypes={[UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE]}

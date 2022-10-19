@@ -64,6 +64,11 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     }
 
     @Override
+    public Promise<Void> selectStateByName(String name){
+        return realPresenter.selectStateByName(name);
+    }
+
+    @Override
     public Promise<String> getContent() {
         return realPresenter.getContent();
     }

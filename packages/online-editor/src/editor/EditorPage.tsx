@@ -44,18 +44,24 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
+import { responsiveBreakpoints } from "../responsiveBreakpoints/ResponsiveBreakpoints";
 
 export interface Props {
   workspaceId: string;
   fileRelativePath: string;
 }
 
+let saveVersion = 1;
+let refreshVersion = 0;
+
 export function EditorPage(props: Props) {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
+  const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
@@ -68,7 +74,11 @@ export function EditorPage(props: Props) {
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
-  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.extension === "dmn" && !isFileBroken);
+  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.workspaceFile.extension === "dmn" && !isFileBroken);
+
+  useEffect(() => {
+    document.title = `KIE Sandbox :: ${props.fileRelativePath}`;
+  }, [props.fileRelativePath]);
 
   const setContentErrorAlert = useAlert(
     alerts,
@@ -98,15 +108,18 @@ export function EditorPage(props: Props) {
 
     history.replace({
       pathname: routes.workspaceWithFilePath.path({
-        workspaceId: workspaceFilePromise.data.workspaceId,
-        fileRelativePath: workspaceFilePromise.data.relativePathWithoutExtension,
-        extension: workspaceFilePromise.data.extension,
+        workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+        fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePathWithoutExtension,
+        extension: workspaceFilePromise.data.workspaceFile.extension,
       }),
       search: queryParams.toString(),
     });
   }, [history, routes, workspaceFilePromise, queryParams]);
 
-  // update EmbeddedEditorFile, but only if content is different than what was saved
+  // begin (REFRESH)
+  // Update EmbeddedEditorFile, but only if content is different from what was saved
+  // This effect handles the case where a file was edited in another tab.
+  // It has its own version pointer to ignore stale executions.
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -114,38 +127,51 @@ export function EditorPage(props: Props) {
           return;
         }
 
-        workspaceFilePromise.data.getFileContentsAsString().then((content) => {
+        const version = refreshVersion++;
+        console.debug(`Refreshing @ new version (${refreshVersion}).`);
+
+        workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
           if (canceled.get()) {
+            console.debug(`Refreshing @ canceled; ignoring.`);
             return;
           }
 
           if (content === lastContent.current) {
+            console.debug(`Refreshing @ unchanged content; ignoring.`);
             return;
           }
 
+          if (version + 1 < saveVersion) {
+            console.debug(`Refreshing @ stale version (${version}); ignoring.`);
+            return;
+          }
+
+          console.debug(`Refreshing @ current version (${saveVersion}).`);
+          refreshVersion = saveVersion;
           lastContent.current = content;
 
+          // FIXME: KOGITO-7958: PMML Editor doesn't work well after this is called. Can't edit using multiple tabs.
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.relativePath,
+            path: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
             isReadOnly: false,
-            fileExtension: workspaceFilePromise.data.extension,
-            fileName: workspaceFilePromise.data.nameWithoutExtension,
+            fileExtension: workspaceFilePromise.data.workspaceFile.extension,
+            fileName: workspaceFilePromise.data.workspaceFile.nameWithoutExtension,
           });
         });
       },
       [workspaceFilePromise]
     )
   );
+  // end (REFRESH)
 
-  // auto-save
-  const uniqueFileId = workspaceFilePromise.data
-    ? workspaces.getUniqueFileIdentifier(workspaceFilePromise.data)
-    : undefined;
-
+  // begin (AUTO-SAVE)
+  const uniqueFileId = workspaceFilePromise.data?.uniqueId;
   const prevUniqueFileId = usePrevious(uniqueFileId);
   if (prevUniqueFileId !== uniqueFileId) {
     lastContent.current = undefined;
+    saveVersion = 1;
+    refreshVersion = 0;
   }
 
   const saveContent = useCallback(async () => {
@@ -153,22 +179,30 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    const content = await editor.getContent();
-    // FIXME: Uncomment when KOGITO-6181 is fixed
-    // const svgString = await editor.getPreview();
+    const version = saveVersion++;
+    console.debug(`Saving @ new version (${saveVersion}).`);
 
+    const content = await editor.getContent();
+    if (version + 1 < saveVersion) {
+      console.debug(`Saving @ stale version (${version}); ignoring before writing.`);
+      return;
+    }
+
+    console.debug(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
 
-    // FIXME: Uncomment when KOGITO-6181 is fixed
-    // if (svgString) {
-    //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
-    // }
-
     await workspaces.updateFile({
-      fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
-      file: workspaceFilePromise.data,
-      getNewContents: () => Promise.resolve(content),
+      workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+      relativePath: workspaceFilePromise.data.workspaceFile.relativePath,
+      newContent: content,
     });
+
+    if (version + 1 < saveVersion) {
+      console.debug(`Saving @ stale version (${version}); ignoring before marking as saved.`);
+      return;
+    }
+
+    console.debug(`Saving @ current version (${version}); marking as saved.`);
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
 
@@ -186,6 +220,31 @@ export function EditorPage(props: Props) {
     ),
     { throttle: 200 }
   );
+  // end (AUTO-SAVE)
+
+  // being (UPDATE PREVIEW SVGS)
+  const updatePreviewSvg = useCallback(() => {
+    editor?.getPreview().then((svgString) => {
+      if (!workspaceFilePromise.data || !svgString) {
+        return;
+      }
+
+      return previewSvgService.companionFsService.createOrOverwrite(
+        {
+          workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+          workspaceFileRelativePath: workspaceFilePromise.data.workspaceFile.relativePath,
+        },
+        svgString
+      );
+    });
+  }, [editor, previewSvgService, workspaceFilePromise.data]);
+
+  // Update the SVG
+  useStateControlSubscription(editor, updatePreviewSvg, { throttle: 200 });
+
+  // Save SVG when opening a file for the first time, even without changing it.
+  useEffect(updatePreviewSvg, [updatePreviewSvg]);
+  //end (UPDATE PREVIEW SVGS)
 
   useEffect(() => {
     alerts?.closeAll();
@@ -194,25 +253,11 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     setFileBroken(false);
     setContentErrorAlert.close();
-  }, [uniqueFileId]);
-
-  useEffect(() => {
-    if (!editor?.isReady || !workspaceFilePromise.data) {
-      return;
-    }
-
-    workspaceFilePromise.data.getFileContentsAsString().then((content) => {
-      if (content !== "") {
-        return;
-      }
-      saveContent();
-    });
-  }, [editor, saveContent, workspaceFilePromise]);
+  }, [setContentErrorAlert, uniqueFileId]);
 
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         relativePath: request.path,
         opts: request.opts,
@@ -224,7 +269,6 @@ export function EditorPage(props: Props) {
   const handleResourceListRequest = useCallback(
     async (request: ResourceListRequest) => {
       return workspaces.resourceContentList({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         globPattern: request.pattern,
         opts: request.opts,
@@ -240,7 +284,11 @@ export function EditorPage(props: Props) {
 
   // validate
   useEffect(() => {
-    if (workspaceFilePromise.data?.extension === "dmn" || !workspaceFilePromise.data || !editor?.isReady) {
+    if (
+      workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
+      !workspaceFilePromise.data ||
+      !editor?.isReady
+    ) {
       return;
     }
 
@@ -264,13 +312,14 @@ export function EditorPage(props: Props) {
       }
 
       const file = await workspaces.getFile({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
-        workspaceId: workspaceFilePromise.data.workspaceId,
+        workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
         relativePath,
       });
 
       if (!file) {
-        throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
+        throw new Error(
+          `Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
+        );
       }
 
       history.push({
@@ -307,10 +356,10 @@ export function EditorPage(props: Props) {
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <>
-            <DmnRunnerProvider workspaceFile={file} editorPageDock={editorPageDock}>
+            <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
               <Page>
                 <EditorToolbar
-                  workspaceFile={file}
+                  workspaceFile={file.workspaceFile}
                   editor={editor}
                   alerts={alerts}
                   alertsRef={alertsRef}
@@ -318,14 +367,18 @@ export function EditorPage(props: Props) {
                 />
                 <Divider />
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
-                  <DmnRunnerDrawer workspaceFile={file} editorPageDock={editorPageDock}>
-                    <EditorPageDockDrawer ref={editorPageDockRef} isEditorReady={editor?.isReady} workspaceFile={file}>
+                  <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
+                    <EditorPageDockDrawer
+                      ref={editorPageDockRef}
+                      isEditorReady={editor?.isReady}
+                      workspaceFile={file.workspaceFile}
+                    >
                       {embeddedEditorFile && (
                         <EmbeddedEditor
                           /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
                            * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
                            */
-                          key={workspaces.getUniqueFileIdentifier(file)}
+                          key={uniqueFileId}
                           ref={editorRef}
                           file={embeddedEditorFile}
                           kogitoWorkspace_openFile={handleOpenFile}
@@ -344,11 +397,11 @@ export function EditorPage(props: Props) {
             </DmnRunnerProvider>
             <TextEditorModal
               editor={editor}
-              workspaceFile={file}
+              workspaceFile={file.workspaceFile}
               refreshEditor={refreshEditor}
               isOpen={isTextEditorModalOpen}
             />
-            <DmnDevSandboxModalConfirmDeploy workspaceFile={file} alerts={alerts} />
+            <DmnDevSandboxModalConfirmDeploy workspaceFile={file.workspaceFile} alerts={alerts} />
           </>
         )}
       />

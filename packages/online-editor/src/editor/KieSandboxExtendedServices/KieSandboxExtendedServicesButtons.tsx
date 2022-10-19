@@ -45,7 +45,7 @@ import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
-import { useDmnRunnerInputsDispatch } from "../../dmnRunnerInputs/DmnRunnerInputsContext";
+import { useDmnRunnerInputsDispatch } from "../../dmnRunnerInputs/DmnRunnerInputsDispatchContext";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -191,28 +191,27 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
             >
               As Table
             </DropdownItem>,
-            <>
+            <React.Fragment key={"dmn-runner-inputs"}>
               <Divider />
               <DropdownItem
-                key={"delete-inputs"}
                 component={"button"}
                 icon={<DownloadIcon />}
                 onClick={() => handleDmnRunnerInputsDownload()}
               >
                 Download inputs
               </DropdownItem>
-            </>,
+            </React.Fragment>,
             <DropdownItem
-              key={"delete-inputs"}
+              key={"dmn-runner--upload-inputs"}
               component={"button"}
               icon={<UploadIcon />}
               onClick={() => uploadDmnRunnerInputsRef.current?.click()}
             >
               Load inputs
             </DropdownItem>,
-            <>
+            <React.Fragment key={"dmn-runner--delete-inputs"}>
               <Divider />
-              <DropdownItem key={"delete-inputs"} component={"button"} style={{ padding: "4px" }}>
+              <DropdownItem component={"button"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
                   onDelete={() => workspacesDmnRunner.deletePersistedInputRows(props.workspaceFile)}
                   item={`Delete DMN Runner inputs`}
@@ -220,7 +219,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                   isHoverable={false}
                 />
               </DropdownItem>
-            </>,
+            </React.Fragment>,
           ]}
         />
       </FeatureDependentOnKieSandboxExtendedServices>

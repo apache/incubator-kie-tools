@@ -25,7 +25,7 @@ import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/services/WorkspaceDescriptorService";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/worker/api/WorkspaceDescriptor";
 
 interface Props {
   children: React.ReactNode;
@@ -69,14 +69,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return false;
       }
 
-      const fs = await workspaces.fsService.getWorkspaceFs(workspaceFile.workspaceId);
       const zipBlob = await workspaces.prepareZip({
-        fs,
         workspaceId: workspaceFile.workspaceId,
         onlyExtensions: ["dmn"],
       });
 
-      const descriptorService = await workspaces.descriptorService.get(workspaceFile.workspaceId);
+      const descriptorService = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
 
       const workspaceName =
         descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workspaceFile.name;

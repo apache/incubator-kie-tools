@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceKind } from "../model/WorkspaceOrigin";
+import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { GitlabIcon } from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
@@ -22,10 +22,11 @@ import { CodeBranchIcon } from "@patternfly/react-icons/dist/js/icons/code-branc
 import { PendingIcon } from "@patternfly/react-icons/dist/js/icons/pending-icon";
 import * as React from "react";
 import { useMemo } from "react";
-import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());
@@ -60,46 +61,60 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   }, [props.descriptor, workspaceImportableUrl]);
 
   return (
-    <>
+    <Flex
+      flexWrap={{ default: "nowrap" }}
+      justifyContent={{ default: "justifyContentFlexStart" }}
+      spaceItems={{ default: "spaceItemsSm" }}
+      style={{ display: "inline-flex" }}
+    >
       {props.descriptor?.origin.kind === WorkspaceKind.GIT && (
-        <Tooltip
-          content={`'${
-            props.descriptor?.name
-          }' is linked to a Git Repository. ${props.descriptor?.origin.url.toString()}`}
-          position={"right"}
-        >
-          <>
-            {gitLabel}
-            &nbsp;&nbsp;
+        <>
+          <FlexItem>
+            <Tooltip
+              content={`'${
+                props.descriptor?.name
+              }' is linked to a Git Repository. ${props.descriptor?.origin.url.toString()}`}
+              position={"right"}
+            >
+              {gitLabel}
+            </Tooltip>
+          </FlexItem>
+          <FlexItem>
             <Label>
               <CodeBranchIcon />
               &nbsp;&nbsp;{props.descriptor?.origin.branch}
             </Label>
-          </>
-        </Tooltip>
+          </FlexItem>
+        </>
       )}
       {props.descriptor?.origin.kind === WorkspaceKind.GITHUB_GIST && (
-        <Tooltip
-          content={`'${props.descriptor?.name}' is linked to a GitHub Gist. ${props.descriptor?.origin.url.toString()}`}
-          position={"right"}
-        >
-          <Label>
-            <GithubIcon />
-            &nbsp;&nbsp;Gist
-          </Label>
-        </Tooltip>
+        <FlexItem>
+          <Tooltip
+            content={`'${
+              props.descriptor?.name
+            }' is linked to a GitHub Gist. ${props.descriptor?.origin.url.toString()}`}
+            position={"right"}
+          >
+            <Label>
+              <GithubIcon />
+              &nbsp;&nbsp;Gist
+            </Label>
+          </Tooltip>
+        </FlexItem>
       )}
       {props.descriptor?.origin.kind === WorkspaceKind.LOCAL && (
-        <Tooltip
-          content={`'${props.descriptor?.name}' is saved directly in the browser. Incognito windows don't have access to it.`}
-          position={"right"}
-        >
-          <Label>
-            <PendingIcon />
-            &nbsp;&nbsp;Ephemeral
-          </Label>
-        </Tooltip>
+        <FlexItem>
+          <Tooltip
+            content={`'${props.descriptor?.name}' is saved directly in the browser. Incognito windows don't have access to it.`}
+            position={"right"}
+          >
+            <Label>
+              <PendingIcon />
+              &nbsp;&nbsp;Ephemeral
+            </Label>
+          </Tooltip>
+        </FlexItem>
       )}
-    </>
+    </Flex>
   );
 }

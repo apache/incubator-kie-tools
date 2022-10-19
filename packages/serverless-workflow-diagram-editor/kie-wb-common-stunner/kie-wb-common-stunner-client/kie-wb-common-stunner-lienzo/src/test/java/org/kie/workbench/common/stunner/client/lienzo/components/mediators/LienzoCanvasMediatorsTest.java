@@ -129,7 +129,7 @@ public class LienzoCanvasMediatorsTest {
         ArgumentCaptor<Supplier> panelCaptor = ArgumentCaptor.forClass(Supplier.class);
         verify(notification, times(1)).init(panelCaptor.capture());
         assertEquals(panel, panelCaptor.getValue().get());
-        verify(zoomMediator, times(1)).setScaleAboutPoint(eq(false));
+        verify(zoomMediator, times(1)).setScaleAboutPoint(eq(true));
     }
 
     @Test
@@ -143,11 +143,11 @@ public class LienzoCanvasMediatorsTest {
         // CTRL.
         when(mediators.enablePreview()).thenReturn(false);
         callback.onKeyShortcut(KeyboardEvent.Key.CONTROL);
-        verify(cursor, times(1)).accept(eq(LienzoCanvasMediators.CURSOR_ZOOM));
+        verify(cursor, times(1)).accept(eq(LienzoCanvasMediators.CURSOR_DEFAULT));
         // ALT.
         when(mediators.enablePreview()).thenReturn(false);
         callback.onKeyShortcut(KeyboardEvent.Key.ALT);
-        verify(cursor, times(1)).accept(eq(LienzoCanvasMediators.CURSOR_PAN));
+        verify(cursor, times(1)).accept(eq(LienzoCanvasMediators.CURSOR_DEFAULT));
         // CTRL + ALT.
         when(mediators.enablePreview()).thenReturn(true);
         callback.onKeyShortcut(KeyboardEvent.Key.CONTROL, KeyboardEvent.Key.ALT);

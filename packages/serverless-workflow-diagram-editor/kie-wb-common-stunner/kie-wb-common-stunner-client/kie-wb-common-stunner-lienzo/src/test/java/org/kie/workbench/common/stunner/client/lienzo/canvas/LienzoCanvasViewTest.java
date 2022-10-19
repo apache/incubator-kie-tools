@@ -20,8 +20,6 @@ import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.util.CursorMap;
-import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
@@ -30,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasView;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
@@ -99,12 +98,17 @@ public class LienzoCanvasViewTest {
 
     @Test
     public void testCursor() {
-        LienzoBoundsPanel panelView = mock(LienzoBoundsPanel.class);
-        when(panel.getView()).thenReturn(panelView);
+        Widget widget = mock(Widget.class);
+        Element element = mock(Element.class);
+        Style style = mock(Style.class);
+        when(panel.asWidget()).thenReturn(widget);
+        when(widget.getElement()).thenReturn(element);
+        when(element.getStyle()).thenReturn(style);
         tested.initialize(panel, settings);
-        tested.setCursor(AbstractCanvas.Cursors.MOVE);
-        verify(panelView, times(1))
-                .setCursor(eq(CursorMap.get().lookup(Style.Cursor.MOVE.getCssName())));
+        tested.setCursor(AbstractCanvas.Cursors.GRAB);
+
+        verify(style, times(1))
+                .setProperty(AbstractCanvasView.CURSOR, "grab");
     }
 
     @Test

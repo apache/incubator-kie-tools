@@ -18,30 +18,36 @@ import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { usePromiseState } from "./PromiseState";
-import { WorkspaceEvents } from "./WorkspaceHooks";
+import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
+import { WorkspaceFileBroadcastEvents } from "../worker/api/WorkspaceFileBroadcastEvents";
 
 export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();
-  const [workspaceFilePromise, setWorkspaceFilePromise] = usePromiseState<WorkspaceFile>();
+  const [workspaceFilePromise, setWorkspaceFilePromise] =
+    usePromiseState<{ workspaceFile: WorkspaceFile; uniqueId: string }>();
 
   const refresh = useCallback(
     async (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
-      workspaces
-        .getFile({ fs: await workspaces.fsService.getWorkspaceFs(workspaceId), workspaceId, relativePath })
-        .then((workspaceFile) => {
+      workspaces.getFile({ workspaceId, relativePath }).then((workspaceFile) => {
+        if (canceled.get()) {
+          return;
+        }
+
+        if (!workspaceFile) {
+          setWorkspaceFilePromise({
+            error: `File '${relativePath}' not found in Workspace '${workspaceId}'`,
+          });
+          return;
+        }
+
+        workspaces.getUniqueFileIdentifier({ workspaceId, relativePath }).then((uniqueId) => {
           if (canceled.get()) {
             return;
           }
 
-          if (!workspaceFile) {
-            setWorkspaceFilePromise({
-              error: `File '${relativePath}' not found in Workspace '${workspaceId}'`,
-            });
-            return;
-          }
-
-          setWorkspaceFilePromise({ data: workspaceFile });
+          setWorkspaceFilePromise({ data: { workspaceFile, uniqueId } });
         });
+      });
     },
     [workspaces, setWorkspaceFilePromise]
   );
@@ -65,33 +71,37 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
           return;
         }
 
-        const uniqueFileIdentifier = workspaces.getUniqueFileIdentifier({ workspaceId, relativePath });
-
-        console.debug("Subscribing to " + uniqueFileIdentifier);
-        const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
-        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
-          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
-          if (data.type === "MOVE" || data.type == "RENAME") {
-            refresh(workspaceId, data.newRelativePath, canceled);
+        workspaces.getUniqueFileIdentifier({ workspaceId, relativePath }).then((uniqueFileIdentifier) => {
+          if (canceled.get()) {
+            return;
           }
-          if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
-            refresh(workspaceId, data.relativePath, canceled);
-          }
-        };
 
-        console.debug("Subscribing to " + workspaceId);
-        const broadcastChannel2 = new BroadcastChannel(workspaceId);
-        broadcastChannel2.onmessage = ({ data }: MessageEvent<WorkspaceEvents>) => {
-          console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
-          if (data.type === "PULL") {
-            refresh(workspaceId, relativePath, canceled);
-          }
-        };
+          console.debug(`Subscribing to ${uniqueFileIdentifier}`);
+          const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
+          broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileBroadcastEvents>) => {
+            console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
+            if (data.type === "WSF_MOVE" || data.type == "WSF_RENAME") {
+              refresh(workspaceId, data.newRelativePath, canceled);
+            }
+            if (data.type === "WSF_UPDATE" || data.type === "WSF_DELETE" || data.type === "WSF_ADD") {
+              refresh(workspaceId, data.relativePath, canceled);
+            }
+          };
 
-        return () => {
-          console.debug("Unsubscribing to " + uniqueFileIdentifier);
-          broadcastChannel.close();
-        };
+          console.debug(`Subscribing to ${workspaceId}`);
+          const broadcastChannel2 = new BroadcastChannel(workspaceId);
+          broadcastChannel2.onmessage = ({ data }: MessageEvent<WorkspaceBroadcastEvents>) => {
+            console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
+            if (data.type === "WS_PULL") {
+              refresh(workspaceId, relativePath, canceled);
+            }
+          };
+
+          return () => {
+            console.debug(`Unsubscribing to ${uniqueFileIdentifier}`);
+            broadcastChannel.close();
+          };
+        });
       },
       [relativePath, workspaceId, workspaces, refresh]
     )
@@ -99,10 +109,3 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
 
   return workspaceFilePromise;
 }
-
-export type WorkspaceFileEvents =
-  | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
-  | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
-  | { type: "UPDATE"; relativePath: string }
-  | { type: "DELETE"; relativePath: string }
-  | { type: "ADD"; relativePath: string };

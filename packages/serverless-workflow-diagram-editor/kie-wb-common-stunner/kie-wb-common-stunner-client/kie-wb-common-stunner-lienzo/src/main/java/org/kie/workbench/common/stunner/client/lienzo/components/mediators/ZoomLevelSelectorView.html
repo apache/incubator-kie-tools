@@ -14,14 +14,29 @@
   ~ limitations under the License.
   -->
 
-<div class="btn-group shadow p-3 mb-5 bg-white rounded" role="group" style="display: inline-flex">
-  <button type="button" data-field="resetButton" class="btn btn-secondary">
+<div
+  class="btn-group shadow p-3 mb-5 bg-white rounded"
+  role="group"
+  style="display: inline-flex"
+  data-ouia-component-id="zoom-controls-panel"
+>
+  <button type="button" data-field="resetButton" class="btn btn-secondary" data-ouia-component-id="reset-zoom-button">
     <span class="glyphicon glyphicon-fullscreen"></span>
   </button>
-  <button type="button" data-field="decreaseButton" class="btn btn-secondary">
+  <button
+    type="button"
+    data-field="decreaseButton"
+    class="btn btn-secondary"
+    data-ouia-component-id="minus-zoom-button"
+  >
     <span class="glyphicon glyphicon-minus"></span>
   </button>
-  <div data-field="dropDownPanelGroup" class="btn-group bootstrap-select" style="width: auto">
+  <div
+    data-field="dropDownPanelGroup"
+    class="btn-group bootstrap-select"
+    style="width: auto"
+    data-ouia-component-id="select-zoom-button"
+  >
     <button type="button" data-field="dropDownButton" class="btn dropdown-toggle btn-default" data-toggle="dropdown">
       <span id="dropDownText" class="filter-option pull-left zoom-selector-button-text"></span>&nbsp;
       <span class="bs-caret">
@@ -34,7 +49,7 @@
       </ul>
     </div>
   </div>
-  <button type="button" data-field="increaseButton" class="btn btn-secondary">
+  <button type="button" data-field="increaseButton" class="btn btn-secondary" data-ouia-component-id="plus-zoom-button">
     <span class="glyphicon glyphicon-plus"></span>
   </button>
 </div>

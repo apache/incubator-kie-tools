@@ -21,7 +21,7 @@ import { HashRouter } from "react-router-dom";
 import {
   EditorEnvelopeLocatorContextProvider,
   useEditorEnvelopeLocator,
-} from "./envelopeLocator/EditorEnvelopeLocatorContext";
+} from "./envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
@@ -34,8 +34,9 @@ import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandb
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
-import { EnvContextProvider } from "./env/EnvContextProvider";
-import { DmnRunnerInputsContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsContextProvider";
+import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
+import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
+import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 
 export function App() {
   return (
@@ -47,9 +48,10 @@ export function App() {
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
-        [DmnRunnerInputsContextProvider, {}],
+        [DmnRunnerInputsDispatchContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
         [NavigationContextProvider, {}],
+        [PreviewSvgsContextProvider, {}],
         [RoutesSwitch, {}]
       )}
     </HashRouter>

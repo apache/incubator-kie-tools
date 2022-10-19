@@ -17,7 +17,6 @@
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import * as React from "react";
-import { useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
@@ -26,6 +25,8 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();

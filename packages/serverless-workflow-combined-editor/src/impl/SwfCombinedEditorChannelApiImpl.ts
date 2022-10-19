@@ -37,14 +37,21 @@ import {
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfFeatureToggleChannelApi } from "../api";
+import {
+  ServerlessWorkflowCombinedEditorChannelApi,
+  SwfFeatureToggle,
+  SwfFeatureToggleChannelApi,
+  SwfPreviewOptions,
+  SwfPreviewOptionsChannelApi,
+} from "../api";
 
 export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombinedEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
     private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi
+    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
+    private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -155,6 +162,14 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     return (
       this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
         defaultValue: { stunnerEnabled: true },
+      }
+    );
+  }
+
+  kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions> {
+    return (
+      this.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
+        defaultValue: { diagramDefaultWidth: "50%" },
       }
     );
   }

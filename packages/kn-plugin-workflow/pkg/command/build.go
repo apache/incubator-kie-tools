@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -191,13 +192,13 @@ func runAddExtension(cfg BuildCmdConfig) error {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		if err := common.RunExtensionCommand(
 			"quarkus:remove-extension",
-			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
+			metadata.QUARKUS_CONTAINER_IMAGE_DOCKER,
 		); err != nil {
 			return err
 		}
 		if err := common.RunExtensionCommand(
 			"quarkus:add-extension",
-			common.QUARKUS_CONTAINER_IMAGE_JIB,
+			metadata.QUARKUS_CONTAINER_IMAGE_JIB,
 		); err != nil {
 			return err
 		}
@@ -205,13 +206,13 @@ func runAddExtension(cfg BuildCmdConfig) error {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
 		if err := common.RunExtensionCommand(
 			"quarkus:remove-extension",
-			common.QUARKUS_CONTAINER_IMAGE_JIB,
+			metadata.QUARKUS_CONTAINER_IMAGE_JIB,
 		); err != nil {
 			return err
 		}
 		if err := common.RunExtensionCommand(
 			"quarkus:add-extension",
-			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
+			metadata.QUARKUS_CONTAINER_IMAGE_DOCKER,
 		); err != nil {
 			return err
 		}
@@ -311,7 +312,7 @@ func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 		name = imageArray[2]
 	}
 
-	var tag = common.DEFAULT_TAG
+	var tag = metadata.DEFAULT_TAG
 	if len(cfg.Tag) > 0 {
 		tag = cfg.Tag
 	} else if len(imageTagArray) > 1 && len(imageTagArray[1]) > 0 {

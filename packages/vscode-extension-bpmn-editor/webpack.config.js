@@ -24,7 +24,7 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const commonConfig = (env) =>
   merge(common(env), {
     output: {
-      library: "DmnEditor",
+      library: "BpmnEditor",
       libraryTarget: "umd",
       umdNamedDefine: true,
       globalObject: "this",

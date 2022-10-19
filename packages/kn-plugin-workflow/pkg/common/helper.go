@@ -17,6 +17,7 @@
 package common
 
 import (
+	"bufio"
 	"fmt"
 	"html/template"
 	"os/exec"
@@ -33,7 +34,17 @@ func RunCommand(command *exec.Cmd, commandName string) error {
 		return err
 	}
 
-	VerboseLog(stdout, stderr)
+	stdoutScanner := bufio.NewScanner(stdout)
+	for stdoutScanner.Scan() {
+		m := stdoutScanner.Text()
+		fmt.Println(m)
+	}
+
+	stderrScanner := bufio.NewScanner(stderr)
+	for stderrScanner.Scan() {
+		m := stderrScanner.Text()
+		fmt.Println(m)
+	}
 
 	if err := command.Wait(); err != nil {
 		fmt.Printf("ERROR: something went wrong during command \"%s\"\n", commandName)

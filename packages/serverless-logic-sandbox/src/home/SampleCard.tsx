@@ -77,7 +77,7 @@ export function SampleCard({ sample }: { sample: Sample }) {
           <sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
         </GridItem>
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
-          <CardTitle>{sample.name}</CardTitle>
+          <CardTitle data-ouia-component-type="sample-title">{sample.name}</CardTitle>
           <CardBody isFilled={true}>
             <Text component="p">{sample.description}</Text>
           </CardBody>
@@ -97,7 +97,7 @@ export function SampleCard({ sample }: { sample: Sample }) {
                 }),
               }}
             >
-              <Button variant={ButtonVariant.tertiary} ouiaId={`try-swf-sample-button`}>
+              <Button variant={ButtonVariant.tertiary} ouiaId={sample.fileName + `-try-swf-sample-button`}>
                 Try it out!
               </Button>
             </Link>

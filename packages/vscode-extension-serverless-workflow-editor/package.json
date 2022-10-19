@@ -55,13 +55,13 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/chai": "^4.2.17",
     "@types/mocha": "^8.2.2",
     "@types/selenium-webdriver": "^4.1.1",
     "@types/vscode": "^1.66.0",
-    "@vscode/test-web": "^0.0.22",
+    "@vscode/test-web": "^0.0.30",
     "chai": "^4.3.4",
     "copy-webpack-plugin": "^8.1.1",
     "cpr": "^3.0.1",
@@ -357,6 +357,9 @@
     "onLanguage:serverless-workflow-json",
     "onLanguage:serverless-workflow-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow"
+  ],
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
   ],
   "icon": "icon.png",
   "capabilities": {

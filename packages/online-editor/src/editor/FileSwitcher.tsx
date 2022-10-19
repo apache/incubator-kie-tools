@@ -15,20 +15,19 @@
  */
 
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
 import { Dropdown } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { Link } from "react-router-dom";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { FileLabel } from "../workspace/components/FileLabel";
+import { FileLabel } from "../filesList/FileLabel";
 import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -46,23 +45,40 @@ import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
+import { PromiseStateWrapper, useCombinedPromiseState } from "../workspace/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useCancelableEffect } from "../reactExt/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
-import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { VariableSizeList } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import {
+  FileDataList,
+  FileLink,
+  FileListItem,
+  getFileDataListHeight,
+  SingleFileWorkspaceDataList,
+} from "../filesList/FileDataList";
+import {
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+} from "@patternfly/react-core/dist/js/components/DataList";
+import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
+import { usePreviewSvg } from "../previewSvgs/PreviewSvgHooks";
+import { WorkspaceLoadingMenuItem } from "../workspace/components/WorkspaceLoadingCard";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -72,7 +88,8 @@ enum FilesDropdownMode {
   CAROUSEL,
 }
 
-const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 400;
+const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 500;
+const MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN = 40;
 
 export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
@@ -101,7 +118,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       );
 
       const hasConflictingFileName = await workspaces.existsFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
@@ -127,7 +143,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       }
 
       await workspaces.renameFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
         newFileNameWithoutExtension: trimmedNewFileName.trim(),
       });
@@ -214,8 +229,12 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
 
   return (
     <>
-      <Flex alignItems={{ default: "alignItemsCenter" }} flexWrap={{ default: "nowrap" }}>
-        <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
+      <Flex
+        alignItems={{ default: "alignItemsCenter" }}
+        flexWrap={{ default: "nowrap" }}
+        className={"kie-sandbox--file-switcher"}
+      >
+        <FlexItem style={{ display: "flex", alignItems: "baseline", minWidth: 0 }}>
           <Dropdown
             style={{ position: "relative" }}
             position={"left"}
@@ -242,27 +261,29 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                       <FileLabel extension={props.workspaceFile.extension} />
                     </b>
                   </FlexItem>
-                  <Popover
-                    hasAutoWidth={true}
-                    distance={15}
-                    showClose={false}
-                    shouldClose={() => setPopoverVisible(false)}
-                    hideOnOutsideClick={true}
-                    enableFlip={false}
-                    withFocusTrap={false}
-                    bodyContent={
-                      <>
-                        <FolderIcon />
-                        &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
-                      </>
-                    }
-                    isVisible={isPopoverVisible}
-                    position={"bottom-start"}
-                  >
-                    <FlexItem>
+
+                  <FlexItem style={{ minWidth: 0 }}>
+                    <Popover
+                      hasAutoWidth={true}
+                      distance={15}
+                      showClose={false}
+                      shouldClose={() => setPopoverVisible(false)}
+                      hideOnOutsideClick={true}
+                      enableFlip={false}
+                      withFocusTrap={false}
+                      bodyContent={
+                        <>
+                          <FolderIcon />
+                          &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
+                        </>
+                      }
+                      isVisible={isPopoverVisible}
+                      position={"bottom-start"}
+                    >
                       <div
                         data-testid={"toolbar-title"}
                         className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
+                        style={{ width: "100%" }}
                       >
                         <Title
                           aria-label={"EmbeddedEditorFile name"}
@@ -302,8 +323,8 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                           />
                         </Tooltip>
                       </div>
-                    </FlexItem>
-                  </Popover>
+                    </Popover>
+                  </FlexItem>
                   <FlexItem>
                     <CaretDownIcon />
                   </FlexItem>
@@ -314,16 +335,12 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
             <Menu
               style={{
                 boxShadow: "none",
-                minWidth:
-                  activeMenu === ROOT_MENU_ID
-                    ? "400px"
-                    : filesDropdownMode === FilesDropdownMode.CAROUSEL
-                    ? "calc(100vw - 16px)"
-                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
-                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2}px`
-                    : "",
+                minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`,
+                width: `${
+                  filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+                    ? MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2
+                    : MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX
+                }px`,
               }}
               id={ROOT_MENU_ID}
               containsDrilldown={true}
@@ -335,14 +352,17 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
               onGetMenuHeight={setHeight}
             >
               <MenuContent
-                maxMenuHeight={"800px"}
+                // MAGIC NUMBER ALERT
+                //
+                // 204px is the exact number that allows the menu to grow to
+                // the maximum size of the screen without adding scroll to the page.
+                maxMenuHeight={`calc(100vh - 204px)`}
                 menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
                 style={{ overflow: "hidden" }}
               >
                 <MenuList>
                   <MenuItem
                     itemId={props.workspace.descriptor.workspaceId}
-                    description={"Current"}
                     direction={"down"}
                     drilldownMenu={
                       <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}`}>
@@ -358,7 +378,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                       </DrilldownMenu>
                     }
                   >
-                    {props.workspace.descriptor.name}
+                    Current
                   </MenuItem>
                   {workspacesMenuItems}
                 </MenuList>
@@ -392,19 +412,12 @@ export function WorkspacesMenuItems(props: {
       <PromiseStateWrapper
         promise={combined}
         pending={
-          <div style={{ padding: "8px" }}>
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-            <br />
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-            <br />
-            <Skeleton />
-            <br />
-            <Skeleton width={"80%"} />
-          </div>
+          <>
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+            <WorkspaceLoadingMenuItem />
+          </>
         }
         resolved={({ workspaceDescriptors, workspaceFiles }) => (
           <>
@@ -414,19 +427,20 @@ export function WorkspacesMenuItems(props: {
               .map((descriptor) => (
                 <React.Fragment key={descriptor.workspaceId}>
                   {workspaceFiles.get(descriptor.workspaceId)!.length === 1 && (
-                    <FileMenuItem
-                      file={workspaceFiles.get(descriptor.workspaceId)![0]}
-                      onSelectFile={props.onSelectFile}
-                    />
+                    <MenuItem onClick={props.onSelectFile} className={"kie-tools--file-switcher-no-padding-menu-item"}>
+                      <SingleFileWorkspaceDataList
+                        workspaceDescriptor={descriptor}
+                        file={workspaceFiles.get(descriptor.workspaceId)![0]}
+                      />
+                    </MenuItem>
                   )}
                   {workspaceFiles.get(descriptor.workspaceId)!.length > 1 && (
                     <MenuItem
+                      style={{
+                        borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+                      }}
+                      className={"kie-tools--file-switcher-no-padding-menu-item"}
                       itemId={descriptor.workspaceId}
-                      description={`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
-                        workspaceFiles
-                          .get(descriptor.workspaceId)!
-                          .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath)).length
-                      } models`}
                       direction={"down"}
                       drilldownMenu={
                         <DrilldownMenu id={`dd${descriptor.workspaceId}`}>
@@ -441,11 +455,27 @@ export function WorkspacesMenuItems(props: {
                         </DrilldownMenu>
                       }
                     >
-                      <FolderIcon />
-                      &nbsp;&nbsp;
-                      {descriptor.name}
-                      &nbsp;&nbsp;
-                      <WorkspaceLabel descriptor={descriptor} />
+                      <DataList aria-label="workspace-data-list" style={{ border: 0 }}>
+                        {/* Need to replicate DatList's border here because of the angle bracket of drilldown menus */}
+                        <DataListItem style={{ border: 0, backgroundColor: "transparent" }}>
+                          <DataListItemRow>
+                            <DataListItemCells
+                              dataListCells={[
+                                <DataListCell key="link" isFilled={false}>
+                                  <WorkspaceListItem
+                                    isBig={false}
+                                    workspaceDescriptor={descriptor}
+                                    allFiles={workspaceFiles.get(descriptor.workspaceId)!}
+                                    editableFiles={workspaceFiles
+                                      .get(descriptor.workspaceId)!
+                                      .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath))}
+                                  />
+                                </DataListCell>,
+                              ]}
+                            />
+                          </DataListItemRow>
+                        </DataListItem>
+                      </DataList>
                     </MenuItem>
                   )}
                 </React.Fragment>
@@ -458,39 +488,17 @@ export function WorkspacesMenuItems(props: {
 }
 
 export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
-  const workspaces = useWorkspaces();
   const imgRef = useRef<HTMLImageElement>(null);
-  const [svg, setSvg] = usePromiseState<string>();
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        Promise.resolve()
-          .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
-          .then(async (file) => {
-            if (canceled.get()) {
-              return;
-            }
-
-            if (file) {
-              setSvg({ data: decoder.decode(await file.getFileContents()) });
-            } else {
-              setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
-            }
-          });
-      },
-      [props.workspaceFile, workspaces, setSvg]
-    )
-  );
+  const { previewSvgString } = usePreviewSvg(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
 
   useEffect(() => {
-    if (svg.data) {
-      const blob = new Blob([svg.data], { type: "image/svg+xml" });
+    if (previewSvgString.data) {
+      const blob = new Blob([previewSvgString.data], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
       imgRef.current!.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
       imgRef.current!.src = url;
     }
-  }, [svg]);
+  }, [previewSvgString]);
 
   return (
     <>
@@ -503,10 +511,15 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
             </Bullseye>
           </div>
         )}
-        promise={svg}
+        promise={previewSvgString}
         resolved={() => (
-          // for some reason, the CardBody adds an extra 6px after the image is loaded. 200 - 6 = 194px.
-          <img style={{ height: "194px" }} ref={imgRef} alt={"SVG for " + props.workspaceFile.relativePath} />
+          <Bullseye>
+            <img
+              style={{ height: "180px", margin: "10px" }}
+              ref={imgRef}
+              alt={`SVG for ${props.workspaceFile.relativePath}`}
+            />
+          </Bullseye>
         )}
       />
     </>
@@ -514,53 +527,86 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
 }
 
 export function SearchableFilesMenuGroup(props: {
-  maxHeight: string;
   shouldFocusOnSearch: boolean;
   filesDropdownMode: FilesDropdownMode;
   label: string;
   allFiles: WorkspaceFile[];
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
   children: (args: { filteredFiles: WorkspaceFile[] }) => React.ReactNode;
 }) {
-  const [search, setSearch] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (props.shouldFocusOnSearch) {
-      setTimeout(() => {
+      const task = setTimeout(() => {
         searchInputRef.current?.focus();
       }, 500);
+      return () => {
+        clearTimeout(task);
+      };
     }
   }, [props.shouldFocusOnSearch, props.filesDropdownMode]);
 
   const filteredFiles = useMemo(
-    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(search.toLowerCase())),
-    [props.allFiles, search]
+    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(props.search.toLowerCase())),
+    [props.allFiles, props.search]
   );
+
+  const height = useMemo(() => {
+    if (
+      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
+      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+    ) {
+      // No reason to know the exact size.
+      const sizeOfFirst50Elements = props.allFiles
+        .slice(0, 50)
+        .map((f) => getFileDataListHeight(f))
+        .reduce((a, b) => a + b, 0);
+
+      // MAGIC NUMBER ALERT
+      //
+      // 440px is the exact number that allows the menu to grow to the end of the screen without adding scroll  to the
+      // entire page, It includes the first menu item, the search bar and the "View other files" button at the bottom.
+      return `max(300px, min(calc(100vh - 440px), ${sizeOfFirst50Elements}px))`;
+    } else if (props.filesDropdownMode === FilesDropdownMode.CAROUSEL) {
+      // MAGIC NUMBER ALERT
+      //
+      // 384px is the exact number that allows the menu to grow to the end of the screen without
+      // adding a scroll to the entire page. It includes the first menu item and the search bar.
+      //
+      // 280px is the size of a File SVG card.
+      return `min(calc(100vh - 384px), calc(${props.allFiles.length} * 280px))`;
+    } else {
+      return "";
+    }
+  }, [props.allFiles, props.filesDropdownMode]);
 
   return (
     <MenuGroup label={props.label}>
-      <MenuInput>
+      {/* Allows for arrows to work when editing the text. */}
+      <MenuInput onKeyDown={(e) => e.stopPropagation()}>
         <TextInput
           ref={searchInputRef}
-          value={search}
+          value={props.search}
           aria-label={"Other files menu items"}
           iconVariant={"search"}
           type={"search"}
-          onChange={(value) => setSearch(value)}
+          onChange={(value) => props.setSearch(value)}
         />
       </MenuInput>
-      {filteredFiles.length === 0 && search && (
-        <Bullseye>
-          <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {`No files match '${search}'.`}
-            </Title>
-          </EmptyState>
-        </Bullseye>
-      )}
-      <div style={{ maxHeight: props.maxHeight, overflowY: "auto" }}>
+      <div style={{ overflowY: "auto", height }}>
         {filteredFiles.length > 0 && props.children({ filteredFiles })}
+        {filteredFiles.length <= 0 && (
+          <Bullseye>
+            <EmptyState>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h4" size="lg">
+                {`No files match '${props.search}'.`}
+              </Title>
+            </EmptyState>
+          </Bullseye>
+        )}
       </div>
     </MenuGroup>
   );
@@ -597,6 +643,9 @@ export function FilesMenuItems(props: {
     [editorEnvelopeLocator, sortedAndFilteredFiles]
   );
 
+  const [search, setSearch] = useState("");
+  const [otherFilesSearch, setOtherFilesSearch] = useState("");
+
   return (
     <>
       <Split>
@@ -605,14 +654,13 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        {/* FIXME: Uncomment when KOGITO-6181 is fixed */}
-        {/*<SplitItem>*/}
-        {/*  <FilesDropdownModeIcons*/}
-        {/*    filesDropdownMode={props.filesDropdownMode}*/}
-        {/*    setFilesDropdownMode={props.setFilesDropdownMode}*/}
-        {/*  />*/}
-        {/*  &nbsp; &nbsp;*/}
-        {/*</SplitItem>*/}
+        <SplitItem>
+          <FilesDropdownModeIcons
+            filesDropdownMode={props.filesDropdownMode}
+            setFilesDropdownMode={props.setFilesDropdownMode}
+          />
+          &nbsp; &nbsp;
+        </SplitItem>
       </Split>
       <Divider component={"li"} />
 
@@ -622,17 +670,38 @@ export function FilesMenuItems(props: {
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <>
               <SearchableFilesMenuGroup
-                maxHeight={"500px"}
+                search={search}
+                setSearch={setSearch}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
                 label={`Models in '${props.workspaceDescriptor.name}'`}
                 allFiles={models}
               >
-                {({ filteredFiles }) =>
-                  filteredFiles.map((file) => (
-                    <FileMenuItem key={file.relativePath} file={file} onSelectFile={props.onSelectFile} />
-                  ))
-                }
+                {({ filteredFiles }) => (
+                  <>
+                    <AutoSizer>
+                      {({ height, width }) => (
+                        <VariableSizeList
+                          height={height}
+                          itemCount={filteredFiles.length}
+                          itemSize={(index) => getFileDataListHeight(filteredFiles[index])}
+                          width={width}
+                        >
+                          {({ index, style }) => (
+                            <MenuItem
+                              key={filteredFiles[index].relativePath}
+                              onClick={props.onSelectFile}
+                              style={style}
+                              className={"kie-tools--file-switcher-no-padding-menu-item"}
+                            >
+                              <FileDataList file={filteredFiles[index]} isEditable={true} />
+                            </MenuItem>
+                          )}
+                        </VariableSizeList>
+                      )}
+                    </AutoSizer>
+                  </>
+                )}
               </SearchableFilesMenuGroup>
               {otherFiles.length > 0 && (
                 <>
@@ -670,19 +739,38 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <SearchableFilesMenuGroup
-              maxHeight={"500px"}
+              search={otherFilesSearch}
+              setSearch={setOtherFilesSearch}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Other files in '${props.workspaceDescriptor.name}'`}
               allFiles={otherFiles}
             >
-              {({ filteredFiles }) =>
-                filteredFiles.map((file) => (
-                  <MenuItem key={file.relativePath}>
-                    <FileName file={file} />
-                  </MenuItem>
-                ))
-              }
+              {({ filteredFiles }) => (
+                <>
+                  <AutoSizer>
+                    {({ height, width }) => (
+                      <VariableSizeList
+                        height={height}
+                        itemCount={filteredFiles.length}
+                        itemSize={(index) => getFileDataListHeight(filteredFiles[index])}
+                        width={width}
+                      >
+                        {({ index, style }) => (
+                          <MenuItem
+                            component={"span"}
+                            onClick={() => {}}
+                            style={style}
+                            className={"kie-tools--file-switcher-no-padding-menu-item"}
+                          >
+                            <FileDataList file={filteredFiles[index]} isEditable={false} />
+                          </MenuItem>
+                        )}
+                      </VariableSizeList>
+                    )}
+                  </AutoSizer>
+                </>
+              )}
             </SearchableFilesMenuGroup>
           </SplitItem>
         )}
@@ -690,15 +778,22 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
           <SplitItem isFilled={true}>
             <SearchableFilesMenuGroup
-              maxHeight={"500px"}
+              search={search}
+              setSearch={setSearch}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Models in '${props.workspaceDescriptor.name}'`}
               allFiles={models}
             >
               {({ filteredFiles }) => (
-                <Gallery hasGutter={true} style={{ padding: "8px" }}>
-                  {filteredFiles.map((file) => (
+                <Gallery
+                  hasGutter={true}
+                  style={{
+                    padding: "8px",
+                    borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+                  }}
+                >
+                  {filteredFiles.slice(0, MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN).map((file) => (
                     <Card
                       key={file.relativePath}
                       isSelectable={true}
@@ -718,27 +813,29 @@ export function FilesMenuItems(props: {
                         props.onSelectFile();
                       }}
                     >
-                      <CardHeader>
-                        <CardHeaderMain>
-                          <CardTitle>
-                            <Flex flexWrap={{ default: "nowrap" }}>
-                              <FlexItem>
-                                <TextContent>
-                                  <Text component={TextVariants.h4}>{file.nameWithoutExtension}</Text>
-                                </TextContent>
-                              </FlexItem>
-                              <FlexItem>
-                                <FileLabel extension={file.extension} />
-                              </FlexItem>
-                            </Flex>
-                          </CardTitle>
-                        </CardHeaderMain>
-                      </CardHeader>
+                      <FileLink file={file}>
+                        {/* The default display:flex makes the text overflow */}
+                        <CardHeader style={{ display: "block" }}>
+                          <CardHeaderMain>
+                            <FileListItem file={file} isEditable={true} />
+                          </CardHeaderMain>
+                        </CardHeader>
+                      </FileLink>
+                      <Divider inset={{ default: "insetMd" }} />
                       <CardBody style={{ padding: 0 }}>
                         <FileSvg workspaceFile={file} />
                       </CardBody>
                     </Card>
                   ))}
+                  {filteredFiles.length > MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN && (
+                    <Card style={{ border: 0 }}>
+                      <CardBody>
+                        <Bullseye>
+                          <div>...and {filteredFiles.length - MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN} more.</div>
+                        </Bullseye>
+                      </CardBody>
+                    </Card>
+                  )}
                 </Gallery>
               )}
             </SearchableFilesMenuGroup>
@@ -746,40 +843,6 @@ export function FilesMenuItems(props: {
         )}
       </Split>
     </>
-  );
-}
-
-export function FileName(props: { file: WorkspaceFile }) {
-  return (
-    <>
-      <Flex flexWrap={{ default: "nowrap" }}>
-        <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
-        <FlexItem>
-          <FileLabel extension={props.file.extension} />
-        </FlexItem>
-      </Flex>
-      <div className={"pf-c-dropdown__menu-item-description"}>
-        {props.file.relativeDirPath.split("/").join(" > ")}
-        &nbsp;
-      </div>
-    </>
-  );
-}
-
-export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => void }) {
-  const routes = useRoutes();
-  return (
-    <MenuItem onClick={props.onSelectFile}>
-      <Link
-        to={routes.workspaceWithFilePath.path({
-          workspaceId: props.file.workspaceId,
-          fileRelativePath: props.file.relativePathWithoutExtension,
-          extension: props.file.extension,
-        })}
-      >
-        <FileName file={props.file} />
-      </Link>
-    </MenuItem>
   );
 }
 

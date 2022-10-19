@@ -18,7 +18,8 @@ import { useWorkspaces } from "../WorkspacesContext";
 import { useCallback } from "react";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
-import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
+import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesBroadcastEvents";
 
 export function useWorkspaceDescriptorsPromise() {
   const workspaces = useWorkspaces();
@@ -26,8 +27,8 @@ export function useWorkspaceDescriptorsPromise() {
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
-      workspaces.descriptorService
-        .listAll()
+      workspaces
+        .listAllWorkspaces()
         .then((descriptors) => {
           if (!canceled.get()) {
             setWorkspaceDescriptorsPromise({
@@ -56,7 +57,7 @@ export function useWorkspaceDescriptorsPromise() {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        const broadcastChannel = new BroadcastChannel("workspaces");
+        const broadcastChannel = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
         broadcastChannel.onmessage = ({ data }) => {
           console.debug(`EVENT::WORKSPACES: ${JSON.stringify(data)}`);
           refresh(canceled);
@@ -72,9 +73,3 @@ export function useWorkspaceDescriptorsPromise() {
 
   return workspaceDescriptorsPromise;
 }
-
-export type WorkspacesEvents =
-  | { type: "DELETE_ALL" }
-  | { type: "ADD_WORKSPACE"; workspaceId: string }
-  | { type: "RENAME_WORKSPACE"; workspaceId: string }
-  | { type: "DELETE_WORKSPACE"; workspaceId: string };

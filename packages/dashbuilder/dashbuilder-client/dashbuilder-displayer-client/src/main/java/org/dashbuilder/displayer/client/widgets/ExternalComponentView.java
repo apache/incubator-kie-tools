@@ -19,7 +19,6 @@ package org.dashbuilder.displayer.client.widgets;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
@@ -86,7 +85,7 @@ public class ExternalComponentView extends Composite implements ExternalComponen
 
     private void postMessageToComponent(Object message) {
         if (externalComponentIFrame != null && externalComponentIFrame.contentWindow != null) {
-            externalComponentIFrame.contentWindow.postMessage(message, Window.Location.getHref());
+            externalComponentIFrame.contentWindow.postMessage(message, "*");
         }
     }
 
@@ -105,7 +104,7 @@ public class ExternalComponentView extends Composite implements ExternalComponen
     public void configurationOk() {
         showComponent();
     }
-    
+
     private void showConfigurationIssue() {
         configurationIssueRoot.style.display = "block";
         externalComponentIFrame.style.display = "none";

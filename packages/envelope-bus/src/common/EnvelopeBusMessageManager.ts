@@ -301,6 +301,7 @@ export class EnvelopeBusMessageManager<
       try {
         response = apiImpl[request.type].apply(apiImpl, request.data);
       } catch (err) {
+        console.error(err);
         this.respond(request, undefined, err);
         return;
       }
@@ -309,7 +310,15 @@ export class EnvelopeBusMessageManager<
         throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
       }
 
-      response.then((data) => this.respond(request, data)).catch((err) => this.respond(request, undefined, err));
+      response
+        .then((data) => {
+          this.respond(request, data);
+        })
+        .catch((err) => {
+          console.error(err);
+          this.respond(request, undefined, err);
+        });
+
       return;
     }
 

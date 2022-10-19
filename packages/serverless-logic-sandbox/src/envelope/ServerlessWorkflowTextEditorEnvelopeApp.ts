@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { initCustom } from "@kie-tools-core/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import {
   ServerlessWorkflowTextEditorChannelApi,
   ServerlessWorkflowTextEditorEnvelopeApi,
@@ -23,9 +23,9 @@ import {
   ServerlessWorkflowTextEditorApi,
   ServerlessWorkflowTextEditorFactory,
 } from "@kie-tools/serverless-workflow-text-editor/dist/editor";
-import { ServerlessWorkflowTextEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-text-editor/dist/envelope/ServerlessWorkflowTextEditorEnvelopeApiImpl";
+import { ServerlessWorkflowTextEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-text-editor/dist/envelope";
 
-initCustom<
+EditorEnvelope.initCustom<
   ServerlessWorkflowTextEditorApi,
   ServerlessWorkflowTextEditorEnvelopeApi,
   ServerlessWorkflowTextEditorChannelApi

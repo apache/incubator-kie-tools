@@ -15,30 +15,28 @@
  */
 
 import {
-  CodeLens,
-  CompletionItem,
-  CompletionItemKind,
-  InsertTextFormat,
-  Position,
-  Range,
-} from "vscode-languageserver-types";
-import * as jsonc from "jsonc-parser";
-import { posix as posixPath } from "path";
-import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { FileLanguage, SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
-import * as swfModelQueries from "./modelQueries";
-import { Specification } from "@severlessworkflow/sdk-typescript";
-import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
+import * as jsonc from "jsonc-parser";
+import { posix as posixPath } from "path";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import { doRefValidation } from "./refValidation";
-import { nodeUpUntilType } from "./nodeUpUntilType";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { FileLanguage } from "../api";
+import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfJsonPath, SwfLsNode, CodeCompletionStrategy } from "./types";
+import { doRefValidation } from "./refValidation";
+import {
+  SwfCompletionItemServiceCatalogService,
+  SwfLanguageServiceCodeCompletion,
+} from "./SwfLanguageServiceCodeCompletion";
+import {
+  SwfLanguageServiceCodeLenses,
+  SwfLanguageServiceCodeLensesFunctionsArgs,
+} from "./SwfLanguageServiceCodeLenses";
+import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -85,7 +83,7 @@ export class SwfLanguageService {
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
-      return [];
+      return args.content.trim().length ? [] : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions(args);
     }
 
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
@@ -96,13 +94,13 @@ export class SwfLanguageService {
       return [];
     }
 
-    const currentNodePosition = {
+    const currentNodeRange: Range = {
       start: doc.positionAt(currentNode.offset),
       end: doc.positionAt(currentNode.offset + currentNode.length),
     };
 
     const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
-      ? Range.create(currentNodePosition.start, currentNodePosition.end)
+      ? currentNodeRange
       : args.cursorWordRange;
 
     const swfCompletionItemServiceCatalogServices = await Promise.all(
@@ -120,30 +118,30 @@ export class SwfLanguageService {
       }))
     );
 
+    const matchedCompletions = Array.from(completions.entries()).filter(([path, _]) =>
+      args.codeCompletionStrategy.shouldComplete({
+        root: args.rootNode,
+        node: currentNode,
+        path: path,
+        content: args.content,
+        cursorOffset: cursorOffset,
+      })
+    );
+
     const result = await Promise.all(
-      Array.from(completions.entries())
-        .filter(([path, _]) =>
-          args.codeCompletionStrategy.shouldComplete({
-            root: args.rootNode,
-            node: currentNode,
-            path: path,
-            content: args.content,
-            cursorOffset: cursorOffset,
-          })
-        )
-        .map(([_, completionItemsDelegate]) => {
-          return completionItemsDelegate({
-            document: doc,
-            cursorPosition: args.cursorPosition,
-            currentNode,
-            currentNodePosition,
-            rootNode: args.rootNode!,
-            overwriteRange,
-            swfCompletionItemServiceCatalogServices,
-            langServiceConfig: this.args.config,
-            codeCompletionStrategy: args.codeCompletionStrategy,
-          });
-        })
+      matchedCompletions.map(([_, completionItemsDelegate]) => {
+        return completionItemsDelegate({
+          document: doc,
+          cursorPosition: args.cursorPosition,
+          currentNode,
+          currentNodeRange,
+          rootNode: args.rootNode!,
+          overwriteRange,
+          swfCompletionItemServiceCatalogServices,
+          langServiceConfig: this.args.config,
+          codeCompletionStrategy: args.codeCompletionStrategy,
+        });
+      })
     );
 
     return Promise.resolve(result.flat());
@@ -199,124 +197,34 @@ export class SwfLanguageService {
     content: string;
     uri: string;
     rootNode: SwfLsNode | undefined;
+    codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CodeLens[]> {
+    if (!args.content.trim().length) {
+      return SwfLanguageServiceCodeLenses.createNewSWF();
+    }
+
     if (!args.rootNode) {
       return [];
     }
 
     const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
 
-    const addFunction = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ node }) => {
-        if (node.type !== "array") {
-          return [];
-        }
-
-        const newCursorPosition = document.positionAt(node.offset + 1);
-
-        return [
-          {
-            name: "swf.ls.commands.OpenFunctionsCompletionItems",
-            title: "+ Add function...",
-            args: [
-              { newCursorPosition } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenFunctionsCompletionItems"],
-            ],
-          },
-        ];
-      },
-    });
-
-    const setupServiceRegistries = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        if (node.type !== "array") {
-          return [];
-        }
-
-        if (!this.args.config.shouldConfigureServiceRegistries()) {
-          return [];
-        }
-
-        return [
-          {
-            name: "swf.ls.commands.OpenServiceRegistriesConfig",
-            title: "↪ Setup Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenServiceRegistriesConfig"]],
-          },
-        ];
-      },
-    });
-
-    const logInServiceRegistries = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        if (node.type !== "array") {
-          return [];
-        }
-
-        if (this.args.config.shouldConfigureServiceRegistries()) {
-          return [];
-        }
-
-        if (!this.args.config.shouldServiceRegistriesLogIn()) {
-          return [];
-        }
-
-        return [
-          {
-            name: "swf.ls.commands.LogInServiceRegistries",
-            title: "↪ Log in Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.LogInServiceRegistries"]],
-          },
-        ];
-      },
-    });
-
-    const refreshServiceRegistries = this.createCodeLenses({
-      document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        if (node.type !== "array") {
-          return [];
-        }
-
-        if (this.args.config.shouldConfigureServiceRegistries()) {
-          return [];
-        }
-
-        if (!this.args.config.canRefreshServices()) {
-          return [];
-        }
-
-        return [
-          {
-            name: "swf.ls.commands.RefreshServiceRegistries",
-            title: "↺ Refresh Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceRegistries"]],
-          },
-        ];
-      },
-    });
-
     const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
+    const codeLensesFunctionsArgs: SwfLanguageServiceCodeLensesFunctionsArgs = {
+      config: this.args.config,
+      document,
+      content: args.content,
+      rootNode: args.rootNode,
+      codeCompletionStrategy: args.codeCompletionStrategy,
+    };
 
     return [
-      ...(displayRhhccIntegration ? setupServiceRegistries : []),
-      ...(displayRhhccIntegration ? logInServiceRegistries : []),
-      ...(displayRhhccIntegration ? refreshServiceRegistries : []),
-      ...addFunction,
+      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.setupServiceRegistries(codeLensesFunctionsArgs) : []),
+      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.logInServiceRegistries(codeLensesFunctionsArgs) : []),
+      ...(displayRhhccIntegration
+        ? SwfLanguageServiceCodeLenses.refreshServiceRegistries(codeLensesFunctionsArgs)
+        : []),
+      ...SwfLanguageServiceCodeLenses.addFunction(codeLensesFunctionsArgs),
     ];
   }
 
@@ -335,19 +243,13 @@ export class SwfLanguageService {
       const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
       const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
-    }
-
-    //
-    else if (
+    } else if (
       (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
       containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
       func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
     ) {
       return `${containingService.source.url}#${func.name}`;
-    }
-
-    //
-    else if (
+    } else if (
       containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
       func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
     ) {
@@ -357,55 +259,11 @@ export class SwfLanguageService {
       );
       const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
-    }
-
-    //
-    else {
+    } else {
       throw new Error("Unknown Service Catalog function source type");
     }
   }
-
-  public createCodeLenses(args: {
-    document: TextDocument;
-    rootNode: SwfLsNode;
-    jsonPath: SwfJsonPath;
-    commandDelegates: (args: {
-      position: Position;
-      node: SwfLsNode;
-    }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
-    positionLensAt: "begin" | "end";
-  }): CodeLens[] {
-    const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
-    const codeLenses = nodes.flatMap((node) => {
-      // Only position at the end if the type is object or array and has at least one child.
-      const position =
-        args.positionLensAt === "end" &&
-        (node.type === "object" || node.type === "array") &&
-        (node.children?.length ?? 0) > 0
-          ? args.document.positionAt(node.offset + node.length)
-          : args.document.positionAt(node.offset);
-
-      return args.commandDelegates({ position, node }).map((command) => ({
-        command: {
-          command: command.name,
-          title: command.title,
-          arguments: command.args,
-        },
-        range: {
-          start: position,
-          end: position,
-        },
-      }));
-    });
-
-    return codeLenses;
-  }
 }
-
-type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
-type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
-  functions: SwfCompletionItemServiceCatalogFunction[];
-};
 
 const completions = new Map<
   SwfJsonPath,
@@ -415,269 +273,29 @@ const completions = new Map<
     cursorPosition: Position;
     currentNode: SwfLsNode;
     overwriteRange: Range;
-    currentNodePosition: { start: Position; end: Position };
+    currentNodeRange: Range;
     rootNode: SwfLsNode;
     langServiceConfig: SwfLanguageServiceConfig;
     codeCompletionStrategy: CodeCompletionStrategy;
   }) => Promise<CompletionItem[]>
 >([
-  [
-    ["functions", "*"],
-    async ({
-      currentNode,
-      rootNode,
-      overwriteRange,
-      swfCompletionItemServiceCatalogServices,
-      document,
-      langServiceConfig,
-      codeCompletionStrategy,
-    }) => {
-      const separator = currentNode.type === "object" ? "," : "";
-      const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
-
-      const specsDir = await langServiceConfig.getSpecsDirPosixPaths(document);
-
-      const result = swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) =>
-        swfServiceCatalogService.functions
-          .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
-          .map((swfServiceCatalogFunc) => {
-            const swfFunction: Omit<Specification.Function, "normalize"> = {
-              name: `$\{1:${swfServiceCatalogFunc.name}}`,
-              operation: swfServiceCatalogFunc.operation,
-              type: swfServiceCatalogFunc.type,
-            };
-
-            const command: SwfLanguageServiceCommandExecution<"swf.ls.commands.ImportFunctionFromCompletionItem"> = {
-              name: "swf.ls.commands.ImportFunctionFromCompletionItem",
-              args: {
-                containingService: swfServiceCatalogService,
-                documentUri: document.uri,
-              },
-            };
-
-            const kind =
-              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-                ? CompletionItemKind.Interface
-                : CompletionItemKind.Reference;
-
-            return {
-              kind,
-              label: toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
-              detail:
-                swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
-                  ? swfServiceCatalogService.source.url
-                  : swfServiceCatalogFunc.operation,
-              textEdit: {
-                newText: codeCompletionStrategy.translate(swfFunction) + separator,
-                range: overwriteRange,
-              },
-              snippet: true,
-              insertTextFormat: InsertTextFormat.Snippet,
-              command: {
-                command: command.name,
-                title: "Import function from completion item",
-                arguments: [command.args],
-              },
-            };
-          })
-      );
-      return Promise.resolve(result);
-    },
-  ],
-  [
-    ["functions", "*", "operation"],
-    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
-      if (!currentNode.parent?.parent) {
-        return Promise.resolve([]);
-      }
-
-      // As "rest" is the default, if the value is undefined, it's a rest function too.
-      const isRestFunction = (findNodeAtLocation(currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
-      if (!isRestFunction) {
-        return Promise.resolve([]);
-      }
-
-      const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
-
-      const result = swfCompletionItemServiceCatalogServices
-        .flatMap((s) => s.functions)
-        .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
-        .map((swfServiceCatalogFunc) => {
-          const kind =
-            swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-              ? CompletionItemKind.Function
-              : CompletionItemKind.Folder;
-
-          return {
-            kind,
-            label: `"${swfServiceCatalogFunc.operation}"`,
-            detail: `"${swfServiceCatalogFunc.operation}"`,
-            filterText: `"${swfServiceCatalogFunc.operation}"`,
-            textEdit: {
-              newText: codeCompletionStrategy.translate(`${swfServiceCatalogFunc.operation}`),
-              range: overwriteRange,
-            },
-            insertTextFormat: InsertTextFormat.Snippet,
-          };
-        });
-      return Promise.resolve(result);
-    },
-  ],
-  [
-    ["states", "*", "actions", "*", "functionRef"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
-      if (currentNode.type !== "property") {
-        console.debug("Cannot autocomplete: functionRef should be a property.");
-        return Promise.resolve([]);
-      }
-
-      const result = swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        const swfServiceCatalogFunc = swfCompletionItemServiceCatalogServices
-          .flatMap((f) => f.functions)
-          .filter((f) => f.operation === swfFunction.operation)
-          .pop()!;
-        if (!swfServiceCatalogFunc) {
-          return [];
-        }
-
-        let argIndex = 1;
-        const swfFunctionRefArgs: Record<string, string> = {};
-        Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
-          swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
-        });
-
-        const swfFunctionRef: Omit<Specification.Functionref, "normalize"> = {
-          refName: swfFunction.name,
-          arguments: swfFunctionRefArgs,
-        };
-
-        return [
-          {
-            kind: CompletionItemKind.Module,
-            label: `${swfFunctionRef.refName}`,
-            sortText: `${swfFunctionRef.refName}`,
-            detail: `${swfServiceCatalogFunc.operation}`,
-            textEdit: {
-              newText: codeCompletionStrategy.translate(swfFunctionRef),
-              range: overwriteRange,
-            },
-            insertTextFormat: InsertTextFormat.Snippet,
-          },
-        ];
-      });
-
-      return Promise.resolve(result);
-    },
-  ],
+  [["functions", "*"], SwfLanguageServiceCodeCompletion.getFunctionCompletions],
+  [["functions", "*", "operation"], SwfLanguageServiceCodeCompletion.getFunctionOperationCompletions],
+  [["states", "*", "actions", "*", "functionRef"], SwfLanguageServiceCodeCompletion.getFunctionRefCompletions],
   [
     ["states", "*", "actions", "*", "functionRef", "refName"],
-    ({ overwriteRange, rootNode, codeCompletionStrategy }) => {
-      const result = swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        return [
-          {
-            kind: CompletionItemKind.Value,
-            label: `"${swfFunction.name}"`,
-            sortText: `"${swfFunction.name}"`,
-            detail: `"${swfFunction.name}"`,
-            filterText: `"${swfFunction.name}"`,
-            textEdit: {
-              newText: codeCompletionStrategy.translate(`${swfFunction.name}`),
-              range: overwriteRange,
-            },
-            insertTextFormat: InsertTextFormat.Snippet,
-          },
-        ];
-      });
-      return Promise.resolve(result);
-    },
+    SwfLanguageServiceCodeCompletion.getFunctionRefRefnameCompletions,
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "arguments"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
-      if (currentNode.type !== "property" && currentNode.type !== "string") {
-        console.debug("Cannot autocomplete: arguments should be a property.");
-        return Promise.resolve([]);
-      }
-
-      const startNode = nodeUpUntilType(currentNode, "object");
-
-      if (!startNode) {
-        return Promise.resolve([]);
-      }
-
-      const swfFunctionRefName: string = findNodeAtLocation(startNode, ["refName"])?.value;
-      if (!swfFunctionRefName) {
-        return Promise.resolve([]);
-      }
-
-      const swfFunction = swfModelQueries
-        .getFunctions(rootNode)
-        ?.filter((f) => f.name === swfFunctionRefName)
-        .pop();
-      if (!swfFunction) {
-        return Promise.resolve([]);
-      }
-
-      const swfServiceCatalogFunc = swfCompletionItemServiceCatalogServices
-        .flatMap((f) => f.functions)
-        .filter((f) => f.operation === swfFunction.operation)
-        .pop()!;
-      if (!swfServiceCatalogFunc) {
-        return Promise.resolve([]);
-      }
-
-      let argIndex = 1;
-      const swfFunctionRefArgs: Record<string, string> = {};
-      Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
-        swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
-      });
-
-      return Promise.resolve([
-        {
-          kind: CompletionItemKind.Module,
-          label: `'${swfFunctionRefName}' arguments`,
-          sortText: `${swfFunctionRefName} arguments`,
-          detail: swfFunction.operation,
-          textEdit: {
-            newText: codeCompletionStrategy.translate(swfFunctionRefArgs),
-            range: overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        },
-      ]);
-    },
+    SwfLanguageServiceCodeCompletion.getFunctionRefArgumentsCompletions,
   ],
 ]);
 
-function toCompletionItemLabelPrefix(
-  swfServiceCatalogFunction: SwfServiceCatalogFunction,
-  specsDirRelativePosixPath: string
-) {
-  switch (swfServiceCatalogFunction.source.type) {
-    case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
-      const fileName =
-        swfServiceCatalogFunction.source.serviceFileAbsolutePath.split("/").pop() ??
-        swfServiceCatalogFunction.source.serviceFileAbsolutePath;
-      return toCompletionItemLabel(specsDirRelativePosixPath, fileName, swfServiceCatalogFunction.name);
-    case SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY:
-      return toCompletionItemLabel(
-        swfServiceCatalogFunction.source.registry,
-        swfServiceCatalogFunction.source.serviceId,
-        swfServiceCatalogFunction.name
-      );
-    default:
-      return "";
-  }
-}
-
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
-  return findNodesAtLocation(root, path)[0];
+  return findNodesAtLocation({ root, path })[0];
 }
 
 export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {
   return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLsNode;
-}
-
-function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
-  return `${namespace}»${resource}#${operation}`;
 }

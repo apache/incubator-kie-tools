@@ -89,6 +89,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const { editor: diagramEditor, editorRef: diagramEditorRef } = useEditorRef();
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowCombinedEditorChannelApi>();
   const [featureToggle] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfFeatureToggle_get);
+  const [previewOptions] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfPreviewOptions_get);
   const lastContent = useRef<string>();
 
   const [isTextEditorReady, setTextEditorReady] = useState(false);
@@ -120,15 +121,16 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   );
 
   const diagramEditorEnvelopeLocator = useMemo(() => {
-    const diagramEnvelopeMappingConfig = featureToggle?.stunnerEnabled
-      ? {
-          resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
-          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
-        }
-      : {
-          resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
-          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
-        };
+    const diagramEnvelopeMappingConfig =
+      featureToggle && !featureToggle.stunnerEnabled
+        ? {
+            resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
+            envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
+          }
+        : {
+            resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
+            envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
+          };
     return new EditorEnvelopeLocator(targetOrigin, [
       new EnvelopeMapping({
         type: ENVELOPE_LOCATOR_TYPE,
@@ -285,7 +287,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       swfTextEditorEnvelopeApi: textEditor?.getEnvelopeServer()
         .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>,
     }),
-    [editorEnvelopeCtx, embeddedDiagramEditorFile, onDiagramEditorReady, textEditor]
+    [editorEnvelopeCtx, embeddedDiagramEditorFile, onDiagramEditorReady, textEditor, props.locale]
   );
 
   const useSwfTextEditorChannelApiArgs = useMemo(
@@ -298,7 +300,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       swfDiagramEditorEnvelopeApi: diagramEditor?.getEnvelopeServer()
         .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>,
     }),
-    [editorEnvelopeCtx, embeddedDiagramEditorFile, onTextEditorReady, diagramEditor]
+    [editorEnvelopeCtx, onTextEditorReady, diagramEditor, embeddedTextEditorFile, props.locale]
   );
 
   const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
@@ -313,7 +315,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       <Drawer isExpanded={true} isInline={true}>
         <DrawerContent
           panelContent={
-            <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
+            <DrawerPanelContent isResizable={true} defaultSize={previewOptions?.diagramDefaultWidth ?? "50%"}>
               <DrawerPanelBody style={{ padding: 0 }}>
                 {embeddedDiagramEditorFile && (
                   <EmbeddedEditor

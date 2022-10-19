@@ -19,8 +19,9 @@ import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
-import { WorkspaceKind } from "../model/WorkspaceOrigin";
-import { GIT_ORIGIN_REMOTE_NAME } from "../services/GitService";
+import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
+import { GIT_ORIGIN_REMOTE_NAME } from "../constants/GitConstants";
+import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
 
 export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
   const workspaces = useWorkspaces();
@@ -34,10 +35,7 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         return;
       }
 
-      const hasLocalChanges = await workspaces.hasLocalChanges({
-        fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
-        workspaceId: workspace.descriptor.workspaceId,
-      });
+      const hasLocalChanges = await workspaces.hasLocalChanges({ workspaceId: workspace.descriptor.workspaceId });
       if (canceled.get()) {
         return;
       }
@@ -51,15 +49,13 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         workspace.descriptor.origin.kind === WorkspaceKind.GIT ||
         workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
       ) {
-        const head = await workspaces.gitService.resolveRef({
-          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
-          dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
+        const head = await workspaces.resolveRef({
+          workspaceId: workspace.descriptor.workspaceId,
           ref: "HEAD",
         });
 
-        const remote = await workspaces.gitService.resolveRef({
-          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
-          dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
+        const remote = await workspaces.resolveRef({
+          workspaceId: workspace.descriptor.workspaceId,
           ref: `${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`,
         });
 
@@ -97,7 +93,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
       }
 
       try {
-        const descriptor = await workspaces.descriptorService.get(workspaceId);
+        const descriptor = await workspaces.getWorkspace({ workspaceId });
         if (canceled.get()) {
           return;
         }
@@ -108,7 +104,6 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         }
 
         const files = await workspaces.getFiles({
-          fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
           workspaceId,
         });
         if (canceled.get()) {
@@ -118,6 +113,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         setWorkspacePromise({ data: { descriptor, files } });
       } catch (error) {
         setWorkspacePromise({ error: `Can't find Workspace with id '${workspaceId}'` });
+        console.error(error);
         return;
       }
     },
@@ -141,7 +137,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         }
 
         const broadcastChannel = new BroadcastChannel(workspaceId);
-        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceEvents>) => {
+        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceBroadcastEvents>) => {
           console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
           return refresh(canceled);
         };
@@ -156,18 +152,3 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
 
   return workspacePromise;
 }
-
-export type WorkspaceEvents =
-  | { type: "ADD"; workspaceId: string }
-  | { type: "CREATE_SAVE_POINT"; workspaceId: string }
-  | { type: "PULL"; workspaceId: string }
-  | { type: "RENAME"; workspaceId: string }
-  | { type: "DELETE"; workspaceId: string }
-  | { type: "ADD_FILE"; relativePath: string }
-  | { type: "MOVE_FILE"; newRelativePath: string; oldRelativePath: string }
-  | { type: "RENAME_FILE"; newRelativePath: string; oldRelativePath: string }
-  | { type: "UPDATE_FILE"; relativePath: string }
-  | { type: "DELETE_FILE"; relativePath: string }
-  | { type: "ADD_BATCH"; workspaceId: string; relativePaths: string[] }
-  | { type: "MOVE_BATCH"; workspaceId: string; relativePaths: Map<string, string> }
-  | { type: "DELETE_BATCH"; workspaceId: string; relativePaths: string[] };

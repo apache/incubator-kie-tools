@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { Position, TextDocument } from "vscode-languageserver-textdocument";
+import { CompletionItemKind, Range } from "vscode-languageserver-types";
+import { SwfLanguageServiceCommandTypes } from "../api";
+
 // types SwfJsonPath, SwfLsNode, SwfLsNodeType need to be compatible with jsonc types
 export declare type SwfJsonPath = (string | number)[];
 export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
@@ -38,7 +43,23 @@ export interface ShouldCompleteArgs {
   cursorOffset: number;
 }
 
+export interface ShouldCreateCodelensArgs {
+  content: string;
+  node: SwfLsNode;
+  commandName: SwfLanguageServiceCommandTypes;
+}
+
+export interface TranslateArgs {
+  completion: object | string;
+  completionItemKind: CompletionItemKind;
+  overwriteRange?: Range;
+  currentNodeRange?: Range;
+}
+
 export interface CodeCompletionStrategy {
-  translate(completion: object | string): string;
+  translate(args: TranslateArgs): string;
+  formatLabel(label: string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;
+  getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined;
+  shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean;
 }

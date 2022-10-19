@@ -20,7 +20,10 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import {
+  SupportedFileExtensions,
+  useEditorEnvelopeLocator,
+} from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -37,16 +40,13 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
-import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
-import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { FileLabel } from "../workspace/components/FileLabel";
+import { FileLabel } from "../filesList/FileLabel";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
-import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -65,20 +65,9 @@ import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConf
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { RelativeDate } from "../dates/RelativeDate";
-import {
-  DataList,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-} from "@patternfly/react-core/dist/js/components/DataList";
-import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
-import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
-import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
 import { Alerts, AlertsController } from "../alerts/Alerts";
@@ -86,7 +75,15 @@ import { useController } from "../reactExt/Hooks";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { VariableSizeList } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { FileDataList, FileLink, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
+import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
+import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCard";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
+import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -119,6 +116,10 @@ export function HomePage() {
   );
 
   useEffect(() => {
+    document.title = "KIE Sandbox :: Home";
+  }, []);
+
+  useEffect(() => {
     if (
       workspaceDescriptorsPromise.data &&
       !workspaceDescriptorsPromise.data.map((f) => f.workspaceId).includes(expandedWorkspaceId!)
@@ -133,9 +134,9 @@ export function HomePage() {
 
   return (
     <OnlineEditorPage>
-      <PageSection isFilled={false}>
-        <Grid hasGutter>
-          <GridItem sm={12} xl={6}>
+      <PageSection isFilled={false} sticky={"top"} hasOverflowScroll={false} style={{ overflowX: "scroll" }}>
+        <Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-c-page__main-section--PaddingTop)" }}>
+          <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
                 <Text component={TextVariants.h1}>Create</Text>
@@ -144,9 +145,9 @@ export function HomePage() {
               <Divider inset={{ default: "insetXl" }} />
               <Gallery
                 hasGutter={true}
-                // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
-                style={{ height: "calc(100% - 32px)" }}
+                // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
+                minWidths={{ default: "calc(33% - var(--pf-c-page__main-section--PaddingTop))" }}
+                style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
                 <NewModelCard
                   title={"Workflow"}
@@ -166,7 +167,7 @@ export function HomePage() {
               </Gallery>
             </PageSection>
           </GridItem>
-          <GridItem sm={12} xl={6}>
+          <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
                 <Text component={TextVariants.h1}>Import</Text>
@@ -175,9 +176,9 @@ export function HomePage() {
               <Divider inset={{ default: "insetXl" }} />
               <Gallery
                 hasGutter={true}
-                // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
-                style={{ height: "calc(100% - 32px)" }}
+                // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
+                minWidths={{ default: "calc(50% - var(--pf-c-page__main-section--PaddingTop))" }}
+                style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
                 <ImportFromUrlCard />
                 <UploadCard expandWorkspace={expandWorkspace} />
@@ -186,7 +187,7 @@ export function HomePage() {
           </GridItem>
         </Grid>
       </PageSection>
-      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={false}>
+      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true}>
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
@@ -201,10 +202,13 @@ export function HomePage() {
                 </DrawerSection>
                 <DrawerContent
                   panelContent={
-                    <WorkspacesListDrawerPanelContent
-                      workspaceId={expandedWorkspaceId}
-                      onClose={closeExpandedWorkspace}
-                    />
+                    <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
+                      <WorkspacesListDrawerPanelContent
+                        key={expandedWorkspaceId}
+                        workspaceId={expandedWorkspaceId}
+                        onClose={closeExpandedWorkspace}
+                      />
+                    </DrawerPanelContent>
                   }
                 >
                   <DrawerContentBody>
@@ -223,6 +227,7 @@ export function HomePage() {
                               </ErrorBoundary>
                             </StackItem>
                           ))}
+                        <br /> {/* Do not let bottom shadow be cut at the bottom*/}
                       </Stack>
                     )}
                     {workspaceDescriptors.length === 0 && (
@@ -252,18 +257,6 @@ export function HomePage() {
   );
 }
 
-export function WorkspaceLoadingCard() {
-  return (
-    <Card>
-      <CardBody>
-        <Skeleton fontSize={"sm"} width={"40%"} />
-        <br />
-        <Skeleton fontSize={"sm"} width={"70%"} />
-      </CardBody>
-    </Card>
-  );
-}
-
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
   return (
@@ -284,7 +277,9 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
             </FlexItem>
           </Flex>
         </CardHeaderMain>
-        <CardActions>
+        <CardActions
+          onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+        >
           <DeleteDropdownWithConfirmation
             onDelete={() => {
               workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
@@ -313,14 +308,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
     return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];
   }, [editorEnvelopeLocator, workspacePromise.data?.files]);
 
-  const workspaceName = useMemo(() => {
-    return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
-  }, [workspacePromise.data]);
-
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
-      pending={<WorkspaceLoadingCard />}
+      pending={<WorkspaceLoadingCard isBig={true} />}
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
@@ -344,69 +335,43 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               }}
             >
               <CardHeader>
-                <Link
-                  to={routes.workspaceWithFilePath.path({
-                    workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                    extension: editableFiles[0].extension,
-                  })}
-                >
+                <FileLink file={editableFiles[0]} style={{ width: "100%", minWidth: 0 }}>
                   <CardHeaderMain style={{ width: "100%" }}>
-                    <Flex>
-                      <FlexItem>
-                        <CardTitle>
-                          <TextContent>
-                            <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                              <TaskIcon />
-                              &nbsp;&nbsp;
-                              {editableFiles[0].nameWithoutExtension}
-                            </Text>
-                          </TextContent>
-                        </CardTitle>
-                      </FlexItem>
-                      <FlexItem>
-                        <b>
-                          <FileLabel extension={editableFiles[0].extension} />
-                        </b>
-                      </FlexItem>
-                    </Flex>
-                  </CardHeaderMain>
-                </Link>
-                <CardActions>
-                  {isHovered && (
-                    <DeleteDropdownWithConfirmation
-                      onDelete={() => {
-                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                      }}
-                      item={
-                        <Flex flexWrap={{ default: "nowrap" }}>
-                          <FlexItem>
-                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
-                          </FlexItem>
-                          <FlexItem>
-                            <b>
-                              <FileLabel extension={editableFiles[0].extension} />
-                            </b>
-                          </FlexItem>
-                        </Flex>
-                      }
+                    <SingleFileWorkspaceListItem
+                      isBig={true}
+                      file={editableFiles[0]}
+                      workspaceDescriptor={workspace.descriptor}
                     />
-                  )}
+                  </CardHeaderMain>
+                </FileLink>
+                <CardActions
+                  style={{ visibility: isHovered ? "visible" : "hidden" }}
+                  onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+                >
+                  <DeleteDropdownWithConfirmation
+                    key={`${workspace.descriptor.workspaceId}-${isHovered}`}
+                    onDelete={() => {
+                      workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                    }}
+                    item={
+                      <Flex flexWrap={{ default: "nowrap" }}>
+                        <FlexItem>
+                          Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                        </FlexItem>
+                        <FlexItem>
+                          <b>
+                            <FileLabel extension={editableFiles[0].extension} />
+                          </b>
+                        </FlexItem>
+                      </Flex>
+                    }
+                  />
                 </CardActions>
               </CardHeader>
-              <CardBody>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <b>{`Created: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
-                    <b>{`, Last updated: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
-                  </Text>
-                </TextContent>
-              </CardBody>
             </Card>
           )) || (
             <Card
+              isExpanded={false}
               isSelected={props.isSelected}
               isSelectable={true}
               onMouseOver={() => setHovered(true)}
@@ -416,55 +381,53 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               style={{ cursor: "pointer" }}
               onClick={props.onSelect}
             >
-              <CardHeader>
-                <CardHeaderMain style={{ width: "100%" }}>
-                  <Flex>
-                    <FlexItem>
-                      <CardTitle>
-                        <TextContent>
-                          <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                            <FolderIcon />
-                            &nbsp;&nbsp;
-                            {workspaceName}
-                            &nbsp;&nbsp;
-                            <WorkspaceLabel descriptor={workspacePromise.data?.descriptor} />
-                          </Text>
-                        </TextContent>
-                      </CardTitle>
-                    </FlexItem>
-                    <FlexItem>
-                      <Text component={TextVariants.p}>
-                        {`${workspace.files.length} files, ${editableFiles?.length} models`}
-                      </Text>
-                    </FlexItem>
-                  </Flex>
+              <CardHeader isToggleRightAligned={true} onExpand={props.onSelect}>
+                <CardHeaderMain style={{ width: "100%", minWidth: 0 }}>
+                  <WorkspaceListItem
+                    isBig={true}
+                    workspaceDescriptor={workspace.descriptor}
+                    allFiles={workspace.files}
+                    editableFiles={editableFiles}
+                  />
                 </CardHeaderMain>
-
-                <CardActions>
-                  {isHovered && (
-                    <DeleteDropdownWithConfirmation
-                      onDelete={() => {
-                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                      }}
-                      item={
-                        <>
-                          Delete <b>{`"${workspacePromise.data?.descriptor.name}"`}</b>
-                        </>
-                      }
-                    />
-                  )}
+                <CardActions
+                  style={{ visibility: isHovered ? "visible" : "hidden" }}
+                  onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
+                >
+                  <DeleteDropdownWithConfirmation
+                    key={`${workspace.descriptor.workspaceId}-${isHovered}`}
+                    onDelete={() => {
+                      workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                    }}
+                    item={
+                      <Flex
+                        flexWrap={{ default: "nowrap" }}
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        style={{ width: "100%" }}
+                        spaceItems={{ default: "spaceItemsNone" }}
+                      >
+                        <FlexItem>{"Delete "}</FlexItem>
+                        <FlexItem style={{ minWidth: 0 }}>
+                          <Tooltip distance={5} position={"top-start"} content={workspace.descriptor.name}>
+                            <TextContent>
+                              <Text
+                                component={TextVariants.p}
+                                style={{
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                <b>{`"${workspace.descriptor.name}"`}</b>
+                              </Text>
+                            </TextContent>
+                          </Tooltip>
+                        </FlexItem>
+                      </Flex>
+                    }
+                  />
                 </CardActions>
               </CardHeader>
-              <CardBody>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <b>{`Created: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
-                    <b>{`, Last updated: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
-                  </Text>
-                </TextContent>
-              </CardBody>
             </Card>
           )}
         </>
@@ -518,7 +481,6 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
 }
 
 export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
-  const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
@@ -538,123 +500,93 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     [editorEnvelopeLocator, workspacePromise.data?.files]
   );
 
+  const arrayWithModelsThenOtherFiles = useMemo(() => {
+    return [...models, ...otherFiles];
+  }, [models, otherFiles]);
+
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const [alerts, alertsRef] = useController<AlertsController>();
 
   return (
-    <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
-      <PromiseStateWrapper
-        promise={workspacePromise}
-        pending={
-          <DrawerPanelBody>
-            <Bullseye>
-              <Spinner />
-            </Bullseye>
-          </DrawerPanelBody>
-        }
-        resolved={(workspace) => (
-          <>
-            <Alerts width={"100%"} ref={alertsRef} />
-            <DrawerHead>
-              <Flex>
-                <FlexItem>
-                  <TextContent>
-                    <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
-                  </TextContent>
-                </FlexItem>
-                <FlexItem>
-                  <Dropdown
-                    isPlain={true}
-                    position={"left"}
-                    isOpen={isNewFileDropdownMenuOpen}
-                    toggle={
-                      <DropdownToggle
-                        className={"kie-tools--masthead-hoverable"}
-                        toggleIndicator={null}
-                        onToggle={setNewFileDropdownMenuOpen}
-                      >
-                        <PlusIcon />
-                      </DropdownToggle>
-                    }
-                  >
-                    <NewFileDropdownMenu
-                      alerts={alerts}
-                      workspaceId={workspace.descriptor.workspaceId}
-                      destinationDirPath={""}
-                      onAddFile={async () => setNewFileDropdownMenuOpen(false)}
-                    />
-                  </Dropdown>
-                </FlexItem>
-              </Flex>
-              {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
-                workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
+    <PromiseStateWrapper
+      promise={workspacePromise}
+      pending={
+        <DrawerPanelBody>
+          <Bullseye>
+            <Spinner />
+          </Bullseye>
+        </DrawerPanelBody>
+      }
+      resolved={(workspace) => (
+        <>
+          <Alerts width={"100%"} ref={alertsRef} />
+          <DrawerHead>
+            <Flex>
+              <FlexItem>
                 <TextContent>
-                  <Text component={TextVariants.small}>
-                    <i>{workspace.descriptor.origin.url.toString()}</i>
-                  </Text>
+                  <Text component={TextVariants.h3}>{`Models in '${workspace.descriptor.name}'`}</Text>
                 </TextContent>
-              )}
-              <DrawerActions>
-                <DrawerCloseButton onClick={props.onClose} />
-              </DrawerActions>
-            </DrawerHead>
-            <DrawerPanelBody>
-              <DataList aria-label="models-data-list">
-                {models.map((file) => (
-                  <Link
-                    key={file.relativePath}
-                    to={routes.workspaceWithFilePath.path({
-                      workspaceId: workspace.descriptor.workspaceId ?? "",
-                      fileRelativePath: file.relativePathWithoutExtension,
-                      extension: file.extension,
-                    })}
-                  >
-                    <FileDataListItem file={file} />
-                  </Link>
-                ))}
-              </DataList>
-              <br />
-              {otherFiles.length > 0 && (
-                <ExpandableSection
-                  toggleTextCollapsed="View other files"
-                  toggleTextExpanded="Hide other files"
-                  className={"plain"}
+              </FlexItem>
+              <FlexItem>
+                <ResponsiveDropdown
+                  isPlain={true}
+                  position={"left"}
+                  isOpen={isNewFileDropdownMenuOpen}
+                  onClose={() => setNewFileDropdownMenuOpen(false)}
+                  title={"Add file"}
+                  toggle={
+                    <ResponsiveDropdownToggle
+                      className={"kie-tools--masthead-hoverable"}
+                      toggleIndicator={null}
+                      onToggle={() => setNewFileDropdownMenuOpen((prev) => !prev)}
+                    >
+                      <PlusIcon />
+                    </ResponsiveDropdownToggle>
+                  }
                 >
-                  <DataList aria-label="other-files-data-list">
-                    {otherFiles.map((file) => (
-                      <FileDataListItem key={file.relativePath} file={file} />
-                    ))}
-                  </DataList>
-                </ExpandableSection>
-              )}
-            </DrawerPanelBody>
-          </>
-        )}
-      />
-    </DrawerPanelContent>
-  );
-}
-
-export function FileDataListItem(props: { file: WorkspaceFile }) {
-  return (
-    <DataListItem>
-      <DataListItemRow>
-        <DataListItemCells
-          dataListCells={[
-            <DataListCell key="link" isFilled={false}>
-              <Flex flexWrap={{ default: "nowrap" }}>
-                <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
-                <FlexItem>
-                  <FileLabel extension={props.file.extension} />
-                </FlexItem>
-              </Flex>
+                  <NewFileDropdownMenu
+                    alerts={alerts}
+                    workspaceId={workspace.descriptor.workspaceId}
+                    destinationDirPath={""}
+                    onAddFile={async () => setNewFileDropdownMenuOpen(false)}
+                  />
+                </ResponsiveDropdown>
+              </FlexItem>
+            </Flex>
+            {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
+              workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
               <TextContent>
-                <Text component={TextVariants.small}>{props.file.relativeDirPath.split("/").join(" > ")}</Text>
+                <Text component={TextVariants.small}>
+                  <i>{workspace.descriptor.origin.url.toString()}</i>
+                </Text>
               </TextContent>
-            </DataListCell>,
-          ]}
-        />
-      </DataListItemRow>
-    </DataListItem>
+            )}
+            <DrawerActions>
+              <DrawerCloseButton onClick={props.onClose} />
+            </DrawerActions>
+          </DrawerHead>
+          <DrawerPanelBody>
+            <AutoSizer>
+              {({ height, width }) => (
+                <VariableSizeList
+                  height={height}
+                  itemCount={arrayWithModelsThenOtherFiles.length}
+                  itemSize={(index) => getFileDataListHeight(arrayWithModelsThenOtherFiles[index])}
+                  width={width}
+                >
+                  {({ index, style }) => (
+                    <FileDataList
+                      file={arrayWithModelsThenOtherFiles[index]}
+                      isEditable={index < models.length}
+                      style={style}
+                    />
+                  )}
+                </VariableSizeList>
+              )}
+            </AutoSizer>
+          </DrawerPanelBody>
+        </>
+      )}
+    />
   );
 }

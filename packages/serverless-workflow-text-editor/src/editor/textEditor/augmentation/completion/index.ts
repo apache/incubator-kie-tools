@@ -23,11 +23,11 @@ import * as ls from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandTypes } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
 
-export function initJsonCompletion(
+export function initCompletion(
   commandIds: SwfTextEditorInstance["commands"],
   channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>
 ): monaco.IDisposable {
-  return monaco.languages.registerCompletionItemProvider("json", {
+  return monaco.languages.registerCompletionItemProvider(["json", "yaml"], {
     triggerCharacters: [" ", ":", '"'],
     provideCompletionItems: async (
       model: monaco.editor.ITextModel,

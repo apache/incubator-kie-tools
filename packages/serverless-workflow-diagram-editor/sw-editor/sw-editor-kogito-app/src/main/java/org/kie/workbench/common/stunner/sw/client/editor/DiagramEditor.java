@@ -222,6 +222,18 @@ public class DiagramEditor {
         });
     }
 
+    public  Promise<Void> selectStateByName(final String name){
+        String uuid = diagramService.getMarshaller().getContext().getNameToUUIDBindings().get(name);
+        ViewerSession session = (ViewerSession) stunnerEditor.getSession();
+        // highlight the node
+        session.getSelectionControl().clearSelection().addSelection(uuid);
+
+        // center the node in the diagram
+        jsCanvas.center(uuid);
+
+        return null;
+    }
+
     public void onStartup(final PlaceRequest place) {
         stunnerEditor.setReadOnly(true);
     }

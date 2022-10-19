@@ -40,7 +40,7 @@
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "^1.66.0",
-    "@vscode/test-web": "^0.0.22",
+    "@vscode/test-web": "^0.0.30",
     "copy-webpack-plugin": "^8.1.1",
     "rimraf": "^3.0.2",
     "vsce": "^2.6.5",

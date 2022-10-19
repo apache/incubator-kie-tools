@@ -45,7 +45,7 @@
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-serverless-workflow-editor" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
-      { "id": "@kie-tools/serverless-workflow-diagram-editor" },
+      { "id": "@kie-tools/serverless-workflow-diagram-editor-assets" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-mermaid-viewer" },
       { "id": "@kie-tools/serverless-workflow-text-editor" },
@@ -67,6 +67,7 @@
       { "id": "@kie-tools/dashbuilder-editor" },
       { "id": "@kie-tools/dashbuilder-images" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
+      { "id": "@kie-tools/dashbuilder-viewer" },
       { "id": "@kie-tools/desktop" },
       { "id": "@kie-tools/dmn-dev-sandbox-deployment-base-image" },
       { "id": "@kie-tools/dmn-dev-sandbox-form-webapp" },
@@ -96,11 +97,13 @@
       { "id": "@kie-tools/serverless-logic-sandbox-base-image-env" },
       { "id": "@kie-tools/serverless-logic-sandbox-base-image" },
       { "id": "@kie-tools/serverless-logic-sandbox-deployment-webapp" },
+      { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "vscode-extension-backend" },
       { "id": "vscode-extension-bpmn-editor" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
+      { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-dmn-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -271,7 +274,7 @@
       },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
       {
@@ -290,11 +293,10 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-workflow-diagram-editor",
-        "target": "@kie-tools/maven-config-setup-helper",
+        "source": "@kie-tools/serverless-workflow-diagram-editor-assets",
+        "target": "@kie-tools/serverless-workflow-diagram-editor",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-diagram-editor-envelope",
         "target": "@kie-tools/kie-bc-editors",
@@ -450,6 +452,8 @@
         "target": "@kie-tools/dashbuilder-client",
         "weight": 1
       },
+      { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools-core/editor", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
       { "source": "@kie-tools/desktop", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/desktop", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
@@ -585,6 +589,12 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-workflow-diagram-editor",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
+      {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/serverless-workflow-service-catalog",
         "weight": 1
@@ -615,6 +625,8 @@
         "target": "@kie-tools/root-env",
         "weight": 1
       },
+      { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
+      { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools/dashbuilder-viewer", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       {
@@ -673,7 +685,7 @@
       },
       {
         "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
       { "source": "vscode-extension-yard-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
@@ -715,6 +727,7 @@
     ["@kie-tools/dashbuilder-editor", "packages/dashbuilder-editor"],
     ["@kie-tools/dashbuilder-images", "packages/dashbuilder-images"],
     ["@kie-tools/dashbuilder-swf-monitoring-dashboard", "packages/dashbuilder-swf-monitoring-dashboard"],
+    ["@kie-tools/dashbuilder-viewer", "packages/dashbuilder-viewer"],
     ["@kie-tools/desktop", "packages/desktop"],
     ["@kie-tools/dmn-dev-sandbox-deployment-base-image", "packages/dmn-dev-sandbox-deployment-base-image"],
     ["@kie-tools/dmn-dev-sandbox-deployment-base-image-env", "packages/dmn-dev-sandbox-deployment-base-image-env"],
@@ -758,6 +771,7 @@
     ["@kie-tools/serverless-logic-sandbox-deployment-webapp", "packages/serverless-logic-sandbox-deployment-webapp"],
     ["@kie-tools/serverless-workflow-combined-editor", "packages/serverless-workflow-combined-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
+    ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
     ["@kie-tools/serverless-workflow-mermaid-viewer", "packages/serverless-workflow-mermaid-viewer"],
@@ -774,6 +788,7 @@
     ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],
     ["vscode-extension-backend", "packages/vscode-extension-backend"],
     ["vscode-extension-bpmn-editor", "packages/vscode-extension-bpmn-editor"],
+    ["vscode-extension-dashbuilder-editor", "packages/vscode-extension-dashbuilder-editor"],
     ["vscode-extension-dmn-editor", "packages/vscode-extension-dmn-editor"],
     ["vscode-extension-kie-ba-bundle", "packages/vscode-extension-kie-ba-bundle"],
     ["vscode-extension-kogito-bundle", "packages/vscode-extension-kogito-bundle"],
