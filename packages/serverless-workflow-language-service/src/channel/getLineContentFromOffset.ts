@@ -15,7 +15,7 @@
  */
 
 /**
- * Get a line in a content from offset.
+ * Get a line from a content at a specific offset.
  *
  * @param content -
  * @param offset -

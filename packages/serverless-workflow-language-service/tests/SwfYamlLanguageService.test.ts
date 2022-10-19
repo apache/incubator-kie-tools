@@ -16,15 +16,12 @@
 
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
+  isNodeUncompleted,
   SwfYamlLanguageService,
   YamlCodeCompletionStrategy,
-  isNodeUncompleted,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat, Position } from "vscode-languageserver-types";
-import { dump } from "yaml-language-server-parser";
-import * as path from "path";
-import * as fs from "fs";
+import { CodeLens, Position } from "vscode-languageserver-types";
 import {
   defaultConfig,
   defaultServiceCatalogConfig,
@@ -33,16 +30,9 @@ import {
 } from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
-const EXPECTED_RESULTS_PROJECT_FOLDER: string = path.resolve("tests", "expectedResults");
 const documentUri = "test.sw.yaml";
 
 describe("YamlCodeCompletionStrategy", () => {
-  const ls = new SwfYamlLanguageService({
-    fs: {},
-    serviceCatalog: defaultServiceCatalogConfig,
-    config: defaultConfig,
-  });
-
   describe("getStartNodeValuePosition", () => {
     const codeCompletionStrategy = new YamlCodeCompletionStrategy();
     const ls = new SwfYamlLanguageService({
@@ -758,10 +748,6 @@ functions:
         ["empty file with a newline after the cursor", `🎯\n`],
       ])("%s", async (_description, content: ContentWithCursor) => {
         let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
-        const expectedResult = fs.readFileSync(
-          path.resolve(EXPECTED_RESULTS_PROJECT_FOLDER, "emptyfile_autocompletion.sw.yaml.result"),
-          "utf-8"
-        );
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();

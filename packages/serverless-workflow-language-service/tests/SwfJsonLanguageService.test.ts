@@ -18,22 +18,13 @@ import {
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import * as fs from "fs";
-import * as path from "path";
 import { CodeLens, Position } from "vscode-languageserver-types";
 import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, trim } from "./testUtils";
 
-const EXPECTED_RESULTS_PROJECT_FOLDER: string = path.resolve("tests", "expectedResults");
 const documentUri = "test.sw.json";
 
 describe("JsonCodeCompletionStrategy", () => {
-  const ls = new SwfJsonLanguageService({
-    fs: {},
-    serviceCatalog: defaultServiceCatalogConfig,
-    config: defaultConfig,
-  });
-
   describe("getStartNodeValuePosition", () => {
     const codeCompletionStrategy = new JsonCodeCompletionStrategy();
     const ls = new SwfJsonLanguageService({
@@ -500,10 +491,6 @@ describe("SWF LS JSON", () => {
         ["empty file with a newline after the cursor", `🎯\n`],
       ])("%s", async (_description, content: ContentWithCursor) => {
         const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
-        const expectedResult = fs.readFileSync(
-          path.resolve(EXPECTED_RESULTS_PROJECT_FOLDER, "emptyfile_autocompletion.sw.json.result"),
-          "utf-8"
-        );
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
