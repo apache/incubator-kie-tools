@@ -23,7 +23,7 @@ import { useOnlineI18n } from "../i18n";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerTable } from "./DmnRunner/DmnRunnerTable";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DecisionResult } from "@kie-tools/form-dmn";
 import {
   NotificationsPanelDockToggle,

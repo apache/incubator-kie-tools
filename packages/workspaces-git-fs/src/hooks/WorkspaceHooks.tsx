@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "../context/WorkspacesContext";
 import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
-import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { GIT_ORIGIN_REMOTE_NAME } from "../constants/GitConstants";
 import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
+import { Holder, useCancelableEffect } from "./useCancelableEffect";
 
 export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
   const workspaces = useWorkspaces();
@@ -64,7 +64,6 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         }
 
         setModifiedPromise({ data: { hasLocalChanges, isSynced: head === remote } });
-        return;
       }
     },
     [workspace, workspaces, setModifiedPromise]

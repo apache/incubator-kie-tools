@@ -15,10 +15,10 @@
  */
 
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
-import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../context/WorkspacesContext";
 import { usePromiseState } from "./PromiseState";
 import { useCallback } from "react";
-import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
+import { Holder, useCancelableEffect } from "./useCancelableEffect";
 
 export function useWorkspacesFilesPromise(workspaceDescriptors: WorkspaceDescriptor[] | undefined) {
   const workspaces = useWorkspaces();

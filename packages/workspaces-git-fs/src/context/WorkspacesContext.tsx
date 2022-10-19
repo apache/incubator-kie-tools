@@ -22,11 +22,12 @@ import {
 } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { WorkspaceDescriptor } from "./worker/api/WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
-import { LocalFile } from "./worker/api/LocalFile";
-import { decoder } from "./encoderdecoder/EncoderDecoder";
-import { parseWorkspaceFileRelativePath } from "./relativePath/WorkspaceFileRelativePathParser";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
+import { GistOrigin, GitHubOrigin } from "../worker/api/WorkspaceOrigin";
+import { LocalFile } from "../worker/api/LocalFile";
+import { decoder } from "../encoderdecoder/EncoderDecoder";
+import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRelativePathParser";
+import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 
 export class WorkspaceFile {
   private readonly parsedRelativePath;
@@ -78,6 +79,8 @@ export class WorkspaceFile {
 }
 
 export interface WorkspacesContextType {
+  workspacesSharedWorker: WorkspacesSharedWorker;
+
   // util
 
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): Promise<string>;

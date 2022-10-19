@@ -21,7 +21,7 @@ import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DecisionResult, InputRow } from "@kie-tools/form-dmn";
 import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";

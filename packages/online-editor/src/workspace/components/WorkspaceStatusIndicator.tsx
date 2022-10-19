@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { ActiveWorkspace } from "../model/ActiveWorkspace";
-import { useWorkspaceGitStatusPromise } from "../hooks/WorkspaceHooks";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { useWorkspaceGitStatusPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
-import { PromiseStateWrapper } from "../hooks/PromiseState";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { PromiseStateWrapper } from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";

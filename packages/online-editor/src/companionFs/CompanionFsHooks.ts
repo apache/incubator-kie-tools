@@ -22,9 +22,9 @@ import {
   WORKSPACES_FILES_BROADCAST_CHANNEL,
   WorkspacesBroadcastEvents,
   WorkspacesFilesBroadcastEvents,
-} from "../workspace/worker/api/WorkspacesBroadcastEvents";
-import { usePromiseState } from "../workspace/hooks/PromiseState";
-import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
+} from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
+import { usePromiseState } from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 export function useSyncedCompanionFs(companionFsService: CompanionFsService) {
   useCancelableEffect(

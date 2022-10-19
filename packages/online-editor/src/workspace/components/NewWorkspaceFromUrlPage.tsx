@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import * as React from "react";
@@ -28,13 +28,13 @@ import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
-import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useGitHubAuthInfo } from "../../github/Hooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
-import { LocalFile } from "../worker/api/LocalFile";
-import { encoder } from "../encoderdecoder/EncoderDecoder";
+import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
+import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "../context/WorkspacesContext";
 import { useCallback } from "react";
 import { usePromiseState } from "./PromiseState";
-import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesBroadcastEvents";
+import { Holder, useCancelableEffect } from "./useCancelableEffect";
 
 export function useWorkspaceDescriptorsPromise() {
   const workspaces = useWorkspaces();

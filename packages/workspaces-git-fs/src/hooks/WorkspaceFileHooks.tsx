@@ -15,11 +15,11 @@
  */
 
 import { useCallback } from "react";
-import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
-import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
+import { useWorkspaces, WorkspaceFile } from "../context/WorkspacesContext";
 import { usePromiseState } from "./PromiseState";
 import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
 import { WorkspaceFileBroadcastEvents } from "../worker/api/WorkspaceFileBroadcastEvents";
+import { Holder, useCancelableEffect } from "./useCancelableEffect";
 
 export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();

@@ -16,7 +16,7 @@
 
 import { Holder } from "../reactExt/Hooks";
 import { useCallback } from "react";
-import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useCompanionFsFileSyncedWithWorkspaceFile } from "../companionFs/CompanionFsHooks";
 import { usePreviewSvgs } from "./PreviewSvgsContext";
 
