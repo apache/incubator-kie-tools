@@ -1,5 +1,6 @@
 {
   "eslint.options": {
     "configFile": "packages/eslint/.eslintrc.js"
-  }
+  },
+  "WhiteSource Advise.Diff.BaseBranch": "main"
 }
