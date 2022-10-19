@@ -45,6 +45,11 @@ export interface GitUser {
   email: string;
 }
 
+export interface CustomCallbacks {
+  isEditable: (path: string) => boolean;
+  isModel: (path: string) => boolean;
+}
+
 export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   private readonly MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
   private readonly NEW_FILE_DEFAULT_NAME = "Untitled";
@@ -66,8 +71,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     private readonly args: {
       corsProxyUrl: string;
       gitDefaultUser: GitUser;
-      isEditableFn: (path: string) => boolean;
-      isModelFn: (path: string) => boolean;
+      customCallbacks: CustomCallbacks;
     }
   ) {
     this.gitService = new GitService(args.corsProxyUrl);
@@ -398,7 +402,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       const fileRelativePaths = await this.gitService.unstagedModifiedFileRelativePaths({
         fs,
         dir: workspaceRootDirPath,
-        exclude: (filepath) => !this.args.isEditableFn(filepath),
+        exclude: (filepath) => !this.args.customCallbacks.isEditable(filepath),
       });
 
       if (fileRelativePaths.length === 0) {
@@ -620,7 +624,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       return this.gitService.hasLocalChanges({
         fs: fs,
         dir: this.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
-        exclude: (filepath) => !this.args.isEditableFn(filepath),
+        exclude: (filepath) => !this.args.customCallbacks.isEditable(filepath),
       });
     });
   }
@@ -649,7 +653,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     }
 
     const suggestedFirstFile = files
-      .filter((file) => this.args.isModelFn(file.relativePath))
+      .filter((file) => this.args.customCallbacks.isModel(file.relativePath))
       .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
     return {

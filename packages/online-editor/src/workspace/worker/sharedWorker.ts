@@ -45,8 +45,10 @@ onconnect = async (e: MessageEvent) => {
         name: "KIE Sandbox",
         email: "",
       },
-      isModelFn: (path) => editorEnvelopeLocator.hasMappingFor(path),
-      isEditableFn: (path) => editorEnvelopeLocator.hasMappingFor(path),
+      customCallbacks: {
+        isModel: (path) => editorEnvelopeLocator.hasMappingFor(path),
+        isEditable: (path) => editorEnvelopeLocator.hasMappingFor(path),
+      },
     }),
     port: e.ports[0],
   });
