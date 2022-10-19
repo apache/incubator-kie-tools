@@ -57,7 +57,10 @@ export interface WorkspacesWorkerStorageApi {
 
   // core
 
-  kieSandboxWorkspacesStorage_getFiles(args: { workspaceId: string }): Promise<WorkspaceWorkerFileDescriptor[]>;
+  kieSandboxWorkspacesStorage_getFiles(args: {
+    workspaceId: string;
+    globPattern?: string;
+  }): Promise<WorkspaceWorkerFileDescriptor[]>;
 
   kieSandboxWorkspacesStorage_addEmptyFile(args: {
     workspaceId: string;
@@ -83,6 +86,11 @@ export interface WorkspacesWorkerStorageApi {
   }): Promise<void>;
 
   kieSandboxWorkspacesStorage_deleteFile(args: { wwfd: WorkspaceWorkerFileDescriptor }): Promise<void>;
+
+  kieSandboxWorkspacesStorage_moveFile(args: {
+    wwfd: WorkspaceWorkerFileDescriptor;
+    newDirPath: string;
+  }): Promise<WorkspaceWorkerFileDescriptor>;
 
   kieSandboxWorkspacesStorage_addFile(args: {
     workspaceId: string;

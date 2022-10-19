@@ -70,7 +70,8 @@ export class StorageService {
       return file;
     }
 
-    const newPath = join(dirname(file.path), `${newFileName}${extname(file.path)}`);
+    const extension = extname(file.path);
+    const newPath = join(dirname(file.path), `${newFileName}${extension ? "." + extension : ""}`);
 
     if (await this.exists(fs, newPath)) {
       throw new Error(`File ${newPath} already exists`);
@@ -91,15 +92,19 @@ export class StorageService {
       throw new Error(`File ${file.path} does not exist`);
     }
 
+    await this.mkdirDeep(fs, newDirPath);
     const newPath = join(newDirPath, basename(file.path));
-    const newFile = new StorageFile({
+    const fileToMove = new StorageFile({
       getFileContents: file.getFileContents,
       path: newPath,
     });
-    await this.createOrOverwriteFile(fs, newFile);
+    await this.createOrOverwriteFile(fs, fileToMove);
     await this.deleteFile(fs, file.path);
 
-    return newFile;
+    return new StorageFile({
+      getFileContents: () => this.getFileContent(fs, newPath),
+      path: newPath,
+    });
   }
 
   public async moveFiles(

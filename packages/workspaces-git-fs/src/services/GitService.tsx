@@ -111,6 +111,36 @@ export class GitService {
     });
   }
 
+  public async deleteRemote(args: { fs: KieSandboxWorkspacesFs; dir: string; name: string }) {
+    await git.deleteRemote({
+      fs: args.fs,
+      dir: args.dir,
+      remote: args.name,
+    });
+  }
+
+  public async fetch(args: { fs: KieSandboxWorkspacesFs; dir: string; remote: string; ref: string }): Promise<void> {
+    await git.fetch({
+      fs: args.fs,
+      http: http,
+      corsProxy: this.corsProxy,
+      dir: args.dir,
+      remote: args.remote,
+      ref: args.ref,
+      singleBranch: true,
+      depth: 1,
+    });
+  }
+
+  public async checkout(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string; remote: string }) {
+    await git.checkout({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.ref,
+      remote: args.remote,
+    });
+  }
+
   public async commit(args: CommitArgs): Promise<void> {
     if (args.author) {
       await this.setupGitConfig(args.fs, args.dir, args.author);
@@ -247,7 +277,7 @@ export class GitService {
   }
 
   async isIgnored(args: { fs: KieSandboxWorkspacesFs; dir: string; filepath: string }) {
-    return await git.isIgnored({
+    return git.isIgnored({
       fs: args.fs,
       dir: args.dir,
       filepath: args.filepath,

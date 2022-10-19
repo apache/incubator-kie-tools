@@ -99,10 +99,7 @@ export interface WorkspacesContextType {
       username: string;
       password: string;
     };
-  }) => Promise<{
-    workspace: WorkspaceDescriptor;
-    suggestedFirstFile?: WorkspaceFile;
-  }>;
+  }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   pull(args: {
     workspaceId: string;
@@ -127,7 +124,11 @@ export interface WorkspacesContextType {
 
   branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
+  checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
+
   addRemote(args: { workspaceId: string; name: string; url: string; force: boolean }): Promise<void>;
+
+  deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
 
   resolveRef(args: { workspaceId: string; ref: string }): Promise<string>;
 
@@ -143,6 +144,8 @@ export interface WorkspacesContextType {
     };
   }): Promise<void>;
 
+  fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
+
   // storage
 
   addEmptyFile(args: {
@@ -153,7 +156,7 @@ export interface WorkspacesContextType {
 
   prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
 
-  getFiles(args: { workspaceId: string }): Promise<WorkspaceFile[]>;
+  getFiles(args: { workspaceId: string; globPattern?: string }): Promise<WorkspaceFile[]>;
 
   deleteWorkspace(args: { workspaceId: string }): Promise<void>;
 
@@ -181,6 +184,8 @@ export interface WorkspacesContextType {
 
   deleteFile(args: { file: WorkspaceFile }): Promise<void>;
 
+  moveFile(args: { file: WorkspaceFile; newDirPath: string }): Promise<WorkspaceFile>;
+
   addFile(args: {
     workspaceId: string;
     name: string;
@@ -198,6 +203,8 @@ export interface WorkspacesContextType {
   initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
 
   initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
+
+  initLocalOnWorkspace(args: { workspaceId: string }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

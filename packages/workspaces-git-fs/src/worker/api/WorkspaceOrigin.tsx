@@ -27,7 +27,7 @@ export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubOrigin;
 export interface LocalOrigin {
   kind: WorkspaceKind.LOCAL;
   branch: typeof GIT_DEFAULT_BRANCH;
-  url?: undefined;
+  url?: string;
 }
 
 export interface GitHubOrigin {

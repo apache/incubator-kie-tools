@@ -79,12 +79,16 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
+  kieSandboxWorkspacesGit_checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
+
   kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
     name: string;
     url: string;
     force: boolean;
   }): Promise<void>;
+
+  kieSandboxWorkspacesGit_deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
 
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
@@ -94,7 +98,11 @@ export interface WorkspacesWorkerGitApi {
     };
   }): Promise<void>;
 
+  kieSandboxWorkspacesGit_fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
+
   kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
 
   kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
+
+  kieSandboxWorkspacesGit_initLocalOnExistingWorkspace(args: { workspaceId: string }): Promise<void>;
 }

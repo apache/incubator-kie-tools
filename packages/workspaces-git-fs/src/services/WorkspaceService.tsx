@@ -65,7 +65,7 @@ export class WorkspaceService {
         async ({ fs, schema, broadcaster }) => {
           const files = await args.storeFiles(fs, schema, workspace);
 
-          await broadcaster.broadcast({
+          broadcaster.broadcast({
             channel: WORKSPACES_BROADCAST_CHANNEL,
             message: async () => ({
               type: "WSS_ADD_WORKSPACE",
@@ -73,7 +73,7 @@ export class WorkspaceService {
             }),
           });
 
-          await broadcaster.broadcast({
+          broadcaster.broadcast({
             channel: workspace.workspaceId,
             message: async () => ({
               type: "WS_ADD",
@@ -98,7 +98,7 @@ export class WorkspaceService {
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const gitDirAbsolutePath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
 
-    return await this.storageService.walk({
+    return this.storageService.walk({
       schema,
       baseAbsolutePath: this.getAbsolutePath({ workspaceId }),
       shouldExcludeAbsolutePath: (absolutePath) => absolutePath.startsWith(gitDirAbsolutePath),
@@ -119,12 +119,12 @@ export class WorkspaceService {
       indexedDB.deleteDatabase(this.fsService.getFsMountPoint(workspaceId));
       indexedDB.deleteDatabase(this.fsService.getFsSchemaMountPoint(workspaceId));
 
-      await broadcaster.broadcast({
+      broadcaster.broadcast({
         channel: WORKSPACES_BROADCAST_CHANNEL,
         message: async () => ({ type: "WSS_DELETE_WORKSPACE", workspaceId }),
       });
 
-      await broadcaster.broadcast({
+      broadcaster.broadcast({
         channel: workspaceId,
         message: async () => ({ type: "WS_DELETE", workspaceId }),
       });
@@ -136,12 +136,12 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.rename(fs, workspaceId, newName);
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, workspaceId);
 
-      await broadcaster.broadcast({
+      broadcaster.broadcast({
         channel: WORKSPACES_BROADCAST_CHANNEL,
         message: async () => ({ type: "WSS_RENAME_WORKSPACE", workspaceId }),
       });
 
-      await broadcaster.broadcast({
+      broadcaster.broadcast({
         channel: workspaceId,
         message: async () => ({ type: "WS_RENAME", workspaceId }),
       });
@@ -170,7 +170,7 @@ export class WorkspaceService {
       zip.file(file.relativePath, file.content);
     }
 
-    return await zip.generateAsync({ type: "blob" });
+    return zip.generateAsync({ type: "blob" });
   }
 
   public async createOrOverwriteFile(
@@ -186,7 +186,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, file.workspaceId);
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: file.workspaceId,
       message: async () => ({
         type: "WS_ADD_FILE",
@@ -194,7 +194,7 @@ export class WorkspaceService {
       }),
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(file),
       message: async () => ({
         type: "WSF_ADD",
@@ -202,7 +202,7 @@ export class WorkspaceService {
       }),
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: WORKSPACES_FILES_BROADCAST_CHANNEL,
       message: async () => ({
         type: "WSSFS_ADD",
@@ -238,7 +238,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, wwfd.workspaceId);
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(wwfd),
       message: async () => ({
         type: "WSF_UPDATE",
@@ -246,7 +246,7 @@ export class WorkspaceService {
       }),
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: wwfd.workspaceId,
       message: async () => ({
         type: "WS_UPDATE_FILE",
@@ -254,7 +254,7 @@ export class WorkspaceService {
       }),
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: WORKSPACES_FILES_BROADCAST_CHANNEL,
       message: async () => ({
         type: "WSSFS_UPDATE",
@@ -274,7 +274,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, wwfd.workspaceId);
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(wwfd),
       message: async () => ({
         type: "WSF_DELETE",
@@ -282,7 +282,7 @@ export class WorkspaceService {
       }),
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: wwfd.workspaceId,
       message: async () => ({
         type: "WS_DELETE_FILE",
@@ -290,7 +290,7 @@ export class WorkspaceService {
       }),
     });
 
-    await broadcaster.broadcast({
+    broadcaster.broadcast({
       channel: WORKSPACES_FILES_BROADCAST_CHANNEL,
       message: async () => ({
         type: "WSSFS_DELETE",
@@ -317,7 +317,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, args.wwfd.workspaceId);
     });
 
-    await args.broadcaster.broadcast({
+    args.broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(args.wwfd),
       message: async () => ({
         type: "WSF_RENAME",
@@ -326,7 +326,7 @@ export class WorkspaceService {
       }),
     });
 
-    await args.broadcaster.broadcast({
+    args.broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(renamedWorkspaceFile),
       message: async () => ({
         type: "WSF_ADD",
@@ -334,7 +334,7 @@ export class WorkspaceService {
       }),
     });
 
-    await args.broadcaster.broadcast({
+    args.broadcaster.broadcast({
       channel: args.wwfd.workspaceId,
       message: async () => ({
         type: "WS_RENAME_FILE",
@@ -343,7 +343,7 @@ export class WorkspaceService {
       }),
     });
 
-    await args.broadcaster.broadcast({
+    args.broadcaster.broadcast({
       channel: WORKSPACES_FILES_BROADCAST_CHANNEL,
       message: async () => ({
         type: "WSSFS_RENAME",
@@ -353,7 +353,7 @@ export class WorkspaceService {
       }),
     });
 
-    await args.broadcaster.broadcast({
+    args.broadcaster.broadcast({
       channel: WORKSPACES_FILES_BROADCAST_CHANNEL,
       message: async () => ({
         type: "WSSFS_ADD",
@@ -363,6 +363,71 @@ export class WorkspaceService {
     });
 
     return renamedWorkspaceFile;
+  }
+
+  public async moveFile(args: {
+    fs: KieSandboxWorkspacesFs;
+    wwfd: WorkspaceWorkerFileDescriptor;
+    newDirPath: string;
+    broadcaster: BroadcasterDispatch;
+  }): Promise<WorkspaceWorkerFile> {
+    const movedStorageFile = await this.storageService.moveFile(
+      args.fs,
+      this.toExistingStorageFile(args.fs, args.wwfd),
+      this.getAbsolutePath({ workspaceId: args.wwfd.workspaceId, relativePath: args.newDirPath })
+    );
+    const movedWorkspaceFile = await this.toWorkspaceFile(args.wwfd.workspaceId, movedStorageFile);
+
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, args.wwfd.workspaceId);
+    });
+
+    args.broadcaster.broadcast({
+      channel: this.getUniqueFileIdentifier(args.wwfd),
+      message: async () => ({
+        type: "WSF_MOVE",
+        oldRelativePath: args.wwfd.relativePath,
+        newRelativePath: movedWorkspaceFile.relativePath,
+      }),
+    });
+
+    args.broadcaster.broadcast({
+      channel: this.getUniqueFileIdentifier(movedWorkspaceFile),
+      message: async () => ({
+        type: "WSF_ADD",
+        relativePath: movedWorkspaceFile.relativePath,
+      }),
+    });
+
+    args.broadcaster.broadcast({
+      channel: args.wwfd.workspaceId,
+      message: async () => ({
+        type: "WS_MOVE_FILE",
+        oldRelativePath: args.wwfd.relativePath,
+        newRelativePath: movedWorkspaceFile.relativePath,
+      }),
+    });
+
+    args.broadcaster.broadcast({
+      channel: WORKSPACES_FILES_BROADCAST_CHANNEL,
+      message: async () => ({
+        type: "WSSFS_MOVE",
+        workspaceId: args.wwfd.workspaceId,
+        oldRelativePath: args.wwfd.relativePath,
+        newRelativePath: movedWorkspaceFile.relativePath,
+      }),
+    });
+
+    args.broadcaster.broadcast({
+      channel: WORKSPACES_FILES_BROADCAST_CHANNEL,
+      message: async () => ({
+        type: "WSSFS_ADD",
+        workspaceId: args.wwfd.workspaceId,
+        relativePath: movedWorkspaceFile.relativePath,
+      }),
+    });
+
+    return movedWorkspaceFile;
   }
 
   public async existsFile(args: {

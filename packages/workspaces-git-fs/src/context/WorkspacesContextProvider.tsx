@@ -97,10 +97,34 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const deleteRemote = useCallback(
+    async (args: { workspaceId: string; name: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_deleteRemote(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
   const branch = useCallback(
     async (args: { workspaceId: string; name: string; checkout: boolean }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_branch(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
+  const fetch = useCallback(
+    async (args: { workspaceId: string; remote: string; ref: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_fetch(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
+  const checkout = useCallback(
+    async (args: { workspaceId: string; ref: string; remote: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_checkout(args)
       ),
     [workspacesSharedWorker]
   );
@@ -239,6 +263,22 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const moveFile = useCallback(
+    async (args: { file: WorkspaceFile; newDirPath: string }) => {
+      const wwfd = await workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_moveFile({
+          wwfd: {
+            workspaceId: args.file.workspaceId,
+            relativePath: args.file.relativePath,
+          },
+          newDirPath: args.newDirPath,
+        })
+      );
+      return toWorkspaceFile(wwfd);
+    },
+    [toWorkspaceFile, workspacesSharedWorker]
+  );
+
   const updateFile = useCallback(
     async (args: { workspaceId: string; relativePath: string; newContent: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
@@ -365,6 +405,16 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const initLocalOnWorkspace = useCallback(
+    async (args: { workspaceId: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initLocalOnExistingWorkspace({
+          workspaceId: args.workspaceId,
+        })
+      ),
+    [workspacesSharedWorker]
+  );
+
   const value = useMemo(
     () => ({
       workspacesSharedWorker,
@@ -379,11 +429,15 @@ export function WorkspacesContextProvider(props: Props) {
       createSavePoint,
       pull,
       addRemote,
+      deleteRemote,
       push,
       branch,
+      checkout,
+      fetch,
       resolveRef,
       getFiles,
       hasLocalChanges,
+      moveFile,
       addEmptyFile,
       addFile,
       existsFile,
@@ -396,6 +450,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      initLocalOnWorkspace,
       isFileModified,
     }),
     [
@@ -413,11 +468,15 @@ export function WorkspacesContextProvider(props: Props) {
       getFiles,
       getUniqueFileIdentifier,
       hasLocalChanges,
+      moveFile,
       prepareZip,
       pull,
       addRemote,
+      deleteRemote,
       push,
       branch,
+      checkout,
+      fetch,
       resolveRef,
       renameFile,
       renameWorkspace,
@@ -428,6 +487,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      initLocalOnWorkspace,
       isFileModified,
     ]
   );
