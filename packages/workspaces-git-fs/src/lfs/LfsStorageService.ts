@@ -15,7 +15,8 @@
  */
 
 import type KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { basename, dirname, extname, join, relative, resolve } from "path";
+import { basename, dirname, join, relative, resolve } from "path";
+import { extractExtension } from "../relativePath/WorkspaceFileRelativePathParser";
 
 export class LfsStorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
@@ -62,7 +63,7 @@ export class LfsStorageService {
       return file;
     }
 
-    const extension = extname(file.path);
+    const extension = extractExtension(file.path);
     const newPath = join(dirname(file.path), `${newFileName}${extension ? "." + extension : ""}`);
 
     if (await this.exists(fs, newPath)) {

@@ -17,6 +17,7 @@
 import { basename, dirname, extname, join, relative } from "path";
 import { EmscriptenFs, KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { FsSchema } from "./FsCache";
+import { extractExtension } from "../relativePath/WorkspaceFileRelativePathParser";
 
 // comes from fsMain.fs
 declare let FS: EmscriptenFs;
@@ -70,7 +71,7 @@ export class StorageService {
       return file;
     }
 
-    const extension = extname(file.path);
+    const extension = extractExtension(file.path);
     const newPath = join(dirname(file.path), `${newFileName}${extension ? "." + extension : ""}`);
 
     if (await this.exists(fs, newPath)) {

@@ -33,6 +33,7 @@ import {
   WORKSPACES_FILES_BROADCAST_CHANNEL,
 } from "../worker/api/WorkspacesBroadcastEvents";
 import { FsSchema } from "./FsCache";
+import { extractExtension } from "../relativePath/WorkspaceFileRelativePathParser";
 
 export class WorkspaceService {
   public constructor(
@@ -158,7 +159,7 @@ export class WorkspaceService {
 
     const filesToZip = await Promise.all(
       wwfds
-        .filter((wwfd) => !onlyExtensions || onlyExtensions.includes(extname(wwfd.relativePath).slice(1)))
+        .filter((wwfd) => !onlyExtensions || onlyExtensions.includes(extractExtension(wwfd.relativePath)))
         .map(async (wwfd) => ({
           relativePath: wwfd.relativePath,
           content: await this.storageService.getFileContent(fs, this.getAbsolutePath(wwfd)),

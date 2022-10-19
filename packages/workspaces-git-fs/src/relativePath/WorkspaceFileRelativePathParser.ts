@@ -17,12 +17,29 @@
 import { basename, extname, parse } from "path";
 
 export function parseWorkspaceFileRelativePath(relativePath: string) {
-  const extension = extname(relativePath).replace(".", "");
+  const extension = extractExtension(relativePath);
   return {
-    relativePathWithoutExtension: relativePath.split(".").slice(0, -1).join("."),
+    relativePathWithoutExtension: relativePath.replace(`.${extension}`, ""),
     relativeDirPath: parse(relativePath).dir,
     extension: extension,
     nameWithoutExtension: basename(relativePath, `.${extension}`),
     name: basename(relativePath),
   };
+}
+
+export function extractExtension(relativePath: string) {
+  const fileName = basename(relativePath);
+  if (fileName.startsWith(".")) {
+    return fileName.slice(1);
+  }
+
+  const matchDots = fileName.match(/\./g);
+  if (matchDots && matchDots.length > 1) {
+    return fileName
+      .split(/\.(.*)/s)
+      .slice(1)
+      .join("");
+  }
+
+  return extname(relativePath).replace(".", "");
 }
