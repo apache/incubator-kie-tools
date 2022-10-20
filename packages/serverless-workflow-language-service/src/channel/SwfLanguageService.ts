@@ -300,6 +300,7 @@ const completions = new Map<
   [["states", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
   [["states", "*", "dataConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
   [["states", "*", "defaultCondition", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
+  [["states", "*", "eventConditions", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
 ]);
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {

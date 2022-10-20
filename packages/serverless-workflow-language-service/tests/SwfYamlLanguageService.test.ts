@@ -1110,6 +1110,20 @@ states:
           expect(completionItems).toMatchSnapshot();
         });
       });
+
+      describe("eventConditions transition completion", () => {
+        test("simple case", async () => {
+          const content = `states:
+- name: Inject Hello World
+  eventConditions:
+    transition: 🎯
+- name: Inject Mantra` as ContentWithCursor;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
+      });
     });
 
     describe("start completion", () => {

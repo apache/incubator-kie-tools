@@ -2615,6 +2615,34 @@ Array [
 ]
 `;
 
+exports[`SWF LS YAML code completion transition completion eventConditions transition completion simple case 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion eventConditions transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 3,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 3,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS YAML code completion transition completion state transition completion inside double quotes / with same level content after 1`] = `1`;
 
 exports[`SWF LS YAML code completion transition completion state transition completion inside double quotes / with same level content after 2`] = `
