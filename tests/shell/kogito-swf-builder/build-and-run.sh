@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+set -e
 
 script_dir_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-docker build "${script_dir_path}" -t quay.io/kiegroup/swf-test:latest
+docker build "${script_dir_path}"/resources -t quay.io/kiegroup/swf-test:latest
 
 docker run -d -p 8080:8080 quay.io/kiegroup/swf-test:latest
 

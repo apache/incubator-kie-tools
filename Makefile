@@ -41,6 +41,7 @@ endif
 # if ignore_test is set to true, ignore the tests
 ifneq ($(ignore_test),true)
 	${CEKIT_CMD} test --overrides-file ${image_name}-overrides.yaml behave ${test_options}
+	tests/shell/run.sh ${image_name}
 endif
 ifneq ($(findstring rc,$(IMAGE_VERSION)),rc)
 	${BUILD_ENGINE} tag quay.io/kiegroup/${image_name}:${IMAGE_VERSION} quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
