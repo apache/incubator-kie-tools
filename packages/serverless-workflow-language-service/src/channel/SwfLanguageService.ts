@@ -282,6 +282,7 @@ const completions = new Map<
     codeCompletionStrategy: CodeCompletionStrategy;
   }) => Promise<CompletionItem[]>
 >([
+  [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],
   [["functions", "*"], SwfLanguageServiceCodeCompletion.getFunctionCompletions],
   [["functions", "*", "operation"], SwfLanguageServiceCodeCompletion.getFunctionOperationCompletions],
   [["events", "*"], SwfLanguageServiceCodeCompletion.getEventsCompletions],
@@ -296,6 +297,7 @@ const completions = new Map<
     SwfLanguageServiceCodeCompletion.getFunctionRefArgumentsCompletions,
   ],
   [["states", "*", "onEvents", "*", "eventRefs", "*"], SwfLanguageServiceCodeCompletion.getEventRefsCompletions],
+  [["states", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
 ]);
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {

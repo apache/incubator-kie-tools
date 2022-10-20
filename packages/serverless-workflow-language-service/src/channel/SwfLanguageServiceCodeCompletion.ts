@@ -111,6 +111,25 @@ function createCompletionItem(args: {
   };
 }
 
+function getStateNameCompletion(
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { states: Specification.States }
+): CompletionItem[] {
+  return args.states.flatMap((state: any) => {
+    const kind = CompletionItemKind.Value;
+    const label = args.codeCompletionStrategy.formatLabel(state.name!, kind);
+
+    return [
+      createCompletionItem({
+        ...args,
+        completion: `${state.name}`,
+        kind,
+        label,
+        detail: `"${state.name}"`,
+      }),
+    ];
+  });
+}
+
 /**
  * SwfLanguageService CodeCompletion functions
  */
@@ -418,6 +437,24 @@ export const SwfLanguageServiceCodeCompletion = {
         }),
       ];
     });
+    return Promise.resolve(result);
+  },
+
+  getTransitionCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const stateNode = nodeUpUntilType(args.currentNode, "object");
+    const currentStateName = stateNode ? findNodeAtLocation(stateNode, ["name"])?.value || "" : "";
+    const states = swfModelQueries
+      .getStates(args.rootNode)
+      .filter((s) => s.name !== currentStateName) as Specification.States;
+    const result = getStateNameCompletion({ ...args, states });
+
+    return Promise.resolve(result);
+  },
+
+  getStartCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const states = swfModelQueries.getStates(args.rootNode);
+    const result = getStateNameCompletion({ ...args, states });
+
     return Promise.resolve(result);
   },
 };

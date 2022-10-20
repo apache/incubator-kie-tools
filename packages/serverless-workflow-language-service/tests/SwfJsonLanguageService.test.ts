@@ -498,75 +498,21 @@ describe("SWF LS JSON", () => {
     });
 
     describe("operation completion", () => {
-      test("not in quotes / without same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
+      test.each([
+        ["not in quotes / without same level content after", ` 🎯`],
+        ["not in quotes / with same level content after", ` 🎯,\n      "type": "rest"`],
+        ["inside double quotes / without same level content after", ` 🎯`],
+        ["inside double quotes / with same level content after", ` 🎯,\n      "type": "rest"`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `{
   "functions": [
     {
       "name": "testRelativeFunction1",
-      "operation": 🎯
+      "operation":${nodeValue}
     }
   ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("not in quotes / with same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {
-      "name": "testRelativeFunction1",
-      "operation": 🎯,
-      "type": "rest"
-    }
-  ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("inside double quotes / without same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {
-      "name": "testRelativeFunction1",
-      "operation": "🎯"
-    }
-  ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("inside double quotes / with same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {
-      "name": "testRelativeFunction1",
-      "operation": "🎯",
-      "type": "rest"
-    }
-  ]
-}`
-        );
+}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
@@ -574,11 +520,11 @@ describe("SWF LS JSON", () => {
     });
 
     describe("functionRef completion", () => {
-      test("without same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
+      test.each([
+        ["without same level content after", ` 🎯`],
+        ["with same level content after", ` 🎯,\n                    "name": "testStateAction",`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `{
   "functions": [
     {
       "name": "testRelativeFunction1",
@@ -594,45 +540,13 @@ describe("SWF LS JSON", () => {
       "actions": [
         {
           "name": "testStateAction",
-          "functionRef": 🎯
+          "functionRef":${nodeValue}
         }
       ]
     }
   ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("with same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {
-      "name": "testRelativeFunction1",
-      "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-      "type": "rest"
-    }
-  ],
-  "states": [
-    {
-      "name": "testState",
-      "type": "operation",
-      "transition": "end",
-      "actions": [
-        {
-          "functionRef": 🎯,
-          "name": "testStateAction",
-        }
-      ]
-    }
-  ]
-}`
-        );
+}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
@@ -640,11 +554,13 @@ describe("SWF LS JSON", () => {
     });
 
     describe("functionRef refName completion", () => {
-      test("not in quotes / without same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
+      test.each([
+        ["not in quotes / without same level content after", ` 🎯`],
+        ["not in quotes / with same level content after", ` 🎯,\n            "arguments": {}`],
+        ["inside double quotes / without same level content after", ` 🎯`],
+        ["inside double quotes / with same level content after", ` 🎯,\n            "arguments": {}`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `{
   "functions": [
     {
       "name": "myFunc",
@@ -661,118 +577,14 @@ describe("SWF LS JSON", () => {
         {
           "name": "testStateAction",
           "functionRef": {
-            "refName": 🎯
+            "refName":${nodeValue}
           }
         }
       ]
     }
   ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("not in quotes / with same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {
-      "name": "myFunc",
-      "operation": "./specs/myService#myFunc",
-      "type": "rest"
-    }
-  ],
-  "states": [
-    {
-      "name": "testState",
-      "type": "operation",
-      "transition": "end",
-      "actions": [
-        {
-          "name": "testStateAction",
-          "functionRef": {
-            "refName": 🎯,
-            "arguments": {}
-          }
-        }
-      ]
-    }
-  ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("inside double quotes / without same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {
-      "name": "myFunc",
-      "operation": "./specs/myService#myFunc",
-      "type": "rest"
-    }
-  ],
-  "states": [
-    {
-      "name": "testState",
-      "type": "operation",
-      "transition": "end",
-      "actions": [
-        {
-          "name": "testStateAction",
-          "functionRef": {
-            "refName": "🎯"
-          }
-        }
-      ]
-    }
-  ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("inside double quotes / with same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-  "functions": [
-    {
-      "name": "myFunc",
-      "operation": "./specs/myService#myFunc",
-      "type": "rest"
-    }
-  ],
-  "states": [
-    {
-      "name": "testState",
-      "type": "operation",
-      "transition": "end",
-      "actions": [
-        {
-          "name": "testStateAction",
-          "functionRef": {
-            "refName": "🎯",
-            "arguments": {}
-          }
-        }
-      ]
-    }
-  ]
-}`
-        );
+}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
@@ -780,11 +592,11 @@ describe("SWF LS JSON", () => {
     });
 
     describe("functionRef arguments completion", () => {
-      test("without same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
+      test.each([
+        ["without same level content after", ` 🎯`],
+        ["with same level content after", ` 🎯,\n            "refName":"testRelativeFunction1"`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `{
   "functions": [
     {
       "name": "testRelativeFunction1",
@@ -802,49 +614,14 @@ describe("SWF LS JSON", () => {
           "name": "testStateAction",
           "functionRef": {
             "refName":"testRelativeFunction1",
-            "arguments": 🎯
+            "arguments":${nodeValue}
           }
         }
       ]
     }
   ]
-}`
-        );
-
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
-      });
-
-      test("with same level content after", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `{
-            "functions": [
-              {
-                "name": "testRelativeFunction1",
-                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-                "type": "rest"
-              }
-            ],
-              "states": [
-                {
-                  "name": "testState",
-                  "type": "operation",
-                  "transition": "end",
-                  "actions": [
-                    {
-                      "name": "testStateAction",
-                      "functionRef": {
-                        "arguments": 🎯,
-                        "refName":"testRelativeFunction1"
-                      }
-                    }
-                  ]
-                }
-              ]
-          }`
-        );
+}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
@@ -891,6 +668,56 @@ describe("SWF LS JSON", () => {
       }
     ]
   }]
+}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
+
+    describe("transition completion", () => {
+      test.each([
+        ["not in quotes / without same level content after", ` 🎯`],
+        ["not in quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+        ["inside double quotes / without same level content after", ` 🎯`],
+        ["inside double quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `{
+    "states": [ 
+      {
+        "name": "Inject Hello World",
+        "transition":${nodeValue}
+      },
+      {
+        "name": "Inject Mantra"
+      }
+    ]
+  }` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
+
+    describe("start completion", () => {
+      test.each([
+        ["not in quotes / without same level content after", ` 🎯`],
+        ["not in quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+        ["inside double quotes / without same level content after", ` 🎯`],
+        ["inside double quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `{
+  "start":${nodeValue},
+  "states": [
+    {
+      "name": "GreetInEnglish"
+    },
+    {
+      "name": "GreetInSpanish"
+    }
+  ]
 }` as ContentWithCursor;
         const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 

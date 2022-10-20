@@ -550,6 +550,10 @@ exports[`SWF LS YAML code completion events completion empty completion items 1`
 
 exports[`SWF LS YAML code completion events completion empty completion items 2`] = `Array []`;
 
+exports[`SWF LS YAML code completion functionRef arguments completion using JSON format 1`] = `0`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion using JSON format 2`] = `Array []`;
+
 exports[`SWF LS YAML code completion functionRef arguments completion with same level content after 1`] = `1`;
 
 exports[`SWF LS YAML code completion functionRef arguments completion with same level content after 2`] = `
@@ -569,34 +573,6 @@ Array [
       "range": Object {
         "end": Object {
           "character": 17,
-          "line": 12,
-        },
-        "start": Object {
-          "character": 17,
-          "line": 12,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS YAML code completion functionRef arguments completion without any function arguments to complete 1`] = `1`;
-
-exports[`SWF LS YAML code completion functionRef arguments completion without any function arguments to complete 2`] = `
-Array [
-  Object {
-    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
-    "filterText": "'testRelativeFunction1' arguments",
-    "insertTextFormat": 2,
-    "kind": 9,
-    "label": "'testRelativeFunction1' arguments",
-    "sortText": "100_'testRelativeFunction1' arguments",
-    "textEdit": Object {
-      "newText": "{}",
-      "range": Object {
-        "end": Object {
-          "character": 17,
           "line": 13,
         },
         "start": Object {
@@ -608,6 +584,14 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without any function arguments to complete 1`] = `0`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without any function arguments to complete 2`] = `Array []`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without same level content after / without space after property name 1`] = `0`;
+
+exports[`SWF LS YAML code completion functionRef arguments completion without same level content after / without space after property name 2`] = `Array []`;
 
 exports[`SWF LS YAML code completion functionRef arguments completion without same level content after 1`] = `1`;
 
@@ -845,6 +829,10 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS YAML code completion functionRef refName completion not in quotes / without space after property name 1`] = `0`;
+
+exports[`SWF LS YAML code completion functionRef refName completion not in quotes / without space after property name 2`] = `Array []`;
 
 exports[`SWF LS YAML code completion functions completion add at the beginning / with double extra indentation / using the code lenses 1`] = `2`;
 
@@ -1602,6 +1590,157 @@ Array [
         "start": Object {
           "character": 13,
           "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion start completion inside double quotes 1`] = `2`;
+
+exports[`SWF LS YAML code completion start completion inside double quotes 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "GreetInEnglish",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "GreetInEnglish",
+    "sortText": "100_GreetInEnglish",
+    "textEdit": Object {
+      "newText": "GreetInEnglish",
+      "range": Object {
+        "end": Object {
+          "character": 9,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 7,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "GreetInSpanish",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "GreetInSpanish",
+    "sortText": "100_GreetInSpanish",
+    "textEdit": Object {
+      "newText": "GreetInSpanish",
+      "range": Object {
+        "end": Object {
+          "character": 9,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 7,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion start completion inside single quotes 1`] = `2`;
+
+exports[`SWF LS YAML code completion start completion inside single quotes 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "GreetInEnglish",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "GreetInEnglish",
+    "sortText": "100_GreetInEnglish",
+    "textEdit": Object {
+      "newText": "GreetInEnglish",
+      "range": Object {
+        "end": Object {
+          "character": 9,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 7,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "GreetInSpanish",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "GreetInSpanish",
+    "sortText": "100_GreetInSpanish",
+    "textEdit": Object {
+      "newText": "GreetInSpanish",
+      "range": Object {
+        "end": Object {
+          "character": 9,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 7,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion start completion not in quotes / without space after property name 1`] = `0`;
+
+exports[`SWF LS YAML code completion start completion not in quotes / without space after property name 2`] = `Array []`;
+
+exports[`SWF LS YAML code completion start completion not in quotes 1`] = `2`;
+
+exports[`SWF LS YAML code completion start completion not in quotes 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "GreetInEnglish",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "GreetInEnglish",
+    "sortText": "100_GreetInEnglish",
+    "textEdit": Object {
+      "newText": "GreetInEnglish",
+      "range": Object {
+        "end": Object {
+          "character": 7,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 7,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "GreetInSpanish",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "GreetInSpanish",
+    "sortText": "100_GreetInSpanish",
+    "textEdit": Object {
+      "newText": "GreetInSpanish",
+      "range": Object {
+        "end": Object {
+          "character": 7,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 7,
+          "line": 0,
         },
       },
     },
@@ -2419,6 +2558,150 @@ Array [
 exports[`SWF LS YAML code completion states completion empty completion items 1`] = `0`;
 
 exports[`SWF LS YAML code completion states completion empty completion items 2`] = `Array []`;
+
+exports[`SWF LS YAML code completion transition completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 14,
+          "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion transition completion inside double quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion inside double quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 14,
+          "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion transition completion inside single quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion inside single quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 14,
+          "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion transition completion not in quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion not in quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 14,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 14,
+          "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion transition completion not in quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion not in quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 14,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 14,
+          "line": 2,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion transition completion not in quotes / without space after property name 1`] = `0`;
+
+exports[`SWF LS YAML code completion transition completion not in quotes / without space after property name 2`] = `Array []`;
 
 exports[`SWF LS YAML parsing content parsing content with empty function array 1`] = `
 Object {

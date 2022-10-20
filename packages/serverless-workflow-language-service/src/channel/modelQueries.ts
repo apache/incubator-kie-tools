@@ -24,15 +24,15 @@ import { OmitRecursively, SwfJsonPath, SwfLsNodeType } from "./types";
  * @param args.fields the fields to pick up
  * @param args.nodeType the node type of the node to get
  */
-function getNode<T>(args: {
+function getNodes<T>(args: {
   fields: string[];
   nodeType: SwfLsNodeType;
   path: SwfJsonPath;
   rootNode: jsonc.Node;
-}): OmitRecursively<T, "normalize">[] {
+}): OmitRecursively<T, "normalize"> {
   const node = jsonc.findNodeAtLocation(args.rootNode, args.path);
   if (node?.type !== args.nodeType) {
-    return [];
+    return [] as unknown as OmitRecursively<T, "normalize">;
   }
 
   return Array.from(node.children ?? []).flatMap((childNode) => {
@@ -42,12 +42,12 @@ function getNode<T>(args: {
       nodeProps[field] = jsonc.findNodeAtLocation(childNode, [field])?.value;
     });
 
-    return [{ ...nodeProps } as unknown as OmitRecursively<T, "normalize">];
-  });
+    return [{ ...nodeProps }];
+  }) as unknown as OmitRecursively<T, "normalize">;
 }
 
 export function getFunctions(rootNode: jsonc.Node) {
-  return getNode<Specification.Function>({
+  return getNodes<Specification.Function[]>({
     rootNode,
     path: ["functions"],
     nodeType: "array",
@@ -56,10 +56,19 @@ export function getFunctions(rootNode: jsonc.Node) {
 }
 
 export function getEvents(rootNode: jsonc.Node) {
-  return getNode<Specification.Eventdef>({
+  return getNodes<Specification.Eventdef[]>({
     rootNode,
     path: ["events"],
     nodeType: "array",
     fields: ["name"],
   }).filter((e) => e.name);
+}
+
+export function getStates(rootNode: jsonc.Node) {
+  return getNodes<Specification.States>({
+    rootNode,
+    path: ["states"],
+    nodeType: "array",
+    fields: ["name"],
+  }).filter((e) => e.name) as Specification.States;
 }
