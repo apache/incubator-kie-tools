@@ -78,7 +78,7 @@ import {
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { PromiseStateWrapper } from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
@@ -91,13 +91,12 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/exter
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { useGitHubAuthInfo } from "../github/Hooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { WorkspacesSharedWorker } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesSharedWorker";
 
 export interface Props {
   alerts: AlertsController | undefined;

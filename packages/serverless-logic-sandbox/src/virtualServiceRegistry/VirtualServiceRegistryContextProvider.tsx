@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { GLOB_PATTERN } from "../extension";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { LfsWorkspaceDescriptorService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsWorkspaceDescriptorService";

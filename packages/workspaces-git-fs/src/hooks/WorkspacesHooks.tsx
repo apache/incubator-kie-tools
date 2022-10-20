@@ -16,10 +16,11 @@
 
 import { useWorkspaces } from "../context/WorkspacesContext";
 import { useCallback } from "react";
-import { usePromiseState } from "./PromiseState";
+import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesBroadcastEvents";
-import { Holder, useCancelableEffect } from "./useCancelableEffect";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 
 export function useWorkspaceDescriptorsPromise() {
   const workspaces = useWorkspaces();

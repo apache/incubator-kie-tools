@@ -29,12 +29,14 @@ import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandbox/DmnDevSandboxMo
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { AlertsController, useAlert } from "../alerts/Alerts";
-import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
-import { PromiseStateWrapper } from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
@@ -46,7 +48,6 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
-import { responsiveBreakpoints } from "../responsiveBreakpoints/ResponsiveBreakpoints";
 
 export interface Props {
   workspaceId: string;

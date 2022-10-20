@@ -16,10 +16,11 @@
 
 import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../context/WorkspacesContext";
-import { usePromiseState } from "./PromiseState";
+import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
 import { WorkspaceFileBroadcastEvents } from "../worker/api/WorkspaceFileBroadcastEvents";
-import { Holder, useCancelableEffect } from "./useCancelableEffect";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 
 export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();

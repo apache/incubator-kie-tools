@@ -24,7 +24,7 @@ import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
-import { usePrevious } from "../../reactExt/Hooks";
+import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";

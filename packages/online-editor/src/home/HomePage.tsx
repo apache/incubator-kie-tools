@@ -46,7 +46,7 @@ import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-f
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { FileLabel } from "../filesList/FileLabel";
-import { PromiseStateWrapper } from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -71,7 +71,7 @@ import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
 import { Alerts, AlertsController } from "../alerts/Alerts";
-import { useController } from "../reactExt/Hooks";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";

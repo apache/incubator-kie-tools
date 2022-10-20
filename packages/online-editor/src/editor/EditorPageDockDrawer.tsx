@@ -30,7 +30,7 @@ import {
   NotificationsPanelDockToggleRef,
 } from "./NotificationsPanel/NotificationsPanelDockToggle";
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
-import { useController } from "../reactExt/Hooks";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";

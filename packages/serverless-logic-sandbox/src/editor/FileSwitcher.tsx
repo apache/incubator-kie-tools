@@ -50,14 +50,14 @@ import {
   PromiseStateWrapper,
   useCombinedPromiseState,
   usePromiseState,
-} from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+} from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useWorkspacesFilesPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";

@@ -19,7 +19,7 @@ import { basename } from "path";
 import { useCallback } from "react";
 import { SwfServiceCatalogStore } from "../../editor/api/SwfServiceCatalogStore";
 import { isSupportedByVirtualServiceRegistry } from "../../extension";
-import { useCancelableEffect } from "../../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import {
   buildUniqueWorkspaceBroadcastChannelName,
   buildWorkspacesBroadcastChannelName,

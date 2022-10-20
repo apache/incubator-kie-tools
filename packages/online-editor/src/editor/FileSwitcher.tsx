@@ -45,10 +45,7 @@ import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
-import {
-  PromiseStateWrapper,
-  useCombinedPromiseState,
-} from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+import { PromiseStateWrapper, useCombinedPromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useCancelableEffect } from "../../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { DEFAULT_ENV_VARS, EnvContext } from "./EnvContext";
 import { ENV_FILE_PATH } from "../EnvConstants";
 

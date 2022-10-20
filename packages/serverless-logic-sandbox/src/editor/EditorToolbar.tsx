@@ -68,14 +68,14 @@ import {
   useNavigationStatusToggle,
   useRoutes,
 } from "../navigation/Hooks";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
 import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
-import { PromiseStateWrapper } from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import {
   GIST_DEFAULT_BRANCH,

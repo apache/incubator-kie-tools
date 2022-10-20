@@ -17,11 +17,12 @@
 import { useWorkspaces } from "../context/WorkspacesContext";
 import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
-import { usePromiseState } from "./PromiseState";
+import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { GIT_ORIGIN_REMOTE_NAME } from "../constants/GitConstants";
 import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
-import { Holder, useCancelableEffect } from "./useCancelableEffect";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 
 export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
   const workspaces = useWorkspaces();

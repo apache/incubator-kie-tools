@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,8 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { EffectCallback, useEffect } from "react";
-
 export class Holder<T> {
   constructor(private value: T) {}
   public readonly get = () => this.value;
   public readonly set = (newValue: T) => (this.value = newValue);
-}
-
-export type CancelableEffectParams = {
-  canceled: Holder<boolean>;
-};
-
-// TODO CAPONETTO: put this file in a new package `react-hooks` and reuse across packages
-export function useCancelableEffect(effect: (args: CancelableEffectParams) => ReturnType<EffectCallback>) {
-  useEffect(() => {
-    const canceled = new Holder(false);
-
-    const effectCleanup = effect({ canceled });
-
-    return () => {
-      canceled.set(true);
-      if (effectCleanup) {
-        effectCleanup();
-      }
-    };
-  }, [effect]);
 }

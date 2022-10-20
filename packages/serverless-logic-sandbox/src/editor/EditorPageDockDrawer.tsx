@@ -21,7 +21,7 @@ import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { isServerlessWorkflowJson } from "../extension";
 import { useAppI18n } from "../i18n";
-import { useController } from "../reactExt/Hooks";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import {
