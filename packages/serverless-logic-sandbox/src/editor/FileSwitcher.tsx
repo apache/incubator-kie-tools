@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -45,11 +45,15 @@ import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
-import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
+import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import {
+  PromiseStateWrapper,
+  useCombinedPromiseState,
+  usePromiseState,
+} from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
+import { useWorkspacesFilesPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
@@ -62,7 +66,7 @@ import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-righ
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { isSandboxAsset } from "../extension";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 const ROOT_MENU_ID = "rootMenu";
 

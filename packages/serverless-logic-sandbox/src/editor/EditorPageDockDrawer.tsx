@@ -22,7 +22,7 @@ import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo
 import { isServerlessWorkflowJson } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useController } from "../reactExt/Hooks";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import {
   NotificationsPanelDockToggle,

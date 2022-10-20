@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { basename, extname } from "path";
+import { basename } from "path";
 import { PROJECT_FILES } from "../project";
 
 const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
@@ -61,16 +61,6 @@ export const supportedFileExtensionArray = [
   FileTypes.DASH_YAML,
   FileTypes.DASH_YML,
 ];
-
-export function resolveExtension(path: string): string {
-  const fileName = basename(path);
-  if (fileName.startsWith(".")) {
-    return fileName.slice(1);
-  }
-  const match = REGEX.supported.exec(path);
-  const extension = match ? match[1] : extname(path);
-  return extension ? extension.slice(1) : "";
-}
 
 export function isServerlessWorkflow(path: string): boolean {
   return REGEX.sw.test(path);

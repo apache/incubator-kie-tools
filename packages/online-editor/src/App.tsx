@@ -37,7 +37,6 @@ import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dis
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
 import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
-import { WORKSPACES_SHARED_WORKER_SCRIPT_URL } from "./workspace/worker/sharedWorker";
 
 export function App() {
   return (
@@ -48,7 +47,7 @@ export function App() {
         [EnvContextProvider, {}],
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
-        [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: WORKSPACES_SHARED_WORKER_SCRIPT_URL }],
+        [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js" }],
         [DmnRunnerInputsDispatchContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
         [NavigationContextProvider, {}],

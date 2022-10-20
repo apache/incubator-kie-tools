@@ -558,9 +558,9 @@
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
       { "source": "@kie-tools/openjdk11-mvn-image", "target": "@kie-tools/openjdk11-mvn-image-env", "weight": 1 },
       { "source": "@kie-tools/openjdk11-mvn-image-env", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/kie-sandbox-fs", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-sandbox",
         "target": "@kie-tools/serverless-workflow-combined-editor",

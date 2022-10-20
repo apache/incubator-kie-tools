@@ -276,9 +276,9 @@ digraph G {
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/serverless-logic-sandbox" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
-  "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/openjdk11-mvn-image-env" [ style = "dashed", color = "black" ];

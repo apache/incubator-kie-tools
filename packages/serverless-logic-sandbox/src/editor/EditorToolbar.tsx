@@ -75,14 +75,14 @@ import { SettingsTabs } from "../settings/SettingsModalBody";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
-import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
-import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { PromiseStateWrapper } from "@kie-tools-core/workspaces-git-fs/dist/hooks/PromiseState";
+import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import {
   GIST_DEFAULT_BRANCH,
   GIST_ORIGIN_REMOTE_NAME,
   GIT_ORIGIN_REMOTE_NAME,
-} from "../workspace/constants/GitConstants";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+} from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { FileSwitcher } from "./FileSwitcher";
@@ -92,8 +92,8 @@ import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
-import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
-import { WorkspacesSharedWorker } from "../workspace/worker/WorkspacesSharedWorker";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { WorkspacesSharedWorker } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesSharedWorker";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -156,7 +156,7 @@ export function EditorToolbar(props: Props) {
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
   const [flushes] = useSharedValue(
-    WorkspacesSharedWorker.getInstance().workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes
+    workspaces.workspacesSharedWorker.workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes
   );
 
   const isSaved = useMemo(() => {

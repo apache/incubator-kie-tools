@@ -20,8 +20,6 @@ import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { EnvVars } from "../../env/hooks/EnvContext";
 
-export const WORKSPACES_SHARED_WORKER_SCRIPT_URL = "workspace/worker/sharedWorker.js";
-
 declare const importScripts: any;
 importScripts("fsMain.js");
 

@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
+import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { basename } from "path";
 import { useCallback } from "react";
 import { SwfServiceCatalogStore } from "../../editor/api/SwfServiceCatalogStore";
-import { isSupportedByVirtualServiceRegistry, resolveExtension } from "../../extension";
+import { isSupportedByVirtualServiceRegistry } from "../../extension";
 import { useCancelableEffect } from "../../reactExt/Hooks";
 import {
   buildUniqueWorkspaceBroadcastChannelName,
   buildWorkspacesBroadcastChannelName,
-} from "../../workspace/lfs/LfsWorkspaceEvents";
-import { WorkspaceEvents } from "../../workspace/worker/api/WorkspaceEvents";
-import { WorkspacesEvents } from "../../workspace/worker/api/WorkspacesEvents";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+} from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsWorkspaceEvents";
+import { WorkspaceBroadcastEvents } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceBroadcastEvents";
+import {
+  WorkspacesBroadcastEvents,
+  WorkspacesFilesBroadcastEvents,
+} from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { VirtualServiceRegistryFunction } from "../models/VirtualServiceRegistryFunction";
 import { VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX } from "../VirtualServiceRegistryConstants";
 import { useVirtualServiceRegistry } from "../VirtualServiceRegistryContext";
@@ -46,12 +50,12 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
         const vsrWorkspaceId = args.workspaceFile.workspaceId; // both are mapped to the same value
         const uniqueWorkspaceBroadcastChannel = new BroadcastChannel(vsrWorkspaceId);
 
-        uniqueWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
+        uniqueWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceBroadcastEvents>) => {
           if (canceled.get()) {
             return;
           }
 
-          if (data.type === "DELETE_FILE") {
+          if (data.type === "WS_DELETE_FILE") {
             if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
               return;
             }
@@ -65,7 +69,7 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
             }
 
             await virtualServiceRegistry.deleteVsrFile({ vsrFile });
-          } else if (data.type === "RENAME_FILE") {
+          } else if (data.type === "WS_RENAME_FILE") {
             if (!isSupportedByVirtualServiceRegistry(data.oldRelativePath)) {
               return;
             }
@@ -81,11 +85,11 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
             await virtualServiceRegistry.renameVsrFile({
               vsrFile,
               newFileNameWithoutExtension: basename(data.newRelativePath).replace(
-                `.${resolveExtension(data.newRelativePath)}`,
+                `.${extractExtension(data.newRelativePath)}`,
                 ""
               ),
             });
-          } else if (data.type === "UPDATE_FILE") {
+          } else if (data.type === "WS_UPDATE_FILE") {
             if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
               return;
             }
@@ -108,7 +112,7 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
               vsrFile,
               getNewContents: async () => vsrFunction.getOpenApiSpec(),
             });
-          } else if (data.type === "ADD_FILE") {
+          } else if (data.type === "WS_ADD_FILE") {
             if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
               return;
             }
@@ -157,12 +161,14 @@ export function useUpdateVirtualServiceRegistryOnVsrFileEvent(args: {
           })
         );
 
-        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceEvents>) => {
+        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({
+          data,
+        }: MessageEvent<WorkspacesFilesBroadcastEvents>) => {
           if (canceled.get()) {
             return;
           }
 
-          if (["ADD_FILE", "DELETE_FILE", "RENAME_FILE"].includes(data.type)) {
+          if (["WSSFS_ADD", "WSSFS_DELETE", "WSSFS_RENAME"].includes(data.type)) {
             await args.catalogStore.refresh();
           }
         };
@@ -184,12 +190,12 @@ export function useUpdateVirtualServiceRegistryOnVsrWorkspaceEvent(args: { catal
           buildWorkspacesBroadcastChannelName(VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX)
         );
 
-        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
+        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesBroadcastEvents>) => {
           if (canceled.get()) {
             return;
           }
 
-          if (["ADD_WORKSPACE", "DELETE_WORKSPACE"].includes(data.type)) {
+          if (["WSS_ADD_WORKSPACE", "WSS_DELETE_WORKSPACE"].includes(data.type)) {
             await args.catalogStore.refresh();
           }
         };
