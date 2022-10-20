@@ -25,10 +25,7 @@ import {
   buildWorkspacesBroadcastChannelName,
 } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsWorkspaceEvents";
 import { WorkspaceBroadcastEvents } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceBroadcastEvents";
-import {
-  WorkspacesBroadcastEvents,
-  WorkspacesFilesBroadcastEvents,
-} from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
+import { WorkspacesBroadcastEvents } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { VirtualServiceRegistryFunction } from "../models/VirtualServiceRegistryFunction";
 import { VIRTUAL_SERVICE_REGISTRY_EVENT_PREFIX } from "../VirtualServiceRegistryConstants";
@@ -161,14 +158,12 @@ export function useUpdateVirtualServiceRegistryOnVsrFileEvent(args: {
           })
         );
 
-        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({
-          data,
-        }: MessageEvent<WorkspacesFilesBroadcastEvents>) => {
+        uniqueVsrWorkspaceBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspaceBroadcastEvents>) => {
           if (canceled.get()) {
             return;
           }
 
-          if (["WSSFS_ADD", "WSSFS_DELETE", "WSSFS_RENAME"].includes(data.type)) {
+          if (data.type === "WS_ADD_FILE" || data.type === "WS_DELETE_FILE" || data.type === "WS_RENAME_FILE") {
             await args.catalogStore.refresh();
           }
         };
@@ -195,7 +190,7 @@ export function useUpdateVirtualServiceRegistryOnVsrWorkspaceEvent(args: { catal
             return;
           }
 
-          if (["WSS_ADD_WORKSPACE", "WSS_DELETE_WORKSPACE"].includes(data.type)) {
+          if (data.type === "WSS_ADD_WORKSPACE" || data.type === "WSS_DELETE_WORKSPACE") {
             await args.catalogStore.refresh();
           }
         };
