@@ -4,16 +4,16 @@ name: "quay.io/kiegroup/kogito-explainability"
 description: "Runtime image for Kogito Explainability Service"
 
 labels:
-- name: "maintainer"
-  value: "kogito <bsig-cloud@redhat.com>"
-- name: "io.k8s.description"
-  value: "Runtime image for Kogito Explainability Service"
-- name: "io.k8s.display-name"
-  value: "Kogito Explainability Service"
-- name: "io.openshift.tags"
-  value: "kogito,explainability"
-- name: "io.openshift.expose-services"
-  value: "8080:http"
+  - name: "maintainer"
+    value: "kogito <bsig-cloud@redhat.com>"
+  - name: "io.k8s.description"
+    value: "Runtime image for Kogito Explainability Service"
+  - name: "io.k8s.display-name"
+    value: "Kogito Explainability Service"
+  - name: "io.openshift.tags"
+    value: "kogito,explainability"
+  - name: "io.openshift.expose-services"
+    value: "8080:http"
 
 envs:
   - name: "SCRIPT_DEBUG"
@@ -23,19 +23,19 @@ envs:
     example: "REST"
     description: "Defines which kind of communication should be used by the Explainability Container: rest api or kafka events."
 ports:
-- value: 8080
+  - value: 8080
 
 modules:
   install:
-  - name: org.kie.kogito.image.dependencies
-  - name: org.kie.kogito.system.user
-  - name: org.kie.kogito.logging
-  - name: org.kie.kogito.openjdk
-    version: "11-headless"
-  - name: org.kie.kogito.dynamic.resources
-  - name: org.kie.kogito.launch.scripts
-  - name: org.kie.kogito.explainability
-  - name: org.kie.kogito.security.custom.truststores
+    - name: org.kie.kogito.image.dependencies
+    - name: org.kie.kogito.system.user
+    - name: org.kie.kogito.logging
+    - name: org.kie.kogito.openjdk
+      version: "11-headless"
+    - name: org.kie.kogito.dynamic.resources
+    - name: org.kie.kogito.launch.scripts
+    - name: org.kie.kogito.explainability
+    - name: org.kie.kogito.security.custom.truststores
 
 run:
   workdir: "/home/kogito"

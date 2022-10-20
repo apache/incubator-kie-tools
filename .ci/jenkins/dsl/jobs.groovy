@@ -33,6 +33,11 @@ if (Utils.isProductizedBranch(this)) {
     setupProdUpdateVersionJob()
 }
 
+KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
+    'python3 scripts/update-quarkus-version.py --bump-to %new_version%'
+])
+
+
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////

@@ -20,6 +20,9 @@ PROD_IMAGE_STREAM_FILENAME = "rhpam-kogito-imagestream.yaml"
 IMAGE_FILENAME = "image.yaml"
 ARTIFACTS_VERSION_ENV_KEY = "KOGITO_VERSION"
 
+QUARKUS_VERSION_ENV_KEY = "QUARKUS_VERSION"
+QUARKUS_VERSION_LABEL_NAME = "org.quarkus.version"
+
 # behave tests that needs to be updated
 BEHAVE_BASE_DIR = 'tests/features'
 
@@ -214,7 +217,7 @@ def update_modules_version(target_version, prod=False):
     if prod:
         modules = get_prod_module_dirs()
     else:
-        get_community_module_dirs()
+        modules = get_community_module_dirs()
 
     for module_dir in modules:
         update_module_version(module_dir, target_version)
@@ -240,6 +243,73 @@ def update_module_version(module_dir, target_version):
     except TypeError:
         raise
 
+def update_images_env_value(env_name, new_value, prod=False):
+    """
+    Update the given env name for all images with the given new value.
+    :param env_name: environment variable name to update
+    :param new_value: new value to set
+    :param prod: if the module to be updated is prod version.
+    """
+    images = []
+    if prod:
+        images = get_prod_images()
+    else:
+        images = get_community_images()
+
+    for image_name in images:
+        image_filename = "{}-overrides.yaml".format(image_name)
+        update_env_value(image_filename, env_name, new_value)
+
+def update_images_label_value(label_name, new_value, prod=False):
+    """
+    Update the given label name for all images with the given new value.
+    :param label_name: label name to update
+    :param new_value: new value to set
+    :param prod: if the module to be updated is prod version.
+    """
+    images = []
+    if prod:
+        images = get_prod_images()
+    else:
+        images = get_community_images()
+
+    for image_name in images:
+        image_filename = "{}-overrides.yaml".format(image_name)
+        update_label_value(image_filename, label_name, new_value)
+
+def update_modules_env_value(env_name, new_value, prod=False):
+    """
+    Update the given environment variable name for all Kogito modules with the given new value.
+    :param env_name: label name to update
+    :param new_value: new value to set
+    :param prod: if the module to be updated is prod version.
+    """
+    modules = []
+    if prod:
+        modules = get_prod_module_dirs()
+    else:
+        modules = get_community_module_dirs()
+
+    for module_dir in modules:
+        module_file = os.path.join(module_dir, "module.yaml")
+        update_env_value(module_file, env_name, new_value)
+
+def update_modules_label_value(label_name, new_value, prod=False):
+    """
+    Update the given label name for all Kogito modules with the given new value.
+    :param label_name: label name to update
+    :param new_value: new value to set
+    :param prod: if the module to be updated is prod version.
+    """
+    modules = []
+    if prod:
+        modules = get_prod_module_dirs()
+    else:
+        modules = get_community_module_dirs()
+
+    for module_dir in modules:
+        module_file = os.path.join(module_dir, "module.yaml")
+        update_label_value(module_file, label_name, new_value)
 
 def retrieve_artifacts_version():
     """
@@ -261,21 +331,7 @@ def update_artifacts_version_env_in_image(artifacts_version):
     Update `KOGITO_VERSION` env var in image.yaml.
     :param artifacts_version: kogito version used to update image.yaml which contains the `KOGITO_VERSION` env var
     """
-    try:
-        with open(IMAGE_FILENAME) as imageFile:
-            data = yaml_loader().load(imageFile)
-            for index, env in enumerate(data['envs'], start=0):
-                if env['name'] == ARTIFACTS_VERSION_ENV_KEY:
-                    print("Updating image.yaml env var {0} with value {1}".format(ARTIFACTS_VERSION_ENV_KEY,
-                                                                                  artifacts_version))
-                    data['envs'][index]['value'] = artifacts_version
-
-        with open(IMAGE_FILENAME, 'w') as imageFile:
-            yaml_loader().dump(data, imageFile)
-
-    except TypeError:
-        raise
-
+    update_env_value(IMAGE_FILENAME, ARTIFACTS_VERSION_ENV_KEY, artifacts_version)
 
 def update_examples_ref_in_behave_tests(examples_ref):
     """
@@ -422,6 +478,53 @@ def update_maven_repo_in_setup_maven(repo_url, replace_jboss_repository):
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)
     update_in_file(SETUP_MAVEN_SCRIPT, pattern, replacement)
 
+def update_env_value(filename, env_name, env_value):
+    """
+    Update environment value into the given yaml module/image file
+    :param filename: filename to update
+    :param env_name: environment variable name to update
+    :param env_value: value to set
+    """
+    try:
+        with open(filename) as yaml_file:
+            data = yaml_loader().load(yaml_file)
+            if 'envs' in data:
+                for index, env in enumerate(data['envs'], start=0):
+                    if env['name'] == env_name:
+                        print("Updating {0} label {1} with value {2}".format(filename, env_name,
+                                                                                    env_value))
+                        if 'value' in data['envs'][index]: # Do not update if no value already defined
+                            data['envs'][index]['value'] = env_value
+
+        with open(filename, 'w') as yaml_file:
+            yaml_loader().dump(data, yaml_file)
+
+    except TypeError:
+        raise
+
+def update_label_value(filename, label_name, label_value):
+    """
+    Update label value into the given yaml module/image file
+    :param filename: filename to update
+    :param label_name: label name to update
+    :param label_value: value to set
+    """
+    try:
+        with open(filename) as yaml_file:
+            data = yaml_loader().load(yaml_file)
+            if 'labels' in data:
+                for index, env in enumerate(data['labels'], start=0):
+                    if env['name'] == label_name:
+                        print("Updating {0} label {1} with value {2}".format(filename, label_name,
+                                                                                    label_value))
+                        if 'value' in data['labels'][index]: # Do not update if no value already defined
+                            data['labels'][index]['value'] = label_value
+
+        with open(filename, 'w') as yaml_file:
+            yaml_loader().dump(data, yaml_file)
+
+    except TypeError:
+        raise
 
 def ignore_maven_self_signed_certificate_in_setup_maven():
     """

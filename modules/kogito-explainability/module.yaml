@@ -5,10 +5,10 @@ version: "2.0.0-snapshot"
 # see build-kogito-apps-components.sh script, responsible for build it.
 # called by the Makefile before builds
 artifacts:
-- path: /tmp/build/explainability-service-rest/explainability-service-rest-quarkus-app.zip
-  name: explainability-service-rest-quarkus-app.zip
-- path: /tmp/build/explainability-service-messaging/explainability-service-messaging-quarkus-app.zip
-  name: explainability-service-messaging-quarkus-app.zip
+  - path: /tmp/build/explainability-service-rest/explainability-service-rest-quarkus-app.zip
+    name: explainability-service-rest-quarkus-app.zip
+  - path: /tmp/build/explainability-service-messaging/explainability-service-messaging-quarkus-app.zip
+    name: explainability-service-messaging-quarkus-app.zip
 
 execute:
   - script: configure

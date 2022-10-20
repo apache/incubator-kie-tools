@@ -4,16 +4,16 @@ name: "quay.io/kiegroup/kogito-trusty-infinispan"
 description: "Runtime image for Kogito Trusty Service for Infinispan persistence provider"
 
 labels:
-- name: "maintainer"
-  value: "kogito <bsig-cloud@redhat.com>"
-- name: "io.k8s.description"
-  value: "Runtime image for Kogito Trusty Service for Infinispan persistence provider"
-- name: "io.k8s.display-name"
-  value: "Kogito Trusty Service - Infinispan"
-- name: "io.openshift.tags"
-  value: "kogito,trusty,trusty-infinispan"
-- name: "io.openshift.expose-services"
-  value: "8080:http"
+  - name: "maintainer"
+    value: "kogito <bsig-cloud@redhat.com>"
+  - name: "io.k8s.description"
+    value: "Runtime image for Kogito Trusty Service for Infinispan persistence provider"
+  - name: "io.k8s.display-name"
+    value: "Kogito Trusty Service - Infinispan"
+  - name: "io.openshift.tags"
+    value: "kogito,trusty,trusty-infinispan"
+  - name: "io.openshift.expose-services"
+    value: "8080:http"
 
 envs:
   - name: "SCRIPT_DEBUG"
@@ -39,20 +39,20 @@ envs:
     description: "Sets SASL mechanism used by authentication"
 
 ports:
-- value: 8080
+  - value: 8080
 
 modules:
   install:
-  - name: org.kie.kogito.image.dependencies
-  - name: org.kie.kogito.system.user
-  - name: org.kie.kogito.logging
-  - name: org.kie.kogito.openjdk
-    version: "11-headless"
-  - name: org.kie.kogito.dynamic.resources
-  - name: org.kie.kogito.launch.scripts
-  - name: org.kie.kogito.trusty.infinispan
-  - name: org.kie.kogito.trusty.common
-  - name: org.kie.kogito.security.custom.truststores
+    - name: org.kie.kogito.image.dependencies
+    - name: org.kie.kogito.system.user
+    - name: org.kie.kogito.logging
+    - name: org.kie.kogito.openjdk
+      version: "11-headless"
+    - name: org.kie.kogito.dynamic.resources
+    - name: org.kie.kogito.launch.scripts
+    - name: org.kie.kogito.trusty.infinispan
+    - name: org.kie.kogito.trusty.common
+    - name: org.kie.kogito.security.custom.truststores
 
 run:
   workdir: "/home/kogito"

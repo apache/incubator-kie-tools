@@ -5,7 +5,7 @@ description: "Adds the capability of configuring a custom Java Truststore to rep
 
 envs:
   - name: "CUSTOM_TRUSTORE"
-    description: ^ Custom JVM Truststore certificate (JKS format) that will replace the original cacerts file when executing the JVM process within the image. 
+    description: ^ Custom JVM Truststore certificate (JKS format) that will replace the original cacerts file when executing the JVM process within the image.
     example: "my-own-cacerts.jks"
   - name: "CUSTOM_TRUSTSTORE_PASSWORD"
     description: ^ Password to for the custom JKS Truststore certificate. Ideally defined on containers platforms using Secrets.
