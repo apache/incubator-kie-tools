@@ -238,8 +238,10 @@ public class Marshaller {
                         .filter(edge -> edge.getTargetNode() == null)
                         .collect(Collectors.toList());
                 for (Edge e : invalidEdges) {
-                    getContext().addMessage(new Message(MessageCode.INVALID_TARGET_NAME,
-                                                        ((State) ((View) e.getSourceNode().getContent()).getDefinition()).name));
+                    if (((View) e.getSourceNode().getContent()).getDefinition() instanceof State) {
+                        getContext().addMessage(new Message(MessageCode.INVALID_TARGET_NAME,
+                                                            ((State) ((View) e.getSourceNode().getContent()).getDefinition()).name));
+                    }
                 }
                 node.getOutEdges().clear();
                 node.getOutEdges().addAll(edges);

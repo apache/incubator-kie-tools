@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
 import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.Start;
+import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 
 public class BuilderContext {
@@ -109,6 +111,27 @@ public class BuilderContext {
             storageCommands.addCommand(new AddChildNodeCommand(parentNode, node, null));
         }
         return node;
+    }
+
+    public boolean isStateAlreadyExist(String name) {
+        int amountOfNodes = storageCommands.size();
+        for (int i = 0; i < amountOfNodes; i++) {
+            Command c = storageCommands.get(i);
+            if (c instanceof AddChildNodeCommand) {
+                AddChildNodeCommand addChildNodeCommand = (AddChildNodeCommand) c;
+                if (addChildNodeCommand.getCandidate().getContent() instanceof View) {
+                    Object d = ((View) addChildNodeCommand.getCandidate().getContent()).getDefinition();
+                    if (d instanceof State) {
+                        State s = (State) d;
+                        if (s.getName().equals(name)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     @SuppressWarnings("all")
