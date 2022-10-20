@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ButtonVariant } from "@patternfly/react-core";
+import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
