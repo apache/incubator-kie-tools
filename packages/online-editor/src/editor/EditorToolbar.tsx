@@ -568,8 +568,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       // Redirect to import workspace
       navigationBlockersBypass.execute(() => {
         history.push({
-          pathname: routes.importModel.path({}),
-          search: routes.importModel.queryString({ url: gist.data.html_url }),
+          pathname: routes.import.path({}),
+          search: routes.import.queryString({ url: gist.data.html_url }),
         });
       });
     } catch (err) {
@@ -586,7 +586,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.workspaceFile.workspaceId,
     navigationBlockersBypass,
     history,
-    routes.importModel,
+    routes.import,
     errorAlert,
   ]);
 
@@ -1055,10 +1055,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         });
 
         history.push({
-          pathname: routes.importModel.path({}),
-          search: routes.importModel.queryString({
+          pathname: routes.import.path({}),
+          search: routes.import.queryString({
             url: `${workspacePromise.data.descriptor.origin.url}`,
             branch: newBranchName,
+            // TODO: tiago Include authSource. Take from workspace? How to decide?
           }),
         });
       } finally {

@@ -16,8 +16,14 @@
 
 import { matchPath } from "react-router";
 import { extname } from "path";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useWorkspaces } from "../WorkspacesContext";
+import { useSettings } from "../../settings/SettingsContext";
+import { PromiseStateStatus, usePromiseState } from "./PromiseState";
+import { useCancelableEffect } from "../../reactExt/Hooks";
+import { GitServerRef } from "../worker/api/GitServerRef";
+import { AuthSource, AuthSourceKeys } from "../../authSources/AuthSourceHooks";
 
 export enum UrlType {
   //git
@@ -258,4 +264,114 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
     return { type: UrlType.UNKNOWN, url };
   }, [editorEnvelopeLocator, urlString, allowedUrlTypes]);
+}
+
+export function useEnhancedImportableUrl(url: string | undefined, authSource: AuthSource) {
+  const importableUrl = useImportableUrl(url);
+
+  const { defaultBranch, gitRefsPromise, defaultRef } = useGitRefs(
+    isPotentiallyGit(importableUrl.type) ? (importableUrl as { url: URL }).url : undefined,
+    authSource
+  );
+
+  const potentialSelectedBranch = useMemo(() => {
+    if (isPotentiallyGit(importableUrl.type)) {
+      return (importableUrl as any).branch ?? defaultBranch;
+    } else {
+      return undefined;
+    }
+  }, [defaultBranch, importableUrl]);
+
+  const selectedBranch = useMemo(() => {
+    if (!potentialSelectedBranch) {
+      return undefined;
+    }
+
+    const potentialSelectedBranchExists = gitRefsPromise.data?.some(
+      ({ ref }) => ref === `refs/heads/${potentialSelectedBranch}`
+    );
+
+    if (potentialSelectedBranchExists) {
+      return potentialSelectedBranch;
+    } else {
+      return undefined;
+    }
+  }, [potentialSelectedBranch, gitRefsPromise.data]);
+
+  const enhancedImportableUrl: ImportableUrl = useMemo(() => {
+    if (importableUrl.type === UrlType.INVALID || gitRefsPromise.status === PromiseStateStatus.PENDING) {
+      return importableUrl;
+    }
+
+    if (!isPotentiallyGit(importableUrl.type)) {
+      return importableUrl;
+    }
+
+    if (defaultBranch) {
+      if (selectedBranch) {
+        return importableUrl;
+      } else {
+        return {
+          type: UrlType.INVALID,
+          url: importableUrl.url.toString(),
+          error: `Selected branch '${potentialSelectedBranch}' does not exist.`,
+        };
+      }
+    }
+
+    return {
+      type: UrlType.INVALID,
+      url: importableUrl.url.toString(),
+      error: `Can't determine Git refs for '${importableUrl.url.toString()}'`,
+    };
+  }, [importableUrl, gitRefsPromise.status, defaultBranch, selectedBranch, potentialSelectedBranch]);
+
+  return { importableUrl: enhancedImportableUrl, defaultBranch, gitRefsPromise, selectedBranch, defaultRef };
+}
+
+export function useGitRefs(url: URL | undefined, authSource: AuthSource) {
+  const workspaces = useWorkspaces();
+  const settings = useSettings();
+  const [gitRefsPromise, setGitRefsPromise] = usePromiseState<GitServerRef[]>();
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!url) {
+          setGitRefsPromise({ error: "Can't determine Git refs without URL." });
+          return;
+        }
+        setGitRefsPromise({ loading: true });
+        workspaces
+          .getGitServerRefs({
+            url: url.toString(),
+            authInfo:
+              authSource === AuthSourceKeys.GITHUB && settings.github.user && settings.github.token
+                ? { username: settings.github.user.login, password: settings.github.token }
+                : undefined,
+          })
+          .then((refs) => {
+            if (canceled.get()) {
+              return;
+            }
+            setGitRefsPromise({ data: refs });
+          })
+          .catch((e) => {
+            if (canceled.get()) {
+              return;
+            }
+            console.log(e);
+            setGitRefsPromise({ error: e });
+          });
+      },
+      [url, setGitRefsPromise, workspaces, authSource, settings.github.user, settings.github.token]
+    )
+  );
+
+  const defaultRef = useMemo(
+    () => gitRefsPromise.data && gitRefsPromise.data.filter((f) => f.ref === "HEAD").pop()?.target,
+    [gitRefsPromise]
+  );
+
+  return { gitRefsPromise, defaultBranch: defaultRef?.replace("refs/heads/", ""), defaultRef };
 }

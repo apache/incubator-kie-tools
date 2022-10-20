@@ -30,11 +30,18 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
 import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
-import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import {
+  isPotentiallyGit,
+  isSingleFile,
+  UrlType,
+  useEnhancedImportableUrl,
+  useImportableUrl,
+} from "../hooks/ImportableUrlHooks";
 import { useGitHubAuthInfo } from "../../github/Hooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { LocalFile } from "../worker/api/LocalFile";
 import { encoder } from "../encoderdecoder/EncoderDecoder";
+import { AuthSourceKeys } from "../../authSources/AuthSourceHooks";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -46,6 +53,8 @@ export function NewWorkspaceFromUrlPage() {
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
+  const queryParamAuthSource = useQueryParam(QueryParams.AUTH_SOURCE);
+  const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
   const importGitWorkspace: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -106,14 +115,15 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   const importableUrl = useImportableUrl(queryParamUrl);
+  const enhancedImportableUrl = useEnhancedImportableUrl(queryParamUrl, queryParamAuthSource ?? AuthSourceKeys.NONE);
 
   useEffect(() => {
     async function run() {
-      const singleFile = [UrlType.FILE, UrlType.GIST_DOT_GITHUB_DOT_COM_FILE, UrlType.GITHUB_DOT_COM_FILE].includes(
-        importableUrl.type
-      );
+      const singleFile = isSingleFile(importableUrl.type);
+
+      // Gist repositories have special treatment.
       const shouldAttemptImportingAsGitRepository =
-        !singleFile && importableUrl.type !== UrlType.GIST_DOT_GITHUB_DOT_COM;
+        isPotentiallyGit(importableUrl.type) && importableUrl.type !== UrlType.GIST_DOT_GITHUB_DOT_COM;
 
       if (shouldAttemptImportingAsGitRepository) {
         // try to import the URL as a git repository first

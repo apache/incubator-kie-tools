@@ -458,8 +458,8 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
           </Link>
           <Link
             to={{
-              pathname: routes.importModel.path({}),
-              search: routes.importModel.queryString({
+              pathname: routes.import.path({}),
+              search: routes.import.queryString({
                 url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
                   type: props.extension,
                 })}`,

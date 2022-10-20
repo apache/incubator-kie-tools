@@ -72,7 +72,7 @@ function RoutesSwitch() {
       <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
       </Route>
-      <Route path={routes.importModel.path({})}>
+      <Route path={routes.import.path({})}>
         <NewWorkspaceFromUrlPage />
       </Route>
       <Route
