@@ -23,6 +23,7 @@ import {
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { TextDocument } from "vscode-json-languageservice";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
+import { getNodePath } from ".";
 import { SwfLanguageServiceCommandExecution } from "../api";
 import {
   eventCompletion,
@@ -441,8 +442,8 @@ export const SwfLanguageServiceCodeCompletion = {
   },
 
   getTransitionCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
-    const stateNode = nodeUpUntilType(args.currentNode, "object");
-    const currentStateName = stateNode ? findNodeAtLocation(stateNode, ["name"])?.value || "" : "";
+    const statePath = getNodePath(args.currentNode).slice(0, 2);
+    const currentStateName = findNodeAtLocation(args.rootNode, [...statePath, "name"])?.value || "";
     const states = swfModelQueries
       .getStates(args.rootNode)
       .filter((s) => s.name !== currentStateName) as Specification.States;

@@ -677,13 +677,14 @@ describe("SWF LS JSON", () => {
     });
 
     describe("transition completion", () => {
-      test.each([
-        ["not in quotes / without same level content after", ` 🎯`],
-        ["not in quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
-        ["inside double quotes / without same level content after", ` 🎯`],
-        ["inside double quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
-      ])("%s", async (_description, nodeValue) => {
-        const content = `{
+      describe("state transition completion", () => {
+        test.each([
+          ["not in quotes / without same level content after", ` 🎯`],
+          ["not in quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+          ["inside double quotes / without same level content after", ` 🎯`],
+          ["inside double quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+        ])("%s", async (_description, nodeValue) => {
+          const content = `{
     "states": [ 
       {
         "name": "Inject Hello World",
@@ -694,10 +695,57 @@ describe("SWF LS JSON", () => {
       }
     ]
   }` as ContentWithCursor;
-        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems.length).toMatchSnapshot();
-        expect(completionItems).toMatchSnapshot();
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
+      });
+
+      describe("dataConditions transition completion", () => {
+        test("simple case", async () => {
+          const content = `{
+    "states": [ 
+      {
+        "name": "Inject Hello World",
+        "dataConditions": [
+          {
+            "transition": 🎯
+          }
+        ]
+      },
+      {
+        "name": "Inject Mantra"
+      }
+    ]
+  }`;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
+      });
+
+      describe("defaultCondition transition completion", () => {
+        test("simple case", async () => {
+          const content = `{
+    "states": [ 
+      {
+        "name": "Inject Hello World",
+        "defaultCondition": {
+          "transition": 🎯
+        }
+      },
+      {
+        "name": "Inject Mantra"
+      }
+    ]
+  }` as ContentWithCursor;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
       });
     });
 

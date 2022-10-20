@@ -2559,9 +2559,65 @@ exports[`SWF LS YAML code completion states completion empty completion items 1`
 
 exports[`SWF LS YAML code completion states completion empty completion items 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion transition completion inside double quotes / with same level content after 1`] = `1`;
+exports[`SWF LS YAML code completion transition completion dataConditions transition completion simple case 1`] = `1`;
 
-exports[`SWF LS YAML code completion transition completion inside double quotes / with same level content after 2`] = `
+exports[`SWF LS YAML code completion transition completion dataConditions transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 3,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 3,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion transition completion defaultCondition transition completion simple case 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion defaultCondition transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "Inject Mantra",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "Inject Mantra",
+    "sortText": "100_Inject Mantra",
+    "textEdit": Object {
+      "newText": "Inject Mantra",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 3,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 3,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML code completion transition completion state transition completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS YAML code completion transition completion state transition completion inside double quotes / with same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -2587,9 +2643,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion transition completion inside double quotes / without same level content after 1`] = `1`;
+exports[`SWF LS YAML code completion transition completion state transition completion inside double quotes / without same level content after 1`] = `1`;
 
-exports[`SWF LS YAML code completion transition completion inside double quotes / without same level content after 2`] = `
+exports[`SWF LS YAML code completion transition completion state transition completion inside double quotes / without same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -2615,9 +2671,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion transition completion inside single quotes / without same level content after 1`] = `1`;
+exports[`SWF LS YAML code completion transition completion state transition completion inside single quotes / without same level content after 1`] = `1`;
 
-exports[`SWF LS YAML code completion transition completion inside single quotes / without same level content after 2`] = `
+exports[`SWF LS YAML code completion transition completion state transition completion inside single quotes / without same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -2643,9 +2699,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion transition completion not in quotes / with same level content after 1`] = `1`;
+exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / with same level content after 1`] = `1`;
 
-exports[`SWF LS YAML code completion transition completion not in quotes / with same level content after 2`] = `
+exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / with same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -2671,9 +2727,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion transition completion not in quotes / without same level content after 1`] = `1`;
+exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / without same level content after 1`] = `1`;
 
-exports[`SWF LS YAML code completion transition completion not in quotes / without same level content after 2`] = `
+exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / without same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -2699,9 +2755,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion transition completion not in quotes / without space after property name 1`] = `0`;
+exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / without space after property name 1`] = `0`;
 
-exports[`SWF LS YAML code completion transition completion not in quotes / without space after property name 2`] = `Array []`;
+exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / without space after property name 2`] = `Array []`;
 
 exports[`SWF LS YAML parsing content parsing content with empty function array 1`] = `
 Object {

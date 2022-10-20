@@ -298,6 +298,8 @@ const completions = new Map<
   ],
   [["states", "*", "onEvents", "*", "eventRefs", "*"], SwfLanguageServiceCodeCompletion.getEventRefsCompletions],
   [["states", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
+  [["states", "*", "dataConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
+  [["states", "*", "defaultCondition", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
 ]);
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
@@ -306,6 +308,10 @@ export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNod
 
 export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {
   return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLsNode;
+}
+
+export function getNodePath(node: SwfLsNode): SwfJsonPath {
+  return jsonc.getNodePath(node as jsonc.Node);
 }
 
 /**

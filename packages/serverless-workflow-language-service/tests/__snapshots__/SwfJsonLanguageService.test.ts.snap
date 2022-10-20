@@ -1692,9 +1692,65 @@ exports[`SWF LS JSON code completion states completion pointing inside an object
 
 exports[`SWF LS JSON code completion states completion pointing inside an object of the array 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion transition completion inside double quotes / with same level content after 1`] = `1`;
+exports[`SWF LS JSON code completion transition completion dataConditions transition completion simple case 1`] = `1`;
 
-exports[`SWF LS JSON code completion transition completion inside double quotes / with same level content after 2`] = `
+exports[`SWF LS JSON code completion transition completion dataConditions transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 26,
+          "line": 6,
+        },
+        "start": Object {
+          "character": 26,
+          "line": 6,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion defaultCondition transition completion simple case 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion defaultCondition transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 24,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 24,
+          "line": 5,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / with same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -1720,9 +1776,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion transition completion inside double quotes / without same level content after 1`] = `1`;
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / without same level content after 1`] = `1`;
 
-exports[`SWF LS JSON code completion transition completion inside double quotes / without same level content after 2`] = `
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / without same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -1748,9 +1804,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion transition completion not in quotes / with same level content after 1`] = `1`;
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / with same level content after 1`] = `1`;
 
-exports[`SWF LS JSON code completion transition completion not in quotes / with same level content after 2`] = `
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / with same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
@@ -1776,9 +1832,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion transition completion not in quotes / without same level content after 1`] = `1`;
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / without same level content after 1`] = `1`;
 
-exports[`SWF LS JSON code completion transition completion not in quotes / without same level content after 2`] = `
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / without same level content after 2`] = `
 Array [
   Object {
     "detail": "\\"Inject Mantra\\"",
