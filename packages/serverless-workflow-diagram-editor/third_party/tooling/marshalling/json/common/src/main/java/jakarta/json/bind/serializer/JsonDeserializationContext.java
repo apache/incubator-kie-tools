@@ -23,7 +23,6 @@ import jakarta.json.Json;
 import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonParserImpl;
 import jakarta.json.stream.gwt.JsonObjectImpl;
-
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.GwtIncompatible;
 
 public class JsonDeserializationContext implements DeserializationContext {

@@ -21,7 +21,6 @@ import java.util.List;
 import jakarta.json.JsonException;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
-
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.CharacterJsonDeserializer;
 
 public class PrimitiveCharacterArrayJsonDeserializer extends AbstractArrayJsonDeserializer<char[]> {

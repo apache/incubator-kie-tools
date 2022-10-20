@@ -23,7 +23,6 @@ import java.util.TreeSet;
 import jakarta.json.JsonException;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
-
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 
 public class SortedSetDeserializer<T> extends CollectionDeserializer<Set<T>, T> {

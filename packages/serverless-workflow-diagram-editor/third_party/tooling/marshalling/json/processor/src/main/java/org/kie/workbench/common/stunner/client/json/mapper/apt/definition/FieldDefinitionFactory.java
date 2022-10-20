@@ -27,7 +27,6 @@ import com.google.auto.common.MoreTypes;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeInfo;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
-
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.exception.GenerationException;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.utils.TypeUtils;

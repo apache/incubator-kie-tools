@@ -19,7 +19,6 @@ package jakarta.json.stream;
 import java.math.BigDecimal;
 
 import jakarta.json.JsonObject;
-
 import jsinterop.base.Js;
 
 public class JsonParserImpl implements JsonParser {

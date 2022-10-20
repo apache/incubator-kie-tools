@@ -17,7 +17,6 @@
 package jakarta.json.stream;
 
 import jakarta.json.bind.serializer.DeserializationContext;
-
 import jsinterop.annotations.JsFunction;
 
 @JsFunction

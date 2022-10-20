@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
-
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializer;
 
 public class BoxedTypeCollectionJsonSerializer<T> extends JsonSerializer<Collection<T>> {

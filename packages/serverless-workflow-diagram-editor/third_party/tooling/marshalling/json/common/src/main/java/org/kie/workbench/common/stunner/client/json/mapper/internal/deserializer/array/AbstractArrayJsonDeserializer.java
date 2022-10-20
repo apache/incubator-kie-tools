@@ -22,7 +22,6 @@ import java.util.List;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
-
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 
 public abstract class AbstractArrayJsonDeserializer<T> extends JsonbDeserializer<T> {

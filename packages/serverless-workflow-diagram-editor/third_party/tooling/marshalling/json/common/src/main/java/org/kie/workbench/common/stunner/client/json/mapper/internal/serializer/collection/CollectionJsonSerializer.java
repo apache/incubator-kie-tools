@@ -23,7 +23,6 @@ import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.json.stream.JsonGeneratorDecorator;
-
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializerAdapter;
 

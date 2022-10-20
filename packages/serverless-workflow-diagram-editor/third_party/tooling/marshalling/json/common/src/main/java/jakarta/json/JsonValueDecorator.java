@@ -21,7 +21,6 @@ import java.math.BigInteger;
 
 import elemental2.core.JsBoolean;
 import elemental2.core.JsNumber;
-
 import jakarta.json.bind.JsonbException;
 import jakarta.json.stream.gwt.JsonObjectImpl;
 import jakarta.json.stream.gwt.JsonValueImpl;

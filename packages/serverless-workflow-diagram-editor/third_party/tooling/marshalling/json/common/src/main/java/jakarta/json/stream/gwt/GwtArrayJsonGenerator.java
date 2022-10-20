@@ -21,7 +21,6 @@ import java.math.BigInteger;
 
 import elemental2.core.JsArray;
 import elemental2.core.JsNumber;
-
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;

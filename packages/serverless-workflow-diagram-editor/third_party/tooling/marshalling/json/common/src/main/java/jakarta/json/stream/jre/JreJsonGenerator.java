@@ -22,7 +22,6 @@ import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonArrayGenerator;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.json.stream.JsonGeneratorDecorator;
-
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.GwtIncompatible;
 
 public class JreJsonGenerator extends JsonGeneratorDecorator {
