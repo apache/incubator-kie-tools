@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesWorkerApiImpl";
+import { createWorkspaceServices } from "@kie-tools-core/workspaces-git-fs/dist/worker/createWorkspaceServices";
 import { setupWorkerConnection } from "@kie-tools-core/workspaces-git-fs/dist/worker/setupWorkerConnection";
+import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesWorkerApiImpl";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
-import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { EnvVars } from "../../env/hooks/EnvContext";
+import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
 
-async function corsProxyUrl() {
+async function corsProxyUrl(): Promise<string> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvVars;
   return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
 
 const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
+const workspaceServices = createWorkspaceServices({ corsProxyUrl: corsProxyUrl() });
+
+// shared worker connection
 
 declare let onconnect: any;
 // eslint-disable-next-line prefer-const
 onconnect = async (e: MessageEvent) => {
-  console.log(`Connected to Workspaces Shared Worker`);
+  console.log("Connected to Workspaces Shared Worker");
 
   setupWorkerConnection({
+    fsFlushManager: workspaceServices.fsFlushManager,
     apiImpl: new WorkspacesWorkerApiImpl({
-      corsProxyUrl: await corsProxyUrl(),
-      gitDefaultUser: {
-        name: "KIE Sandbox",
-        email: "",
-      },
+      appName: "KIE Sandbox",
+      services: workspaceServices,
       customCallbacks: {
-        isModel: (path) => editorEnvelopeLocator.hasMappingFor(path),
         isEditable: (path) => editorEnvelopeLocator.hasMappingFor(path),
+        isModel: (path) => editorEnvelopeLocator.hasMappingFor(path),
       },
     }),
     port: e.ports[0],

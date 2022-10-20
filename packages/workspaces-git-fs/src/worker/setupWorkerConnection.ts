@@ -15,11 +15,16 @@
  */
 
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
+import { FsFlushManager } from "../services/FsFlushManager";
 import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import { WorkspacesWorkerChannelApi } from "./api/WorkspacesWorkerChannelApi";
 import { WorkspacesWorkerApiImpl } from "./WorkspacesWorkerApiImpl";
 
-export function setupWorkerConnection(args: { apiImpl: WorkspacesWorkerApiImpl; port: MessagePort }) {
+export function setupWorkerConnection(args: {
+  apiImpl: WorkspacesWorkerApiImpl;
+  port: MessagePort;
+  fsFlushManager: FsFlushManager;
+}) {
   const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, WorkspacesWorkerChannelApi>((m) =>
     args.port.postMessage(m)
   );
@@ -27,7 +32,7 @@ export function setupWorkerConnection(args: { apiImpl: WorkspacesWorkerApiImpl; 
   args.port.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
   bus.clientApi.notifications.kieToolsWorkspacesWorker_ready.send();
 
-  const flushManagerSubscription = args.apiImpl.flushManager.subscribable.subscribe((flushes) => {
+  const flushManagerSubscription = args.fsFlushManager.subscribable.subscribe((flushes) => {
     bus.shared.kieSandboxWorkspacesStorage_flushes.set(flushes);
   });
 
@@ -39,7 +44,7 @@ export function setupWorkerConnection(args: { apiImpl: WorkspacesWorkerApiImpl; 
         // This connection is no longer active, as the corresponding bus did not respond in 200ms. Tear it down.
         console.log("Disconnecting from Workspaces Shared Worker");
         args.port.close();
-        args.apiImpl.flushManager.subscribable.unsubscribe(flushManagerSubscription);
+        args.fsFlushManager.subscribable.unsubscribe(flushManagerSubscription);
         clearInterval(keepalive);
       } else {
         console.debug("Connection is still alive.");

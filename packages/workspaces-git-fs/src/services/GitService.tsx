@@ -69,14 +69,14 @@ export interface RemoteRefArgs {
 }
 
 export class GitService {
-  public constructor(private readonly corsProxy: string) {}
+  public constructor(private readonly corsProxy: Promise<string>) {}
 
   public async clone(args: CloneArgs): Promise<void> {
     console.time("GitService#clone");
     await git.clone({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       url: args.repositoryUrl.href,
       singleBranch: true,
@@ -123,7 +123,7 @@ export class GitService {
     await git.fetch({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       remote: args.remote,
       ref: args.ref,
@@ -182,7 +182,7 @@ export class GitService {
     await git.pull({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       ref: args.ref,
       singleBranch: true,
@@ -197,7 +197,7 @@ export class GitService {
     const serverRefs = await git.listServerRefs({
       http: http,
       url,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       onAuth: () => args.authInfo,
     });
 
@@ -229,7 +229,7 @@ export class GitService {
     await git.push({
       fs: args.fs,
       http: http,
-      corsProxy: this.corsProxy,
+      corsProxy: await this.corsProxy,
       dir: args.dir,
       ref: args.ref,
       remoteRef: args.remoteRef,

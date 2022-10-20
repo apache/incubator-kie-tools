@@ -25,10 +25,14 @@ import { KieIcon } from "./KieIcon";
 import { LATEST_VERSION_COMPATIBLE_WITH_LFS } from "./LatestCompatibleVersion";
 import { APP_NAME } from "../../AppConstants";
 
-const hasNecessaryApis = window["SharedWorker"] && window["BroadcastChannel"];
+const hasNecessaryApis = window["SharedWorker"] && window["BroadcastChannel"] && indexedDB["databases"];
 const isCompatibleBrowser = Bowser.getParser(window.navigator.userAgent).satisfies({
-  chrome: ">4",
+  chrome: ">=4",
   safari: ">=16",
+  // Although enabled here from v29, Firefox does not implement indexedDB.databases().
+  // Thus, Firefox is not supported at the moment (`hasNecessaryApis` is false).
+  // See: https://bugzilla.mozilla.org/show_bug.cgi?id=934640
+  firefox: ">=29",
   mobile: {
     safari: ">=16",
   },
