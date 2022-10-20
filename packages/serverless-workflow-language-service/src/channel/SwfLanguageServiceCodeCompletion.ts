@@ -23,7 +23,7 @@ import {
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { TextDocument } from "vscode-json-languageservice";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
-import { getNodePath } from ".";
+import { getNodePath } from "./SwfLanguageService";
 import { SwfLanguageServiceCommandExecution } from "../api";
 import {
   eventCompletion,

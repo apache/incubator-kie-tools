@@ -754,9 +754,9 @@ describe("SWF LS JSON", () => {
     "states": [ 
       {
         "name": "Inject Hello World",
-        "eventConditions": {
+        "eventConditions": [{
           "transition": 🎯
-        }
+        }]
       },
       {
         "name": "Inject Mantra"

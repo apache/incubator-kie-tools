@@ -1116,7 +1116,7 @@ states:
           const content = `states:
 - name: Inject Hello World
   eventConditions:
-    transition: 🎯
+  - transition: 🎯
 - name: Inject Mantra` as ContentWithCursor;
           const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
