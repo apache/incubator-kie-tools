@@ -371,7 +371,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
-    return await this.createWorkspace({
+    return this.createWorkspace({
       preferredName: new URL(args.origin.url).pathname.substring(1), // Remove slash
       origin: args.origin,
       storeFiles: async (fs, schema, workspace) => {
@@ -438,7 +438,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         fs,
         dir: workspaceRootDirPath,
         targetBranch: descriptor.origin.branch,
-        message: "Changes from KIE Sandbox",
+        message: `Changes from ${this.args.gitDefaultUser}`,
         author: {
           name: args.gitConfig?.name ?? this.args.gitDefaultUser.name,
           email: args.gitConfig?.email ?? this.args.gitDefaultUser.email,
@@ -474,7 +474,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     preferredName?: string;
     gitConfig?: { email: string; name: string };
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
-    return await this.createWorkspace({
+    return this.createWorkspace({
       preferredName: args.preferredName,
       origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
       storeFiles: async (fs, schema, workspace) => {
@@ -535,7 +535,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         await this.gitService.commit({
           fs,
           dir: workspaceRootDirAbsolutePath,
-          message: "Initial commit from KIE Sandbox",
+          message: `Initial commit from ${this.args.gitDefaultUser}`,
           targetBranch: GIT_DEFAULT_BRANCH,
           author: {
             name: args.gitConfig?.name ?? this.args.gitDefaultUser.name,
