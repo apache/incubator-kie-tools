@@ -21,10 +21,10 @@ import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-t
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { YardEditorChannelApi } from "../api";
 import { editor } from "monaco-editor";
+import { YardFile } from "../types";
 
 interface Props {
-  content: string;
-  fileName: string;
+  file: YardFile;
   onContentChange: (content: string) => void;
   channelType: ChannelType;
   setValidationErrors: (errors: editor.IMarker[]) => void;
@@ -32,7 +32,7 @@ interface Props {
 }
 
 const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditorApi | undefined, Props> = (
-  { content, fileName, onContentChange, channelType, isReadOnly, setValidationErrors },
+  { file, onContentChange, channelType, isReadOnly, setValidationErrors },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
@@ -40,9 +40,9 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
 
   const controller: YardTextEditorApi = useMemo<YardTextEditorApi>(() => {
-    if (fileName.endsWith(".yard.json")) {
+    if (file.path.endsWith(".yard.json")) {
       return new YardTextEditorController(
-        content,
+        file.content,
         onContentChange,
         "json",
         editorEnvelopeCtx.operatingSystem,
@@ -50,9 +50,9 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
         setValidationErrors
       );
     }
-    if (fileName.endsWith(".yard.yaml") || fileName.endsWith(".yard.yml")) {
+    if (file.path.endsWith(".yard.yaml") || file.path.endsWith(".yard.yml")) {
       return new YardTextEditorController(
-        content,
+        file.content,
         onContentChange,
         "yaml",
         editorEnvelopeCtx.operatingSystem,
@@ -60,8 +60,8 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
         setValidationErrors
       );
     }
-    throw new Error(`Unsupported extension '${fileName}'`);
-  }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange, isReadOnly, setValidationErrors]);
+    throw new Error(`Unsupported extension '${file.path}'`);
+  }, [editorEnvelopeCtx.operatingSystem, file, onContentChange, isReadOnly, setValidationErrors]);
 
   useEffect(() => {
     controller.forceRedraw();
@@ -89,15 +89,7 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
     // TODO: Add support to YAML
     // initYamlCompletion(commands);
     // initYamlWidgets(commands);
-  }, [
-    content,
-    fileName,
-    channelType,
-    controller,
-    theme,
-    editorEnvelopeCtx.channelApi,
-    editorEnvelopeCtx.operatingSystem,
-  ]);
+  }, [file, channelType, controller, theme, editorEnvelopeCtx.channelApi, editorEnvelopeCtx.operatingSystem]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

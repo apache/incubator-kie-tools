@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-.monaco-editor {
-  padding-left: 4px;
-}
+export type YardFile = {
+  content: string;
+  path: string;
+};
