@@ -5,7 +5,7 @@ plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: kogito-serverless-operator
-repo: github.com/davidesalerno/kogito-serverless-operator
+repo: github.com/kiegroup/kogito-serverless-operator
 resources:
 - api:
     crdVersion: v1
@@ -14,7 +14,7 @@ resources:
   domain: kie.org
   group: sw.kogito
   kind: KogitoServerlessWorkflow
-  path: github.com/davidesalerno/kogito-serverless-operator/api/v08
+  path: github.com/kiegroup/kogito-serverless-operator/api/v08
   version: v08
 - api:
     crdVersion: v1
@@ -23,6 +23,6 @@ resources:
   domain: kie.org
   group: sw.kogito
   kind: KogitoServerlessBuild
-  path: github.com/davidesalerno/kogito-serverless-operator/api/v08
+  path: github.com/kiegroup/kogito-serverless-operator/api/v08
   version: v08
 version: "3"

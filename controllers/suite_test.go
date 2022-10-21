@@ -30,7 +30,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
+	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
 	//+kubebuilder:scaffold:imports
 )
 

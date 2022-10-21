@@ -2,7 +2,7 @@ package converters
 
 import (
 	"context"
-	"github.com/davidesalerno/kogito-serverless-operator/test/utils"
+	"github.com/kiegroup/kogito-serverless-operator/test/utils"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"

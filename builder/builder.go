@@ -17,7 +17,7 @@ package builder
 
 import (
 	"context"
-	"github.com/davidesalerno/kogito-serverless-operator/constants"
+	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/ricardozanini/kogito-builder/api"
 	"github.com/ricardozanini/kogito-builder/builder"
 	"github.com/ricardozanini/kogito-builder/client"
