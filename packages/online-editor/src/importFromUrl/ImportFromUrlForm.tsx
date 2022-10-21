@@ -23,7 +23,7 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
-import { ImportableUrl } from "../hooks/ImportableUrlHooks";
+import { ImportableUrl } from "./ImportableUrlHooks";
 
 export function ImportFromUrlForm(props: {
   defaultBranch?: string;

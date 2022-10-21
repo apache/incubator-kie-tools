@@ -4,6 +4,7 @@ import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 import { useMemo } from "react";
+import { useGitHubAuthInfo } from "../github/Hooks";
 
 // These are temporary placeholders
 export type AuthSource = string;
@@ -77,4 +78,26 @@ export function useAuthSources() {
   }, [settings.github.authStatus, settings.github.user]);
 
   return authSources;
+}
+
+export function useSelectedAuthInfo(authSource: AuthSource | undefined) {
+  const githubAuthInfo = useGitHubAuthInfo();
+
+  // Change this when more auth sources are available.
+  const { selectedAuthInfo, selectedAuthSource } = useMemo(() => {
+    // By default, use GitHub if present.
+    if (!authSource && githubAuthInfo) {
+      return { selectedAuthInfo: githubAuthInfo, selectedAuthSource: AuthSourceKeys.GITHUB };
+    }
+
+    // If GitHub is selected, use it, independent if present or not.
+    if (authSource === AuthSourceKeys.GITHUB) {
+      return { selectedAuthInfo: githubAuthInfo, selectedAuthSource: AuthSourceKeys.GITHUB };
+    }
+
+    // Don't use anything
+    return { selectedAuthInfo: undefined, selectedAuthSource: AuthSourceKeys.NONE };
+  }, [githubAuthInfo, authSource]);
+
+  return { authInfo: selectedAuthInfo, authSource: selectedAuthSource };
 }

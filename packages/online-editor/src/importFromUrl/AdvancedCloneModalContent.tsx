@@ -24,21 +24,21 @@ import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { useImperativeHandle, useState } from "react";
-import { useAuthSources } from "../authSources/AuthSourceHooks";
-import { useEnhancedImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
+import { AuthSourceKeys, useAuthSources } from "../authSources/AuthSourceHooks";
+import { useClonableUrl } from "./ImportableUrlHooks";
 
 export interface AdvancedCloneModalRef {
   open(): void;
 }
 
 export interface AdvancedCloneModalProps {
-  enhancedImportableUrl: ReturnType<typeof useEnhancedImportableUrl>;
+  enhancedImportableUrl: ReturnType<typeof useClonableUrl>;
   validation: { option: ValidatedOptions; helperText?: React.ReactNode; helperTextInvalid?: string };
   onSubmit: (e: React.SyntheticEvent) => void;
   url: string;
   setUrl: React.Dispatch<React.SetStateAction<string>>;
-  authSource: string;
-  setAuthSource: React.Dispatch<React.SetStateAction<string>>;
+  authSource: AuthSourceKeys;
+  setAuthSource: React.Dispatch<React.SetStateAction<AuthSourceKeys>>;
   branch: string;
   setBranch: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -89,7 +89,7 @@ export const AdvancedCloneModal = React.forwardRef<AdvancedCloneModalRef, Advanc
                   isOpen={isAuthSourceSelectorOpen}
                   onToggle={setAuthSourceSelectorOpen}
                   onSelect={(e, value) => {
-                    props.setAuthSource(value as string);
+                    props.setAuthSource(value as AuthSourceKeys);
                     setAuthSourceSelectorOpen(false);
                   }}
                   menuAppendTo={document.body}
@@ -159,7 +159,7 @@ export const AdvancedCloneModal = React.forwardRef<AdvancedCloneModalRef, Advanc
                   menuAppendTo={document.body}
                   maxHeight={"400px"}
                 >
-                  {props.enhancedImportableUrl.gitRefsPromise.data
+                  {props.enhancedImportableUrl.gitRefsPromise.data?.refs
                     ?.filter(({ ref }) => ref.startsWith("refs/heads/"))
                     .map(({ ref }, index) => (
                       <SelectOption key={index} value={ref.replace("refs/heads/", "")}>

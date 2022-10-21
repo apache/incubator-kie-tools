@@ -37,8 +37,8 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
-import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
-import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
+import { ImportFromUrlForm } from "../importFromUrl/ImportFromUrlForm";
+import { UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
 

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import { matchPath } from "react-router";
 import { extname } from "path";
 import { useCallback, useMemo } from "react";
-import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useWorkspaces } from "../WorkspacesContext";
-import { useSettings } from "../../settings/SettingsContext";
-import { PromiseStateStatus, usePromiseState } from "./PromiseState";
-import { useCancelableEffect } from "../../reactExt/Hooks";
-import { GitServerRef } from "../worker/api/GitServerRef";
-import { AuthSource, AuthSourceKeys } from "../../authSources/AuthSourceHooks";
+import { matchPath } from "react-router";
+import { AuthSource, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useCancelableEffect } from "../reactExt/Hooks";
+import { PromiseStateStatus, usePromiseState } from "../workspace/hooks/PromiseState";
+import { GitServerRef } from "../workspace/worker/api/GitServerRef";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 
 export enum UrlType {
   //git
@@ -110,30 +109,33 @@ export type ImportableUrl =
   | {
       type: UrlType.INVALID;
       error: string;
-      url: string;
+      url?: undefined;
     };
 
 export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]): ImportableUrl {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
-  return useMemo(() => {
-    const ifAllowed = (url: ImportableUrl): ImportableUrl => {
+  const ifAllowed = useCallback(
+    (url: ImportableUrl): ImportableUrl => {
       if (allowedUrlTypes && !allowedUrlTypes.includes(url.type) && url.type !== UrlType.INVALID) {
         return { type: UrlType.NOT_SUPPORTED, error: `URL type not allowed (${url.type})`, url: url.url };
       }
 
       return url;
-    };
+    },
+    [allowedUrlTypes]
+  );
 
+  return useMemo(() => {
     if (!urlString) {
-      return { type: UrlType.INVALID, error: "Empty URL", url: "" };
+      return { type: UrlType.INVALID, error: "Empty URL" };
     }
 
     let url: URL;
     try {
       url = new URL(urlString);
     } catch (e) {
-      return { type: UrlType.INVALID, error: "Invalid URL", url: urlString };
+      return { type: UrlType.INVALID, error: "Invalid URL" };
     }
 
     if (url.host === "github.com" || url.host === "raw.githubusercontent.com") {
@@ -263,115 +265,117 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     return { type: UrlType.UNKNOWN, url };
-  }, [editorEnvelopeLocator, urlString, allowedUrlTypes]);
+  }, [urlString, ifAllowed, editorEnvelopeLocator]);
 }
 
-export function useEnhancedImportableUrl(url: string | undefined, authSource: AuthSource) {
+export function useClonableUrl(
+  url: string | undefined,
+  authSource: AuthSource | undefined,
+  branch: string | undefined
+) {
   const importableUrl = useImportableUrl(url);
 
-  const { defaultBranch, gitRefsPromise, defaultRef } = useGitRefs(
-    isPotentiallyGit(importableUrl.type) ? (importableUrl as { url: URL }).url : undefined,
-    authSource
-  );
+  const gitRefsPromise = useGitRefs(isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined, authSource);
 
-  const potentialSelectedBranch = useMemo(() => {
-    if (isPotentiallyGit(importableUrl.type)) {
-      return (importableUrl as any).branch ?? defaultBranch;
-    } else {
-      return undefined;
+  const branchFromUrl = useMemo(() => {
+    return (importableUrl as any).branch ?? gitRefsPromise.data?.defaultBranch;
+  }, [gitRefsPromise.data?.defaultBranch, importableUrl]);
+
+  const selectedBranch = useMemo<string | undefined>(() => {
+    if (branch) {
+      const branchExists = gitRefsPromise.data?.refs.some(({ ref }) => ref === `refs/heads/${branch}`);
+      if (branchExists) {
+        return branch;
+      }
+    } else if (branchFromUrl) {
+      const branchFromUrlExists = gitRefsPromise.data?.refs.some(({ ref }) => ref === `refs/heads/${branchFromUrl}`);
+      if (branchFromUrlExists) {
+        return branchFromUrl;
+      }
     }
-  }, [defaultBranch, importableUrl]);
 
-  const selectedBranch = useMemo(() => {
-    if (!potentialSelectedBranch) {
-      return undefined;
-    }
+    return undefined;
+  }, [branch, branchFromUrl, gitRefsPromise.data]);
 
-    const potentialSelectedBranchExists = gitRefsPromise.data?.some(
-      ({ ref }) => ref === `refs/heads/${potentialSelectedBranch}`
-    );
-
-    if (potentialSelectedBranchExists) {
-      return potentialSelectedBranch;
-    } else {
-      return undefined;
-    }
-  }, [potentialSelectedBranch, gitRefsPromise.data]);
-
-  const enhancedImportableUrl: ImportableUrl = useMemo(() => {
-    if (importableUrl.type === UrlType.INVALID || gitRefsPromise.status === PromiseStateStatus.PENDING) {
+  const clonableUrl: ImportableUrl = useMemo(() => {
+    if (!isPotentiallyGit(importableUrl.type) || gitRefsPromise.status === PromiseStateStatus.PENDING) {
       return importableUrl;
     }
 
-    if (!isPotentiallyGit(importableUrl.type)) {
-      return importableUrl;
-    }
-
-    if (defaultBranch) {
+    if (gitRefsPromise.data?.defaultBranch) {
       if (selectedBranch) {
         return importableUrl;
       } else {
         return {
           type: UrlType.INVALID,
-          url: importableUrl.url.toString(),
-          error: `Selected branch '${potentialSelectedBranch}' does not exist.`,
+          error: `Selected branch '${branch ?? branchFromUrl}' does not exist.`,
         };
       }
     }
 
     return {
       type: UrlType.INVALID,
-      url: importableUrl.url.toString(),
-      error: `Can't determine Git refs for '${importableUrl.url.toString()}'`,
+      error: `Can't determine Git refs for '${importableUrl.url?.toString()}'`,
     };
-  }, [importableUrl, gitRefsPromise.status, defaultBranch, selectedBranch, potentialSelectedBranch]);
+  }, [importableUrl, gitRefsPromise.status, gitRefsPromise.data?.defaultBranch, selectedBranch, branch, branchFromUrl]);
 
-  return { importableUrl: enhancedImportableUrl, defaultBranch, gitRefsPromise, selectedBranch, defaultRef };
+  return { clonableUrl, selectedBranch, gitRefsPromise };
 }
 
-export function useGitRefs(url: URL | undefined, authSource: AuthSource) {
+export function useGitRefs(url: URL | undefined, authSource: AuthSource | undefined) {
   const workspaces = useWorkspaces();
-  const settings = useSettings();
-  const [gitRefsPromise, setGitRefsPromise] = usePromiseState<GitServerRef[]>();
+  const { authInfo } = useSelectedAuthInfo(authSource);
 
+  const gitRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; defaultRef: string }>(
+    useMemo(() => {
+      if (!url) {
+        return { error: "Can't determine Git refs without URL." };
+      }
+      return async () => {
+        const refs = await workspaces.getGitServerRefs({
+          url: url.toString(),
+          authInfo,
+        });
+
+        const defaultRef = refs.filter((f) => f.ref === "HEAD").pop()!.target!;
+
+        const defaultBranch = defaultRef.replace("refs/heads/", "");
+
+        return { refs, defaultBranch, defaultRef };
+      };
+    }, [authInfo, url, workspaces])
+  );
+
+  return gitRefsPromise;
+}
+
+export function useLivePromiseState<T>(promiseDelegate: (() => Promise<T>) | { error: string }) {
+  const [state, setState] = usePromiseState<T>();
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!url) {
-          setGitRefsPromise({ error: "Can't determine Git refs without URL." });
+        if (typeof promiseDelegate !== "function") {
+          setState({ error: promiseDelegate.error });
           return;
         }
-        setGitRefsPromise({ loading: true });
-        workspaces
-          .getGitServerRefs({
-            url: url.toString(),
-            authInfo:
-              authSource === AuthSourceKeys.GITHUB && settings.github.user && settings.github.token
-                ? { username: settings.github.user.login, password: settings.github.token }
-                : undefined,
-          })
+        setState({ loading: true });
+        promiseDelegate()
           .then((refs) => {
             if (canceled.get()) {
               return;
             }
-            setGitRefsPromise({ data: refs });
+            setState({ data: refs });
           })
           .catch((e) => {
             if (canceled.get()) {
               return;
             }
             console.log(e);
-            setGitRefsPromise({ error: e });
+            setState({ error: e });
           });
       },
-      [url, setGitRefsPromise, workspaces, authSource, settings.github.user, settings.github.token]
+      [promiseDelegate, setState]
     )
   );
-
-  const defaultRef = useMemo(
-    () => gitRefsPromise.data && gitRefsPromise.data.filter((f) => f.ref === "HEAD").pop()?.target,
-    [gitRefsPromise]
-  );
-
-  return { gitRefsPromise, defaultBranch: defaultRef?.replace("refs/heads/", ""), defaultRef };
+  return state;
 }

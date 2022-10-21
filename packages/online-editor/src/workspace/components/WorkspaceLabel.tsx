@@ -26,7 +26,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { useMemo } from "react";
-import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import { UrlType, useImportableUrl } from "../../importFromUrl/ImportableUrlHooks";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {

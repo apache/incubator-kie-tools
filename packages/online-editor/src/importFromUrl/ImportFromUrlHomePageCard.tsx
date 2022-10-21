@@ -33,7 +33,7 @@ import { useHistory } from "react-router";
 import { AuthSource, AuthSourceKeys } from "../authSources/AuthSourceHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
-import { isPotentiallyGit, UrlType, useEnhancedImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
+import { isPotentiallyGit, UrlType, useClonableUrl, useImportableUrl } from "./ImportableUrlHooks";
 import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
 import { AdvancedCloneModal, AdvancedCloneModalRef } from "./AdvancedCloneModalContent";
 
@@ -42,35 +42,33 @@ export function ImportFromUrlCard() {
   const history = useHistory();
   const settings = useSettings();
 
-  const [authSource, setAuthSource] = useState<AuthSource>(AuthSourceKeys.NONE);
+  const [authSource, setAuthSource] = useState<AuthSourceKeys>(AuthSourceKeys.NONE);
   const [url, setUrl] = useState("");
   const [branch, setBranch] = useState("");
 
   const advancedCloneModalRef = useRef<AdvancedCloneModalRef>(null);
 
-  const enhancedImportableUrl = useEnhancedImportableUrl(url, authSource);
-  const { importableUrl, selectedBranch, gitRefsPromise } = enhancedImportableUrl;
+  const importableUrl = useImportableUrl(url);
+  const clonableUrlObject = useClonableUrl(url, authSource, branch);
+  const { clonableUrl, selectedBranch, gitRefsPromise } = clonableUrlObject;
 
-  //
-  // FIXME: Tiago There's a loop here.
-  //
-  // // AUTH SOURCE FROM URL (begin)
-  // useEffect(() => {
-  //   const urlType = importableUrl.type;
-  //   if (urlType === UrlType.GITHUB_DOT_COM || urlType === UrlType.GIST_DOT_GITHUB_DOT_COM) {
-  //     if (settings.github.authStatus === AuthStatus.SIGNED_IN) {
-  //       setAuthSource(AuthSourceKeys.GITHUB);
-  //       return;
-  //     }
-  //   }
+  // AUTH SOURCE FROM URL (begin)
+  useEffect(() => {
+    const urlType = importableUrl.type;
+    if (urlType === UrlType.GITHUB_DOT_COM || urlType === UrlType.GIST_DOT_GITHUB_DOT_COM) {
+      if (settings.github.authStatus === AuthStatus.SIGNED_IN) {
+        setAuthSource(AuthSourceKeys.GITHUB);
+        return;
+      }
+    }
 
-  //   setAuthSource(AuthSourceKeys.NONE);
-  // }, [importableUrl.type, settings.github.authStatus]);
-  // // AUTH SOURCE FROM URL (end)
+    setAuthSource(AuthSourceKeys.NONE);
+  }, [importableUrl, settings.github.authStatus]);
+  // AUTH SOURCE FROM URL (end)
 
   // BRANCH FROM URL (begin)
   useEffect(() => {
-    setBranch(selectedBranch);
+    setBranch(selectedBranch ?? "");
   }, [selectedBranch]);
   // BRANCH FROM URL (end)
 
@@ -93,10 +91,10 @@ export function ImportFromUrlCard() {
       };
     }
 
-    if (importableUrl.error) {
+    if (clonableUrl.error) {
       return {
         option: ValidatedOptions.error,
-        helperTextInvalid: importableUrl.error,
+        helperTextInvalid: clonableUrl.error,
       };
     }
 
@@ -139,7 +137,7 @@ export function ImportFromUrlCard() {
         </FormHelperText>
       ),
     };
-  }, [url, gitRefsPromise.status, importableUrl.error, branch, authSource, settings.github.user?.login]);
+  }, [url, gitRefsPromise.status, clonableUrl.error, branch, authSource, settings.github.user?.login]);
 
   const isValid = useMemo(() => {
     return validation.option === ValidatedOptions.success;
@@ -163,12 +161,12 @@ export function ImportFromUrlCard() {
   );
 
   const buttonLabel = useMemo(() => {
-    if (isPotentiallyGit(importableUrl.type) && isValid) {
+    if (isPotentiallyGit(importableUrl.type)) {
       return "Clone";
     } else {
       return "Import";
     }
-  }, [importableUrl.type, isValid]);
+  }, [importableUrl]);
 
   return (
     <>
@@ -216,11 +214,21 @@ export function ImportFromUrlCard() {
           >
             {buttonLabel}
           </Button>
+          {isPotentiallyGit(importableUrl.type) && !isValid && gitRefsPromise.status !== PromiseStateStatus.PENDING && (
+            <Button
+              isSmall={true}
+              variant={ButtonVariant.link}
+              style={{ paddingBottom: 0, verticalAlign: "text-top" }}
+              onClick={() => advancedCloneModalRef.current?.open()}
+            >
+              Advanced...
+            </Button>
+          )}
         </CardFooter>
       </Card>
       <AdvancedCloneModal
         ref={advancedCloneModalRef}
-        enhancedImportableUrl={enhancedImportableUrl}
+        enhancedImportableUrl={clonableUrlObject}
         validation={validation}
         onSubmit={onSubmit}
         authSource={authSource}
