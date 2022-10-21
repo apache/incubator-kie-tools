@@ -63,7 +63,7 @@ export const switchStateCompletion: OmitRecursively<Specification.Databasedswitc
 export const injectStateCompletion: OmitRecursively<Specification.Injectstate, "normalize"> = {
   name: genericStateCompletion.name,
   type: "inject",
-  data: [],
+  data: {},
   transition: genericStateCompletion.transition,
   end: false,
 };

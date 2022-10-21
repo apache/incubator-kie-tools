@@ -1846,7 +1846,7 @@ Array [
     "textEdit": Object {
       "newText": "- name: '\${1:Unique State name}'
   type: inject
-  data: []
+  data: {}
   transition: '\${10:Next transition of the workflow}'
   end: false
 ",
@@ -1963,7 +1963,7 @@ Array [
     "textEdit": Object {
       "newText": "- name: '\${1:Unique State name}'
   type: inject
-  data: []
+  data: {}
   transition: '\${10:Next transition of the workflow}'
   end: false
 ",
@@ -2077,7 +2077,7 @@ Array [
     "textEdit": Object {
       "newText": "name: '\${1:Unique State name}'
   type: inject
-  data: []
+  data: {}
   transition: '\${10:Next transition of the workflow}'
   end: false",
       "range": Object {
@@ -2193,7 +2193,7 @@ Array [
     "textEdit": Object {
       "newText": "- name: '\${1:Unique State name}'
   type: inject
-  data: []
+  data: {}
   transition: '\${10:Next transition of the workflow}'
   end: false
 ",
@@ -2307,7 +2307,7 @@ Array [
     "textEdit": Object {
       "newText": "name: '\${1:Unique State name}'
   type: inject
-  data: []
+  data: {}
   transition: '\${10:Next transition of the workflow}'
   end: false",
       "range": Object {
@@ -2424,7 +2424,7 @@ Array [
     "textEdit": Object {
       "newText": "name: '\${1:Unique State name}'
   type: inject
-  data: []
+  data: {}
   transition: '\${10:Next transition of the workflow}'
   end: false",
       "range": Object {
@@ -2537,7 +2537,7 @@ Array [
     "textEdit": Object {
       "newText": "name: '\${1:Unique State name}'
   type: inject
-  data: []
+  data: {}
   transition: '\${10:Next transition of the workflow}'
   end: false",
       "range": Object {
