@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.kogito.core.internal.util.WorkspaceUtil;
@@ -43,7 +44,7 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
             JavaLanguageServerPlugin.logException("Error trying to read workspace tree", e);
         }
 
-        return Optional.of(activatorPath);
+        return Optional.ofNullable(activatorPath);
     }
 
     @Override
@@ -54,8 +55,11 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
         }
 
         JavaLanguageServerPlugin.logInfo("Java file found: " + filePath);
+        long linesThatMatch;
 
-        long linesThatMatch = Files.lines(file).filter(this::containsActivator).count();
+        try (Stream<String> linesStream = Files.lines(file)) {
+            linesThatMatch = linesStream.filter(this::containsActivator).count();
+        }
 
         if (linesThatMatch >= 2) {
             JavaLanguageServerPlugin.logInfo("Activator found: " + filePath);
@@ -66,7 +70,7 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
         }
     }
 
-    protected boolean containsActivator(String line) {
+    private boolean containsActivator(String line) {
         return line.contains(IMPORT_ACTIVATOR) || line.contains(ANNOTATION_ACTIVATOR);
     }
 

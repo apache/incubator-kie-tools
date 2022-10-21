@@ -16,45 +16,46 @@
 
 package org.kogito.core.internal.engine;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kogito.core.internal.util.TestUtil;
-import org.mockito.Mockito;
 
-import java.nio.file.Path;
-import java.util.Optional;
+import java.io.File;
 
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.kogito.core.internal.util.TestUtil.COMMON_RESOURCE_PATH;
 
 class ActivationCheckerTest {
-
-    private ActivationFileVisitor activationFileVisitorMock;
 
     private ActivationChecker activationChecker;
 
     @BeforeEach
     public void setup() {
-        activationFileVisitorMock = Mockito.mock(ActivationFileVisitor.class);
-        this.activationChecker = new ActivationChecker();
+        activationChecker = new ActivationChecker();
     }
 
     @Test
     void getActivatorPathWithoutSpecialChars() {
-        TestUtil.mockWorkspace("src/test/resources/testProject/", () -> activationChecker.check());
-        var activatorUri = activationChecker.getActivatorPath();
-        Assertions.assertNotNull(activatorUri);
-        Assertions.assertTrue(activatorUri.endsWith("Activator.java"));
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "testProject" + File.separator, () -> activationChecker.check());
+
+        assertThat(activationChecker.existActivator()).isTrue();
+        assertThat(activationChecker.getActivatorPath().endsWith("Activator.java")).isTrue();
     }
 
     @Test
     void getActivatorPathWithSpecialChars() {
-        TestUtil.mockWorkspace("src/test/resources/test projéct", () -> activationChecker.check());
-        var activatorUri = activationChecker.getActivatorPath();
-        System.out.println(activatorUri);
-        var path = activatorUri.toUri().toASCIIString();
-        //Assertions.assertTrue(activatorUri.toUri().toASCIIString().contains("test%20proj%C3%A9ct"));
-        Assertions.assertTrue(activatorUri.endsWith("Activator.java"));
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "test projéct" + File.separator, () -> activationChecker.check());
+
+        assertThat(activationChecker.existActivator()).isTrue();
+        assertThat(activationChecker.getActivatorPath().endsWith("MyActivator.java")).isTrue();
     }
 
+    @Test
+    void getActivatorPathWithNoActivator() {
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "noActivatorProject" + File.separator, () -> activationChecker.check());
+
+        assertThat(activationChecker.existActivator()).isFalse();
+        assertThrowsExactly(ActivationCheckerException.class, () -> activationChecker.getActivatorPath());
+    }
 }

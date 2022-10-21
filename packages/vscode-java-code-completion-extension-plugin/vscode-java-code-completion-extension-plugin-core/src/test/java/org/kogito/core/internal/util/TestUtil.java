@@ -18,10 +18,14 @@ package org.kogito.core.internal.util;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import java.io.File;
+
 /**
- * Shared Util classs for Testing purpuses
+ * Shared Util class for Testing purposes
  */
 public class TestUtil {
+
+    public static String COMMON_RESOURCE_PATH = "src" + File.separator + "test" + File.separator + "resources" + File.separator;
 
     public static void mockWorkspace(String workspacePath, Runnable functionToTest) {
         try (MockedStatic<WorkspaceUtil> utilities = Mockito.mockStatic(WorkspaceUtil.class)) {
