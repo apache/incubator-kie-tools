@@ -25,11 +25,16 @@ import { useMemo } from "react";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
-import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
-  const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const workspaceImportableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: props.descriptor?.origin.url?.toString(),
+  });
 
   const gitLabel = useMemo(() => {
     if (props.descriptor?.origin.kind !== WorkspaceKind.GIT) {

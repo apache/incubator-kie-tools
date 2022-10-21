@@ -74,7 +74,6 @@ import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../s
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import {
@@ -93,7 +92,8 @@ import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { WorkspacesSharedWorker } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesSharedWorker";
+import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -147,9 +147,13 @@ export function EditorToolbar(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
-  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
+  const workspaceImportableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: workspacePromise.data?.descriptor.origin.url?.toString(),
+  });
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);

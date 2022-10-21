@@ -38,9 +38,9 @@ import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
-import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { UrlType } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;

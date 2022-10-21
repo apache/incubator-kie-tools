@@ -29,12 +29,13 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -42,6 +43,7 @@ export function NewWorkspaceFromUrlPage() {
   const history = useHistory();
   const githubAuthInfo = useGitHubAuthInfo();
   const settingsDispatch = useSettingsDispatch();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const [importingError, setImportingError] = useState("");
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
@@ -120,7 +122,10 @@ export function NewWorkspaceFromUrlPage() {
     [routes, history, workspaces]
   );
 
-  const importableUrl = useImportableUrl(queryParamUrl);
+  const importableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: queryParamUrl,
+  });
 
   useEffect(() => {
     async function run() {

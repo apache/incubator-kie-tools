@@ -20,8 +20,9 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
-import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
+import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export function ImportFromUrlForm(props: {
   url?: string;
@@ -31,7 +32,12 @@ export function ImportFromUrlForm(props: {
   urlInputRef?: React.RefObject<HTMLInputElement>;
   allowedTypes?: UrlType[];
 }) {
-  const importableUrl = useImportableUrl(props.url, props.allowedTypes);
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const importableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: props.url,
+    allowedUrlTypes: props.allowedTypes,
+  });
 
   const onSubmit = useCallback(
     (e: FormEvent) => {

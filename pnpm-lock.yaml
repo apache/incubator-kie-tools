@@ -5709,6 +5709,7 @@ importers:
       "@types/jest-when": ^2.7.4
       "@types/minimatch": ^3.0.4
       "@types/react": ^17.0.6
+      "@types/react-router": ^5.1.14
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
       "@types/uuid": ^8.3.0
@@ -5719,6 +5720,7 @@ importers:
       jszip: ^3.7.1
       minimatch: ^3.0.4
       react: ^17.0.2
+      react-router: ^5.2.1
       rimraf: ^3.0.2
       ts-jest: ^26.5.6
       typescript: ^4.4.2
@@ -5733,6 +5735,7 @@ importers:
       jszip: 3.7.1
       minimatch: 3.0.5
       react: 17.0.2
+      react-router: 5.2.1_react@17.0.2
       uuid: 8.3.2
     devDependencies:
       "@babel/core": 7.16.12
@@ -5747,6 +5750,7 @@ importers:
       "@types/jest-when": 2.7.4
       "@types/minimatch": 3.0.4
       "@types/react": 17.0.21
+      "@types/react-router": 5.1.14
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
       "@types/uuid": 8.3.0
