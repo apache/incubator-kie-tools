@@ -131,11 +131,11 @@ public class ShapeStateDefaultHandlerTest {
         tested.setBackgroundShape(() -> backgroundShape);
         assertNotNull(onComplete);
         this.onComplete.execute();
-        verify(backgroundShape, times(1)).setShadow(anyString(),
-                                                    anyInt(),
-                                                    anyDouble(),
-                                                    anyDouble());
-        verify(backgroundShape, never()).removeShadow();
+        verify(backgroundShape, never()).setShadow(anyString(),
+                                                   anyInt(),
+                                                   anyDouble(),
+                                                   anyDouble());
+        verify(backgroundShape, times(1)).removeShadow();
     }
 
     @Test
