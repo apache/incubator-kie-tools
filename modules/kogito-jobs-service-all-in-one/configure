@@ -1,0 +1,34 @@
+#!/bin/sh
+set -e
+
+SOURCES_DIR=/tmp/artifacts
+SCRIPT_DIR=$(dirname "${0}")
+ADDED_DIR="${SCRIPT_DIR}"/added
+
+unzip "${SOURCES_DIR}"/jobs-service-inmemory-quarkus-app.zip -d "${KOGITO_HOME}"/bin/ephemeral
+unzip "${SOURCES_DIR}"/jobs-service-infinispan-quarkus-app.zip -d "${KOGITO_HOME}"/bin/infinispan
+unzip "${SOURCES_DIR}"/jobs-service-mongodb-quarkus-app.zip -d "${KOGITO_HOME}"/bin/mongodb
+unzip "${SOURCES_DIR}"/jobs-service-postgresql-quarkus-app.zip -d "${KOGITO_HOME}"/bin/postgresql
+
+
+mkdir "${KOGITO_HOME}"/bin/shared-libs/
+
+mv "${KOGITO_HOME}"/bin/ephemeral/quarkus-app/lib/* "${KOGITO_HOME}"/bin/shared-libs/
+rm -rf "${KOGITO_HOME}"/bin/ephemeral/quarkus-app/lib
+ln -s "${KOGITO_HOME}"/bin/shared-libs "${KOGITO_HOME}"/bin/ephemeral/quarkus-app/lib
+
+cp -r "${KOGITO_HOME}"/bin/infinispan/quarkus-app/lib/* "${KOGITO_HOME}"/bin/shared-libs/
+rm -rf "${KOGITO_HOME}"/bin/infinispan/quarkus-app/lib
+ln -s "${KOGITO_HOME}"/bin/shared-libs "${KOGITO_HOME}"/bin/infinispan/quarkus-app/lib
+
+cp -r "${KOGITO_HOME}"/bin/mongodb/quarkus-app/lib/* "${KOGITO_HOME}"/bin/shared-libs/
+rm -rf "${KOGITO_HOME}"/bin/mongodb/quarkus-app/lib
+ln -s "${KOGITO_HOME}"/bin/shared-libs "${KOGITO_HOME}"/bin/mongodb/quarkus-app/lib
+
+cp -r "${KOGITO_HOME}"/bin/postgresql/quarkus-app/lib/* "${KOGITO_HOME}"/bin/shared-libs/
+rm -rf "${KOGITO_HOME}"/bin/postgresql/quarkus-app/lib
+ln -s "${KOGITO_HOME}"/bin/shared-libs "${KOGITO_HOME}"/bin/postgresql/quarkus-app/lib
+
+
+cp "${ADDED_DIR}"/kogito-app-launch.sh "${KOGITO_HOME}"
+chmod +x-w "${KOGITO_HOME}"/kogito-app-launch.sh

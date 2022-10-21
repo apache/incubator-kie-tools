@@ -1,0 +1,20 @@
+schema_version: 1
+name: org.kie.kogito.jobs.service.allinone
+version: "2.0.0-snapshot"
+
+artifacts:
+  - path: /tmp/build/jobs-service-inmemory-all-in-one/jobs-service-inmemory-quarkus-app.zip
+    name: jobs-service-inmemory-quarkus-app.zip
+  - path: /tmp/build/jobs-service-mongodb-all-in-one/jobs-service-mongodb-quarkus-app.zip
+    name: jobs-service-mongodb-quarkus-app.zip
+  - path: /tmp/build/jobs-service-infinispan-all-in-one/jobs-service-infinispan-quarkus-app.zip
+    name: jobs-service-infinispan-quarkus-app.zip
+  - path: /tmp/build/jobs-service-postgresql-all-in-one/jobs-service-postgresql-quarkus-app.zip
+    name: jobs-service-postgresql-quarkus-app.zip
+
+packages:
+  install:
+    - pam.x86_64
+
+execute:
+  - script: configure

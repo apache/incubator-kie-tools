@@ -14,7 +14,3 @@ packages:
 
 execute:
   - script: configure
-
-modules:
-  install:
-    - name: org.kie.kogito.jobs.service.common

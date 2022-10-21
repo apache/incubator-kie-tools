@@ -408,6 +408,27 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
+      name: kogito-jobs-service-allinone
+      annotations:
+        openshift.io/display-name: All in One Runtime image for Kogito Jobs Service
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: All in One Runtime image for Kogito Jobs Service
+            iconClass: icon-jbpm
+            tags: kogito,jobs-service, all-in-one
+            supports: out-of-box process timers
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-jobs-service-allinone:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
       name: kogito-management-console
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Management Console

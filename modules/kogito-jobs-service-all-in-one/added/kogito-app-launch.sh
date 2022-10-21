@@ -11,6 +11,16 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     printenv
 fi
 
+allowed_jobs_service_flavors=("ephemeral" "mongodb" "infinispan" "postgresql")
+jobs_service_flavor="ephemeral"
+if [[ ! "${allowed_jobs_service_flavors[*]}" =~ ${JOBS_SERVICE_PERSISTENCE,,} ]]; then
+  log_warning "${JOBS_SERVICE_PERSISTENCE,,} is not supported, the allowed flavors are [${allowed_jobs_service_flavors[*]}], defaulting to ${jobs_service_flavor}"
+  unset JOBS_SERVICE_PERSISTENCE
+
+elif [ "x${JOBS_SERVICE_PERSISTENCE}" != "x" ]; then
+  jobs_service_flavor=${JOBS_SERVICE_PERSISTENCE,,}
+fi
+
 # Configuration scripts
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(
@@ -26,4 +36,4 @@ DYNAMIC_RESOURCES_OPTS="$(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/java-default-option
 exec java ${SHOW_JVM_SETTINGS} ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${KOGITO_JOBS_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
     -Dquarkus.http.host=0.0.0.0 \
     -Dquarkus.http.port=8080 \
-    -jar "${KOGITO_HOME}"/bin/postgresql/quarkus-app/quarkus-run.jar
+    -jar "${KOGITO_HOME}"/bin/${jobs_service_flavor}/quarkus-app/quarkus-run.jar

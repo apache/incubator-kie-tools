@@ -34,10 +34,10 @@ SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral", "kogito-data-index-
                               "kogito-data-index-postgresql", "kogito-explainability",
                               "kogito-jit-runner", "kogito-jobs-service-ephemeral",
                               "kogito-jobs-service-infinispan", "kogito-jobs-service-mongodb",
-                              "kogito-jobs-service-postgresql", "kogito-management-console",
-                              "kogito-task-console", "kogito-trusty-infinispan",
-                              "kogito-trusty-postgresql", "kogito-trusty-redis",
-                              "kogito-trusty-ui"}
+                              "kogito-jobs-service-postgresql", "kogito-jobs-service-allinone",
+                              "kogito-management-console", "kogito-task-console",
+                              "kogito-trusty-infinispan", "kogito-trusty-postgresql",
+                              "kogito-trusty-redis", "kogito-trusty-ui"}
 
 PROD_SUPPORTING_SERVICES_IMAGES = {"logic-data-index-ephemeral-rhel8"}
 

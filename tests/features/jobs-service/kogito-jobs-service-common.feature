@@ -2,6 +2,7 @@
 @quay.io/kiegroup/kogito-jobs-service-mongodb
 @quay.io/kiegroup/kogito-jobs-service-ephemeral
 @quay.io/kiegroup/kogito-jobs-service-postgresql
+@quay.io/kiegroup/kogito-jobs-service-allinone
 Feature: Kogito-jobs-service common feature.
 
   Scenario: verify if the events is correctly enabled

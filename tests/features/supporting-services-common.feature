@@ -5,10 +5,6 @@
 @quay.io/kiegroup/kogito-data-index-mongodb
 @quay.io/kiegroup/kogito-data-index-oracle
 @quay.io/kiegroup/kogito-data-index-postgresql
-@quay.io/kiegroup/kogito-jobs-service-ephemeral
-@quay.io/kiegroup/kogito-jobs-service-infinispan
-@quay.io/kiegroup/kogito-jobs-service-mongodb
-@quay.io/kiegroup/kogito-jobs-service-postgresql
 @quay.io/kiegroup/kogito-trusty-infinispan
 @quay.io/kiegroup/kogito-trusty-postgresql
 @quay.io/kiegroup/kogito-trusty-redis
