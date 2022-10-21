@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
+import * as React from "react";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { extname } from "path";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
-import { AuthSource, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
+import { AuthSource, AuthSourceKeys, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
+import { useSettings } from "../settings/SettingsContext";
 import { PromiseStateStatus, usePromiseState } from "../workspace/hooks/PromiseState";
 import { GitServerRef } from "../workspace/worker/api/GitServerRef";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
+import CheckCircleIcon from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import CodeBranchIcon from "@patternfly/react-icons/dist/js/icons/code-branch-icon";
+import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 export enum UrlType {
   //git
@@ -378,4 +388,78 @@ export function useLivePromiseState<T>(promiseDelegate: (() => Promise<T>) | { e
     )
   );
   return state;
+}
+
+export function useImportableUrlValidation(
+  authSource: AuthSourceKeys | undefined,
+  url: string | undefined,
+  branch: string | undefined,
+  clonableUrl: ReturnType<typeof useClonableUrl>,
+  advancedImportModalRef?: React.RefObject<AdvancedImportModalRef>
+) {
+  const settings = useSettings();
+
+  return useMemo(() => {
+    if (!url) {
+      return {
+        option: ValidatedOptions.default,
+        helperText: <FormHelperText isHidden={true} icon={<Spinner size={"sm"} />} />,
+      };
+    }
+
+    if (clonableUrl.gitRefsPromise.status === PromiseStateStatus.PENDING) {
+      return {
+        option: ValidatedOptions.default,
+        helperText: (
+          <FormHelperText isHidden={false} icon={<Spinner size={"sm"} />}>
+            Loading...
+          </FormHelperText>
+        ),
+      };
+    }
+
+    if (clonableUrl.clonableUrl.error) {
+      return {
+        option: ValidatedOptions.error,
+        helperTextInvalid: clonableUrl.clonableUrl.error,
+      };
+    }
+
+    return {
+      option: ValidatedOptions.success,
+      helperText: (
+        <FormHelperText
+          isHidden={false}
+          icon={<CheckCircleIcon style={{ visibility: "hidden", width: 0 }} />}
+          style={branch ? {} : { visibility: "hidden" }}
+        >
+          <>
+            <CodeBranchIcon />
+            &nbsp;&nbsp;
+            {branch}
+            &nbsp;&nbsp;
+            <AuthSourceIcon authSource={authSource} />
+            &nbsp;&nbsp;
+            {authSource === AuthSourceKeys.GITHUB ? settings.github.user?.login ?? "Not logged in" : "Anonymous"}
+            <Button
+              isSmall={true}
+              variant={ButtonVariant.link}
+              style={{ paddingTop: 0, paddingBottom: 0 }}
+              onClick={() => advancedImportModalRef?.current?.open()}
+            >
+              Change...
+            </Button>
+          </>
+        </FormHelperText>
+      ),
+    };
+  }, [
+    url,
+    clonableUrl.gitRefsPromise.status,
+    clonableUrl.clonableUrl.error,
+    branch,
+    authSource,
+    settings.github.user?.login,
+    advancedImportModalRef,
+  ]);
 }

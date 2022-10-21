@@ -22,21 +22,27 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AuthSourceKeys, useAuthSources, useSelectedAuthInfo as useAuthInfo } from "../authSources/AuthSourceHooks";
+import { AuthSourceKeys, useAuthSources, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
-import { useSettingsDispatch } from "../settings/SettingsContext";
+import { AuthStatus, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
 import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
 import { LocalFile } from "../workspace/worker/api/LocalFile";
 import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
-import { isSingleFile, UrlType, useClonableUrl, useImportableUrl } from "./ImportableUrlHooks";
-import { AdvancedCloneModal, AdvancedCloneModalRef } from "./AdvancedCloneModalContent";
-import { useImportableUrlValidation } from "./ImportFromUrlHomePageCard";
+import {
+  isPotentiallyGit,
+  isSingleFile,
+  UrlType,
+  useClonableUrl,
+  useImportableUrl,
+  useImportableUrlValidation,
+} from "./ImportableUrlHooks";
+import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -47,18 +53,89 @@ export function NewWorkspaceFromUrlPage() {
 
   const [importingError, setImportingError] = useState("");
 
+  const queryParams = useQueryParams();
+
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
   const queryParamAuthSource = useQueryParam(QueryParams.AUTH_SOURCE);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
-  const queryParams = useQueryParams();
-
-  const { authInfo, authSource } = useAuthInfo(queryParamAuthSource);
+  const { authInfo, authSource } = useSelectedAuthInfo(queryParamAuthSource);
 
   const importableUrl = useImportableUrl(queryParamUrl);
   const clonableUrlObject = useClonableUrl(queryParamUrl, authSource, queryParamBranch);
   const { clonableUrl, selectedBranch, gitRefsPromise } = clonableUrlObject;
+
+  const setAuthSource = useCallback(
+    (newAuthSource) => {
+      if (!newAuthSource) {
+        history.replace({
+          pathname: routes.import.path({}),
+          search: queryParams.without(QueryParams.AUTH_SOURCE).toString(),
+        });
+        return;
+      }
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams
+          .with(
+            QueryParams.AUTH_SOURCE,
+            typeof newAuthSource === "function" ? newAuthSource(authSource) : newAuthSource
+          )
+          .toString(),
+      });
+    },
+    [authSource, history, queryParams, routes.import]
+  );
+
+  const setUrl = useCallback(
+    (newUrl) => {
+      if (!newUrl) {
+        history.replace({
+          pathname: routes.import.path({}),
+          search: queryParams.without(QueryParams.URL).toString(),
+        });
+        return;
+      }
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams
+          .with(QueryParams.URL, typeof newUrl === "function" ? newUrl(queryParamUrl ?? "") : newUrl)
+          .toString(),
+      });
+    },
+    [history, queryParamUrl, queryParams, routes.import]
+  );
+
+  const setBranch = useCallback(
+    (newBranch) => {
+      if (!newBranch) {
+        history.replace({
+          pathname: routes.import.path({}),
+          search: queryParams.without(QueryParams.BRANCH).toString(),
+        });
+        return;
+      }
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams
+          .with(QueryParams.BRANCH, typeof newBranch === "function" ? newBranch(selectedBranch ?? "") : newBranch)
+          .toString(),
+      });
+    },
+    [history, queryParams, routes.import, selectedBranch]
+  );
+
+  // Startup the page. Only import if those are set.
+  useEffect(() => {
+    if (!selectedBranch) {
+      return;
+    }
+    history.replace({
+      pathname: routes.import.path({}),
+      search: queryParams.with(QueryParams.BRANCH, selectedBranch).with(QueryParams.AUTH_SOURCE, authSource).toString(),
+    });
+  }, [authSource, history, queryParams, routes.import, selectedBranch, setBranch]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -220,7 +297,6 @@ export function NewWorkspaceFromUrlPage() {
     importableUrl,
     authSources,
     queryParamAuthSource,
-
     clonableUrl.type,
     clonableUrl.error,
     gitRefsPromise.data?.defaultBranch,
@@ -235,21 +311,43 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   useEffect(() => {
+    if (!queryParamUrl) {
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
+      });
+    }
+  }, [history, queryParamUrl, queryParams, routes.import]);
+
+  useEffect(() => {
+    if ((!queryParamBranch || !queryParamAuthSource) && selectedBranch) {
+      return;
+    }
+
     if (gitRefsPromise.status === PromiseStateStatus.PENDING) {
       return;
     }
 
-    if (queryParamConfirm === "true") {
-      advancedCloneModalRef.current?.open();
+    if (!queryParamUrl || (isPotentiallyGit(importableUrl.type) && queryParamConfirm === "true")) {
+      advancedImportModalRef.current?.open();
       return;
     }
 
     setImportingError("");
     doImport();
-  }, [gitRefsPromise.status, doImport, queryParamConfirm]);
+  }, [
+    gitRefsPromise.status,
+    doImport,
+    queryParamConfirm,
+    importableUrl.type,
+    queryParamUrl,
+    queryParamBranch,
+    queryParamAuthSource,
+    selectedBranch,
+  ]);
 
   const validation = useImportableUrlValidation(authSource, queryParamUrl, queryParamBranch, clonableUrlObject);
-  const advancedCloneModalRef = useRef<AdvancedCloneModalRef>(null);
+  const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
 
   return (
     <>
@@ -262,20 +360,20 @@ export function NewWorkspaceFromUrlPage() {
               errors={[importingError]}
             />
           )}
-          {!importingError && queryParamConfirm !== "true" && (
+          {!importingError && queryParamConfirm !== "true" && queryParamUrl && (
             <Bullseye>
               <TextContent>
                 <Bullseye>
                   <Spinner />
                 </Bullseye>
                 <br />
-                <Text component={TextVariants.p}>{`Importing from '${queryParamUrl}'`}</Text>
+                <Text component={TextVariants.p}>{`Importing '${queryParamUrl}'`}</Text>
               </TextContent>
             </Bullseye>
           )}
-          {queryParamConfirm === "true" && (
-            <AdvancedCloneModal
-              ref={advancedCloneModalRef}
+          {(queryParamConfirm === "true" || !queryParamUrl) && (
+            <AdvancedImportModal
+              ref={advancedImportModalRef}
               onSubmit={() => {
                 history.replace({
                   pathname: routes.import.path({}),
@@ -291,37 +389,10 @@ export function NewWorkspaceFromUrlPage() {
               validation={validation}
               authSource={authSource}
               url={queryParamUrl ?? ""}
-              branch={queryParamBranch ?? ""}
-              setAuthSource={(newAuthSource) => {
-                history.replace({
-                  pathname: routes.import.path({}),
-                  search: queryParams
-                    .with(
-                      QueryParams.AUTH_SOURCE,
-                      typeof newAuthSource === "function" ? newAuthSource(authSource) : newAuthSource
-                    )
-                    .toString(),
-                });
-              }}
-              setUrl={(newUrl) => {
-                history.replace({
-                  pathname: routes.import.path({}),
-                  search: queryParams
-                    .with(QueryParams.URL, typeof newUrl === "function" ? newUrl(queryParamUrl ?? "") : newUrl)
-                    .toString(),
-                });
-              }}
-              setBranch={(newBranch) => {
-                history.replace({
-                  pathname: routes.import.path({}),
-                  search: queryParams
-                    .with(
-                      QueryParams.BRANCH,
-                      typeof newBranch === "function" ? newBranch(queryParamBranch ?? "") : newBranch
-                    )
-                    .toString(),
-                });
-              }}
+              branch={selectedBranch ?? ""}
+              setAuthSource={setAuthSource}
+              setUrl={setUrl}
+              setBranch={setBranch}
             />
           )}
         </PageSection>
