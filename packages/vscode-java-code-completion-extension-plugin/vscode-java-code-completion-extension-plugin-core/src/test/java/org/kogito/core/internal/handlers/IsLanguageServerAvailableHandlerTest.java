@@ -35,12 +35,11 @@ class IsLanguageServerAvailableHandlerTest {
     @BeforeEach
     public void setup() {
         workspaceUtilMock = Mockito.mock(WorkspaceUtil.class);
-        activationChecker = new ActivationChecker(workspaceUtilMock);
     }
 
     @Test
     void isLanguageServerNotAvailable() {
-        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/noActivatorProject/");
+        when(WorkspaceUtil.getProjectLocation()).thenReturn("src/test/resources/noActivatorProject/");
         IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
         activationChecker.check();
         assertFalse(handler.handle(null, null));
@@ -48,7 +47,7 @@ class IsLanguageServerAvailableHandlerTest {
 
     @Test
     void isLanguageServerAvailable() {
-        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/testProject/");
+        when(WorkspaceUtil.getProjectLocation()).thenReturn("src/test/resources/testProject/");
         IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
         activationChecker.check();
         assertTrue(handler.handle(null, null));
