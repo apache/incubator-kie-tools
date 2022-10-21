@@ -35,9 +35,13 @@ import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceServices } from "./createWorkspaceServices";
 
-export interface CustomCallbacks {
-  isEditable: (path: string) => boolean;
+export interface FileFilter {
+  // Files with the highest priority
   isModel: (path: string) => boolean;
+  // Any supported file that is editable
+  isEditable: (path: string) => boolean;
+  // Any supported file including editable and readonly ones
+  isSupported: (path: string) => boolean;
 }
 
 export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
@@ -51,7 +55,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   constructor(
     private readonly args: {
       appName: string;
-      customCallbacks: CustomCallbacks;
+      fileFilter: FileFilter;
       services: WorkspaceServices;
     }
   ) {}
@@ -420,7 +424,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         const fileRelativePaths = await this.args.services.gitService.unstagedModifiedFileRelativePaths({
           fs,
           dir: workspaceRootDirPath,
-          exclude: (filepath) => !this.args.customCallbacks.isEditable(filepath),
+          exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
         });
 
         if (fileRelativePaths.length === 0) {
@@ -652,7 +656,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       return this.args.services.gitService.hasLocalChanges({
         fs: fs,
         dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
-        exclude: (filepath) => !this.args.customCallbacks.isEditable(filepath),
+        exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
       });
     });
   }
@@ -680,16 +684,21 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       return { workspace, suggestedFirstFile: undefined };
     }
 
-    const suggestedFirstFile = files
-      .filter((file) => this.args.customCallbacks.isModel(file.relativePath))
-      .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
+    let filteredFiles = files.filter((file) => this.args.fileFilter.isModel(file.relativePath));
+    if (!filteredFiles.length) {
+      filteredFiles = files.filter((file) => this.args.fileFilter.isEditable(file.relativePath));
+    }
+    if (!filteredFiles.length) {
+      filteredFiles = files.filter((file) => this.args.fileFilter.isSupported(file.relativePath));
+    }
+
+    filteredFiles.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+
+    const suggestedFirstFile = filteredFiles.length ? filteredFiles[0] : undefined;
 
     return {
       workspace,
-      suggestedFirstFile: {
-        workspaceId: suggestedFirstFile.workspaceId,
-        relativePath: suggestedFirstFile.relativePath,
-      },
+      suggestedFirstFile,
     };
   }
 }

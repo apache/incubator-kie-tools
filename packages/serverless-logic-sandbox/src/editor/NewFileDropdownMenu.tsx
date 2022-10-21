@@ -34,7 +34,7 @@ import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/co
 import { basename } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { useRoutes } from "../navigation/Hooks";
-import { FileTypes, isSandboxAsset, SupportedFileExtensions } from "../extension";
+import { FileTypes, isEditable, SupportedFileExtensions } from "../extension";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
@@ -191,7 +191,7 @@ export function NewFileDropdownMenu(props: {
         })
       );
 
-      const fileToGoTo = uploadedFiles.filter((file) => isSandboxAsset(file.relativePath)).pop();
+      const fileToGoTo = uploadedFiles.filter((file) => isEditable(file.relativePath)).pop();
 
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });

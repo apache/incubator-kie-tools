@@ -45,9 +45,10 @@ onconnect = async (e: MessageEvent) => {
     apiImpl: new WorkspacesWorkerApiImpl({
       appName: "KIE Sandbox",
       services: workspaceServices,
-      customCallbacks: {
-        isEditable: (path) => editorEnvelopeLocator.hasMappingFor(path),
+      fileFilter: {
         isModel: (path) => editorEnvelopeLocator.hasMappingFor(path),
+        isEditable: (path) => editorEnvelopeLocator.hasMappingFor(path),
+        isSupported: (path) => editorEnvelopeLocator.hasMappingFor(path),
       },
     }),
     port: e.ports[0],

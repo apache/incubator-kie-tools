@@ -87,7 +87,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Showcase } from "./Showcase";
-import { FileTypes, isSandboxAsset, SupportedFileExtensions } from "../extension";
+import { FileTypes, isEditable, SupportedFileExtensions } from "../extension";
 import { APP_NAME } from "../AppConstants";
 
 export function HomePage() {
@@ -322,7 +322,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
   const editableFiles = useMemo(() => {
-    return workspacePromise.data?.files.filter((file) => isSandboxAsset(file.relativePath)) ?? [];
+    return workspacePromise.data?.files.filter((file) => isEditable(file.relativePath)) ?? [];
   }, [workspacePromise.data?.files]);
 
   const workspaceName = useMemo(() => {
@@ -560,7 +560,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => !isSandboxAsset(file.relativePath)),
+        .filter((file) => !isEditable(file.relativePath)),
     [workspacePromise.data?.files]
   );
 
@@ -568,7 +568,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => isSandboxAsset(file.relativePath)),
+        .filter((file) => isEditable(file.relativePath)),
     [workspacePromise.data?.files]
   );
 

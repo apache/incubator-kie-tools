@@ -19,8 +19,9 @@ import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/
 import { setupWorkerConnection } from "@kie-tools-core/workspaces-git-fs/dist/worker/setupWorkerConnection";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { APP_NAME } from "../../AppConstants";
-import { isModel, isSandboxAsset } from "../../extension";
+import { isModel, isEditable } from "../../extension";
 import { EnvVars } from "../../env/EnvContext";
+import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -31,6 +32,7 @@ async function corsProxyUrl(): Promise<string> {
   return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
 
+const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
 const workspaceServices = createWorkspaceServices({ corsProxyUrl: corsProxyUrl() });
 
 // shared worker connection
@@ -45,9 +47,10 @@ onconnect = async (e: MessageEvent) => {
     apiImpl: new WorkspacesWorkerApiImpl({
       appName: APP_NAME,
       services: workspaceServices,
-      customCallbacks: {
+      fileFilter: {
         isModel: (path) => isModel(path),
-        isEditable: (path) => isSandboxAsset(path),
+        isEditable: (path) => isEditable(path),
+        isSupported: (path) => editorEnvelopeLocator.hasMappingFor(path),
       },
     }),
     port: e.ports[0],

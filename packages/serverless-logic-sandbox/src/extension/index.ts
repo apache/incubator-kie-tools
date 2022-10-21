@@ -86,7 +86,7 @@ export function isModel(path: string): boolean {
   return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
 }
 
-export function isSandboxAsset(path: string): boolean {
+export function isEditable(path: string): boolean {
   return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path));
 }
 

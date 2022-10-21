@@ -65,7 +65,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { isSandboxAsset } from "../extension";
+import { isEditable } from "../extension";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 const ROOT_MENU_ID = "rootMenu";
@@ -425,7 +425,7 @@ export function WorkspacesMenuItems(props: {
                     <MenuItem
                       itemId={descriptor.workspaceId}
                       description={`${
-                        workspaceFiles.get(descriptor.workspaceId)!.filter((f) => isSandboxAsset(f.relativePath)).length
+                        workspaceFiles.get(descriptor.workspaceId)!.filter((f) => isEditable(f.relativePath)).length
                       } editable file(s) in ${workspaceFiles.get(descriptor.workspaceId)!.length} file(s)`}
                       direction={"down"}
                       drilldownMenu={
@@ -587,12 +587,12 @@ export function FilesMenuItems(props: {
   );
 
   const editableFiles = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => isSandboxAsset(file.relativePath)),
+    () => sortedAndFilteredFiles.filter((file) => isEditable(file.relativePath)),
     [sortedAndFilteredFiles]
   );
 
   const readonlyFiles = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => !isSandboxAsset(file.relativePath)),
+    () => sortedAndFilteredFiles.filter((file) => !isEditable(file.relativePath)),
     [sortedAndFilteredFiles]
   );
 

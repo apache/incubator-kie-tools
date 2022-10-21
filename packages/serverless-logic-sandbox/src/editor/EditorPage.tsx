@@ -31,7 +31,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflow } from "../extension";
+import { isEditable, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -160,7 +160,7 @@ export function EditorPage(props: Props) {
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
-            isReadOnly: !isSandboxAsset(workspaceFilePromise.data.workspaceFile.relativePath),
+            isReadOnly: !isEditable(workspaceFilePromise.data.workspaceFile.relativePath),
             fileExtension: workspaceFilePromise.data.workspaceFile.extension,
             fileName: workspaceFilePromise.data.workspaceFile.name,
           });
