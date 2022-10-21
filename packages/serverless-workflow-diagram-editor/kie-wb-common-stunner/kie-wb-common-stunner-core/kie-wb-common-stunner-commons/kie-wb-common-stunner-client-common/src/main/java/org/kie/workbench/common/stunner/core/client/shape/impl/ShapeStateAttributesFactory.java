@@ -22,8 +22,8 @@ import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttribu
 
 public class ShapeStateAttributesFactory {
 
-    static final String COLOR_SELECTED = "#0088CE";
-    static final String COLOR_HIGHLIGHT = "#3366CC";
+    static final String COLOR_SELECTED = "#0066CC";
+    static final String COLOR_HIGHLIGHT = "#4F5255";
     static final String COLOR_INVALID = "#FF0000";
 
     public static ShapeStateAttributes buildStrokeAttributes(final ShapeState state) {

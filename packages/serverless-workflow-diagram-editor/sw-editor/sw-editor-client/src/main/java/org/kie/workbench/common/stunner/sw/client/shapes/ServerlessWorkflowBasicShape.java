@@ -33,6 +33,9 @@ public abstract class ServerlessWorkflowBasicShape<T extends ServerlessWorkflowB
                 return;
             }
             shapeStateHandler.applyState(ShapeState.HIGHLIGHT);
+            if (this instanceof StateShapeView) {
+                getPath().setCornerRadius(5);
+            }
         };
         mouseEnterHandler = getShape().addNodeMouseEnterHandler(enterEvent);
 

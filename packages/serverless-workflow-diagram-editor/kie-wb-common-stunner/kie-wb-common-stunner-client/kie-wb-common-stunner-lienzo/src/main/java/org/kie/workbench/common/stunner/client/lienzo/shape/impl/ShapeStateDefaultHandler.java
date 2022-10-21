@@ -55,7 +55,6 @@ public class ShapeStateDefaultHandler
         CONTAINER
     }
 
-    private static final Shadow SHADOW_HIGHLIGHT = new Shadow(ColorName.BLACK.getColor().setA(0.40), 10, 0, 0);
     private static final Shadow SHADOW_SELECTED = new Shadow(ColorName.BLACK.getColor().setA(0.40), 5, 2, 2);
 
     protected final ShapeStateAttributeAnimationHandler<LienzoShapeView<?>> handler;
@@ -149,11 +148,6 @@ public class ShapeStateDefaultHandler
                             SHADOW_SELECTED.getBlur(),
                             SHADOW_SELECTED.getOffset().getX(),
                             SHADOW_SELECTED.getOffset().getY());
-        } else if (isStateHighlight(handler.getShapeState())) {
-            shape.setShadow(SHADOW_HIGHLIGHT.getColor(),
-                            SHADOW_HIGHLIGHT.getBlur(),
-                            SHADOW_HIGHLIGHT.getOffset().getX(),
-                            SHADOW_HIGHLIGHT.getOffset().getY());
         } else {
             removeShadow(shape);
         }

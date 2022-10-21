@@ -30,7 +30,7 @@ public class StartShapeView extends ServerlessWorkflowBasicShape<StartShapeView>
                       .setListening(true)
                       .setOffset(0.00, 0.00)
                       .setFillColor("#ffffff")
-                      .setStrokeColor("#d5d5d5")
+                      .setStrokeColor("#ccc")
                       .setStrokeWidth(2.00));
         setTitle("Start");
         setTitleXOffsetPosition(0.0);

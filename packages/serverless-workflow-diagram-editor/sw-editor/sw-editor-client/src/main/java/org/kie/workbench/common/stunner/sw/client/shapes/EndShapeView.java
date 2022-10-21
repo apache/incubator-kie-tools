@@ -30,8 +30,8 @@ public class EndShapeView extends ServerlessWorkflowBasicShape<EndShapeView> {
                       .setListening(true)
                       .setScale(1.00, 1.00)
                       .setOffset(0.00, 0.00)
-                      .setFillColor("#ffffff")
-                      .setStrokeColor("#d5d5d5")
+                      .setFillColor("#fff")
+                      .setStrokeColor("#ccc")
                       .setStrokeWidth(2.00));
         setTitle("End");
         setTextBoundaries(46, 46);

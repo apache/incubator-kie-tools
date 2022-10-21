@@ -29,9 +29,11 @@ import com.ait.lienzo.shared.core.types.TextBaseLine;
 
 public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView> {
 
-    Group iconCircle;
+    private Group iconCircle;
 
-    Circle backgroundCircle;
+    private Circle backgroundCircle;
+
+    private Rectangle mainRectangle;
 
     public StateShapeView(String name) {
         this(new MultiPath()
@@ -73,18 +75,19 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
     }
 
     private void initialize(String name) {
-        addChild(new Rectangle(250, 90)
-                         .setCornerRadius(5.00)
-                         .setDraggable(false)
-                         .setAlpha(1.00)
-                         .setListening(true)
-                         .setScale(1.00, 1.00)
-                         .setOffset(0.00, 0.00)
-                         .setFillColor("#fff")
-                         .setStrokeColor("#d5d5d5")
-                         .setStrokeWidth(2.00)
-                         .setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR)
-                         .setListening(true));
+        mainRectangle = new Rectangle(250, 90)
+                .setCornerRadius(5.00)
+                .setDraggable(false)
+                .setAlpha(1.00)
+                .setListening(true)
+                .setScale(1.00, 1.00)
+                .setOffset(0.00, 0.00)
+                .setFillColor("#fff")
+                .setStrokeColor("#ccc")
+                .setStrokeWidth(2.00)
+                .setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR)
+                .setListening(true);
+        addChild(mainRectangle);
         Text title = new Text(name)
                 .setX(90)
                 .setY(35)
@@ -131,5 +134,11 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
         icon.setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR);
 
         return icon;
+    }
+
+    @Override
+    public StateShapeView setFillColor(String color) {
+        mainRectangle.setFillColor(color);
+        return this;
     }
 }
