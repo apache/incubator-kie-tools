@@ -26,7 +26,7 @@ export function useAuthSources() {
         AuthSourceKeys.NONE,
         {
           enabled: true,
-          label: "None",
+          label: "Anonymous",
           description: "",
         },
       ],
@@ -36,8 +36,8 @@ export function useAuthSources() {
           enabled: settings.github.authStatus === AuthStatus.SIGNED_IN,
           label: (
             <>
-              <GithubIcon />
-              &nbsp;&nbsp;GitHub{" "}
+              {`GitHub`}
+              &nbsp;
               <i>{settings.github.authStatus === AuthStatus.SIGNED_IN ? `(${settings.github.user?.login})` : ""}</i>
             </>
           ),
@@ -52,12 +52,7 @@ export function useAuthSources() {
         AuthSourceKeys.BITBUCKET,
         {
           enabled: false,
-          label: (
-            <>
-              <BitbucketIcon />
-              &nbsp;&nbsp;Bitbucket
-            </>
-          ),
+          label: <>{`Bitbucket`}</>,
           description: "Available soon!",
         },
       ],
@@ -65,12 +60,7 @@ export function useAuthSources() {
         AuthSourceKeys.GITLAB,
         {
           enabled: false,
-          label: (
-            <>
-              <GitlabIcon />
-              &nbsp;&nbsp;GitLab
-            </>
-          ),
+          label: <>{`GitLab`}</>,
           description: "Available soon!",
         },
       ],

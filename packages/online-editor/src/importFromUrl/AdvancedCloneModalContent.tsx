@@ -25,6 +25,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import * as React from "react";
 import { useImperativeHandle, useState } from "react";
 import { AuthSourceKeys, useAuthSources } from "../authSources/AuthSourceHooks";
+import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
 import { useClonableUrl } from "./ImportableUrlHooks";
 
 export interface AdvancedCloneModalRef {
@@ -32,9 +33,10 @@ export interface AdvancedCloneModalRef {
 }
 
 export interface AdvancedCloneModalProps {
-  enhancedImportableUrl: ReturnType<typeof useClonableUrl>;
+  clonableUrl: ReturnType<typeof useClonableUrl>;
   validation: { option: ValidatedOptions; helperText?: React.ReactNode; helperTextInvalid?: string };
   onSubmit: (e: React.SyntheticEvent) => void;
+  onClose: (() => void) | undefined;
   url: string;
   setUrl: React.Dispatch<React.SetStateAction<string>>;
   authSource: AuthSourceKeys;
@@ -64,7 +66,10 @@ export const AdvancedCloneModal = React.forwardRef<AdvancedCloneModalRef, Advanc
           title="Clone Git repository"
           isOpen={isModalOpen}
           variant={ModalVariant.medium}
-          onClose={() => setModalOpen(false)}
+          onClose={() => {
+            props.onClose?.();
+            return setModalOpen(false);
+          }}
           actions={[
             <Button
               key="confirm"
@@ -74,7 +79,14 @@ export const AdvancedCloneModal = React.forwardRef<AdvancedCloneModalRef, Advanc
             >
               Clone
             </Button>,
-            <Button key="cancel" variant="link" onClick={() => setModalOpen(false)}>
+            <Button
+              key="cancel"
+              variant="link"
+              onClick={() => {
+                props.onClose?.();
+                return setModalOpen(false);
+              }}
+            >
               Cancel
             </Button>,
           ]}
@@ -96,13 +108,15 @@ export const AdvancedCloneModal = React.forwardRef<AdvancedCloneModalRef, Advanc
                   maxHeight={"400px"}
                 >
                   {[
-                    ...[...authSources.entries()].map(([domain, authSource]) => (
+                    ...[...authSources.entries()].map(([authSourceKey, authSource]) => (
                       <SelectOption
-                        key={domain}
-                        value={domain}
+                        key={authSourceKey}
+                        value={authSourceKey}
                         isDisabled={!authSource.enabled}
                         description={<i>{authSource.description}</i>}
                       >
+                        <AuthSourceIcon authSource={authSourceKey} />
+                        &nbsp;&nbsp;
                         {authSource.label}
                       </SelectOption>
                     )),
@@ -159,7 +173,7 @@ export const AdvancedCloneModal = React.forwardRef<AdvancedCloneModalRef, Advanc
                   menuAppendTo={document.body}
                   maxHeight={"400px"}
                 >
-                  {props.enhancedImportableUrl.gitRefsPromise.data?.refs
+                  {props.clonableUrl.gitRefsPromise.data?.refs
                     ?.filter(({ ref }) => ref.startsWith("refs/heads/"))
                     .map(({ ref }, index) => (
                       <SelectOption key={index} value={ref.replace("refs/heads/", "")}>

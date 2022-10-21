@@ -20,14 +20,14 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AuthSourceKeys, useAuthSources, useSelectedAuthInfo as useAuthInfo } from "../authSources/AuthSourceHooks";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
-import { useQueryParam } from "../queryParams/QueryParamsContext";
+import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
 import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
@@ -35,6 +35,8 @@ import { LocalFile } from "../workspace/worker/api/LocalFile";
 import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { isSingleFile, UrlType, useClonableUrl, useImportableUrl } from "./ImportableUrlHooks";
+import { AdvancedCloneModal, AdvancedCloneModalRef } from "./AdvancedCloneModalContent";
+import { useImportableUrlValidation } from "./ImportFromUrlHomePageCard";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -50,10 +52,13 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamAuthSource = useQueryParam(QueryParams.AUTH_SOURCE);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
+  const queryParams = useQueryParams();
+
   const { authInfo, authSource } = useAuthInfo(queryParamAuthSource);
 
   const importableUrl = useImportableUrl(queryParamUrl);
-  const { clonableUrl, gitRefsPromise, selectedBranch } = useClonableUrl(queryParamUrl, authSource, queryParamBranch);
+  const clonableUrlObject = useClonableUrl(queryParamUrl, authSource, queryParamBranch);
+  const { clonableUrl, selectedBranch, gitRefsPromise } = clonableUrlObject;
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -234,9 +239,17 @@ export function NewWorkspaceFromUrlPage() {
       return;
     }
 
+    if (queryParamConfirm === "true") {
+      advancedCloneModalRef.current?.open();
+      return;
+    }
+
     setImportingError("");
     doImport();
-  }, [gitRefsPromise.status, doImport]);
+  }, [gitRefsPromise.status, doImport, queryParamConfirm]);
+
+  const validation = useImportableUrlValidation(authSource, queryParamUrl, queryParamBranch, clonableUrlObject);
+  const advancedCloneModalRef = useRef<AdvancedCloneModalRef>(null);
 
   return (
     <>
@@ -249,7 +262,7 @@ export function NewWorkspaceFromUrlPage() {
               errors={[importingError]}
             />
           )}
-          {!importingError && (
+          {!importingError && queryParamConfirm !== "true" && (
             <Bullseye>
               <TextContent>
                 <Bullseye>
@@ -259,6 +272,57 @@ export function NewWorkspaceFromUrlPage() {
                 <Text component={TextVariants.p}>{`Importing from '${queryParamUrl}'`}</Text>
               </TextContent>
             </Bullseye>
+          )}
+          {queryParamConfirm === "true" && (
+            <AdvancedCloneModal
+              ref={advancedCloneModalRef}
+              onSubmit={() => {
+                history.replace({
+                  pathname: routes.import.path({}),
+                  search: queryParams.without(QueryParams.CONFIRM).toString(),
+                });
+              }}
+              onClose={() => {
+                history.push({
+                  pathname: routes.home.path({}),
+                });
+              }}
+              clonableUrl={clonableUrlObject}
+              validation={validation}
+              authSource={authSource}
+              url={queryParamUrl ?? ""}
+              branch={queryParamBranch ?? ""}
+              setAuthSource={(newAuthSource) => {
+                history.replace({
+                  pathname: routes.import.path({}),
+                  search: queryParams
+                    .with(
+                      QueryParams.AUTH_SOURCE,
+                      typeof newAuthSource === "function" ? newAuthSource(authSource) : newAuthSource
+                    )
+                    .toString(),
+                });
+              }}
+              setUrl={(newUrl) => {
+                history.replace({
+                  pathname: routes.import.path({}),
+                  search: queryParams
+                    .with(QueryParams.URL, typeof newUrl === "function" ? newUrl(queryParamUrl ?? "") : newUrl)
+                    .toString(),
+                });
+              }}
+              setBranch={(newBranch) => {
+                history.replace({
+                  pathname: routes.import.path({}),
+                  search: queryParams
+                    .with(
+                      QueryParams.BRANCH,
+                      typeof newBranch === "function" ? newBranch(queryParamBranch ?? "") : newBranch
+                    )
+                    .toString(),
+                });
+              }}
+            />
           )}
         </PageSection>
       </OnlineEditorPage>

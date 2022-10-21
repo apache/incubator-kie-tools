@@ -33,9 +33,10 @@ import { useHistory } from "react-router";
 import { AuthSource, AuthSourceKeys } from "../authSources/AuthSourceHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
-import { isPotentiallyGit, UrlType, useClonableUrl, useImportableUrl } from "./ImportableUrlHooks";
-import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
+import { ImportableUrl, isPotentiallyGit, UrlType, useClonableUrl, useImportableUrl } from "./ImportableUrlHooks";
+import { PromiseState, PromiseStateStatus } from "../workspace/hooks/PromiseState";
 import { AdvancedCloneModal, AdvancedCloneModalRef } from "./AdvancedCloneModalContent";
+import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
@@ -72,72 +73,7 @@ export function ImportFromUrlCard() {
   }, [selectedBranch]);
   // BRANCH FROM URL (end)
 
-  const validation = useMemo(() => {
-    if (!url) {
-      return {
-        option: ValidatedOptions.default,
-        helperText: <FormHelperText isHidden={true} icon={<Spinner size={"sm"} />} />,
-      };
-    }
-
-    if (gitRefsPromise.status === PromiseStateStatus.PENDING) {
-      return {
-        option: ValidatedOptions.default,
-        helperText: (
-          <FormHelperText isHidden={false} icon={<Spinner size={"sm"} />}>
-            Loading...
-          </FormHelperText>
-        ),
-      };
-    }
-
-    if (clonableUrl.error) {
-      return {
-        option: ValidatedOptions.error,
-        helperTextInvalid: clonableUrl.error,
-      };
-    }
-
-    return {
-      option: ValidatedOptions.success,
-      helperText: (
-        <FormHelperText
-          isHidden={false}
-          icon={<CheckCircleIcon style={{ visibility: "hidden", width: 0 }} />}
-          style={branch ? {} : { visibility: "hidden" }}
-        >
-          <>
-            <CodeBranchIcon />
-            &nbsp;&nbsp;
-            {branch}
-            &nbsp;&nbsp;
-            {authSource === AuthSourceKeys.GITHUB ? (
-              <>
-                <UserIcon />
-                &nbsp;&nbsp;
-                {settings.github.user?.login}
-              </>
-            ) : (
-              // Change this when more auth sources are available.
-              <>
-                <UsersIcon />
-                &nbsp;&nbsp;
-                <i>Anonymous</i>
-              </>
-            )}
-            <Button
-              isSmall={true}
-              variant={ButtonVariant.link}
-              style={{ paddingTop: 0, paddingBottom: 0 }}
-              onClick={() => advancedCloneModalRef.current?.open()}
-            >
-              Change...
-            </Button>
-          </>
-        </FormHelperText>
-      ),
-    };
-  }, [url, gitRefsPromise.status, clonableUrl.error, branch, authSource, settings.github.user?.login]);
+  const validation = useImportableUrlValidation(authSource, url, branch, clonableUrlObject, advancedCloneModalRef);
 
   const isValid = useMemo(() => {
     return validation.option === ValidatedOptions.success;
@@ -228,9 +164,10 @@ export function ImportFromUrlCard() {
       </Card>
       <AdvancedCloneModal
         ref={advancedCloneModalRef}
-        enhancedImportableUrl={clonableUrlObject}
+        clonableUrl={clonableUrlObject}
         validation={validation}
         onSubmit={onSubmit}
+        onClose={undefined}
         authSource={authSource}
         setAuthSource={setAuthSource}
         url={url}
@@ -240,4 +177,78 @@ export function ImportFromUrlCard() {
       />
     </>
   );
+}
+
+export function useImportableUrlValidation(
+  authSource: AuthSourceKeys | undefined,
+  url: string | undefined,
+  branch: string | undefined,
+  clonableUrl: ReturnType<typeof useClonableUrl>,
+  advancedCloneModalRef?: React.RefObject<AdvancedCloneModalRef>
+) {
+  const settings = useSettings();
+
+  return useMemo(() => {
+    if (!url) {
+      return {
+        option: ValidatedOptions.default,
+        helperText: <FormHelperText isHidden={true} icon={<Spinner size={"sm"} />} />,
+      };
+    }
+
+    if (clonableUrl.gitRefsPromise.status === PromiseStateStatus.PENDING) {
+      return {
+        option: ValidatedOptions.default,
+        helperText: (
+          <FormHelperText isHidden={false} icon={<Spinner size={"sm"} />}>
+            Loading...
+          </FormHelperText>
+        ),
+      };
+    }
+
+    if (clonableUrl.clonableUrl.error) {
+      return {
+        option: ValidatedOptions.error,
+        helperTextInvalid: clonableUrl.clonableUrl.error,
+      };
+    }
+
+    return {
+      option: ValidatedOptions.success,
+      helperText: (
+        <FormHelperText
+          isHidden={false}
+          icon={<CheckCircleIcon style={{ visibility: "hidden", width: 0 }} />}
+          style={branch ? {} : { visibility: "hidden" }}
+        >
+          <>
+            <CodeBranchIcon />
+            &nbsp;&nbsp;
+            {branch}
+            &nbsp;&nbsp;
+            <AuthSourceIcon authSource={authSource} />
+            &nbsp;&nbsp;
+            {authSource === AuthSourceKeys.GITHUB ? settings.github.user?.login ?? "Not logged in" : "Anonymous"}
+            <Button
+              isSmall={true}
+              variant={ButtonVariant.link}
+              style={{ paddingTop: 0, paddingBottom: 0 }}
+              onClick={() => advancedCloneModalRef?.current?.open()}
+            >
+              Change...
+            </Button>
+          </>
+        </FormHelperText>
+      ),
+    };
+  }, [
+    url,
+    clonableUrl.gitRefsPromise.status,
+    clonableUrl.clonableUrl.error,
+    branch,
+    authSource,
+    settings.github.user?.login,
+    advancedCloneModalRef,
+  ]);
 }
