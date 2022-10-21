@@ -25,6 +25,7 @@ import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/e
 import { editor } from "monaco-editor";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { YardUIEditor } from "../uiEditor";
+import { YardFile } from "../types";
 import "./YardEditor.css";
 
 interface Props {
@@ -62,16 +63,11 @@ export type YardEditorRef = {
   setContent(path: string, content: string): Promise<void>;
 };
 
-type YardEditorContent = {
-  originalContent: string;
-  path: string;
-};
-
 const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | undefined, Props> = (
   props,
   forwardedRef
 ) => {
-  const [initialContent, setInitialContent] = useState<YardEditorContent | undefined>(undefined);
+  const [file, setFile] = useState<YardFile | undefined>(undefined);
   const yardTextEditorRef = useRef<YardTextEditorApi>(null);
 
   useImperativeHandle(
@@ -80,8 +76,8 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
       return {
         setContent: (path: string, newContent: string): Promise<void> => {
           try {
-            setInitialContent({
-              originalContent: newContent,
+            setFile({
+              content: newContent,
               path: path,
             });
             return Promise.resolve();
@@ -115,12 +111,12 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
 
   const setValidationErrors = useCallback(
     (errors: editor.IMarker[]) => {
-      if (!initialContent) {
+      if (!file) {
         return;
       }
       const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
         type: "PROBLEM",
-        path: initialContent.path,
+        path: file.path,
         severity: "ERROR",
         message: `${error.message}`,
         position: {
@@ -130,9 +126,9 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           endColumn: error.endColumn,
         },
       }));
-      props.setNotifications.apply(initialContent.path, notifications);
+      props.setNotifications.apply(file.path, notifications);
     },
-    [initialContent, props.setNotifications]
+    [file, props.setNotifications]
   );
 
   const isVscode = useCallback(() => {
@@ -168,18 +164,17 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
 
   const yardTextEditor = useMemo(
     () =>
-      initialContent && (
+      file && (
         <YardTextEditor
           channelType={props.channelType}
-          content={initialContent.originalContent}
-          fileName={initialContent.path}
+          file={file}
           onContentChange={onContentChanged}
           setValidationErrors={setValidationErrors}
           ref={yardTextEditorRef}
           isReadOnly={props.isReadOnly}
         />
       ),
-    [initialContent, props.channelType, onContentChanged, setValidationErrors, props.isReadOnly]
+    [file, props.channelType, onContentChanged, setValidationErrors, props.isReadOnly]
   );
 
   const yardUIContainer = (
@@ -189,7 +184,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
       initialLocale={navigator.language}
       ctx={YardEditorI18nContext}
     >
-      <YardUIEditor />
+      <YardUIEditor file={file} isReadOnly={true} />
     </I18nDictionariesProvider>
   );
 

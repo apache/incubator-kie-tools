@@ -18,6 +18,12 @@
   margin: 10px;
 }
 
+.yard-ui-editor .separator {
+  width: 6px;
+  height: auto;
+  display: inline-block;
+}
+
 .yard-ui-editor .decision-element-header {
   margin-top: 10px;
 }
@@ -26,10 +32,21 @@
   margin-top: 10px;
 }
 
-.yard-ui-editor .decision-input-header {
+.yard-ui-editor .decision-input-body {
   margin-top: 10px;
 }
 
 .yard-ui-editor .general-body {
   margin-top: 10px;
+}
+
+.yard-ui-editor .pf-c-divider {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+yard-ui-editor .boxed-expression {
+  overflow-y: auto;
+  height: 40vh;
+  border: 1px dashed rgb(211, 211, 211);
 }

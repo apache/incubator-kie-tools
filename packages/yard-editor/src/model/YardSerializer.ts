@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-.monaco-editor {
-  padding-left: 4px;
+import * as yaml from "js-yaml";
+import { YardModel } from "./YardModel";
+
+/**
+ * It deserializes content string as YardModel object
+ * @param {string} content The JSON or YAML yard source to deserialize
+ * @returns {YardModel} Resulting object representation of yard model
+ */
+export function deserialize(content: string): YardModel {
+  try {
+    const model = yaml.load(content);
+    return new YardModel(model);
+  } catch (e) {
+    throw new Error("Error during deserialize phase of yard model" + e.toString());
+  }
 }

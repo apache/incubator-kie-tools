@@ -19,16 +19,16 @@ import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface YardEditorDictionary extends ReferenceDictionary {
   decisionElementsTab: {
-    addDecisionElementsButton: string;
     emptyStateTitle: string;
     emptyStateBody: string;
-    removeDecisionElementButton: string;
     tabTitle: string;
   };
   decisionInputsTab: {
     emptyStateTitle: string;
     emptyStateBody: string;
+    name: string;
     tabTitle: string;
+    type: string;
   };
   generalTab: {
     expressionLang: string;
