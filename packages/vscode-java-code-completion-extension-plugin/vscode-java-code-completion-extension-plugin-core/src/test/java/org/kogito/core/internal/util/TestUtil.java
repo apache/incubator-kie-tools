@@ -33,6 +33,4 @@ public class TestUtil {
             functionToTest.run();
         }
     }
-
-
 }

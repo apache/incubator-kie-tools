@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JavaEngineTest {
 
     private JavaEngine javaEngine;
-    private final Path path = Path.of("file:///aaa/src/main/java/pkg/MainClass.java)");
+    private final Path path = Path.of("aaa/src/main/java/pkg/MainClass.java)");
 
     @BeforeEach
     public void setUp() {
