@@ -6,7 +6,7 @@ import { scaleLinear } from "d3-scale";
 const DEFAULT_GEO = "world.geo.json";
 const DEFAULT_BACKGROUND = "lightblue";
 const DEFAULT_STROKE = "darkgray";
-const DEFAULT_FILL = "#F2D0A9 ";
+const DEFAULT_FILL = "#F2D0A9";
 const DEFAULT_DISABLED = "lightgray";
 const DEFAULT_STROKE_WIDTH = 1.0;
 const DEFAULT_PROJECTION = "geoEqualEarth";
