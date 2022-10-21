@@ -3,9 +3,9 @@ package converters
 import (
 	"context"
 	"errors"
-	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
-	"github.com/davidesalerno/kogito-serverless-operator/constants"
 	"github.com/go-logr/logr"
+	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
+	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
 	"path"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"

@@ -17,8 +17,8 @@ package controllers
 
 import (
 	"context"
-	"github.com/davidesalerno/kogito-serverless-operator/api/v08"
-	"github.com/davidesalerno/kogito-serverless-operator/test/utils"
+	"github.com/kiegroup/kogito-serverless-operator/api/v08"
+	"github.com/kiegroup/kogito-serverless-operator/test/utils"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"

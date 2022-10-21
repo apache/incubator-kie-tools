@@ -1,4 +1,4 @@
-module github.com/davidesalerno/kogito-serverless-operator
+module github.com/kiegroup/kogito-serverless-operator
 
 go 1.19
 
