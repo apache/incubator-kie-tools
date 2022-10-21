@@ -75,6 +75,12 @@ The KIE Tools project contains several applications. To develop each one of them
 3. **NOTE:** To run the VS Code extension in development mode, you need `webpack` and `webpack-cli` to be globally installed on NPM. Normally you can do that with `npm install -g webpack@^5.36.2 webpack-cli@^4.7.0`, but `sudo` may be required depending on your installation.
 4. **Remember!** If you make changes to any package other than `packages/vscode-extension-pack-kogito-kie-editors`, you have to manually rebuild them before relaunching the extension on VS Code.
 
+#### VS Code Extension (Serverless Workflow Editor)
+
+1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-serverless-workflow-editor` folder on VS Code. Use a new VS Code window so that the `packages/vscode-extension-serverless-workflow-editor` folder shows up as root in the VS Code explorer.
+1. From there, you can Run the extension or the integration tests by using the `Debug` menu/section. You can also use the respective shortcuts (F5 to start debugging, for instance).
+1. **Remember!** If you make changes to any package other than `packages/vscode-extension-serverless-workflow-editor`, you have to manually rebuild them before relaunching the extension on VS Code.
+
 #### Chrome Extension (DMN, BPMN, and SceSim Editors)
 
 1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-pack-kogito-kie-editors` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
@@ -84,11 +90,26 @@ The KIE Tools project contains several applications. To develop each one of them
 5. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-pack-kogito-kie-editors/dist` folder.
 6. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
 
+#### Chrome Extension (Serverless Workflow Editor)
+
+1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-serverless-workflow-editor` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
+1. Run `pnpm build:dev` on `packages/chrome-extension-serverless-workflow-editor`. This will create a version of the Chrome Extension that fetches the envelope locally.
+1. Open a terminal and run `pnpm start` on `packages/chrome-extension-serverless-workflow-editor`. This will start a `webpack serve` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
+1. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag. Alternativelly, you can go to `https://localhost:9000` and add an exception.
+1. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-serverless-workflow-editor/dist` folder.
+1. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
+
 #### KIE Sandbox
 
 1. After you've successfully built the project following the instructions above, go to `packages/online-editor`.
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Online Editor resources.
 3. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
+
+#### Serverless Logic Web Tools
+
+1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-sandbox`.
+1. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
+1. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
 
 #### Desktop app (DMN and BPMN)
 
