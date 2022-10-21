@@ -15,7 +15,7 @@ spec:
     singular: kogitoserverlessbuild
   scope: Namespaced
   versions:
-  - name: v08
+  - name: v1alpha08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessBuild is the Schema for the kogitoserverlessbuilds

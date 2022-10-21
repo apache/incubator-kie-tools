@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package v08 contains API Schema definitions for the serverless v08 API group
+// Package v1alpha08 contains API Schema definitions for the serverless v1alpha08 API group
 // +kubebuilder:object:generate=true
 // +groupName=sw.kogito.kie.org
-package v08
+package v1alpha08
 
 import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -26,7 +26,7 @@ import (
 
 var (
 	// GroupVersion is group version used to register these objects
-	GroupVersion = schema.GroupVersion{Group: "sw.kogito.kie.org", Version: "v08"}
+	GroupVersion = schema.GroupVersion{Group: "sw.kogito.kie.org", Version: "v1alpha08"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
 	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}

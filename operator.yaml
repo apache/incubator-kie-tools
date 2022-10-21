@@ -21,7 +21,7 @@ spec:
     singular: kogitoserverlessbuild
   scope: Namespaced
   versions:
-  - name: v08
+  - name: v1alpha08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessBuild is the Schema for the kogitoserverlessbuilds API
@@ -269,7 +269,7 @@ spec:
     singular: kogitoserverlessworkflow
   scope: Namespaced
   versions:
-  - name: v08
+  - name: v1alpha08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
@@ -2108,11 +2108,11 @@ subjects:
 ---
 apiVersion: v1
 data:
-  BUILDER_RESOURCE_NAME_DEFAULT: kogito_builder_dockerfile.yaml
+  DEFAULT_BUILDER_RESOURCE_NAME: Dockerfile
   DEFAULT_KANIKO_SECRET_DEFAULT: regcred
   DEFAULT_REGISTRY_REPO: quay.io/kiegroup
   DEFAULT_WORKFLOW_EXTENSION_KEY: .sw.json
-  kogito_builder_dockerfile.yaml: "FROM quay.io/mdessi/kogito-swf-builder:latest AS builder\n  \n  # Copy from build context to skeleton resources project\nCOPY * ./resources/\n\nRUN /home/kogito/launch/build-app.sh ./resources\n  \n  #=============================\n  # Runtime Run\n  #=============================\nFROM registry.access.redhat.com/ubi8/openjdk-11:latest\n\nENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'\n  \n  # We make four distinct layers so if there are application changes the library layers can be re-used\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/lib/ /deployments/lib/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/*.jar /deployments/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/app/ /deployments/app/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/quarkus/ /deployments/quarkus/\n\nEXPOSE 8080\nUSER 185\nENV AB_JOLOKIA_OFF=\"\"\nENV JAVA_OPTS=\"-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager\"\nENV JAVA_APP_JAR=\"/deployments/quarkus-run.jar\"\n"
+  Dockerfile: "FROM quay.io/mdessi/kogito-swf-builder:latest AS builder\n  \n  # Copy from build context to skeleton resources project\nCOPY * ./resources/\n\nRUN /home/kogito/launch/build-app.sh ./resources\n  \n  #=============================\n  # Runtime Run\n  #=============================\nFROM registry.access.redhat.com/ubi8/openjdk-11:latest\n\nENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'\n  \n  # We make four distinct layers so if there are application changes the library layers can be re-used\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/lib/ /deployments/lib/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/*.jar /deployments/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/app/ /deployments/app/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/quarkus/ /deployments/quarkus/\n\nEXPOSE 8080\nUSER 185\nENV AB_JOLOKIA_OFF=\"\"\nENV JAVA_OPTS=\"-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager\"\nENV JAVA_APP_JAR=\"/deployments/quarkus-run.jar\"\n"
 kind: ConfigMap
 metadata:
   name: kogito-serverless-operator-builder-config

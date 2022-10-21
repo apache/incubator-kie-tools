@@ -93,7 +93,7 @@ kubectl create namespace greeting-workflow
 7. Install Instances of Custom Resources:
 
 ```sh
-kubectl apply -f config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.yaml -n greeting-workflow
+kubectl apply -f config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml -n greeting-workflow
 ```
 
 8. Default configuration

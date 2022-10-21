@@ -15,13 +15,13 @@ spec:
       displayName: Kogito Serverless Build
       kind: KogitoServerlessBuild
       name: kogitoserverlessbuilds.sw.kogito.kie.org
-      version: v08
+      version: v1alpha08
     - description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows
         API
       displayName: Kogito Serverless Workflow
       kind: KogitoServerlessWorkflow
       name: kogitoserverlessworkflows.sw.kogito.kie.org
-      version: v08
+      version: v1alpha08
   description: Kogito Serverless Workflow Operator
   displayName: kogito-serverlessworkflow-operator
   icon:

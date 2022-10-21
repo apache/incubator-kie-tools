@@ -22,7 +22,7 @@ import (
 	"os"
 
 	"github.com/kiegroup/container-builder/util/log"
-	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
+	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/kiegroup/kogito-serverless-operator/converters"
 	corev1 "k8s.io/api/core/v1"
