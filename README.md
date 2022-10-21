@@ -4,21 +4,17 @@ The Kogito Serverless Operator is built in order to help the Kogito Serverless u
 Kubernetes/Knative/OpenShift a service based on Kogito that it will be able to execute a workflow.
 
 The CustomResources defined and managed by this operator are the following:
-- Workflow 
-- Build
-
-# PreRequisites
-
-operator-sdk-v1.24.0
-
-Go 1.19
-
-
-## Description
-The aim of this project is to collect everything is needed for a proof-of-concept of the Kogito Serverless Workflow CRD
+- Workflow
+- Platform
+- Build`
 
 ## Getting Started
-You’ll need a Kubernetes cluster to run against. You can use [KIND](https://sigs.k8s.io/kind) to get a local cluster for testing, or run against a remote cluster.
+You’ll need a Kubernetes cluster to run against. You can use
+- [KIND](https://sigs.k8s.io/kind)
+- [MINIKUBE](https://minikube.sigs.k8s.io/)
+- [CRC](https://console.redhat.com/openshift/create/local)
+
+to get a local cluster for testing, or run against a remote cluster.
 **Note:** Your controller will automatically use the current context in your kubeconfig file (i.e. whatever cluster `kubectl cluster-info` shows).
 
 ### Running on the cluster
@@ -54,7 +50,6 @@ UnDeploy the controller to the cluster:
 make undeploy
 ```
 
-Minikube or CRC
 
 ## Test the Greeting workflow on Minikube
 
@@ -103,8 +98,7 @@ kubectl apply -f config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.
 
 8. Default configuration
 
-A configmap called kogito-serverless-operator-builder-config will be created under the kogito-serverless-operator-system 
-namespace when the Operator will be installer and it contains:
+A configmap called kogito-serverless-operator-builder-config will be created under the kogito-serverless-operator-system namespace when the Operator will be installed, and it contains:
   
 - DEFAULT_BUILDER_RESOURCE = kogito_builder_dockerfile.yaml
 - DEFAULT_WORKFLOW_DEXTENSION = .sw.json
@@ -113,15 +107,6 @@ namespace when the Operator will be installer and it contains:
 - kogito_builder_dockerfile.yaml = dockerfile content
 
 For the local development the DEFAULT_REGISTRY_REPO must be changed
-
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
-
-### How it works
-This project aims to follow the Kubernetes [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/)
-
-It uses [Controllers](https://kubernetes.io/docs/concepts/architecture/controller/) 
-which provides a reconcile function responsible for synchronizing resources untile the desired state is reached on the cluster 
 
 ### Test It Out
 1. Install the CRDs into the cluster:
@@ -138,16 +123,14 @@ make run
 
 **NOTE:** You can also run this in one step by running: `make install run`
 
-### Modifying the API definitions
-If you are editing the API definitions, generate the manifests such as CRs or CRDs using:
 
-```sh
-make manifests
-```
-
-**NOTE:** Run `make --help` for more information on all potential `make` targets
+**NOTE:** Run `make help` for more information on all potential `make` targets
 
 More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
+
+# Development and Contributions 
+
+Contributing is easy, just take a look at our [contributors](./CONTRIBUTING.md)'guide.
 
 ## License
 
