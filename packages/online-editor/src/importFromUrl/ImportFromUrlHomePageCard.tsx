@@ -29,16 +29,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AuthSourceKeys, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
 import { useRoutes } from "../navigation/Hooks";
-import { AuthStatus, useSettings } from "../settings/SettingsContext";
-import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
-import {
-  isPotentiallyGit,
-  UrlType,
-  useClonableUrl,
-  useImportableUrl,
-  useImportableUrlValidation,
-} from "./ImportableUrlHooks";
+import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
@@ -46,25 +38,24 @@ export function ImportFromUrlCard() {
 
   const [authSource, setAuthSource] = useState<AuthSourceKeys>();
   const [url, setUrl] = useState("");
-  const [branch, setBranch] = useState("");
+  const [gitRefName, setGitRef] = useState("");
 
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
 
   const { authSource: selectedAuthSource } = useSelectedAuthInfo(authSource);
 
   const importableUrl = useImportableUrl(url);
-  const clonableUrlObject = useClonableUrl(url, authSource, branch);
-  const { selectedBranch, gitRefsPromise } = clonableUrlObject;
+  const clonableUrl = useClonableUrl(url, authSource, gitRefName);
 
   useEffect(() => {
     setAuthSource(selectedAuthSource);
   }, [selectedAuthSource]);
 
   useEffect(() => {
-    setBranch(selectedBranch ?? "");
-  }, [selectedBranch]);
+    setGitRef(clonableUrl.selectedGitRefName ?? "");
+  }, [clonableUrl.selectedGitRefName]);
 
-  const validation = useImportableUrlValidation(authSource, url, branch, clonableUrlObject, advancedImportModalRef);
+  const validation = useImportableUrlValidation(authSource, url, gitRefName, clonableUrl, advancedImportModalRef);
 
   const isValid = useMemo(() => {
     return validation.option === ValidatedOptions.success;
@@ -81,10 +72,10 @@ export function ImportFromUrlCard() {
 
       history.push({
         pathname: routes.import.path({}),
-        search: routes.import.queryString({ url, branch, authSource }),
+        search: routes.import.queryString({ url, branch: gitRefName, authSource }),
       });
     },
-    [authSource, branch, history, isValid, routes.import, url]
+    [authSource, gitRefName, history, isValid, routes.import, url]
   );
 
   const buttonLabel = useMemo(() => {
@@ -166,7 +157,7 @@ export function ImportFromUrlCard() {
       </Card>
       <AdvancedImportModal
         ref={advancedImportModalRef}
-        clonableUrl={clonableUrlObject}
+        clonableUrl={clonableUrl}
         validation={validation}
         onSubmit={onSubmit}
         onClose={undefined}
@@ -174,8 +165,8 @@ export function ImportFromUrlCard() {
         setAuthSource={setAuthSource}
         url={url}
         setUrl={setUrl}
-        branch={branch}
-        setBranch={setBranch}
+        gitRefName={gitRefName}
+        setGitRefName={setGitRef}
       />
     </>
   );

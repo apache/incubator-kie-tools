@@ -17,15 +17,17 @@
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { ServerRef } from "isomorphic-git";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useState } from "react";
 import { AuthSourceKeys, useAuthSources } from "../authSources/AuthSourceHooks";
 import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
+import { getGitRefName, getGitRefTypeLabel, getGitRefType, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
 
 export interface AdvancedImportModalRef {
@@ -41,8 +43,8 @@ export interface AdvancedImportModalProps {
   setUrl: React.Dispatch<React.SetStateAction<string>>;
   authSource: AuthSourceKeys | undefined;
   setAuthSource: React.Dispatch<React.SetStateAction<AuthSourceKeys>>;
-  branch: string;
-  setBranch: React.Dispatch<React.SetStateAction<string>>;
+  gitRefName: string;
+  setGitRefName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, AdvancedImportModalProps>(
@@ -67,6 +69,13 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
         return "Import";
       }
     }, [props.clonableUrl.clonableUrl.type]);
+
+    const gitServerRefsByType = useMemo(() => {
+      return props.clonableUrl.gitRefsPromise.data?.refs.reduce(
+        (acc, next) => acc.set(getGitRefType(next.ref), [...(acc.get(getGitRefType(next.ref)) ?? []), next]),
+        new Map<GitRefType, ServerRef[]>()
+      );
+    }, [props.clonableUrl.gitRefsPromise.data?.refs]);
 
     return (
       <>
@@ -157,8 +166,8 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
               </FormGroup>
               <FormGroup
                 style={!isPotentiallyGit(props.clonableUrl.clonableUrl.type) ? { visibility: "hidden" } : {}}
-                fieldId="branch"
-                label="Branch"
+                fieldId="gitRefName"
+                label="Branch/Tag"
                 isRequired={true}
                 helperText={
                   <FormHelperText
@@ -172,22 +181,28 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                 <Select
                   isDisabled={props.validation.option !== ValidatedOptions.success}
                   variant={SelectVariant.typeahead}
-                  selections={props.branch}
+                  selections={props.gitRefName}
                   isOpen={isBranchSelectorOpen}
                   onToggle={setBranchSelectorOpen}
+                  isGrouped={true}
                   onSelect={(e, value) => {
-                    props.setBranch(value as string);
+                    props.setGitRefName(value as string);
                     setBranchSelectorOpen(false);
                   }}
                   menuAppendTo={document.body}
                   maxHeight={"400px"}
                 >
-                  {props.clonableUrl.gitRefsPromise.data?.refs
-                    ?.filter(({ ref }) => ref.startsWith("refs/heads/"))
-                    .map(({ ref }, index) => (
-                      <SelectOption key={index} value={ref.replace("refs/heads/", "")}>
-                        {ref.replace("refs/heads/", "")}
-                      </SelectOption>
+                  {[...(gitServerRefsByType?.entries() ?? [])]
+                    .sort(([a], [b]) => (a > b ? 1 : -1))
+                    .filter(([type]) => type === GitRefType.BRANCH || type === GitRefType.TAG)
+                    .map(([type, gitServerRefs]) => (
+                      <SelectGroup key={type} label={getGitRefTypeLabel(type)}>
+                        {gitServerRefs.map(({ ref }) => (
+                          <SelectOption key={ref} value={getGitRefName(ref)}>
+                            {getGitRefName(ref)}
+                          </SelectOption>
+                        ))}
+                      </SelectGroup>
                     ))}
                 </Select>
               </FormGroup>

@@ -24,16 +24,16 @@ import { AuthSource, AuthSourceKeys, useSelectedAuthInfo } from "../authSources/
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import { useSettings } from "../settings/SettingsContext";
-import { PromiseStateStatus, usePromiseState } from "../workspace/hooks/PromiseState";
+import { PromiseStateStatus, useLivePromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
 import { GitServerRef } from "../workspace/worker/api/GitServerRef";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import CheckCircleIcon from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import CodeBranchIcon from "@patternfly/react-icons/dist/js/icons/code-branch-icon";
 import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefTypeIcon } from "../gitRefs/GitRefs";
 
 export enum UrlType {
   //git
@@ -161,18 +161,18 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url });
       }
 
-      const customBranchMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
+      const customRefNameMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
         path: "/:org/:repo/tree/:tree",
         exact: true,
         strict: true,
         sensitive: false,
       });
 
-      if (customBranchMatch) {
-        const branch = customBranchMatch.params.tree;
-        const customBranchUrl = new URL(urlString);
-        customBranchUrl.pathname = customBranchUrl.pathname.replace(`/tree/${branch}`, "");
-        return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url: customBranchUrl, branch });
+      if (customRefNameMatch) {
+        const gitRefName = customRefNameMatch.params.tree;
+        const customGitRefNameUrl = new URL(urlString);
+        customGitRefNameUrl.pathname = customGitRefNameUrl.pathname.replace(`/tree/${gitRefName}`, "");
+        return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url: customGitRefNameUrl, branch: gitRefName });
       }
 
       const gitHubFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
@@ -286,31 +286,31 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 export function useClonableUrl(
   url: string | undefined,
   authSource: AuthSource | undefined,
-  branch: string | undefined
+  gitRefName: string | undefined
 ) {
   const importableUrl = useImportableUrl(url);
 
   const gitRefsPromise = useGitRefs(isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined, authSource);
 
-  const branchFromUrl = useMemo(() => {
+  const gitRefNameFromUrl = useMemo(() => {
     return (importableUrl as any).branch ?? gitRefsPromise.data?.defaultBranch;
   }, [gitRefsPromise.data?.defaultBranch, importableUrl]);
 
-  const selectedBranch = useMemo<string | undefined>(() => {
-    if (branch) {
-      const branchExists = gitRefsPromise.data?.refs.some(({ ref }) => ref === `refs/heads/${branch}`);
-      if (branchExists) {
-        return branch;
+  const selectedGitRefName = useMemo<string | undefined>(() => {
+    if (gitRefName) {
+      const gitRefNameExists = gitRefsPromise.data?.refs.some(({ ref }) => getGitRefName(ref) === gitRefName);
+      if (gitRefNameExists) {
+        return gitRefName;
       }
-    } else if (branchFromUrl) {
-      const branchFromUrlExists = gitRefsPromise.data?.refs.some(({ ref }) => ref === `refs/heads/${branchFromUrl}`);
-      if (branchFromUrlExists) {
-        return branchFromUrl;
+    } else if (gitRefNameFromUrl) {
+      const gitRefFromUrlExists = gitRefsPromise.data?.refs.some(({ ref }) => getGitRefName(ref) === gitRefNameFromUrl);
+      if (gitRefFromUrlExists) {
+        return gitRefNameFromUrl;
       }
     }
 
     return undefined;
-  }, [branch, branchFromUrl, gitRefsPromise.data]);
+  }, [gitRefName, gitRefNameFromUrl, gitRefsPromise.data]);
 
   const clonableUrl: ImportableUrl = useMemo(() => {
     if (!isPotentiallyGit(importableUrl.type) || gitRefsPromise.status === PromiseStateStatus.PENDING) {
@@ -318,12 +318,12 @@ export function useClonableUrl(
     }
 
     if (gitRefsPromise.data?.defaultBranch) {
-      if (selectedBranch) {
+      if (selectedGitRefName) {
         return importableUrl;
       } else {
         return {
           type: UrlType.INVALID,
-          error: `Selected branch '${branch || branchFromUrl}' does not exist.`,
+          error: `Selected ref '${gitRefName || gitRefNameFromUrl}' does not exist.`,
         };
       }
     }
@@ -332,16 +332,23 @@ export function useClonableUrl(
       type: UrlType.INVALID,
       error: `Can't determine Git refs for '${importableUrl.url?.toString()}'`,
     };
-  }, [importableUrl, gitRefsPromise.status, gitRefsPromise.data?.defaultBranch, selectedBranch, branch, branchFromUrl]);
+  }, [
+    importableUrl,
+    gitRefsPromise.status,
+    gitRefsPromise.data?.defaultBranch,
+    selectedGitRefName,
+    gitRefName,
+    gitRefNameFromUrl,
+  ]);
 
-  return { clonableUrl, selectedBranch, gitRefsPromise };
+  return { clonableUrl, selectedGitRefName, gitRefsPromise };
 }
 
 export function useGitRefs(url: URL | undefined, authSource: AuthSource | undefined) {
   const workspaces = useWorkspaces();
   const { authInfo } = useSelectedAuthInfo(authSource);
 
-  const gitRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; defaultRef: string }>(
+  const gitRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
     useMemo(() => {
       if (!url) {
         return { error: "Can't determine Git refs without URL." };
@@ -352,11 +359,11 @@ export function useGitRefs(url: URL | undefined, authSource: AuthSource | undefi
           authInfo,
         });
 
-        const defaultRef = refs.filter((f) => f.ref === "HEAD").pop()!.target!;
+        const headRef = refs.filter((f) => f.ref === "HEAD").pop()!.target!;
 
-        const defaultBranch = defaultRef.replace("refs/heads/", "");
+        const defaultBranch = getGitRefName(headRef);
 
-        return { refs, defaultBranch, defaultRef };
+        return { refs, defaultBranch, headRef };
       };
     }, [authInfo, url, workspaces])
   );
@@ -364,41 +371,10 @@ export function useGitRefs(url: URL | undefined, authSource: AuthSource | undefi
   return gitRefsPromise;
 }
 
-export function useLivePromiseState<T>(promiseDelegate: (() => Promise<T>) | { error: string }) {
-  const [state, setState] = usePromiseState<T>();
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (typeof promiseDelegate !== "function") {
-          setState({ error: promiseDelegate.error });
-          return;
-        }
-        setState({ loading: true });
-        promiseDelegate()
-          .then((refs) => {
-            if (canceled.get()) {
-              return;
-            }
-            setState({ data: refs });
-          })
-          .catch((e) => {
-            if (canceled.get()) {
-              return;
-            }
-            console.log(e);
-            setState({ error: e });
-          });
-      },
-      [promiseDelegate, setState]
-    )
-  );
-  return state;
-}
-
 export function useImportableUrlValidation(
   authSource: AuthSourceKeys | undefined,
   url: string | undefined,
-  branch: string | undefined,
+  gitRefName: string | undefined,
   clonableUrl: ReturnType<typeof useClonableUrl>,
   advancedImportModalRef?: React.RefObject<AdvancedImportModalRef>
 ) {
@@ -436,13 +412,13 @@ export function useImportableUrlValidation(
         <FormHelperText
           isHidden={false}
           icon={<CheckCircleIcon style={{ visibility: "hidden", width: 0 }} />}
-          style={branch ? { display: "flex", flexWrap: "nowrap" } : { visibility: "hidden" }}
+          style={gitRefName ? { display: "flex", flexWrap: "nowrap" } : { visibility: "hidden" }}
         >
-          <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ display: "inline-flex", gap: "6px" }}>
+          <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ display: "inline-flex" }}>
             <FlexItem style={{ minWidth: 0 }}>
-              <CodeBranchIcon />
+              <GitRefTypeIcon type={getGitRefType(gitRefName!)} />
               &nbsp;&nbsp;
-              {branch}
+              {getGitRefName(gitRefName!)}
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
               <AuthSourceIcon authSource={authSource} />
@@ -467,7 +443,7 @@ export function useImportableUrlValidation(
     url,
     clonableUrl.gitRefsPromise.status,
     clonableUrl.clonableUrl.error,
-    branch,
+    gitRefName,
     authSource,
     settings.github.user?.login,
     advancedImportModalRef,

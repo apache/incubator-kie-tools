@@ -64,7 +64,7 @@ export function NewWorkspaceFromUrlPage() {
 
   const importableUrl = useImportableUrl(queryParamUrl);
   const clonableUrlObject = useClonableUrl(queryParamUrl, authSource, queryParamBranch);
-  const { clonableUrl, selectedBranch, gitRefsPromise } = clonableUrlObject;
+  const { clonableUrl, selectedGitRefName: selectedGitRef, gitRefsPromise } = clonableUrlObject;
 
   const setAuthSource = useCallback(
     (newAuthSource) => {
@@ -119,23 +119,23 @@ export function NewWorkspaceFromUrlPage() {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams
-          .with(QueryParams.BRANCH, typeof newBranch === "function" ? newBranch(selectedBranch ?? "") : newBranch)
+          .with(QueryParams.BRANCH, typeof newBranch === "function" ? newBranch(selectedGitRef ?? "") : newBranch)
           .toString(),
       });
     },
-    [history, queryParams, routes.import, selectedBranch]
+    [history, queryParams, routes.import, selectedGitRef]
   );
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    if (!selectedBranch) {
+    if (!selectedGitRef) {
       return;
     }
     history.replace({
       pathname: routes.import.path({}),
-      search: queryParams.with(QueryParams.BRANCH, selectedBranch).with(QueryParams.AUTH_SOURCE, authSource).toString(),
+      search: queryParams.with(QueryParams.BRANCH, selectedGitRef).with(QueryParams.AUTH_SOURCE, authSource).toString(),
     });
-  }, [authSource, history, queryParams, routes.import, selectedBranch, setBranch]);
+  }, [authSource, history, queryParams, routes.import, selectedGitRef, setBranch]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -202,7 +202,7 @@ export function NewWorkspaceFromUrlPage() {
             origin: {
               kind: WorkspaceKind.GIT,
               url: importableUrl.url.toString(),
-              branch: selectedBranch ?? gitRefsPromise.data.defaultBranch,
+              branch: selectedGitRef ?? gitRefsPromise.data.defaultBranch,
             },
             gitConfig: authInfo,
             authInfo: authInfo,
@@ -220,7 +220,7 @@ export function NewWorkspaceFromUrlPage() {
             origin: {
               kind: WorkspaceKind.GIT,
               url: importableUrl.url.toString(),
-              branch: selectedBranch ?? gitRefsPromise.data.defaultBranch,
+              branch: selectedGitRef ?? gitRefsPromise.data.defaultBranch,
             },
             gitConfig: authInfo,
             authInfo: authInfo,
@@ -240,7 +240,7 @@ export function NewWorkspaceFromUrlPage() {
             origin: {
               kind: WorkspaceKind.GITHUB_GIST,
               url: importableUrl.url.toString(),
-              branch: queryParamBranch ?? selectedBranch ?? gitRefsPromise.data.defaultBranch,
+              branch: queryParamBranch ?? selectedGitRef ?? gitRefsPromise.data.defaultBranch,
             },
             gitConfig: authInfo,
             authInfo: authInfo,
@@ -306,7 +306,7 @@ export function NewWorkspaceFromUrlPage() {
     gitRefsPromise.error,
     cloneGitRepository,
     queryParamBranch,
-    selectedBranch,
+    selectedGitRef,
     authInfo,
     createWorkspaceForFile,
     settingsDispatch.github.octokit.repos,
@@ -323,7 +323,7 @@ export function NewWorkspaceFromUrlPage() {
   }, [history, queryParamUrl, queryParams, routes.import]);
 
   useEffect(() => {
-    if ((!queryParamBranch || !queryParamAuthSource) && selectedBranch) {
+    if ((!queryParamBranch || !queryParamAuthSource) && selectedGitRef) {
       return;
     }
 
@@ -346,7 +346,7 @@ export function NewWorkspaceFromUrlPage() {
     queryParamUrl,
     queryParamBranch,
     queryParamAuthSource,
-    selectedBranch,
+    selectedGitRef,
   ]);
 
   const validation = useImportableUrlValidation(authSource, queryParamUrl, queryParamBranch, clonableUrlObject);
@@ -392,10 +392,10 @@ export function NewWorkspaceFromUrlPage() {
               validation={validation}
               authSource={authSource}
               url={queryParamUrl ?? ""}
-              branch={selectedBranch ?? ""}
+              gitRefName={selectedGitRef ?? ""}
               setAuthSource={setAuthSource}
               setUrl={setUrl}
-              setBranch={setBranch}
+              setGitRefName={setBranch}
             />
           )}
         </PageSection>
