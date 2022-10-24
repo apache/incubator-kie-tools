@@ -53,7 +53,7 @@ public class ImageStripsTest {
                                                            ImageStrip.Orientation.HORIZONTAL);
 
     @Mock
-    private ImageElementProxy proxy;
+    private ImageBitmapProxy proxy;
 
     private ImageStrips instance;
 
@@ -82,7 +82,7 @@ public class ImageStripsTest {
         Runnable callback = mock(Runnable.class);
         instance.register(new ImageStrip[]{STRIP},
                           callback);
-        ImageElementProxy aProxy = instance.newProxy(STRIP);
+        ImageBitmapProxy aProxy = instance.newProxy(STRIP);
         assertNotNull(aProxy);
         assertTrue(aProxy instanceof ImageStrips.ImageElementProxyDelegate);
         ImageStrips.ImageElementProxyDelegate delegateProxy = (ImageStrips.ImageElementProxyDelegate) aProxy;

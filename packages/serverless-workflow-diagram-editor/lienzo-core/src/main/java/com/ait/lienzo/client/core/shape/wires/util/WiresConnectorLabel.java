@@ -138,7 +138,6 @@ public class WiresConnectorLabel implements IDestroyable {
 
     private void refresh() {
         executor.accept(connector, text);
-        batch();
     }
 
     private void batch() {

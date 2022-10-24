@@ -17,11 +17,11 @@
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
 import com.ait.lienzo.client.core.image.ImageProxy;
+import com.ait.lienzo.client.core.image.JsImageBitmap;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwtmockito.WithClassesToStub;
-import elemental2.dom.HTMLImageElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,14 +41,14 @@ public class LienzoPictureUtilsTest {
     private ImageProxy imageProxy;
 
     @Mock
-    private HTMLImageElement imageElement;
+    private JsImageBitmap image;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         //Fake image loading...
         when(picture.getImageProxy()).thenReturn(imageProxy);
-        when(imageProxy.getImage()).thenReturn(imageElement);
+        when(imageProxy.getImage()).thenReturn(image);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class LienzoPictureUtilsTest {
 
         verify(picture).removeFromParent();
 
-        verify(imageElement).remove();
+        verify(image).close();
     }
 
     @Test
@@ -74,6 +74,6 @@ public class LienzoPictureUtilsTest {
                                       });
 
         verify(picture).removeFromParent();
-        verify(imageElement).remove();
+        verify(image).close();
     }
 }
