@@ -120,9 +120,25 @@ public class WiresConnectorViewExt<T>
     @SuppressWarnings("unchecked")
     public T setTitle(final String title) {
         return Optional.ofNullable(title)
-                .map(t -> label.map(l -> l.configure(text -> text.setText(t))))
+                .map(t -> label.map(l -> l.configure(text -> {
+                                                         l.rectangle.setHeight(text.getBoundingBox().getHeight());
+                                                         l.rectangle.setWidth(text.getBoundingBox().getWidth());
+                                                         text.setFillColor("white");
+                                                         text.setStrokeColor("white");
+                                                         text.setFontFamily("Verdana");
+                                                         text.setFontSize(10);
+                                                         text.setText(t);
+                                                     }
+                                    )
+                ))
                 .map(l -> cast())
                 .orElse(cast());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void setTitleBackgroundColor(String color) {
+        label.ifPresent(l -> l.setRectangleColor(color));
     }
 
     @Override
@@ -275,7 +291,7 @@ public class WiresConnectorViewExt<T>
     }
 
     protected Optional<WiresConnectorLabel> createLabel(final String title) {
-        return Optional.of(WiresConnectorLabelFactory.newLabelOnFirstSegment(title, this));
+        return Optional.of(WiresConnectorLabelFactory.newLabelOnLongestSegment(title, this));
     }
 
     private void destroyLabel() {

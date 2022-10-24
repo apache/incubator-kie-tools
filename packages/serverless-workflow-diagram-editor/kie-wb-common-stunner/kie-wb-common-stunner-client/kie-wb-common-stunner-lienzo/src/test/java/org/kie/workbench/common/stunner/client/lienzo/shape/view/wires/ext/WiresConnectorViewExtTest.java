@@ -23,9 +23,11 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabel;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -47,6 +49,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorViewExtTest {
@@ -59,6 +62,11 @@ public class WiresConnectorViewExtTest {
 
     @Mock
     private WiresConnectorLabel label;
+
+    @Mock
+    private Rectangle rectangle;
+
+    private BoundingBox boundingBox;
 
     @Mock
     private Text labelText;
@@ -93,6 +101,9 @@ public class WiresConnectorViewExtTest {
                 return Optional.of(WiresConnectorViewExtTest.this.label);
             }
         });
+        boundingBox = new BoundingBox();
+        when(labelText.getBoundingBox()).thenReturn(boundingBox);
+        label.rectangle = rectangle;
         tested.setControl(connectorControl);
         layer.add(tested.getGroup());
     }
