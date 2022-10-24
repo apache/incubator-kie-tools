@@ -27,7 +27,7 @@ export class UserData {
   private readonly resourceTypes: string[];
 
   constructor(options: { configName: string; resourceTypes: string[]; defaults: any }) {
-    this.basePath = (electron.app || electron.remote.app).getPath("userData");
+    this.basePath = electron.app.getPath("userData");
     this.dataPath = path.join(this.basePath, options.configName + ".json");
     this.defaults = options.defaults;
     this.resourceTypes = options.resourceTypes;
