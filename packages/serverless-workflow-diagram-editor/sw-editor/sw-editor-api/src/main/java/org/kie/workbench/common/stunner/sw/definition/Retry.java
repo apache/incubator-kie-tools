@@ -16,33 +16,44 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Retry {
 
     private String name;
     private String delay;
     private Integer maxAttempts;
 
-    public String getName() {
+    @JsOverlay
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    @JsOverlay
+    public final void setName(String name) {
         this.name = name;
     }
 
-    public String getDelay() {
+    @JsOverlay
+    public final String getDelay() {
         return delay;
     }
 
-    public void setDelay(String delay) {
+    @JsOverlay
+    public final void setDelay(String delay) {
         this.delay = delay;
     }
 
-    public Integer getMaxAttempts() {
+    @JsOverlay
+    public final Integer getMaxAttempts() {
         return maxAttempts;
     }
 
-    public void setMaxAttempts(Integer maxAttempts) {
+    @JsOverlay
+    public final void setMaxAttempts(Integer maxAttempts) {
         this.maxAttempts = maxAttempts;
     }
 }

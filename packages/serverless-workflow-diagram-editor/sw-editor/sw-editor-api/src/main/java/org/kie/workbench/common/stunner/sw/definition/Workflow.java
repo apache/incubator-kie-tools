@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJso
 @Definition
 @CanContain(roles = {Workflow.LABEL_ROOT_NODE})
 @JSONMapper
+@JsType
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
 public class Workflow {
 

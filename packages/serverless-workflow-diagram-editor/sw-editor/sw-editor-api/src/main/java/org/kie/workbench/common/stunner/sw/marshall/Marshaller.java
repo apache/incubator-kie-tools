@@ -276,7 +276,7 @@ public class Marshaller {
                 for (Edge e : invalidEdges) {
                     if (((View) e.getSourceNode().getContent()).getDefinition() instanceof State) {
                         getContext().addMessage(new Message(MessageCode.INVALID_TARGET_NAME,
-                                                            ((State) ((View) e.getSourceNode().getContent()).getDefinition()).name));
+                                                            ((State) ((View) e.getSourceNode().getContent()).getDefinition()).getName()));
                     }
                 }
                 node.getOutEdges().clear();

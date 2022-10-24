@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonSeria
 @Bindable
 @Definition
 @MorphBase(defaultType = CallFunctionAction.class)
+@JsType
 public class ActionNode {
 
     public static final String LABEL_ACTION = "action";

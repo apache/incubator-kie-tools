@@ -18,11 +18,15 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeSerializer;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class SubFlowRef {
 
     private String workflowId;
@@ -35,35 +39,43 @@ public class SubFlowRef {
     @JsonbTypeDeserializer(SubflowExecutionTypeJsonbTypeDeserializer.class)
     private SubflowExecutionType onParentComplete;
 
-    public String getWorkflowId() {
+    @JsOverlay
+    public final String getWorkflowId() {
         return workflowId;
     }
 
-    public void setWorkflowId(String workflowId) {
+    @JsOverlay
+    public final void setWorkflowId(String workflowId) {
         this.workflowId = workflowId;
     }
 
-    public String getVersion() {
+    @JsOverlay
+    public final String getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    @JsOverlay
+    public final void setVersion(String version) {
         this.version = version;
     }
 
-    public FunctionRefType getInvoke() {
+    @JsOverlay
+    public final FunctionRefType getInvoke() {
         return invoke;
     }
 
-    public void setInvoke(FunctionRefType invoke) {
+    @JsOverlay
+    public final void setInvoke(FunctionRefType invoke) {
         this.invoke = invoke;
     }
 
-    public SubflowExecutionType getOnParentComplete() {
+    @JsOverlay
+    public final SubflowExecutionType getOnParentComplete() {
         return onParentComplete;
     }
 
-    public void setOnParentComplete(SubflowExecutionType onParentComplete) {
+    @JsOverlay
+    public final void setOnParentComplete(SubflowExecutionType onParentComplete) {
         this.onParentComplete = onParentComplete;
     }
 }

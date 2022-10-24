@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -47,6 +48,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJso
 @Definition
 @CanDock(roles = {Timeout.LABEL_TIMEOUT})
 @MorphBase(defaultType = InjectState.class)
+@JsType
 public class State {
 
     public static final String LABEL_STATE = "state";

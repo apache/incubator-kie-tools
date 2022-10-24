@@ -18,11 +18,15 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowExecTimeoutJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowExecTimeoutJsonSerializer;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class WorkflowTimeouts {
 
     @JsonbTypeSerializer(WorkflowExecTimeoutJsonSerializer.class)
@@ -33,43 +37,53 @@ public class WorkflowTimeouts {
     private String branchExecTimeout;
     private String eventTimeout;
 
-    public Object getWorkflowExecTimeout() {
+    @JsOverlay
+    public final Object getWorkflowExecTimeout() {
         return workflowExecTimeout;
     }
 
-    public void setWorkflowExecTimeout(Object workflowExecTimeout) {
+    @JsOverlay
+    public final void setWorkflowExecTimeout(Object workflowExecTimeout) {
         this.workflowExecTimeout = workflowExecTimeout;
     }
 
-    public String getStateExecTimeout() {
+    @JsOverlay
+    public final String getStateExecTimeout() {
         return stateExecTimeout;
     }
 
-    public void setStateExecTimeout(String stateExecTimeout) {
+    @JsOverlay
+    public final void setStateExecTimeout(String stateExecTimeout) {
         this.stateExecTimeout = stateExecTimeout;
     }
 
-    public String getActionExecTimeout() {
+    @JsOverlay
+    public final String getActionExecTimeout() {
         return actionExecTimeout;
     }
 
-    public void setActionExecTimeout(String actionExecTimeout) {
+    @JsOverlay
+    public final void setActionExecTimeout(String actionExecTimeout) {
         this.actionExecTimeout = actionExecTimeout;
     }
 
-    public String getBranchExecTimeout() {
+    @JsOverlay
+    public final String getBranchExecTimeout() {
         return branchExecTimeout;
     }
 
-    public void setBranchExecTimeout(String branchExecTimeout) {
+    @JsOverlay
+    public final void setBranchExecTimeout(String branchExecTimeout) {
         this.branchExecTimeout = branchExecTimeout;
     }
 
-    public String getEventTimeout() {
+    @JsOverlay
+    public final String getEventTimeout() {
         return eventTimeout;
     }
 
-    public void setEventTimeout(String eventTimeout) {
+    @JsOverlay
+    public final void setEventTimeout(String eventTimeout) {
         this.eventTimeout = eventTimeout;
     }
 }

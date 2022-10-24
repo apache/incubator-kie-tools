@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class ContinueAs {
 
     private String workflowId;
@@ -26,35 +30,44 @@ public class ContinueAs {
     private String data;
     private String workflowExecTimeout;
 
-    public String getWorkflowId() {
+    @JsOverlay
+    public final String getWorkflowId() {
         return workflowId;
     }
 
-    public void setWorkflowId(String workflowId) {
+    @JsOverlay
+
+    public final void setWorkflowId(String workflowId) {
         this.workflowId = workflowId;
     }
 
-    public String getVersion() {
+    @JsOverlay
+    public final String getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    @JsOverlay
+    public final void setVersion(String version) {
         this.version = version;
     }
 
-    public String getData() {
+    @JsOverlay
+    public final String getData() {
         return data;
     }
 
-    public void setData(String data) {
+    @JsOverlay
+    public final void setData(String data) {
         this.data = data;
     }
 
-    public String getWorkflowExecTimeout() {
+    @JsOverlay
+    public final String getWorkflowExecTimeout() {
         return workflowExecTimeout;
     }
 
-    public void setWorkflowExecTimeout(String workflowExecTimeout) {
+    @JsOverlay
+    public final void setWorkflowExecTimeout(String workflowExecTimeout) {
         this.workflowExecTimeout = workflowExecTimeout;
     }
 }

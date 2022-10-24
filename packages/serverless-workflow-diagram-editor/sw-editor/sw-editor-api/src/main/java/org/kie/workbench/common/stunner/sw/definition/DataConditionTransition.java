@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -50,6 +51,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefi
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
+@JsType
 public class DataConditionTransition {
 
     public static final String LABEL_TRANSITION_DATA_CONDITION = "transition_data_condition";

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTyp
 
 @Bindable
 @Definition
+@JsType
 public class End {
 
     public static final String LABEL_END = "end";
@@ -46,6 +48,7 @@ public class End {
     public End() {
         this.name = "End";
     }
+
 
     public Set<String> getLabels() {
         return labels;

@@ -18,11 +18,15 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeSerializer;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class StateEnd {
 
     private Boolean terminate;
@@ -34,35 +38,43 @@ public class StateEnd {
 
     private ProducedEvent[] produceEvents;
 
-    public Boolean getTerminate() {
+    @JsOverlay
+    public final Boolean getTerminate() {
         return terminate;
     }
 
-    public void setTerminate(Boolean terminate) {
+    @JsOverlay
+    public final void setTerminate(Boolean terminate) {
         this.terminate = terminate;
     }
 
-    public Boolean getCompensate() {
+    @JsOverlay
+    public final Boolean getCompensate() {
         return compensate;
     }
 
-    public void setCompensate(Boolean compensate) {
+    @JsOverlay
+    public final void setCompensate(Boolean compensate) {
         this.compensate = compensate;
     }
 
-    public Object getContinueAs() {
+    @JsOverlay
+    public final Object getContinueAs() {
         return continueAs;
     }
 
-    public void setContinueAs(Object continueAs) {
+    @JsOverlay
+    public final void setContinueAs(Object continueAs) {
         this.continueAs = continueAs;
     }
 
-    public ProducedEvent[] getProduceEvents() {
+    @JsOverlay
+    public final ProducedEvent[] getProduceEvents() {
         return produceEvents;
     }
 
-    public void setProduceEvents(ProducedEvent[] produceEvents) {
+    @JsOverlay
+    public final void setProduceEvents(ProducedEvent[] produceEvents) {
         this.produceEvents = produceEvents;
     }
 }

@@ -18,6 +18,9 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
@@ -26,6 +29,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJs
  * Used to define events and their correlations.
  */
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Event {
 
     /**
@@ -53,59 +57,73 @@ public class Event {
     @JsonbTypeDeserializer(WorkflowFunctionsJsonDeserializer.class)
     private Object functions;
 
-    public String getName() {
+    @JsOverlay
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    @JsOverlay
+    public final void setName(String name) {
         this.name = name;
     }
 
-    public String getSource() {
+    @JsOverlay
+    public final String getSource() {
         return source;
     }
 
-    public void setSource(String source) {
+    @JsOverlay
+    public final void setSource(String source) {
         this.source = source;
     }
 
-    public String getType() {
+    @JsOverlay
+    public final String getType() {
         return type;
     }
 
-    public void setType(String type) {
+    @JsOverlay
+    public final void setType(String type) {
         this.type = type;
     }
 
-    public Boolean getDataOnly() {
+    @JsOverlay
+    public final Boolean getDataOnly() {
         return dataOnly;
     }
 
-    public void setDataOnly(Boolean dataOnly) {
+    @JsOverlay
+    public final void setDataOnly(Boolean dataOnly) {
         this.dataOnly = dataOnly;
     }
 
-    public Kind getKind() {
+    @JsOverlay
+    public final Kind getKind() {
         return kind;
     }
 
-    public void setKind(Kind kind) {
+    @JsOverlay
+    public final void setKind(Kind kind) {
         this.kind = kind;
     }
 
-    public Correlation[] getCorrelation() {
+    @JsOverlay
+    public final Correlation[] getCorrelation() {
         return correlation;
     }
 
-    public void setCorrelation(Correlation[] correlation) {
+    @JsOverlay
+    public final void setCorrelation(Correlation[] correlation) {
         this.correlation = correlation;
     }
 
-    public Object getFunctions() {
+    @JsOverlay
+    public final Object getFunctions() {
         return functions;
     }
 
-    public void setFunctions(Object functions) {
+    @JsOverlay
+    public final void setFunctions(Object functions) {
         this.functions = functions;
     }
 }

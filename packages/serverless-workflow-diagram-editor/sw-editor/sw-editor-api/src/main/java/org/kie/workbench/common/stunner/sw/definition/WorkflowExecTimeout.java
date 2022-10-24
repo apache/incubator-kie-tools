@@ -16,36 +16,46 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class WorkflowExecTimeout {
 
     private String duration;
     private Boolean interrupt;
     private String runBefore;
 
-    public String getDuration() {
+    @JsOverlay
+    public final String getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    @JsOverlay
+    public final void setDuration(String duration) {
         this.duration = duration;
     }
 
-    public Boolean getInterrupt() {
+    @JsOverlay
+    public final Boolean getInterrupt() {
         return interrupt;
     }
 
-    public void setInterrupt(Boolean interrupt) {
+    @JsOverlay
+    public final void setInterrupt(Boolean interrupt) {
         this.interrupt = interrupt;
     }
 
-    public String getRunBefore() {
+    @JsOverlay
+    public final String getRunBefore() {
         return runBefore;
     }
 
-    public void setRunBefore(String runBefore) {
+    @JsOverlay
+    public final void setRunBefore(String runBefore) {
         this.runBefore = runBefore;
     }
 }

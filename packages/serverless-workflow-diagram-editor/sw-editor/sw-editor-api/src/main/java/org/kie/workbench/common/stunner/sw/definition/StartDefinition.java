@@ -18,11 +18,15 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeSerializer;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class StartDefinition {
 
     private String stateName;
@@ -31,19 +35,23 @@ public class StartDefinition {
     @JsonbTypeDeserializer(ScheduleJsonbTypeDeserializer.class)
     private Object schedule;
 
-    public String getStateName() {
+    @JsOverlay
+    public final String getStateName() {
         return stateName;
     }
 
-    public void setStateName(String stateName) {
+    @JsOverlay
+    public final void setStateName(String stateName) {
         this.stateName = stateName;
     }
 
-    public Object getSchedule() {
+    @JsOverlay
+    public final Object getSchedule() {
         return schedule;
     }
 
-    public void setSchedule(Object schedule) {
+    @JsOverlay
+    public final void setSchedule(Object schedule) {
         this.schedule = schedule;
     }
 }

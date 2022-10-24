@@ -17,16 +17,22 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 
-//TODO maybe is should converted to JsType=native with custom ser/deser
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Data {
 
     private String result;
 
-    public String getResult() {
+    @JsOverlay
+    public final String getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    @JsOverlay
+    public final void setResult(String result) {
         this.result = result;
     }
 }

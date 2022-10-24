@@ -16,24 +16,33 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Sleep {
 
     private String after;
     private String before;
 
-    public String getAfter() {
+    @JsOverlay
+    public final String getAfter() {
         return after;
     }
 
-    public void setAfter(String after) {
+    @JsOverlay
+    public final void setAfter(String after) {
         this.after = after;
     }
 
-    public String getBefore() {
+    @JsOverlay
+    public final String getBefore() {
         return before;
     }
 
-    public void setBefore(String before) {
+    @JsOverlay
+    public final void setBefore(String before) {
         this.before = before;
     }
 }

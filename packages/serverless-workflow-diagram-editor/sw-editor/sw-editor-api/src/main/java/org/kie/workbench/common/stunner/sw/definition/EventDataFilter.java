@@ -16,33 +16,44 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class EventDataFilter {
 
     private Boolean useData;
     private String data;
     private String toStateData;
 
-    public Boolean getUseData() {
+    @JsOverlay
+    public final Boolean getUseData() {
         return useData;
     }
 
-    public void setUseData(Boolean useData) {
+    @JsOverlay
+    public final void setUseData(Boolean useData) {
         this.useData = useData;
     }
 
-    public String getData() {
+    @JsOverlay
+    public final String getData() {
         return data;
     }
 
-    public void setData(String data) {
+    @JsOverlay
+    public final void setData(String data) {
         this.data = data;
     }
 
-    public String getToStateData() {
+    @JsOverlay
+    public final String getToStateData() {
         return toStateData;
     }
 
-    public void setToStateData(String toStateData) {
+    @JsOverlay
+    public final void setToStateData(String toStateData) {
         this.toStateData = toStateData;
     }
 }

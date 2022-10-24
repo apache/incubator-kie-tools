@@ -18,11 +18,15 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.ArgumentsValueHolderJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ValueHolderJsonbTypeDeserializer;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class FunctionRef {
 
     private String refName;
@@ -33,35 +37,43 @@ public class FunctionRef {
     @JsonbTypeDeserializer(ValueHolderJsonbTypeDeserializer.class)
     private ValueHolder arguments;
 
-    public String getRefName() {
+    @JsOverlay
+    public final String getRefName() {
         return refName;
     }
 
-    public void setRefName(String refName) {
+    @JsOverlay
+    public final void setRefName(String refName) {
         this.refName = refName;
     }
 
-    public String getSelectionSet() {
+    @JsOverlay
+    public final String getSelectionSet() {
         return selectionSet;
     }
 
-    public void setSelectionSet(String selectionSet) {
+    @JsOverlay
+    public final void setSelectionSet(String selectionSet) {
         this.selectionSet = selectionSet;
     }
 
-    public FunctionRefType getInvoke() {
+    @JsOverlay
+    public final FunctionRefType getInvoke() {
         return invoke;
     }
 
-    public void setInvoke(FunctionRefType invoke) {
+    @JsOverlay
+    public final void setInvoke(FunctionRefType invoke) {
         this.invoke = invoke;
     }
 
-    public ValueHolder getArguments() {
+    @JsOverlay
+    public final ValueHolder getArguments() {
         return arguments;
     }
 
-    public void setArguments(ValueHolder arguments) {
+    @JsOverlay
+    public final void setArguments(ValueHolder arguments) {
         this.arguments = arguments;
     }
 }

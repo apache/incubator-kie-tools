@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-//TODO is it the same as EventRef
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class ActionEventRef {
 
     private String produceEventRef;
@@ -25,43 +29,53 @@ public class ActionEventRef {
     private String data;
     private FunctionRefType invoke;
 
-    public String getProduceEventRef() {
+    @JsOverlay
+    public final String getProduceEventRef() {
         return produceEventRef;
     }
 
-    public void setProduceEventRef(String produceEventRef) {
+    @JsOverlay
+    public final void setProduceEventRef(String produceEventRef) {
         this.produceEventRef = produceEventRef;
     }
 
-    public String getConsumeEventRef() {
+    @JsOverlay
+    public final String getConsumeEventRef() {
         return consumeEventRef;
     }
 
-    public void setConsumeEventRef(String consumeEventRef) {
+    @JsOverlay
+    public final void setConsumeEventRef(String consumeEventRef) {
         this.consumeEventRef = consumeEventRef;
     }
 
-    public String getConsumeEventTimeout() {
+    @JsOverlay
+    public final String getConsumeEventTimeout() {
         return consumeEventTimeout;
     }
 
-    public void setConsumeEventTimeout(String consumeEventTimeout) {
+    @JsOverlay
+    public final void setConsumeEventTimeout(String consumeEventTimeout) {
         this.consumeEventTimeout = consumeEventTimeout;
     }
 
-    public String getData() {
+    @JsOverlay
+    public final String getData() {
         return data;
     }
 
-    public void setData(String data) {
+    @JsOverlay
+    public final void setData(String data) {
         this.data = data;
     }
 
-    public FunctionRefType getInvoke() {
+    @JsOverlay
+    public final FunctionRefType getInvoke() {
         return invoke;
     }
 
-    public void setInvoke(FunctionRefType invoke) {
+    @JsOverlay
+    public final void setInvoke(FunctionRefType invoke) {
         this.invoke = invoke;
     }
 }

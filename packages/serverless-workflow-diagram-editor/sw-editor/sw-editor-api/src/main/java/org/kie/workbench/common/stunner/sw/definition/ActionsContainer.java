@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 @Bindable
 @Definition
 @CanContain(roles = {ActionNode.LABEL_ACTION})
+@JsType
 public class ActionsContainer {
 
     public static final String LABEL_ACTIONS = "actions";

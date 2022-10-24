@@ -17,43 +17,55 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class ActionDataFilters {
 
     private String fromStateData;
     private String results;
     private String toStateData;
+    private Boolean useResults;
 
-    public String getFromStateData() {
+    @JsOverlay
+    public final String getFromStateData() {
         return fromStateData;
     }
 
-    public void setFromStateData(String fromStateData) {
+    @JsOverlay
+    public final void setFromStateData(String fromStateData) {
         this.fromStateData = fromStateData;
     }
 
-    public String getResults() {
+    @JsOverlay
+    public final String getResults() {
         return results;
     }
 
-    public void setResults(String results) {
+    @JsOverlay
+    public final void setResults(String results) {
         this.results = results;
     }
 
-    public String getToStateData() {
+    @JsOverlay
+    public final String getToStateData() {
         return toStateData;
     }
 
-    public void setToStateData(String toStateData) {
+    @JsOverlay
+    public final void setToStateData(String toStateData) {
         this.toStateData = toStateData;
     }
 
-    public Boolean getUseResults() {
+    @JsOverlay
+    public final Boolean getUseResults() {
         return useResults;
     }
 
-    public void setUseResults(Boolean useResults) {
+    @JsOverlay
+    public final void setUseResults(Boolean useResults) {
         this.useResults = useResults;
     }
-
-    private Boolean useResults;
 }

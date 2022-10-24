@@ -16,36 +16,46 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Error {
 
     private String name;
     private String code;
     private String description;
 
-    public String getName() {
+    @JsOverlay
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    @JsOverlay
+    public final void setName(String name) {
         this.name = name;
     }
 
-    public String getCode() {
+    @JsOverlay
+    public final String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    @JsOverlay
+    public final void setCode(String code) {
         this.code = code;
     }
 
-    public String getDescription() {
+    @JsOverlay
+    public final String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    @JsOverlay
+    public final void setDescription(String description) {
         this.description = description;
     }
 }

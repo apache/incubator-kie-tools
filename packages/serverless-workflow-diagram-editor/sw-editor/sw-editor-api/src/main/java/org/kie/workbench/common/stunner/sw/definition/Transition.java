@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @JSONMapper
+@JsType
 public class Transition {
 
     public static final String LABEL_TRANSITION = "transition";

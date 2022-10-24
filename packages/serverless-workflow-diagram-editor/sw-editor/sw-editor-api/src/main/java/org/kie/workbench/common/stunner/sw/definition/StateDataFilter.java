@@ -16,24 +16,33 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class StateDataFilter {
 
     private String input;
     private String output;
 
-    public String getInput() {
+    @JsOverlay
+    public final String getInput() {
         return input;
     }
 
-    public void setInput(String input) {
+    @JsOverlay
+    public final void setInput(String input) {
         this.input = input;
     }
 
-    public String getOutput() {
+    @JsOverlay
+    public final String getOutput() {
         return output;
     }
 
-    public void setOutput(String output) {
+    @JsOverlay
+    public final void setOutput(String output) {
         this.output = output;
     }
 }
