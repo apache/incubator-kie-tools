@@ -33,6 +33,7 @@ import CodeBranchIcon from "@patternfly/react-icons/dist/js/icons/code-branch-ic
 import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export enum UrlType {
   //git
@@ -431,25 +432,30 @@ export function useImportableUrlValidation(
         <FormHelperText
           isHidden={false}
           icon={<CheckCircleIcon style={{ visibility: "hidden", width: 0 }} />}
-          style={branch ? {} : { visibility: "hidden" }}
+          style={branch ? { display: "flex", flexWrap: "nowrap" } : { visibility: "hidden" }}
         >
-          <>
-            <CodeBranchIcon />
-            &nbsp;&nbsp;
-            {branch}
-            &nbsp;&nbsp;
-            <AuthSourceIcon authSource={authSource} />
-            &nbsp;&nbsp;
-            {authSource === AuthSourceKeys.GITHUB ? settings.github.user?.login ?? "Not logged in" : "Anonymous"}
-            <Button
-              isSmall={true}
-              variant={ButtonVariant.link}
-              style={{ paddingTop: 0, paddingBottom: 0 }}
-              onClick={() => advancedImportModalRef?.current?.open()}
-            >
-              Change...
-            </Button>
-          </>
+          <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ gap: "6px" }}>
+            <FlexItem style={{ minWidth: 0 }}>
+              <CodeBranchIcon />
+              &nbsp;&nbsp;
+              {branch}
+            </FlexItem>
+            <FlexItem style={{ minWidth: 0 }}>
+              <AuthSourceIcon authSource={authSource} />
+              &nbsp;&nbsp;
+              {authSource === AuthSourceKeys.GITHUB ? settings.github.user?.login ?? "Not logged in" : "Anonymous"}
+            </FlexItem>
+            <FlexItem style={{ minWidth: 0 }}>
+              <Button
+                isSmall={true}
+                variant={ButtonVariant.link}
+                style={{ padding: 0 }}
+                onClick={() => advancedImportModalRef?.current?.open()}
+              >
+                Change...
+              </Button>
+            </FlexItem>
+          </Flex>
         </FormHelperText>
       ),
     };

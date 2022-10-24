@@ -99,16 +99,23 @@ export function ImportFromUrlCard() {
     <>
       <Card isFullHeight={true} isLarge={true} isPlain={true} isSelected={url.length > 0}>
         <CardTitle>
-          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} flexWrap={{ default: "nowrap" }}>
             <FlexItem>
               <TextContent>
-                <Text component={TextVariants.h2}>
+                <Text
+                  component={TextVariants.h2}
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
                   <CodeIcon />
-                  &nbsp;&nbsp;From URL&nbsp;&nbsp;
+                  &nbsp;&nbsp;From URL
                 </Text>
               </TextContent>
             </FlexItem>
-            <FlexItem>
+            <FlexItem style={{ minWidth: 0 }}>
               <Button
                 isSmall={true}
                 variant={ButtonVariant.link}
