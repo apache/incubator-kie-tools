@@ -26,7 +26,10 @@ export function getGitRefTypeLabel(type: GitRefType) {
   }
 }
 
-export function getGitRefName(ref: string) {
+export function getGitRefName(ref: string | undefined) {
+  if (!ref) {
+    return "";
+  }
   return ref
     .replace("refs/heads/", "")
     .replace("refs/merge-requests/", "")
@@ -34,14 +37,14 @@ export function getGitRefName(ref: string) {
     .replace("refs/pull/", "");
 }
 
-export function getGitRefType(ref: string) {
-  if (ref.startsWith("refs/heads")) {
+export function getGitRefType(ref: string | undefined) {
+  if (ref?.startsWith("refs/heads")) {
     return GitRefType.BRANCH;
-  } else if (ref.startsWith("refs/pull")) {
+  } else if (ref?.startsWith("refs/pull")) {
     return GitRefType.GITHUB_PULL_REQUEST;
-  } else if (ref.startsWith("refs/tags")) {
+  } else if (ref?.startsWith("refs/tags")) {
     return GitRefType.TAG;
-  } else if (ref.startsWith("refs/merge-requests")) {
+  } else if (ref?.startsWith("refs/merge-requests")) {
     return GitRefType.GITLAB_MERGE_REQUEST;
   } else {
     return GitRefType.OTHER;

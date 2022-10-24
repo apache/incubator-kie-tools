@@ -416,9 +416,9 @@ export function useImportableUrlValidation(
         >
           <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ display: "inline-flex" }}>
             <FlexItem style={{ minWidth: 0 }}>
-              <GitRefTypeIcon type={getGitRefType(gitRefName!)} />
+              <GitRefTypeIcon type={getGitRefType(gitRefName)} />
               &nbsp;&nbsp;
-              {getGitRefName(gitRefName!)}
+              {getGitRefName(gitRefName)}
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
               <AuthSourceIcon authSource={authSource} />
