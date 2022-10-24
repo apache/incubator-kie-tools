@@ -238,6 +238,24 @@ public class DiagramEditorTest {
     }
 
     @Test
+    public void testScaleToFitWorkflowFits() {
+        when(lienzoPanel.getWidePx()).thenReturn(500);
+        when(lienzoPanel.getHighPx()).thenReturn(500);
+        // No need to scale if workflow fits
+        when(lienzoPanel.getLayerBounds()).thenReturn(Bounds.build(0d, 0d, 400d, 400d));
+
+        DiagramEditor.scaleToFitWorkflow(stunnerEditor);
+
+        verify(lienzoPanel, times(1)).setPostResizeCallback(any(PostResizeCallback.class));
+        assertNotNull(lienzoPanel.getPostResizeCallback());
+        // Run callback
+        lienzoPanel.getPostResizeCallback().execute(lienzoPanel);
+        // Keep the transform
+        assertEquals(transform, viewport.getTransform());
+        verify(lienzoPanel, times(1)).setPostResizeCallback(null);
+    }
+
+    @Test
     public void testScaleToFitWorkflowScaleLessThanZero() {
         when(lienzoPanel.getWidePx()).thenReturn(0);
         when(lienzoPanel.getHighPx()).thenReturn(0);

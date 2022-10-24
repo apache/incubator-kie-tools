@@ -94,8 +94,6 @@ public class ControlHandleList extends Activatable implements IControlHandleList
             }
         }
         m_chlist.clear();
-
-        m_shape.batch();
     }
 
     @Override

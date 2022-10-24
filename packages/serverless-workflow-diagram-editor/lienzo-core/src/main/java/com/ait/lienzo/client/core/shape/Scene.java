@@ -317,8 +317,6 @@ public class Scene extends ContainerNode<Layer, Scene> {
             getElement().appendChild(layer.getElement());
 
             super.add(layer);
-
-            layer.batch();
         }
         return this;
     }

@@ -49,7 +49,7 @@ public class ImageTest {
                                                            ImageStrip.Orientation.HORIZONTAL);
 
     @Mock
-    private ImageElementProxy proxy;
+    private ImageBitmapProxy proxy;
 
     private Image tested;
 

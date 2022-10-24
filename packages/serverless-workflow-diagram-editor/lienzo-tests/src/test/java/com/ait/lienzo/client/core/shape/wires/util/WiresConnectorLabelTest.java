@@ -124,20 +124,22 @@ public class WiresConnectorLabelTest {
             configured[0] = true;
         });
         assertTrue(configured[0]);
-        verifyRefresh();
+        verifyAccept();
+
     }
 
     @Test
     public void testShow() {
         tested.show();
         verify(text, times(1)).setAlpha(eq(1d));
-        verifyRefresh();
+        verifyAccept();
     }
 
     @Test
     public void testHide() {
         tested.hide();
         verify(text, times(1)).setAlpha(eq(0d));
+        verifyAccept();
         verifyRefresh();
     }
 
@@ -189,7 +191,10 @@ public class WiresConnectorLabelTest {
     }
 
     private void verifyRefresh() {
-        verify(executor, atLeastOnce()).accept(eq(connector), eq(text));
         verify(layer, atLeastOnce()).batch();
+    }
+
+    private void verifyAccept() {
+        verify(executor, atLeastOnce()).accept(eq(connector), eq(text));
     }
 }

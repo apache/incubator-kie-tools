@@ -108,7 +108,6 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
 
     @Override
     public void onResize() {
-        refresh();
     }
 
     public void batch() {
