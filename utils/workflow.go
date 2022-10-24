@@ -19,14 +19,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"os"
+
+	"github.com/kiegroup/container-builder/util/log"
 	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/kiegroup/kogito-serverless-operator/converters"
-	"github.com/ricardozanini/kogito-builder/util/log"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"os"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 )

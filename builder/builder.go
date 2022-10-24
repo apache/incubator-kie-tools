@@ -17,14 +17,15 @@ package builder
 
 import (
 	"context"
+	"time"
+
+	"github.com/kiegroup/container-builder/api"
+	"github.com/kiegroup/container-builder/builder"
+	"github.com/kiegroup/container-builder/client"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
-	"github.com/ricardozanini/kogito-builder/api"
-	"github.com/ricardozanini/kogito-builder/builder"
-	"github.com/ricardozanini/kogito-builder/client"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
-	"time"
 )
 
 type Builder struct {

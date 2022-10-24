@@ -19,4 +19,4 @@ jobs:
       - run: make test
       - uses: shogo82148/actions-goveralls@v1
         with:
-          path-to-profile: coverage.out
+          path-to-profile: cover.out

@@ -17,8 +17,9 @@ package builder
 
 import (
 	"context"
+
+	"github.com/kiegroup/container-builder/util/log"
 	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
-	"github.com/ricardozanini/kogito-builder/util/log"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
