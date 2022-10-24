@@ -40,6 +40,7 @@
     "test:it:win32": "echo \"Not supported\""
   },
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
@@ -48,7 +49,7 @@
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
-    "electron": "^12.0.11",
+    "electron": "^15.5.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^5.2.1",
@@ -80,7 +81,7 @@
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
-    "spectron": "^14.0.0",
+    "spectron": "^17.0.0",
     "ts-jest": "^26.5.6",
     "typescript": "^4.4.2",
     "webpack": "^5.36.2",

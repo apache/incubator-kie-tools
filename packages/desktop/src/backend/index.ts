@@ -22,6 +22,7 @@ import { Files } from "../storage/core/Files";
 import { DesktopUserData } from "./DesktopUserData";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { desktopI18nDefaults, desktopI18nDictionaries } from "./i18n";
+import remoteMain = require("@electron/remote/main");
 
 let mainWindow: BrowserWindow | null = null;
 let forceQuit = false; // flag needed to keep app running on MacOS when the window is closed
@@ -36,6 +37,8 @@ app.on("before-quit", () => {
 });
 
 const createWindow = () => {
+  remoteMain.initialize();
+
   mainWindow = new BrowserWindow({
     width: 1440,
     height: 900,
@@ -45,10 +48,11 @@ const createWindow = () => {
     icon: path.join(__dirname, "images/icon.png"),
     webPreferences: {
       contextIsolation: false,
-      enableRemoteModule: true,
       nodeIntegration: true, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
     },
   });
+
+  remoteMain.enable(mainWindow?.webContents);
 
   mainWindow
     .loadFile(path.join(__dirname, "index.html"))
