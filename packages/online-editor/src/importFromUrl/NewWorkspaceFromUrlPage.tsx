@@ -144,7 +144,10 @@ export function NewWorkspaceFromUrlPage() {
       const { workspace, suggestedFirstFile } = res;
 
       if (!suggestedFirstFile) {
-        history.replace({ pathname: routes.home.path({}) });
+        history.replace({
+          pathname: routes.home.path({}),
+          search: routes.home.queryString({ expand: workspace.workspaceId }),
+        });
         return res;
       }
 

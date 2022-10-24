@@ -89,20 +89,16 @@ const createWorkspace = async (args: {
     preferredName: args.preferredName,
   });
 
-  if (files.length <= 0) {
+  const supportedFiles = files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath));
+  if (supportedFiles.length <= 0) {
     return { workspace, suggestedFirstFile: undefined };
   }
 
-  const suggestedFirstFile = files
-    .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath))
-    .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
+  const suggestedFirstFile = supportedFiles.sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
   return {
     workspace,
-    suggestedFirstFile: {
-      workspaceId: suggestedFirstFile.workspaceId,
-      relativePath: suggestedFirstFile.relativePath,
-    },
+    suggestedFirstFile,
   };
 };
 

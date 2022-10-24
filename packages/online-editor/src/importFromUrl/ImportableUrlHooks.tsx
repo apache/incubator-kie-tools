@@ -149,16 +149,9 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.INVALID, error: "Invalid URL" };
     }
 
-    if (url.host === "github.com" || url.host === "raw.githubusercontent.com") {
+    if (url.host === "github.com") {
       const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
         path: "/:org/:repo",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
-
-      const customBranchMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
-        path: "/:org/:repo/tree/:tree",
         exact: true,
         strict: true,
         sensitive: false,
@@ -167,6 +160,13 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       if (defaultBranchMatch) {
         return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url });
       }
+
+      const customBranchMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
+        path: "/:org/:repo/tree/:tree",
+        exact: true,
+        strict: true,
+        sensitive: false,
+      });
 
       if (customBranchMatch) {
         const branch = customBranchMatch.params.tree;
@@ -193,6 +193,10 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         });
       }
 
+      return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub URL", url };
+    }
+
+    if (url.host === "raw.githubusercontent.com") {
       const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
         path: "/:org/:repo/:tree/:path*",
         exact: true,
@@ -211,7 +215,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         });
       }
 
-      return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub URL", url };
+      return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub raw URL", url };
     }
 
     if (url.host === "gist.github.com" || url.host === "gist.githubusercontent.com") {
@@ -319,7 +323,7 @@ export function useClonableUrl(
       } else {
         return {
           type: UrlType.INVALID,
-          error: `Selected branch '${branch ?? branchFromUrl}' does not exist.`,
+          error: `Selected branch '${branch || branchFromUrl}' does not exist.`,
         };
       }
     }
@@ -434,7 +438,7 @@ export function useImportableUrlValidation(
           icon={<CheckCircleIcon style={{ visibility: "hidden", width: 0 }} />}
           style={branch ? { display: "flex", flexWrap: "nowrap" } : { visibility: "hidden" }}
         >
-          <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ gap: "6px" }}>
+          <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ display: "inline-flex", gap: "6px" }}>
             <FlexItem style={{ minWidth: 0 }}>
               <CodeBranchIcon />
               &nbsp;&nbsp;
