@@ -24,6 +24,9 @@ import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
+import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 
 public class TransitionShape<W>
         extends ConnectorShape<W, TransitionShapeDef<W>, TransitionView> {
@@ -37,6 +40,7 @@ public class TransitionShape<W>
                       .setRenderType(ShapeStateDefaultHandler.RenderType.STROKE)
                       .setBorderShape(() -> view)
                       .setBackgroundShape(() -> view));
+
     }
 
     @Override
@@ -45,6 +49,20 @@ public class TransitionShape<W>
         DashArray dashArray = getShapeDefinition().getDashArray(getDefinition(element));
         if (null != dashArray) {
             getShapeView().setDashArray(dashArray);
+        }
+
+        if (element.getContent().getDefinition() instanceof ErrorTransition) {
+            final ErrorTransition definition = (ErrorTransition) element.getContent().getDefinition();
+            getShapeView().setTitle(definition.getErrorRef());
+            getShapeView().setTitleBackgroundColor("red");
+        } else if (element.getContent().getDefinition() instanceof EventConditionTransition) {
+            final EventConditionTransition definition = (EventConditionTransition) element.getContent().getDefinition();
+            getShapeView().setTitle(definition.getEventRef());
+            getShapeView().setTitleBackgroundColor("orange");
+        } else if (element.getContent().getDefinition() instanceof DataConditionTransition) {
+            final DataConditionTransition definition = (DataConditionTransition) element.getContent().getDefinition();
+            getShapeView().setTitle(definition.getCondition());
+            getShapeView().setTitleBackgroundColor("gray");
         }
     }
 
