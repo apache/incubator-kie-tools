@@ -59,10 +59,9 @@ const GIT_USER_DEFAULT = {
 };
 
 async function corsProxyUrl() {
-  // const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
-  // const env = await (await fetch(envFilePath)).json();
-  // return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
-  return "http://localhost:8080";
+  const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
+  const env = await (await fetch(envFilePath)).json();
+  return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
 
 const fsFlushManager = new FsFlushManager();
