@@ -114,7 +114,7 @@ public class BuilderContext {
     @SuppressWarnings("all")
     public Edge addEdge(String uuid, Object bean, Node source) {
         final EdgeImpl edge = (EdgeImpl) factoryManager.registry().getElementFactory(EdgeFactory.class).build(uuid, bean);
-        storageCommands.addCommand(new AddConnectorCommand(source, edge, MagnetConnection.Builder.atCenter(source)));
+        storageCommands.addCommand(new AddConnectorCommand(source, edge, MagnetConnection.Builder.atBottom(source)));
         return edge;
     }
 
@@ -126,7 +126,7 @@ public class BuilderContext {
             public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
                 final Node<? extends View<?>, Edge> targetNode = getTargetNode(context);
                 if (null != targetNode) {
-                    asMagnetConnection().setIndex(0);
+                    asMagnetConnection().setIndex(1);
                     asMagnetConnection().setAuto(false);
                     // asMagnetConnection().setLocation(MagnetConnection.Builder.forTarget(source, targetNode).getLocation().copy());
                 }

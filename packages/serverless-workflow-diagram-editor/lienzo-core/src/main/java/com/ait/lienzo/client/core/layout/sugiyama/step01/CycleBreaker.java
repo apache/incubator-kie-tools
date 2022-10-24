@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.autolayout.elkjs;
+package com.ait.lienzo.client.core.layout.sugiyama.step01;
 
-import elemental2.promise.Promise;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
+import com.ait.lienzo.client.core.layout.ReorderedGraph;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class ELK {
+public interface CycleBreaker {
 
-    public native Promise<Object> layout(Object graph);
-
+    void breakCycle(final ReorderedGraph graph);
 }
