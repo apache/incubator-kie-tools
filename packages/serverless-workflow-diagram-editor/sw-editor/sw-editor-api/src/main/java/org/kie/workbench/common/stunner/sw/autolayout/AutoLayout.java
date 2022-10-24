@@ -19,9 +19,18 @@ package org.kie.workbench.common.stunner.sw.autolayout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.ait.lienzo.client.core.layout.Layout;
+import com.ait.lienzo.client.core.layout.VertexPosition;
+import com.ait.lienzo.client.core.layout.graph.OutgoingEdge;
+import com.ait.lienzo.client.core.layout.graph.Vertex;
+import com.ait.lienzo.client.core.types.Point2D;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -29,12 +38,13 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand;
-import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand;
+import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand;
+import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
@@ -42,80 +52,205 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.C
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.sw.autolayout.elkjs.ELKEdge;
-import org.kie.workbench.common.stunner.sw.autolayout.elkjs.ELKNode;
-import org.kie.workbench.common.stunner.sw.autolayout.elkjs.ELKUtils;
-import org.kie.workbench.common.stunner.sw.autolayout.elkjs.ELKWrapper;
-import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
-import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
-import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
-import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
-import org.kie.workbench.common.stunner.sw.definition.StartTransition;
-import org.kie.workbench.common.stunner.sw.definition.Transition;
+import org.kie.workbench.common.stunner.sw.autolayout.lienzo.LienzoAutoLayout;
 import org.uberfire.client.promise.Promises;
 
 public class AutoLayout {
 
+    private AutoLayout() {
+        // Private constructor to prevent instantiation
+    }
+
     @SuppressWarnings("all")
-    public static Promise<Node> applyLayout(Graph graph,
-                                            Node parentNode,
-                                            Promises promises,
-                                            DirectGraphCommandExecutionContext context,
-                                            boolean isSubset) {
-        //TODO Temporary solution to inject ELK lib into canvas frame
-        new ELKWrapper().injectScript();
+    public static Promise<Node> applyLayout(final Graph graph,
+                                            final Node parentNode,
+                                            final Promises promises,
+                                            final DirectGraphCommandExecutionContext context,
+                                            final boolean isSubset,
+                                            final String startingNodeId,
+                                            final String endingNodeId) {
 
-        //Get ELK processed layout promise
-        final Promise<Object> elkLayoutPromise = ELKUtils.
-                processGraph(buildElkInputNode(graph,
-                                               parentNode,
-                                               ELKUtils.getCanvasTopDownLayoutOptionsObject(),
-                                               ELKUtils.getContainerLeftToRightDownLayoutOptionsObject(),
-                                               isSubset).sortEdges());
+        final Map<String, Vertex> vertices = loadVertices(graph, parentNode, false);
+        final Promise<Layout> autoLayoutPromise = new LienzoAutoLayout().layout(graph, vertices, startingNodeId, endingNodeId);
 
-        //Apply ELK layout to graph
-        return promises.create((resolve, reject) -> elkLayoutPromise
-                .then(elkGraph -> {
-                    final ELKNode elkRoot = ELKUtils.parse(elkGraph);
+        return promises.create((resolve, reject) -> autoLayoutPromise
+                .then(layout -> {
+
                     final CompositeCommand.Builder layoutCommands = new CompositeCommand.Builder();
 
-                    //Update node sizes in the graph
-                    updateGraphNodeSizes(elkRoot, graph);
-
-                    //Apply ELKNodes layout values into graph structure
-                    updateNodesPosition(elkRoot, graph, layoutCommands);
-
-                    //Create ELKBendPoints in graph structure
-                    createControlPoints(elkRoot, layoutCommands);
+                    updateEdgesDirection(layout, layoutCommands);
+                    createControlPoints(layout, layoutCommands);
+                    hideNodeIfIsNotConnected(layout, startingNodeId, graph, parentNode);
+                    hideNodeIfIsNotConnected(layout, endingNodeId, graph, parentNode);
 
                     final CompositeCommand<GraphCommandExecutionContext, RuleViolation> all =
                             new CompositeCommand.Builder<>()
                                     .addCommand(layoutCommands.build())
                                     .build();
 
-                    // TODO: Check errors...
                     all.execute(context);
-
                     resolve.onInvoke(parentNode);
                     return null;
                 }, error -> {
-                    //TODO Handle ELK error
                     DomGlobal.console.error("Error while performing layout: " + error);
                     resolve.onInvoke(parentNode);
                     return null;
                 }));
     }
 
-    @SuppressWarnings("all")
-    public static ELKNode buildElkInputNode(Graph graph,
-                                            Node parentNode,
-                                            Object parentLayoutOptions,
-                                            Object nestedParentLayoutOptions,
-                                            boolean isSubset) {
-        final String rootUUID = parentNode.getUUID();
-        //ELK root node definition
-        final ELKNode[] elkRoot = new ELKNode[]{new ELKNode(rootUUID, parentLayoutOptions)};
+    static void hideNodeIfIsNotConnected(final Layout layout,
+                                         final String nodeId,
+                                         final Graph graph,
+                                         final Node parentNode) {
 
+        final Optional<VertexPosition> vertexPosition = layout.getVerticesPositions()
+                .stream()
+                .filter(p -> Objects.equals(p.getId(), nodeId)).findFirst();
+
+        if (!vertexPosition.isPresent()
+                || vertexPosition.get().getOutgoingEdges().isEmpty()
+                && !hasIncomingConnection(nodeId, layout)) {
+            deleteNode(parentNode, nodeId, graph);
+        }
+    }
+
+    private static void deleteNode(Node parentNode, String nodeId, Graph graph) {
+        final Optional outParent = parentNode.getOutEdges().stream()
+                .filter(outEdge -> Objects.equals(((Edge) outEdge).getTargetNode().getUUID(), nodeId))
+                .findFirst();
+        if (outParent.isPresent()) {
+            parentNode.getOutEdges().remove(outParent.get());
+        }
+        graph.removeNode(nodeId);
+    }
+
+    static boolean hasIncomingConnection(final String nodeId, final Layout layout) {
+
+        return layout.getVerticesPositions().stream()
+                .anyMatch(p -> p.getOutgoingEdges().stream().anyMatch(edge -> Objects.equals(edge.getTarget(), nodeId)));
+    }
+
+    static void updateEdgesDirection(final Layout layout,
+                                     final CompositeCommand.Builder layoutCommands) {
+
+        final Map<String, VertexPosition> index = layout.getVerticesPositions()
+                .stream()
+                .collect(Collectors.toMap(VertexPosition::getId, verticesPosition -> verticesPosition, (a, b) -> b));
+
+        for (final VertexPosition verticesPosition : layout.getVerticesPositions()) {
+            for (com.ait.lienzo.client.core.layout.Edge outgoingEdge : verticesPosition.getOutgoingEdges()) {
+
+                final Position position = getTargetPositionRelativeToSource(outgoingEdge, index);
+                final String edgeIUd = outgoingEdge.getId();
+                switch (position) {
+                    case ABOVE:
+                        updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 3);
+                        updateSourceMagnet(layoutCommands, outgoingEdge, edgeIUd, 1);
+                        break;
+
+                    case LEFT:
+                        updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 2);
+                        updateSourceMagnet(layoutCommands, outgoingEdge, edgeIUd, 4);
+                        break;
+
+                    case RIGHT:
+                        updateTargetMagnet(layoutCommands, outgoingEdge, edgeIUd, 4);
+                        updateSourceMagnet(layoutCommands, outgoingEdge, edgeIUd, 2);
+                        break;
+
+                    case BELOW:
+                        // Do nothing because it's already in the right direction
+                        break;
+                }
+            }
+        }
+    }
+
+    private static void updateTargetMagnet(final CompositeCommand.Builder layoutCommands,
+                                           final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
+                                           final String edgeIUd,
+                                           final int magnetIndex) {
+        layoutCommands.addCommand(new SetConnectionTargetNodeCommand(outgoingEdge.getTarget(),
+                                                                     edgeIUd,
+                                                                     MagnetConnection.Builder.at(0, 0)) {
+            public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
+                final Node<? extends View<?>, Edge> targetNode = getTargetNode(context);
+                if (null != targetNode) {
+                    asMagnetConnection().setIndex(magnetIndex);
+                }
+                return super.execute(context);
+            }
+
+            private MagnetConnection asMagnetConnection() {
+                return (MagnetConnection) getConnection();
+            }
+        });
+    }
+
+    private static void updateSourceMagnet(final CompositeCommand.Builder layoutCommands,
+                                           final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
+                                           final String edgeIUd,
+                                           final int magnetIndex) {
+        layoutCommands.addCommand(new SetConnectionSourceNodeCommand(outgoingEdge.getSource(),
+                                                                     edgeIUd,
+                                                                     MagnetConnection.Builder.at(0, 0)) {
+            public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
+                final Node<? extends View<?>, Edge> sourceNode = getSourceNode(context);
+                if (null != sourceNode) {
+                    asMagnetConnection().setIndex(magnetIndex);
+                }
+                return super.execute(context);
+            }
+
+            private MagnetConnection asMagnetConnection() {
+                return (MagnetConnection) getConnection();
+            }
+        });
+    }
+
+    static Position getTargetPositionRelativeToSource(final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
+                                                      final Map<String, VertexPosition> index) {
+        final VertexPosition source = index.get(outgoingEdge.getSource());
+        final VertexPosition target = index.get(outgoingEdge.getTarget());
+        if (target.getY() < source.getY()) {
+            return Position.ABOVE;
+        }
+
+        if (target.getY() > source.getY()) {
+            return Position.BELOW;
+        }
+
+        if (target.getX() < source.getX()) {
+            return Position.LEFT;
+        }
+
+        if (target.getX() > source.getX()) {
+            return Position.RIGHT;
+        }
+
+        return Position.BELOW;
+    }
+
+    public static void createControlPoints(final Layout layout,
+                                           final CompositeCommand.Builder layoutCommands) {
+
+        for (final VertexPosition verticesPosition : layout.getVerticesPositions()) {
+            for (com.ait.lienzo.client.core.layout.Edge outgoingEdge : verticesPosition.getOutgoingEdges()) {
+                int index = -1;
+                for (final Point2D bendingPoint : outgoingEdge.getBendingPoints()) {
+                    final org.kie.workbench.common.stunner.core.graph.content.view.Point2D point = new org.kie.workbench.common.stunner.core.graph.content.view.Point2D(bendingPoint.getX(), bendingPoint.getY());
+                    layoutCommands.addCommand(new AddControlPointCommand(outgoingEdge.getId(), new ControlPoint(point), ++index));
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("all")
+    public static Map<String, Vertex> loadVertices(final Graph graph,
+                                                   final Node parentNode,
+                                                   boolean isSubset) {
+        final String rootUUID = parentNode.getUUID();
+        final Map<String, Vertex> vertices = new HashMap<>();
         final Map<String, String> nodeContainment = new HashMap<>();
 
         new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl())
@@ -132,7 +267,7 @@ public class AutoLayout {
                             addNode(node);
                         } else {
                             //Containment
-                            addChildNode(parent, node, nestedParentLayoutOptions);
+                            addChildNode(parent, node);
                         }
 
                         return true;
@@ -144,18 +279,14 @@ public class AutoLayout {
                             return;
                         }
 
-                        Bounds bounds = node.getContent().getBounds();
-                        elkRoot[0].addNode(new ELKNode(node.getUUID(),
-                                                       bounds.getWidth(),
-                                                       bounds.getHeight()));
+                        addVertex(node, vertices);
 
                         addProcessedNode(node);
                     }
 
                     //Containment
                     private void addChildNode(final Node<View, Edge> parent,
-                                              final Node<View, Edge> node,
-                                              final Object nestedParentLayoutOptions) {
+                                              final Node<View, Edge> node) {
                         //skip in case the node was already processed
                         if (processedNodes.containsKey(node.getUUID()) || parent.getUUID().equals(rootUUID)) {
                             return;
@@ -166,13 +297,7 @@ public class AutoLayout {
                             addNode(parent);
                         }
 
-                        final ELKNode elkParent = elkRoot[0].getChild(parent.getUUID());
-                        //final Bound bound = getBound(node);
-                        Bounds bounds = node.getContent().getBounds();
-                        elkParent.addNode(new ELKNode(node.getUUID(), bounds.getWidth(), bounds.getHeight()));
-
-                        //Set horizontal layout for containers
-                        elkParent.setLayoutOptions(nestedParentLayoutOptions);
+                        addVertex(node, vertices);
 
                         addNodeParentReference(node, parent);
                         addProcessedNode(node);
@@ -222,43 +347,15 @@ public class AutoLayout {
                 if (edge.getSourceNode() == null || edge.getTargetNode() == null) {
                     return;
                 }
+                final String sourceUuid = edge.getSourceNode().getUUID();
+                final String targetUuid = edge.getTargetNode().getUUID();
 
-                final ELKEdge elkEdge = new ELKEdge(edge.getUUID(),
-                                                    edge.getSourceNode().getUUID(),
-                                                    edge.getTargetNode().getUUID());
-                String sourceParent = nodeContainment.get(edge.getSourceNode().getUUID());
-                String targetParent = nodeContainment.get(edge.getTargetNode().getUUID());
-                final Class<?> type = ((View<?>) edge.getContent()).getDefinition().getClass();
+                final Vertex source = vertices.get(sourceUuid);
+                final Vertex target = vertices.get(targetUuid);
+                final String edgeUuid = edge.getUUID();
 
-                // Transition priority in the same level
-                if (EventConditionTransition.class.equals(type)) {
-                    elkEdge.setPriority(0);
-                } else if (ErrorTransition.class.equals(type)) {
-                    elkEdge.setPriority(1);
-                } else if (StartTransition.class.equals(type)) {
-                    elkEdge.setPriority(2);
-                } else if (Transition.class.equals(type)) {
-                    elkEdge.setPriority(3);
-                } else if (CompensationTransition.class.equals(type)) {
-                    elkEdge.setPriority(4);
-                } else if (DefaultConditionTransition.class.equals(type)) {
-                    elkEdge.setPriority(5);
-                }
-
-                //if nodes have same parent add edge into parent node structure
-                if (null != sourceParent && sourceParent.equals(targetParent)) {
-                    if (isSubset) {
-                        elkRoot[0].getChild(sourceParent).addEdgeWithFilter(elkEdge);
-                    } else {
-                        elkRoot[0].getChild(sourceParent).addEdge(elkEdge);
-                    }
-                } else {
-                    if (isSubset) {
-                        elkRoot[0].addEdgeWithFilter(elkEdge);
-                    } else {
-                        elkRoot[0].addEdge(elkEdge);
-                    }
-                }
+                final OutgoingEdge outgoingEdge = new OutgoingEdge(edgeUuid, target);
+                source.getOutgoingEdges().add(outgoingEdge);
             }
 
             @Override
@@ -282,62 +379,15 @@ public class AutoLayout {
             }
         });
 
-        //add container into new root
-        if (isSubset) {
-            final ELKNode newElkRoot = new ELKNode("root", parentLayoutOptions);
-            newElkRoot.addNode(elkRoot[0].setLayoutOptions(nestedParentLayoutOptions));
-
-            //DomGlobal.console.log("----->" + Global.JSON.stringify(newElkRoot));
-
-            return newElkRoot;
-        }
-
-        //DomGlobal.console.log("----->" + Global.JSON.stringify(elkRoot[0]));
-
-        return elkRoot[0];
+        return vertices;
     }
 
-    //Update node sizes after ELK processing
-    @SuppressWarnings("all")
-    public static void updateGraphNodeSizes(ELKNode elkRoot, Graph graph) {
-        for (ELKNode elkNode : elkRoot.getChildren().asList()) {
-            ((Node<View, Edge>) graph.getNode(elkNode.getId())).getContent()
-                    .setBounds(Bounds.create(elkNode.getX(),
-                                             elkNode.getY(),
-                                             elkNode.getX() + elkNode.getWidth(),
-                                             elkNode.getY() + elkNode.getHeight()));
-
-            if (elkNode.getChildren().length > 0) {
-                updateGraphNodeSizes(elkNode, graph);
-            }
-        }
-    }
-
-    @SuppressWarnings("all")
-    public static void updateNodesPosition(ELKNode elkRoot,
-                                           Graph graph,
-                                           CompositeCommand.Builder layoutCommands) {
-        for (ELKNode elkNode : elkRoot.getChildren().asList()) {
-            layoutCommands.addCommand(new UpdateElementPositionCommand(graph.getNode(elkNode.getId()),
-                                                                       new Point2D(elkNode.getX(), elkNode.getY())));
-            if (elkNode.getChildren().length > 0) {
-                updateNodesPosition(elkNode, graph, layoutCommands);
-            }
-        }
-    }
-
-    @SuppressWarnings("all")
-    public static void createControlPoints(final ELKNode elkNode,
-                                           final CompositeCommand.Builder layoutCommands) {
-        for (ELKEdge elkEdge : elkNode.getEdges().asList()) {
-            int index = -1;
-            for (Point2D point : elkEdge.getBendPoints().asList()) {
-                layoutCommands.addCommand(new AddControlPointCommand(elkEdge.getId(), new ControlPoint(point), ++index));
-            }
-        }
-
-        for (ELKNode elkClildNode : elkNode.getChildren().asList()) {
-            createControlPoints(elkClildNode, layoutCommands);
-        }
+    static void addVertex(final Node<View, Edge> node,
+                          final Map<String, Vertex> vertices) {
+        final Bounds bounds = node.getContent().getBounds();
+        final Vertex v = new Vertex(node.getUUID());
+        v.setWidth((int) bounds.getWidth());
+        v.setHeight((int) bounds.getHeight());
+        vertices.put(v.getId(), v);
     }
 }

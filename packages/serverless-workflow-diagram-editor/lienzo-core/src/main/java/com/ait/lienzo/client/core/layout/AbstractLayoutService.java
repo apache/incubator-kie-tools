@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.autolayout.elkjs;
+package com.ait.lienzo.client.core.layout;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
+import java.util.List;
 
-interface JsClientBundle extends ClientBundle {
-    JsClientBundle INSTANCE = GWT.create(JsClientBundle.class);
+import com.ait.lienzo.client.core.layout.graph.Vertex;
 
-    @Source("elk.bundled.js")
-    TextResource elk();
+public abstract class AbstractLayoutService {
+
+    private static final double CLOSE_TO_ZERO_TOLERANCE = 0.1;
+
+    protected static boolean isCloseToZero(final double value) {
+        return Math.abs(value - 0) < CLOSE_TO_ZERO_TOLERANCE;
+    }
+
+    public abstract Layout createLayout(final List<Vertex> vertices,
+                                        final String startingVertexId,
+                                        final String endingVertexId);
 }

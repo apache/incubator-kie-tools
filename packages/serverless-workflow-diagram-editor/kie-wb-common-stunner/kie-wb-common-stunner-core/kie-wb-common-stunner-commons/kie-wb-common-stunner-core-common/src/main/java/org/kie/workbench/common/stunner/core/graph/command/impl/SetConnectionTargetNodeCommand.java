@@ -171,7 +171,7 @@ public class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<? extends View<?>, Edge> getSourceNode(final GraphCommandExecutionContext context) {
+    protected Node<? extends View<?>, Edge> getSourceNode(final GraphCommandExecutionContext context) {
         if (null == sourceNode) {
             sourceNode = getEdge(context).getSourceNode();
         }

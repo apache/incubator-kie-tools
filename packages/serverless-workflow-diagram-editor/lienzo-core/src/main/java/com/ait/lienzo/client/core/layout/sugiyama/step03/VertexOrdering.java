@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.autolayout.elkjs;
+package com.ait.lienzo.client.core.layout.sugiyama.step03;
 
-import com.google.gwt.core.client.ScriptInjector;
+import com.ait.lienzo.client.core.layout.ReorderedGraph;
 
-public class ELKWrapper {
+public interface VertexOrdering {
 
-    public void injectScript() {
-        if (!isInjected()) {
-           ScriptInjector.fromString(JsClientBundle.INSTANCE.elk().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
-        }
-    }
-
-    //TODO Migrate from JSNI to Native
-    private native final boolean isInjected() /*-{
-        if (!(typeof $wnd.ELK === "undefined") && !(null===$wnd.ELK)) {
-            return true;
-        }
-        return false;
-    }-*/;
-
+    void orderVertices(final ReorderedGraph reorderedGraph);
 }
