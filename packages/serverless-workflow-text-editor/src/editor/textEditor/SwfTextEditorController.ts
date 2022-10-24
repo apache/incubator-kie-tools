@@ -18,7 +18,7 @@ import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { FileLanguage, SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import { editor, KeyCode, KeyMod } from "monaco-editor";
+import { editor, KeyCode, KeyMod, Position } from "monaco-editor";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 
@@ -77,7 +77,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     });
 
     editor.onDidCreateEditor((codeEditor) => {
-      codeEditor.onDidChangeCursorPosition((event) => this.handleDidChangeCursorPosition(event));
+      codeEditor.onDidChangeCursorSelection((event) => this.handleDidChangeCursorSelection(event));
     });
   }
 
@@ -177,13 +177,16 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     this.editor?.focus();
   }
 
-  public handleDidChangeCursorPosition(event: editor.ICursorPositionChangedEvent): void {
-    const position = event.position;
-    if (!position || event.reason !== editor.CursorChangeReason.Explicit) {
+  public handleDidChangeCursorSelection(event: editor.ICursorSelectionChangedEvent): void {
+    const selection = event.selection;
+    if (
+      event.reason !== editor.CursorChangeReason.Explicit ||
+      !Position.equals(selection.getStartPosition(), selection.getEndPosition())
+    ) {
       return;
     }
 
-    const offset = this.editor?.getModel()?.getOffsetAt(position);
+    const offset = this.editor?.getModel()?.getOffsetAt(selection.getStartPosition());
     if (!offset) {
       return;
     }
