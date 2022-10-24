@@ -1,7 +1,7 @@
 name: go
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, edited, synchronize]
     branches:
       - main
 
