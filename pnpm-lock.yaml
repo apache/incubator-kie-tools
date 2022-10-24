@@ -3723,6 +3723,7 @@ importers:
       cypress: ^10.7.0
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      dexie: ^3.2.2
       history: ^4.9.0
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
@@ -3780,6 +3781,7 @@ importers:
       axios: 0.27.2
       bowser: 2.11.0
       buffer: 6.0.3
+      dexie: 3.2.2
       history: 4.10.1
       jszip: 3.7.1
       moment: 2.29.4
@@ -12020,7 +12022,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -12029,7 +12031,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -14144,7 +14146,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -17418,7 +17420,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9_debug@4.3.1:
+  /follow-redirects/1.14.9:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -17427,8 +17429,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dependencies:
-      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -18422,7 +18422,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug

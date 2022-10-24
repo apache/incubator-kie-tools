@@ -25,12 +25,12 @@ import { StartupBlockerTemplate } from "./StartupBlockerTemplate";
 import { KieIcon } from "./KieIcon";
 import { LATEST_VERSION_COMPATIBLE_WITH_LFS } from "./LatestCompatibleVersion";
 import { APP_NAME } from "../../AppConstants";
+import Dexie from "dexie";
 
 const OLD_WORKSPACES_IDB_NAME = "workspaces";
 
 export async function isTrue() {
-  const dbs = await indexedDB.databases();
-  return dbs.map((db) => db.name).indexOf(OLD_WORKSPACES_IDB_NAME) > 0;
+  return await Dexie.exists(OLD_WORKSPACES_IDB_NAME);
 }
 
 export function Component() {
@@ -54,11 +54,7 @@ export function Component() {
             isLoading={isDeleting}
             onClick={async () => {
               setDeleting(true);
-              await Promise.all(
-                (await indexedDB.databases())
-                  .filter((db) => db.name)
-                  .map(async (db) => indexedDB.deleteDatabase(db.name!))
-              );
+              await Promise.all((await Dexie.getDatabaseNames()).map(async (dbName) => Dexie.delete(dbName)));
               window.location.reload();
             }}
           >
