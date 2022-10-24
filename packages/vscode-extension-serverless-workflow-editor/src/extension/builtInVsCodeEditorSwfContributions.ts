@@ -258,7 +258,9 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   );
 
   vscode.window.onDidChangeTextEditorSelection((e) => {
-    if (!isEventFiredFromUser(e)) {
+    const selection = e.selections[0];
+
+    if (!isEventFiredFromUser(e) || !selection.start.isEqual(selection.end)) {
       return;
     }
 
