@@ -19,7 +19,7 @@ import { OmitRecursively } from "../../channel";
 export const workflowCompletion: OmitRecursively<Specification.Workflow, "normalize"> = {
   id: "${1:Workflow unique identifier}",
   version: "${2:0.1}",
-  specVersion: "${3:0.1}",
+  specVersion: "${3:0.8}",
   name: "${4:Workflow name}",
   description: "${5:Workflow description}",
   start: "${13}",
