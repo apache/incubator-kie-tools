@@ -21,4 +21,5 @@ public interface MessageCode {
 
     String INVALID_TARGET_NAME = "Transition from %s has invalid target.";
 
+    String DUPLICATE_STATE_NAME = "%s state name is duplicated.";
 }
