@@ -70,6 +70,11 @@
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
 
     <dependency>
@@ -113,7 +118,6 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
     </dependency>
-
 
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>

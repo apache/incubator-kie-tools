@@ -17,7 +17,11 @@
 package org.kie.workbench.common.stunner.sw.client;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.Picture;
+import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.sw.client.resources.GlyphFactory;
@@ -58,6 +62,9 @@ import static org.kie.workbench.common.stunner.core.definition.adapter.binding.B
 public class ShapeFactory
         implements org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory<Object, Shape> {
 
+    @Inject
+    ResourceContentService resourceContentService;
+
     @Override
     @SuppressWarnings("all")
     public Shape newShape(Object instance) {
@@ -67,12 +74,58 @@ public class ShapeFactory
             return new EndShape();
         } else if (instance instanceof State) {
             State state = (State) instance;
-            return StateShape.create(state.getName()).setType(state.getType());
+            StateShape shape = new StateShape(state.getName());
+            if (state.metadata == null) {
+                shape.setType(state.getType());
+                return shape;
+            }
+
+            if (state.metadata.type != null) {
+                shape.setType(state.metadata.type);
+            }
+
+            if (!shape.isIconEmpty()) {
+                return shape;
+            }
+
+            if (state.metadata.icon == null) {
+                shape.setType(state.getType());
+                return shape;
+            }
+
+            if (state.metadata.icon.startsWith("data:")) {
+                Picture picture = new Picture(state.metadata.icon);
+                shape.setIconPicture(picture);
+            } else {
+                resourceContentService
+                        .get(state.metadata.icon, ResourceContentOptions.binary())
+                        .then(image -> {
+                            if (image != null) {
+                                String base64image = iconDataUri(state.metadata.icon, image);
+                                Picture picture = new Picture(base64image);
+                                shape.setIconPicture(picture);
+                            } else {
+                                shape.setType(state.getType());
+                            }
+                            return null;
+                        });
+            }
+
+            return shape;
         } else if (TransitionShape.isTransition(instance)) {
             return TransitionShape.create(instance).setAppearance(instance);
-        } else {
-            return null;
         }
+        return null;
+    }
+
+    protected static String iconDataUri(String iconUri, String iconData) {
+        String[] iconUriParts = iconUri.split("\\.");
+        if (iconUriParts.length > 1) {
+            int fileTypeIndex = iconUriParts.length - 1;
+            String fileType = iconUriParts[fileTypeIndex];
+            return "data:image/" + fileType + ";base64, " + iconData;
+        }
+        return iconData;
     }
 
     @Override

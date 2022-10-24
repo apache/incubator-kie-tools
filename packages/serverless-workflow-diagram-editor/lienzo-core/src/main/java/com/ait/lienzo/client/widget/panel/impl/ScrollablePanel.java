@@ -226,8 +226,10 @@ public class ScrollablePanel extends LienzoBoundsPanel {
     @Override
     protected void doDestroy() {
         removeHandlers();
-        resizeObserver.disconnect();
-        resizeObserver = null;
+        if (resizeObserver != null) {
+            resizeObserver.disconnect();
+            resizeObserver = null;
+        }
         rootPanel.remove();
         isMouseDown = false;
     }

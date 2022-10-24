@@ -21,6 +21,7 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -34,9 +35,10 @@ public class Circle extends Shape<Circle> {
     @JsProperty
     private double radius;
 
+    private final PathPartList m_list = new PathPartList();
+
     /**
      * Constructor. Creates an instance of a circle.
-     *
      * @param radius
      */
     public Circle(final double radius) {
@@ -54,7 +56,6 @@ public class Circle extends Shape<Circle> {
 
     /**
      * Draws this circle
-     *
      * @param context the {@link Context2D} used to draw this circle.
      */
     @Override
@@ -62,12 +63,7 @@ public class Circle extends Shape<Circle> {
         final double r = getRadius();
 
         if (r > 0) {
-            context.beginPath();
-
-            context.arc(0, 0, r, 0, Math.PI * 2, true);
-
-            context.closePath();
-
+            context.path(getPathPartList());
             return true;
         }
         return false;
@@ -80,7 +76,6 @@ public class Circle extends Shape<Circle> {
 
     /**
      * Sets this circle's radius.
-     *
      * @param radius
      * @return this Circle
      */
@@ -92,7 +87,6 @@ public class Circle extends Shape<Circle> {
 
     /**
      * Gets this circle's radius.
-     *
      * @return double
      */
     public double getRadius() {
@@ -102,5 +96,32 @@ public class Circle extends Shape<Circle> {
     @Override
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS);
+    }
+
+    @Override
+    public PathPartList getPathPartList() {
+        if (m_list.size() < 1 && getRadius() > 0) {
+            final double r = getRadius();
+
+            final double x = 0;
+
+            final double y = 0;
+
+            final double c = r * 2;
+
+            m_list.M(x, y - r);
+
+            m_list.A(x + r, y - r, x + r, y, r);
+
+            m_list.A(x + r, y + r, x, y + r, r);
+
+            m_list.A(x - r, y + r, x - r, y, r);
+
+            m_list.A(x - r, y - r, x, y - r, r);
+
+            m_list.Z();
+        }
+
+        return m_list;
     }
 }
