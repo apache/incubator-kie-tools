@@ -16,13 +16,15 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/go-logr/logr"
+	"github.com/kiegroup/container-builder/api"
+	clientr "github.com/kiegroup/container-builder/client"
 	api08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
 	"github.com/kiegroup/kogito-serverless-operator/builder"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
-	"github.com/ricardozanini/kogito-builder/api"
-	clientr "github.com/ricardozanini/kogito-builder/client"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -32,7 +34,6 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
-	"time"
 )
 
 // KogitoServerlessBuildReconciler reconciles a KogitoServerlessBuild object
@@ -43,8 +44,8 @@ type KogitoServerlessBuildReconciler struct {
 	defaultBuildConf corev1.ConfigMap
 }
 
-//+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds/status,verbs=get;update;patch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

@@ -15,6 +15,7 @@
 # vendor/
 .idea
 .vscode
+*.iml
 
 /bin/
 /.idea/
