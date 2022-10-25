@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
@@ -109,6 +110,13 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
           ]}
         >
           <div onKeyDown={(e) => e.stopPropagation()}>
+            <Text>
+              <TextContent>
+                {`Choose the authentication source for your import, paste or type the URL of what you want to import, and if
+                it's a Git repository, select the branch or tag as well.`}
+              </TextContent>
+            </Text>
+            <br />
             <br />
             <Form onSubmit={props.onSubmit}>
               <FormGroup fieldId="auth-source" label="Authentication" isRequired={true}>

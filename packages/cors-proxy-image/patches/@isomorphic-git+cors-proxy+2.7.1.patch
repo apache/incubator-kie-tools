@@ -14,7 +14,7 @@ index 68241c8..a29ffad 100644
          <p>It can also be installed from npm with <code>npm install <a href="https://npmjs.org/package/${pkg.name}">@isomorphic-git/cors-proxy</a></code></p>
  
 diff --git a/node_modules/@isomorphic-git/cors-proxy/middleware.js b/node_modules/@isomorphic-git/cors-proxy/middleware.js
-index 582a37b..f11b50d 100644
+index 68241c8..a29ffad 100644
 --- a/node_modules/@isomorphic-git/cors-proxy/middleware.js
 +++ b/node_modules/@isomorphic-git/cors-proxy/middleware.js
 @@ -100,7 +100,7 @@ module.exports = ({ origin, insecure_origins = [], authorization = noop } = {})
