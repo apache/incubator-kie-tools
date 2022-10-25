@@ -133,7 +133,7 @@ export function ImportFromUrlCard() {
             >
               <TextInput
                 id={"url"}
-                ouiaId={"url"}
+                ouiaId={"import-from-url-input"}
                 validated={validation.option}
                 isRequired={true}
                 placeholder={"URL"}
