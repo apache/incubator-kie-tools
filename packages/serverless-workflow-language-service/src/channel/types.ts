@@ -22,6 +22,17 @@ import { SwfLanguageServiceCommandTypes } from "../api";
 export declare type SwfJsonPath = (string | number)[];
 export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 
+type OmitDistributive<T, K extends PropertyKey> = T extends any
+  ? T extends object
+    ? Id<OmitRecursively<T, K>>
+    : T
+  : never;
+type Id<T> = {} & { [P in keyof T]: T[P] };
+export type OmitRecursively<T extends any, K extends PropertyKey> = Omit<
+  { [P in keyof T]: OmitDistributive<T[P], K> },
+  K
+>;
+
 /**
  * The AST node used in the LanguageServices
  */
@@ -36,11 +47,12 @@ export type SwfLsNode = {
 };
 
 export interface ShouldCompleteArgs {
-  root: SwfLsNode | undefined;
-  node: SwfLsNode | undefined;
-  path: SwfJsonPath;
   content: string;
   cursorOffset: number;
+  cursorPosition: Position;
+  node: SwfLsNode | undefined;
+  path: SwfJsonPath;
+  root: SwfLsNode | undefined;
 }
 
 export interface ShouldCreateCodelensArgs {
@@ -52,8 +64,9 @@ export interface ShouldCreateCodelensArgs {
 export interface TranslateArgs {
   completion: object | string;
   completionItemKind: CompletionItemKind;
-  overwriteRange?: Range;
+  currentNode?: SwfLsNode;
   currentNodeRange?: Range;
+  overwriteRange?: Range;
 }
 
 export interface CodeCompletionStrategy {

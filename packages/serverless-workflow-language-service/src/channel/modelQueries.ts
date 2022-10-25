@@ -16,21 +16,59 @@
 
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import * as jsonc from "jsonc-parser";
+import { OmitRecursively, SwfJsonPath, SwfLsNodeType } from "./types";
 
-export function getFunctions(rootNode: jsonc.Node) {
-  const functionsNode = jsonc.findNodeAtLocation(rootNode, ["functions"]);
-  if (functionsNode?.type !== "array") {
-    return [];
+/**
+ * Get a node in the format of the SWF Specification
+ *
+ * @param args.fields the fields to pick up
+ * @param args.nodeType the node type of the node to get
+ */
+function getNodes<T>(args: {
+  fields: string[];
+  nodeType: SwfLsNodeType;
+  path: SwfJsonPath;
+  rootNode: jsonc.Node;
+}): OmitRecursively<T, "normalize"> {
+  const node = jsonc.findNodeAtLocation(args.rootNode, args.path);
+  if (node?.type !== args.nodeType) {
+    return [] as unknown as OmitRecursively<T, "normalize">;
   }
 
-  return Array.from(functionsNode.children ?? []).flatMap((functionNode) => {
-    const name = jsonc.findNodeAtLocation(functionNode, ["name"])?.value;
-    const operation = jsonc.findNodeAtLocation(functionNode, ["operation"])?.value;
+  return Array.from(node.children ?? []).flatMap((childNode) => {
+    const nodeProps: { [key: string]: string } = {};
 
-    if (!name || !operation) {
-      return [];
-    }
+    args.fields.forEach((field) => {
+      nodeProps[field] = jsonc.findNodeAtLocation(childNode, [field])?.value;
+    });
 
-    return [{ name, operation } as Omit<Specification.Function, "normalize">];
-  });
+    return [{ ...nodeProps }];
+  }) as unknown as OmitRecursively<T, "normalize">;
+}
+
+export function getFunctions(rootNode: jsonc.Node) {
+  return getNodes<Specification.Function[]>({
+    rootNode,
+    path: ["functions"],
+    nodeType: "array",
+    fields: ["name", "operation"],
+  }).filter((f) => f.name && f.operation);
+}
+
+export function getEvents(rootNode: jsonc.Node) {
+  return getNodes<Specification.Eventdef[]>({
+    rootNode,
+    path: ["events"],
+    nodeType: "array",
+    fields: ["name"],
+  }).filter((e) => e.name);
+}
+
+export function getStates(rootNode: jsonc.Node) {
+  return getNodes<Specification.States>({
+    rootNode,
+    path: ["states"],
+    nodeType: "array",
+    fields: ["name"],
+  }).filter((e) => e.name) as Specification.States;
 }
