@@ -22,6 +22,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/dashbuilder-component-api": "workspace:*",
     "@kie-tools/dashbuilder-component-echarts": "workspace:*",
+    "@kie-tools/dashbuilder-component-map": "workspace:*",
     "@kie-tools/dashbuilder-component-svg-heatmap": "workspace:*",
     "@kie-tools/dashbuilder-component-table": "workspace:*",
     "@kie-tools/dashbuilder-component-timeseries": "workspace:*",

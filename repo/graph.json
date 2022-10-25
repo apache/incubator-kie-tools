@@ -53,6 +53,7 @@
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
       { "id": "@kie-tools/dashbuilder-component-echarts" },
+      { "id": "@kie-tools/dashbuilder-component-map" },
       { "id": "@kie-tools/dashbuilder-component-svg-heatmap" },
       { "id": "@kie-tools/dashbuilder-component-table" },
       { "id": "@kie-tools/dashbuilder-component-timeseries" },
@@ -325,6 +326,11 @@
       },
       {
         "source": "@kie-tools/dashbuilder-component-assembler",
+        "target": "@kie-tools/dashbuilder-component-map",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-component-assembler",
         "target": "@kie-tools/dashbuilder-component-svg-heatmap",
         "weight": 1
       },
@@ -361,6 +367,13 @@
       { "source": "@kie-tools/dashbuilder-component-echarts", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-echarts",
+        "target": "@kie-tools/dashbuilder-component-dev",
+        "weight": 1
+      },
+      { "source": "@kie-tools/dashbuilder-component-map", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-component-map", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      {
+        "source": "@kie-tools/dashbuilder-component-map",
         "target": "@kie-tools/dashbuilder-component-dev",
         "weight": 1
       },
@@ -719,6 +732,7 @@
     ["@kie-tools/dashbuilder-component-dev", "packages/dashbuilder-component-dev"],
     ["@kie-tools/dashbuilder-component-echarts", "packages/dashbuilder-component-echarts"],
     ["@kie-tools/dashbuilder-component-echarts-base", "packages/dashbuilder-component-echarts-base"],
+    ["@kie-tools/dashbuilder-component-map", "packages/dashbuilder-component-map"],
     ["@kie-tools/dashbuilder-component-svg-heatmap", "packages/dashbuilder-component-svg-heatmap"],
     ["@kie-tools/dashbuilder-component-table", "packages/dashbuilder-component-table"],
     ["@kie-tools/dashbuilder-component-timeseries", "packages/dashbuilder-component-timeseries"],

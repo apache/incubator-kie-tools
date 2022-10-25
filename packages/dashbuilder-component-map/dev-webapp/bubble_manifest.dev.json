@@ -1,0 +1,102 @@
+{
+  "init": [
+    {
+      "key": "_projection",
+      "value": "geoOrthographic"
+    },
+    {
+      "key": "enableZoom",
+      "value": "true"
+    },
+    {
+      "key": "zoom",
+      "value": "1"
+    },
+    {
+      "key": "zoomCenterLong",
+      "value": "0"
+    },
+    {
+      "key": "zoomCenterLat",
+      "value": "0"
+    },
+    {
+      "key": "_fill",
+      "value": "blue"
+    },
+    {
+      "key": "_hover",
+      "value": "darkred"
+    },
+    {
+      "key": "_stroke",
+      "value": "black"
+    },
+    {
+      "key": "_strokeWidth",
+      "value": "0.5"
+    },
+    {
+      "key": "_hoverStrokeWidth",
+      "value": "2"
+    },
+    {
+      "key": "_hoverStrokeFill",
+      "value": "yellow"
+    },
+    {
+      "key": "disabledFill",
+      "value": "darkgray"
+    },
+    {
+      "key": "_bubbleFill",
+      "value": "GREEN"
+    }
+  ],
+  "dataSet": {
+    "columns": [
+      {
+        "name": "LAT",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "LAT",
+          "columnName": "LAT",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      },
+      {
+        "name": "LONG",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "LONG",
+          "columnName": "LONG",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      },
+      {
+        "name": "VALUE",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "VALUE",
+          "columnName": "VALUE",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      }
+    ],
+    "data": [
+      ["-15.7750656", "-48.0773013", "212"],
+      ["-23.533773", "-46.625290", "20"],
+      ["40.7128", "-74.006", "30"],
+
+      ["38.8938672", "-77.0846156", "300"],
+      ["55.5815245", "36.8251412", "120"],
+      ["39.9390731", "116.1172793", "1200"]
+    ]
+  }
+}

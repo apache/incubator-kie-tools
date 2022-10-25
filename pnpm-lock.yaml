@@ -875,6 +875,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-echarts": workspace:*
+      "@kie-tools/dashbuilder-component-map": workspace:*
       "@kie-tools/dashbuilder-component-svg-heatmap": workspace:*
       "@kie-tools/dashbuilder-component-table": workspace:*
       "@kie-tools/dashbuilder-component-timeseries": workspace:*
@@ -892,6 +893,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
       "@kie-tools/dashbuilder-component-echarts": link:../dashbuilder-component-echarts
+      "@kie-tools/dashbuilder-component-map": link:../dashbuilder-component-map
       "@kie-tools/dashbuilder-component-svg-heatmap": link:../dashbuilder-component-svg-heatmap
       "@kie-tools/dashbuilder-component-table": link:../dashbuilder-component-table
       "@kie-tools/dashbuilder-component-timeseries": link:../dashbuilder-component-timeseries
@@ -1072,6 +1074,81 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
+
+  packages/dashbuilder-component-map:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-dev": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@testing-library/jest-dom": ^5.16.1
+      "@types/d3-scale": ^4.0.2
+      "@types/heatmap.js": ^2.0.36
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/react": ^17.0.6
+      "@types/react-dom": ^17.0.5
+      "@types/react-simple-maps": ^1.0.8
+      "@types/testing-library__jest-dom": ^5.9.1
+      copy-webpack-plugin: ^8.1.1
+      d3-scale: ^4.0.2
+      html-webpack-plugin: ^5.3.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-simple-maps: ^3.0.0
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      webpack: ^5.36.2
+      webpack-cli: ^4.7.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.7.3
+    dependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      d3-scale: 4.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-simple-maps: 3.0.0_sfoxds7t5ydpegc3knd667wn6m
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@testing-library/jest-dom": 5.16.1
+      "@types/d3-scale": 4.0.2
+      "@types/heatmap.js": 2.0.37
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/react": 17.0.21
+      "@types/react-dom": 17.0.8
+      "@types/react-simple-maps": 1.0.8
+      "@types/testing-library__jest-dom": 5.9.5
+      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      html-webpack-plugin: 5.3.2_webpack@5.70.0
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      typescript: 4.5.4
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack-merge: 5.8.0
 
   packages/dashbuilder-component-svg-heatmap:
     specifiers:
@@ -9989,6 +10066,50 @@ packages:
       { integrity: sha512-N3aUkw/yWPtdV5Ilze3UskxHjkM4mHjvQ8w9o0RK7Y6IvRkdwNyZhzGacYceCx9RTQsyw6sa1DXBHx4toDR8tQ== }
     dev: true
 
+  /@types/d3-color/1.4.2:
+    resolution:
+      { integrity: sha512-fYtiVLBYy7VQX+Kx7wU/uOIkGQn8aAEY8oWMoyja3N4dLd8Yf6XgSIR/4yWvMuveNOH5VShnqCgRqqh/UNanBA== }
+    dev: true
+
+  /@types/d3-geo/1.12.3:
+    resolution:
+      { integrity: sha512-yZbPb7/5DyL/pXkeOmZ7L5ySpuGr4H48t1cuALjnJy5sXQqmSSAYBiwa6Ya/XpWKX2rJqGDDubmh3nOaopOpeA== }
+    dependencies:
+      "@types/geojson": 7946.0.8
+    dev: true
+
+  /@types/d3-interpolate/1.4.2:
+    resolution:
+      { integrity: sha512-ylycts6llFf8yAEs1tXzx2loxxzDZHseuhPokrqKprTQSTcD3JbJI1omZP1rphsELZO3Q+of3ff0ZS7+O6yVzg== }
+    dependencies:
+      "@types/d3-color": 1.4.2
+    dev: true
+
+  /@types/d3-scale/4.0.2:
+    resolution:
+      { integrity: sha512-Yk4htunhPAwN0XGlIwArRomOjdoBFXC3+kCxK2Ubg7I9shQlVSJy/pG/Ht5ASN+gdMIalpk8TJ5xV74jFsetLA== }
+    dependencies:
+      "@types/d3-time": 3.0.0
+    dev: true
+
+  /@types/d3-selection/1.4.3:
+    resolution:
+      { integrity: sha512-GjKQWVZO6Sa96HiKO6R93VBE8DUW+DDkFpIMf9vpY5S78qZTlRRSNUsHr/afDpF7TvLDV7VxrUFOWW7vdIlYkA== }
+    dev: true
+
+  /@types/d3-time/3.0.0:
+    resolution:
+      { integrity: sha512-sZLCdHvBUcNby1cB6Fd3ZBrABbjz3v1Vm90nysCQ6Vt7vd6e/h9Lt7SiJUoEX0l4Dzc7P5llKyhqSi1ycSf1Hg== }
+    dev: true
+
+  /@types/d3-zoom/1.8.3:
+    resolution:
+      { integrity: sha512-3kHkL6sPiDdbfGhzlp5gIHyu3kULhtnHTTAl3UBZVtWB1PzcLL8vdmz5mTx7plLiUqOA2Y+yT2GKjt/TdA2p7Q== }
+    dependencies:
+      "@types/d3-interpolate": 1.4.2
+      "@types/d3-selection": 1.4.3
+    dev: true
+
   /@types/echarts/4.9.15:
     resolution:
       { integrity: sha512-C+GhOl8jYjpZrPE9JPYgI8pH8+mIfsib2WoE5E+WpM2wRWZDQhaIy6ZZ1HhaZOT1h+QkrHvDVWUoGvXCzcb0rw== }
@@ -10333,6 +10454,16 @@ packages:
       { integrity: sha512-LAJpqYUaCTMT2anZheoidiIymt8MuX286zoVFPM3DVb23aQBH0mAkFvzpd4LKqiolV8bBtZWT5Qp7hClCNDENw== }
     dependencies:
       "@types/history": 4.7.5
+      "@types/react": 17.0.21
+    dev: true
+
+  /@types/react-simple-maps/1.0.8:
+    resolution:
+      { integrity: sha512-gNXpQor+H0CCjp8GVNUeeTV+iDPdqFuCDIlYHH17KZ/tVHK1WaRIZl+s2ZnPCVQo27nEnRgU3GQxYbOYxXxgNQ== }
+    dependencies:
+      "@types/d3-geo": 1.12.3
+      "@types/d3-zoom": 1.8.3
+      "@types/geojson": 7946.0.8
       "@types/react": 17.0.21
     dev: true
 
@@ -14426,6 +14557,13 @@ packages:
       { integrity: sha512-KHW6M86R+FUPYGb3R5XiYjXPq7VzwxZ22buHhAEVG5ztoEcZZMLov530mmccaqA1GghZArjQV46fuc8kUqhhHw== }
     dev: false
 
+  /d3-array/2.12.1:
+    resolution:
+      { integrity: sha512-B0ErZK/66mHtEsR1TkPEEkwdy+WDesimkM5gpZr5Dsg54BiTA5RXtYW5qTLIAcekaS9xfZrzBLF/OAkB3Qn1YQ== }
+    dependencies:
+      internmap: 1.0.1
+    dev: false
+
   /d3-array/3.1.1:
     resolution:
       { integrity: sha512-33qQ+ZoZlli19IFiQx4QEpf2CBEayMRzhlisJHSCsSUbDXv6ZishqS1x7uFVClKG4Wr7rZVHvaAttoLow6GqdQ== }
@@ -14542,6 +14680,14 @@ packages:
       d3-selection: 1.4.2
     dev: false
 
+  /d3-drag/2.0.0:
+    resolution:
+      { integrity: sha512-g9y9WbMnF5uqB9qKqwIIa/921RYWzlUDv9Jl1/yONQwxbOfszAWTCm8u7HOTgJgRDXiRZN56cHT9pd24dmXs8w== }
+    dependencies:
+      d3-dispatch: 1.0.6
+      d3-selection: 2.0.0
+    dev: false
+
   /d3-drag/3.0.0:
     resolution:
       { integrity: sha512-pWbUJLdETVA8lQNJecMxoXfH6x+mO2UQo8rSmZ+QqxcbyA3hfeprFgIT//HW2nlHChWeIIMwS2Fq+gEARkhTkg== }
@@ -14634,6 +14780,13 @@ packages:
       { integrity: sha512-XG4d1c/UJSEX9NfU02KwBL6BYPj8YKHxgBEw5om2ZnTRSbIcego6dhHwcxuSR3clxh0EpE38os1DVPOmnYtTPg== }
     dependencies:
       d3-array: 1.2.4
+    dev: false
+
+  /d3-geo/2.0.2:
+    resolution:
+      { integrity: sha512-8pM1WGMLGFuhq9S+FpPURxic+gKzjluCD/CHTuUF3mXMeiCo0i6R0tO1s4+GArRFde96SLcW/kOFRjoAosPsFA== }
+    dependencies:
+      d3-array: 2.12.1
     dev: false
 
   /d3-geo/3.0.1:
@@ -14773,6 +14926,11 @@ packages:
       { integrity: sha512-SJ0BqYihzOjDnnlfyeHT0e30k0K1+5sR3d5fNueCNeuhZTnGw4M4o8mqJchSwgKMXCNFo+e2VTChiSJ0vYtXkg== }
     dev: false
 
+  /d3-selection/2.0.0:
+    resolution:
+      { integrity: sha512-XoGGqhLUN/W14NmaqcO/bb1nqjDAw5WtSYb2X8wiuQWvSZUsUVYsOSkOybUrNvcBjaywBdYPy03eXHMXjk9nZA== }
+    dev: false
+
   /d3-selection/3.0.0:
     resolution:
       { integrity: sha512-fmTRWbNMmsmWq6xJV8D19U/gw/bwrHfNXxrIN+HfZgnzqTHp9jOmKMhsTUjXOJnZOdZY9Q28y4yebKzqDKlxlQ== }
@@ -14845,6 +15003,20 @@ packages:
       d3-timer: 1.0.10
     dev: false
 
+  /d3-transition/2.0.0_d3-selection@2.0.0:
+    resolution:
+      { integrity: sha512-42ltAGgJesfQE3u9LuuBHNbGrI/AJjNL2OAUdclE70UE6Vy239GCBEYD38uBPoLeNsOhFStGpPI0BAOV+HMxog== }
+    peerDependencies:
+      d3-selection: "2"
+    dependencies:
+      d3-color: 1.4.1
+      d3-dispatch: 1.0.6
+      d3-ease: 1.0.7
+      d3-interpolate: 1.4.0
+      d3-selection: 2.0.0
+      d3-timer: 1.0.10
+    dev: false
+
   /d3-transition/3.0.1_d3-selection@3.0.0:
     resolution:
       { integrity: sha512-ApKvfjsSR6tg06xrL434C0WydLr7JewBB3V+/39RMHsaXTOG0zmt/OAXeng5M5LBm0ojmxJrpomQVZ1aPvBL4w== }
@@ -14874,6 +15046,17 @@ packages:
       d3-interpolate: 1.4.0
       d3-selection: 1.4.2
       d3-transition: 1.3.2
+    dev: false
+
+  /d3-zoom/2.0.0:
+    resolution:
+      { integrity: sha512-fFg7aoaEm9/jf+qfstak0IYpnesZLiMX6GZvXtUSdv8RH2o4E2qeelgdU09eKS6wGuiGMfcnMI0nTIqWzRHGpw== }
+    dependencies:
+      d3-dispatch: 1.0.6
+      d3-drag: 2.0.0
+      d3-interpolate: 1.4.0
+      d3-selection: 2.0.0
+      d3-transition: 2.0.0_d3-selection@2.0.0
     dev: false
 
   /d3-zoom/3.0.0:
@@ -18434,6 +18617,11 @@ packages:
       has: 1.0.3
       side-channel: 1.0.4
     dev: true
+
+  /internmap/1.0.1:
+    resolution:
+      { integrity: sha512-lDB5YccMydFBtasVtxnZ3MRBHuaoE8GKsppq+EchKL2U4nK/DmEpPHNH8MZe5HkMtpSiTSOZwfN0tzYjO/lJEw== }
+    dev: false
 
   /internmap/2.0.3:
     resolution:
@@ -23882,6 +24070,22 @@ packages:
       tiny-invariant: 1.1.0
       tiny-warning: 1.0.3
 
+  /react-simple-maps/3.0.0_sfoxds7t5ydpegc3knd667wn6m:
+    resolution:
+      { integrity: sha512-vKNFrvpPG8Vyfdjnz5Ne1N56rZlDfHXv5THNXOVZMqbX1rWZA48zQuYT03mx6PAKanqarJu/PDLgshIZAfHHqw== }
+    peerDependencies:
+      prop-types: ^15.7.2
+      react: ^16.8.0 || 17.x || 18.x
+      react-dom: ^16.8.0 || 17.x || 18.x
+    dependencies:
+      d3-geo: 2.0.2
+      d3-selection: 2.0.0
+      d3-zoom: 2.0.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      topojson-client: 3.1.0
+    dev: false
+
   /react-sortable-hoc/2.0.0_sfoxds7t5ydpegc3knd667wn6m:
     resolution:
       { integrity: sha512-JZUw7hBsAHXK7PTyErJyI7SopSBFRcFHDjWW5SWjcugY0i6iH7f+eJkY8cJmGMlZ1C9xz1J3Vjz0plFpavVeRg== }
@@ -26339,6 +26543,14 @@ packages:
       { integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA== }
     engines: { node: ">=0.6" }
     dev: true
+
+  /topojson-client/3.1.0:
+    resolution:
+      { integrity: sha512-605uxS6bcYxGXw9qi62XyrV6Q3xwbndjachmNxu8HWTtVPxZfEJN9fd/SZS1Q54Sn2y0TMyMxFj/cJINqGHrKw== }
+    hasBin: true
+    dependencies:
+      commander: 2.20.3
+    dev: false
 
   /tough-cookie/2.5.0:
     resolution:
