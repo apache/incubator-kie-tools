@@ -16,15 +16,14 @@
 
 package org.kogito.core.internal.engine;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kogito.core.internal.util.TestUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kogito.core.internal.util.TestUtil.COMMON_RESOURCE_PATH;
 
 class ActivationFileVisitorTest {
 
@@ -32,26 +31,24 @@ class ActivationFileVisitorTest {
 
     @BeforeEach
     public void setUp() {
-
         activationFileVisitor = new ActivationFileVisitor();
     }
 
     @Test
-    void testContainsActivator() throws IOException {
-        Path workspace = Paths.get("src/test/resources/testProject");
-        Files.walkFileTree(workspace.toAbsolutePath(), this.activationFileVisitor);
-        assertThat(this.activationFileVisitor.isPresent()).isTrue();
+    void testContainsActivator() {
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "testProject" + File.separator,
+                () -> assertThat(activationFileVisitor.searchActivatorPath().isPresent()).isTrue());
     }
 
     @Test
-    void testContainsActivatorImport() {
-        boolean present = this.activationFileVisitor.containsActivator(ActivationFileVisitor.IMPORT_ACTIVATOR);
-        assertThat(present).isTrue();
+    void testContainsActivatorSpecialPath() {
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "test projéct" + File.separator,
+                () -> assertThat(activationFileVisitor.searchActivatorPath().isPresent()).isTrue());
     }
 
     @Test
-    void testContainsActivatorAnnotation() {
-        boolean present = this.activationFileVisitor.containsActivator(ActivationFileVisitor.ANNOTATION_ACTIVATOR);
-        assertThat(present).isTrue();
+    void testContainsNotActivator() {
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "noActivatorProject" + File.separator,
+                () -> assertThat(activationFileVisitor.searchActivatorPath().isPresent()).isFalse());
     }
 }

@@ -19,39 +19,37 @@ package org.kogito.core.internal.handlers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kogito.core.internal.engine.ActivationChecker;
-import org.kogito.core.internal.util.WorkspaceUtil;
-import org.mockito.Mockito;
+import org.kogito.core.internal.util.TestUtil;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import java.io.File;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kogito.core.internal.util.TestUtil.COMMON_RESOURCE_PATH;
 
 class IsLanguageServerAvailableHandlerTest {
 
-    private WorkspaceUtil workspaceUtilMock;
-
     private ActivationChecker activationChecker;
+    private IsLanguageServerAvailableHandler isLanguageServerAvailableHandler;
 
     @BeforeEach
     public void setup() {
-        workspaceUtilMock = Mockito.mock(WorkspaceUtil.class);
-        activationChecker = new ActivationChecker(workspaceUtilMock);
+        activationChecker = new ActivationChecker();
+        isLanguageServerAvailableHandler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
     }
 
     @Test
     void isLanguageServerNotAvailable() {
-        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/noActivatorProject/");
-        IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
-        activationChecker.check();
-        assertFalse(handler.handle(null, null));
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "noActivatorProject" + File.separator, () -> {
+            activationChecker.check();
+            assertThat(isLanguageServerAvailableHandler.handle(null, null)).isFalse();
+        });
     }
 
     @Test
     void isLanguageServerAvailable() {
-        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/testProject/");
-        IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
-        activationChecker.check();
-        assertTrue(handler.handle(null, null));
+        TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "testProject" + File.separator, () -> {
+            activationChecker.check();
+            assertThat(isLanguageServerAvailableHandler.handle(null, null)).isTrue();
+        });
     }
-
 }

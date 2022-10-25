@@ -17,13 +17,17 @@
 package org.kogito.core.internal.engine;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
+import org.kogito.core.internal.util.WorkspaceUtil;
 
 public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
 
@@ -31,11 +35,16 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
     protected static final String ANNOTATION_ACTIVATOR = "@KieActivator";
     protected static final String JAVA_EXTENSION = ".java";
 
-    private boolean present;
     private Path activatorPath;
 
-    public ActivationFileVisitor() {
-        this.present = false;
+    public Optional<Path> searchActivatorPath() {
+        try {
+            Files.walkFileTree(Paths.get(WorkspaceUtil.getProjectLocation()), this);
+        } catch (IOException e) {
+            JavaLanguageServerPlugin.logException("Error trying to read workspace tree", e);
+        }
+
+        return Optional.ofNullable(activatorPath);
     }
 
     @Override
@@ -46,11 +55,13 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
         }
 
         JavaLanguageServerPlugin.logInfo("Java file found: " + filePath);
+        long linesThatMatch;
 
-        long linesThatMatch = Files.lines(file).filter(this::containsActivator).count();
+        try (Stream<String> linesStream = Files.lines(file)) {
+            linesThatMatch = linesStream.filter(this::containsActivator).count();
+        }
 
         if (linesThatMatch >= 2) {
-            this.present = true;
             JavaLanguageServerPlugin.logInfo("Activator found: " + filePath);
             this.activatorPath = file;
             return FileVisitResult.TERMINATE;
@@ -59,15 +70,8 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
         }
     }
 
-    protected boolean containsActivator(String line) {
+    private boolean containsActivator(String line) {
         return line.contains(IMPORT_ACTIVATOR) || line.contains(ANNOTATION_ACTIVATOR);
     }
 
-    public boolean isPresent() {
-        return present;
-    }
-
-    public Path getActivatorFile() {
-        return activatorPath;
-    }
 }

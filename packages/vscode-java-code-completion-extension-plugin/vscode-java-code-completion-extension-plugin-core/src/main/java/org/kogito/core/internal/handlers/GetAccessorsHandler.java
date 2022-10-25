@@ -45,7 +45,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
     public List<GetPublicResult> handle(List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo("Handle Accessors");
         GetPublicParameters parameters = checkParameters(arguments);
-        BuildInformation buildInformation = javaEngine.buildPublicContent(this.autocompleteHandler.getUri(),
+        BuildInformation buildInformation = javaEngine.buildPublicContent(this.autocompleteHandler.getActivatorPath(),
                                                                           parameters.getFqcn(),
                                                                           parameters.getQuery());
         JavaLanguageServerPlugin.logInfo(buildInformation.getText());

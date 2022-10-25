@@ -16,16 +16,18 @@
 
 package org.kogito.core.internal.engine;
 
+import java.nio.file.Path;
+
 public class BuildInformation {
 
-    private final String uri;
+    private final Path path;
     private final String originalText;
     private final String text;
     private final int line;
     private final int position;
 
-    public BuildInformation(String uri, String originalText, String text, int line, int position) {
-        this.uri = uri;
+    public BuildInformation(Path path, String originalText, String text, int line, int position) {
+        this.path = path;
         this.originalText = originalText;
         this.text = text;
         this.line = line;
@@ -44,8 +46,8 @@ public class BuildInformation {
         return position;
     }
 
-    public String getUri() {
-        return uri;
+    public Path getPath() {
+        return path;
     }
 
     public String getOriginalText() {
