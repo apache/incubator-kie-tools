@@ -22,19 +22,20 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AuthSourceKeys, useAuthSources, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
+import { AuthSourceKeys, useAuthSources, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
-import { AuthStatus, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { useSettingsDispatch } from "../settings/SettingsContext";
 import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
 import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
 import { LocalFile } from "../workspace/worker/api/LocalFile";
 import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import {
+  ImportableUrl,
   isPotentiallyGit,
   isSingleFile,
   UrlType,
@@ -43,6 +44,7 @@ import {
   useImportableUrlValidation,
 } from "./ImportableUrlHooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
+import { fetchSingleFileContent } from "./fetchSingleFileContent";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -60,11 +62,11 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamAuthSource = useQueryParam(QueryParams.AUTH_SOURCE);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
-  const { authInfo, authSource } = useSelectedAuthInfo(queryParamAuthSource);
+  const { authInfo, authSource } = useSelectedAuthSession(queryParamAuthSource);
 
   const importableUrl = useImportableUrl(queryParamUrl);
   const clonableUrlObject = useClonableUrl(queryParamUrl, authSource, queryParamBranch);
-  const { clonableUrl, selectedGitRefName: selectedGitRef, gitRefsPromise } = clonableUrlObject;
+  const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
 
   const setAuthSource = useCallback(
     (newAuthSource) => {
@@ -107,9 +109,9 @@ export function NewWorkspaceFromUrlPage() {
     [history, queryParamUrl, queryParams, routes.import]
   );
 
-  const setBranch = useCallback(
-    (newBranch) => {
-      if (!newBranch) {
+  const setGitRefName = useCallback(
+    (newGitRefName) => {
+      if (!newGitRefName) {
         history.replace({
           pathname: routes.import.path({}),
           search: queryParams.without(QueryParams.BRANCH).toString(),
@@ -119,23 +121,29 @@ export function NewWorkspaceFromUrlPage() {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams
-          .with(QueryParams.BRANCH, typeof newBranch === "function" ? newBranch(selectedGitRef ?? "") : newBranch)
+          .with(
+            QueryParams.BRANCH,
+            typeof newGitRefName === "function" ? newGitRefName(selectedGitRefName ?? "") : newGitRefName
+          )
           .toString(),
       });
     },
-    [history, queryParams, routes.import, selectedGitRef]
+    [history, queryParams, routes.import, selectedGitRefName]
   );
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    if (!selectedGitRef) {
+    if (!selectedGitRefName) {
       return;
     }
     history.replace({
       pathname: routes.import.path({}),
-      search: queryParams.with(QueryParams.BRANCH, selectedGitRef).with(QueryParams.AUTH_SOURCE, authSource).toString(),
+      search: queryParams
+        .with(QueryParams.BRANCH, selectedGitRefName)
+        .with(QueryParams.AUTH_SOURCE, authSource)
+        .toString(),
     });
-  }, [authSource, history, queryParams, routes.import, selectedGitRef, setBranch]);
+  }, [authSource, history, queryParams, routes.import, selectedGitRefName, setGitRefName]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -181,6 +189,23 @@ export function NewWorkspaceFromUrlPage() {
     [routes, history, workspaces]
   );
 
+  const doImportAsSingleFile = useCallback(
+    async (importableUrl: ImportableUrl) => {
+      const singleFileContent = await fetchSingleFileContent(importableUrl, settingsDispatch.github.octokit);
+
+      if (singleFileContent.error) {
+        setImportingError(singleFileContent.error);
+        return;
+      }
+
+      await createWorkspaceForFile({
+        path: basename(decodeURIComponent(singleFileContent.rawUrl!.pathname)),
+        fileContents: encoder.encode(singleFileContent.content!),
+      });
+    },
+    [createWorkspaceForFile, settingsDispatch.github.octokit]
+  );
+
   const doImport = useCallback(async () => {
     const singleFile = isSingleFile(importableUrl.type);
 
@@ -197,36 +222,35 @@ export function NewWorkspaceFromUrlPage() {
 
       //unknown
       else if (importableUrl.type === UrlType.UNKNOWN) {
-        if (gitRefsPromise.data?.defaultBranch) {
+        if (gitServerRefsPromise.data?.defaultBranch) {
           await cloneGitRepository({
             origin: {
               kind: WorkspaceKind.GIT,
               url: importableUrl.url.toString(),
-              branch: selectedGitRef ?? gitRefsPromise.data.defaultBranch,
+              branch: selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
             gitConfig: authInfo,
             authInfo: authInfo,
           });
         } else {
-          // TODO Tiago
-          // Attempt importing single file.
+          await doImportAsSingleFile(importableUrl);
         }
       }
 
       // git but not gist
       else if (importableUrl.type === UrlType.GITHUB_DOT_COM || importableUrl.type === UrlType.GIT) {
-        if (gitRefsPromise.data?.defaultBranch) {
+        if (gitServerRefsPromise.data?.defaultBranch) {
           await cloneGitRepository({
             origin: {
               kind: WorkspaceKind.GIT,
               url: importableUrl.url.toString(),
-              branch: selectedGitRef ?? gitRefsPromise.data.defaultBranch,
+              branch: selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
             gitConfig: authInfo,
             authInfo: authInfo,
           });
         } else {
-          setImportingError(`Can't clone. ${gitRefsPromise.error}`);
+          setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
           return;
         }
       }
@@ -235,59 +259,25 @@ export function NewWorkspaceFromUrlPage() {
       else if (importableUrl.type === UrlType.GIST_DOT_GITHUB_DOT_COM) {
         importableUrl.url.hash = "";
 
-        if (gitRefsPromise.data?.defaultBranch) {
+        if (gitServerRefsPromise.data?.defaultBranch) {
           await cloneGitRepository({
             origin: {
               kind: WorkspaceKind.GITHUB_GIST,
               url: importableUrl.url.toString(),
-              branch: queryParamBranch ?? selectedGitRef ?? gitRefsPromise.data.defaultBranch,
+              branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
             gitConfig: authInfo,
             authInfo: authInfo,
           });
         } else {
-          setImportingError(`Can't clone. ${gitRefsPromise.error}`);
+          setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
           return;
         }
       }
 
       // single file
       else if (singleFile) {
-        let rawUrl = importableUrl.url as URL;
-
-        if (importableUrl.type === UrlType.GITHUB_DOT_COM_FILE) {
-          const res = await settingsDispatch.github.octokit.repos.getContent({
-            repo: importableUrl.repo,
-            owner: importableUrl.org,
-            ref: importableUrl.branch,
-            path: decodeURIComponent(importableUrl.filePath),
-            headers: {
-              "If-None-Match": "",
-            },
-          });
-          rawUrl = new URL((res.data as any).download_url);
-        }
-
-        if (importableUrl.type === UrlType.GIST_DOT_GITHUB_DOT_COM_FILE) {
-          const { data } = await settingsDispatch.github.octokit.gists.get({ gist_id: importableUrl.gistId });
-          const fileName =
-            Object.keys(data.files!).find((k) => k.toLowerCase() === importableUrl.fileName.toLowerCase()) ??
-            Object.keys(data.files!)[0];
-          rawUrl = new URL((data as any).files[fileName].raw_url);
-        }
-
-        const response = await fetch(rawUrl.toString());
-        if (!response.ok) {
-          setImportingError(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
-          return;
-        }
-
-        const content = await response.text();
-
-        await createWorkspaceForFile({
-          path: basename(decodeURIComponent(rawUrl.pathname)),
-          fileContents: encoder.encode(content),
-        });
+        doImportAsSingleFile(importableUrl);
       } else {
         throw new Error("Invalid UrlType " + importableUrl.type);
       }
@@ -298,19 +288,17 @@ export function NewWorkspaceFromUrlPage() {
     }
   }, [
     importableUrl,
-    authSources,
     queryParamAuthSource,
+    authSources,
     clonableUrl.type,
     clonableUrl.error,
-    gitRefsPromise.data?.defaultBranch,
-    gitRefsPromise.error,
+    gitServerRefsPromise.data?.defaultBranch,
+    gitServerRefsPromise.error,
     cloneGitRepository,
-    queryParamBranch,
-    selectedGitRef,
+    selectedGitRefName,
     authInfo,
-    createWorkspaceForFile,
-    settingsDispatch.github.octokit.repos,
-    settingsDispatch.github.octokit.gists,
+    queryParamBranch,
+    doImportAsSingleFile,
   ]);
 
   useEffect(() => {
@@ -323,11 +311,11 @@ export function NewWorkspaceFromUrlPage() {
   }, [history, queryParamUrl, queryParams, routes.import]);
 
   useEffect(() => {
-    if ((!queryParamBranch || !queryParamAuthSource) && selectedGitRef) {
+    if ((!queryParamBranch || !queryParamAuthSource) && selectedGitRefName) {
       return;
     }
 
-    if (gitRefsPromise.status === PromiseStateStatus.PENDING) {
+    if (gitServerRefsPromise.status === PromiseStateStatus.PENDING) {
       return;
     }
 
@@ -339,14 +327,14 @@ export function NewWorkspaceFromUrlPage() {
     setImportingError("");
     doImport();
   }, [
-    gitRefsPromise.status,
+    gitServerRefsPromise.status,
     doImport,
     queryParamConfirm,
     importableUrl.type,
     queryParamUrl,
     queryParamBranch,
     queryParamAuthSource,
-    selectedGitRef,
+    selectedGitRefName,
   ]);
 
   const validation = useImportableUrlValidation(authSource, queryParamUrl, queryParamBranch, clonableUrlObject);
@@ -384,18 +372,16 @@ export function NewWorkspaceFromUrlPage() {
                 });
               }}
               onClose={() => {
-                history.push({
-                  pathname: routes.home.path({}),
-                });
+                history.push({ pathname: routes.home.path({}) });
               }}
               clonableUrl={clonableUrlObject}
               validation={validation}
               authSource={authSource}
               url={queryParamUrl ?? ""}
-              gitRefName={selectedGitRef ?? ""}
+              gitRefName={selectedGitRefName ?? ""}
               setAuthSource={setAuthSource}
               setUrl={setUrl}
-              setGitRefName={setBranch}
+              setGitRefName={setGitRefName}
             />
           )}
         </PageSection>

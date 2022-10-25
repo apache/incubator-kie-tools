@@ -1,7 +1,6 @@
 import * as React from "react";
 import CodeBranchIcon from "@patternfly/react-icons/dist/js/icons/code-branch-icon";
 import TagIcon from "@patternfly/react-icons/dist/js/icons/tag-icon";
-import { ServerRef } from "isomorphic-git";
 
 export enum GitRefType {
   BRANCH = "branch",

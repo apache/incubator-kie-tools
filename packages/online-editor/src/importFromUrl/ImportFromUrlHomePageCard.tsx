@@ -27,7 +27,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AuthSourceKeys, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
+import { AuthSourceKeys, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
@@ -42,7 +42,7 @@ export function ImportFromUrlCard() {
 
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
 
-  const { authSource: selectedAuthSource } = useSelectedAuthInfo(authSource);
+  const { authSource: selectedAuthSource } = useSelectedAuthSession(authSource);
 
   const importableUrl = useImportableUrl(url);
   const clonableUrl = useClonableUrl(url, authSource, gitRefName);

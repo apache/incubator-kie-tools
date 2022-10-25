@@ -19,12 +19,7 @@ import { useMemo } from "react";
 import { useGitHubAuthInfo } from "../github/Hooks";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
 
-//
-//
-//
-//  This file contains temporary modeling for auth sources.
-//
-//
+// This file contains temporary modeling for auth sources.
 
 export type AuthSource = string;
 
@@ -89,7 +84,7 @@ export function useAuthSources() {
   return authSources;
 }
 
-export function useSelectedAuthInfo(authSource: AuthSource | undefined) {
+export function useSelectedAuthSession(authSource: AuthSource | undefined) {
   const githubAuthInfo = useGitHubAuthInfo();
 
   // Change this when more auth sources are available.

@@ -20,7 +20,7 @@ import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constan
 import { extname } from "path";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
-import { AuthSource, AuthSourceKeys, useSelectedAuthInfo } from "../authSources/AuthSourceHooks";
+import { AuthSource, AuthSourceKeys, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import { useSettings } from "../settings/SettingsContext";
@@ -290,34 +290,39 @@ export function useClonableUrl(
 ) {
   const importableUrl = useImportableUrl(url);
 
-  const gitRefsPromise = useGitRefs(isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined, authSource);
+  const gitServerRefsPromise = useGitServerRefs(
+    isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined,
+    authSource
+  );
 
   const gitRefNameFromUrl = useMemo(() => {
-    return (importableUrl as any).branch ?? gitRefsPromise.data?.defaultBranch;
-  }, [gitRefsPromise.data?.defaultBranch, importableUrl]);
+    return (importableUrl as any).branch ?? gitServerRefsPromise.data?.defaultBranch;
+  }, [gitServerRefsPromise.data?.defaultBranch, importableUrl]);
 
   const selectedGitRefName = useMemo<string | undefined>(() => {
     if (gitRefName) {
-      const gitRefNameExists = gitRefsPromise.data?.refs.some(({ ref }) => getGitRefName(ref) === gitRefName);
+      const gitRefNameExists = gitServerRefsPromise.data?.refs.some(({ ref }) => getGitRefName(ref) === gitRefName);
       if (gitRefNameExists) {
         return gitRefName;
       }
     } else if (gitRefNameFromUrl) {
-      const gitRefFromUrlExists = gitRefsPromise.data?.refs.some(({ ref }) => getGitRefName(ref) === gitRefNameFromUrl);
+      const gitRefFromUrlExists = gitServerRefsPromise.data?.refs.some(
+        ({ ref }) => getGitRefName(ref) === gitRefNameFromUrl
+      );
       if (gitRefFromUrlExists) {
         return gitRefNameFromUrl;
       }
     }
 
     return undefined;
-  }, [gitRefName, gitRefNameFromUrl, gitRefsPromise.data]);
+  }, [gitRefName, gitRefNameFromUrl, gitServerRefsPromise.data]);
 
   const clonableUrl: ImportableUrl = useMemo(() => {
-    if (!isPotentiallyGit(importableUrl.type) || gitRefsPromise.status === PromiseStateStatus.PENDING) {
+    if (!isPotentiallyGit(importableUrl.type) || gitServerRefsPromise.status === PromiseStateStatus.PENDING) {
       return importableUrl;
     }
 
-    if (gitRefsPromise.data?.defaultBranch) {
+    if (gitServerRefsPromise.data?.defaultBranch) {
       if (selectedGitRefName) {
         return importableUrl;
       } else {
@@ -334,21 +339,21 @@ export function useClonableUrl(
     };
   }, [
     importableUrl,
-    gitRefsPromise.status,
-    gitRefsPromise.data?.defaultBranch,
+    gitServerRefsPromise.status,
+    gitServerRefsPromise.data?.defaultBranch,
     selectedGitRefName,
     gitRefName,
     gitRefNameFromUrl,
   ]);
 
-  return { clonableUrl, selectedGitRefName, gitRefsPromise };
+  return { clonableUrl, selectedGitRefName, gitServerRefsPromise };
 }
 
-export function useGitRefs(url: URL | undefined, authSource: AuthSource | undefined) {
+export function useGitServerRefs(url: URL | undefined, authSource: AuthSource | undefined) {
   const workspaces = useWorkspaces();
-  const { authInfo } = useSelectedAuthInfo(authSource);
+  const { authInfo } = useSelectedAuthSession(authSource);
 
-  const gitRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
+  const gitServerRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
     useMemo(() => {
       if (!url) {
         return { error: "Can't determine Git refs without URL." };
@@ -368,7 +373,7 @@ export function useGitRefs(url: URL | undefined, authSource: AuthSource | undefi
     }, [authInfo, url, workspaces])
   );
 
-  return gitRefsPromise;
+  return gitServerRefsPromise;
 }
 
 export function useImportableUrlValidation(
@@ -388,7 +393,7 @@ export function useImportableUrlValidation(
       };
     }
 
-    if (clonableUrl.gitRefsPromise.status === PromiseStateStatus.PENDING) {
+    if (clonableUrl.gitServerRefsPromise.status === PromiseStateStatus.PENDING) {
       return {
         option: ValidatedOptions.default,
         helperText: (
@@ -441,7 +446,7 @@ export function useImportableUrlValidation(
     };
   }, [
     url,
-    clonableUrl.gitRefsPromise.status,
+    clonableUrl.gitServerRefsPromise.status,
     clonableUrl.clonableUrl.error,
     gitRefName,
     authSource,

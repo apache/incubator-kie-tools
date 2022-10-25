@@ -71,11 +71,11 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
     }, [props.clonableUrl.clonableUrl.type]);
 
     const gitServerRefsByType = useMemo(() => {
-      return props.clonableUrl.gitRefsPromise.data?.refs.reduce(
+      return props.clonableUrl.gitServerRefsPromise.data?.refs.reduce(
         (acc, next) => acc.set(getGitRefType(next.ref), [...(acc.get(getGitRefType(next.ref)) ?? []), next]),
         new Map<GitRefType, ServerRef[]>()
       );
-    }, [props.clonableUrl.gitRefsPromise.data?.refs]);
+    }, [props.clonableUrl.gitServerRefsPromise.data?.refs]);
 
     return (
       <>

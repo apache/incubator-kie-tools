@@ -25,8 +25,7 @@ import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
 import { ImportableUrl } from "./ImportableUrlHooks";
 
-export function ImportFromUrlForm(props: {
-  defaultBranch?: string;
+export function ImportSingleFileFromUrlForm(props: {
   url?: string;
   onChange: (url: string) => void;
   importingError?: string;
@@ -60,7 +59,7 @@ export function ImportFromUrlForm(props: {
     return ValidatedOptions.success;
   }, [props.url, props.importingError, props.importableUrl.error]);
 
-  const displayError = useMemo(() => {
+  const helperTextInvalid = useMemo(() => {
     if (props.importableUrl.error) {
       return props.importableUrl.error;
     }
@@ -75,21 +74,9 @@ export function ImportFromUrlForm(props: {
   return (
     <Form onSubmit={onSubmit}>
       <FormGroup
-        helperTextInvalid={displayError}
-        helperText={
-          <FormHelperText
-            icon={<CheckCircleIcon />}
-            isHidden={false}
-            style={props.defaultBranch ? {} : { visibility: "hidden" }}
-          >
-            <>
-              {`Cloning default branch '${props.defaultBranch}'`}
-              <Button isSmall={true} variant={ButtonVariant.link} style={{ paddingTop: 0, paddingBottom: 0 }}>
-                Change...
-              </Button>
-            </>
-          </FormHelperText>
-        }
+        label={"Import file from URL"}
+        helperTextInvalid={helperTextInvalid}
+        helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
         helperTextInvalidIcon={<ExclamationCircleIcon />}
         fieldId="url"
         validated={validatedOption}

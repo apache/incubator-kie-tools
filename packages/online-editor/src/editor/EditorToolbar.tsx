@@ -1059,7 +1059,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           search: routes.import.queryString({
             url: `${workspacePromise.data.descriptor.origin.url}`,
             branch: newBranchName,
-            // TODO: tiago Include authSource. Take from workspace? How to decide?
+            // Use same authSource from this workspace.
           }),
         });
       } finally {
