@@ -29,12 +29,11 @@ import org.kogito.core.internal.handlers.GetClassesHandler;
 import org.kogito.core.internal.handlers.Handler;
 import org.kogito.core.internal.handlers.HandlerConstants;
 import org.kogito.core.internal.handlers.IsLanguageServerAvailableHandler;
-import org.kogito.core.internal.util.WorkspaceUtil;
 
 public class DelegateHandler implements IDelegateCommandHandler {
 
     private static final JavaEngine JAVA_ENGINE = new JavaEngine();
-    private static final ActivationChecker ACTIVATION_CHECKER = new ActivationChecker(new WorkspaceUtil());
+    private static final ActivationChecker ACTIVATION_CHECKER = new ActivationChecker();
     private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATION_CHECKER);
     private final IsLanguageServerAvailableHandler isAvailableHandler;
 
