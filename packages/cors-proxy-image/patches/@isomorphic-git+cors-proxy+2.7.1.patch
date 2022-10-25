@@ -1,8 +1,19 @@
 diff --git a/node_modules/@isomorphic-git/cors-proxy/index.js b/node_modules/@isomorphic-git/cors-proxy/index.js
-index 68241c8..a29ffad 100644
+index 68241c8..5ead595 100644
 --- a/node_modules/@isomorphic-git/cors-proxy/index.js
 +++ b/node_modules/@isomorphic-git/cors-proxy/index.js
-@@ -16,9 +16,7 @@ async function service (req, res) {
+@@ -10,15 +10,18 @@ async function service (req, res) {
+   middleware(req, res, () => {
+     let u = url.parse(req.url, true)
+ 
++    if (u.pathname === '/ping') {
++      res.setHeader('content-type', 'text/plain')
++      return send(res, 200, "pong")
++    }
++
+     if (u.pathname === '/') {
+       res.setHeader('content-type', 'text/html')
+       let html = `<!DOCTYPE html>
        <html>
          <title>@isomorphic-git/cors-proxy</title>
          <h1>@isomorphic-git/cors-proxy</h1>
