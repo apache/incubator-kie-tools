@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Specification } from "@severlessworkflow/sdk-typescript";
 
-export * from "./SwfJsonLanguageService";
-export * from "./SwfLanguageService";
-export * from "./SwfYamlLanguageService";
-export * from "./matchNodeWithLocation";
-export * from "./findNodesAtLocation";
-export * from "./refValidation";
-export * from "./nodeUpUntilType";
-export * from "./types";
-export * from "./indentText";
-export * from "./getNodeFormat";
-export * from "./getLineContentFromOffset";
+export const eventCompletion: Omit<Specification.Eventdef, "normalize"> = {
+  name: "${1:Unique event name}",
+  source: "${2:CloudEvent source}",
+  type: "${3:CloudEvent type}",
+};

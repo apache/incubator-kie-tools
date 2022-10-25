@@ -23,8 +23,17 @@ import {
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { TextDocument } from "vscode-json-languageservice";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
+import { getNodePath } from "./SwfLanguageService";
 import { SwfLanguageServiceCommandExecution } from "../api";
-import * as simpleTemplate from "../assets/code-completion/simple-template.sw.json";
+import {
+  eventCompletion,
+  eventStateCompletion,
+  functionCompletion,
+  injectStateCompletion,
+  operationStateCompletion,
+  switchStateCompletion,
+  workflowCompletion,
+} from "../assets/code-completions";
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
@@ -36,14 +45,14 @@ export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogServi
 };
 
 export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
-  document: TextDocument;
-  overwriteRange: Range;
+  codeCompletionStrategy: CodeCompletionStrategy;
   currentNode: SwfLsNode;
   currentNodeRange: Range;
-  rootNode: SwfLsNode;
-  codeCompletionStrategy: CodeCompletionStrategy;
-  swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
+  document: TextDocument;
   langServiceConfig: SwfLanguageServiceConfig;
+  overwriteRange: Range;
+  rootNode: SwfLsNode;
+  swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
 };
 
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
@@ -71,6 +80,57 @@ function toCompletionItemLabelPrefix(
   }
 }
 
+function createCompletionItem(args: {
+  codeCompletionStrategy: CodeCompletionStrategy;
+  completion: object | string;
+  currentNode: SwfLsNode;
+  currentNodeRange: Range;
+  detail: string;
+  extraOptions?: Partial<CompletionItem>;
+  kind: CompletionItemKind;
+  label: string;
+  overwriteRange: Range;
+}): CompletionItem {
+  return {
+    kind: args.kind,
+    label: args.label,
+    sortText: `100_${args.label}`, //place the completion on top in the menu
+    filterText: args.label,
+    detail: args.detail,
+    textEdit: {
+      newText: args.codeCompletionStrategy.translate({
+        completion: args.completion,
+        completionItemKind: args.kind,
+        overwriteRange: args.overwriteRange,
+        currentNodeRange: args.currentNodeRange,
+        currentNode: args.currentNode,
+      }),
+      range: args.overwriteRange,
+    },
+    insertTextFormat: InsertTextFormat.Snippet,
+    ...args.extraOptions,
+  };
+}
+
+function getStateNameCompletion(
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { states: Specification.States }
+): CompletionItem[] {
+  return args.states.flatMap((state: any) => {
+    const kind = CompletionItemKind.Value;
+    const label = args.codeCompletionStrategy.formatLabel(state.name!, kind);
+
+    return [
+      createCompletionItem({
+        ...args,
+        completion: `${state.name}`,
+        kind,
+        label,
+        detail: `"${state.name}"`,
+      }),
+    ];
+  });
+}
+
 /**
  * SwfLanguageService CodeCompletion functions
  */
@@ -89,12 +149,61 @@ export const SwfLanguageServiceCodeCompletion = {
         detail: "Start with a simple Serverless Workflow",
         sortText: `100_${label}`, //place the completion on top in the menu
         textEdit: {
-          newText: args.codeCompletionStrategy.translate({ completion: simpleTemplate, completionItemKind: kind }),
+          newText: args.codeCompletionStrategy.translate({ completion: workflowCompletion, completionItemKind: kind }),
           range: Range.create(args.cursorPosition, args.cursorPosition),
         },
         insertTextFormat: InsertTextFormat.Snippet,
       },
     ];
+  },
+
+  getEventsCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const kind = CompletionItemKind.Interface;
+
+    return Promise.resolve([
+      createCompletionItem({
+        ...args,
+        completion: eventCompletion,
+        kind,
+        label: "New event",
+        detail: "Add a new event",
+      }),
+    ]);
+  },
+
+  getStatesCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const kind = CompletionItemKind.Interface;
+
+    return Promise.resolve([
+      createCompletionItem({
+        ...args,
+        completion: operationStateCompletion,
+        kind,
+        label: "New operation state",
+        detail: "Add a new operation state",
+      }),
+      createCompletionItem({
+        ...args,
+        completion: eventStateCompletion,
+        kind,
+        label: "New event state",
+        detail: "Add a new event state",
+      }),
+      createCompletionItem({
+        ...args,
+        completion: switchStateCompletion,
+        kind,
+        label: "New switch state",
+        detail: "Add a new switch state",
+      }),
+      createCompletionItem({
+        ...args,
+        completion: injectStateCompletion,
+        kind,
+        label: "New inject state",
+        detail: "Add a new inject state",
+      }),
+    ]);
   },
 
   getFunctionCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
@@ -130,34 +239,35 @@ export const SwfLanguageServiceCodeCompletion = {
             kind
           );
 
-          return {
+          return createCompletionItem({
+            ...args,
+            completion: swfFunction,
             kind,
             label,
             detail:
               swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
                 ? swfServiceCatalogService.source.url
                 : swfServiceCatalogFunc.operation,
-            textEdit: {
-              newText:
-                args.codeCompletionStrategy.translate({
-                  completion: swfFunction,
-                  completionItemKind: kind,
-                  overwriteRange: args.overwriteRange,
-                  currentNodeRange: args.currentNodeRange,
-                }) + (args.currentNode.type === "object" ? "," : ""),
-              range: args.overwriteRange,
+            extraOptions: {
+              command: {
+                command: command.name,
+                title: "Import function from completion item",
+                arguments: [command.args],
+              },
             },
-            snippet: true,
-            insertTextFormat: InsertTextFormat.Snippet,
-            command: {
-              command: command.name,
-              title: "Import function from completion item",
-              arguments: [command.args],
-            },
-          };
+          });
         })
     );
-    return Promise.resolve(result);
+
+    const genericFunctionCompletion = createCompletionItem({
+      ...args,
+      completion: functionCompletion,
+      kind: CompletionItemKind.Interface,
+      label: "New function",
+      detail: "Add a new function",
+    });
+
+    return Promise.resolve([...result, genericFunctionCompletion]);
   },
 
   getFunctionOperationCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
@@ -184,20 +294,13 @@ export const SwfLanguageServiceCodeCompletion = {
 
         const label = args.codeCompletionStrategy.formatLabel(swfServiceCatalogFunc.operation, kind);
 
-        return {
+        return createCompletionItem({
+          ...args,
+          completion: `${swfServiceCatalogFunc.operation}`,
           kind,
           label,
           detail: label,
-          filterText: label,
-          textEdit: {
-            newText: args.codeCompletionStrategy.translate({
-              completion: `${swfServiceCatalogFunc.operation}`,
-              completionItemKind: kind,
-            }),
-            range: args.overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        };
+        });
       });
     return Promise.resolve(result);
   },
@@ -232,17 +335,13 @@ export const SwfLanguageServiceCodeCompletion = {
       const label = args.codeCompletionStrategy.formatLabel(swfFunctionRef.refName, kind);
 
       return [
-        {
+        createCompletionItem({
+          ...args,
+          completion: swfFunctionRef,
           kind,
           label,
-          sortText: label,
           detail: `${swfServiceCatalogFunc.operation}`,
-          textEdit: {
-            newText: args.codeCompletionStrategy.translate({ completion: swfFunctionRef, completionItemKind: kind }),
-            range: args.overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        },
+        }),
       ];
     });
 
@@ -257,21 +356,13 @@ export const SwfLanguageServiceCodeCompletion = {
       const label = args.codeCompletionStrategy.formatLabel(swfFunction.name, kind);
 
       return [
-        {
+        createCompletionItem({
+          ...args,
+          completion: `${swfFunction.name}`,
           kind,
           label,
-          sortText: label,
           detail: `"${swfFunction.name}"`,
-          filterText: label,
-          textEdit: {
-            newText: args.codeCompletionStrategy.translate({
-              completion: `${swfFunction.name}`,
-              completionItemKind: kind,
-            }),
-            range: args.overwriteRange,
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        },
+        }),
       ];
     });
     return Promise.resolve(result);
@@ -322,17 +413,49 @@ export const SwfLanguageServiceCodeCompletion = {
     const label = `'${swfFunctionRefName}' arguments`;
 
     return Promise.resolve([
-      {
+      createCompletionItem({
+        ...args,
+        completion: swfFunctionRefArgs,
         kind,
         label,
-        sortText: label,
         detail: swfFunction.operation,
-        textEdit: {
-          newText: args.codeCompletionStrategy.translate({ completion: swfFunctionRefArgs, completionItemKind: kind }),
-          range: args.overwriteRange,
-        },
-        insertTextFormat: InsertTextFormat.Snippet,
-      },
+      }),
     ]);
+  },
+
+  getEventRefsCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const result = swfModelQueries.getEvents(args.rootNode).flatMap((event) => {
+      const kind = CompletionItemKind.Value;
+      const label = args.codeCompletionStrategy.formatLabel(event.name!, kind);
+
+      return [
+        createCompletionItem({
+          ...args,
+          completion: `${event.name}`,
+          kind,
+          label,
+          detail: `"${event.name}"`,
+        }),
+      ];
+    });
+    return Promise.resolve(result);
+  },
+
+  getTransitionCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const statePath = getNodePath(args.currentNode).slice(0, 2);
+    const currentStateName = findNodeAtLocation(args.rootNode, [...statePath, "name"])?.value || "";
+    const states = swfModelQueries
+      .getStates(args.rootNode)
+      .filter((s) => s.name !== currentStateName) as Specification.States;
+    const result = getStateNameCompletion({ ...args, states });
+
+    return Promise.resolve(result);
+  },
+
+  getStartCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const states = swfModelQueries.getStates(args.rootNode);
+    const result = getStateNameCompletion({ ...args, states });
+
+    return Promise.resolve(result);
   },
 };
