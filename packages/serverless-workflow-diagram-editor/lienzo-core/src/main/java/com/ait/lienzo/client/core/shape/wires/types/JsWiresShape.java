@@ -109,6 +109,33 @@ public class JsWiresShape {
         return child;
     }
 
+    public void clearStateIcon() {
+        getChild(2).asGroup().getChildNodes().get(1).asGroup().removeAll();
+        draw();
+    }
+
+    public void setStateIcon(String path) {
+        clearStateIcon();
+        MultiPath mp = new MultiPath(path)
+                .setDraggable(false)
+                .setX(0.00)
+                .setY(0.00)
+                .setAlpha(1.00)
+                .setListening(false)
+                .setScale(1.00, 1.00)
+                .setOffset(0.00, 0.00)
+                .setFillColor("#ffffff")
+                .setStrokeColor("#ffffff")
+                .setStrokeWidth(2.00);
+        getChild(2).asGroup().getChildNodes().get(1).asGroup().add(mp);
+        draw();
+    }
+
+    public void setStateIconBackground(String color) {
+        getChild(2).asGroup().getChildNodes().get(0).asShape().setFillColor(color);
+        draw();
+    }
+
     public Shape<?> getShape(int index) {
         return flatShapes().getAt(index);
     }
