@@ -19,7 +19,7 @@ import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-cor
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { isServerlessWorkflowJson } from "../extension";
+import { isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useController } from "../reactExt/Hooks";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
@@ -100,7 +100,7 @@ export const EditorPageDockDrawer = React.forwardRef<
   );
 
   const notificationsPanelIsDisabled = useMemo(
-    () => !isServerlessWorkflowJson(props.workspaceFile.name),
+    () => !isServerlessWorkflow(props.workspaceFile.name),
     [props.workspaceFile.name]
   );
 
