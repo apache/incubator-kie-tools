@@ -19,4 +19,8 @@ export default defineConfig({
     specPattern: "e2e/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "support/e2e.ts",
   },
+  retries: {
+    runMode: 1,
+    openMode: 0,
+  },
 });
