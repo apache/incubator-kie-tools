@@ -37,7 +37,7 @@ import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getNodeFormat } from "./getNodeFormat";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
-import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { findNodeAtOffset, positions_equals, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import {
   CodeCompletionStrategy,
   ShouldCompleteArgs,
@@ -45,6 +45,7 @@ import {
   SwfLsNode,
   TranslateArgs,
 } from "./types";
+import { getLineContentFromOffset } from "./getLineContentFromOffset";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -247,7 +248,7 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
 
     return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
       args.completionItemKind
-    ) && args.overwriteRange?.start.character === args.currentNodeRange?.start.character
+    ) && positions_equals(args.overwriteRange?.start ?? null, args.currentNodeRange?.start ?? null)
       ? `- ${completionText}\n`
       : completionText;
   }
@@ -280,6 +281,16 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
         getNodeFormat(args.content, args.node.parent) === FileLanguage.JSON)
     ) {
       return false;
+    }
+
+    //this manage the test case: "completion › add in the middle / without dash character"
+    if (args.node?.type === "array" && args.cursorOffset !== args.node.offset) {
+      const lineContent = getLineContentFromOffset(args.content, args.cursorOffset);
+      const lineContentStartsWithDash = /^\s*- /.test(lineContent);
+
+      if (!lineContentStartsWithDash) {
+        return false;
+      }
     }
 
     return matchNodeWithLocation(args.root, args.node, args.path);

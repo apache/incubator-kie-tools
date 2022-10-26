@@ -1,5 +1,1893 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SWF LS JSON code completion empty file completion empty file with a newline after the cursor 1`] = `1`;
+
+exports[`SWF LS JSON code completion empty file completion empty file with a newline after the cursor 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple Serverless Workflow",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first Serverless Workflow",
+    "sortText": "100_Create your first Serverless Workflow",
+    "textEdit": Object {
+      "newText": "{
+  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"version\\": \\"\${2:0.1}\\",
+  \\"specVersion\\": \\"\${3:0.8}\\",
+  \\"name\\": \\"\${4:Workflow name}\\",
+  \\"description\\": \\"\${5:Workflow description}\\",
+  \\"start\\": \\"\${13}\\",
+  \\"functions\\": [
+    {
+      \\"name\\": \\"\${7:uniqueFunctionName}\\",
+      \\"operation\\": \\"\${8:localhost#operation}\\",
+      \\"type\\": \\"\${9:rest}\\"
+    }
+  ],
+  \\"events\\": [
+    {
+      \\"name\\": \\"\${10:Unique event name}\\",
+      \\"source\\": \\"\${11:CloudEvent source}\\",
+      \\"type\\": \\"\${12:CloudEvent type}\\"
+    }
+  ],
+  \\"states\\": [
+    {
+      \\"name\\": \\"\${13:StartState}\\",
+      \\"type\\": \\"\${14:operation}\\",
+      \\"actions\\": [
+        {
+          \\"name\\": \\"\${15:uniqueActionName}\\",
+          \\"functionRef\\": {
+            \\"refName\\": \\"\${7}\\",
+            \\"arguments\\": {
+              \\"firstArgument\\": \\"\\",
+              \\"secondArgument\\": \\"\\"
+            }
+          }
+        }
+      ],
+      \\"end\\": true
+    }
+  ]
+}",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion empty file completion empty file with a newline before the cursor 1`] = `1`;
+
+exports[`SWF LS JSON code completion empty file completion empty file with a newline before the cursor 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple Serverless Workflow",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first Serverless Workflow",
+    "sortText": "100_Create your first Serverless Workflow",
+    "textEdit": Object {
+      "newText": "{
+  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"version\\": \\"\${2:0.1}\\",
+  \\"specVersion\\": \\"\${3:0.8}\\",
+  \\"name\\": \\"\${4:Workflow name}\\",
+  \\"description\\": \\"\${5:Workflow description}\\",
+  \\"start\\": \\"\${13}\\",
+  \\"functions\\": [
+    {
+      \\"name\\": \\"\${7:uniqueFunctionName}\\",
+      \\"operation\\": \\"\${8:localhost#operation}\\",
+      \\"type\\": \\"\${9:rest}\\"
+    }
+  ],
+  \\"events\\": [
+    {
+      \\"name\\": \\"\${10:Unique event name}\\",
+      \\"source\\": \\"\${11:CloudEvent source}\\",
+      \\"type\\": \\"\${12:CloudEvent type}\\"
+    }
+  ],
+  \\"states\\": [
+    {
+      \\"name\\": \\"\${13:StartState}\\",
+      \\"type\\": \\"\${14:operation}\\",
+      \\"actions\\": [
+        {
+          \\"name\\": \\"\${15:uniqueActionName}\\",
+          \\"functionRef\\": {
+            \\"refName\\": \\"\${7}\\",
+            \\"arguments\\": {
+              \\"firstArgument\\": \\"\\",
+              \\"secondArgument\\": \\"\\"
+            }
+          }
+        }
+      ],
+      \\"end\\": true
+    }
+  ]
+}",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion empty file completion total empty file 1`] = `1`;
+
+exports[`SWF LS JSON code completion empty file completion total empty file 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple Serverless Workflow",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first Serverless Workflow",
+    "sortText": "100_Create your first Serverless Workflow",
+    "textEdit": Object {
+      "newText": "{
+  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"version\\": \\"\${2:0.1}\\",
+  \\"specVersion\\": \\"\${3:0.8}\\",
+  \\"name\\": \\"\${4:Workflow name}\\",
+  \\"description\\": \\"\${5:Workflow description}\\",
+  \\"start\\": \\"\${13}\\",
+  \\"functions\\": [
+    {
+      \\"name\\": \\"\${7:uniqueFunctionName}\\",
+      \\"operation\\": \\"\${8:localhost#operation}\\",
+      \\"type\\": \\"\${9:rest}\\"
+    }
+  ],
+  \\"events\\": [
+    {
+      \\"name\\": \\"\${10:Unique event name}\\",
+      \\"source\\": \\"\${11:CloudEvent source}\\",
+      \\"type\\": \\"\${12:CloudEvent type}\\"
+    }
+  ],
+  \\"states\\": [
+    {
+      \\"name\\": \\"\${13:StartState}\\",
+      \\"type\\": \\"\${14:operation}\\",
+      \\"actions\\": [
+        {
+          \\"name\\": \\"\${15:uniqueActionName}\\",
+          \\"functionRef\\": {
+            \\"refName\\": \\"\${7}\\",
+            \\"arguments\\": {
+              \\"firstArgument\\": \\"\\",
+              \\"secondArgument\\": \\"\\"
+            }
+          }
+        }
+      ],
+      \\"end\\": true
+    }
+  ]
+}",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion eventRefs completion add at the beginning of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion add at the beginning of the array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion eventRefs completion add at the end of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion add at the end of the array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 26,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 26,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion eventRefs completion add into empty array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion add into empty array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing after the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing after the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 3`] = `0`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing before the array 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing inside an object of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion eventRefs completion pointing inside an object of the array 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetEvent\\"",
+    "filterText": "\\"GreetEvent\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetEvent\\"",
+    "sortText": "100_\\"GreetEvent\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetEvent\\"",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 23,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion events completion add at the beginning of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion events completion add at the beginning of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new event",
+    "filterText": "New event",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event",
+    "sortText": "100_New event",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique event name}\\",
+  \\"source\\": \\"\${2:CloudEvent source}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion events completion add at the end of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion events completion add at the end of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new event",
+    "filterText": "New event",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event",
+    "sortText": "100_New event",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique event name}\\",
+  \\"source\\": \\"\${2:CloudEvent source}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion events completion add into empty array 1`] = `1`;
+
+exports[`SWF LS JSON code completion events completion add into empty array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new event",
+    "filterText": "New event",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event",
+    "sortText": "100_New event",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique event name}\\",
+  \\"source\\": \\"\${2:CloudEvent source}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion events completion pointing after the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion events completion pointing after the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion events completion pointing before the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion events completion pointing before the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion events completion pointing before the array 3`] = `0`;
+
+exports[`SWF LS JSON code completion events completion pointing before the array 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion events completion pointing inside an object of the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion events completion pointing inside an object of the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion functionRef arguments completion with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef arguments completion with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "'testRelativeFunction1' arguments",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "'testRelativeFunction1' arguments",
+    "sortText": "100_'testRelativeFunction1' arguments",
+    "textEdit": Object {
+      "newText": "{
+  \\"argString\\": \\"\${1:}\\",
+  \\"argNumber\\": \\"\${2:}\\",
+  \\"argBoolean\\": \\"\${3:}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 18,
+        },
+        "start": Object {
+          "character": 25,
+          "line": 18,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef arguments completion without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef arguments completion without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "'testRelativeFunction1' arguments",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "'testRelativeFunction1' arguments",
+    "sortText": "100_'testRelativeFunction1' arguments",
+    "textEdit": Object {
+      "newText": "{
+  \\"argString\\": \\"\${1:}\\",
+  \\"argNumber\\": \\"\${2:}\\",
+  \\"argBoolean\\": \\"\${3:}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 18,
+        },
+        "start": Object {
+          "character": 25,
+          "line": 18,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef completion with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef completion with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "testRelativeFunction1",
+    "sortText": "100_testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"refName\\": \\"testRelativeFunction1\\",
+  \\"arguments\\": {
+    \\"argString\\": \\"\${1:}\\",
+    \\"argNumber\\": \\"\${2:}\\",
+    \\"argBoolean\\": \\"\${3:}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 16,
+        },
+        "start": Object {
+          "character": 25,
+          "line": 16,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef completion without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef completion without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 9,
+    "label": "testRelativeFunction1",
+    "sortText": "100_testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"refName\\": \\"testRelativeFunction1\\",
+  \\"arguments\\": {
+    \\"argString\\": \\"\${1:}\\",
+    \\"argNumber\\": \\"\${2:}\\",
+    \\"argBoolean\\": \\"\${3:}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 25,
+          "line": 16,
+        },
+        "start": Object {
+          "character": 25,
+          "line": 16,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef refName completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef refName completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "\\"myFunc\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"myFunc\\"",
+    "sortText": "100_\\"myFunc\\"",
+    "textEdit": Object {
+      "newText": "\\"myFunc\\"",
+      "range": Object {
+        "end": Object {
+          "character": 23,
+          "line": 17,
+        },
+        "start": Object {
+          "character": 23,
+          "line": 17,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef refName completion inside double quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef refName completion inside double quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "\\"myFunc\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"myFunc\\"",
+    "sortText": "100_\\"myFunc\\"",
+    "textEdit": Object {
+      "newText": "\\"myFunc\\"",
+      "range": Object {
+        "end": Object {
+          "character": 23,
+          "line": 17,
+        },
+        "start": Object {
+          "character": 23,
+          "line": 17,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef refName completion not in quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef refName completion not in quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "\\"myFunc\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"myFunc\\"",
+    "sortText": "100_\\"myFunc\\"",
+    "textEdit": Object {
+      "newText": "\\"myFunc\\"",
+      "range": Object {
+        "end": Object {
+          "character": 23,
+          "line": 17,
+        },
+        "start": Object {
+          "character": 23,
+          "line": 17,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functionRef refName completion not in quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion functionRef refName completion not in quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"myFunc\\"",
+    "filterText": "\\"myFunc\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"myFunc\\"",
+    "sortText": "100_\\"myFunc\\"",
+    "textEdit": Object {
+      "newText": "\\"myFunc\\"",
+      "range": Object {
+        "end": Object {
+          "character": 23,
+          "line": 17,
+        },
+        "start": Object {
+          "character": 23,
+          "line": 17,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functions completion add at the beginning of the array 1`] = `2`;
+
+exports[`SWF LS JSON code completion functions completion add at the beginning of the array 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.json",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:testRelativeFunction1}\\",
+  \\"operation\\": \\"specs/testRelativeService1.yml#testRelativeFunction1\\",
+  \\"type\\": \\"rest\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:Function type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functions completion add at the end of the array 1`] = `2`;
+
+exports[`SWF LS JSON code completion functions completion add at the end of the array 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.json",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:testRelativeFunction1}\\",
+  \\"operation\\": \\"specs/testRelativeService1.yml#testRelativeFunction1\\",
+  \\"type\\": \\"rest\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:Function type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functions completion add into empty array 1`] = `2`;
+
+exports[`SWF LS JSON code completion functions completion add into empty array 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.json",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:testRelativeFunction1}\\",
+  \\"operation\\": \\"specs/testRelativeService1.yml#testRelativeFunction1\\",
+  \\"type\\": \\"rest\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:Function type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functions completion pointing after the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion functions completion pointing after the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion functions completion pointing before the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion functions completion pointing before the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion functions completion pointing before the array 3`] = `0`;
+
+exports[`SWF LS JSON code completion functions completion pointing before the array 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion functions completion pointing inside an object of the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion functions completion pointing inside an object of the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion operation completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 19,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion operation completion inside double quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion inside double quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 19,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 19,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion operation completion not in quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "filterText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "insertTextFormat": 2,
+    "kind": 19,
+    "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+    "textEdit": Object {
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 19,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 19,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after 1`] = `2`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "\\"GreetInEnglish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInEnglish\\"",
+    "sortText": "100_\\"GreetInEnglish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInEnglish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "\\"GreetInSpanish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInSpanish\\"",
+    "sortText": "100_\\"GreetInSpanish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInSpanish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / without same level content after 1`] = `2`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "\\"GreetInEnglish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInEnglish\\"",
+    "sortText": "100_\\"GreetInEnglish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInEnglish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "\\"GreetInSpanish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInSpanish\\"",
+    "sortText": "100_\\"GreetInSpanish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInSpanish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion start completion not in quotes / with same level content after 1`] = `2`;
+
+exports[`SWF LS JSON code completion start completion not in quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "\\"GreetInEnglish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInEnglish\\"",
+    "sortText": "100_\\"GreetInEnglish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInEnglish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "\\"GreetInSpanish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInSpanish\\"",
+    "sortText": "100_\\"GreetInSpanish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInSpanish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion start completion not in quotes / without same level content after 1`] = `2`;
+
+exports[`SWF LS JSON code completion start completion not in quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "\\"GreetInEnglish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInEnglish\\"",
+    "sortText": "100_\\"GreetInEnglish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInEnglish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "\\"GreetInSpanish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInSpanish\\"",
+    "sortText": "100_\\"GreetInSpanish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInSpanish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion states completion add at the beginning of the array 1`] = `4`;
+
+exports[`SWF LS JSON code completion states completion add at the beginning of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": {},
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion states completion add at the end of the array 1`] = `4`;
+
+exports[`SWF LS JSON code completion states completion add at the end of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": {},
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion states completion add into empty array 1`] = `4`;
+
+exports[`SWF LS JSON code completion states completion add into empty array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": {},
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 13,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion states completion pointing after the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion states completion pointing after the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion states completion pointing before the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion states completion pointing before the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion states completion pointing before the array 3`] = `0`;
+
+exports[`SWF LS JSON code completion states completion pointing before the array 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion states completion pointing inside an object of the array 1`] = `0`;
+
+exports[`SWF LS JSON code completion states completion pointing inside an object of the array 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion transition completion dataConditions transition completion simple case 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion dataConditions transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 26,
+          "line": 6,
+        },
+        "start": Object {
+          "character": 26,
+          "line": 6,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion defaultCondition transition completion simple case 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion defaultCondition transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 24,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 24,
+          "line": 5,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion eventConditions transition completion simple case 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion eventConditions transition completion simple case 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 24,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 24,
+          "line": 5,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion inside double quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / with same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / without same level content after 1`] = `1`;
+
+exports[`SWF LS JSON code completion transition completion state transition completion not in quotes / without same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"Inject Mantra\\"",
+    "filterText": "\\"Inject Mantra\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"Inject Mantra\\"",
+    "sortText": "100_\\"Inject Mantra\\"",
+    "textEdit": Object {
+      "newText": "\\"Inject Mantra\\"",
+      "range": Object {
+        "end": Object {
+          "character": 22,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 22,
+          "line": 4,
+        },
+      },
+    },
+  },
+]
+`;
+
 exports[`SWF LS JSON diagnostic missing property value 1`] = `2`;
 
 exports[`SWF LS JSON diagnostic missing property value 2`] = `

@@ -16,32 +16,17 @@
 
 package org.kogito.core.internal.engine;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
-import org.kogito.core.internal.util.WorkspaceUtil;
 
 public class ActivationChecker {
 
-    private final WorkspaceUtil workspaceUtil;
     private Path activatorPath = null;
 
-    public ActivationChecker(WorkspaceUtil workspaceUtil) {
-        this.workspaceUtil = workspaceUtil;
-    }
-
     public void check() {
-        ActivationFileVisitor visitor = new ActivationFileVisitor();
-        try {
-            Files.walkFileTree(Paths.get(workspaceUtil.getProjectLocation()), visitor);
-        } catch (IOException e) {
-            JavaLanguageServerPlugin.logException("Error trying to read workspace tree", e);
-        }
-        if (visitor.isPresent()) {
-            this.activatorPath = visitor.getActivatorFile().toAbsolutePath();
+        var fileVisitor = new ActivationFileVisitor();
+        var activatorPathOpt = fileVisitor.searchActivatorPath();
+        if (activatorPathOpt.isPresent()) {
+            activatorPath = fileVisitor.searchActivatorPath().get().toAbsolutePath();
         }
     }
 
@@ -49,9 +34,9 @@ public class ActivationChecker {
         return activatorPath != null && activatorPath.toFile().exists();
     }
 
-    public String getActivatorUri() {
+    public Path getActivatorPath() {
         if (existActivator()) {
-            return activatorPath.toUri().toASCIIString();
+            return activatorPath;
         } else {
             throw new ActivationCheckerException("Activator URI is not present");
         }

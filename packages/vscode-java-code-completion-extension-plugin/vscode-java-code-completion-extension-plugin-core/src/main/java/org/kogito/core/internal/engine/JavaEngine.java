@@ -51,27 +51,27 @@ public class JavaEngine {
         }
     }
 
-    public BuildInformation buildImportClass(String uri, String importText) {
+    public BuildInformation buildImportClass(Path filePath, String importText) {
 
         TemplateParameters item = new TemplateParameters();
-        item.setClassName(getClassName(uri));
+        item.setClassName(getClassName(filePath));
         item.setQuery(importText);
 
         String content = this.evaluate(Templates.TEMPLATE_CLASS, item);
 
-        return new BuildInformation(uri, getContent(uri), content, 2, getEndOfLinePosition(content, 2));
+        return new BuildInformation(filePath, getContent(filePath), content, 2, getEndOfLinePosition(content, 2));
     }
 
-    public BuildInformation buildPublicContent(String uri, String fqcn, String completeText) {
+    public BuildInformation buildPublicContent(Path filePath, String fqcn, String completeText) {
 
         TemplateParameters item = new TemplateParameters();
-        item.setClassName(getClassName(uri));
+        item.setClassName(getClassName(filePath));
         item.setQuery(completeText);
         item.setFqcn(fqcn);
 
         String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
 
-        return new BuildInformation(uri, getContent(uri), content, 5, getEndOfLinePosition(content, 5));
+        return new BuildInformation(filePath, getContent(filePath), content, 5, getEndOfLinePosition(content, 5));
     }
 
     protected int getEndOfLinePosition(String content, int lineNumber) {
@@ -80,8 +80,8 @@ public class JavaEngine {
         return split[lineNumber].length();
     }
 
-    protected String getClassName(String url) {
-        String fileName = Paths.get(url).getFileName().toString();
+    protected String getClassName(Path path) {
+        String fileName = path.getFileName().toString();
         if (fileName.contains(".")) {
             return fileName.substring(0, fileName.lastIndexOf("."));
         } else {
@@ -89,11 +89,11 @@ public class JavaEngine {
         }
     }
 
-    protected String getContent(String uri) {
+    protected String getContent(Path path) {
         try {
-            return Files.readString(Path.of(URI.create(uri)));
+            return Files.readString(path);
         } catch (IOException e) {
-            JavaLanguageServerPlugin.logException("Can't read content from: " + uri, e);
+            JavaLanguageServerPlugin.logException("Can't read content from: " + path, e);
             return "";
         }
     }

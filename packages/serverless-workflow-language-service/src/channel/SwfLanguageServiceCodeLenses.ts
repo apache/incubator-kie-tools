@@ -23,7 +23,7 @@ import {
 } from "../api";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode, SwfLsNodeType } from "./types";
 
 export type SwfLanguageServiceCodeLensesFunctionsArgs = {
   config: SwfLanguageServiceConfig;
@@ -70,6 +70,45 @@ const createCodeLenses = (args: {
 };
 
 /**
+ * Create code lenses for the 'OpenCompletionItems' command
+ *
+ * @param args -
+ * @returns the CodeLenses created
+ */
+const createOpenCompletionItemsCodeLenses = (
+  args: {
+    jsonPath: string[];
+    title: string;
+    nodeType: SwfLsNodeType;
+    commandName?: SwfLanguageServiceCommandTypes;
+  } & SwfLanguageServiceCodeLensesFunctionsArgs
+): CodeLens[] =>
+  createCodeLenses({
+    ...args,
+    positionLensAt: "begin",
+    commandDelegates: ({ node }) => {
+      const commandName: SwfLanguageServiceCommandTypes = args.commandName || "swf.ls.commands.OpenCompletionItems";
+
+      if (
+        node.type !== args.nodeType ||
+        !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content })
+      ) {
+        return [];
+      }
+
+      const newCursorPosition = args.codeCompletionStrategy.getStartNodeValuePosition(args.document, node);
+
+      return [
+        {
+          name: commandName,
+          title: args.title,
+          args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs[typeof commandName]],
+        },
+      ];
+    },
+  });
+
+/**
  * Functions to create CodeLenses
  */
 export const SwfLanguageServiceCodeLenses = {
@@ -93,31 +132,27 @@ export const SwfLanguageServiceCodeLenses = {
   },
 
   addFunction: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
-    createCodeLenses({
-      document: args.document,
-      rootNode: args.rootNode,
+    createOpenCompletionItemsCodeLenses({
+      ...args,
       jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
+      title: "+ Add function...",
+      nodeType: "array",
+    }),
 
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content })
-        ) {
-          return [];
-        }
+  addEvent: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
+    createOpenCompletionItemsCodeLenses({
+      ...args,
+      jsonPath: ["events"],
+      title: "+ Add event...",
+      nodeType: "array",
+    }),
 
-        const newCursorPosition = args.codeCompletionStrategy.getStartNodeValuePosition(args.document, node);
-
-        return [
-          {
-            name: commandName,
-            title: "+ Add function...",
-            args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs[typeof commandName]],
-          },
-        ];
-      },
+  addState: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
+    createOpenCompletionItemsCodeLenses({
+      ...args,
+      jsonPath: ["states"],
+      title: "+ Add state...",
+      nodeType: "array",
     }),
 
   setupServiceRegistries: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>

@@ -24,7 +24,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 
 public class WorkspaceUtil {
 
-    public String getProjectLocation() {
+    private WorkspaceUtil() {};
+
+    public static String getProjectLocation() {
         String workspaceStorage = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
         Optional<IProject> project = Arrays.stream(ResourcesPlugin.getWorkspace().getRoot().getProjects())
                 .filter(iProject -> !iProject.getLocation().makeAbsolute().toOSString().contains(workspaceStorage))

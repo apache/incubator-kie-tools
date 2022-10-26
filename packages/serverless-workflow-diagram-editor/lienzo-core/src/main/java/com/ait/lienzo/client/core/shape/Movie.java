@@ -26,10 +26,12 @@ import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.IndefiniteAnimation;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
-import com.ait.lienzo.client.core.image.ImageLoader;
+import com.ait.lienzo.client.core.image.JsImageBitmap;
+import com.ait.lienzo.client.core.image.JsImageBitmapCallback;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
+import com.ait.lienzo.client.core.style.Style;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.MovieEndedHandler;
 import com.ait.lienzo.client.core.util.ScratchPad;
@@ -43,7 +45,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.MediaElement;
 import com.google.gwt.safehtml.shared.UriUtils;
 import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLImageElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLVideoElement;
 import elemental2.dom.MediaError;
 import elemental2.dom.TextMetrics;
@@ -71,7 +73,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
 
     private String m_error = null;
 
-    private HTMLImageElement m_postr = null;
+    private JsImageBitmap m_postr = null;
 
     private MovieEndedHandler m_onend = null;
 
@@ -174,7 +176,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
 
             m_video.loop = isLoop();
 
-            ImageLoader.setVisible(m_video, false);
+            setVisible(m_video, false);
 
             m_video.playbackRate = getPlaybackRate();
 
@@ -188,6 +190,16 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
             return new MovieAnimation(this, m_video);
         } else {
             return null;
+        }
+    }
+
+    public static void setVisible(HTMLElement image, boolean visible) {
+        image.style.display = visible ? "" : Style.Display.NONE.getCssName();
+
+        if (visible) {
+            image.removeAttribute("aria-hidden");
+        } else {
+            image.setAttribute("aria-hidden", "true");
         }
     }
 
@@ -682,17 +694,17 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
                     final String url = m_video.poster;
 
                     if (null != url) {
-                        new ImageLoader(url) {
+                        JsImageBitmap.loadImageBitmap(url, new JsImageBitmapCallback() {
                             @Override
-                            public void onImageElementLoad(final HTMLImageElement elem) {
-                                m_postr = elem;
+                            public void onSuccess(JsImageBitmap image) {
+                                m_postr = image;
                             }
 
                             @Override
-                            public void onImageElementError(String message) {
-                                LienzoCore.get().error("ERROR: Getting video poster url[" + url + "] " + message);
+                            public void onError(Object error) {
+                                LienzoCore.get().error("ERROR: Getting video poster url[" + url + "] " + error.toString());
                             }
-                        };
+                        });
                     }
                 }
             }

@@ -75,6 +75,10 @@ public abstract class LienzoCanvas<V extends LienzoCanvasView>
         return this;
     }
 
+    public void setBackgroundColor(final String color) {
+        getView().getLienzoPanel().getView().getElement().style.backgroundColor = color;
+    }
+
     @Override
     public Optional<Shape> getShapeAt(final double x,
                                       final double y) {

@@ -104,6 +104,10 @@ public interface HasTitle<T> {
 
     T setTitle(final String title);
 
+    default void setTitleBackgroundColor(String color) {
+
+    }
+
     T setMargins(final Map<Enum, Double> margins);
 
     T setTitleXOffsetPosition(final Double xOffset);

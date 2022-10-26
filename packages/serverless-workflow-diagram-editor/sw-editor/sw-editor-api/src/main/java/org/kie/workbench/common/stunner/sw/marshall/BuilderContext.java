@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
 import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.Start;
+import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 
 public class BuilderContext {
@@ -111,10 +113,31 @@ public class BuilderContext {
         return node;
     }
 
+    public boolean isStateAlreadyExist(String name) {
+        int amountOfNodes = storageCommands.size();
+        for (int i = 0; i < amountOfNodes; i++) {
+            Command c = storageCommands.get(i);
+            if (c instanceof AddChildNodeCommand) {
+                AddChildNodeCommand addChildNodeCommand = (AddChildNodeCommand) c;
+                if (addChildNodeCommand.getCandidate().getContent() instanceof View) {
+                    Object d = ((View) addChildNodeCommand.getCandidate().getContent()).getDefinition();
+                    if (d instanceof State) {
+                        State s = (State) d;
+                        if (s.getName().equals(name)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     @SuppressWarnings("all")
     public Edge addEdge(String uuid, Object bean, Node source) {
         final EdgeImpl edge = (EdgeImpl) factoryManager.registry().getElementFactory(EdgeFactory.class).build(uuid, bean);
-        storageCommands.addCommand(new AddConnectorCommand(source, edge, MagnetConnection.Builder.atCenter(source)));
+        storageCommands.addCommand(new AddConnectorCommand(source, edge, MagnetConnection.Builder.atBottom(source)));
         return edge;
     }
 
@@ -126,7 +149,7 @@ public class BuilderContext {
             public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
                 final Node<? extends View<?>, Edge> targetNode = getTargetNode(context);
                 if (null != targetNode) {
-                    asMagnetConnection().setIndex(0);
+                    asMagnetConnection().setIndex(1);
                     asMagnetConnection().setAuto(false);
                     // asMagnetConnection().setLocation(MagnetConnection.Builder.forTarget(source, targetNode).getLocation().copy());
                 }

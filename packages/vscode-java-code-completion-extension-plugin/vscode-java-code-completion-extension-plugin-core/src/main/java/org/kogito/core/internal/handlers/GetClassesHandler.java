@@ -40,7 +40,7 @@ public class GetClassesHandler extends Handler<List<GetClassesResult>> {
     public List<GetClassesResult> handle(List<Object> arguments, IProgressMonitor progress) {
         checkParameters(arguments);
         String completeText = (String) arguments.get(0);
-        BuildInformation buildInformation = javaEngine.buildImportClass(this.autocompleteHandler.getUri(), completeText);
+        BuildInformation buildInformation = javaEngine.buildImportClass(this.autocompleteHandler.getActivatorPath(), completeText);
         List<CompletionItem> items = this.autocompleteHandler.handle("GetClassesHandler", buildInformation);
         return this.transformCompletionItemsToResult(items);
     }

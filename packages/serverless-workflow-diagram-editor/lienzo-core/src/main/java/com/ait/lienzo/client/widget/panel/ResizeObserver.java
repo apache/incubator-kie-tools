@@ -26,8 +26,6 @@ public class ResizeObserver {
     public ResizeObserver(ResizeCallback callback) {
     }
 
-    ;
-
     public native void observe(Element element);
 
     public native void unobserve(Element element);

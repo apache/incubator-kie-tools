@@ -49,6 +49,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
 
+    <version.flatten.plugin>1.3.0</version.flatten.plugin>
   </properties>
   <repositories>
     <repository>
@@ -97,7 +98,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.3.0</version>
+        <version>${version.flatten.plugin}</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
