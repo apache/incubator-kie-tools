@@ -179,7 +179,7 @@ export const en: OnlineI18n = {
       subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`,
     },
     footer: {
-      createNewToken: "Create a new token",
+      createNewToken: "Generate new token",
       placeHolder: "Paste your token here",
     },
     body: {
