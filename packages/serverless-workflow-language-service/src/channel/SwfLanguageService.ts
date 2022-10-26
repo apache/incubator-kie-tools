@@ -22,10 +22,9 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
-import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { TextDocument } from "vscode-json-languageservice";
+import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
-import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { doRefValidation } from "./refValidation";
 import {
@@ -147,7 +146,12 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string; rootNode: SwfLsNode | undefined }) {
+  public async getDiagnostics(args: {
+    content: string;
+    uriPath: string;
+    rootNode: SwfLsNode | undefined;
+    getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+  }): Promise<Diagnostic[]> {
     if (!args.rootNode) {
       return [];
     }
@@ -161,36 +165,11 @@ export class SwfLanguageService {
 
     const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
 
-    if (this.args.lang.fileLanguage === FileLanguage.YAML) {
-      //TODO: Include JSON Schema validation for YAML as well. Probably use what the YAML extension uses?
-      return refValidationResults;
-    }
-
     const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
-      ? await this.getJsonSchemaDiagnostics(textDocument)
+      ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
 
     return [...schemaValidationResults, ...refValidationResults];
-  }
-
-  private async getJsonSchemaDiagnostics(textDocument: TextDocument) {
-    const jsonLs = getLanguageService({
-      schemaRequestService: async (uri) => {
-        if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
-          return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
-        } else {
-          throw new Error(`Unable to load schema from '${uri}'`);
-        }
-      },
-    });
-
-    jsonLs.configure({
-      allowComments: false,
-      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
-    });
-
-    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
-    return jsonLs.doValidation(textDocument, jsonDocument);
   }
 
   public async getCodeLenses(args: {

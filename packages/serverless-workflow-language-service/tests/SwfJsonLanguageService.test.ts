@@ -1286,4 +1286,113 @@ describe("SWF LS JSON", () => {
       });
     });
   });
+
+  describe("diagnostic", () => {
+    const ls = new SwfJsonLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [] },
+      },
+      config: defaultConfig,
+    });
+
+    test.each([
+      [
+        "valid",
+        "valid.sw.json",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "type": "inject", 
+            "data": {},
+            "end":true
+          }
+        ]
+      }`,
+      ],
+      [
+        "unclosed brackets",
+        "unclosed_brackets.sw.json",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "type": "inject", 
+            "data": {},
+            "end": true
+        ]
+      }`,
+      ],
+      [
+        "missing property value",
+        "missing_property_value.sw.json",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "duration": "PT15M",
+            "end": true,
+            "type": 
+          }]
+      }`,
+      ],
+      [
+        "missing state type",
+        "missing_state_type.sw.json",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "duration": "PT15M",
+            "end": true
+          }
+        ]
+      }`,
+      ],
+      [
+        "wrong states type",
+        "wrong_states_type.sw.json",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "states": "Wrong states type"
+      }`,
+      ],
+      [
+        "wrong start state",
+        "wrong_start_state.sw.json",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Wrong state name", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "type": "inject", 
+            "data": {},
+            "end":true
+          }
+        ]}`,
+      ],
+    ])("%s", async (_description, documentUri, content) => {
+      const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
+
+      expect(diagnostic.length).toMatchSnapshot();
+      expect(diagnostic).toMatchSnapshot();
+    });
+  });
 });

@@ -15,7 +15,9 @@
  */
 
 import { TextDocument } from "vscode-json-languageservice";
-import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
+import { createConnection, ProposedFeatures } from "vscode-languageserver/node";
+import { getLanguageService, SchemaRequestService, WorkspaceContextService } from "yaml-language-server";
 import {
   dump,
   Kind,
@@ -27,15 +29,19 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
-import { getNodeFormat } from "./getNodeFormat";
+import { Telemetry } from "yaml-language-server/out/server/src/languageserver/telemetry";
+import { LanguageSettings } from "yaml-language-server/out/server/src/languageservice/yamlLanguageService";
+import { SettingsState } from "yaml-language-server/out/server/src/yamlSettings";
 import { FileLanguage } from "../api";
+import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
+import { getNodeFormat } from "./getNodeFormat";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import {
-  ShouldCreateCodelensArgs,
   CodeCompletionStrategy,
   ShouldCompleteArgs,
+  ShouldCreateCodelensArgs,
   SwfLsNode,
   TranslateArgs,
 } from "./types";
@@ -65,7 +71,7 @@ export class SwfYamlLanguageService {
 
     // check if the yaml is not valid
     if (ast && ast.errors && ast.errors.length) {
-      throw new Error(ast.errors[0].message);
+      return;
     }
 
     return astConvert(ast);
@@ -116,7 +122,46 @@ export class SwfYamlLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
-    return this.ls.getDiagnostics({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getDiagnostics({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      getSchemaDiagnostics: this.getSchemaDiagnostics,
+    });
+  }
+
+  private getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
+    const schemaRequestService: SchemaRequestService = async (uri) => {
+      if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
+        return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
+      } else {
+        throw new Error(`Unable to load schema from '${uri}'`);
+      }
+    };
+    const workspaceContext: WorkspaceContextService = {
+      resolveRelativePath: (relativePath: string, resource: string) => {
+        return "";
+      },
+    };
+    // return new Promise<Diagnostic[]>((resolve) => {resolve([])});
+    const connection = createConnection(ProposedFeatures.all);
+    const telemetry = new Telemetry(connection);
+
+    const yamlLs = getLanguageService(
+      schemaRequestService,
+      workspaceContext,
+      connection,
+      telemetry,
+      new SettingsState()
+    );
+    yamlLs.configure(<LanguageSettings>{
+      validate: true,
+      completion: false,
+      format: false,
+      hover: false,
+      isKubernetes: false,
+      schemas: [{ fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
+    });
+    return yamlLs.doValidation(textDocument, false);
   }
 
   public dispose() {

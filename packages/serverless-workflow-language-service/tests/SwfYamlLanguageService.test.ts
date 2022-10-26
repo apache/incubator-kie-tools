@@ -36,6 +36,9 @@ import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTeste
 const EXPECTED_RESULTS_PROJECT_FOLDER: string = path.resolve("tests", "expectedResults");
 const documentUri = "test.sw.yaml";
 
+// required to test yaml-language-service
+process.argv.push("--node-ipc");
+
 describe("YamlCodeCompletionStrategy", () => {
   const ls = new SwfYamlLanguageService({
     fs: {},
@@ -1665,6 +1668,91 @@ states:
 
         expect(completionItems).toHaveLength(0);
       });
+    });
+  });
+
+  describe("diagnostic", () => {
+    const ls = new SwfYamlLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [] },
+      },
+      config: defaultConfig,
+    });
+
+    describe("using JSON format", () => {
+      test.each([
+        [
+          "unclosed brackets",
+          "unclosed_brackets.sw.yaml",
+          `id: hello_world
+specVersion: "0.1"
+start: Inject Hello World
+states: [{
+            "name": "Inject Hello World",
+            "data": {},
+            "type": "inject",
+            "end": true
+        ]
+        `,
+        ],
+      ])("%s", async (_description, documentUri, content) => {
+        const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
+
+        expect(diagnostic.length).toMatchSnapshot();
+        expect(diagnostic).toMatchSnapshot();
+      });
+    });
+
+    test.each([
+      [
+        "missing state type",
+        "missing_state_type.sw.yaml",
+        `id: hello_world
+specVersion: "0.1"
+start: Inject Hello World
+states:
+  - name: Inject Hello World
+    duration: "PT15M"
+    end: true`,
+      ],
+      [
+        "wrong states type",
+        "wrong_states_type.sw.yaml",
+        `id: hello_world
+specVersion: "0.1"
+states: Wrong states type`,
+      ],
+      [
+        "wrong start state",
+        "wrong_start_state.sw.yaml",
+        `id: hello_world
+specVersion: "0.1"
+start: Wrong state name
+states:
+  - name: Inject Hello World
+    type: inject
+    data: {}
+    end: true`,
+      ],
+      [
+        "valid",
+        "valid.sw.yaml",
+        `id: hello_world
+specVersion: "0.1"
+start: Inject Hello World
+states:
+  - name: Inject Hello World
+    type: inject
+    data: {}
+    end: true`,
+      ],
+    ])("%s", async (_description, documentUri, content) => {
+      const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
+
+      expect(diagnostic.length).toMatchSnapshot();
+      expect(diagnostic).toMatchSnapshot();
     });
   });
 });
