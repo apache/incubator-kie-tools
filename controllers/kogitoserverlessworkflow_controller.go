@@ -18,7 +18,7 @@ package controllers
 
 import (
 	"context"
-	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
+	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/builder"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"

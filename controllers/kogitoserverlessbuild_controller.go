@@ -21,7 +21,7 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/kiegroup/container-builder/api"
 	clientr "github.com/kiegroup/container-builder/client"
-	api08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
+	api08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/builder"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/kiegroup/kogito-serverless-operator/utils"

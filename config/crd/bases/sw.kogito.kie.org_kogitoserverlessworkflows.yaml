@@ -15,7 +15,7 @@ spec:
     singular: kogitoserverlessworkflow
   scope: Namespaced
   versions:
-  - name: v08
+  - name: v1alpha08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows

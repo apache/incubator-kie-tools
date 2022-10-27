@@ -127,7 +127,7 @@ var _ = Describe("kogito-serverless", func() {
 			By("creating an instance of the Kogito Serverless Operand(CR)")
 			EventuallyWithOffset(1, func() error {
 				cmd = exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.yaml"), "-n", namespace)
+					"config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"), "-n", namespace)
 				_, err = utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())

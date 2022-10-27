@@ -2,7 +2,7 @@ package utils
 
 import (
 	"bytes"
-	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
+	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"io/ioutil"
 	"k8s.io/apimachinery/pkg/util/yaml"
 	"log"

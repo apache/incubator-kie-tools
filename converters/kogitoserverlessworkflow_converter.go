@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/go-logr/logr"
-	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v08"
+	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
 	"path"
