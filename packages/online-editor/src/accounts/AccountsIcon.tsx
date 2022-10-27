@@ -1,372 +1,250 @@
-import * as React from "react";
-import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
-import { useCallback, useMemo, useReducer, useState } from "react";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { Card, CardBody, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
-import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
-import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
-import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
-import OpenshiftIcon from "@patternfly/react-icons/dist/js/icons/openshift-icon";
-import QuestionIcon from "@patternfly/react-icons/dist/js/icons/question-icon";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { CardHeader, Form, FormGroup, InputGroup, TextInput } from "@patternfly/react-core";
-import { v4 as uuid } from "uuid";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { useOnlineI18n } from "../i18n";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
-import { Octokit } from "@octokit/rest";
-import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
-import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-export interface AuthSession {
-  id: string;
-  token: string;
-  login: string;
-  email: string;
-  name: string;
+import * as React from "react";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
+import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
+import { useCallback, useReducer, useState } from "react";
+import { ConnectToGitHubSection } from "./ConnectToGitHubSection";
+import { AuthProvidersGallery } from "./authProviders/AuthProvidersGallery";
+import { AuthProviderIcon } from "./authProviders/AuthProviderIcon";
+import { AuthSessionsList } from "./authSessions/AuthSessionsList";
+import { GitAuthProvider, useAuthProviders } from "./authProviders/AuthProvidersContext";
+import { useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
+import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+
+// State
+
+export enum AccountsModalSection {
+  HOME = "HOME",
+  CONNECT_TO_NEW_ACC = "NEW_ACC",
+  CONNECT_TO_NEW_GITHUB_ACC = "NEW_GITHUB_ACC",
 }
 
-export type AuthProvider =
+export type AccountsModalState =
   | {
-      id: string;
-      type: "openshift";
-      name: string;
-      domain: undefined;
-      iconPath?: string;
-      enabled: true;
+      section: AccountsModalSection.HOME;
+      selectedAuthProvider?: undefined;
     }
   | {
-      id: string;
-      type: "github" | "bitbucket" | "gitlab";
-      name: string;
-      domain: string;
-      iconPath?: string;
-      enabled: boolean;
+      section: AccountsModalSection.CONNECT_TO_NEW_ACC;
+      selectedAuthProvider?: undefined;
+      backActionKind: AccountsModalDispatchActionKind.GO_HOME;
+    }
+  | {
+      section: AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC;
+      selectedAuthProvider: GitAuthProvider;
+      backActionKind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER | AccountsModalDispatchActionKind.GO_HOME;
     };
 
-const AUTH_PROVIDERS: AuthProvider[] = [
-  {
-    id: "github_dot_com", // Primary Key
-    domain: "github.com",
-    type: "github",
-    name: "GitHub",
-    enabled: true,
-    iconPath: "", // (Optional). Each type has a default icon path that is always part of the webapp.
-  },
-  {
-    id: "gitlab_dot_com",
-    domain: "gitlab.com",
-    type: "gitlab",
-    name: "GitLab",
-    enabled: false,
-    iconPath: "", // (Optional). Each type has a default icon path that is always part of the webapp.
-  },
-  {
-    id: "bitbucket_dot_com",
-    domain: "bitbucket.com",
-    type: "bitbucket",
-    name: "Bitbucket",
-    enabled: false,
-    iconPath: "", // (Optional). Each type has a default icon path that is always part of the webapp.
-  },
-  {
-    id: "github_at_ibm",
-    domain: "github.ibm.com",
-    type: "github",
-    name: "GitHub @ IBM",
-    enabled: true,
-    iconPath: "static/assets/ibm-github-icon.png", // Always relative path
-  },
-  {
-    id: "bitbucket_at_my_customer",
-    domain: "bitbucket.my-customer.com",
-    type: "bitbucket",
-    name: "Bitbucket @ My customer",
-    enabled: false,
-    iconPath: "static/assets/bitbucket-my-customer.png", // Always relative path
-  },
-  {
-    id: "github_at_my_partner",
-    domain: "my-partner.ibm.com",
-    type: "github",
-    name: "GitHub @ My partner",
-    enabled: false,
-    iconPath: "static/assets/my-partner-github-icon.png", // Always relative path
-  },
-  {
-    id: "openshift",
-    type: "openshift",
-    name: "OpenShift cluster",
-    domain: undefined,
-    enabled: true,
-  },
-];
+// Reducer
 
-export const GITHUB_OAUTH_TOKEN_SIZE = 40;
-export const GITHUB_TOKENS_HOW_TO_URL =
-  "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";
+export enum AccountsModalDispatchActionKind {
+  GO_HOME = "GO_HOME",
+  SELECT_AUTH_PROVDER = "SELECT_AUTH_PROVDER",
+  SETUP_GITHUB_TOKEN = "SETUP_GITHUB_TOKEN",
+}
+
+export type AccountsModalDispatchAction =
+  | {
+      kind: AccountsModalDispatchActionKind.GO_HOME;
+    }
+  | {
+      kind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER;
+    }
+  | {
+      kind: AccountsModalDispatchActionKind.SETUP_GITHUB_TOKEN;
+      selectedAuthProvider: GitAuthProvider;
+      backActionKind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER | AccountsModalDispatchActionKind.GO_HOME;
+    };
+
+export function reducer(state: AccountsModalState, action: AccountsModalDispatchAction): AccountsModalState {
+  const { kind } = action;
+  switch (kind) {
+    case AccountsModalDispatchActionKind.GO_HOME:
+      return {
+        section: AccountsModalSection.HOME,
+        selectedAuthProvider: undefined,
+      };
+    case AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER:
+      return {
+        section: AccountsModalSection.CONNECT_TO_NEW_ACC,
+        selectedAuthProvider: undefined,
+        backActionKind: AccountsModalDispatchActionKind.GO_HOME,
+      };
+    case AccountsModalDispatchActionKind.SETUP_GITHUB_TOKEN:
+      return {
+        section: AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC,
+        selectedAuthProvider: action.selectedAuthProvider,
+        backActionKind: action.backActionKind,
+      };
+    default:
+      assertUnreachable(kind);
+  }
+}
+
+export function assertUnreachable(_x: never): never {
+  throw new Error("Didn't expect to get here");
+}
 
 export function AccountsIcon() {
-  const { i18n } = useOnlineI18n();
-
   const [isAccountsModalOpen, setAccountsModalOpen] = useState(false);
+  const [state, dispatch] = useReducer(reducer, { section: AccountsModalSection.HOME });
 
-  const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>(new Map());
-  const [selectedAuthProvider, setSelectedAuthProvider] = useState<AuthProvider>();
+  const { authSessions } = useAuthSessions();
 
-  const authProviders = useMemo<AuthProvider[]>(() => AUTH_PROVIDERS, []);
-
-  const onPasteGitHubToken = useCallback(async (e: React.ClipboardEvent, githubInstanceDomain: string) => {
-    const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
-    (document.getElementById("github-personal-access-token-input") as HTMLInputElement).setAttribute(
-      "value",
-      obfuscate(token)
-    );
-
-    const octokit = new Octokit({
-      auth: token,
-      baseUrl: githubApiUrl(githubInstanceDomain),
-    });
-
-    const response = await octokit.users.getAuthenticated();
-
-    const scopes = response.headers["x-oauth-scopes"]?.split(", ") ?? [];
-    if (!scopes.includes("repo") || !scopes.includes("gist")) {
-      throw new Error("GitHub Personal Access Token (classic) must include the 'repo' and 'gist' scopes.");
+  const goBack = useCallback(() => {
+    if (state.section !== AccountsModalSection.HOME) {
+      dispatch({ kind: state.backActionKind });
     }
-
-    setAuthSessions((prev) => {
-      const id = uuid();
-      return prev.set(id, {
-        id,
-        token,
-        login: response.data.login,
-        name: response.data.name ?? "",
-        email: response.data.email ?? "",
-      });
-    });
-  }, []);
-
-  const isGitHubTokenValid = true;
-
-  const githubTokenValidated = useMemo(() => {
-    return isGitHubTokenValid ? "default" : "error";
-  }, [isGitHubTokenValid]);
-
-  const githubTokenHelperText = useMemo(() => {
-    return isGitHubTokenValid ? undefined : "Invalid token. Check if it has the 'repo' scope.";
-  }, [isGitHubTokenValid]);
+  }, [state]);
 
   return (
     <>
       <Button
         variant={ButtonVariant.plain}
-        onClick={() => setAccountsModalOpen((prev) => !prev)}
-        aria-label="Accounts"
+        onClick={() => {
+          dispatch({ kind: AccountsModalDispatchActionKind.GO_HOME });
+          setAccountsModalOpen((prev) => !prev);
+        }}
         className={"kie-tools--masthead-hoverable-dark"}
       >
         <UserIcon />
       </Button>
       <Modal
+        aria-label={"Accounts"}
         variant={ModalVariant.medium}
         isOpen={isAccountsModalOpen}
         onClose={() => setAccountsModalOpen(false)}
         header={
           <div>
-            <TextContent>
-              <Text component={TextVariants.h1}>
-                {!selectedAuthProvider && <>Connect to a new account</>}
-                {selectedAuthProvider && (
-                  <>
-                    {`Connect with`}
-                    &nbsp;
-                    {selectedAuthProvider.name}
-                    &nbsp;
-                    <AuthProviderIcon authProvider={selectedAuthProvider} size={"sm"} />
-                  </>
-                )}
-              </Text>
-            </TextContent>
-            <>
-              <Button
-                key={"back"}
-                onClick={() => setSelectedAuthProvider(undefined)}
-                variant={ButtonVariant.link}
-                style={{ paddingLeft: 0 }}
-                icon={<AngleLeftIcon />}
-              >
-                {`Back`}
-              </Button>
-              <br />
-            </>
+            {state.section !== AccountsModalSection.HOME && (
+              <>
+                <Button
+                  key={"back"}
+                  onClick={goBack}
+                  variant={ButtonVariant.link}
+                  style={{ paddingLeft: 0 }}
+                  icon={<AngleLeftIcon />}
+                >
+                  {`Back`}
+                </Button>
+                <br />
+                <br />
+              </>
+            )}
+            {state.section === AccountsModalSection.HOME && (
+              <>
+                <TextContent>
+                  <Text component={TextVariants.h1}>Accounts</Text>
+                </TextContent>
+              </>
+            )}
+            {state.section === AccountsModalSection.CONNECT_TO_NEW_ACC && (
+              <>
+                <TextContent>
+                  <Text component={TextVariants.h1}>Connect to a new account</Text>
+                </TextContent>
+              </>
+            )}
+            {state.section === AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC && (
+              <>
+                <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                  <FlexItem>
+                    <Flex
+                      justifyContent={{ default: "justifyContentFlexStart" }}
+                      spaceItems={{ default: "spaceItemsSm" }}
+                    >
+                      <TextContent>
+                        <Text component={TextVariants.h2}>
+                          {`Connect to`}
+                          &nbsp;
+                          {state.selectedAuthProvider.name}
+                        </Text>
+                      </TextContent>
+                      <TextContent>
+                        <Text component={TextVariants.small}>
+                          <i>{state.selectedAuthProvider.domain}</i>
+                        </Text>
+                      </TextContent>
+                    </Flex>
+                  </FlexItem>
+                  <AuthProviderIcon authProvider={state.selectedAuthProvider} size={"sm"} />
+                </Flex>
+              </>
+            )}
             <br />
-            <Divider inset={{ default: "inset3xl" }} />
+            <Divider inset={{ default: "insetMd" }} />
           </div>
         }
       >
-        <>
-          {selectedAuthProvider && (
+        <Page>
+          <PageSection variant={"light"}>
             <>
-              {selectedAuthProvider.type === "github" && (
-                <Page>
-                  <PageSection variant={"light"}>
-                    <Form>
-                      <FormGroup
-                        isRequired={true}
-                        helperTextInvalid={githubTokenHelperText}
-                        validated={githubTokenValidated}
-                        label={"Personal Access Token (classic)"}
-                        fieldId={"github-pat"}
-                        helperText={"Your token must include the 'repo' and 'gist' scopes."}
-                      >
-                        <InputGroup>
-                          <TextInput
-                            autoComplete={"off"}
-                            id="github-personal-access-token-input"
-                            name="tokenInput"
-                            aria-describedby="token-text-input-helper"
-                            placeholder={"Paste your GitHub token here"}
-                            maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-                            validated={githubTokenValidated}
-                            onPaste={(e) => onPasteGitHubToken(e, selectedAuthProvider.domain)}
-                            autoFocus={true}
-                          />
-                        </InputGroup>
-                      </FormGroup>
-                    </Form>
-                    <br />
-                    <h3>
-                      <a href={generateNewGitHubPatUrl(selectedAuthProvider.domain)} target={"_blank"}>
-                        {i18n.githubTokenModal.footer.createNewToken}
-                        &nbsp;
-                        <ExternalLinkAltIcon className="pf-u-mx-sm" />
-                      </a>
-                    </h3>
-                    <br />
-                    <br />
-                    <TextContent>
-                      <Text component={TextVariants.blockquote}>
-                        <InfoAltIcon />
-                        &nbsp;
-                        <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}&nbsp;</span>
-                        <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
-                          {i18n.githubTokenModal.body.learnMore}
-                          &nbsp;
-                          <ExternalLinkAltIcon className="pf-u-mx-sm" />
-                        </a>
-                      </Text>
-                    </TextContent>
-                  </PageSection>
-                </Page>
-              )}
-            </>
-          )}
-          {!selectedAuthProvider && (
-            <>
-              {authSessions.size <= 0 && (
+              {state.section === AccountsModalSection.HOME && (
                 <>
-                  <Gallery hasGutter={true}>
-                    {authProviders
-                      .sort((a, b) => (a.name > b.name ? -1 : 1))
-                      .sort((a) => (a.enabled ? -1 : 1))
-                      .map((authProvider) => (
-                        <Card
-                          key={authProvider.id}
-                          isSelectable={authProvider.enabled}
-                          isRounded={true}
-                          onClick={() => {
-                            if (authProvider.enabled) {
-                              return setSelectedAuthProvider(authProvider);
-                            }
-                          }}
-                          style={{ opacity: authProvider.enabled ? 1 : 0.5 }}
+                  {authSessions.size <= 0 && (
+                    <>
+                      {`Looks like you don't have any accounts connected yet. Select a provider below to connect an account.`}
+                      <br />
+                      <br />
+                      <br />
+                      <AuthProvidersGallery
+                        dispatch={dispatch}
+                        backActionKind={AccountsModalDispatchActionKind.GO_HOME}
+                      />
+                    </>
+                  )}
+                  {authSessions.size > 0 && (
+                    <>
+                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                        <FlexItem>&nbsp;</FlexItem>
+                        <Button
+                          icon={<PlusIcon />}
+                          variant={ButtonVariant.link}
+                          onClick={() => dispatch({ kind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER })}
                         >
-                          <CardHeader>
-                            <CardHeaderMain>
-                              <CardTitle>
-                                {authProvider.name}
-                                {!authProvider.enabled && (
-                                  <TextContent>
-                                    <Text component={TextVariants.small}>
-                                      <i>Available soon!</i>
-                                    </Text>
-                                  </TextContent>
-                                )}
-                              </CardTitle>
-                              <TextContent>
-                                <Text component={TextVariants.small}>
-                                  <i>{authProvider.domain ?? <>&nbsp;</>}</i>
-                                </Text>
-                              </TextContent>
-                            </CardHeaderMain>
-                          </CardHeader>
-                          <br />
-                          <CardBody>
-                            <AuthProviderIcon authProvider={authProvider} size={"lg"} />
-                          </CardBody>
-                        </Card>
-                      ))}
-                  </Gallery>
+                          Add
+                        </Button>
+                      </Flex>
+                      <br />
+                      <AuthSessionsList authSessions={authSessions} />
+                    </>
+                  )}
                 </>
               )}
-              {authSessions.size > 0 && (
-                <>
-                  {[...authSessions.values()].map((authSession) => {
-                    return <>{JSON.stringify(authSession)}</>;
-                  })}
-                </>
+              {state.section === AccountsModalSection.CONNECT_TO_NEW_ACC && (
+                <AuthProvidersGallery
+                  dispatch={dispatch}
+                  backActionKind={AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER}
+                />
+              )}
+              {state.section === AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC && (
+                <ConnectToGitHubSection dispatch={dispatch} authProvider={state.selectedAuthProvider} />
               )}
             </>
-          )}
-        </>
+          </PageSection>
+        </Page>
       </Modal>
     </>
   );
 }
-
-export function AuthProviderIcon(props: { authProvider: AuthProvider; size: IconSize | keyof typeof IconSize }) {
-  if (props.authProvider.iconPath) {
-    return <QuestionIcon size={props.size} />;
-    // return <img width={"120px"} height={"120px"} src={props.authProvider.iconPath} />;
-  }
-
-  if (props.authProvider.type === "github") {
-    return <GithubIcon size={props.size} />;
-  }
-
-  if (props.authProvider.type === "bitbucket") {
-    return <BitbucketIcon size={props.size} />;
-  }
-
-  if (props.authProvider.type === "gitlab") {
-    return <GitlabIcon size={props.size} />;
-  }
-
-  if (props.authProvider.type === "openshift") {
-    return <OpenshiftIcon size={props.size} />;
-  }
-
-  return <QuestionIcon size={props.size} />;
-}
-
-export function obfuscate(token: string) {
-  if (token.length <= 8) {
-    return token;
-  }
-
-  const stars = new Array(token.length - 8).join("*");
-  const pieceToObfuscate = token.substring(4, token.length - 4);
-  return token.replace(pieceToObfuscate, stars);
-}
-
-export const generateNewGitHubPatUrl = (domain: string) => {
-  return `https://${domain}/settings/tokens`;
-};
-
-export const githubApiUrl = (domain: string) => {
-  return `https://${domain}/api/v3`;
-};

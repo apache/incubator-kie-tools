@@ -37,6 +37,7 @@ import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
 import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
+import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
 
 export function App() {
   return (
@@ -47,6 +48,7 @@ export function App() {
         [EnvContextProvider, {}],
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
+        [AuthSessionsContextProvider, {}],
         [WorkspacesContextProvider, {}],
         [DmnRunnerInputsDispatchContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
