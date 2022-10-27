@@ -17,10 +17,14 @@
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { RegistryIcon } from "@patternfly/react-icons/dist/js/icons";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
+import { useAppI18n } from "../../i18n";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
@@ -31,14 +35,20 @@ import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
+import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegistry/hooks/useVirtualServiceRegistryDependencies";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 
 export function useDeployDropdownItems(props: { workspace: ActiveWorkspace | undefined }) {
+  const { i18n } = useAppI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const openshift = useOpenShift();
+  const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
+    workspace: props.workspace,
+    deployAsProject: true,
+  });
 
   const isKieSandboxExtendedServicesRunning = useMemo(
     () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
@@ -97,6 +107,22 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace | und
                 </Flex>
               )}
             </DropdownItem>
+            {needsDependencyDeployment && (
+              <>
+                <Divider />
+                <Tooltip content={i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip} position="bottom">
+                  <DropdownItem icon={<RegistryIcon color="var(--pf-global--warning-color--100)" />} isDisabled>
+                    <Flex flexWrap={{ default: "nowrap" }}>
+                      <FlexItem>
+                        <Text component="small" style={{ color: "var(--pf-global--warning-color--200)" }}>
+                          {i18n.deployments.virtualServiceRegistry.dependencyWarning}
+                        </Text>
+                      </FlexItem>
+                    </Flex>
+                  </DropdownItem>
+                </Tooltip>
+              </>
+            )}
           </FeatureDependentOnKieSandboxExtendedServices>
         )}
         {!isOpenShiftConnected && isKieSandboxExtendedServicesRunning && (
@@ -116,5 +142,13 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace | und
         )}
       </React.Fragment>,
     ];
-  }, [props.workspace, onDeploy, isKieSandboxExtendedServicesRunning, isOpenShiftConnected, onSetup]);
+  }, [
+    props.workspace,
+    onDeploy,
+    isKieSandboxExtendedServicesRunning,
+    isOpenShiftConnected,
+    needsDependencyDeployment,
+    i18n,
+    onSetup,
+  ]);
 }

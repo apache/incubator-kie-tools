@@ -19,6 +19,8 @@ import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { generateOpenApiSpec } from "./BaseOpenApiSpec";
 import * as yaml from "yaml";
 import { decoder } from "../../workspace/encoderdecoder/EncoderDecoder";
+import { toWorkspaceIdFromVsrFunctionPath } from "../VirtualServiceRegistryPathConverter";
+import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../VirtualServiceRegistryConstants";
 
 export class VirtualServiceRegistryFunction {
   constructor(private readonly file: WorkspaceFile) {}
@@ -28,14 +30,18 @@ export class VirtualServiceRegistryFunction {
   }
 
   public async getOpenApiSpec(): Promise<string> {
-    const content = await this.file.getFileContents();
-    if (isSpec(this.relativePath)) {
-      return decoder.decode(content);
+    // Don't generate spec for files that depend on other workflows
+    if (await hasVirtualServiceRegistryDependency(this.file)) {
+      return "";
     }
 
-    const decodedContent = decoder.decode(content);
+    const content = await this.file.getFileContentsAsString();
+    if (isSpec(this.relativePath)) {
+      return content;
+    }
+
     try {
-      const parsedContent = isJson(this.file.relativePath) ? JSON.parse(decodedContent) : yaml.parse(decodedContent);
+      const parsedContent = isJson(this.file.relativePath) ? JSON.parse(content) : yaml.parse(content);
       if (parsedContent.id) {
         return generateOpenApiSpec(parsedContent.id);
       } else {
@@ -46,4 +52,29 @@ export class VirtualServiceRegistryFunction {
     }
     return "";
   }
+}
+
+export async function getVirtualServiceRegistryDependencies(file: WorkspaceFile) {
+  const content = await file.getFileContentsAsString();
+  let parsedContent: Record<string, unknown>;
+  try {
+    parsedContent = isJson(file.relativePath) ? JSON.parse(content) : yaml.parse(content);
+  } catch (e) {
+    // Invalid file.
+    return [];
+  }
+  const workflowFunctions = parsedContent["functions"] as Array<{ operation?: string }> | undefined;
+
+  const dependencies: Array<string> = [];
+  workflowFunctions?.forEach((workflowFunction) => {
+    if (workflowFunction.operation?.includes(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX)) {
+      const workspaceId = toWorkspaceIdFromVsrFunctionPath(workflowFunction.operation);
+      workspaceId && dependencies.push(workspaceId);
+    }
+  });
+  return dependencies;
+}
+
+export async function hasVirtualServiceRegistryDependency(file: WorkspaceFile) {
+  return (await getVirtualServiceRegistryDependencies(file)).length > 0;
 }
