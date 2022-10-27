@@ -93,12 +93,15 @@ export function OpenShiftContextProvider(props: Props) {
             ? descriptor.name
             : args.workspaceFile.name;
 
+        const deploymentResourceName = settingsDispatch.openshift.service.newResourceName();
+
         const dockerfileFile = new WorkspaceFile({
           workspaceId: args.workspaceFile.workspaceId,
           relativePath: PROJECT_FILES.dockerFile,
           getFileContents: async () => {
             const dockerfileContent = args.shouldDeployAsProject
               ? createDockerfileContentForBaseJdk11MvnImage({
+                  deploymentResourceName,
                   projectName: workspaceName,
                   openShiftConfig: settings.openshift.config,
                 })
@@ -121,6 +124,7 @@ export function OpenShiftContextProvider(props: Props) {
         });
 
         return settingsDispatch.openshift.service.deploy({
+          deploymentResourceName,
           workspaceName: workspaceName,
           targetFilePath: args.workspaceFile.relativePath,
           workspaceZipBlob: zipBlob,
