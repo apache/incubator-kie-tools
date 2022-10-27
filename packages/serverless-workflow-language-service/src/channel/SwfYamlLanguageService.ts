@@ -130,7 +130,7 @@ export class SwfYamlLanguageService {
     });
   }
 
-  private getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
+  private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
     const schemaRequestService: SchemaRequestService = async (uri) => {
       if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
         return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
@@ -139,11 +139,10 @@ export class SwfYamlLanguageService {
       }
     };
     const workspaceContext: WorkspaceContextService = {
-      resolveRelativePath: (relativePath: string, resource: string) => {
+      resolveRelativePath: (_relativePath: string, _resource: string) => {
         return "";
       },
     };
-    // return new Promise<Diagnostic[]>((resolve) => {resolve([])});
     const connection = createConnection(ProposedFeatures.all);
     const telemetry = new Telemetry(connection);
 
@@ -154,15 +153,16 @@ export class SwfYamlLanguageService {
       telemetry,
       new SettingsState()
     );
-    yamlLs.configure(<LanguageSettings>{
+    yamlLs.configure({
       validate: true,
       completion: false,
       format: false,
       hover: false,
       isKubernetes: false,
       schemas: [{ fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
-    });
+    } as LanguageSettings);
     return yamlLs.doValidation(textDocument, false);
+    // return new Promise<Diagnostic[]>((resolve) => {resolve([])});
   }
 
   public dispose() {
