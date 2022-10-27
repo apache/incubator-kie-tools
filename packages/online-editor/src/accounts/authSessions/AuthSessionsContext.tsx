@@ -27,6 +27,7 @@ export interface AuthSession {
   login: string;
   email?: string;
   name?: string;
+  authProviderId: string;
 }
 
 export type AuthSessionsContextType = {

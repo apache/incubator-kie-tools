@@ -14,32 +14,64 @@
  * limitations under the License.
  */
 
-import { ButtonVariant, Card, CardHeaderMain } from "@patternfly/react-core";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { CardActions, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Card, CardActions, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import * as React from "react";
+import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
+import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession, useAuthSessionsDispatch } from "./AuthSessionsContext";
 
 export function AuthSessionsList(props: { authSessions: Map<string, AuthSession> }) {
   const authSessionsDispatch = useAuthSessionsDispatch();
+  const authProviders = useAuthProviders();
+
   return (
     <>
       <Stack hasGutter={true} style={{ height: "auto" }}>
-        {[...props.authSessions.values()].map((authSession) => (
-          <Card key={authSession.id} isCompact={true}>
-            <CardHeader>
-              <CardActions>
-                <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(authSession)}>
-                  Remove
-                </Button>
-              </CardActions>
-              <CardHeaderMain>
-                {authSession.login} ({authSession.email})
-              </CardHeaderMain>
-            </CardHeader>
-          </Card>
-        ))}
+        {[...props.authSessions.values()].map((authSession) => {
+          const authProvider = authProviders.find((a) => a.id === authSession.authProviderId)!;
+          return (
+            <Card key={authSession.id} isCompact={true}>
+              <CardHeader>
+                <CardActions>
+                  <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(authSession)}>
+                    Remove
+                  </Button>
+                </CardActions>
+                <CardHeaderMain>
+                  <Flex alignItems={{ default: "alignItemsCenter" }}>
+                    <AuthProviderIcon authProvider={authProvider} size={IconSize.md} />
+                    <FlexItem>
+                      <TextContent>
+                        <Text component={TextVariants.h3} style={{ display: "inline" }}>
+                          {authSession.login}
+                          {authSession.email && (
+                            <>
+                              &nbsp;
+                              <Text component={TextVariants.small} style={{ display: "inline" }}>
+                                <i>({authSession.email})</i>
+                              </Text>
+                            </>
+                          )}
+                        </Text>
+                      </TextContent>
+                      <TextContent>
+                        <Text component={TextVariants.small}>
+                          {authProvider.name}
+                          &nbsp;
+                        </Text>
+                      </TextContent>
+                    </FlexItem>
+                  </Flex>
+                </CardHeaderMain>
+              </CardHeader>
+            </Card>
+          );
+        })}
       </Stack>
     </>
   );

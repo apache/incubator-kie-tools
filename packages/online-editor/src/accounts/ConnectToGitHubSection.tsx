@@ -69,9 +69,10 @@ export function ConnectToGitHubSection(props: {
         login: response.data.login,
         name: response.data.name ?? undefined,
         email: response.data.email ?? undefined,
+        authProviderId: props.authProvider.id,
       });
     },
-    [authSessionsDispatch]
+    [authSessionsDispatch, props.authProvider.id]
   );
 
   const isGitHubTokenValid = true;
@@ -151,5 +152,8 @@ export const generateNewTokenUrl = (domain: string) => {
 };
 
 export const githubInstanceApiUrl = (domain: string) => {
+  if (domain === "github.com") {
+    return undefined;
+  }
   return `https://${domain}/api/v3`;
 };

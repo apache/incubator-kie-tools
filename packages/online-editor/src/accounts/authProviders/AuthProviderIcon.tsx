@@ -25,7 +25,11 @@ import { AuthProvider } from "./AuthProvidersContext";
 
 export function AuthProviderIcon(props: { authProvider: AuthProvider; size: IconSize | keyof typeof IconSize }) {
   if (props.authProvider.iconPath) {
-    return <img style={{ height: getSize(props.size) }} src={props.authProvider.iconPath} />;
+    const heightWidth = getSize(props.size);
+    const baseAlign = -0.125 * Number.parseFloat(heightWidth);
+    return (
+      <img style={{ height: getSize(props.size), verticalAlign: `${baseAlign}em` }} src={props.authProvider.iconPath} />
+    );
   }
 
   if (props.authProvider.type === "github") {
