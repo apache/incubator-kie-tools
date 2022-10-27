@@ -74,19 +74,26 @@ export function useDelayedPromiseState<T>(ms: number): [PromiseState<T>, (newSta
   return [ret, setState];
 }
 
-export function usePromiseState<T>(): [PromiseState<T>, (newState: NewStateArgs<T>) => void] {
+export function usePromiseState<T>(): [
+  PromiseState<T>,
+  (newState: NewStateArgs<T> | ((prevState: T | undefined) => NewStateArgs<T>)) => void
+] {
   const [state, setState] = useState<PromiseState<T>>({ status: PromiseStateStatus.PENDING });
 
-  const set = useCallback((newState: NewStateArgs<T>) => {
-    if (newState.error) {
-      setState({ status: PromiseStateStatus.REJECTED, error: [newState.error] });
-    } else if (newState.data !== undefined) {
-      setState({ status: PromiseStateStatus.RESOLVED, data: newState.data });
-    } else if (newState.loading) {
-      setState({ status: PromiseStateStatus.PENDING });
-    } else {
-      throw new Error("Invalid state");
-    }
+  const set = useCallback((newState) => {
+    return setState((prev) => {
+      const ns = typeof newState == "function" ? newState(prev.data) : newState;
+
+      if (ns.error) {
+        return { status: PromiseStateStatus.REJECTED, error: [ns.error] };
+      } else if (ns.data !== undefined) {
+        return { status: PromiseStateStatus.RESOLVED, data: ns.data };
+      } else if (ns.loading) {
+        return { status: PromiseStateStatus.PENDING };
+      } else {
+        throw new Error("Invalid state");
+      }
+    });
   }, []);
 
   return [state, set];

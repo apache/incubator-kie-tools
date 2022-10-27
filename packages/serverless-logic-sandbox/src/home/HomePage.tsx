@@ -76,7 +76,7 @@ import {
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
-import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
@@ -85,9 +85,10 @@ import { useController } from "../reactExt/Hooks";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { Showcase } from "./Showcase";
 import { FileTypes, isSandboxAsset, SupportedFileExtensions } from "../extension";
+import { APP_NAME } from "../AppConstants";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -118,6 +119,10 @@ export function HomePage() {
     },
     [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
   );
+
+  useEffect(() => {
+    document.title = `${APP_NAME} :: Home`;
+  }, []);
 
   useEffect(() => {
     if (

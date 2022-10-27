@@ -306,9 +306,6 @@ export const en: AppI18n = {
       },
     },
   },
-  browserAlert: {
-    warning: "To get the best experience, please prefer using Chromium based browsers.",
-  },
   notificationsPanel: {
     name: "Notifications Panel",
     tooltip: {

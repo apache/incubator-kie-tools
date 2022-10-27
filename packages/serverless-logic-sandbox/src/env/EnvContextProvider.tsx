@@ -17,13 +17,12 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useCancelableEffect } from "../reactExt/Hooks";
+import { ENV_FILE_PATH } from "./EnvConstants";
 import { DEFAULT_ENV_VARS, EnvContext } from "./EnvContext";
 
 interface Props {
   children: React.ReactNode;
 }
-
-const ENV_FILE_PATH = "env.json";
 
 export function EnvContextProvider(props: Props) {
   const [vars, setVars] = useState(DEFAULT_ENV_VARS);

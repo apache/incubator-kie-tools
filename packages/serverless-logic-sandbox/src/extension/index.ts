@@ -28,7 +28,7 @@ const REGEX = {
   dash: /^.*\.dash\.(yml|yaml)$/i,
   json: /^.*\.json$/i,
   yaml: /^.*\.(yml|yaml)$/i,
-  spec: /^.*(spec|specs)\/.*(.json|.yml|.yaml)$/i,
+  spec: /^.*(\.spec|\.specs|spec|specs)\.(json|yml|yaml)$/i,
 };
 
 export const GLOB_PATTERN = {
@@ -36,6 +36,8 @@ export const GLOB_PATTERN = {
   sw: "**/*.sw.+(json|yml|yaml)",
   yard: "**/*.yard.+(json|yml|yaml)",
   dash: "**/*.dash.+(yml|yaml)",
+  spec: "**/+(*.spec?(s)|spec?(s)).+(yml|yaml|json)",
+  sw_spec: "**/+(*.sw|*.spec?(s)|spec?(s)).+(yml|yaml|json)",
 };
 
 export enum FileTypes {
@@ -96,6 +98,10 @@ export function isModel(path: string): boolean {
 
 export function isSandboxAsset(path: string): boolean {
   return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path));
+}
+
+export function isSupportedByVirtualServiceRegistry(path: string): boolean {
+  return isServerlessWorkflow(path) || isSpec(path);
 }
 
 export function isSpec(path: string): boolean {

@@ -3652,6 +3652,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
       "@kie-tools/dashbuilder-editor": workspace:*
+      "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/kie-sandbox-fs": workspace:*
@@ -3685,6 +3686,7 @@ importers:
       "@types/react-router-dom": ^5.1.7
       "@types/uuid": ^8.3.0
       axios: ^0.27.2
+      bowser: ^2.10.0
       buffer: ^6.0.3
       copy-webpack-plugin: ^8.1.1
       cypress: ^10.7.0
@@ -3705,6 +3707,7 @@ importers:
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
+      patch-package: ^6.4.7
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -3733,6 +3736,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/dashbuilder-editor": link:../dashbuilder-editor
+      "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
@@ -3751,6 +3755,7 @@ importers:
       "@rhoas/registry-instance-sdk": 0.34.1
       "@types/js-yaml": 4.0.5
       axios: 0.27.2
+      bowser: 2.11.0
       buffer: 6.0.3
       history: 4.10.1
       isomorphic-git: 1.11.1
@@ -3801,6 +3806,7 @@ importers:
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
       monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
+      patch-package: 6.4.7
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
@@ -11928,7 +11934,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -11937,7 +11943,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -17325,7 +17331,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9_debug@4.3.1:
+  /follow-redirects/1.14.9:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -17334,8 +17340,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dependencies:
-      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -18329,7 +18333,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
