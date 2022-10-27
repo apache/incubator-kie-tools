@@ -1,0 +1,126 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+helper = null
+testsFailed = false
+
+pipeline {
+    agent {
+        label 'kogito-operator-node && !built-in'
+    }
+
+    tools {
+        go 'golang-1.19' // TODO to setup in tools
+    }
+
+    options {
+        timeout(time: 120, unit: 'HOURS')
+    }
+
+    environment {
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+    }
+
+    stages {
+        stage('Setup pipeline') {
+            steps {
+                script {
+                    helper = load '.ci/jenkins/scripts/helper.groovy'
+                    helper.initPipeline()
+                }
+            }
+        }
+        stage('Initialize') {
+            steps {
+                script {
+                    helper.cleanGoPath()
+
+                    helper.updateDisplayName()
+                    helper.checkoutRepo()
+                }
+            }
+        }
+
+        stage('Update version') {
+            steps {
+                script {
+                    sh "make bump-version new_version=${helper.getProjectVersion()}"
+                }
+            }
+        }
+
+        stage('Build Kogito Operator') {
+            steps {
+                sh "make container-build BUILDER=${env.CONTAINER_ENGINE}"
+            }
+            post {
+                unsuccessful {
+                    script {
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
+        }
+
+        stage('Push to registry') {
+            steps {
+                script {
+                    helper.loginRegistry()
+
+                    container.tagImage("quay.io/kiegroup/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}", helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
+                    container.pushImage(helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
+
+                    String reducedTag = helper.getReducedTag()
+                    if (reducedTag) {
+                        String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, reducedTag)
+                        container.tagImage("quay.io/kiegroup/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}", finalFullImage)
+                        container.pushImage(finalFullImage)
+                    }
+                }
+            }
+        }
+
+        stage('Update branch') {
+            steps {
+                script {
+                    sh '''
+                        git checkout -- go.mod
+                        git checkout -- go.sum
+                    '''
+                    if (githubscm.isThereAnyChanges()) {
+                        githubscm.commitChanges("[${helper.getBuildBranch()}] Update version to ${helper.getProjectVersion()}", {
+                            sh '''
+                                git add .
+                            '''
+                        })
+                        githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
+                    } else {
+                        println '[WARN] no changes to commit'
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                helper.cleanGoPath()
+                util.cleanNode(containerEngine)
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        mailer.sendMarkdownTestSummaryNotification('Setup branch', "[${helper.getBuildBranch()}] Kogito Operator", [env.KOGITO_CI_EMAIL_TO], "You can find test error logs here: ${BUILD_URL}/artifact/test/logs/error/")
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+String getOperatorVersion() {
+    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
+}
