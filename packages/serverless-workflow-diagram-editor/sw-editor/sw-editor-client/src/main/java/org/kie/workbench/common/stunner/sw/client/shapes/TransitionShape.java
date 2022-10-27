@@ -59,6 +59,9 @@ public class TransitionShape<W>
             getShapeView().setTitle(definition.getCondition());
             getShapeView().setTitleBackgroundColor("gray");
         }
+        getShapeView().setTitleFontColor(getColor(transitionType));
+        getShapeView().setTitleStrokeColor(getColor(transitionType));
+
         return this;
     }
 

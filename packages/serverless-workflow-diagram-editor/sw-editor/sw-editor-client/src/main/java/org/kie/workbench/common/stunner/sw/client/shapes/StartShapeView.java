@@ -17,12 +17,13 @@
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import elemental2.dom.DomGlobal;
 
 public class StartShapeView extends ServerlessWorkflowBasicShape<StartShapeView> {
 
     public StartShapeView() {
         super(new MultiPath()
-                      .setX(23)
+                      .setX(25)
                       .circle(25)
                       .setDraggable(false)
                       .setID("start")
@@ -33,7 +34,7 @@ public class StartShapeView extends ServerlessWorkflowBasicShape<StartShapeView>
                       .setStrokeColor("#ccc")
                       .setStrokeWidth(2.00));
         setTitle("Start");
-        setTitleXOffsetPosition(0.0);
+        setTitleXOffsetPosition(2.0);
         setTitleYOffsetPosition(17.0);
         setTitlePosition(VerticalAlignment.MIDDLE, HorizontalAlignment.CENTER, ReferencePosition.INSIDE, Orientation.HORIZONTAL);
         setTitleFontColor("#929292");
