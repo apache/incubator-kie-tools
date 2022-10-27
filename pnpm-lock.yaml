@@ -3260,7 +3260,6 @@ importers:
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
       moment: ^2.29.4
-      patch-package: ^6.4.7
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -3349,7 +3348,6 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
-      patch-package: 6.4.7
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
@@ -3735,7 +3733,6 @@ importers:
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       openapi-types: ^7.0.1
-      patch-package: ^6.4.7
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -3823,7 +3820,6 @@ importers:
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
       monaco-editor-webpack-plugin: 7.0.1_eodoae2vto4nf5xogfjxixxxnq
-      patch-package: 6.4.7
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
@@ -5721,6 +5717,7 @@ importers:
       jest-when: ^3.5.0
       jszip: ^3.7.1
       minimatch: ^3.0.4
+      patch-package: ^6.4.7
       react: ^17.0.2
       react-router: ^5.2.1
       rimraf: ^3.0.2
@@ -5759,6 +5756,7 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
+      patch-package: 6.4.7
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
@@ -12022,7 +12020,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -12031,7 +12029,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -14146,7 +14144,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -17420,7 +17418,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
+  /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -17429,6 +17427,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -18422,7 +18422,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
