@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import { matchPath } from "react-router";
 import { extname } from "path";
 import { useMemo } from "react";
-import { matchPath } from "react-router";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 
 export enum UrlType {
@@ -229,10 +229,10 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return ifAllowed({ type: UrlType.GIT, url });
     }
 
-    /*if (!editorEnvelopeLocator.hasMappingFor(url.pathname)) {
+    if (!editorEnvelopeLocator.hasMappingFor(url.pathname)) {
       return { type: UrlType.INVALID, error: `Unsupported extension for '${url.pathname}'`, url: urlString };
-    }*/
+    }
 
     return ifAllowed({ type: UrlType.FILE, url });
-  }, [urlString, allowedUrlTypes]);
+  }, [editorEnvelopeLocator, urlString, allowedUrlTypes]);
 }

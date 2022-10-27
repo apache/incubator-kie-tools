@@ -14,40 +14,21 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { GLOB_PATTERN } from "../extension";
+import { EditorEnvelopeLocatorFactory } from "./EditorEnvelopeLocatorFactory";
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
-  const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
+  const value = useMemo(
     () =>
-      new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping({
-          type: "swf",
-          filePathGlob: GLOB_PATTERN.sw,
-          resourcesPathPrefix: ".",
-          envelopePath: "serverless-workflow-combined-editor-envelope.html",
-        }),
-        new EnvelopeMapping({
-          type: "dash",
-          filePathGlob: GLOB_PATTERN.dash,
-          resourcesPathPrefix: "",
-          envelopePath: "dashbuilder-editor-envelope.html",
-        }),
-        new EnvelopeMapping({
-          type: "text",
-          filePathGlob: GLOB_PATTERN.all,
-          resourcesPathPrefix: "",
-          envelopePath: "text-editor-envelope.html",
-        }),
-      ]),
+      new EditorEnvelopeLocatorFactory().create({
+        targetOrigin: window.location.origin,
+      }),
     []
   );
-
-  const value = useMemo(() => editorEnvelopeLocator, [editorEnvelopeLocator]);
 
   return <EditorEnvelopeLocatorContext.Provider value={value}>{props.children}</EditorEnvelopeLocatorContext.Provider>;
 }
