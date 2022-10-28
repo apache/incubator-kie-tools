@@ -62,9 +62,7 @@ export function App() {
 
 function RoutesSwitch() {
   const routes = useRoutes();
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
-
-  const supportedExtensions = useMemo(() => "bpmn|bpmn2|dmn|pmml", [editorEnvelopeLocator]);
+  const supportedExtensions = useMemo(() => "bpmn|bpmn2|dmn|pmml", []);
 
   return (
     <Switch>
