@@ -30,7 +30,7 @@ export function AuthSessionsList(props: {}) {
       <Stack hasGutter={true} style={{ height: "auto" }}>
         {[...authSessions.values()].map((authSession) => {
           if (authSession.type === "none") {
-            // This is never going to happen, as we don't persist the "None" auth session.
+            // This is never going to happen, as we don't persist the "none" auth session.
             return <></>;
           }
 

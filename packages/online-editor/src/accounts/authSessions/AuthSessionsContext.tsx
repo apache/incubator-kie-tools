@@ -23,9 +23,9 @@ import { decoder, encoder } from "../../workspace/encoderdecoder/EncoderDecoder"
 
 export const AUTH_SESSION_NONE: AuthSession = {
   id: "none",
-  name: "Anonymous",
+  name: "Unauthenticated",
   type: "none",
-  login: "Anonymous",
+  login: "Unauthenticated",
 };
 
 export type GitAuthSession = {
@@ -40,9 +40,9 @@ export type GitAuthSession = {
 
 export type NoneAuthSession = {
   type: "none";
-  name: "Anonymous";
+  name: "Unauthenticated";
   id: "none";
-  login: "Anonymous";
+  login: "Unauthenticated";
 };
 
 export type AuthSession = GitAuthSession | NoneAuthSession;

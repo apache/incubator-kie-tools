@@ -31,6 +31,15 @@ import { AuthSessionsList } from "./authSessions/AuthSessionsList";
 import { GitAuthProvider, useAuthProviders } from "./authProviders/AuthProvidersContext";
 import { useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateSecondaryActions,
+  EmptyStateVariant,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 
 // State
 
@@ -154,15 +163,28 @@ export function AccountsIcon() {
             )}
             {state.section === AccountsModalSection.HOME && (
               <>
-                <TextContent>
-                  <Text component={TextVariants.h1}>Accounts</Text>
-                </TextContent>
+                <>
+                  <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
+                    <TextContent>
+                      <Text component={TextVariants.h1}>Your accounts</Text>
+                    </TextContent>
+                    {authSessions.size > 0 && (
+                      <Button
+                        icon={<PlusIcon />}
+                        variant={ButtonVariant.link}
+                        onClick={() => dispatch({ kind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER })}
+                      >
+                        Add
+                      </Button>
+                    )}
+                  </Flex>
+                </>
               </>
             )}
             {state.section === AccountsModalSection.CONNECT_TO_NEW_ACC && (
               <>
                 <TextContent>
-                  <Text component={TextVariants.h1}>Connect to a new account</Text>
+                  <Text component={TextVariants.h1}>Connect to an account</Text>
                 </TextContent>
               </>
             )}
@@ -204,8 +226,15 @@ export function AccountsIcon() {
                 <>
                   {authSessions.size <= 0 && (
                     <>
-                      {`Looks like you don't have any accounts connected yet. Select a provider below to connect an account.`}
+                      <EmptyState variant={EmptyStateVariant.xs}>
+                        <EmptyStateIcon icon={UsersIcon} />
+                        <Title headingLevel="h4" size="md">
+                          {`Looks like you don't have any accounts connected yet`}
+                        </Title>
+                        <EmptyStateBody>{`Select a provider below to connect an account.`}</EmptyStateBody>
+                      </EmptyState>
                       <br />
+                      <Divider inset={{ default: "inset3xl" }} />
                       <br />
                       <br />
                       <AuthProvidersGallery
@@ -216,17 +245,6 @@ export function AccountsIcon() {
                   )}
                   {authSessions.size > 0 && (
                     <>
-                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                        <FlexItem>&nbsp;</FlexItem>
-                        <Button
-                          icon={<PlusIcon />}
-                          variant={ButtonVariant.link}
-                          onClick={() => dispatch({ kind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER })}
-                        >
-                          Add
-                        </Button>
-                      </Flex>
-                      <br />
                       <AuthSessionsList />
                     </>
                   )}
