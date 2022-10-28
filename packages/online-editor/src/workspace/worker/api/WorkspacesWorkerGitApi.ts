@@ -18,8 +18,17 @@ import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
 import { GistOrigin, GitHubOrigin } from "./WorkspaceOrigin";
 import { LocalFile } from "./LocalFile";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
+import { GitServerRef } from "./GitServerRef";
 
 export interface WorkspacesWorkerGitApi {
+  kieSandboxWorkspacesGit_getGitServerRefs(args: {
+    url: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
+  }): Promise<GitServerRef[]>;
+
   kieSandboxWorkspacesGit_hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
 
   kieSandboxWorkspacesGit_isModified(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
