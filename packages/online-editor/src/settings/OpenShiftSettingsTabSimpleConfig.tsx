@@ -195,6 +195,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
         )}
 
         <Button
+          style={{ paddingLeft: 0 }}
           id="dmn-dev-sandbox-config-use-wizard-button"
           key="use-wizard"
           className="pf-u-p-0"
@@ -204,6 +205,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
           data-testid="use-wizard-button"
         >
           {i18n.dmnDevSandbox.configModal.useWizard}
+          &nbsp;
           <ArrowRightIcon className="pf-u-ml-sm" />
         </Button>
 

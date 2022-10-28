@@ -25,22 +25,20 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../i18n";
 import { v4 as uuid } from "uuid";
-import { useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
-import { AccountsModalDispatchAction } from "./AccountsIcon";
+import { AuthSession, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
 import { githubInstanceApiUrl } from "../github/Hooks";
+import { AccountsSection, useAccounts } from "./AccountsDispatchContext";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
 export const GITHUB_TOKENS_HOW_TO_URL =
   "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";
 
-export function ConnectToGitHubSection(props: {
-  authProvider: GitAuthProvider;
-  dispatch: React.Dispatch<AccountsModalDispatchAction>;
-}) {
+export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider }) {
   const { i18n } = useOnlineI18n();
   const authSessionsDispatch = useAuthSessionsDispatch();
+  const accounts = useAccounts();
 
   const onPasteGitHubToken = useCallback(
     async (e: React.ClipboardEvent, githubInstanceDomain: string) => {
@@ -65,7 +63,7 @@ export function ConnectToGitHubSection(props: {
         throw new Error("GitHub Personal Access Token (classic) must include the 'repo' and 'gist' scopes.");
       }
 
-      authSessionsDispatch.add({
+      const newAuthSession: AuthSession = {
         id: uuid(),
         token,
         type: "git",
@@ -73,9 +71,14 @@ export function ConnectToGitHubSection(props: {
         name: response.data.name ?? undefined,
         email: response.data.email ?? undefined,
         authProviderId: props.authProvider.id,
-      });
+      };
+
+      authSessionsDispatch.add(newAuthSession);
+      if (accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC) {
+        accounts.onNewAuthSession?.(newAuthSession);
+      }
     },
-    [authSessionsDispatch, props.authProvider.id]
+    [accounts, authSessionsDispatch, props.authProvider.id]
   );
 
   const isGitHubTokenValid = true;

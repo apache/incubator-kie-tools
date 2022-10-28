@@ -10,6 +10,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ButtonVariant } from "@patternfly/react-core";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../AccountsDispatchContext";
 
 export function AuthSessionSelect(props: {
   authSessionId: string | undefined;
@@ -22,6 +23,7 @@ export function AuthSessionSelect(props: {
   const authProviders = useAuthProviders();
 
   const { authSession } = useAuthSession(props.authSessionId);
+  const accountsDispatch = useAccountsDispatch();
 
   const selectedAuthSessionId = useMemo(() => {
     // Provided authSessionId doesn't exist anymore.
@@ -58,7 +60,17 @@ export function AuthSessionSelect(props: {
       style={{ minWidth: "400px" }}
       footer={
         <>
-          <Button variant={ButtonVariant.link} isInline={true} icon={<PlusIcon />}>
+          <Button
+            variant={ButtonVariant.link}
+            isInline={true}
+            icon={<PlusIcon />}
+            onClick={() =>
+              accountsDispatch({
+                kind: AccountsDispatchActionKind.SELECT_AUTH_PROVDER,
+                onNewAuthSession: (newAuthSession) => props.setAuthSessionId(newAuthSession.id),
+              })
+            }
+          >
             Connect to an account...
           </Button>
         </>
@@ -70,7 +82,9 @@ export function AuthSessionSelect(props: {
           &nbsp;&nbsp;
           {AUTH_SESSION_NONE.login}
         </SelectOption>,
-        <Divider key={"divider-none-others"} />,
+        <React.Fragment key={"divider-none"}>
+          <>{authSessions.size > 0 && <Divider />}</>
+        </React.Fragment>,
         ...[...authSessions.entries()].flatMap(([authSessionId, authSession], index) => {
           if (authSession.type === "none") {
             return [];

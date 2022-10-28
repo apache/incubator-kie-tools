@@ -40,229 +40,153 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
-
-// State
-
-export enum AccountsModalSection {
-  HOME = "HOME",
-  CONNECT_TO_NEW_ACC = "NEW_ACC",
-  CONNECT_TO_NEW_GITHUB_ACC = "NEW_GITHUB_ACC",
-}
-
-export type AccountsModalState =
-  | {
-      section: AccountsModalSection.HOME;
-      selectedAuthProvider?: undefined;
-    }
-  | {
-      section: AccountsModalSection.CONNECT_TO_NEW_ACC;
-      selectedAuthProvider?: undefined;
-      backActionKind: AccountsModalDispatchActionKind.GO_HOME;
-    }
-  | {
-      section: AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC;
-      selectedAuthProvider: GitAuthProvider;
-      backActionKind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER | AccountsModalDispatchActionKind.GO_HOME;
-    };
-
-// Reducer
-
-export enum AccountsModalDispatchActionKind {
-  GO_HOME = "GO_HOME",
-  SELECT_AUTH_PROVDER = "SELECT_AUTH_PROVDER",
-  SETUP_GITHUB_TOKEN = "SETUP_GITHUB_TOKEN",
-}
-
-export type AccountsModalDispatchAction =
-  | {
-      kind: AccountsModalDispatchActionKind.GO_HOME;
-    }
-  | {
-      kind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER;
-    }
-  | {
-      kind: AccountsModalDispatchActionKind.SETUP_GITHUB_TOKEN;
-      selectedAuthProvider: GitAuthProvider;
-      backActionKind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER | AccountsModalDispatchActionKind.GO_HOME;
-    };
-
-export function reducer(state: AccountsModalState, action: AccountsModalDispatchAction): AccountsModalState {
-  const { kind } = action;
-  switch (kind) {
-    case AccountsModalDispatchActionKind.GO_HOME:
-      return {
-        section: AccountsModalSection.HOME,
-        selectedAuthProvider: undefined,
-      };
-    case AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER:
-      return {
-        section: AccountsModalSection.CONNECT_TO_NEW_ACC,
-        selectedAuthProvider: undefined,
-        backActionKind: AccountsModalDispatchActionKind.GO_HOME,
-      };
-    case AccountsModalDispatchActionKind.SETUP_GITHUB_TOKEN:
-      return {
-        section: AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC,
-        selectedAuthProvider: action.selectedAuthProvider,
-        backActionKind: action.backActionKind,
-      };
-    default:
-      assertUnreachable(kind);
-  }
-}
-
-export function assertUnreachable(_x: never): never {
-  throw new Error("Didn't expect to get here");
-}
+import {
+  AccountsDispatchActionKind,
+  AccountsSection,
+  useAccounts,
+  useAccountsDispatch,
+} from "./AccountsDispatchContext";
 
 export function AccountsIcon() {
-  const [isAccountsModalOpen, setAccountsModalOpen] = useState(false);
-  const [state, dispatch] = useReducer(reducer, { section: AccountsModalSection.HOME });
-
+  const accounts = useAccounts();
+  const accountsDispatch = useAccountsDispatch();
   const { authSessions } = useAuthSessions();
 
   const goBack = useCallback(() => {
-    if (state.section !== AccountsModalSection.HOME) {
-      dispatch({ kind: state.backActionKind });
+    if (accounts.section !== AccountsSection.HOME && accounts.section !== AccountsSection.CLOSED) {
+      accountsDispatch({ kind: accounts.backActionKind });
     }
-  }, [state]);
+  }, [accountsDispatch, accounts]);
 
   return (
     <>
       <Button
         variant={ButtonVariant.plain}
-        onClick={() => {
-          dispatch({ kind: AccountsModalDispatchActionKind.GO_HOME });
-          setAccountsModalOpen((prev) => !prev);
-        }}
+        onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.GO_HOME })}
         className={"kie-tools--masthead-hoverable-dark"}
       >
         <UserIcon />
       </Button>
-      <Modal
-        aria-label={"Accounts"}
-        variant={ModalVariant.medium}
-        isOpen={isAccountsModalOpen}
-        onClose={() => setAccountsModalOpen(false)}
-        header={
-          <div>
-            {state.section !== AccountsModalSection.HOME && (
-              <>
-                <Button
-                  key={"back"}
-                  onClick={goBack}
-                  variant={ButtonVariant.link}
-                  style={{ paddingLeft: 0 }}
-                  icon={<AngleLeftIcon />}
-                >
-                  {`Back`}
-                </Button>
-                <br />
-                <br />
-              </>
-            )}
-            {state.section === AccountsModalSection.HOME && (
-              <>
+      {accounts.section !== AccountsSection.CLOSED && (
+        <Modal
+          aria-label={"Accounts"}
+          variant={ModalVariant.medium}
+          isOpen={true}
+          onClose={() => accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE })}
+          header={
+            <div>
+              {accounts.section !== AccountsSection.HOME && (
                 <>
-                  <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
-                    <TextContent>
-                      <Text component={TextVariants.h1}>Your accounts</Text>
-                    </TextContent>
-                    {authSessions.size > 0 && (
-                      <Button
-                        icon={<PlusIcon />}
-                        variant={ButtonVariant.link}
-                        onClick={() => dispatch({ kind: AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER })}
+                  <Button
+                    key={"back"}
+                    onClick={goBack}
+                    variant={ButtonVariant.link}
+                    style={{ paddingLeft: 0 }}
+                    icon={<AngleLeftIcon />}
+                  >
+                    {`Back`}
+                  </Button>
+                  <br />
+                  <br />
+                </>
+              )}
+              {accounts.section === AccountsSection.HOME && (
+                <>
+                  <>
+                    <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
+                      <TextContent>
+                        <Text component={TextVariants.h1}>Your connected accounts</Text>
+                      </TextContent>
+                      {authSessions.size > 0 && (
+                        <Button
+                          icon={<PlusIcon />}
+                          variant={ButtonVariant.link}
+                          onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVDER })}
+                        >
+                          Add
+                        </Button>
+                      )}
+                    </Flex>
+                  </>
+                </>
+              )}
+              {accounts.section === AccountsSection.CONNECT_TO_NEW_ACC && (
+                <>
+                  <TextContent>
+                    <Text component={TextVariants.h1}>Connect to an account</Text>
+                  </TextContent>
+                </>
+              )}
+              {accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC && (
+                <>
+                  <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                    <FlexItem>
+                      <Flex
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        spaceItems={{ default: "spaceItemsSm" }}
                       >
-                        Add
-                      </Button>
-                    )}
+                        <TextContent>
+                          <Text component={TextVariants.h2}>
+                            {`Connect to`}
+                            &nbsp;
+                            {accounts.selectedAuthProvider.name}
+                          </Text>
+                        </TextContent>
+                        <TextContent>
+                          <Text component={TextVariants.small}>
+                            <i>{accounts.selectedAuthProvider.domain}</i>
+                          </Text>
+                        </TextContent>
+                      </Flex>
+                    </FlexItem>
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
                   </Flex>
                 </>
-              </>
-            )}
-            {state.section === AccountsModalSection.CONNECT_TO_NEW_ACC && (
+              )}
+              <br />
+              <Divider inset={{ default: "insetMd" }} />
+            </div>
+          }
+        >
+          <Page>
+            <PageSection variant={"light"}>
               <>
-                <TextContent>
-                  <Text component={TextVariants.h1}>Connect to an account</Text>
-                </TextContent>
+                {accounts.section === AccountsSection.HOME && (
+                  <>
+                    {authSessions.size <= 0 && (
+                      <>
+                        <EmptyState variant={EmptyStateVariant.xs}>
+                          <EmptyStateIcon icon={UsersIcon} />
+                          <Title headingLevel="h4" size="md">
+                            {`Looks like you don't have any accounts connected yet`}
+                          </Title>
+                          <EmptyStateBody>{`Select a provider below to connect an account.`}</EmptyStateBody>
+                        </EmptyState>
+                        <br />
+                        <Divider inset={{ default: "inset3xl" }} />
+                        <br />
+                        <br />
+                        <AuthProvidersGallery backActionKind={AccountsDispatchActionKind.GO_HOME} />
+                      </>
+                    )}
+                    {authSessions.size > 0 && (
+                      <>
+                        <AuthSessionsList />
+                      </>
+                    )}
+                  </>
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_NEW_ACC && (
+                  <AuthProvidersGallery backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVDER} />
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC && (
+                  <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />
+                )}
               </>
-            )}
-            {state.section === AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC && (
-              <>
-                <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                  <FlexItem>
-                    <Flex
-                      justifyContent={{ default: "justifyContentFlexStart" }}
-                      spaceItems={{ default: "spaceItemsSm" }}
-                    >
-                      <TextContent>
-                        <Text component={TextVariants.h2}>
-                          {`Connect to`}
-                          &nbsp;
-                          {state.selectedAuthProvider.name}
-                        </Text>
-                      </TextContent>
-                      <TextContent>
-                        <Text component={TextVariants.small}>
-                          <i>{state.selectedAuthProvider.domain}</i>
-                        </Text>
-                      </TextContent>
-                    </Flex>
-                  </FlexItem>
-                  <AuthProviderIcon authProvider={state.selectedAuthProvider} size={"sm"} />
-                </Flex>
-              </>
-            )}
-            <br />
-            <Divider inset={{ default: "insetMd" }} />
-          </div>
-        }
-      >
-        <Page>
-          <PageSection variant={"light"}>
-            <>
-              {state.section === AccountsModalSection.HOME && (
-                <>
-                  {authSessions.size <= 0 && (
-                    <>
-                      <EmptyState variant={EmptyStateVariant.xs}>
-                        <EmptyStateIcon icon={UsersIcon} />
-                        <Title headingLevel="h4" size="md">
-                          {`Looks like you don't have any accounts connected yet`}
-                        </Title>
-                        <EmptyStateBody>{`Select a provider below to connect an account.`}</EmptyStateBody>
-                      </EmptyState>
-                      <br />
-                      <Divider inset={{ default: "inset3xl" }} />
-                      <br />
-                      <br />
-                      <AuthProvidersGallery
-                        dispatch={dispatch}
-                        backActionKind={AccountsModalDispatchActionKind.GO_HOME}
-                      />
-                    </>
-                  )}
-                  {authSessions.size > 0 && (
-                    <>
-                      <AuthSessionsList />
-                    </>
-                  )}
-                </>
-              )}
-              {state.section === AccountsModalSection.CONNECT_TO_NEW_ACC && (
-                <AuthProvidersGallery
-                  dispatch={dispatch}
-                  backActionKind={AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER}
-                />
-              )}
-              {state.section === AccountsModalSection.CONNECT_TO_NEW_GITHUB_ACC && (
-                <ConnectToGitHubSection dispatch={dispatch} authProvider={state.selectedAuthProvider} />
-              )}
-            </>
-          </PageSection>
-        </Page>
-      </Modal>
+            </PageSection>
+          </Page>
+        </Modal>
+      )}
     </>
   );
 }

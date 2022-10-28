@@ -2,15 +2,21 @@ import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternf
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import * as React from "react";
-import { AccountsModalDispatchAction, AccountsModalDispatchActionKind } from "../AccountsIcon";
+import {
+  AccountsDispatchActionKind,
+  AccountsSection,
+  useAccounts,
+  useAccountsDispatch,
+} from "../AccountsDispatchContext";
 import { AuthProviderIcon } from "./AuthProviderIcon";
 import { useAuthProviders } from "./AuthProvidersContext";
 
 export function AuthProvidersGallery(props: {
-  dispatch: React.Dispatch<AccountsModalDispatchAction>;
-  backActionKind: AccountsModalDispatchActionKind.GO_HOME | AccountsModalDispatchActionKind.SELECT_AUTH_PROVDER;
+  backActionKind: AccountsDispatchActionKind.GO_HOME | AccountsDispatchActionKind.SELECT_AUTH_PROVDER;
 }) {
   const authProviders = useAuthProviders();
+  const accountsDispatch = useAccountsDispatch();
+  const accounts = useAccounts();
 
   return (
     <>
@@ -28,10 +34,12 @@ export function AuthProvidersGallery(props: {
               }}
               onClick={() => {
                 if (authProvider.enabled && authProvider.type === "github") {
-                  props.dispatch({
-                    kind: AccountsModalDispatchActionKind.SETUP_GITHUB_TOKEN,
+                  accountsDispatch({
+                    kind: AccountsDispatchActionKind.SETUP_GITHUB_TOKEN,
                     selectedAuthProvider: authProvider,
                     backActionKind: props.backActionKind,
+                    onNewAuthSession:
+                      accounts.section === AccountsSection.CONNECT_TO_NEW_ACC ? accounts.onNewAuthSession : undefined,
                   });
                 }
               }}
