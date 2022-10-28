@@ -45,7 +45,6 @@ public class SWAPITests extends SWEditorSeleniumBase {
 
             backgroundColor = jsHelper.getGetBackgroundColor(uuid);
             borderColor = jsHelper.getBorderColor(uuid);
-            ;
 
             assertThat(backgroundColor).isEqualTo("#ff00ff");
             assertThat(borderColor).isEqualTo("#dd00ff");
@@ -63,7 +62,6 @@ public class SWAPITests extends SWEditorSeleniumBase {
 
         List<Object> location1List = jsHelper.getLocation(nodeIds.get(0));
         List<Object> absoluteLocation1List = jsHelper.getAbsoluteLocation(nodeIds.get(0));
-        ;
 
         assertThat(location1List.get(0)).isEqualTo(153L);
         assertThat(location1List.get(1)).isEqualTo(267L);
@@ -73,7 +71,6 @@ public class SWAPITests extends SWEditorSeleniumBase {
 
         List<Object> location2List = jsHelper.getLocation(nodeIds.get(1));
         List<Object> absoluteLocation2List = jsHelper.getAbsoluteLocation(nodeIds.get(1));
-        ;
 
         assertThat(location2List.get(0)).isEqualTo(50L);
         assertThat(location2List.get(1)).isEqualTo(50L);
