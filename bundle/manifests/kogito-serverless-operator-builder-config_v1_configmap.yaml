@@ -4,7 +4,7 @@ data:
   DEFAULT_KANIKO_SECRET_DEFAULT: regcred
   DEFAULT_REGISTRY_REPO: quay.io/kiegroup
   DEFAULT_WORKFLOW_EXTENSION_KEY: .sw.json
-  Dockerfile: "FROM quay.io/mdessi/kogito-swf-builder:latest AS builder\n  \n  # Copy
+  Dockerfile: "FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder\n  \n  # Copy
     from build context to skeleton resources project\nCOPY * ./resources/\n\nRUN /home/kogito/launch/build-app.sh
     ./resources\n  \n  #=============================\n  # Runtime Run\n  #=============================\nFROM
     registry.access.redhat.com/ubi8/openjdk-11:latest\n\nENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'\n
