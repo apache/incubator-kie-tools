@@ -230,7 +230,7 @@ export function NewWorkspaceFromUrlPage() {
             },
             gitConfig,
             authInfo,
-            authSessionId: queryParamAuthSessionId,
+            gitAuthSessionId: queryParamAuthSessionId,
           });
         } else {
           await doImportAsSingleFile(importableUrl);
@@ -246,7 +246,7 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            authSessionId: queryParamAuthSessionId,
+            gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
           });
@@ -267,7 +267,7 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            authSessionId: queryParamAuthSessionId,
+            gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
           });

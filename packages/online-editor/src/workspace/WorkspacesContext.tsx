@@ -93,7 +93,7 @@ export interface WorkspacesContextType {
   createWorkspaceFromGitRepository: (args: {
     origin: GistOrigin | GitHubOrigin;
     gitConfig?: { email: string; name: string };
-    authSessionId: string | undefined;
+    gitAuthSessionId: string | undefined;
     authInfo?: {
       username: string;
       password: string;
@@ -205,6 +205,8 @@ export interface WorkspacesContextType {
   initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
 
   initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
+
+  changeGitAuthSessionId(args: { workspaceId: string; gitAuthSessionId: string | undefined }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

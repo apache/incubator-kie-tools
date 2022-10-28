@@ -153,7 +153,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: {
       origin: GistOrigin | GitHubOrigin;
       gitConfig?: { email: string; name: string };
-      authSessionId: string | undefined;
+      gitAuthSessionId: string | undefined;
       authInfo?: {
         username: string;
         password: string;
@@ -310,6 +310,17 @@ export function WorkspacesContextProvider(props: Props) {
     });
   }, []);
 
+  const changeGitAuthSessionId = useCallback(
+    async (args: { workspaceId: string; gitAuthSessionId: string | undefined }) => {
+      await ready;
+      return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_changeGitAuthSessionId({
+        workspaceId: args.workspaceId,
+        gitAuthSessionId: args.gitAuthSessionId,
+      });
+    },
+    []
+  );
+
   const value = useMemo(
     () => ({
       resourceContentGet,
@@ -340,6 +351,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      changeGitAuthSessionId,
       isFileModified,
       getGitServerRefs,
     }),
@@ -372,6 +384,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      changeGitAuthSessionId,
       isFileModified,
       getGitServerRefs,
     ]

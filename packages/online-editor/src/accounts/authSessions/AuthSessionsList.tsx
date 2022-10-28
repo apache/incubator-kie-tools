@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardActions, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
-import * as React from "react";
-import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
-import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSessionLabel } from "./AuthSessionLabel";
 import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
 

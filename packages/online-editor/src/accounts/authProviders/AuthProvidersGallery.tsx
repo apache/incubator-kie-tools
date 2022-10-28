@@ -20,12 +20,11 @@ export function AuthProvidersGallery(props: {
           .sort((a) => (a.enabled ? -1 : 1))
           .map((authProvider) => (
             <Card
-              isCompact={true}
               key={authProvider.id}
               isSelectable={authProvider.enabled}
+              isRounded={true}
               style={{
                 opacity: authProvider.enabled ? 1 : 0.5,
-                borderRadius: "8px",
               }}
               onClick={() => {
                 if (authProvider.enabled && authProvider.type === "github") {

@@ -32,6 +32,7 @@ import { AUTH_SESSION_NONE, useAuthSessions } from "../accounts/authSessions/Aut
 import { AuthProviderIcon } from "../accounts/authProviders/AuthProviderIcon";
 import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
+import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -54,7 +55,6 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
   (props, forwardedRef) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isBranchSelectorOpen, setBranchSelectorOpen] = useState(false);
-    const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
 
     useImperativeHandle(
       forwardedRef,
@@ -78,9 +78,6 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
         new Map<GitRefType, ServerRef[]>()
       );
     }, [props.clonableUrl.gitServerRefsPromise.data?.refs]);
-
-    const { authSessions } = useAuthSessions();
-    const authProviders = useAuthProviders();
 
     return (
       <>
@@ -124,43 +121,11 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
             <br />
             <Form onSubmit={props.onSubmit}>
               <FormGroup fieldId="auth-source" label="Authentication" isRequired={true}>
-                <Select
-                  variant={SelectVariant.single}
-                  selections={props.authSessionId}
-                  isOpen={isAuthSessionSelectorOpen}
-                  onToggle={setAuthSessionSelectorOpen}
-                  onSelect={(e, value) => {
-                    props.setAuthSessionId(value as string);
-                    setAuthSessionSelectorOpen(false);
-                  }}
-                  menuAppendTo={document.body}
-                  maxHeight={"400px"}
-                >
-                  {[
-                    <SelectOption key={AUTH_SESSION_NONE.id} value={AUTH_SESSION_NONE.id} description={<i>{}</i>}>
-                      <AuthProviderIcon authProvider={undefined} size={IconSize.sm} />
-                      &nbsp;&nbsp;
-                      {"None"}
-                    </SelectOption>,
-                    ...[...authSessions.entries()].flatMap(([authSessionId, authSession]) => {
-                      if (authSession.type === "none") {
-                        return [];
-                      }
-                      const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
-                      return [
-                        <SelectOption
-                          key={authSessionId}
-                          value={authSessionId}
-                          description={<i>{authProvider?.name}</i>}
-                        >
-                          <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
-                          &nbsp;&nbsp;
-                          {authSession.login}
-                        </SelectOption>,
-                      ];
-                    }),
-                  ]}
-                </Select>
+                <AuthSessionSelect
+                  authSessionId={props.authSessionId}
+                  setAuthSessionId={props.setAuthSessionId}
+                  isPlain={false}
+                />
               </FormGroup>
               <FormGroup
                 fieldId="url"

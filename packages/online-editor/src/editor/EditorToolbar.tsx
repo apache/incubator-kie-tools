@@ -100,6 +100,7 @@ import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { AUTH_SESSION_NONE, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { AuthSessionLabel } from "../accounts/authSessions/AuthSessionLabel";
+import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -1318,7 +1319,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [workspacePromise.data?.descriptor.origin.kind, workspacePromise.data?.files.length]
   );
 
-  const { authSession } = useAuthSession(workspacePromise.data?.descriptor.authSessionId ?? AUTH_SESSION_NONE.id);
+  const changeGitAuthSessionId = useCallback(
+    (gitAuthSessionId: string | undefined) => {
+      workspaces.changeGitAuthSessionId({ workspaceId: props.workspaceFile.workspaceId, gitAuthSessionId });
+    },
+    [props.workspaceFile.workspaceId, workspaces]
+  );
 
   return (
     <PromiseStateWrapper
@@ -1353,7 +1359,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         <WorkspaceLabel descriptor={workspace.descriptor} />
                       </FlexItem>
                       <FlexItem>
-                        <AuthSessionLabel authSession={authSession ?? AUTH_SESSION_NONE} />
+                        <AuthSessionSelect
+                          isPlain={true}
+                          authSessionId={workspace.descriptor.gitAuthSessionId}
+                          setAuthSessionId={(newAuthSessionId) =>
+                            changeGitAuthSessionId(
+                              typeof newAuthSessionId === "function"
+                                ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
+                                : newAuthSessionId
+                            )
+                          }
+                        />
                       </FlexItem>
                       <FlexItem style={{ minWidth: 0 }}>
                         <div
