@@ -23,11 +23,11 @@ import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import * as React from "react";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { AuthSession, GitAuthSession, useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
+import { AuthSessionLabel } from "./AuthSessionLabel";
+import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
 
 export function AuthSessionsList(props: {}) {
   const authSessionsDispatch = useAuthSessionsDispatch();
-  const authProviders = useAuthProviders();
   const { authSessions } = useAuthSessions();
 
   return (
@@ -35,11 +35,10 @@ export function AuthSessionsList(props: {}) {
       <Stack hasGutter={true} style={{ height: "auto" }}>
         {[...authSessions.values()].map((authSession) => {
           if (authSession.type === "none") {
-            // This is never going to happen, as we don't save the "None" auth session.
+            // This is never going to happen, as we don't persist the "None" auth session.
             return <></>;
           }
 
-          const authProvider = authProviders.find((a) => a.id === authSession.authProviderId)!;
           return (
             <Card key={authSession.id} isCompact={true}>
               <CardHeader>
@@ -49,30 +48,7 @@ export function AuthSessionsList(props: {}) {
                   </Button>
                 </CardActions>
                 <CardHeaderMain>
-                  <Flex alignItems={{ default: "alignItemsCenter" }}>
-                    <AuthProviderIcon authProvider={authProvider} size={IconSize.md} />
-                    <FlexItem>
-                      <TextContent>
-                        <Text component={TextVariants.h3} style={{ display: "inline" }}>
-                          {authSession.login}
-                          {authSession.email && (
-                            <>
-                              &nbsp;
-                              <Text component={TextVariants.small} style={{ display: "inline" }}>
-                                <i>({authSession.email})</i>
-                              </Text>
-                            </>
-                          )}
-                        </Text>
-                      </TextContent>
-                      <TextContent>
-                        <Text component={TextVariants.small}>
-                          {authProvider.name}
-                          &nbsp;
-                        </Text>
-                      </TextContent>
-                    </FlexItem>
-                  </Flex>
+                  <AuthSessionLabel authSession={authSession} />
                 </CardHeaderMain>
               </CardHeader>
             </Card>

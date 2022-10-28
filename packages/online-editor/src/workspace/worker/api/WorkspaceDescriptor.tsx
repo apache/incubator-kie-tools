@@ -24,4 +24,5 @@ export interface WorkspaceDescriptor {
   origin: WorkspaceOrigin;
   createdDateISO: string;
   lastUpdatedDateISO: string;
+  authSessionId: string | undefined;
 }

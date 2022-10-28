@@ -49,6 +49,7 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_clone(args: {
     origin: GistOrigin | GitHubOrigin;
+    authSessionId: string | undefined;
     gitConfig?: {
       email: string;
       name: string;

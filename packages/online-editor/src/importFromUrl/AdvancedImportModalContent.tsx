@@ -146,12 +146,12 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                       if (authSession.type === "none") {
                         return [];
                       }
-                      const authProvider = authProviders.find((a) => a.id === authSession.authProviderId)!;
+                      const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
                       return [
                         <SelectOption
                           key={authSessionId}
                           value={authSessionId}
-                          description={<i>{authProvider.name}</i>}
+                          description={<i>{authProvider?.name}</i>}
                         >
                           <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
                           &nbsp;&nbsp;

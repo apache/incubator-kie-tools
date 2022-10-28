@@ -29,7 +29,7 @@ export const AUTH_SESSION_NONE: AuthSession = {
 };
 
 export type GitAuthSession = {
-  type: "github" | "gitlab" | "bitbucket";
+  type: "git";
   id: string;
   token: string;
   login: string;

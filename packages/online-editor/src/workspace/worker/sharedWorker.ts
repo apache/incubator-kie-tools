@@ -81,11 +81,13 @@ const createWorkspace = async (args: {
   ) => Promise<WorkspaceWorkerFileDescriptor[]>;
   origin: WorkspaceOrigin;
   preferredName?: string;
+  authSessionId: string | undefined;
 }) => {
   const { workspace, files } = await service.create({
     storeFiles: args.storeFiles,
     origin: args.origin,
     preferredName: args.preferredName,
+    authSessionId: args.authSessionId,
   });
 
   const supportedFiles = files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath));
@@ -337,10 +339,12 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       origin: GistOrigin | GitHubOrigin;
       gitConfig?: { email: string; name: string };
       authInfo?: { username: string; password: string };
+      authSessionId: string | undefined;
     }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
       return await createWorkspace({
         preferredName: new URL(args.origin.url).pathname.substring(1), // Remove slash
         origin: args.origin,
+        authSessionId: args.authSessionId,
         storeFiles: async (fs, schema, workspace) => {
           await gitService.clone({
             fs,
@@ -428,6 +432,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       return await createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
+        authSessionId: undefined,
         storeFiles: async (fs, schema, workspace) => {
           const files = args.localFiles
             .filter((file) => !file.path.startsWith(".git/"))

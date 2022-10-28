@@ -153,6 +153,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: {
       origin: GistOrigin | GitHubOrigin;
       gitConfig?: { email: string; name: string };
+      authSessionId: string | undefined;
       authInfo?: {
         username: string;
         password: string;

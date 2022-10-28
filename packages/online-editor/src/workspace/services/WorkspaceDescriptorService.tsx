@@ -65,13 +65,19 @@ export class WorkspaceDescriptorService {
     return JSON.parse(decoder.decode(await workspaceDescriptorFile.getFileContents()));
   }
 
-  public async create(args: { fs: KieSandboxWorkspacesFs; origin: WorkspaceOrigin; preferredName?: string }) {
+  public async create(args: {
+    fs: KieSandboxWorkspacesFs;
+    origin: WorkspaceOrigin;
+    preferredName?: string;
+    authSessionId: string | undefined;
+  }) {
     const workspace: WorkspaceDescriptor = {
       workspaceId: this.newWorkspaceId(),
       name: args.preferredName?.trim() || NEW_WORKSPACE_DEFAULT_NAME,
       origin: args.origin,
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
+      authSessionId: args.authSessionId,
     };
     await this.storageService.createOrOverwriteFile(args.fs, this.toStorageFile(workspace));
     return workspace;

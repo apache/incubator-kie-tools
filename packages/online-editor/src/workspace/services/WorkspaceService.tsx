@@ -50,12 +50,14 @@ export class WorkspaceService {
     ) => Promise<WorkspaceWorkerFileDescriptor[]>;
     origin: WorkspaceOrigin;
     preferredName?: string;
+    authSessionId: string | undefined;
   }) {
     const workspace = await this.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.workspaceDescriptorService.create({
         fs,
         origin: args.origin,
         preferredName: args.preferredName,
+        authSessionId: args.authSessionId,
       });
     });
 

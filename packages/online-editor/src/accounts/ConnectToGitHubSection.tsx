@@ -66,7 +66,7 @@ export function ConnectToGitHubSection(props: {
       authSessionsDispatch.add({
         id: uuid(),
         token,
-        type: "github",
+        type: "git",
         login: response.data.login,
         name: response.data.name ?? undefined,
         email: response.data.email ?? undefined,
