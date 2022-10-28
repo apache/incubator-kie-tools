@@ -28,8 +28,8 @@ import { NoMatchPage } from "./NoMatchPage";
 import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { HomePage } from "./home/HomePage";
-import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspaceWithEmptyFilePage";
-import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
+import { NewWorkspaceWithEmptyFilePage } from "./importFromUrl/NewWorkspaceWithEmptyFilePage";
+import { NewWorkspaceFromUrlPage } from "./importFromUrl/NewWorkspaceFromUrlPage";
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
@@ -72,7 +72,7 @@ function RoutesSwitch() {
       <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
       </Route>
-      <Route path={routes.importModel.path({})}>
+      <Route path={routes.import.path({})}>
         <NewWorkspaceFromUrlPage />
       </Route>
       <Route

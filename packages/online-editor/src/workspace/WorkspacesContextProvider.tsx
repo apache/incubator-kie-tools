@@ -112,6 +112,19 @@ export function WorkspacesContextProvider(props: Props) {
     []
   );
 
+  const getGitServerRefs = useCallback(
+    async (args: {
+      url: string;
+      authInfo?: {
+        username: string;
+        password: string;
+      };
+    }) => {
+      return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_getGitServerRefs(args);
+    },
+    []
+  );
+
   const getFile = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
     await ready;
     const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFile(args);
@@ -327,6 +340,7 @@ export function WorkspacesContextProvider(props: Props) {
       initGitOnWorkspace,
       initGistOnWorkspace,
       isFileModified,
+      getGitServerRefs,
     }),
     [
       addEmptyFile,
@@ -358,6 +372,7 @@ export function WorkspacesContextProvider(props: Props) {
       initGitOnWorkspace,
       initGistOnWorkspace,
       isFileModified,
+      getGitServerRefs,
     ]
   );
 

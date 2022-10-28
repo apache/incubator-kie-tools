@@ -91,7 +91,7 @@ export function usePromiseState<T>(): [
       } else if (ns.loading) {
         return { status: PromiseStateStatus.PENDING };
       } else {
-        throw new Error("Invalid state");
+        throw new Error("Invalid promise state");
       }
     });
   }, []);
@@ -141,4 +141,35 @@ export function PromiseStateWrapper<T>(props: {
   }, [props]);
 
   return <>{component}</>;
+}
+
+export function useLivePromiseState<T>(promiseDelegate: (() => Promise<T>) | { error: string }) {
+  const [state, setState] = usePromiseState<T>();
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (typeof promiseDelegate !== "function") {
+          setState({ error: promiseDelegate.error });
+          return;
+        }
+        setState({ loading: true });
+        promiseDelegate()
+          .then((refs) => {
+            if (canceled.get()) {
+              return;
+            }
+            setState({ data: refs });
+          })
+          .catch((e) => {
+            if (canceled.get()) {
+              return;
+            }
+            console.log(e);
+            setState({ error: e });
+          });
+      },
+      [promiseDelegate, setState]
+    )
+  );
+  return state;
 }

@@ -39,5 +39,5 @@ export interface GitHubOrigin {
 export interface GistOrigin {
   kind: WorkspaceKind.GITHUB_GIST;
   url: string;
-  branch: typeof GIST_DEFAULT_BRANCH;
+  branch: string;
 }
