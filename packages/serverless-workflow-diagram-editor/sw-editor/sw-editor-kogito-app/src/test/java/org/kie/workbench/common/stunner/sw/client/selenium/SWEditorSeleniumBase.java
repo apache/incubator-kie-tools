@@ -66,6 +66,8 @@ public class SWEditorSeleniumBase {
      */
     protected WebDriver driver;
 
+    protected JsCanvasHelper jsHelper;
+
     @BeforeClass
     public static void setupClass() {
         WebDriverManager.firefoxdriver().useMirror().setup();
@@ -80,6 +82,8 @@ public class SWEditorSeleniumBase {
         driver.manage().window().maximize();
 
         driver.get(INDEX_HTML_PATH);
+
+        jsHelper = new JsCanvasHelper((JavascriptExecutor) driver);
 
         final WebElement designer = waitOperation()
                 .until(presenceOfElementLocated(className(DIAGRAM_PANEL)));
