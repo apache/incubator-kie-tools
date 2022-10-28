@@ -16,13 +16,11 @@
 
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import * as React from "react";
-import { GitHubSettingsTab } from "./GitHubSettingsTab";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./OpenShiftSettingsTab";
 import { KieSandboxExtendedServicesSettingsTab } from "./KieSandboxExtendedServicesSettingsTab";
 
 export enum SettingsTabs {
-  GITHUB = "github",
   OPENSHIFT = "openshift",
   KIE_SANDBOX_EXTENDED_SERVICES = "kie-sandbox-extended-services",
 }
@@ -38,13 +36,6 @@ export function SettingsModalBody() {
       isVertical={false}
       isBox={false}
     >
-      <Tab
-        className="kie-tools--settings-tab"
-        eventKey={SettingsTabs.GITHUB}
-        title={<TabTitleText>GitHub</TabTitleText>}
-      >
-        <GitHubSettingsTab />
-      </Tab>
       <Tab
         className="kie-tools--settings-tab"
         eventKey={SettingsTabs.OPENSHIFT}

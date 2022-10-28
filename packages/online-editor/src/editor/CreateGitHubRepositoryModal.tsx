@@ -33,7 +33,8 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useGitHubAuthInfo } from "../github/Hooks";
+import { AUTH_SESSION_NONE, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useOctokit } from "../github/Hooks";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -49,7 +50,8 @@ export function CreateGitHubRepositoryModal(props: {
 }) {
   const workspaces = useWorkspaces();
   const settingsDispatch = useSettingsDispatch();
-  const githubAuthInfo = useGitHubAuthInfo();
+  const { authSession, gitConfig, authInfo } = useAuthSession(props.workspace.gitAuthSessionId);
+  const octokit = useOctokit(authSession);
 
   const [isPrivate, setPrivate] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -62,13 +64,13 @@ export function CreateGitHubRepositoryModal(props: {
 
   const create = useCallback(async () => {
     try {
-      if (!githubAuthInfo) {
+      if (!authInfo || !gitConfig) {
         return;
       }
 
       setError(undefined);
       setLoading(true);
-      const repo = await settingsDispatch.github.octokit.request("POST /user/repos", {
+      const repo = await octokit.request("POST /user/repos", {
         name,
         private: isPrivate,
       });
@@ -88,10 +90,7 @@ export function CreateGitHubRepositoryModal(props: {
 
       await workspaces.createSavePoint({
         workspaceId: props.workspace.workspaceId,
-        gitConfig: {
-          name: githubAuthInfo.name,
-          email: githubAuthInfo.email,
-        },
+        gitConfig,
       });
 
       await workspaces.push({
@@ -100,7 +99,7 @@ export function CreateGitHubRepositoryModal(props: {
         ref: GIT_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIT_DEFAULT_BRANCH}`,
         force: false,
-        authInfo: githubAuthInfo,
+        authInfo,
       });
 
       await workspaces.initGitOnWorkspace({
@@ -121,7 +120,7 @@ export function CreateGitHubRepositoryModal(props: {
     } finally {
       setLoading(false);
     }
-  }, [githubAuthInfo, isPrivate, name, props, settingsDispatch.github.octokit, workspaces]);
+  }, [authInfo, gitConfig, isPrivate, name, octokit, props, workspaces]);
 
   const isNameValid = useMemo(() => {
     return name.match(/^[._\-\w\d]+$/g);

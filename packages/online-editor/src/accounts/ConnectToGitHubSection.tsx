@@ -26,8 +26,9 @@ import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../i18n";
 import { v4 as uuid } from "uuid";
 import { useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
-import { AccountsModalDispatchAction, AccountsModalDispatchActionKind } from "./AccountsIcon";
+import { AccountsModalDispatchAction } from "./AccountsIcon";
 import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
+import { githubInstanceApiUrl } from "../github/Hooks";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
@@ -51,6 +52,7 @@ export function ConnectToGitHubSection(props: {
         obfuscate(token)
       );
 
+      // TODO: Tiago remove this
       const octokit = new Octokit({
         auth: token,
         baseUrl: githubInstanceApiUrl(githubInstanceDomain),
@@ -150,11 +152,4 @@ export function obfuscate(token: string) {
 
 export const generateNewTokenUrl = (domain: string) => {
   return `https://${domain}/settings/tokens`;
-};
-
-export const githubInstanceApiUrl = (domain: string) => {
-  if (domain === "github.com") {
-    return undefined;
-  }
-  return `https://${domain}/api/v3`;
 };

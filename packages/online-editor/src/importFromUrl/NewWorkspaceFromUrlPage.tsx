@@ -27,7 +27,6 @@ import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
-import { useSettingsDispatch } from "../settings/SettingsContext";
 import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
 import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
 import { LocalFile } from "../workspace/worker/api/LocalFile";
@@ -45,12 +44,12 @@ import {
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { AuthSession, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useOctokit } from "../github/Hooks";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
-  const settingsDispatch = useSettingsDispatch();
 
   const [importingError, setImportingError] = useState("");
 
@@ -188,9 +187,11 @@ export function NewWorkspaceFromUrlPage() {
     [routes, history, workspaces]
   );
 
+  const octokit = useOctokit(authSession);
+
   const doImportAsSingleFile = useCallback(
     async (importableUrl: ImportableUrl) => {
-      const singleFileContent = await fetchSingleFileContent(importableUrl, settingsDispatch.github.octokit);
+      const singleFileContent = await fetchSingleFileContent(importableUrl, octokit);
 
       if (singleFileContent.error) {
         setImportingError(singleFileContent.error);
@@ -202,7 +203,7 @@ export function NewWorkspaceFromUrlPage() {
         fileContents: encoder.encode(singleFileContent.content!),
       });
     },
-    [createWorkspaceForFile, settingsDispatch.github.octokit]
+    [createWorkspaceForFile, octokit]
   );
 
   const doImport = useCallback(async () => {

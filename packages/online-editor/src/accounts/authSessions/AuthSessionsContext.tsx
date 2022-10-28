@@ -162,7 +162,7 @@ export function useAuthSession(authSessionId: string | undefined): {
   }, [authSessionId, authSessions]);
 
   const gitConfig = useMemo(() => {
-    if (authSession?.type == "none") {
+    if (authSession?.type !== "git") {
       return undefined;
     }
     return (
@@ -174,7 +174,7 @@ export function useAuthSession(authSessionId: string | undefined): {
   }, [authSession]);
 
   const authInfo = useMemo(() => {
-    if (authSession?.type == "none") {
+    if (authSession?.type !== "git") {
       return undefined;
     }
     return (

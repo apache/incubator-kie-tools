@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useMemo } from "react";
+import { AuthSession } from "../authSessions/AuthSessionsContext";
 
 export type OpenShiftAuthProvider = {
   id: string;
@@ -81,4 +82,13 @@ export const AUTH_PROVIDERS: AuthProvider[] = [
 
 export function useAuthProviders() {
   return useMemo<AuthProvider[]>(() => AUTH_PROVIDERS, []);
+}
+
+export function useAuthProvider(authSession: AuthSession | undefined) {
+  const authProviders = useAuthProviders();
+  if (authSession?.type === "none") {
+    return undefined;
+  }
+
+  return authProviders.find((a) => a.id === authSession?.authProviderId);
 }
