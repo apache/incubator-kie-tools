@@ -20,9 +20,8 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AuthSourceKeys, useAuthSources, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
@@ -45,12 +44,12 @@ import {
 } from "./ImportableUrlHooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
+import { AuthSession, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
-  const authSources = useAuthSources();
   const settingsDispatch = useSettingsDispatch();
 
   const [importingError, setImportingError] = useState("");
@@ -59,21 +58,21 @@ export function NewWorkspaceFromUrlPage() {
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
-  const queryParamAuthSource = useQueryParam(QueryParams.AUTH_SOURCE);
+  const queryParamAuthSessionId = useQueryParam(QueryParams.AUTH_SESSION_ID);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
-  const { authInfo, authSource } = useSelectedAuthSession(queryParamAuthSource);
+  const { authSession, gitConfig, authInfo } = useAuthSession(queryParamAuthSessionId);
 
   const importableUrl = useImportableUrl(queryParamUrl);
-  const clonableUrlObject = useClonableUrl(queryParamUrl, authSource, queryParamBranch);
+  const clonableUrlObject = useClonableUrl(queryParamUrl, authInfo, queryParamBranch);
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
 
-  const setAuthSource = useCallback(
-    (newAuthSource) => {
-      if (!newAuthSource) {
+  const setAuthSessionId = useCallback(
+    (newAuthSessionId: React.SetStateAction<string | undefined>) => {
+      if (!newAuthSessionId) {
         history.replace({
           pathname: routes.import.path({}),
-          search: queryParams.without(QueryParams.AUTH_SOURCE).toString(),
+          search: queryParams.without(QueryParams.AUTH_SESSION_ID).toString(),
         });
         return;
       }
@@ -81,13 +80,13 @@ export function NewWorkspaceFromUrlPage() {
         pathname: routes.import.path({}),
         search: queryParams
           .with(
-            QueryParams.AUTH_SOURCE,
-            typeof newAuthSource === "function" ? newAuthSource(authSource) : newAuthSource
+            QueryParams.AUTH_SESSION_ID,
+            typeof newAuthSessionId === "function" ? newAuthSessionId(queryParamAuthSessionId) : newAuthSessionId
           )
           .toString(),
       });
     },
-    [authSource, history, queryParams, routes.import]
+    [history, queryParamAuthSessionId, queryParams, routes.import]
   );
 
   const setUrl = useCallback(
@@ -140,10 +139,10 @@ export function NewWorkspaceFromUrlPage() {
       pathname: routes.import.path({}),
       search: queryParams
         .with(QueryParams.BRANCH, selectedGitRefName)
-        .with(QueryParams.AUTH_SOURCE, authSource)
+        .with(QueryParams.AUTH_SESSION_ID, authSession?.id)
         .toString(),
     });
-  }, [authSource, history, queryParams, routes.import, selectedGitRefName, setGitRefName]);
+  }, [authSession?.id, history, queryParams, routes.import, selectedGitRefName, setGitRefName]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -210,8 +209,8 @@ export function NewWorkspaceFromUrlPage() {
     const singleFile = isSingleFile(importableUrl.type);
 
     try {
-      if (queryParamAuthSource && !authSources.has(queryParamAuthSource as AuthSourceKeys)) {
-        setImportingError(`Auth source '${queryParamAuthSource}' not found.`);
+      if (queryParamAuthSessionId && !authSession) {
+        setImportingError(`Auth session '${queryParamAuthSessionId}' not found.`);
         return;
       }
 
@@ -229,8 +228,8 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            gitConfig: authInfo,
-            authInfo: authInfo,
+            gitConfig,
+            authInfo,
           });
         } else {
           await doImportAsSingleFile(importableUrl);
@@ -246,8 +245,8 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            gitConfig: authInfo,
-            authInfo: authInfo,
+            gitConfig,
+            authInfo,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -266,8 +265,8 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            gitConfig: authInfo,
-            authInfo: authInfo,
+            gitConfig,
+            authInfo,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -288,17 +287,18 @@ export function NewWorkspaceFromUrlPage() {
     }
   }, [
     importableUrl,
-    queryParamAuthSource,
-    authSources,
+    queryParamAuthSessionId,
+    authSession,
     clonableUrl.type,
     clonableUrl.error,
     gitServerRefsPromise.data?.defaultBranch,
     gitServerRefsPromise.error,
     cloneGitRepository,
     selectedGitRefName,
+    gitConfig,
     authInfo,
-    queryParamBranch,
     doImportAsSingleFile,
+    queryParamBranch,
   ]);
 
   useEffect(() => {
@@ -311,7 +311,7 @@ export function NewWorkspaceFromUrlPage() {
   }, [history, queryParamUrl, queryParams, routes.import]);
 
   useEffect(() => {
-    if ((!queryParamBranch || !queryParamAuthSource) && selectedGitRefName) {
+    if ((!queryParamBranch || !queryParamAuthSessionId) && selectedGitRefName) {
       return;
     }
 
@@ -333,11 +333,11 @@ export function NewWorkspaceFromUrlPage() {
     importableUrl.type,
     queryParamUrl,
     queryParamBranch,
-    queryParamAuthSource,
+    queryParamAuthSessionId,
     selectedGitRefName,
   ]);
 
-  const validation = useImportableUrlValidation(authSource, queryParamUrl, queryParamBranch, clonableUrlObject);
+  const validation = useImportableUrlValidation(authSession, queryParamUrl, queryParamBranch, clonableUrlObject);
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
 
   return (
@@ -376,10 +376,10 @@ export function NewWorkspaceFromUrlPage() {
               }}
               clonableUrl={clonableUrlObject}
               validation={validation}
-              authSource={authSource}
+              authSessionId={queryParamAuthSessionId}
               url={queryParamUrl ?? ""}
               gitRefName={selectedGitRefName ?? ""}
-              setAuthSource={setAuthSource}
+              setAuthSessionId={setAuthSessionId}
               setUrl={setUrl}
               setGitRefName={setGitRefName}
             />

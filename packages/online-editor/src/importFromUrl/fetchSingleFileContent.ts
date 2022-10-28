@@ -1,5 +1,4 @@
 import { Octokit } from "@octokit/rest";
-import { SettingsDispatchContextType } from "../settings/SettingsContext";
 import { ImportableUrl, UrlType } from "./ImportableUrlHooks";
 
 export async function fetchSingleFileContent(

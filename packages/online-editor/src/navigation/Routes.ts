@@ -22,7 +22,7 @@ export enum QueryParams {
   BRANCH = "branch",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
   EXPAND = "expand",
-  AUTH_SOURCE = "authSource",
+  AUTH_SESSION_ID = "authSessionId",
   CONFIRM = "confirm",
 }
 
@@ -81,7 +81,7 @@ export class Route<
 export interface QueryParamsImpl<Q extends string> {
   has(name: Q): boolean;
   get(name: Q): string | undefined;
-  with(name: Q, value: string): QueryParamsImpl<Q>;
+  with(name: Q, value: string | undefined): QueryParamsImpl<Q>;
   without(name: Q): QueryParamsImpl<Q>;
   toString(): string;
 }
@@ -95,7 +95,11 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
     },
     with: (name, value) => {
       const urlSearchParams = new URLSearchParams(queryString);
-      urlSearchParams.set(name, value);
+      if (value === undefined) {
+        urlSearchParams.delete(name);
+      } else {
+        urlSearchParams.set(name, value);
+      }
       return newQueryParamsImpl(decodeURIComponent(urlSearchParams.toString()));
     },
     without: (name) => {
@@ -132,7 +136,7 @@ export const routes = {
       | QueryParams.URL
       | QueryParams.DMN_RUNNER_FORM_INPUTS
       | QueryParams.BRANCH
-      | QueryParams.AUTH_SOURCE
+      | QueryParams.AUTH_SESSION_ID
       | QueryParams.CONFIRM;
   }>(() => `/import`),
 

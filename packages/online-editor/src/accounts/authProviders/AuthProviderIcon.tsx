@@ -22,11 +22,18 @@ import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 import OpenshiftIcon from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import QuestionIcon from "@patternfly/react-icons/dist/js/icons/question-icon";
 import { AuthProvider } from "./AuthProvidersContext";
+import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 
-export function AuthProviderIcon(props: { authProvider: AuthProvider; size: IconSize | keyof typeof IconSize }) {
+export function AuthProviderIcon(props: {
+  authProvider: AuthProvider | undefined;
+  size: IconSize | keyof typeof IconSize;
+}) {
+  if (!props.authProvider) {
+    return <UsersIcon size={props.size} />;
+  }
+
   if (props.authProvider.iconPath) {
-    const heightWidth = getSize(props.size);
-    const baseAlign = -0.125 * Number.parseFloat(heightWidth);
+    const baseAlign = -0.125 * Number.parseFloat(getSize(props.size)); // Copied from PatternFly
     return (
       <img style={{ height: getSize(props.size), verticalAlign: `${baseAlign}em` }} src={props.authProvider.iconPath} />
     );

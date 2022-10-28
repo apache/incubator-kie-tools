@@ -23,16 +23,22 @@ import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import * as React from "react";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { AuthSession, useAuthSessionsDispatch } from "./AuthSessionsContext";
+import { AuthSession, GitAuthSession, useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
 
-export function AuthSessionsList(props: { authSessions: Map<string, AuthSession> }) {
+export function AuthSessionsList(props: {}) {
   const authSessionsDispatch = useAuthSessionsDispatch();
   const authProviders = useAuthProviders();
+  const { authSessions } = useAuthSessions();
 
   return (
     <>
       <Stack hasGutter={true} style={{ height: "auto" }}>
-        {[...props.authSessions.values()].map((authSession) => {
+        {[...authSessions.values()].map((authSession) => {
+          if (authSession.type === "none") {
+            // This is never going to happen, as we don't save the "None" auth session.
+            return <></>;
+          }
+
           const authProvider = authProviders.find((a) => a.id === authSession.authProviderId)!;
           return (
             <Card key={authSession.id} isCompact={true}>

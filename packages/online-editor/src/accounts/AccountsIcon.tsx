@@ -227,7 +227,7 @@ export function AccountsIcon() {
                         </Button>
                       </Flex>
                       <br />
-                      <AuthSessionsList authSessions={authSessions} />
+                      <AuthSessionsList />
                     </>
                   )}
                 </>

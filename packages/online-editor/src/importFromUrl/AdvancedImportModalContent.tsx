@@ -26,10 +26,12 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { ServerRef } from "isomorphic-git";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useState } from "react";
-import { AuthSourceKeys, useAuthSources } from "../authSources/AuthSourceHooks";
-import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
 import { getGitRefName, getGitRefTypeLabel, getGitRefType, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
+import { AUTH_SESSION_NONE, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { AuthProviderIcon } from "../accounts/authProviders/AuthProviderIcon";
+import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -42,18 +44,17 @@ export interface AdvancedImportModalProps {
   onClose: (() => void) | undefined;
   url: string;
   setUrl: React.Dispatch<React.SetStateAction<string>>;
-  authSource: AuthSourceKeys | undefined;
-  setAuthSource: React.Dispatch<React.SetStateAction<AuthSourceKeys>>;
+  authSessionId: string | undefined;
+  setAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
   gitRefName: string;
   setGitRefName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, AdvancedImportModalProps>(
   (props, forwardedRef) => {
-    const authSources = useAuthSources();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isBranchSelectorOpen, setBranchSelectorOpen] = useState(false);
-    const [isAuthSourceSelectorOpen, setAuthSourceSelectorOpen] = useState(false);
+    const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
 
     useImperativeHandle(
       forwardedRef,
@@ -77,6 +78,9 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
         new Map<GitRefType, ServerRef[]>()
       );
     }, [props.clonableUrl.gitServerRefsPromise.data?.refs]);
+
+    const { authSessions } = useAuthSessions();
+    const authProviders = useAuthProviders();
 
     return (
       <>
@@ -122,29 +126,39 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
               <FormGroup fieldId="auth-source" label="Authentication" isRequired={true}>
                 <Select
                   variant={SelectVariant.single}
-                  selections={props.authSource}
-                  isOpen={isAuthSourceSelectorOpen}
-                  onToggle={setAuthSourceSelectorOpen}
+                  selections={props.authSessionId}
+                  isOpen={isAuthSessionSelectorOpen}
+                  onToggle={setAuthSessionSelectorOpen}
                   onSelect={(e, value) => {
-                    props.setAuthSource(value as AuthSourceKeys);
-                    setAuthSourceSelectorOpen(false);
+                    props.setAuthSessionId(value as string);
+                    setAuthSessionSelectorOpen(false);
                   }}
                   menuAppendTo={document.body}
                   maxHeight={"400px"}
                 >
                   {[
-                    ...[...authSources.entries()].map(([authSourceKey, authSource]) => (
-                      <SelectOption
-                        key={authSourceKey}
-                        value={authSourceKey}
-                        isDisabled={!authSource.enabled}
-                        description={<i>{authSource.description}</i>}
-                      >
-                        <AuthSourceIcon authSource={authSourceKey} />
-                        &nbsp;&nbsp;
-                        {authSource.label}
-                      </SelectOption>
-                    )),
+                    <SelectOption key={AUTH_SESSION_NONE.id} value={AUTH_SESSION_NONE.id} description={<i>{}</i>}>
+                      <AuthProviderIcon authProvider={undefined} size={IconSize.sm} />
+                      &nbsp;&nbsp;
+                      {"None"}
+                    </SelectOption>,
+                    ...[...authSessions.entries()].flatMap(([authSessionId, authSession]) => {
+                      if (authSession.type === "none") {
+                        return [];
+                      }
+                      const authProvider = authProviders.find((a) => a.id === authSession.authProviderId)!;
+                      return [
+                        <SelectOption
+                          key={authSessionId}
+                          value={authSessionId}
+                          description={<i>{authProvider.name}</i>}
+                        >
+                          <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+                          &nbsp;&nbsp;
+                          {authSession.login}
+                        </SelectOption>,
+                      ];
+                    }),
                   ]}
                 </Select>
               </FormGroup>

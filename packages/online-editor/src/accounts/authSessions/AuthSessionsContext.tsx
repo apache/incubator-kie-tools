@@ -14,21 +14,38 @@
  * limitations under the License.
  */
 
+import { type } from "os";
 import * as React from "react";
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { LfsFsCache } from "../../companionFs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "../../companionFs/LfsStorageService";
-import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { decoder, encoder } from "../../workspace/encoderdecoder/EncoderDecoder";
 
-export interface AuthSession {
+export const AUTH_SESSION_NONE: AuthSession = {
+  id: "none",
+  name: "Anonymous",
+  type: "none",
+  login: "Anonymous",
+};
+
+export type GitAuthSession = {
+  type: "github" | "gitlab" | "bitbucket";
   id: string;
   token: string;
   login: string;
   email?: string;
   name?: string;
   authProviderId: string;
-}
+};
+
+export type NoneAuthSession = {
+  type: "none";
+  name: "Anonymous";
+  id: "none";
+  login: "Anonymous";
+};
+
+export type AuthSession = GitAuthSession | NoneAuthSession;
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -116,4 +133,57 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
       )}
     </>
   );
+}
+
+export interface AuthInfo {
+  username: string;
+  password: string;
+}
+
+export interface GitConfig {
+  name: string;
+  email: string;
+}
+
+export function useAuthSession(authSessionId: string | undefined): {
+  authSession: AuthSession | undefined;
+  authInfo: AuthInfo | undefined;
+  gitConfig: GitConfig | undefined;
+} {
+  const { authSessions } = useAuthSessions();
+  const authSession = useMemo(() => {
+    if (!authSessionId) {
+      return undefined;
+    } else if (authSessionId == AUTH_SESSION_NONE.id) {
+      return AUTH_SESSION_NONE;
+    } else {
+      return authSessions.get(authSessionId);
+    }
+  }, [authSessionId, authSessions]);
+
+  const gitConfig = useMemo(() => {
+    if (authSession?.type == "none") {
+      return undefined;
+    }
+    return (
+      authSession && {
+        name: authSession.name ?? "",
+        email: authSession.email ?? "",
+      }
+    );
+  }, [authSession]);
+
+  const authInfo = useMemo(() => {
+    if (authSession?.type == "none") {
+      return undefined;
+    }
+    return (
+      authSession && {
+        username: authSession.login,
+        password: authSession.token,
+      }
+    );
+  }, [authSession]);
+
+  return { authSession, gitConfig, authInfo };
 }
