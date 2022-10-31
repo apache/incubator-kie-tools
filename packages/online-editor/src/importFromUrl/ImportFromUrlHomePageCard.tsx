@@ -27,6 +27,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
 import { AUTH_SESSION_NONE, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
@@ -35,6 +36,7 @@ import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlVal
 export function ImportFromUrlCard() {
   const routes = useRoutes();
   const history = useHistory();
+  const accountsDispatch = useAccountsDispatch();
 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>(AUTH_SESSION_NONE.id);
   const [url, setUrl] = useState("");
@@ -158,7 +160,10 @@ export function ImportFromUrlCard() {
         onSubmit={onSubmit}
         onClose={undefined}
         authSessionId={authSessionId}
-        setAuthSessionId={setAuthSessionId}
+        setAuthSessionId={(newAuthSessionId) => {
+          setAuthSessionId(newAuthSessionId);
+          accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+        }}
         url={url}
         setUrl={setUrl}
         gitRefName={gitRefName}

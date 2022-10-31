@@ -99,6 +99,9 @@ import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
 import { useAuthProvider } from "../accounts/authProviders/AuthProvidersContext";
 import { useOctokit } from "../github/Hooks";
+import { AccountsDispatchActionKind, useAccounts, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -137,6 +140,7 @@ export function EditorToolbar(props: Props) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
+  const accountsDispatch = useAccountsDispatch();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
   const [isSyncGitHubGistDropdownOpen, setSyncGitHubGistDropdownOpen] = useState(false);
   const [isSyncGitRepositoryDropdownOpen, setSyncGitRepositoryDropdownOpen] = useState(false);
@@ -372,12 +376,12 @@ export function EditorToolbar(props: Props) {
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
-        authInfo: authInfo,
+        authInfo,
       });
 
       await workspaces.pull({
         workspaceId: props.workspaceFile.workspaceId,
-        authInfo: authInfo,
+        authInfo,
       });
     } catch (e) {
       errorAlert.show();
@@ -404,7 +408,7 @@ export function EditorToolbar(props: Props) {
                 forceUpdateGitHubGist();
               }}
             >
-              Force push
+              Push forcefully
             </AlertActionLink>,
             <AlertActionLink key="dismiss" onClick={close}>
               Dismiss
@@ -438,12 +442,12 @@ export function EditorToolbar(props: Props) {
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: false,
-        authInfo: authInfo,
+        authInfo,
       });
 
       await workspaces.pull({
         workspaceId: props.workspaceFile.workspaceId,
-        authInfo: authInfo,
+        authInfo,
       });
     } catch (e) {
       errorPushingGist.show();
@@ -512,12 +516,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
-        authInfo: authInfo,
+        authInfo,
       });
 
       await workspaces.pull({
         workspaceId: props.workspaceFile.workspaceId,
-        authInfo: authInfo,
+        authInfo,
       });
 
       successfullyCreateGistAlert.show();
@@ -575,7 +579,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
-        authInfo: authInfo,
+        authInfo,
       });
 
       // Redirect to import workspace
@@ -655,6 +659,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     ]
   );
 
+  const changeGitAuthSessionId = useCallback(
+    (gitAuthSessionId: string | undefined) => {
+      workspaces.changeGitAuthSessionId({ workspaceId: props.workspaceFile.workspaceId, gitAuthSessionId });
+    },
+    [props.workspaceFile.workspaceId, workspaces]
+  );
+
   const [isCreateGitHubRepositoryModalOpen, setCreateGitHubRepositoryModalOpen] = useState(false);
 
   const shareDropdownItems = useMemo(
@@ -710,10 +721,37 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
         ? [
             <DropdownGroup key={"github-group"} label={i18n.names.github}>
+              {!canPushToGitRepository && (
+                <Alert
+                  isInline={true}
+                  variant={"default"}
+                  title={"Can't Create Repository or Gist without selecting an authentication source"}
+                  actionLinks={
+                    <AuthSessionSelect
+                      position={SelectPosition.right}
+                      isPlain={false}
+                      authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
+                      setAuthSessionId={(newAuthSessionId) => {
+                        changeGitAuthSessionId(
+                          typeof newAuthSessionId === "function"
+                            ? newAuthSessionId(workspacePromise.data?.descriptor.gitAuthSessionId)
+                            : newAuthSessionId
+                        );
+
+                        accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                        setShareDropdownOpen(true);
+                        setSmallKebabOpen(true);
+                      }}
+                    />
+                  }
+                >
+                  {`Select an authentication source for '${workspacePromise.data.descriptor.name}' to be able to Create Repository or Gist.`}
+                </Alert>
+              )}
               <Tooltip
                 data-testid={"create-github-repository-tooltip"}
                 key={`dropdown-create-github-repository`}
-                content={<div>{`You can't create a repository because you're not authenticated with GitHub.`}</div>}
+                content={<div>{`You need to select an authentication source to be able to Create a repository.`}</div>}
                 trigger={!canCreateGitRepository ? "mouseenter click" : ""}
                 position="left"
               >
@@ -744,34 +782,29 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   {i18n.editorToolbar.createGist}
                 </DropdownItem>
               </Tooltip>
-              {!canPushToGitRepository && (
-                <>
-                  <Divider />
-                  <DropdownItem onClick={() => findWayToLogIn()}>
-                    <Button isInline={true} variant={ButtonVariant.link}>
-                      Configure GitHub token...
-                    </Button>
-                  </DropdownItem>
-                </>
-              )}
             </DropdownGroup>,
           ]
         : []),
     ],
     [
-      canPushToGitRepository,
       onDownload,
-      workspacePromise,
-      props.workspaceFile,
+      props.workspaceFile.name,
       shouldIncludeDownloadSvgDropdownItem,
       downloadSvg,
       downloadWorkspaceZip,
       shouldIncludeEmbedDropdownItem,
       openEmbedModal,
-      i18n,
-      canCreateGitHubGist,
+      i18n.editorToolbar.embed,
+      i18n.editorToolbar.cantCreateGistTooltip,
+      i18n.editorToolbar.createGist,
+      i18n.names.github,
+      workspacePromise.data?.descriptor,
       canCreateGitRepository,
+      canCreateGitHubGist,
       createGitHubGist,
+      canPushToGitRepository,
+      changeGitAuthSessionId,
+      accountsDispatch,
     ]
   );
 
@@ -983,7 +1016,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         return (
           <Alert
             variant="danger"
-            title={`Error pushing to '${workspacePromise.data?.descriptor.origin.url}'`}
+            title={`Error Pushing to '${workspacePromise.data?.descriptor.origin.url}'`}
             actionClose={<AlertActionCloseButton onClose={close} />}
           />
         );
@@ -1053,7 +1086,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           remoteRef: `refs/heads/${newBranchName}`,
           ref: newBranchName,
           force: false,
-          authInfo: authInfo,
+          authInfo,
         });
 
         history.push({
@@ -1065,6 +1098,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           }),
         });
       } finally {
+        // TODO: Tiago -> Show push error message
         pushingAlert.close();
       }
     },
@@ -1091,32 +1125,77 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         return (
           <Alert
             variant="danger"
-            title={`Error pulling from '${workspacePromise.data?.descriptor.origin.url}'`}
+            title={`Error Pulling from '${workspacePromise.data?.descriptor.origin.url}'`}
             actionClose={<AlertActionCloseButton onClose={close} />}
-            actionLinks={
-              <>
-                {canPushToGitRepository && (
-                  <AlertActionLink onClick={() => pushNewBranch(newBranchName)}>
-                    {`Switch to '${newBranchName}'`}
-                  </AlertActionLink>
-                )}
-
-                {!canPushToGitRepository && (
-                  <AlertActionLink onClick={() => findWayToLogIn()}>{`Configure GitHub token...`}</AlertActionLink>
-                )}
-              </>
-            }
+            actionLinks={<></>}
           >
-            This usually happens when your branch has conflicts with the upstream branch.
+            {`This usually happens when your branch has conflicts with the upstream branch or you don't have permission to Pull.`}
             <br />
             <br />
-            {canPushToGitRepository && `You can still save your work to a new branch.`}
-            {!canPushToGitRepository &&
-              `To be able to save your work on a new branch, please authenticate with GitHub.`}
+            {`You can save your work to a new branch.`}
+            <br />
+            <br />
+            <Tooltip
+              data-testid={"gist-it-tooltip"}
+              content={<div>{`You need select an authentication source to be able to Push to a new branch.`}</div>}
+              trigger={!canPushToGitRepository ? "mouseenter click" : ""}
+              position="left"
+            >
+              <Button
+                onClick={() => pushNewBranch(newBranchName)}
+                variant={ButtonVariant.link}
+                style={{ paddingLeft: 0 }}
+                isSmall={true}
+                isDisabled={!canPushToGitRepository}
+              >
+                {`Switch to '${newBranchName}'`}
+              </Button>
+            </Tooltip>
+            <br />
+            <br />
+
+            {`Or change the authentication source for '${workspacePromise.data?.descriptor.name}' and try again`}
+            <br />
+            <br />
+
+            <AuthSessionSelect
+              isPlain={false}
+              authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
+              setAuthSessionId={(newAuthSessionId) => {
+                changeGitAuthSessionId(
+                  typeof newAuthSessionId === "function"
+                    ? newAuthSessionId(workspacePromise.data?.descriptor.gitAuthSessionId)
+                    : newAuthSessionId
+                );
+
+                accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+              }}
+            />
+
+            <br />
+            <br />
+
+            <Button
+              // TODO: Tiago -> Resolve this cycle
+              // onClick={() => pullFromGitRepository({ showAlerts: true })}
+              variant={ButtonVariant.link}
+              style={{ paddingLeft: 0 }}
+              isSmall={true}
+              isDisabled={!canPushToGitRepository}
+            >
+              {`Try again`}
+            </Button>
           </Alert>
         );
       },
-      [canPushToGitRepository, pushNewBranch, workspacePromise]
+      [
+        accountsDispatch,
+        canPushToGitRepository,
+        changeGitAuthSessionId,
+        // pullFromGitRepository,
+        pushNewBranch,
+        workspacePromise.data,
+      ]
     )
   );
 
@@ -1137,7 +1216,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       try {
         await workspaces.pull({
           workspaceId: props.workspaceFile.workspaceId,
-          authInfo: authInfo,
+          authInfo,
         });
 
         if (args.showAlerts) {
@@ -1192,7 +1271,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         remote: GIST_ORIGIN_REMOTE_NAME,
         remoteRef: `refs/heads/${workspace.origin.branch}`,
         force: false,
-        authInfo: authInfo,
+        authInfo,
       });
       await pullFromGitRepository({ showAlerts: false });
       pushSuccessAlert.show();
@@ -1251,6 +1330,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 </AlertActionLink>
               )) || (
                 <PushToGitHubAlertActionLinks
+                  changeGitAuthSessionId={changeGitAuthSessionId}
+                  workspaceDescriptor={workspacePromise.data?.descriptor}
                   canPush={isGistWorkspace ? canUpdateGitHubGist : canPushToGitRepository}
                   kind={workspacePromise.data?.descriptor.origin.kind}
                   remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
@@ -1285,6 +1366,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         workspacePromise.data?.descriptor,
         i18n,
         navigationStatusToggle,
+        changeGitAuthSessionId,
         isGistWorkspace,
         canUpdateGitHubGist,
         canPushToGitRepository,
@@ -1327,13 +1409,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [workspacePromise.data?.descriptor.origin.kind, workspacePromise.data?.files.length]
   );
 
-  const changeGitAuthSessionId = useCallback(
-    (gitAuthSessionId: string | undefined) => {
-      workspaces.changeGitAuthSessionId({ workspaceId: props.workspaceFile.workspaceId, gitAuthSessionId });
-    },
-    [props.workspaceFile.workspaceId, workspaces]
-  );
-
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
@@ -1370,13 +1445,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         <AuthSessionSelect
                           isPlain={true}
                           authSessionId={workspace.descriptor.gitAuthSessionId}
-                          setAuthSessionId={(newAuthSessionId) =>
+                          setAuthSessionId={(newAuthSessionId) => {
                             changeGitAuthSessionId(
                               typeof newAuthSessionId === "function"
                                 ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
                                 : newAuthSessionId
-                            )
-                          }
+                            );
+
+                            accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                          }}
                         />
                       </FlexItem>
                       <FlexItem style={{ minWidth: 0 }}>
@@ -1471,9 +1548,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   <Alert
                                     isInline={true}
                                     variant={"warning"}
-                                    title={"You have new changes to push"}
+                                    title={"You have new changes to Push"}
                                     actionLinks={
                                       <PushToGitHubAlertActionLinks
+                                        changeGitAuthSessionId={changeGitAuthSessionId}
+                                        workspaceDescriptor={workspacePromise.data?.descriptor}
                                         canPush={canPushToGitRepository}
                                         remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
                                         onPush={pushToGitRepository}
@@ -1661,29 +1740,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               }
                               dropdownItems={[
                                 <DropdownGroup key={"sync-gist-dropdown-group"}>
-                                  {canForkGitHubGist && (
-                                    <>
-                                      <li role="menuitem">
-                                        <Alert
-                                          isInline={true}
-                                          variant={"info"}
-                                          title={
-                                            <span style={{ whiteSpace: "nowrap" }}>
-                                              {"Can't update Gists you don't own"}
-                                            </span>
-                                          }
-                                          actionLinks={
-                                            <AlertActionLink onClick={forkGitHubGist} style={{ fontWeight: "bold" }}>
-                                              {`Fork Gist`}
-                                            </AlertActionLink>
-                                          }
-                                        >
-                                          {`You can create a fork of '${workspace.descriptor.name}' to save your updates.`}
-                                        </Alert>
-                                      </li>
-                                      <Divider />
-                                    </>
-                                  )}
                                   <Tooltip
                                     data-testid={"gist-it-tooltip"}
                                     content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
@@ -1692,20 +1748,87 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   >
                                     <>
                                       <DropdownItem
+                                        style={{ minWidth: "300px" }}
                                         icon={<GithubIcon />}
                                         onClick={updateGitHubGist}
                                         isDisabled={!canUpdateGitHubGist}
                                       >
                                         Update Gist
                                       </DropdownItem>
+                                      {canForkGitHubGist && (
+                                        <>
+                                          <Divider />
+                                          <li role="menuitem">
+                                            <Alert
+                                              isInline={true}
+                                              variant={"default"}
+                                              title={
+                                                <span style={{ whiteSpace: "nowrap" }}>
+                                                  {"Can't update Gists you don't own"}
+                                                </span>
+                                              }
+                                            >
+                                              <br />
+                                              {`You can create a fork of '${workspace.descriptor.name}' to save your updates.`}
+                                              <br />
+                                              <br />
+                                              <Button
+                                                onClick={forkGitHubGist}
+                                                variant={ButtonVariant.link}
+                                                isSmall={true}
+                                                style={{ paddingLeft: 0 }}
+                                              >
+                                                {`Fork Gist`}
+                                              </Button>
+                                              <br />
+                                              <br />
+                                              {`Or you can change the authentication source for '${workspace.descriptor.name}' to be able to Update Gist.`}
+                                              <br />
+                                              <br />
+                                              <AuthSessionSelect
+                                                isPlain={false}
+                                                authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                setAuthSessionId={(newAuthSessionId) => {
+                                                  changeGitAuthSessionId(
+                                                    typeof newAuthSessionId === "function"
+                                                      ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
+                                                      : newAuthSessionId
+                                                  );
+
+                                                  accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                                                  setSyncGitHubGistDropdownOpen(true);
+                                                }}
+                                              />
+                                            </Alert>
+                                          </li>
+                                        </>
+                                      )}
                                       {!canPushToGitRepository && (
                                         <>
                                           <Divider />
-                                          <DropdownItem onClick={() => findWayToLogIn()}>
-                                            <Button isInline={true} variant={ButtonVariant.link}>
-                                              Configure GitHub token...
-                                            </Button>
-                                          </DropdownItem>
+                                          <Alert
+                                            isInline={true}
+                                            variant={"default"}
+                                            title={"Can't Update Gist without selecting an authentication source"}
+                                            actionLinks={
+                                              <AuthSessionSelect
+                                                isPlain={false}
+                                                authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                setAuthSessionId={(newAuthSessionId) => {
+                                                  changeGitAuthSessionId(
+                                                    typeof newAuthSessionId === "function"
+                                                      ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
+                                                      : newAuthSessionId
+                                                  );
+
+                                                  accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                                                  setSyncGitHubGistDropdownOpen(true);
+                                                }}
+                                              />
+                                            }
+                                          >
+                                            {`Select an authentication source for '${workspace.descriptor.name}' to be able to Update Gist.`}
+                                          </Alert>
                                         </>
                                       )}
                                     </>
@@ -1742,7 +1865,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   <Tooltip
                                     data-testid={"gist-it-tooltip"}
                                     content={
-                                      <div>{`You need to be signed in with GitHub to push to this repository.`}</div>
+                                      <div>{`You need to select an authentication source to Push to this repository.`}</div>
                                     }
                                     trigger={!canPushToGitRepository ? "mouseenter click" : ""}
                                     position="left"
@@ -1758,12 +1881,29 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                       </DropdownItem>
                                       {!canPushToGitRepository && (
                                         <>
-                                          <Divider />
-                                          <DropdownItem onClick={() => findWayToLogIn()}>
-                                            <Button isInline={true} variant={ButtonVariant.link}>
-                                              Configure GitHub token...
-                                            </Button>
-                                          </DropdownItem>
+                                          <Alert
+                                            isInline={true}
+                                            variant={"default"}
+                                            title={"Can't Push without selecting an authentication source"}
+                                            actionLinks={
+                                              <AuthSessionSelect
+                                                isPlain={false}
+                                                authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                setAuthSessionId={(newAuthSessionId) => {
+                                                  changeGitAuthSessionId(
+                                                    typeof newAuthSessionId === "function"
+                                                      ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
+                                                      : newAuthSessionId
+                                                  );
+
+                                                  accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                                                  setSyncGitRepositoryDropdownOpen(true);
+                                                }}
+                                              />
+                                            }
+                                          >
+                                            {`Select an authentication source for '${workspace.descriptor.name}' to be able to Push.`}
+                                          </Alert>
                                         </>
                                       )}
                                     </>
@@ -1855,21 +1995,55 @@ export function PushToGitHubAlertActionLinks(props: {
   canPush?: boolean;
   kind?: WorkspaceKind;
   remoteRef?: string;
+  workspaceDescriptor: WorkspaceDescriptor | undefined;
+  changeGitAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
+  const accountsDispatch = useAccountsDispatch();
   if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
     throw new Error("Should specify remoteRef for GIT workspaces");
   }
 
+  const pushButton = useMemo(() => {
+    return (
+      <AlertActionLink onClick={props.onPush} style={{ fontWeight: "bold" }} isDisabled={!props.canPush}>
+        {props.kind === WorkspaceKind.GIT ? `Push to '${props.remoteRef}'` : `Update Gist`}
+      </AlertActionLink>
+    );
+  }, [props.canPush, props.kind, props.onPush, props.remoteRef]);
+
   return (
     <>
       {!props.canPush && (
-        <AlertActionLink onClick={() => findWayToLogIn()}>{`Configure GitHub token...`}</AlertActionLink>
+        <Alert
+          isInline={true}
+          variant={"default"}
+          title={"Can't Push without selecting an authentication source"}
+          actionLinks={
+            <>
+              <AuthSessionSelect
+                isPlain={false}
+                authSessionId={props.workspaceDescriptor?.gitAuthSessionId}
+                setAuthSessionId={(newAuthSessionId) => {
+                  props.changeGitAuthSessionId(
+                    typeof newAuthSessionId === "function"
+                      ? newAuthSessionId(props.workspaceDescriptor?.gitAuthSessionId)
+                      : newAuthSessionId
+                  );
+
+                  accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                }}
+              />
+              <br />
+              <br />
+              {pushButton}
+            </>
+          }
+        >
+          {`Select an authentication source for '${props.workspaceDescriptor?.name}' to be able to Push.`}
+          <br />
+        </Alert>
       )}
-      {props.canPush && (
-        <AlertActionLink onClick={props.onPush} style={{ fontWeight: "bold" }}>
-          {props.kind === WorkspaceKind.GIT ? `Push to '${props.remoteRef}'` : `Update Gist`}
-        </AlertActionLink>
-      )}
+      {props.canPush && pushButton}
     </>
   );
 }
@@ -1899,8 +2073,4 @@ export function KebabDropdown(props: {
       dropdownItems={props.items}
     />
   );
-}
-
-function findWayToLogIn() {
-  console.info("aaa...");
 }

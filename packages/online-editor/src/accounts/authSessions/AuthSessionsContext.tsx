@@ -87,9 +87,9 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     });
   }, []);
 
-  const persistAuthSessions = useCallback((map: Map<string, AuthSession>) => {
+  const persistAuthSessions = useCallback(async (map: Map<string, AuthSession>) => {
     const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
-    fsService.createOrOverwriteFile(
+    await fsService.createOrOverwriteFile(
       fs,
       new LfsStorageFile({
         path: AUTH_SESSIONS_FILE_PATH,
@@ -102,7 +102,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     async function run() {
       const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
       if (!(await fsService.exists(fs, AUTH_SESSIONS_FILE_PATH))) {
-        persistAuthSessions(new Map());
+        await persistAuthSessions(new Map());
       }
 
       const content = await (await fsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();

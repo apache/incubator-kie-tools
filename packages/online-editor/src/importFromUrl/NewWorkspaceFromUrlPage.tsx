@@ -45,11 +45,13 @@ import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportMod
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { AuthSession, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { useOctokit } from "../github/Hooks";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
+  const accountsDispatch = useAccountsDispatch();
 
   const [importingError, setImportingError] = useState("");
 
@@ -84,8 +86,10 @@ export function NewWorkspaceFromUrlPage() {
           )
           .toString(),
       });
+
+      accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
     },
-    [history, queryParamAuthSessionId, queryParams, routes.import]
+    [accountsDispatch, history, queryParamAuthSessionId, queryParams, routes.import]
   );
 
   const setUrl = useCallback(

@@ -160,7 +160,7 @@ export function AccountsIcon() {
                           <Title headingLevel="h4" size="md">
                             {`Looks like you don't have any accounts connected yet`}
                           </Title>
-                          <EmptyStateBody>{`Select a provider below to connect an account.`}</EmptyStateBody>
+                          <EmptyStateBody>{`Select a provider below to connect to an account.`}</EmptyStateBody>
                         </EmptyState>
                         <br />
                         <Divider inset={{ default: "inset3xl" }} />

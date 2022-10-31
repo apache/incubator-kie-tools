@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectPosition, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { AUTH_SESSION_NONE, useAuthSession, useAuthSessions } from "./AuthSessionsContext";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
@@ -16,6 +16,7 @@ export function AuthSessionSelect(props: {
   authSessionId: string | undefined;
   setAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
   isPlain: boolean;
+  position?: SelectPosition;
 }) {
   const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
 
@@ -45,6 +46,7 @@ export function AuthSessionSelect(props: {
 
   return (
     <Select
+      position={props.position}
       validated={validated}
       variant={SelectVariant.single}
       selections={selectedAuthSessionId}
@@ -52,10 +54,11 @@ export function AuthSessionSelect(props: {
       onToggle={setAuthSessionSelectorOpen}
       isPlain={validated === ValidatedOptions.default ? props.isPlain : false}
       onSelect={(e, value) => {
+        e.stopPropagation();
         props.setAuthSessionId(value as string);
         setAuthSessionSelectorOpen(false);
       }}
-      menuAppendTo={document.body}
+      menuAppendTo={"parent"}
       maxHeight={"400px"}
       style={{ minWidth: "400px" }}
       footer={
