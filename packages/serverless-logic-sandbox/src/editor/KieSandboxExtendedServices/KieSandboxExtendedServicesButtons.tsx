@@ -32,7 +32,7 @@ import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
-  workspace: ActiveWorkspace | undefined;
+  workspace: ActiveWorkspace;
 }
 
 export function KieSandboxExtendedServicesButtons(props: Props) {

@@ -29,10 +29,10 @@ export class VirtualServiceRegistryFunction {
     return this.file.relativePath;
   }
 
-  public async getOpenApiSpec(): Promise<string> {
+  public async getOpenApiSpec(): Promise<string | undefined> {
     // Don't generate spec for files that depend on other workflows
     if (await hasVirtualServiceRegistryDependency(this.file)) {
-      return "";
+      return;
     }
 
     const content = await this.file.getFileContentsAsString();
@@ -50,7 +50,6 @@ export class VirtualServiceRegistryFunction {
     } catch (e) {
       console.debug(e);
     }
-    return "";
   }
 }
 
@@ -65,14 +64,12 @@ export async function getVirtualServiceRegistryDependencies(file: WorkspaceFile)
   }
   const workflowFunctions = parsedContent["functions"] as Array<{ operation?: string }> | undefined;
 
-  const dependencies: Array<string> = [];
-  workflowFunctions?.forEach((workflowFunction) => {
-    if (workflowFunction.operation?.includes(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX)) {
-      const workspaceId = toWorkspaceIdFromVsrFunctionPath(workflowFunction.operation);
-      workspaceId && dependencies.push(workspaceId);
-    }
-  });
-  return dependencies;
+  return (
+    workflowFunctions
+      ?.filter((workflowFunction) => workflowFunction.operation?.includes(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX))
+      .map((workflowFunction) => toWorkspaceIdFromVsrFunctionPath(workflowFunction.operation!))
+      .filter((workspaceId): workspaceId is string => !!workspaceId) || []
+  );
 }
 
 export async function hasVirtualServiceRegistryDependency(file: WorkspaceFile) {

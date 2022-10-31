@@ -164,7 +164,7 @@ export class SwfServiceCatalogStore {
       );
     };
 
-    const isForeignWorkflow = (metadata: SearchedArtifact) => {
+    const isForeignArtifact = (metadata: SearchedArtifact) => {
       return !isSpec(metadata.id) && metadata.groupId !== this.currentFile?.workspaceId;
     };
 
@@ -181,7 +181,7 @@ export class SwfServiceCatalogStore {
       return (
         file.content &&
         !isFromCurrentFile(file.metadata) &&
-        (isForeignWorkflow(file.metadata) || isLocalSpec(file.metadata))
+        (isForeignArtifact(file.metadata) || isLocalSpec(file.metadata))
       );
     });
   }

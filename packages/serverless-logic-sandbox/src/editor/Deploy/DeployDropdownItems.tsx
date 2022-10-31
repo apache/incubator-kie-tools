@@ -39,7 +39,7 @@ import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegis
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 
-export function useDeployDropdownItems(props: { workspace: ActiveWorkspace | undefined }) {
+export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
   const { i18n } = useAppI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -47,7 +47,6 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace | und
   const openshift = useOpenShift();
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
-    deployAsProject: true,
   });
 
   const isKieSandboxExtendedServicesRunning = useMemo(

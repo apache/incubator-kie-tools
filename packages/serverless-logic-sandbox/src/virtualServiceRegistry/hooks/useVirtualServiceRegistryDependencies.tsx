@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as React from "react";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { isServerlessWorkflow } from "../../extension";
@@ -8,46 +24,25 @@ import { useVirtualServiceRegistry } from "../VirtualServiceRegistryContext";
 
 export type VirtualServiceRegistryDependency = ActiveWorkspace & { vsrFiles: WorkspaceFile[] };
 
-export function useVirtualServiceRegistryDependencies(props: {
-  workspace?: ActiveWorkspace;
-  workspaceFile?: WorkspaceFile;
-  deployAsProject?: boolean;
-  canUploadOpenApi?: boolean;
-}) {
+export function useVirtualServiceRegistryDependencies(props: { workspace: ActiveWorkspace }) {
   const [virtualServiceRegistryDependencies, setVirtualServiceRegistryDependencies] = useState<Array<string>>([]);
   const workspaces = useWorkspaces();
   const virtualServiceRegistry = useVirtualServiceRegistry();
-  const [workspaceFiles, setWorkspaceFiles] = useState<WorkspaceFile[]>([]);
-
-  useEffect(() => {
-    if (props.workspace) {
-      setWorkspaceFiles(props.workspace.files);
-    } else if (props.workspaceFile) {
-      workspaces.getFiles({ workspaceId: props.workspaceFile.workspaceId }).then(setWorkspaceFiles);
-    }
-  }, [workspaces, props.workspaceFile, setWorkspaceFiles, props.workspace]);
 
   useEffect(() => {
     const updateWorkspacesList = async () => {
-      let dependencies: Array<string> = [];
-      if (props.deployAsProject) {
-        if (workspaceFiles) {
-          dependencies = (
-            await Promise.all(
-              workspaceFiles
-                .map((file) => isServerlessWorkflow(file.relativePath) && getVirtualServiceRegistryDependencies(file))
-                .filter((value): value is Promise<Array<string>> => Boolean(value))
-            )
-          ).flat();
-        }
-      } else if (props.workspaceFile) {
-        dependencies = await getVirtualServiceRegistryDependencies(props.workspaceFile);
-      }
+      const dependencies: Array<string> = (
+        await Promise.all(
+          props.workspace.files
+            .map((file) => isServerlessWorkflow(file.relativePath) && getVirtualServiceRegistryDependencies(file))
+            .filter((value): value is Promise<Array<string>> => Boolean(value))
+        )
+      ).flat();
 
       setVirtualServiceRegistryDependencies(dependencies);
     };
     updateWorkspacesList();
-  }, [props.deployAsProject, workspaceFiles, props.workspaceFile, virtualServiceRegistry, workspaces]);
+  }, [props.workspace, virtualServiceRegistry, workspaces]);
 
   const needsDependencyDeployment = useMemo(
     () => virtualServiceRegistryDependencies.length > 0,
