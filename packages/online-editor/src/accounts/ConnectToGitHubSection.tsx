@@ -157,7 +157,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
     if (!accounts.onNewAuthSession) {
       return {
         action: () => accountsDispatch({ kind: AccountsDispatchActionKind.GO_HOME }),
-        label: "See your accounts",
+        label: "See your connected accounts",
       };
     }
 
