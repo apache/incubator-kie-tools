@@ -32,11 +32,11 @@ export function useOctokit(authSession: AuthSession | undefined): Octokit {
       return new Octokit();
     }
 
-    return new Octokit({ baseUrl: githubInstanceApiUrl(authProvider.domain), auth: authSession.token });
+    return new Octokit({ baseUrl: getGithubInstanceApiUrl(authProvider.domain), auth: authSession.token });
   }, [authProviders, authSession]);
 }
 
-export const githubInstanceApiUrl = (domain: string) => {
+export const getGithubInstanceApiUrl = (domain: string) => {
   if (domain === "github.com") {
     return undefined;
   }

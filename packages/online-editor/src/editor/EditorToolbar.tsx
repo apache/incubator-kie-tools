@@ -660,8 +660,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const changeGitAuthSessionId = useCallback(
-    (gitAuthSessionId: string | undefined) => {
-      workspaces.changeGitAuthSessionId({ workspaceId: props.workspaceFile.workspaceId, gitAuthSessionId });
+    (newGitAuthSessionId: React.SetStateAction<string | undefined>, lastAuthSessionId: string | undefined) => {
+      workspaces.changeGitAuthSessionId({
+        workspaceId: props.workspaceFile.workspaceId,
+        gitAuthSessionId:
+          typeof newGitAuthSessionId === "function" ? newGitAuthSessionId(lastAuthSessionId) : newGitAuthSessionId,
+      });
     },
     [props.workspaceFile.workspaceId, workspaces]
   );
@@ -732,12 +736,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       isPlain={false}
                       authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
                       setAuthSessionId={(newAuthSessionId) => {
-                        changeGitAuthSessionId(
-                          typeof newAuthSessionId === "function"
-                            ? newAuthSessionId(workspacePromise.data?.descriptor.gitAuthSessionId)
-                            : newAuthSessionId
-                        );
-
+                        changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
                         accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                         setShareDropdownOpen(true);
                         setSmallKebabOpen(true);
@@ -1162,12 +1161,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
               isPlain={false}
               authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
               setAuthSessionId={(newAuthSessionId) => {
-                changeGitAuthSessionId(
-                  typeof newAuthSessionId === "function"
-                    ? newAuthSessionId(workspacePromise.data?.descriptor.gitAuthSessionId)
-                    : newAuthSessionId
-                );
-
+                changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
                 accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
               }}
             />
@@ -1446,12 +1440,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           isPlain={true}
                           authSessionId={workspace.descriptor.gitAuthSessionId}
                           setAuthSessionId={(newAuthSessionId) => {
-                            changeGitAuthSessionId(
-                              typeof newAuthSessionId === "function"
-                                ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
-                                : newAuthSessionId
-                            );
-
+                            changeGitAuthSessionId(newAuthSessionId, workspace.descriptor.gitAuthSessionId);
                             accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                           }}
                         />
@@ -1790,11 +1779,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
-                                                    typeof newAuthSessionId === "function"
-                                                      ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
-                                                      : newAuthSessionId
+                                                    newAuthSessionId,
+                                                    workspace.descriptor.gitAuthSessionId
                                                   );
-
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                                                   setSyncGitHubGistDropdownOpen(true);
                                                 }}
@@ -1816,11 +1803,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
-                                                    typeof newAuthSessionId === "function"
-                                                      ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
-                                                      : newAuthSessionId
+                                                    newAuthSessionId,
+                                                    workspace.descriptor.gitAuthSessionId
                                                   );
-
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                                                   setSyncGitHubGistDropdownOpen(true);
                                                 }}
@@ -1891,11 +1876,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
-                                                    typeof newAuthSessionId === "function"
-                                                      ? newAuthSessionId(workspace.descriptor.gitAuthSessionId)
-                                                      : newAuthSessionId
+                                                    newAuthSessionId,
+                                                    workspace.descriptor.gitAuthSessionId
                                                   );
-
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                                                   setSyncGitRepositoryDropdownOpen(true);
                                                 }}
@@ -1996,7 +1979,7 @@ export function PushToGitHubAlertActionLinks(props: {
   kind?: WorkspaceKind;
   remoteRef?: string;
   workspaceDescriptor: WorkspaceDescriptor | undefined;
-  changeGitAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  changeGitAuthSessionId: (a: React.SetStateAction<string | undefined>, b: string | undefined) => void;
 }) {
   const accountsDispatch = useAccountsDispatch();
   if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
@@ -2024,12 +2007,7 @@ export function PushToGitHubAlertActionLinks(props: {
                 isPlain={false}
                 authSessionId={props.workspaceDescriptor?.gitAuthSessionId}
                 setAuthSessionId={(newAuthSessionId) => {
-                  props.changeGitAuthSessionId(
-                    typeof newAuthSessionId === "function"
-                      ? newAuthSessionId(props.workspaceDescriptor?.gitAuthSessionId)
-                      : newAuthSessionId
-                  );
-
+                  props.changeGitAuthSessionId(newAuthSessionId, props.workspaceDescriptor?.gitAuthSessionId);
                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                 }}
               />

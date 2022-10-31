@@ -122,13 +122,19 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     persistAuthSessions(authSessions ?? new Map());
   }, [persistAuthSessions, authSessions]);
 
+  const dispatch = useMemo(() => {
+    return { add, remove };
+  }, [add, remove]);
+
+  const value = useMemo(() => {
+    return authSessions ? { authSessions } : undefined;
+  }, [authSessions]);
+
   return (
     <>
-      {authSessions && (
-        <AuthSessionsContext.Provider value={{ authSessions }}>
-          <AuthSessionsDispatchContext.Provider value={{ add, remove }}>
-            {props.children}
-          </AuthSessionsDispatchContext.Provider>
+      {value && (
+        <AuthSessionsContext.Provider value={value}>
+          <AuthSessionsDispatchContext.Provider value={dispatch}>{props.children}</AuthSessionsDispatchContext.Provider>
         </AuthSessionsContext.Provider>
       )}
     </>

@@ -16,19 +16,37 @@
 
 import { Octokit } from "@octokit/rest";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import InfoAltIcon from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useOnlineI18n } from "../i18n";
 import { v4 as uuid } from "uuid";
-import { AuthSession, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
+import { GitAuthSession, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
-import { githubInstanceApiUrl } from "../github/Hooks";
-import { AccountsSection, useAccounts } from "./AccountsDispatchContext";
+import { getGithubInstanceApiUrl } from "../github/Hooks";
+import {
+  AccountsDispatchActionKind,
+  AccountsSection,
+  useAccounts,
+  useAccountsDispatch,
+} from "./AccountsDispatchContext";
+import { useCancelableEffect } from "../reactExt/Hooks";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
+import { PromiseStateStatus, usePromiseState } from "../workspace/hooks/PromiseState";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import {
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+} from "@patternfly/react-core/dist/js/components/DescriptionList";
+import { AccessibleIconIcon } from "@patternfly/react-icons";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
@@ -39,106 +57,200 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
   const { i18n } = useOnlineI18n();
   const authSessionsDispatch = useAuthSessionsDispatch();
   const accounts = useAccounts();
+  const accountsDispatch = useAccountsDispatch();
 
-  const onPasteGitHubToken = useCallback(
-    async (e: React.ClipboardEvent, githubInstanceDomain: string) => {
-      const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
+  const [githubToken, setGitHubToken] = useState("");
+  const [newAuthSession, setNewAuthSession] = usePromiseState<GitAuthSession>();
 
-      // ????
-      (document.getElementById("github-personal-access-token-input") as HTMLInputElement).setAttribute(
-        "value",
-        obfuscate(token)
-      );
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!githubToken) {
+          return;
+        }
 
-      // TODO: Tiago remove this
-      const octokit = new Octokit({
-        auth: token,
-        baseUrl: githubInstanceApiUrl(githubInstanceDomain),
-      });
+        setNewAuthSession({ loading: true });
 
-      const response = await octokit.users.getAuthenticated();
+        delay(1000)
+          .then(() => {
+            const octokit = new Octokit({
+              auth: githubToken,
+              baseUrl: getGithubInstanceApiUrl(props.authProvider.domain),
+            });
 
-      const scopes = response.headers["x-oauth-scopes"]?.split(", ") ?? [];
-      if (!scopes.includes("repo") || !scopes.includes("gist")) {
-        throw new Error("GitHub Personal Access Token (classic) must include the 'repo' and 'gist' scopes.");
-      }
+            return octokit.users.getAuthenticated();
+          })
+          .then((response) => {
+            if (canceled.get()) {
+              return;
+            }
 
-      const newAuthSession: AuthSession = {
-        id: uuid(),
-        token,
-        type: "git",
-        login: response.data.login,
-        name: response.data.name ?? undefined,
-        email: response.data.email ?? undefined,
-        authProviderId: props.authProvider.id,
-      };
+            const scopes = response.headers["x-oauth-scopes"]?.split(", ") ?? [];
+            if (!scopes.includes("repo") || !scopes.includes("gist")) {
+              setNewAuthSession({
+                error:
+                  "Error. Make sure your GitHub Personal Access Token (classic) includes the 'repo' and 'gist' scopes.",
+              });
+            }
 
-      authSessionsDispatch.add(newAuthSession);
-      if (accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC) {
-        accounts.onNewAuthSession?.(newAuthSession);
-      }
-    },
-    [accounts, authSessionsDispatch, props.authProvider.id]
+            const newAuthSession: GitAuthSession = {
+              id: uuid(),
+              token: githubToken,
+              type: "git",
+              login: response.data.login,
+              name: response.data.name ?? undefined,
+              email: response.data.email ?? undefined,
+              authProviderId: props.authProvider.id,
+            };
+
+            authSessionsDispatch.add(newAuthSession);
+
+            setNewAuthSession({ data: newAuthSession });
+          })
+          .catch((e) => {
+            if (canceled.get()) {
+              return;
+            }
+
+            setNewAuthSession({ error: `${e}` });
+          });
+      },
+      [authSessionsDispatch, githubToken, props.authProvider.domain, props.authProvider.id, setNewAuthSession]
+    )
   );
 
-  const isGitHubTokenValid = true;
+  const validation = useMemo(() => {
+    if (!githubToken) {
+      return {
+        validated: ValidatedOptions.default,
+        helperTextIcon: <Spinner diameter={"1em"} style={{ display: "none" }} />,
+        helperText: "Your token must include the 'repo' and 'gist' scopes.",
+      };
+    }
 
-  const githubTokenValidated = useMemo(() => {
-    return isGitHubTokenValid ? "default" : "error";
-  }, [isGitHubTokenValid]);
+    const { status } = newAuthSession;
+    switch (status) {
+      case PromiseStateStatus.PENDING:
+        return {
+          validated: ValidatedOptions.default,
+          helperTextIcon: <Spinner diameter={"1em"} />,
+          helperText: "Loading...",
+        };
+      case PromiseStateStatus.REJECTED:
+        return {
+          validated: ValidatedOptions.error,
+          helperTextInvalid: newAuthSession.error.join(". "),
+          helperTextInvalidIcon: <ExclamationCircleIcon />,
+        };
+      case PromiseStateStatus.RESOLVED:
+        return { validated: ValidatedOptions.success };
+      default:
+        assertUnreachable(status);
+    }
+  }, [githubToken, newAuthSession]);
 
-  const githubTokenHelperText = useMemo(() => {
-    return isGitHubTokenValid ? undefined : "Invalid token. Check if it has the 'repo' scope.";
-  }, [isGitHubTokenValid]);
+  const successPrimaryAction = useMemo(() => {
+    if (accounts.section !== AccountsSection.CONNECT_TO_NEW_GITHUB_ACC || !newAuthSession.data) {
+      return;
+    }
+
+    if (!accounts.onNewAuthSession) {
+      return {
+        action: () => accountsDispatch({ kind: AccountsDispatchActionKind.GO_HOME }),
+        label: "See your accounts",
+      };
+    }
+
+    return {
+      action: () => accounts.onNewAuthSession?.(newAuthSession.data),
+      label: "Continue",
+    };
+  }, [accounts, accountsDispatch, newAuthSession.data]);
 
   return (
     <>
-      <Form>
-        <FormGroup
-          isRequired={true}
-          helperTextInvalid={githubTokenHelperText}
-          validated={githubTokenValidated}
-          label={"Personal Access Token (classic)"}
-          fieldId={"github-pat"}
-          helperText={"Your token must include the 'repo' and 'gist' scopes."}
-        >
-          <InputGroup>
-            <TextInput
-              autoComplete={"off"}
-              id="github-personal-access-token-input"
-              name="tokenInput"
-              aria-describedby="token-text-input-helper"
-              placeholder={"Paste your GitHub token here"}
-              maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-              validated={githubTokenValidated}
-              onPaste={(e) => onPasteGitHubToken(e, props.authProvider.domain)}
-              autoFocus={true}
-            />
-          </InputGroup>
-        </FormGroup>
-      </Form>
-      <br />
-      <h3>
-        <a href={generateNewTokenUrl(props.authProvider.domain)} target={"_blank"}>
-          {i18n.githubTokenModal.footer.createNewToken}
-          &nbsp;
-          <ExternalLinkAltIcon className="pf-u-mx-sm" />
-        </a>
-      </h3>
-      <br />
-      <br />
-      <TextContent>
-        <Text component={TextVariants.blockquote}>
-          <InfoAltIcon />
-          &nbsp;
-          <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}&nbsp;</span>
-          <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
-            {i18n.githubTokenModal.body.learnMore}
-            &nbsp;
-            <ExternalLinkAltIcon className="pf-u-mx-sm" />
-          </a>
-        </Text>
-      </TextContent>
+      {validation.validated === ValidatedOptions.success && (
+        <>
+          <Alert isPlain={true} isInline={true} variant={AlertVariant.success} title={`Succesfully connected`}>
+            <br />
+            <DescriptionList isHorizontal={true} isCompact={true} isFluid={true}>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Login</DescriptionListTerm>
+                <DescriptionListDescription>{newAuthSession.data?.login}</DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Name</DescriptionListTerm>
+                <DescriptionListDescription>{newAuthSession.data?.name ?? <i>(Empty)</i>}</DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Email</DescriptionListTerm>
+                <DescriptionListDescription>{newAuthSession.data?.email ?? <i>(Empty)</i>}</DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Token</DescriptionListTerm>
+                <DescriptionListDescription>{obfuscate(newAuthSession.data?.token ?? "")}</DescriptionListDescription>
+              </DescriptionListGroup>
+            </DescriptionList>
+          </Alert>
+          <br />
+          <br />
+          <br />
+          <Button variant={ButtonVariant.primary} onClick={successPrimaryAction?.action}>
+            {successPrimaryAction?.label}
+          </Button>
+        </>
+      )}
+      {validation.validated !== ValidatedOptions.success && (
+        <>
+          <Form>
+            <FormGroup
+              isRequired={true}
+              helperTextIcon={validation.helperTextIcon}
+              helperTextInvalidIcon={validation.helperTextInvalidIcon}
+              helperTextInvalid={validation.helperTextInvalid}
+              helperText={validation.helperText}
+              validated={validation.validated}
+              label={"Personal Access Token (classic)"}
+              fieldId={"github-pat"}
+            >
+              <TextInput
+                value={obfuscate(githubToken)}
+                autoComplete={"off"}
+                id="github-personal-access-token-input"
+                name="tokenInput"
+                aria-describedby="token-text-input-helper"
+                placeholder={"Paste your GitHub token here"}
+                maxLength={GITHUB_OAUTH_TOKEN_SIZE}
+                validated={validation.validated}
+                onPaste={(e) => setGitHubToken(e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE))}
+                autoFocus={true}
+              />
+            </FormGroup>
+          </Form>
+          <br />
+          <h3>
+            <a href={generateNewTokenUrl(props.authProvider.domain)} target={"_blank"}>
+              {i18n.githubTokenModal.footer.createNewToken}
+              &nbsp;
+              <ExternalLinkAltIcon className="pf-u-mx-sm" />
+            </a>
+          </h3>
+          <br />
+          <br />
+          <TextContent>
+            <Text component={TextVariants.blockquote}>
+              <InfoAltIcon />
+              &nbsp;
+              <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}&nbsp;</span>
+              <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
+                {i18n.githubTokenModal.body.learnMore}
+                &nbsp;
+                <ExternalLinkAltIcon className="pf-u-mx-sm" />
+              </a>
+            </Text>
+          </TextContent>
+        </>
+      )}
     </>
   );
 }
@@ -156,3 +268,11 @@ export function obfuscate(token: string) {
 export const generateNewTokenUrl = (domain: string) => {
   return `https://${domain}/settings/tokens`;
 };
+
+function delay(ms: number) {
+  return new Promise((res) => setTimeout(res, ms));
+}
+
+export function assertUnreachable(_x: never): never {
+  throw new Error("Didn't expect to get here");
+}

@@ -75,7 +75,7 @@ export function AccountsIcon() {
           onClose={() => accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE })}
           header={
             <div>
-              {accounts.section !== AccountsSection.HOME && (
+              {accounts.section !== AccountsSection.HOME && !accounts.onNewAuthSession && (
                 <>
                   <Button
                     key={"back"}
