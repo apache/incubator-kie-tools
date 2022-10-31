@@ -66,7 +66,7 @@ import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext
 import { QueryParams } from "../navigation/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { UploadCard } from "./UploadCard";
-import { ImportFromUrlCard } from "./ImportFromUrlCard";
+import { ImportFromUrlCard } from "../importFromUrl/ImportFromUrlHomePageCard";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
@@ -458,8 +458,8 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
           </Link>
           <Link
             to={{
-              pathname: routes.importModel.path({}),
-              search: routes.importModel.queryString({
+              pathname: routes.import.path({}),
+              search: routes.import.queryString({
                 url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
                   type: props.extension,
                 })}`,

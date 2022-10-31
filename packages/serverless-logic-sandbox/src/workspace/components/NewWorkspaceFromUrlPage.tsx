@@ -34,8 +34,8 @@ import { useGitHubAuthInfo } from "../../settings/github/Hooks";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
+import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();

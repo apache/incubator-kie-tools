@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import * as React from "react";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
-import { useRoutes } from "../../navigation/Hooks";
-import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
+import { useRoutes } from "../navigation/Hooks";
+import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";

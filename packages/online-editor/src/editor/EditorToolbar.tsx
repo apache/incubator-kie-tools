@@ -84,6 +84,7 @@ import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Location } from "history";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
@@ -96,7 +97,6 @@ import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -154,10 +154,7 @@ export function EditorToolbar(props: Props) {
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
-  const workspaceImportableUrl = useImportableUrl({
-    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
-    urlString: workspacePromise.data?.descriptor.origin.url?.toString(),
-  });
+  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
@@ -186,7 +183,7 @@ export function EditorToolbar(props: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST) {
+        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST_DOT_GITHUB_DOT_COM) {
           return;
         }
 
@@ -572,8 +569,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       // Redirect to import workspace
       navigationBlockersBypass.execute(() => {
         history.push({
-          pathname: routes.importModel.path({}),
-          search: routes.importModel.queryString({ url: gist.data.html_url }),
+          pathname: routes.import.path({}),
+          search: routes.import.queryString({ url: gist.data.html_url }),
         });
       });
     } catch (err) {
@@ -590,7 +587,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.workspaceFile.workspaceId,
     navigationBlockersBypass,
     history,
-    routes.importModel,
+    routes.import,
     errorAlert,
   ]);
 
@@ -1059,10 +1056,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         });
 
         history.push({
-          pathname: routes.importModel.path({}),
-          search: routes.importModel.queryString({
+          pathname: routes.import.path({}),
+          search: routes.import.queryString({
             url: `${workspacePromise.data.descriptor.origin.url}`,
             branch: newBranchName,
+            // Use same authSource from this workspace.
           }),
         });
       } finally {
@@ -1384,7 +1382,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
                 {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&
-                  workspaceImportableUrl.type === UrlType.GITHUB && (
+                  workspaceImportableUrl.type === UrlType.GITHUB_DOT_COM && (
                     <FlexItem
                       style={{
                         minWidth: "137px",

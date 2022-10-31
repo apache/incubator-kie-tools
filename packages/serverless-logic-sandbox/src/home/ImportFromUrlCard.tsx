@@ -23,8 +23,8 @@ import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
-import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();

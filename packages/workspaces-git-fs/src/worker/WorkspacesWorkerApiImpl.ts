@@ -27,6 +27,7 @@ import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { FsSchema } from "../services/FsCache";
 import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { StorageFile } from "../services/StorageService";
+import { GitServerRef } from "./api/GitServerRef";
 import { LocalFile } from "./api/LocalFile";
 import { WorkspaceDescriptor } from "./api/WorkspaceDescriptor";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./api/WorkspaceOrigin";
@@ -384,6 +385,16 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         });
       }
     );
+  }
+
+  public async kieSandboxWorkspacesGit_getGitServerRefs(args: {
+    url: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
+  }): Promise<GitServerRef[]> {
+    return this.args.services.gitService.listServerRefs(args);
   }
 
   public async kieSandboxWorkspacesGit_clone(args: {

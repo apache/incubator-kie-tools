@@ -28,6 +28,7 @@ import { LocalFile } from "../worker/api/LocalFile";
 import { decoder } from "../encoderdecoder/EncoderDecoder";
 import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRelativePathParser";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
+import { GitServerRef } from "../worker/api/GitServerRef";
 
 export class WorkspaceFile {
   private readonly parsedRelativePath;
@@ -131,6 +132,14 @@ export interface WorkspacesContextType {
   deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
 
   resolveRef(args: { workspaceId: string; ref: string }): Promise<string>;
+
+  getGitServerRefs(args: {
+    url: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
+  }): Promise<GitServerRef[]>;
 
   hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
 

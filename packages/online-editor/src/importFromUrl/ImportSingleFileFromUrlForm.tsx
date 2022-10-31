@@ -14,43 +14,37 @@
  * limitations under the License.
  */
 
+import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
-import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
-import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
-import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { ImportableUrl } from "./ImportableUrlHooks";
 
-export function ImportFromUrlForm(props: {
+export function ImportSingleFileFromUrlForm(props: {
   url?: string;
-  importingError?: string;
   onChange: (url: string) => void;
+  importingError?: string;
   onSubmit: () => void;
   urlInputRef?: React.RefObject<HTMLInputElement>;
-  allowedTypes?: UrlType[];
+  importableUrl: ImportableUrl;
 }) {
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
-  const importableUrl = useImportableUrl({
-    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
-    urlString: props.url,
-    allowedUrlTypes: props.allowedTypes,
-  });
-
   const onSubmit = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
-      if (importableUrl.error) {
+      if (props.importableUrl.error) {
         return;
       }
 
       props.onSubmit();
     },
-    [importableUrl.error, props]
+    [props]
   );
 
   const validatedOption = useMemo(() => {
@@ -58,16 +52,16 @@ export function ImportFromUrlForm(props: {
       return ValidatedOptions.default;
     }
 
-    if (importableUrl.error || props.importingError) {
+    if (props.importableUrl.error || props.importingError) {
       return ValidatedOptions.error;
     }
 
     return ValidatedOptions.success;
-  }, [props.url, props.importingError, importableUrl.error]);
+  }, [props.url, props.importingError, props.importableUrl.error]);
 
-  const displayError = useMemo(() => {
-    if (importableUrl.error) {
-      return importableUrl.error;
+  const helperTextInvalid = useMemo(() => {
+    if (props.importableUrl.error) {
+      return props.importableUrl.error;
     }
 
     if (props.importingError) {
@@ -75,21 +69,22 @@ export function ImportFromUrlForm(props: {
     }
 
     return "";
-  }, [importableUrl.error, props.importingError]);
+  }, [props.importableUrl.error, props.importingError]);
 
   return (
     <Form onSubmit={onSubmit}>
       <FormGroup
-        helperTextInvalid={displayError}
+        label={"Import file from URL"}
+        helperTextInvalid={helperTextInvalid}
         helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
         helperTextInvalidIcon={<ExclamationCircleIcon />}
-        fieldId="import-url-form-input"
+        fieldId="url"
         validated={validatedOption}
       >
         <TextInput
           ref={props.urlInputRef}
-          id={"import-url-form-input"}
-          ouiaId={"import-url-form-input"}
+          id={"url"}
+          ouiaId={"url"}
           validated={validatedOption}
           isRequired={true}
           placeholder={"URL"}

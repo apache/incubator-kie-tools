@@ -25,8 +25,8 @@ import { useMemo } from "react";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
-import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
+import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();

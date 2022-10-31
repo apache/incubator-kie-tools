@@ -71,6 +71,23 @@ export interface RemoteRefArgs {
 export class GitService {
   public constructor(private readonly corsProxy: Promise<string>) {}
 
+  public async listServerRefs(args: {
+    url: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
+  }) {
+    return git.listServerRefs({
+      http,
+      corsProxy: await this.corsProxy,
+      onAuth: () => args.authInfo,
+      url: args.url,
+      symrefs: true,
+      protocolVersion: 1,
+    });
+  }
+
   public async clone(args: CloneArgs): Promise<void> {
     console.time("GitService#clone");
     await git.clone({

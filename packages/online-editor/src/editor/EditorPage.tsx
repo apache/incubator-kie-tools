@@ -354,7 +354,9 @@ export function EditorPage(props: Props) {
             </TextContent>
           </Bullseye>
         }
-        rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
+        rejected={(errors) => (
+          <EditorPageErrorPage title={"Can't open file"} errors={errors} path={props.fileRelativePath} />
+        )}
         resolved={(file) => (
           <>
             <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>

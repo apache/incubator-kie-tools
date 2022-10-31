@@ -92,8 +92,8 @@ import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 
 export interface Props {
   alerts: AlertsController | undefined;

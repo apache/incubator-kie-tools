@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../../constants/GitConstants";
+import { GIT_DEFAULT_BRANCH } from "../../constants/GitConstants";
 
 export enum WorkspaceKind {
   GITHUB_GIST = "GITHUB_GIST",
@@ -39,5 +39,5 @@ export interface GitHubOrigin {
 export interface GistOrigin {
   kind: WorkspaceKind.GITHUB_GIST;
   url: string;
-  branch: typeof GIST_DEFAULT_BRANCH;
+  branch: string;
 }

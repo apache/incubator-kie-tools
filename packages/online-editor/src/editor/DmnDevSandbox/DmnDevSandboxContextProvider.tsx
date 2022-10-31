@@ -86,7 +86,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
           workspaceZipBlob: zipBlob,
           config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>
-            routes.importModel.url({
+            routes.import.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: {},
               queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
@@ -98,7 +98,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return false;
       }
     },
-    [settings.openshift.config, settingsDispatch.openshift.service, workspaces, routes.importModel]
+    [settings.openshift.config, settingsDispatch.openshift.service, workspaces, routes.import]
   );
 
   useEffect(() => {

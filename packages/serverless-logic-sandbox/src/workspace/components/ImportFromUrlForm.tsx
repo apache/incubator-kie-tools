@@ -22,7 +22,7 @@ import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
-import { UrlType, useImportableUrl } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
+import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 
 export function ImportFromUrlForm(props: {
   url?: string;

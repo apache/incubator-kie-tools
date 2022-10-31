@@ -37,7 +37,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { FileTypes, isEditable, SupportedFileExtensions } from "../extension";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
-import { UrlType } from "@kie-tools-core/workspaces-git-fs/src/hooks/ImportableUrlHooks";
+import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
