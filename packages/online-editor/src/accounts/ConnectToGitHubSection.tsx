@@ -21,32 +21,25 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import InfoAltIcon from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import * as React from "react";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
+import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { useCallback, useMemo, useState } from "react";
-import { useOnlineI18n } from "../i18n";
 import { v4 as uuid } from "uuid";
-import { GitAuthSession, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
-import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
 import { getGithubInstanceApiUrl } from "../github/Hooks";
+import { useOnlineI18n } from "../i18n";
+import { useCancelableEffect } from "../reactExt/Hooks";
+import { PromiseStateStatus, usePromiseState } from "../workspace/hooks/PromiseState";
 import {
   AccountsDispatchActionKind,
   AccountsSection,
   useAccounts,
   useAccountsDispatch,
 } from "./AccountsDispatchContext";
-import { useCancelableEffect } from "../reactExt/Hooks";
-import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
-import { PromiseStateStatus, usePromiseState } from "../workspace/hooks/PromiseState";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import {
-  DescriptionList,
-  DescriptionListDescription,
-  DescriptionListGroup,
-  DescriptionListTerm,
-} from "@patternfly/react-core/dist/js/components/DescriptionList";
-import { AccessibleIconIcon } from "@patternfly/react-icons";
+import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
+import { GitAuthSession, useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 import { AuthSessionDescriptionList } from "./authSessions/AuthSessionsList";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -56,9 +49,10 @@ export const GITHUB_TOKENS_HOW_TO_URL =
 
 export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider }) {
   const { i18n } = useOnlineI18n();
-  const authSessionsDispatch = useAuthSessionsDispatch();
   const accounts = useAccounts();
   const accountsDispatch = useAccountsDispatch();
+  const { authSessions } = useAuthSessions();
+  const authSessionsDispatch = useAuthSessionsDispatch();
 
   const [githubToken, setGitHubToken] = useState("");
   const [newAuthSession, setNewAuthSession] = usePromiseState<GitAuthSession>();
@@ -72,15 +66,17 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
 
         setNewAuthSession({ loading: true });
 
-        delay(1000)
-          .then(() => {
-            const octokit = new Octokit({
-              auth: githubToken,
-              baseUrl: getGithubInstanceApiUrl(props.authProvider.domain),
-            });
+        if (
+          [...authSessions.values()]
+            .filter(({ type }) => type === "git")
+            .some(({ token }: GitAuthSession) => token === githubToken)
+        ) {
+          setNewAuthSession({ error: "You're already logged in with this Token." });
+          return;
+        }
 
-            return octokit.users.getAuthenticated();
-          })
+        delay(600)
+          .then(() => fetchAuthenticatedGitHubUser(githubToken, getGithubInstanceApiUrl(props.authProvider.domain)))
           .then((response) => {
             if (canceled.get()) {
               return;
@@ -89,8 +85,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
             const scopes = response.headers["x-oauth-scopes"]?.split(", ") ?? [];
             if (!scopes.includes("repo") || !scopes.includes("gist")) {
               setNewAuthSession({
-                error:
-                  "Error. Make sure your GitHub Personal Access Token (classic) includes the 'repo' and 'gist' scopes.",
+                error: "Make sure your Token includes the 'repo' and 'gist' scopes.",
               });
             }
 
@@ -117,7 +112,14 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
             setNewAuthSession({ error: `${e}` });
           });
       },
-      [authSessionsDispatch, githubToken, props.authProvider.domain, props.authProvider.id, setNewAuthSession]
+      [
+        authSessions,
+        authSessionsDispatch,
+        githubToken,
+        props.authProvider.domain,
+        props.authProvider.id,
+        setNewAuthSession,
+      ]
     )
   );
 
@@ -173,10 +175,10 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
     <>
       {validation.validated === ValidatedOptions.success && (
         <>
-          <Alert isPlain={true} isInline={true} variant={AlertVariant.success} title={`Succesfully connected`}>
-            <br />
-            <AuthSessionDescriptionList authSession={newAuthSession.data!} />
-          </Alert>
+          <Alert isPlain={true} isInline={true} variant={AlertVariant.success} title={`Successfully connected`}></Alert>
+          <br />
+          <br />
+          <AuthSessionDescriptionList authSession={newAuthSession.data!} />
           <br />
           <br />
           <br />
@@ -260,4 +262,13 @@ function delay(ms: number) {
 
 export function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here");
+}
+
+export function fetchAuthenticatedGitHubUser(githubToken: string, githubInstanceApiUrl: string | undefined) {
+  const octokit = new Octokit({
+    auth: githubToken,
+    baseUrl: githubInstanceApiUrl,
+  });
+
+  return octokit.users.getAuthenticated();
 }

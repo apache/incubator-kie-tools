@@ -28,19 +28,26 @@ import {
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
 import { AuthSession, useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
-import { obfuscate } from "../ConnectToGitHubSection";
+import { fetchAuthenticatedGitHubUser, obfuscate } from "../ConnectToGitHubSection";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useWorkspaceDescriptorsPromise } from "../../workspace/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "../../workspace/worker/api/WorkspaceDescriptor";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { PromiseStateWrapper, usePromiseState } from "../../workspace/hooks/PromiseState";
+import { useCancelableEffect } from "../../reactExt/Hooks";
+import { getGithubInstanceApiUrl } from "../../github/Hooks";
+import { useAuthProvider } from "../authProviders/AuthProvidersContext";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();
@@ -93,22 +100,54 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
   const authSessionsDispatch = useAuthSessionsDispatch();
   const [isExpanded, setExpanded] = useState(false);
 
+  const authProvider = useAuthProvider(props.authSession);
+  const [authAttempt, setAuthAttempt] = usePromiseState<string>();
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (props.authSession.type === "git" && authProvider?.type === "github") {
+          fetchAuthenticatedGitHubUser(props.authSession.token, getGithubInstanceApiUrl(authProvider.domain))
+            .then((res) => {
+              if (canceled.get()) return;
+              return setAuthAttempt({ data: "ok" });
+            })
+            .catch((e) => {
+              if (canceled.get()) return;
+              return setAuthAttempt({ error: `${e}` });
+            });
+        }
+      },
+      [authProvider, props.authSession, setAuthAttempt]
+    )
+  );
+
   return (
-    <Card
-      key={props.authSession.id}
-      isCompact={true}
-      isExpanded={isExpanded}
-      style={{ opacity: (props.usages?.length ?? 0) <= 0 ? 0.5 : 1 }}
-    >
+    <Card key={props.authSession.id} isCompact={true} isExpanded={isExpanded}>
       <CardHeader onExpand={() => setExpanded((prev) => !prev)}>
         <CardActions>
-          <Label>&nbsp;{props.usages ? props.usages.length : "-"}&nbsp;</Label>
+          <PromiseStateWrapper
+            promise={authAttempt}
+            pending={<Spinner size={"md"} />}
+            rejected={(e) => (
+              <Tooltip
+                content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
+              >
+                <ExclamationCircleIcon color={"red"} size={"md"} />
+              </Tooltip>
+            )}
+            resolved={() => <></>}
+          />
           <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(props.authSession)}>
             Remove
           </Button>
         </CardActions>
-        <CardHeaderMain>
+        <CardHeaderMain style={{ display: "flex", opacity: (props.usages?.length ?? 0) <= 0 ? 0.5 : 1 }}>
           <AuthSessionLabel authSession={props.authSession} />
+          &nbsp; &nbsp; &nbsp;
+          <Label>
+            &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}&nbsp;
+          </Label>
         </CardHeaderMain>
       </CardHeader>
       <CardExpandableContent>

@@ -725,28 +725,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
         ? [
             <DropdownGroup key={"github-group"} label={i18n.names.github}>
-              {!canPushToGitRepository && (
-                <Alert
-                  isInline={true}
-                  variant={"default"}
-                  title={"Can't Create Repository or Gist without selecting an authentication source"}
-                  actionLinks={
-                    <AuthSessionSelect
-                      position={SelectPosition.right}
-                      isPlain={false}
-                      authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
-                      setAuthSessionId={(newAuthSessionId) => {
-                        changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
-                        accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                        setShareDropdownOpen(true);
-                        setSmallKebabOpen(true);
-                      }}
-                    />
-                  }
-                >
-                  {`Select an authentication source for '${workspacePromise.data.descriptor.name}' to be able to Create Repository or Gist.`}
-                </Alert>
-              )}
               <Tooltip
                 data-testid={"create-github-repository-tooltip"}
                 key={`dropdown-create-github-repository`}
@@ -781,6 +759,30 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   {i18n.editorToolbar.createGist}
                 </DropdownItem>
               </Tooltip>
+              {!canPushToGitRepository && (
+                <Alert
+                  isInline={true}
+                  variant={"default"}
+                  title={"Can't Create Repository or Gist without selecting an authentication source"}
+                  actionLinks={
+                    <AuthSessionSelect
+                      position={SelectPosition.right}
+                      isPlain={false}
+                      authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
+                      setAuthSessionId={(newAuthSessionId) => {
+                        changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
+                        setTimeout(() => {
+                          accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                          setShareDropdownOpen(true);
+                          setSmallKebabOpen(true);
+                        }, 0);
+                      }}
+                    />
+                  }
+                >
+                  {`Select an authentication source for '${workspacePromise.data.descriptor.name}' to be able to Create Repository or Gist.`}
+                </Alert>
+              )}
             </DropdownGroup>,
           ]
         : []),
@@ -1783,7 +1785,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     workspace.descriptor.gitAuthSessionId
                                                   );
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                                                  setSyncGitHubGistDropdownOpen(true);
+                                                  setTimeout(() => {
+                                                    setSyncGitHubGistDropdownOpen(true);
+                                                  }, 0);
                                                 }}
                                               />
                                             </Alert>
@@ -1807,7 +1811,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     workspace.descriptor.gitAuthSessionId
                                                   );
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                                                  setSyncGitHubGistDropdownOpen(true);
+                                                  setTimeout(() => {
+                                                    setSyncGitHubGistDropdownOpen(true);
+                                                  }, 0);
                                                 }}
                                               />
                                             }
@@ -1880,7 +1886,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     workspace.descriptor.gitAuthSessionId
                                                   );
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                                                  setSyncGitRepositoryDropdownOpen(true);
+                                                  setTimeout(() => {
+                                                    setSyncGitRepositoryDropdownOpen(true);
+                                                  });
                                                 }}
                                               />
                                             }

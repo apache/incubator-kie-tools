@@ -30,7 +30,7 @@ export function AuthSessionLabel(props: { authSession: AuthSession }) {
 
   return (
     <>
-      <Flex alignItems={{ default: "alignItemsCenter" }}>
+      <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>
         <AuthProviderIcon authProvider={authProvider} size={IconSize.md} />
         <TextContent>
           <Text component={TextVariants.h3}>{props.authSession.login}</Text>
