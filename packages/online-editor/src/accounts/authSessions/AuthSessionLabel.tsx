@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { AuthSession, GitAuthSession } from "./AuthSessionsContext";
+import { AuthSession } from "./AuthSessionsContext";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -32,29 +32,24 @@ export function AuthSessionLabel(props: { authSession: AuthSession }) {
     <>
       <Flex alignItems={{ default: "alignItemsCenter" }}>
         <AuthProviderIcon authProvider={authProvider} size={IconSize.md} />
-        <FlexItem>
+        <TextContent>
+          <Text component={TextVariants.h3}>{props.authSession.login}</Text>
+        </TextContent>
+        {props.authSession.type === "git" && props.authSession.email && (
           <TextContent>
-            <Text component={TextVariants.h3} style={{ display: "inline" }}>
-              {props.authSession.login}
-              {props.authSession.type === "git" && props.authSession.email && (
-                <>
-                  &nbsp;
-                  <Text component={TextVariants.small} style={{ display: "inline" }}>
-                    <i>({props.authSession.email})</i>
-                  </Text>
-                </>
-              )}
+            <Text component={TextVariants.small}>
+              <i>({props.authSession.email})</i>
             </Text>
           </TextContent>
-          {authProvider && (
-            <TextContent>
-              <Text component={TextVariants.small}>
-                {authProvider.name}
-                &nbsp;
-              </Text>
-            </TextContent>
-          )}
-        </FlexItem>
+        )}
+        {authProvider && (
+          <TextContent>
+            <Text component={TextVariants.small}>
+              {authProvider.name}
+              &nbsp;
+            </Text>
+          </TextContent>
+        )}
       </Flex>
     </>
   );

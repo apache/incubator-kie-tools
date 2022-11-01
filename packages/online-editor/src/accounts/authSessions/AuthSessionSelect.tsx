@@ -29,7 +29,7 @@ export function AuthSessionSelect(props: {
   const selectedAuthSessionId = useMemo(() => {
     // Provided authSessionId doesn't exist anymore.
     if (props.authSessionId && !authSession) {
-      return "Expired authentication";
+      return "Authentication expired";
     } else {
       return props.authSessionId;
     }

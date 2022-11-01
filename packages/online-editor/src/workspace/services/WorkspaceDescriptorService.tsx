@@ -25,6 +25,7 @@ import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { join } from "path";
 import { FsSchema } from "./FsCache";
 import { Broadcaster } from "./FsService";
+import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesBroadcastEvents";
 
 export class WorkspaceDescriptorService {
   constructor(
@@ -116,6 +117,11 @@ export class WorkspaceDescriptorService {
       channel: workspaceId,
       message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
     });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
   }
 
   public async turnIntoGit(fs: KieSandboxWorkspacesFs, workspaceId: string, url: URL) {
@@ -133,6 +139,11 @@ export class WorkspaceDescriptorService {
       channel: workspaceId,
       message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
     });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
   }
 
   public async changeGitAuthSessionId(
@@ -149,6 +160,11 @@ export class WorkspaceDescriptorService {
     new Broadcaster().broadcast({
       channel: workspaceId,
       message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
     });
   }
 

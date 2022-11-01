@@ -1433,9 +1433,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         </Button>
                       </FlexItem>
                       <FlexItem>
-                        <WorkspaceLabel descriptor={workspace.descriptor} />
-                      </FlexItem>
-                      <FlexItem>
                         <AuthSessionSelect
                           isPlain={true}
                           authSessionId={workspace.descriptor.gitAuthSessionId}
@@ -1444,6 +1441,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                           }}
                         />
+                      </FlexItem>
+                      <FlexItem>
+                        <WorkspaceLabel descriptor={workspace.descriptor} />
                       </FlexItem>
                       <FlexItem style={{ minWidth: 0 }}>
                         <div

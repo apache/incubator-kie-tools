@@ -95,7 +95,7 @@ export function AccountsIcon() {
                   <>
                     <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
                       <TextContent>
-                        <Text component={TextVariants.h1}>Your connected accounts</Text>
+                        <Text component={TextVariants.h1}>Connected accounts</Text>
                       </TextContent>
                       {authSessions.size > 0 && (
                         <Button
@@ -113,7 +113,7 @@ export function AccountsIcon() {
               {accounts.section === AccountsSection.CONNECT_TO_NEW_ACC && (
                 <>
                   <TextContent>
-                    <Text component={TextVariants.h1}>Connect to an account</Text>
+                    <Text component={TextVariants.h1}>Select a provider</Text>
                   </TextContent>
                 </>
               )}

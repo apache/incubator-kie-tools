@@ -36,6 +36,7 @@ export type GitAuthSession = {
   email?: string;
   name?: string;
   authProviderId: string;
+  createdAtDateISO: string;
 };
 
 export type NoneAuthSession = {

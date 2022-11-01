@@ -47,6 +47,7 @@ import {
   DescriptionListTerm,
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
 import { AccessibleIconIcon } from "@patternfly/react-icons";
+import { AuthSessionDescriptionList } from "./authSessions/AuthSessionsList";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
@@ -101,6 +102,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
               name: response.data.name ?? undefined,
               email: response.data.email ?? undefined,
               authProviderId: props.authProvider.id,
+              createdAtDateISO: new Date().toISOString(),
             };
 
             authSessionsDispatch.add(newAuthSession);
@@ -157,7 +159,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
     if (!accounts.onNewAuthSession) {
       return {
         action: () => accountsDispatch({ kind: AccountsDispatchActionKind.GO_HOME }),
-        label: "See your connected accounts",
+        label: "See connected accounts",
       };
     }
 
@@ -173,24 +175,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
         <>
           <Alert isPlain={true} isInline={true} variant={AlertVariant.success} title={`Succesfully connected`}>
             <br />
-            <DescriptionList isHorizontal={true} isCompact={true} isFluid={true}>
-              <DescriptionListGroup>
-                <DescriptionListTerm>Login</DescriptionListTerm>
-                <DescriptionListDescription>{newAuthSession.data?.login}</DescriptionListDescription>
-              </DescriptionListGroup>
-              <DescriptionListGroup>
-                <DescriptionListTerm>Name</DescriptionListTerm>
-                <DescriptionListDescription>{newAuthSession.data?.name ?? <i>(Empty)</i>}</DescriptionListDescription>
-              </DescriptionListGroup>
-              <DescriptionListGroup>
-                <DescriptionListTerm>Email</DescriptionListTerm>
-                <DescriptionListDescription>{newAuthSession.data?.email ?? <i>(Empty)</i>}</DescriptionListDescription>
-              </DescriptionListGroup>
-              <DescriptionListGroup>
-                <DescriptionListTerm>Token</DescriptionListTerm>
-                <DescriptionListDescription>{obfuscate(newAuthSession.data?.token ?? "")}</DescriptionListDescription>
-              </DescriptionListGroup>
-            </DescriptionList>
+            <AuthSessionDescriptionList authSession={newAuthSession.data!} />
           </Alert>
           <br />
           <br />
