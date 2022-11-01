@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useContext, useReducer } from "react";
+import { useCallback, useContext, useReducer } from "react";
 import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
-import { AuthSession } from "./authSessions/AuthSessionsContext";
+import { AuthSession, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 
 // State
 
@@ -76,41 +76,50 @@ export type AccountsDispatchAction =
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     };
 
-export function reducer(state: AccountsState, action: AccountsDispatchAction): AccountsState {
-  const { kind } = action;
-  switch (kind) {
-    case AccountsDispatchActionKind.CLOSE:
-      return {
-        section: AccountsSection.CLOSED,
-      };
-    case AccountsDispatchActionKind.GO_HOME:
-      return {
-        section: AccountsSection.HOME,
-        selectedAuthProvider: undefined,
-      };
-    case AccountsDispatchActionKind.SELECT_AUTH_PROVDER:
-      return {
-        section: AccountsSection.CONNECT_TO_NEW_ACC,
-        selectedAuthProvider: undefined,
-        onNewAuthSession: action.onNewAuthSession,
-        backActionKind: AccountsDispatchActionKind.GO_HOME,
-      };
-    case AccountsDispatchActionKind.SETUP_GITHUB_TOKEN:
-      return {
-        section: AccountsSection.CONNECT_TO_NEW_GITHUB_ACC,
-        selectedAuthProvider: action.selectedAuthProvider,
-        onNewAuthSession: action.onNewAuthSession,
-        backActionKind: action.backActionKind,
-      };
-    default:
-      assertUnreachable(kind);
-  }
-}
-
 export const AccountsContext = React.createContext<AccountsState>({} as any);
 export const AccountsDispatchContext = React.createContext<React.Dispatch<AccountsDispatchAction>>({} as any);
 
 export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
+  const authSessionsDispatch = useAuthSessionsDispatch();
+
+  const reducer = useCallback(
+    (state: AccountsState, action: AccountsDispatchAction): AccountsState => {
+      const { kind } = action;
+      switch (kind) {
+        case AccountsDispatchActionKind.CLOSE:
+          return {
+            section: AccountsSection.CLOSED,
+          };
+        case AccountsDispatchActionKind.GO_HOME:
+          if (state.section === AccountsSection.CLOSED) {
+            // Only recalculate when opening the Modal, not when navigating inside it.
+            authSessionsDispatch.recalculateAuthSessionStatus();
+          }
+          return {
+            section: AccountsSection.HOME,
+            selectedAuthProvider: undefined,
+          };
+        case AccountsDispatchActionKind.SELECT_AUTH_PROVDER:
+          return {
+            section: AccountsSection.CONNECT_TO_NEW_ACC,
+            selectedAuthProvider: undefined,
+            onNewAuthSession: action.onNewAuthSession,
+            backActionKind: AccountsDispatchActionKind.GO_HOME,
+          };
+        case AccountsDispatchActionKind.SETUP_GITHUB_TOKEN:
+          return {
+            section: AccountsSection.CONNECT_TO_NEW_GITHUB_ACC,
+            selectedAuthProvider: action.selectedAuthProvider,
+            onNewAuthSession: action.onNewAuthSession,
+            backActionKind: action.backActionKind,
+          };
+        default:
+          assertUnreachable(kind);
+      }
+    },
+    [authSessionsDispatch]
+  );
+
   const [state, dispatch] = useReducer(reducer, { section: AccountsSection.CLOSED });
 
   return (

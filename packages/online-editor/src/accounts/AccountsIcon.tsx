@@ -23,19 +23,17 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
-import { useCallback, useReducer, useState } from "react";
+import { useCallback } from "react";
 import { ConnectToGitHubSection } from "./ConnectToGitHubSection";
 import { AuthProvidersGallery } from "./authProviders/AuthProvidersGallery";
 import { AuthProviderIcon } from "./authProviders/AuthProviderIcon";
 import { AuthSessionsList } from "./authSessions/AuthSessionsList";
-import { GitAuthProvider, useAuthProviders } from "./authProviders/AuthProvidersContext";
-import { useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
+import { useAuthSessions } from "./authSessions/AuthSessionsContext";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
   EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
