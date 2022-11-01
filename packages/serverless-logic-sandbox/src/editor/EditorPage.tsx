@@ -31,16 +31,18 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflow } from "../extension";
+import { isEditable, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useSettingsDispatch } from "../settings/SettingsContext";
-import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
-import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
@@ -158,7 +160,7 @@ export function EditorPage(props: Props) {
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
-            isReadOnly: !isSandboxAsset(workspaceFilePromise.data.workspaceFile.relativePath),
+            isReadOnly: !isEditable(workspaceFilePromise.data.workspaceFile.relativePath),
             fileExtension: workspaceFilePromise.data.workspaceFile.extension,
             fileName: workspaceFilePromise.data.workspaceFile.name,
           });

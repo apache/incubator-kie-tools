@@ -25,9 +25,9 @@ import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsC
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/worker/api/WorkspaceDescriptor";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import {
   createDockerfileContentForBaseJdk11MvnImage,
   createDockerfileContentForBaseQuarkusProjectImage,

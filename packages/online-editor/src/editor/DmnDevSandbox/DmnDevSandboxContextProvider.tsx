@@ -24,8 +24,8 @@ import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/worker/api/WorkspaceDescriptor";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 interface Props {
   children: React.ReactNode;

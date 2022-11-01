@@ -19,15 +19,15 @@ import { CodeBranchIcon } from "@patternfly/react-icons/dist/js/icons/code-branc
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { GitlabIcon } from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 import { PendingIcon } from "@patternfly/react-icons/dist/js/icons/pending-icon";
-import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import * as React from "react";
+import { useMemo } from "react";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
-import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
-import { useMemo } from "react";
 import { UrlType, useImportableUrl } from "../../importFromUrl/ImportableUrlHooks";
-import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());

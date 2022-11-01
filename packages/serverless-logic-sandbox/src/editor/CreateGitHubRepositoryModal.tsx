@@ -29,15 +29,18 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
-import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
+import {
+  GIT_DEFAULT_BRANCH,
+  GIT_ORIGIN_REMOTE_NAME,
+} from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { dirname, join } from "path";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { isProject } from "../project";
 

@@ -27,11 +27,11 @@ import { APP_NAME } from "../../AppConstants";
 
 const hasNecessaryApis = window["SharedWorker"] && window["BroadcastChannel"];
 const isCompatibleBrowser = Bowser.getParser(window.navigator.userAgent).satisfies({
-  chrome: ">4",
+  chrome: ">=4",
+  // edge: ">=79", KOGITO-8166: Assess browser compatibility
   safari: ">=16",
-  mobile: {
-    safari: ">=16",
-  },
+  firefox: ">=29", // KOGITO-8166: Assess browser compatibility
+  // opera: ">=12", KOGITO-8166: Assess browser compatibility
 });
 const browserInfo = Bowser.parse(window.navigator.userAgent);
 
@@ -66,6 +66,7 @@ export function Component() {
           <Text component={TextVariants.p}>Compatible browsers are:</Text>
           <List>
             <ListItem>Chromium-based</ListItem>
+            <ListItem>Firefox</ListItem>
             <ListItem>Safari 16 or newer</ListItem>
           </List>
         </TextContent>

@@ -15,16 +15,17 @@
  */
 
 import { CompanionFsService, CompanionFsServiceBroadcastEvents } from "./CompanionFsService";
-import { Holder, useCancelableEffect } from "../reactExt/Hooks";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useCallback } from "react";
 import {
   WORKSPACES_BROADCAST_CHANNEL,
   WORKSPACES_FILES_BROADCAST_CHANNEL,
   WorkspacesBroadcastEvents,
   WorkspacesFilesBroadcastEvents,
-} from "../workspace/worker/api/WorkspacesBroadcastEvents";
-import { usePromiseState } from "../workspace/hooks/PromiseState";
-import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
+} from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
+import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 export function useSyncedCompanionFs(companionFsService: CompanionFsService) {
   useCancelableEffect(

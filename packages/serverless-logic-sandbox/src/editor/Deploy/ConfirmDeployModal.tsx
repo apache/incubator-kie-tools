@@ -29,9 +29,9 @@ import { isKafkaConfigValid } from "../../settings/kafka/KafkaSettingsConfig";
 import { isServiceAccountConfigValid } from "../../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings } from "../../settings/SettingsContext";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { isSingleModuleProject } from "../../project";
 
 const FETCH_OPEN_API_POLLING_TIME = 5000;
