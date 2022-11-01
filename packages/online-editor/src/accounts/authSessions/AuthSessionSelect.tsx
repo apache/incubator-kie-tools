@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Select, SelectOption, SelectPosition, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
-import { AUTH_SESSION_NONE, useAuthSession, useAuthSessions } from "./AuthSessionsContext";
+import { AuthSessionStatus, AUTH_SESSION_NONE, useAuthSession, useAuthSessions } from "./AuthSessionsContext";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { useMemo, useState } from "react";
@@ -11,6 +11,9 @@ import { ButtonVariant } from "@patternfly/react-core";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../AccountsDispatchContext";
+import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 export function AuthSessionSelect(props: {
   authSessionId: string | undefined;
@@ -20,7 +23,7 @@ export function AuthSessionSelect(props: {
 }) {
   const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
 
-  const { authSessions } = useAuthSessions();
+  const { authSessions, authSessionStatus } = useAuthSessions();
   const authProviders = useAuthProviders();
 
   const { authSession } = useAuthSession(props.authSessionId);
@@ -36,7 +39,6 @@ export function AuthSessionSelect(props: {
   }, [authSession, props.authSessionId]);
 
   const validated = useMemo(() => {
-    // Provided authSessionId doesn't exist anymore.
     if (props.authSessionId && !authSession) {
       return ValidatedOptions.warning;
     } else {
@@ -95,9 +97,26 @@ export function AuthSessionSelect(props: {
           const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
           return [
             <SelectOption key={authSessionId} value={authSessionId} description={<i>{authProvider?.name}</i>}>
-              <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
-              &nbsp;&nbsp;
-              {authSession.login}
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                <FlexItem>
+                  <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+                  &nbsp;&nbsp;
+                  {authSession.login}
+                </FlexItem>
+                {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID && (
+                  <FlexItem style={{ zIndex: 99999 }}>
+                    <Tooltip
+                      position={"bottom"}
+                      content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
+                    >
+                      <>
+                        {/* Color copied from PF4 */}
+                        <ExclamationCircleIcon color={"#c9190b"} /> {/* Color copied from PF4 */}
+                      </>
+                    </Tooltip>
+                  </FlexItem>
+                )}
+              </Flex>
             </SelectOption>,
             <React.Fragment key={`divider-${authSessionId}`}>
               {index < authSessions.size - 1 && <Divider />}

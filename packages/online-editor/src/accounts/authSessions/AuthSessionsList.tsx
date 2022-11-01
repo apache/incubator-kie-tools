@@ -21,31 +21,25 @@ import {
   CardActions,
   CardBody,
   CardExpandableContent,
-  CardFooter,
   CardHeader,
   CardHeaderMain,
 } from "@patternfly/react-core/dist/js/components/Card";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
-import { AuthSession, useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
-import { useCallback, useMemo, useState } from "react";
+import { AuthSession, AuthSessionStatus, useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
+import { useMemo, useState } from "react";
 import {
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
-import { fetchAuthenticatedGitHubUser, obfuscate } from "../ConnectToGitHubSection";
+import { obfuscate } from "../ConnectToGitHubSection";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useWorkspaceDescriptorsPromise } from "../../workspace/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "../../workspace/worker/api/WorkspaceDescriptor";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { PromiseStateWrapper, usePromiseState } from "../../workspace/hooks/PromiseState";
-import { useCancelableEffect } from "../../reactExt/Hooks";
-import { getGithubInstanceApiUrl } from "../../github/Hooks";
-import { useAuthProvider } from "../authProviders/AuthProvidersContext";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
@@ -58,7 +52,9 @@ export function AuthSessionsList(props: {}) {
       return new Map<string, WorkspaceDescriptor[]>();
     }
 
-    const initialUsages = new Map<string, WorkspaceDescriptor[]>([...authSessions.keys()].map((a) => [a, []]));
+    const initialUsages = new Map<string, WorkspaceDescriptor[]>(
+      [...authSessions.keys()].map((authSession) => [authSession, []])
+    );
 
     return workspaceDescriptorsPromise.data.reduce(
       (acc, workspaceDescriptor) =>
@@ -71,8 +67,6 @@ export function AuthSessionsList(props: {}) {
       initialUsages
     );
   }, [authSessions, workspaceDescriptorsPromise.data]);
-
-  console.info(usagesByWorkspace);
 
   return (
     <>
@@ -99,45 +93,20 @@ export function AuthSessionsList(props: {}) {
 function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDescriptor[] | undefined }) {
   const authSessionsDispatch = useAuthSessionsDispatch();
   const [isExpanded, setExpanded] = useState(false);
-
-  const authProvider = useAuthProvider(props.authSession);
-  const [authAttempt, setAuthAttempt] = usePromiseState<string>();
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (props.authSession.type === "git" && authProvider?.type === "github") {
-          fetchAuthenticatedGitHubUser(props.authSession.token, getGithubInstanceApiUrl(authProvider.domain))
-            .then((res) => {
-              if (canceled.get()) return;
-              return setAuthAttempt({ data: "ok" });
-            })
-            .catch((e) => {
-              if (canceled.get()) return;
-              return setAuthAttempt({ error: `${e}` });
-            });
-        }
-      },
-      [authProvider, props.authSession, setAuthAttempt]
-    )
-  );
+  const { authSessionStatus } = useAuthSessions();
 
   return (
     <Card key={props.authSession.id} isCompact={true} isExpanded={isExpanded}>
       <CardHeader onExpand={() => setExpanded((prev) => !prev)}>
         <CardActions>
-          <PromiseStateWrapper
-            promise={authAttempt}
-            pending={<Spinner size={"md"} />}
-            rejected={(e) => (
-              <Tooltip
-                content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
-              >
-                <ExclamationCircleIcon color={"red"} size={"md"} />
-              </Tooltip>
-            )}
-            resolved={() => <></>}
-          />
+          {authSessionStatus.get(props.authSession.id) === AuthSessionStatus.INVALID && (
+            <Tooltip content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}>
+              <>
+                {/* Color copied from PF4 */}
+                <ExclamationCircleIcon color={"#c9190b"} />
+              </>
+            </Tooltip>
+          )}
           <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(props.authSession)}>
             Remove
           </Button>

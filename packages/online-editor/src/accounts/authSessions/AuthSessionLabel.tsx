@@ -35,13 +35,6 @@ export function AuthSessionLabel(props: { authSession: AuthSession }) {
         <TextContent>
           <Text component={TextVariants.h3}>{props.authSession.login}</Text>
         </TextContent>
-        {props.authSession.type === "git" && props.authSession.email && (
-          <TextContent>
-            <Text component={TextVariants.small}>
-              <i>({props.authSession.email})</i>
-            </Text>
-          </TextContent>
-        )}
         {authProvider && (
           <TextContent>
             <Text component={TextVariants.small}>

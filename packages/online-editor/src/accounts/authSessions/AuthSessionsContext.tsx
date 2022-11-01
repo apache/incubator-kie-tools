@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-import { type } from "os";
 import * as React from "react";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { LfsFsCache } from "../../companionFs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "../../companionFs/LfsStorageService";
+import { getGithubInstanceApiUrl } from "../../github/Hooks";
+import { useCancelableEffect } from "../../reactExt/Hooks";
 import { decoder, encoder } from "../../workspace/encoderdecoder/EncoderDecoder";
+import { useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { fetchAuthenticatedGitHubUser } from "../ConnectToGitHubSection";
 
 export const AUTH_SESSION_NONE: AuthSession = {
   id: "none",
@@ -39,6 +42,11 @@ export type GitAuthSession = {
   createdAtDateISO: string;
 };
 
+export enum AuthSessionStatus {
+  VALID,
+  INVALID,
+}
+
 export type NoneAuthSession = {
   type: "none";
   name: "Unauthenticated";
@@ -50,6 +58,7 @@ export type AuthSession = GitAuthSession | NoneAuthSession;
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
+  authSessionStatus: Map<string, AuthSessionStatus>;
 };
 
 export type AuthSessionsDispatchContextType = {
@@ -75,7 +84,9 @@ const AUTH_SESSIONS_FILE_PATH = "/authSessions.json";
 const AUTH_SESSIONS_FS_NAME = "auth_sessions";
 
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
+  const authProviders = useAuthProviders();
   const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
+  const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
   const add = useCallback((authSession: AuthSession) => {
     setAuthSessions((prev) => new Map(prev?.entries() ?? []).set(authSession.id, authSession));
@@ -115,6 +126,42 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     run();
   }, [persistAuthSessions]);
 
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        async function run() {
+          const newAuthSessionStatus: [string, AuthSessionStatus][] = await Promise.all(
+            [...(authSessions?.values() ?? [])].map(async (authSession) => {
+              if (authSession.type === "git") {
+                const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId);
+                if (authProvider?.type === "github") {
+                  try {
+                    await fetchAuthenticatedGitHubUser(authSession.token, getGithubInstanceApiUrl(authProvider.domain));
+                    return [authSession.id, AuthSessionStatus.VALID];
+                  } catch (e) {
+                    return [authSession.id, AuthSessionStatus.INVALID];
+                  }
+                } else {
+                  return [authSession.id, AuthSessionStatus.VALID];
+                }
+              } else {
+                return [authSession.id, AuthSessionStatus.VALID];
+              }
+            })
+          );
+
+          if (canceled.get()) {
+            return;
+          }
+
+          setAuthSessionStatus(new Map(newAuthSessionStatus));
+        }
+        run();
+      },
+      [authProviders, authSessions]
+    )
+  );
+
   useEffect(() => {
     if (!authSessions) {
       return;
@@ -128,8 +175,8 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   }, [add, remove]);
 
   const value = useMemo(() => {
-    return authSessions ? { authSessions } : undefined;
-  }, [authSessions]);
+    return authSessions && authSessionStatus ? { authSessions, authSessionStatus } : undefined;
+  }, [authSessionStatus, authSessions]);
 
   return (
     <>

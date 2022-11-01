@@ -18,6 +18,7 @@ export type GitAuthProvider = {
   domain: string;
   iconPath?: string;
   enabled: boolean;
+  supportedGitRemoteDomains: string[];
 };
 
 export type AuthProvider = OpenShiftAuthProvider | GitAuthProvider;
@@ -26,6 +27,7 @@ export const AUTH_PROVIDERS: AuthProvider[] = [
   {
     id: "github_dot_com", // Primary Key
     domain: "github.com",
+    supportedGitRemoteDomains: ["github.com", "gist.github.com"],
     type: "github",
     name: "GitHub",
     enabled: true,
@@ -34,6 +36,7 @@ export const AUTH_PROVIDERS: AuthProvider[] = [
   {
     id: "gitlab_dot_com",
     domain: "gitlab.com",
+    supportedGitRemoteDomains: ["gitlab.com"],
     type: "gitlab",
     name: "GitLab",
     enabled: false,
@@ -42,6 +45,7 @@ export const AUTH_PROVIDERS: AuthProvider[] = [
   {
     id: "bitbucket_dot_com",
     domain: "bitbucket.com",
+    supportedGitRemoteDomains: ["bitbucket.com"],
     type: "bitbucket",
     name: "Bitbucket",
     enabled: false,
@@ -50,6 +54,7 @@ export const AUTH_PROVIDERS: AuthProvider[] = [
   {
     id: "github_at_ibm",
     domain: "github.ibm.com",
+    supportedGitRemoteDomains: ["github.ibm.com", "gist.github.ibm.com"],
     type: "github",
     name: "GitHub @ IBM",
     enabled: true,

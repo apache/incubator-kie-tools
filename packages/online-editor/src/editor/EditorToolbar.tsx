@@ -99,7 +99,7 @@ import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
 import { useAuthProvider } from "../accounts/authProviders/AuthProvidersContext";
 import { useOctokit } from "../github/Hooks";
-import { AccountsDispatchActionKind, useAccounts, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 
@@ -1329,7 +1329,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   changeGitAuthSessionId={changeGitAuthSessionId}
                   workspaceDescriptor={workspacePromise.data?.descriptor}
                   canPush={isGistWorkspace ? canUpdateGitHubGist : canPushToGitRepository}
-                  kind={workspacePromise.data?.descriptor.origin.kind}
                   remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
                   onPush={() => {
                     navigationStatusToggle.unblock();
@@ -1543,9 +1542,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                     actionLinks={
                                       <PushToGitHubAlertActionLinks
                                         changeGitAuthSessionId={changeGitAuthSessionId}
-                                        workspaceDescriptor={workspacePromise.data?.descriptor}
+                                        workspaceDescriptor={workspace.descriptor}
                                         canPush={canPushToGitRepository}
-                                        remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
+                                        remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`}
                                         onPush={pushToGitRepository}
                                       />
                                     }
@@ -1556,6 +1555,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 </>
                               )}
                               <DropdownItem
+                                style={{ minWidth: "400px" }}
                                 href={`https://vscode.dev/github${
                                   new URL(workspace.descriptor.origin.url).pathname.endsWith(".git")
                                     ? new URL(workspace.descriptor.origin.url).pathname.replace(".git", "")
@@ -1984,23 +1984,23 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 export function PushToGitHubAlertActionLinks(props: {
   onPush: () => void;
   canPush?: boolean;
-  kind?: WorkspaceKind;
   remoteRef?: string;
   workspaceDescriptor: WorkspaceDescriptor | undefined;
   changeGitAuthSessionId: (a: React.SetStateAction<string | undefined>, b: string | undefined) => void;
 }) {
   const accountsDispatch = useAccountsDispatch();
-  if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
+  if (props.workspaceDescriptor?.origin.kind === WorkspaceKind.GIT && !props.remoteRef) {
     throw new Error("Should specify remoteRef for GIT workspaces");
   }
 
-  const pushButton = useMemo(() => {
-    return (
+  const pushButton = useMemo(
+    () => (
       <AlertActionLink onClick={props.onPush} style={{ fontWeight: "bold" }} isDisabled={!props.canPush}>
-        {props.kind === WorkspaceKind.GIT ? `Push to '${props.remoteRef}'` : `Update Gist`}
+        {props.workspaceDescriptor?.origin.kind === WorkspaceKind.GIT ? `Push to '${props.remoteRef}'` : `Update Gist`}
       </AlertActionLink>
-    );
-  }, [props.canPush, props.kind, props.onPush, props.remoteRef]);
+    ),
+    [props]
+  );
 
   return (
     <>
@@ -2012,6 +2012,7 @@ export function PushToGitHubAlertActionLinks(props: {
           actionLinks={
             <>
               <AuthSessionSelect
+                position={SelectPosition.right}
                 isPlain={false}
                 authSessionId={props.workspaceDescriptor?.gitAuthSessionId}
                 setAuthSessionId={(newAuthSessionId) => {

@@ -28,7 +28,8 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
-import { AUTH_SESSION_NONE, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { AUTH_SESSION_NONE, useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
@@ -48,6 +49,31 @@ export function ImportFromUrlCard() {
 
   const importableUrl = useImportableUrl(url);
   const clonableUrl = useClonableUrl(url, authInfo, gitRefName);
+
+  // Select authSession based on the importableUrl domain (begin)
+  const { authSessions } = useAuthSessions();
+  const authProviders = useAuthProviders();
+
+  useEffect(() => {
+    const gitRemoteDomain = importableUrl.url?.hostname;
+    if (!gitRemoteDomain) {
+      return;
+    }
+
+    [...authSessions.values()].forEach((authSession) => {
+      if (authSession.type === "git") {
+        const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId);
+        if (
+          authProvider &&
+          authProvider.type === "github" && // Need to support other Git providers as well
+          new Set(authProvider.supportedGitRemoteDomains).has(gitRemoteDomain)
+        ) {
+          setAuthSessionId(authSession.id);
+        }
+      }
+    });
+  }, [authProviders, authSessions, importableUrl]);
+  // Select authSession based on the importableUrl domain (end)
 
   useEffect(() => {
     setGitRef(clonableUrl.selectedGitRefName ?? "");
