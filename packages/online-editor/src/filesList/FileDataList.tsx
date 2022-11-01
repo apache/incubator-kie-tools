@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "./FileLabel";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -30,7 +30,7 @@ import {
 import { Link } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
 
 const FILE_DATA_LIST_HEIGHTS = {

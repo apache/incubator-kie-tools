@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -24,11 +25,18 @@ import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/Ki
 import { useRoutes } from "../navigation/Hooks";
 import { OpenshiftDeploymentsDropdown } from "../openshift/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../settings/SettingsButton";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
 import { APP_NAME } from "../AppConstants";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
+
+  const isChromiumBased = useMemo(() => {
+    const agent = window.navigator.userAgent.toLowerCase();
+    return agent.indexOf("edg") > -1 || agent.indexOf("chrome") > -1;
+  }, []);
 
   return (
     <Page
@@ -61,6 +69,22 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                   <KieSandboxExtendedServicesIcon />
                 </PageHeaderToolsItem>
               </FlexItem>
+              {!isChromiumBased && (
+                <Tooltip
+                  className="kogito--editor__light-tooltip"
+                  key={"not-chromium"}
+                  content={"To get the best experience, please prefer using Chromium based browsers."}
+                  flipBehavior={["left"]}
+                  distance={20}
+                >
+                  <ExclamationIcon
+                    data-testid="not-chromium-icon"
+                    className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated static-opacity"
+                    id="kie-sandbox-extended-services-not-chromium-icon"
+                    style={{ cursor: "pointer" }}
+                  />
+                </Tooltip>
+              )}
             </Flex>
           </MastheadMain>
         </Masthead>

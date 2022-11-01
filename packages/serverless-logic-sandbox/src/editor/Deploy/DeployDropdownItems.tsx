@@ -37,7 +37,7 @@ import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegistry/hooks/useVirtualServiceRegistryDependencies";
 import { FileLabel } from "../../workspace/components/FileLabel";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 
 export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
   const { i18n } = useAppI18n();

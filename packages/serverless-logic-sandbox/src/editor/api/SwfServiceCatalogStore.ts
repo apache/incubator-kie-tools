@@ -40,7 +40,7 @@ import {
 } from "../../virtualServiceRegistry/VirtualServiceRegistryConstants";
 import { VirtualServiceRegistryContextType } from "../../virtualServiceRegistry/VirtualServiceRegistryContext";
 import { toVsrFunctionPathFromWorkspaceFilePath } from "../../virtualServiceRegistry/VirtualServiceRegistryPathConverter";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ArtifactWithContent, RemoteArtifactCatalogApi, UploadArtifactArgs } from "./RemoteServiceRegistryCatalogApi";
 
 export class SwfServiceCatalogStore {
@@ -177,6 +177,7 @@ export class SwfServiceCatalogStore {
     // - Show specs from same workspace
     // - Hide current file workflow
     // - Hide specs from other workspaces
+    // - Hide workflows from the same workspace since they need to be added as subFlowRefs
     return vsrWorkspacesWithEagerFiles.flat().filter((file) => {
       return (
         file.content &&

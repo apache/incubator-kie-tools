@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Holder } from "../reactExt/Hooks";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { useCallback } from "react";
-import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useCompanionFsFileSyncedWithWorkspaceFile } from "../companionFs/CompanionFsHooks";
 import { usePreviewSvgs } from "./PreviewSvgsContext";
 

@@ -24,9 +24,9 @@ describe("Open from source test", () => {
 
   it("should open BPMN file from GitHub url", () => {
     // open BPMN file from github url
+    cy.get("[data-ouia-component-id='import-from-url-input']").type(SAMPLES_URL + "testProcess.bpmn");
     cy.get("[data-ouia-component-id='import-from-url-button']").should("be.enabled");
-    cy.get("[data-ouia-component-id='import-url-form-input']").type(SAMPLES_URL + "testProcess.bpmn");
-    cy.get("[data-ouia-component-id='import-url-form-input']").should("have.value", SAMPLES_URL + "testProcess.bpmn");
+    cy.get("[data-ouia-component-id='import-from-url-input']").should("have.value", SAMPLES_URL + "testProcess.bpmn");
     cy.get("[data-ouia-component-id='import-from-url-button']", { timeout: 15000 }).should("be.enabled");
     cy.get("[data-ouia-component-id='import-from-url-button']").click();
 
@@ -55,9 +55,9 @@ describe("Open from source test", () => {
 
   it("should open DMN file from GitHub url", () => {
     // open DMN file from github url
+    cy.get("[data-ouia-component-id='import-from-url-input']").type(SAMPLES_URL + "testModel.dmn");
     cy.get("[data-ouia-component-id='import-from-url-button']").should("be.enabled");
-    cy.get("[data-ouia-component-id='import-url-form-input']").type(SAMPLES_URL + "testModel.dmn");
-    cy.get("[data-ouia-component-id='import-url-form-input']").should("have.value", SAMPLES_URL + "testModel.dmn");
+    cy.get("[data-ouia-component-id='import-from-url-input']").should("have.value", SAMPLES_URL + "testModel.dmn");
     cy.get("[data-ouia-component-id='import-from-url-button']", { timeout: 15000 }).should("be.enabled");
     cy.get("[data-ouia-component-id='import-from-url-button']").click();
 
@@ -89,9 +89,9 @@ describe("Open from source test", () => {
 
   it("should open PMML file from GitHub url", () => {
     // open PMML file from github url
+    cy.get("[data-ouia-component-id='import-from-url-input']").type(SAMPLES_URL + "testScoreCard.pmml");
     cy.get("[data-ouia-component-id='import-from-url-button']").should("be.enabled");
-    cy.get("[data-ouia-component-id='import-url-form-input']").type(SAMPLES_URL + "testScoreCard.pmml");
-    cy.get("[data-ouia-component-id='import-url-form-input']").should("have.value", SAMPLES_URL + "testScoreCard.pmml");
+    cy.get("[data-ouia-component-id='import-from-url-input']").should("have.value", SAMPLES_URL + "testScoreCard.pmml");
     cy.get("[data-ouia-component-id='import-from-url-button']", { timeout: 15000 }).should("be.enabled");
     cy.get("[data-ouia-component-id='import-from-url-button']").click();
 

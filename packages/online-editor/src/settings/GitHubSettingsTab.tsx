@@ -254,9 +254,10 @@ export function GitHubSettingsTab() {
                   {/*<br />*/}
                   <>
                     <p>
-                      <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}</span>
+                      <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}&nbsp;</span>
                       <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
                         {i18n.githubTokenModal.body.learnMore}
+                        &nbsp;
                         <ExternalLinkAltIcon className="pf-u-mx-sm" />
                       </a>
                     </p>
@@ -265,6 +266,7 @@ export function GitHubSettingsTab() {
                   <h3>
                     <a href={GITHUB_TOKENS_URL} target={"_blank"}>
                       {i18n.githubTokenModal.footer.createNewToken}
+                      &nbsp;
                       <ExternalLinkAltIcon className="pf-u-mx-sm" />
                     </a>
                   </h3>

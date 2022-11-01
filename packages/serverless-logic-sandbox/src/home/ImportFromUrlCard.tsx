@@ -23,11 +23,13 @@ import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
   const history = useHistory();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const [url, setUrl] = useState("");
 
   const importFromUrl = useCallback(() => {
@@ -37,7 +39,10 @@ export function ImportFromUrlCard() {
     });
   }, [history, routes, url]);
 
-  const importableUrl = useImportableUrl(url);
+  const importableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: url,
+  });
 
   const buttonLabel = useMemo(() => {
     if (importableUrl.type === UrlType.GITHUB || importableUrl.type === UrlType.GIST) {

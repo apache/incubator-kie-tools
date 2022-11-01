@@ -15,12 +15,12 @@
  */
 
 import { isJson, isSpec } from "../../extension";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { generateOpenApiSpec } from "./BaseOpenApiSpec";
 import * as yaml from "yaml";
-import { decoder } from "../../workspace/encoderdecoder/EncoderDecoder";
 import { toWorkspaceIdFromVsrFunctionPath } from "../VirtualServiceRegistryPathConverter";
 import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../VirtualServiceRegistryConstants";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 export class VirtualServiceRegistryFunction {
   constructor(private readonly file: WorkspaceFile) {}

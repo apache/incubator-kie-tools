@@ -68,21 +68,20 @@ import {
   useNavigationStatusToggle,
   useRoutes,
 } from "../navigation/Hooks";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
 import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
-import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
-import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import {
   GIST_DEFAULT_BRANCH,
   GIST_ORIGIN_REMOTE_NAME,
   GIT_ORIGIN_REMOTE_NAME,
-} from "../workspace/constants/GitConstants";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+} from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { FileSwitcher } from "./FileSwitcher";
@@ -90,10 +89,11 @@ import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
-import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
-import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -147,15 +147,21 @@ export function EditorToolbar(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
-  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
+  const workspaceImportableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: workspacePromise.data?.descriptor.origin.url?.toString(),
+  });
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
-  const [flushes] = useSharedValue(workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes);
+  const [flushes] = useSharedValue(
+    workspaces.workspacesSharedWorker.workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes
+  );
 
   const isSaved = useMemo(() => {
     return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));

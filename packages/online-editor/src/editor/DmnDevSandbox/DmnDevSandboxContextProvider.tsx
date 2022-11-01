@@ -24,8 +24,8 @@ import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/worker/api/WorkspaceDescriptor";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 interface Props {
   children: React.ReactNode;
@@ -86,7 +86,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
           workspaceZipBlob: zipBlob,
           config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>
-            routes.importModel.url({
+            routes.import.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: {},
               queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
@@ -98,7 +98,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return false;
       }
     },
-    [settings.openshift.config, settingsDispatch.openshift.service, workspaces, routes.importModel]
+    [settings.openshift.config, settingsDispatch.openshift.service, workspaces, routes.import]
   );
 
   useEffect(() => {

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { ActiveWorkspace } from "../model/ActiveWorkspace";
-import { useWorkspaceGitStatusPromise } from "../hooks/WorkspaceHooks";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { useWorkspaceGitStatusPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
-import { PromiseStateWrapper } from "../hooks/PromiseState";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { usePrevious } from "../../reactExt/Hooks";
+import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
 import { matchPath } from "react-router";
 

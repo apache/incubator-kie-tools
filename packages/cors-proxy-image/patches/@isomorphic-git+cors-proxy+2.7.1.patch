@@ -1,8 +1,19 @@
 diff --git a/node_modules/@isomorphic-git/cors-proxy/index.js b/node_modules/@isomorphic-git/cors-proxy/index.js
-index 68241c8..a29ffad 100644
+index 68241c8..5ead595 100644
 --- a/node_modules/@isomorphic-git/cors-proxy/index.js
 +++ b/node_modules/@isomorphic-git/cors-proxy/index.js
-@@ -16,9 +16,7 @@ async function service (req, res) {
+@@ -10,15 +10,18 @@ async function service (req, res) {
+   middleware(req, res, () => {
+     let u = url.parse(req.url, true)
+ 
++    if (u.pathname === '/ping') {
++      res.setHeader('content-type', 'text/plain')
++      return send(res, 200, "pong")
++    }
++
+     if (u.pathname === '/') {
+       res.setHeader('content-type', 'text/html')
+       let html = `<!DOCTYPE html>
        <html>
          <title>@isomorphic-git/cors-proxy</title>
          <h1>@isomorphic-git/cors-proxy</h1>
@@ -13,3 +24,28 @@ index 68241c8..a29ffad 100644
          <p>The source code is hosted on Github at <a href="https://github.com/isomorphic-git/cors-proxy">https://github.com/isomorphic-git/cors-proxy</a></p>
          <p>It can also be installed from npm with <code>npm install <a href="https://npmjs.org/package/${pkg.name}">@isomorphic-git/cors-proxy</a></code></p>
  
+diff --git a/node_modules/@isomorphic-git/cors-proxy/middleware.js b/node_modules/@isomorphic-git/cors-proxy/middleware.js
+index 582a37b..a9ce8a0 100644
+--- a/node_modules/@isomorphic-git/cors-proxy/middleware.js
++++ b/node_modules/@isomorphic-git/cors-proxy/middleware.js
+@@ -100,7 +100,7 @@ module.exports = ({ origin, insecure_origins = [], authorization = noop } = {})
+       next()
+     }
+   }
+-  function middleware (req, res) {
++  function middleware (req, res, next) {
+     let u = url.parse(req.url, true)
+ 
+ 
+@@ -147,7 +147,10 @@ module.exports = ({ origin, insecure_origins = [], authorization = noop } = {})
+         res.setHeader('x-redirected-url', f.url)
+       }
+       f.body.pipe(res)
+-    })
++    }).catch(e => {
++      console.error(e);
++      next();
++    });
+   }
+   const cors = microCors({
+     allowHeaders,

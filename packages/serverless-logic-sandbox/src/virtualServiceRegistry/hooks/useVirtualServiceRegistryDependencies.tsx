@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { isServerlessWorkflow } from "../../extension";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { getVirtualServiceRegistryDependencies } from "../models/VirtualServiceRegistryFunction";
 import { useVirtualServiceRegistry } from "../VirtualServiceRegistryContext";
 

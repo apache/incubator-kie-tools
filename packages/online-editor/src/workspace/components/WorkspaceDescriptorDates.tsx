@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { RelativeDate } from "../../dates/RelativeDate";
 

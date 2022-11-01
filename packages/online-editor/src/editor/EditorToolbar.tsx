@@ -50,7 +50,7 @@ import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
@@ -64,7 +64,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../filesList/FileLabel";
-import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { OutlinedHddIcon } from "@patternfly/react-icons/dist/js/icons/outlined-hdd-icon";
 import { DesktopIcon } from "@patternfly/react-icons/dist/js/icons/desktop-icon";
 import { FileSwitcher } from "./FileSwitcher";
@@ -76,24 +76,23 @@ import {
   GIST_DEFAULT_BRANCH,
   GIST_ORIGIN_REMOTE_NAME,
   GIT_ORIGIN_REMOTE_NAME,
-} from "../workspace/constants/GitConstants";
-import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
-import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+} from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
+import { UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Location } from "history";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { useGitHubAuthInfo } from "../github/Hooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
-import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
@@ -161,7 +160,9 @@ export function EditorToolbar(props: Props) {
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
-  const [flushes] = useSharedValue(workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes);
+  const [flushes] = useSharedValue(
+    workspaces.workspacesSharedWorker.workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes
+  );
 
   const isSaved = useMemo(() => {
     return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));
@@ -182,7 +183,7 @@ export function EditorToolbar(props: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST) {
+        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST_DOT_GITHUB_DOT_COM) {
           return;
         }
 
@@ -568,8 +569,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       // Redirect to import workspace
       navigationBlockersBypass.execute(() => {
         history.push({
-          pathname: routes.importModel.path({}),
-          search: routes.importModel.queryString({ url: gist.data.html_url }),
+          pathname: routes.import.path({}),
+          search: routes.import.queryString({ url: gist.data.html_url }),
         });
       });
     } catch (err) {
@@ -586,7 +587,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.workspaceFile.workspaceId,
     navigationBlockersBypass,
     history,
-    routes.importModel,
+    routes.import,
     errorAlert,
   ]);
 
@@ -1055,10 +1056,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         });
 
         history.push({
-          pathname: routes.importModel.path({}),
-          search: routes.importModel.queryString({
+          pathname: routes.import.path({}),
+          search: routes.import.queryString({
             url: `${workspacePromise.data.descriptor.origin.url}`,
             branch: newBranchName,
+            // Use same authSource from this workspace.
           }),
         });
       } finally {
@@ -1380,7 +1382,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
                 {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&
-                  workspaceImportableUrl.type === UrlType.GITHUB && (
+                  workspaceImportableUrl.type === UrlType.GITHUB_DOT_COM && (
                     <FlexItem
                       style={{
                         minWidth: "137px",

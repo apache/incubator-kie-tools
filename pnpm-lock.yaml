@@ -3208,8 +3208,10 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/react-hooks": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
+      "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
@@ -3219,7 +3221,6 @@ importers:
       "@kie-tools/form-dmn": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
-      "@kie-tools/kie-sandbox-fs": workspace:*
       "@kie-tools/pmml-editor": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -3236,7 +3237,6 @@ importers:
       "@types/history": ^4.7.3
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
-      "@types/minimatch": ^3.0.4
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
@@ -3245,7 +3245,6 @@ importers:
       "@types/react-window": ^1.8.5
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
-      "@types/uuid": ^8.3.0
       bowser: ^2.10.0
       buffer: ^6.0.3
       copy-webpack-plugin: ^8.1.1
@@ -3261,10 +3260,7 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      jszip: ^3.7.1
-      minimatch: ^3.0.4
       moment: ^2.29.4
-      patch-package: ^6.4.7
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -3276,7 +3272,6 @@ importers:
       start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
       typescript: ^4.4.2
-      uuid: ^8.3.2
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
       webpack-dev-server: ^4.7.3
@@ -3291,14 +3286,15 @@ importers:
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/react-hooks": link:../react-hooks
       "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
       "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
-      "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
       "@kie-tools/pmml-editor": link:../pmml-editor
       "@kie-tools/unitables": link:../unitables
       "@kie-tools/unitables-dmn": link:../unitables-dmn
@@ -3311,8 +3307,6 @@ importers:
       buffer: 6.0.3
       history: 4.10.1
       isomorphic-git: 1.11.1
-      jszip: 3.7.1
-      minimatch: 3.0.5
       moment: 2.29.4
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -3321,7 +3315,6 @@ importers:
       react-router-dom: 5.3.0_react@17.0.2
       react-virtualized-auto-sizer: 1.0.7_sfoxds7t5ydpegc3knd667wn6m
       react-window: 1.8.7_sfoxds7t5ydpegc3knd667wn6m
-      uuid: 8.3.2
     devDependencies:
       "@babel/core": 7.16.12
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
@@ -3338,7 +3331,6 @@ importers:
       "@types/history": 4.7.5
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
-      "@types/minimatch": 3.0.4
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
@@ -3347,7 +3339,6 @@ importers:
       "@types/react-window": 1.8.5
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
-      "@types/uuid": 8.3.0
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       cypress: 10.7.0
       cypress-file-upload: 5.0.8_cypress@10.7.0
@@ -3359,7 +3350,6 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
-      patch-package: 6.4.7
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
@@ -3623,6 +3613,51 @@ importers:
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
 
+  packages/react-hooks:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@testing-library/jest-dom": ^5.16.1
+      "@testing-library/react": ^11.2.6
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/react": ^17.0.6
+      "@types/testing-library__jest-dom": ^5.9.1
+      "@types/testing-library__react": ^9.1.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      react: ^17.0.2
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+    dependencies:
+      react: 17.0.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@testing-library/jest-dom": 5.16.1
+      "@testing-library/react": 11.2.7_react@17.0.2
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/react": 17.0.21
+      "@types/testing-library__jest-dom": 5.9.5
+      "@types/testing-library__react": 9.1.3
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      typescript: 4.5.4
+
   packages/root-env:
     specifiers: {}
 
@@ -3642,20 +3677,19 @@ importers:
       "@babel/preset-react": ^7.16.0
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/guided-tour": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/keyboard-shortcuts": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/react-hooks": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
       "@kie-tools/dashbuilder-editor": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
-      "@kie-tools/kie-sandbox-fs": workspace:*
       "@kie-tools/openjdk11-mvn-image-env": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
@@ -3678,13 +3712,10 @@ importers:
       "@types/history": ^4.7.3
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
-      "@types/js-yaml": ^4.0.5
-      "@types/minimatch": ^3.0.4
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
-      "@types/uuid": ^8.3.0
       axios: ^0.27.2
       bowser: ^2.10.0
       buffer: ^6.0.3
@@ -3692,22 +3723,18 @@ importers:
       cypress: ^10.7.0
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      dexie: ^3.2.2
       history: ^4.9.0
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
-      isomorphic-git: ^1.11.1
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      js-yaml: ^4.1.0
       jszip: ^3.7.1
-      minimatch: ^3.0.4
       moment: ^2.29.4
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
-      patch-package: ^6.4.7
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -3717,8 +3744,6 @@ importers:
       start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
       typescript: ^4.4.2
-      uuid: ^8.3.2
-      vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
@@ -3728,17 +3753,16 @@ importers:
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope-bus": link:../envelope-bus
-      "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools-core/react-hooks": link:../react-hooks
+      "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
       "@kie-tools/dashbuilder-editor": link:../dashbuilder-editor
       "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
-      "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
       "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
@@ -3753,26 +3777,20 @@ importers:
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-tokens": 4.33.1
       "@rhoas/registry-instance-sdk": 0.34.1
-      "@types/js-yaml": 4.0.5
       axios: 0.27.2
       bowser: 2.11.0
       buffer: 6.0.3
+      dexie: 3.2.2
       history: 4.10.1
-      isomorphic-git: 1.11.1
-      js-yaml: 4.1.0
       jszip: 3.7.1
-      minimatch: 3.0.5
       moment: 2.29.4
       monaco-editor: 0.33.0
-      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       openapi-types: 7.2.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-dropzone: 11.4.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
-      uuid: 8.3.2
-      vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
       yaml: 2.0.1
     devDependencies:
@@ -3790,12 +3808,10 @@ importers:
       "@types/history": 4.7.5
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
-      "@types/minimatch": 3.0.4
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
-      "@types/uuid": 8.3.0
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       cypress: 10.7.0
       cypress-iframe: 1.0.1
@@ -3805,8 +3821,7 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
-      monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
-      patch-package: 6.4.7
+      monaco-editor-webpack-plugin: 7.0.1_eodoae2vto4nf5xogfjxixxxnq
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
@@ -5671,6 +5686,79 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      typescript: 4.5.4
+
+  packages/workspaces-git-fs:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/react-hooks": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/emscripten-fs": ^0.0.2
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/kie-sandbox-fs": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@testing-library/jest-dom": ^5.16.1
+      "@testing-library/react": ^11.2.6
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/minimatch": ^3.0.4
+      "@types/react": ^17.0.6
+      "@types/react-router": ^5.1.14
+      "@types/testing-library__jest-dom": ^5.9.1
+      "@types/testing-library__react": ^9.1.2
+      "@types/uuid": ^8.3.0
+      isomorphic-git: ^1.11.1
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      jszip: ^3.7.1
+      minimatch: ^3.0.4
+      patch-package: ^6.4.7
+      react: ^17.0.2
+      react-router: ^5.2.1
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      uuid: ^8.3.2
+    dependencies:
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/react-hooks": link:../react-hooks
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/emscripten-fs": 0.0.2
+      "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
+      isomorphic-git: 1.11.1
+      jszip: 3.7.1
+      minimatch: 3.0.5
+      react: 17.0.2
+      react-router: 5.2.1_react@17.0.2
+      uuid: 8.3.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@testing-library/jest-dom": 5.16.1
+      "@testing-library/react": 11.2.7_react@17.0.2
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/minimatch": 3.0.4
+      "@types/react": 17.0.21
+      "@types/react-router": 5.1.14
+      "@types/testing-library__jest-dom": 5.9.5
+      "@types/testing-library__react": 9.1.3
+      "@types/uuid": 8.3.0
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      patch-package: 6.4.7
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
@@ -11934,7 +12022,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -11943,7 +12031,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -13914,7 +14002,8 @@ packages:
     dev: true
 
   /concat-map/0.0.1:
-    resolution: { integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s= }
+    resolution:
+      { integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg== }
 
   /concat-stream/1.6.2:
     resolution:
@@ -15716,7 +15805,8 @@ packages:
     dev: true
 
   /diff3/0.0.3:
-    resolution: { integrity: sha1-1OXDpM305f4SEatC5pP8tDIVgPw= }
+    resolution:
+      { integrity: sha512-iSq8ngPOt0K53A6eVr4d5Kn6GNrM2nQZtC740pzIriHtn4pOQ2lyzEXQMBeVcWERN0ye7fhBsk9PbLLQOnUx/g== }
     dev: false
 
   /dir-glob/3.0.1:
@@ -17331,7 +17421,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
+  /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -17340,6 +17430,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -18333,7 +18425,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -18512,7 +18604,8 @@ packages:
     optional: true
 
   /immediate/3.0.6:
-    resolution: { integrity: sha1-nbHb0Pr43m++D13V5Wu2BigN5ps= }
+    resolution:
+      { integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ== }
 
   /immer/9.0.7:
     resolution:
@@ -21132,15 +21225,16 @@ packages:
     engines: { node: ">=4" }
     dev: true
 
-  /mini-create-react-context/0.4.1_mv67koxdvxhyejehvpcoenu3ai:
+  /mini-create-react-context/0.4.1_at7mkepldmzoo6silmqc5bca74:
     resolution:
       { integrity: sha512-YWCYEmd5CQeHGSAKrYvXgmzzkrvssZcuuQDDeqkT+PziKGMgE+0MCCtcKbROzocGBG1meBLl2FotlRwf4gAzbQ== }
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       prop-types: ^15.0.0
       react: ^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       "@babel/runtime": 7.16.7
-      prop-types: 15.7.2
+      prop-types: 15.8.1
       react: 17.0.2
       tiny-warning: 1.0.3
 
@@ -21405,6 +21499,19 @@ packages:
       loader-utils: 2.0.2
       monaco-editor: 0.33.0
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      webpack: 5.70.0_webpack-cli@4.7.0
+    dev: true
+
+  /monaco-editor-webpack-plugin/7.0.1_eodoae2vto4nf5xogfjxixxxnq:
+    resolution:
+      { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
+    peerDependencies:
+      monaco-editor: ">= 0.31.0"
+      monaco-yaml: "*"
+      webpack: ^4.5.0 || 5.x
+    dependencies:
+      loader-utils: 2.0.2
+      monaco-editor: 0.33.0
       webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
@@ -24066,9 +24173,9 @@ packages:
       history: 4.10.1
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
-      mini-create-react-context: 0.4.1_mv67koxdvxhyejehvpcoenu3ai
+      mini-create-react-context: 0.4.1_at7mkepldmzoo6silmqc5bca74
       path-to-regexp: 1.8.0
-      prop-types: 15.7.2
+      prop-types: 15.8.1
       react: 17.0.2
       react-is: 16.13.1
       tiny-invariant: 1.1.0
@@ -25192,7 +25299,8 @@ packages:
     dev: true
 
   /set-immediate-shim/1.0.1:
-    resolution: { integrity: sha1-SysbJ+uAip+NzEgaWOXlb1mfP2E= }
+    resolution:
+      { integrity: sha512-Li5AOqrZWCVA2n5kryzEmqai6bKSIvpz5oUJHPVj6+dsbD3X1ixtsY5tEnsaNpH3pFAHmG8eIHUrtEtohrg+UQ== }
     engines: { node: ">=0.10.0" }
 
   /set-value/2.0.1:

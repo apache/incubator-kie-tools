@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { LfsStorageFile, LfsStorageService } from "./LfsStorageService";
-import { LfsFsCache } from "./LfsFsCache";
-import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
+import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
+import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { join } from "path";
 
 export class CompanionFsService {

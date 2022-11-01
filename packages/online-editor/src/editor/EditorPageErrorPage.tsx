@@ -15,8 +15,7 @@
  */
 
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateBody } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { EmptyStateIcon } from "@patternfly/react-core";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -25,10 +24,12 @@ import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export interface Props {
   errors: string[];
   path: string;
+  title: string;
 }
 
 export function EditorPageErrorPage(props: Props) {
@@ -45,22 +46,15 @@ export function EditorPageErrorPage(props: Props) {
   }, [props.errors]);
 
   return (
-    <PageSection isFilled={true} padding={{ default: "noPadding" }}>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
+    <Bullseye>
       <EmptyState>
         <EmptyStateIcon icon={ExclamationTriangleIcon} />
         <TextContent>
-          <Text component={"h2"}>{"Can't open file"}</Text>
+          <Text component={"h2"}>{props.title}</Text>
         </TextContent>
         <EmptyStateBody>
           <PageSection>
-            <TextContent style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-              {`There was an error opening "${props.path}".`}
-            </TextContent>
+            <TextContent style={{ textOverflow: "ellipsis", overflow: "hidden" }}>{props.path}</TextContent>
             <br />
             {props.errors && (
               <>
@@ -87,6 +81,6 @@ export function EditorPageErrorPage(props: Props) {
           Return home
         </Button>
       </EmptyState>
-    </PageSection>
+    </Bullseye>
   );
 }
