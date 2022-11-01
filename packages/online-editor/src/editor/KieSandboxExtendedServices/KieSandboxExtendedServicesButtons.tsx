@@ -37,11 +37,11 @@ import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServic
 import { useSettings } from "../../settings/SettingsContext";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";

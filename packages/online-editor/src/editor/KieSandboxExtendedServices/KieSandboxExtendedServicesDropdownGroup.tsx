@@ -29,7 +29,7 @@ import {
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 
 export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();

@@ -29,11 +29,6 @@ import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettingsDispatch } from "../settings/SettingsContext";
-import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
-import { PromiseStateStatus } from "../workspace/hooks/PromiseState";
-import { LocalFile } from "../workspace/worker/api/LocalFile";
-import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
 import {
   ImportableUrl,
   isPotentiallyGit,
@@ -45,6 +40,11 @@ import {
 } from "./ImportableUrlHooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
+import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();

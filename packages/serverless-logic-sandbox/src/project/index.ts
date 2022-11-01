@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 export const PROJECT_FILES = {
   pomXml: "pom.xml",

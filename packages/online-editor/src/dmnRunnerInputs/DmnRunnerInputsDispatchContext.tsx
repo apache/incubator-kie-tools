@@ -17,7 +17,7 @@
 import { createContext, useContext } from "react";
 import { InputRow } from "@kie-tools/form-dmn";
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 interface DmnInputsDispatchContextType {
   dmnRunnerInputsService: DmnRunnerInputsService;

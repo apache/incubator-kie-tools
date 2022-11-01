@@ -32,7 +32,7 @@ import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { FileLabel } from "../../workspace/components/FileLabel";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 
 export function useDeployDropdownItems(props: { workspace: ActiveWorkspace | undefined }) {
   const settings = useSettings();

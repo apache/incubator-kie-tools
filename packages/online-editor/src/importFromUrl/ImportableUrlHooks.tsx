@@ -22,18 +22,17 @@ import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
 import { AuthSource, AuthSourceKeys, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useCancelableEffect } from "../reactExt/Hooks";
 import { useSettings } from "../settings/SettingsContext";
-import { PromiseStateStatus, useLivePromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
-import { GitServerRef } from "../workspace/worker/api/GitServerRef";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import CheckCircleIcon from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefTypeIcon } from "../gitRefs/GitRefs";
+import { getGitRefName, getGitRefType, GitRefTypeIcon } from "../gitRefs/GitRefs";
+import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
 
 export enum UrlType {
   //git

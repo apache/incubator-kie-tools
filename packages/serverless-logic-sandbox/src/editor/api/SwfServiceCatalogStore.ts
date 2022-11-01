@@ -38,7 +38,7 @@ import {
   VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX,
 } from "../../virtualServiceRegistry/VirtualServiceRegistryConstants";
 import { VirtualServiceRegistryContextType } from "../../virtualServiceRegistry/VirtualServiceRegistryContext";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ArtifactWithContent, RemoteArtifactCatalogApi, UploadArtifactArgs } from "./RemoteServiceRegistryCatalogApi";
 
 export class SwfServiceCatalogStore {

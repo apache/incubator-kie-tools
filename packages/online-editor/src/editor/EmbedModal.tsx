@@ -21,9 +21,9 @@ import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../i18n";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
-import { GistOrigin, WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { GistOrigin, WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 

@@ -25,8 +25,6 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
