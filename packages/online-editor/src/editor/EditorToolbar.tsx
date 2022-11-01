@@ -1487,6 +1487,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         }}
                       >
                         <Dropdown
+                          className={"kie-tools--masthead-hoverable"}
                           isPlain={true}
                           onSelect={() => setVsCodeDropdownOpen(false)}
                           isOpen={isVsCodeDropdownOpen}

@@ -60,6 +60,7 @@ export function AuthSessionSelect(props: {
         props.setAuthSessionId(value as string);
         setAuthSessionSelectorOpen(false);
       }}
+      className={props.isPlain ? "kie-tools--masthead-hoverable" : ""}
       menuAppendTo={"parent"}
       maxHeight={"400px"}
       style={{ minWidth: "400px" }}
