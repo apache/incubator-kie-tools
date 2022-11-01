@@ -100,9 +100,11 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
               createdAtDateISO: new Date().toISOString(),
             };
 
-            authSessionsDispatch.add(newAuthSession);
-
-            setNewAuthSession({ data: newAuthSession });
+            // batch updates
+            setTimeout(() => {
+              authSessionsDispatch.add(newAuthSession);
+              setNewAuthSession({ data: newAuthSession });
+            }, 0);
           })
           .catch((e) => {
             if (canceled.get()) {
