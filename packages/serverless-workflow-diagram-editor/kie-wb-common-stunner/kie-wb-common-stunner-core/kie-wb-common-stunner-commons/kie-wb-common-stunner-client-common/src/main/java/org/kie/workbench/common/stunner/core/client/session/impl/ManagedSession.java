@@ -35,9 +35,12 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.mvp.Command;
@@ -389,5 +392,15 @@ public class ManagedSession
             this.type = type;
             this.qualifier = qualifier;
         }
+    }
+
+    @Override
+    public CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return null;
+    }
+
+    @Override
+    public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
+        return null;
     }
 }

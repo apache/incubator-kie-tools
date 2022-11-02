@@ -20,9 +20,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class ViewerSession
         extends AbstractSession<AbstractCanvas, AbstractCanvasHandler> {
@@ -31,11 +28,7 @@ public abstract class ViewerSession
         super();
     }
 
-    public abstract CanvasCommandManager<AbstractCanvasHandler> getCommandManager();
-
     public abstract MediatorsControl<AbstractCanvas> getMediatorsControl();
 
     public abstract AlertsControl<AbstractCanvas> getAlertsControl();
-
-    public abstract SelectionControl<AbstractCanvasHandler, Element> getSelectionControl();
 }

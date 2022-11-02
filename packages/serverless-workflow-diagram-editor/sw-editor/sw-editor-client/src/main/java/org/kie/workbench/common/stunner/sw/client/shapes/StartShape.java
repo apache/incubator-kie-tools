@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import elemental2.dom.DomGlobal;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
@@ -45,9 +44,6 @@ public class StartShape extends NodeShapeImpl {
 
             @Override
             public StartShapeView getShapeView() {
-                if (shape.getMagnets() != null) {
-                    shape.getMagnets().getMagnet(3).setRx(23);
-                }
                 return shape;
             }
         });

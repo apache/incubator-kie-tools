@@ -17,13 +17,11 @@
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import elemental2.dom.DomGlobal;
 
 public class StartShapeView extends ServerlessWorkflowBasicShape<StartShapeView> {
 
     public StartShapeView() {
         super(new MultiPath()
-                      .setX(25)
                       .circle(25)
                       .setDraggable(false)
                       .setID("start")

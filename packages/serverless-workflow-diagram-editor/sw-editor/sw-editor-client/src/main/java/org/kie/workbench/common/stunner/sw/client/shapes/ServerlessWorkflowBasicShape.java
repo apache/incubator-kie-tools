@@ -24,7 +24,7 @@ public abstract class ServerlessWorkflowBasicShape<T extends ServerlessWorkflowB
 
     public ServerlessWorkflowBasicShape(MultiPath path) {
         super(path, new WiresLayoutContainer());
-        setEventHandlerManager(new ViewEventHandlerManager(getShape(), ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES));
+        setEventHandlerManager(new ViewEventHandlerManager(getShape(), getShape(), ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES));
 
         getShape().setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
