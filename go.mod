@@ -6,7 +6,6 @@ require (
 	github.com/go-logr/logr v1.2.3
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
-	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.20.1
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
@@ -25,6 +24,8 @@ require (
 
 require (
 	github.com/RHsyseng/operator-utils v1.4.11
+	github.com/kiegroup/container-builder v0.0.0-20221024122349-96342f7cc7cb
+	github.com/onsi/ginkgo v1.16.5
 	github.com/openshift/api v0.0.0-20211209135129-c58d9f695577
 )
 
@@ -62,7 +63,6 @@ require (
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/kiegroup/container-builder v0.0.0-20221024122349-96342f7cc7cb // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2 // indirect
@@ -71,13 +71,11 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
-	github.com/operator-framework/operator-lib v0.11.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.13.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
-	github.com/ricardozanini/kogito-builder v0.0.0-20221011121056-f1b666583d6c // indirect
 	github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
