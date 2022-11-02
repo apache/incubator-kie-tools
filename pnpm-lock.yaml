@@ -2223,14 +2223,14 @@ importers:
 
   packages/extended-services:
     specifiers:
-      "@kie-tools/jitexecutor-native": 1.12.0-Final
+      "@kie-tools/jitexecutor-native": 1.28.0-Final
       "@kie-tools/root-env": workspace:*
       cross-env: ^7.0.3
       js-yaml: ^4.1.0
       rimraf: ^3.0.2
       run-script-os: ^1.1.6
     dependencies:
-      "@kie-tools/jitexecutor-native": 1.12.0-Final
+      "@kie-tools/jitexecutor-native": 1.28.0-Final
     devDependencies:
       "@kie-tools/root-env": link:../root-env
       cross-env: 7.0.3
@@ -8193,9 +8193,9 @@ packages:
       { integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ== }
     dev: false
 
-  /@kie-tools/jitexecutor-native/1.12.0-Final:
+  /@kie-tools/jitexecutor-native/1.28.0-Final:
     resolution:
-      { integrity: sha512-8mglRmsYN9cYlexjY7P/S4d/5zBTXyKIMJwGc19PNQoNKgphAQQ3V8htrSJaBAyOevnyHFDRi1qQ5Zu0rXA5VQ== }
+      { integrity: sha512-RmPuVWEZK/g3458QnpXsU8xVsZ000YFQoYXmwMvJOQAK9wggrN8sUste3CDxrbaJCXH8UcwU/igSQoMc2KlYSA== }
     dev: false
 
   /@koa/cors/3.4.1:
@@ -23966,7 +23966,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /rc/1.2.8:
