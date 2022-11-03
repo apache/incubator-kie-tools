@@ -18,13 +18,11 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class ParallelStateBranch {
 
     private String name;
@@ -34,32 +32,26 @@ public class ParallelStateBranch {
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonDeserializer.class)
     private Object timeouts;
 
-    @JsOverlay
     public final String getName() {
         return name;
     }
 
-    @JsOverlay
     public final void setName(String name) {
         this.name = name;
     }
 
-    @JsOverlay
     public final ActionNode[] getActions() {
         return actions;
     }
 
-    @JsOverlay
     public final void setActions(ActionNode[] actions) {
         this.actions = actions;
     }
 
-    @JsOverlay
     public final Object getTimeouts() {
         return timeouts;
     }
 
-    @JsOverlay
     public final void setTimeouts(Object timeouts) {
         this.timeouts = timeouts;
     }

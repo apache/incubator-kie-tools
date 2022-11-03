@@ -16,11 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class ActionEventRef {
 
     private String produceEventRef;
@@ -29,52 +27,42 @@ public class ActionEventRef {
     private String data;
     private FunctionRefType invoke;
 
-    @JsOverlay
     public final String getProduceEventRef() {
         return produceEventRef;
     }
 
-    @JsOverlay
     public final void setProduceEventRef(String produceEventRef) {
         this.produceEventRef = produceEventRef;
     }
 
-    @JsOverlay
     public final String getConsumeEventRef() {
         return consumeEventRef;
     }
 
-    @JsOverlay
     public final void setConsumeEventRef(String consumeEventRef) {
         this.consumeEventRef = consumeEventRef;
     }
 
-    @JsOverlay
     public final String getConsumeEventTimeout() {
         return consumeEventTimeout;
     }
 
-    @JsOverlay
     public final void setConsumeEventTimeout(String consumeEventTimeout) {
         this.consumeEventTimeout = consumeEventTimeout;
     }
 
-    @JsOverlay
     public final String getData() {
         return data;
     }
 
-    @JsOverlay
     public final void setData(String data) {
         this.data = data;
     }
 
-    @JsOverlay
     public final FunctionRefType getInvoke() {
         return invoke;
     }
 
-    @JsOverlay
     public final void setInvoke(FunctionRefType invoke) {
         this.invoke = invoke;
     }

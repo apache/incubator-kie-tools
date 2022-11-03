@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class Function {
 
     private String name;
@@ -33,42 +31,34 @@ public class Function {
 
     private String authRef;
 
-    @JsOverlay
     public final String getName() {
         return name;
     }
 
-    @JsOverlay
     public final void setName(String name) {
         this.name = name;
     }
 
-    @JsOverlay
     public final String getOperation() {
         return operation;
     }
 
-    @JsOverlay
     public final void setOperation(String operation) {
         this.operation = operation;
     }
 
-    @JsOverlay
     public final FunctionType getType() {
         return type;
     }
 
-    @JsOverlay
     public final void setType(FunctionType type) {
         this.type = type;
     }
 
-    @JsOverlay
     public final String getAuthRef() {
         return authRef;
     }
 
-    @JsOverlay
     public final void setAuthRef(String authRef) {
         this.authRef = authRef;
     }

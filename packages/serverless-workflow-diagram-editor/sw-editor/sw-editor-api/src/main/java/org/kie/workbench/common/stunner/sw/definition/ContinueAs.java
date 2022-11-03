@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class ContinueAs {
 
     private String workflowId;
@@ -30,43 +28,34 @@ public class ContinueAs {
     private String data;
     private String workflowExecTimeout;
 
-    @JsOverlay
     public final String getWorkflowId() {
         return workflowId;
     }
-
-    @JsOverlay
 
     public final void setWorkflowId(String workflowId) {
         this.workflowId = workflowId;
     }
 
-    @JsOverlay
     public final String getVersion() {
         return version;
     }
 
-    @JsOverlay
     public final void setVersion(String version) {
         this.version = version;
     }
 
-    @JsOverlay
     public final String getData() {
         return data;
     }
 
-    @JsOverlay
     public final void setData(String data) {
         this.data = data;
     }
 
-    @JsOverlay
     public final String getWorkflowExecTimeout() {
         return workflowExecTimeout;
     }
 
-    @JsOverlay
     public final void setWorkflowExecTimeout(String workflowExecTimeout) {
         this.workflowExecTimeout = workflowExecTimeout;
     }

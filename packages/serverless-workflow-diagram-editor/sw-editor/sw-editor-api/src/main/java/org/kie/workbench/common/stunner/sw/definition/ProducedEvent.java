@@ -16,32 +16,26 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class ProducedEvent {
 
     private String eventRef;
     private String data;
 
-    @JsOverlay
     public final String getEventRef() {
         return eventRef;
     }
 
-    @JsOverlay
     public final void setEventRef(String eventRef) {
         this.eventRef = eventRef;
     }
 
-    @JsOverlay
     public final String getData() {
         return data;
     }
 
-    @JsOverlay
     public final void setData(String data) {
         this.data = data;
     }

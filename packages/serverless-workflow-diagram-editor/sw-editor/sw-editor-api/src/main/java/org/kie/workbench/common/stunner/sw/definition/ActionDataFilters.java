@@ -17,11 +17,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class ActionDataFilters {
 
     private String fromStateData;
@@ -29,42 +27,34 @@ public class ActionDataFilters {
     private String toStateData;
     private Boolean useResults;
 
-    @JsOverlay
     public final String getFromStateData() {
         return fromStateData;
     }
 
-    @JsOverlay
     public final void setFromStateData(String fromStateData) {
         this.fromStateData = fromStateData;
     }
 
-    @JsOverlay
     public final String getResults() {
         return results;
     }
 
-    @JsOverlay
     public final void setResults(String results) {
         this.results = results;
     }
 
-    @JsOverlay
     public final String getToStateData() {
         return toStateData;
     }
 
-    @JsOverlay
     public final void setToStateData(String toStateData) {
         this.toStateData = toStateData;
     }
 
-    @JsOverlay
     public final Boolean getUseResults() {
         return useResults;
     }
 
-    @JsOverlay
     public final void setUseResults(Boolean useResults) {
         this.useResults = useResults;
     }

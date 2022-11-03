@@ -17,32 +17,26 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class Correlation {
 
     private String contextAttributeName;
     private String contextAttributeValue;
 
-    @JsOverlay
     public final String getContextAttributeValue() {
         return contextAttributeValue;
     }
 
-    @JsOverlay
     public final void setContextAttributeValue(String contextAttributeValue) {
         this.contextAttributeValue = contextAttributeValue;
     }
 
-    @JsOverlay
     public final String getContextAttributeName() {
         return contextAttributeName;
     }
 
-    @JsOverlay
     public final void setContextAttributeName(String contextAttributeName) {
         this.contextAttributeName = contextAttributeName;
     }

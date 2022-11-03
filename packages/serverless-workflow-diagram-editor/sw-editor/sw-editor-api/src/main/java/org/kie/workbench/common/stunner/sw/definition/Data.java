@@ -17,21 +17,17 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class Data {
 
     private String result;
 
-    @JsOverlay
     public final String getResult() {
         return result;
     }
 
-    @JsOverlay
     public final void setResult(String result) {
         this.result = result;
     }

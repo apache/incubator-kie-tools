@@ -16,34 +16,28 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class StateTransition {
 
     private String nextState;
     private Boolean compensate;
 
-    @JsOverlay
     public final String getNextState() {
         return nextState;
     }
 
-    @JsOverlay
     public final void setNextState(String nextState) {
         this.nextState = nextState;
     }
 
-    @JsOverlay
     public final Boolean getCompensate() {
         return compensate;
     }
 
-    @JsOverlay
     public final void setCompensate(Boolean compensate) {
         this.compensate = compensate;
     }

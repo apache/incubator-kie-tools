@@ -18,15 +18,13 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeSerializer;
 
 @JSONMapper
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class StateEnd {
 
     private Boolean terminate;
@@ -38,42 +36,34 @@ public class StateEnd {
 
     private ProducedEvent[] produceEvents;
 
-    @JsOverlay
     public final Boolean getTerminate() {
         return terminate;
     }
 
-    @JsOverlay
     public final void setTerminate(Boolean terminate) {
         this.terminate = terminate;
     }
 
-    @JsOverlay
     public final Boolean getCompensate() {
         return compensate;
     }
 
-    @JsOverlay
     public final void setCompensate(Boolean compensate) {
         this.compensate = compensate;
     }
 
-    @JsOverlay
     public final Object getContinueAs() {
         return continueAs;
     }
 
-    @JsOverlay
     public final void setContinueAs(Object continueAs) {
         this.continueAs = continueAs;
     }
 
-    @JsOverlay
     public final ProducedEvent[] getProduceEvents() {
         return produceEvents;
     }
 
-    @JsOverlay
     public final void setProduceEvents(ProducedEvent[] produceEvents) {
         this.produceEvents = produceEvents;
     }

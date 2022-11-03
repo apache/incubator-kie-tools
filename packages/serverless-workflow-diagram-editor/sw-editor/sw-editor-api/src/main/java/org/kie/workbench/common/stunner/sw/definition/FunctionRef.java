@@ -18,15 +18,13 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.ArgumentsValueHolderJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ValueHolderJsonbTypeDeserializer;
 
 @JSONMapper
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class FunctionRef {
 
     private String refName;
@@ -37,42 +35,34 @@ public class FunctionRef {
     @JsonbTypeDeserializer(ValueHolderJsonbTypeDeserializer.class)
     private ValueHolder arguments;
 
-    @JsOverlay
     public final String getRefName() {
         return refName;
     }
 
-    @JsOverlay
     public final void setRefName(String refName) {
         this.refName = refName;
     }
 
-    @JsOverlay
     public final String getSelectionSet() {
         return selectionSet;
     }
 
-    @JsOverlay
     public final void setSelectionSet(String selectionSet) {
         this.selectionSet = selectionSet;
     }
 
-    @JsOverlay
     public final FunctionRefType getInvoke() {
         return invoke;
     }
 
-    @JsOverlay
     public final void setInvoke(FunctionRefType invoke) {
         this.invoke = invoke;
     }
 
-    @JsOverlay
     public final ValueHolder getArguments() {
         return arguments;
     }
 
-    @JsOverlay
     public final void setArguments(ValueHolder arguments) {
         this.arguments = arguments;
     }

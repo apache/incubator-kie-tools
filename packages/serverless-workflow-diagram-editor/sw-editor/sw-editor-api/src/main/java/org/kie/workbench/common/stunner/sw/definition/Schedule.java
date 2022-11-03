@@ -16,45 +16,37 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@JsType
 public class Schedule {
 
     private String interval;
     private String cron;
     private String timezone;
 
-    @JsOverlay
     public final String getInterval() {
         return interval;
     }
 
-    @JsOverlay
     public final void setInterval(String interval) {
         this.interval = interval;
     }
 
-    @JsOverlay
     public final String getCron() {
         return cron;
     }
 
-    @JsOverlay
     public final void setCron(String cron) {
         this.cron = cron;
     }
 
-    @JsOverlay
     public final String getTimezone() {
         return timezone;
     }
 
-    @JsOverlay
     public final void setTimezone(String timezone) {
         this.timezone = timezone;
     }
