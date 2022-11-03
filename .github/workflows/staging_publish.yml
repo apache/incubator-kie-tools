@@ -28,8 +28,8 @@ jobs:
         # This bash script returns the `tag` name for the release.
         # Will match "/refs/{tags,heads}/{tag}-prerelease"
         run: |
-          echo ::set-output name=tag::$(node -p "'${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1]")
-          echo ::set-output name=commit_sha::$(git rev-parse HEAD)
+          echo "tag=$(node -p "'${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1]")" >> $GITHUB_OUTPUT
+          echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: "Check `tag` against `package.json.version`"
         shell: bash
@@ -50,9 +50,10 @@ jobs:
 
       - name: "Generate download URL for Release assets"
         id: release_json_ext
-        shell: python
+        shell: bash
         run: |
-          print('::set-output name=download_url::' + '${{ steps.create_release_draft.outputs.html_url }}'.replace('/tag/', '/download/'));
+          url=$(echo ${{ steps.create_release_draft.outputs.html_url }} | sed "s#/tag/#/download/#")
+          echo "download_url=$url" >> $GITHUB_OUTPUT
 
   build_and_publish:
     needs: [create_release]

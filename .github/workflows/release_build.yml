@@ -13,10 +13,6 @@ on:
         type: string
         required: false
         default: "0.0.0"
-      download_asset_url:
-        type: string
-        required: false
-        default: ""
       upload_asset_url:
         type: string
         required: false
@@ -86,24 +82,24 @@ jobs:
         id: set_runners
         shell: bash
         run: |
-          echo "::set-output name=dmn_dev_sandbox_image::${{ fromJSON(inputs.runners).dmn_dev_sandbox_image }}"
-          echo "::set-output name=kie_sandbox_image::${{ fromJSON(inputs.runners).kie_sandbox_image }}"
-          echo "::set-output name=kie_sandbox_extended_services_image::${{ fromJSON(inputs.runners).kie_sandbox_extended_services_image }}"
-          echo "::set-output name=cors_proxy_image::${{ fromJSON(inputs.runners).cors_proxy_image }}"
-          echo "::set-output name=online_editor::${{ fromJSON(inputs.runners).online_editor }}"
-          echo "::set-output name=chrome_extensions::${{ fromJSON(inputs.runners).chrome_extensions }}"
-          echo "::set-output name=vscode_extensions_dev::${{ fromJSON(inputs.runners).vscode_extensions_dev }}"
-          echo "::set-output name=vscode_extensions_prod::${{ fromJSON(inputs.runners).vscode_extensions_prod }}"
-          echo "::set-output name=desktop::${{ fromJSON(inputs.runners).desktop }}"
-          echo "::set-output name=npm_packages::${{ fromJSON(inputs.runners).npm_packages }}"
-          echo "::set-output name=standalone_editors_cdn::${{ fromJSON(inputs.runners).standalone_editors_cdn }}"
-          echo "::set-output name=extended_services::${{ fromJSON(inputs.runners).extended_services }}"
-          echo "::set-output name=dashbuilder::${{ fromJSON(inputs.runners).dashbuilder }}"
-          echo "::set-output name=dashbuilder_images::${{ fromJSON(inputs.runners).dashbuilder_images }}"
-          echo "::set-output name=serverless_logic_sandbox::${{ fromJSON(inputs.runners).serverless_logic_sandbox }}"
-          echo "::set-output name=serverless_logic_sandbox_base_image::${{ fromJSON(inputs.runners).serverless_logic_sandbox_base_image }}"
-          echo "::set-output name=openjdk11_mvn_image::${{ fromJSON(inputs.runners).openjdk11_mvn_image }}"
-          echo "::set-output name=kn_plugin_workflow::${{ fromJSON(inputs.runners).kn_plugin_workflow }}"
+          echo "dmn_dev_sandbox_image=${{ fromJSON(inputs.runners).dmn_dev_sandbox_image }}" >> $GITHUB_OUTPUT
+          echo "kie_sandbox_image=${{ fromJSON(inputs.runners).kie_sandbox_image }}" >> $GITHUB_OUTPUT
+          echo "kie_sandbox_extended_services_image=${{ fromJSON(inputs.runners).kie_sandbox_extended_services_image }}" >> $GITHUB_OUTPUT
+          echo "cors_proxy_image=${{ fromJSON(inputs.runners).cors_proxy_image }}" >> $GITHUB_OUTPUT
+          echo "online_editor=${{ fromJSON(inputs.runners).online_editor }}" >> $GITHUB_OUTPUT
+          echo "chrome_extensions=${{ fromJSON(inputs.runners).chrome_extensions }}" >> $GITHUB_OUTPUT
+          echo "vscode_extensions_dev=${{ fromJSON(inputs.runners).vscode_extensions_dev }}" >> $GITHUB_OUTPUT
+          echo "vscode_extensions_prod=${{ fromJSON(inputs.runners).vscode_extensions_prod }}" >> $GITHUB_OUTPUT
+          echo "desktop=${{ fromJSON(inputs.runners).desktop }}" >> $GITHUB_OUTPUT
+          echo "npm_packages=${{ fromJSON(inputs.runners).npm_packages }}" >> $GITHUB_OUTPUT
+          echo "standalone_editors_cdn=${{ fromJSON(inputs.runners).standalone_editors_cdn }}" >> $GITHUB_OUTPUT
+          echo "extended_services=${{ fromJSON(inputs.runners).extended_services }}" >> $GITHUB_OUTPUT
+          echo "dashbuilder=${{ fromJSON(inputs.runners).dashbuilder }}" >> $GITHUB_OUTPUT
+          echo "dashbuilder_images=${{ fromJSON(inputs.runners).dashbuilder_images }}" >> $GITHUB_OUTPUT
+          echo "serverless_logic_sandbox=${{ fromJSON(inputs.runners).serverless_logic_sandbox }}" >> $GITHUB_OUTPUT
+          echo "serverless_logic_sandbox_base_image=${{ fromJSON(inputs.runners).serverless_logic_sandbox_base_image }}" >> $GITHUB_OUTPUT
+          echo "openjdk11_mvn_image=${{ fromJSON(inputs.runners).openjdk11_mvn_image }}" >> $GITHUB_OUTPUT
+          echo "kn_plugin_workflow=${{ fromJSON(inputs.runners).kn_plugin_workflow }}" >> $GITHUB_OUTPUT
 
       - name: "Print Runners"
         shell: bash
@@ -575,7 +571,7 @@ jobs:
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip)
           echo "$uploadResponse"
-          echo ::set-output name=upload_status::$(echo "$uploadResponse" | jq -r '.uploadState')
+          echo "upload_status=$(echo "$uploadResponse" | jq -r '.uploadState')" >> $GITHUB_OUTPUT
 
       - name: "Check Upload - Chrome Extension for KIE Editors"
         if: ${{ !inputs.dry_run }}
@@ -589,7 +585,7 @@ jobs:
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
           echo "$publishResponse"
-          echo ::set-output name=publish_status::$(echo "$publishResponse" | jq -r '.status | .[0]')
+          echo "publish_status=$(echo "$publishResponse" | jq -r '.status | .[0]')" >> $GITHUB_OUTPUT
 
       - name: "Check Publish - Chrome Extension for KIE Editors"
         if: ${{ !inputs.dry_run }}
@@ -631,7 +627,7 @@ jobs:
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.swf_chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip)
           echo "$uploadResponse"
-          echo ::set-output name=upload_status::$(echo "$uploadResponse" | jq -r '.uploadState')
+          echo "upload_status=$(echo "$uploadResponse" | jq -r '.uploadState')" >> $GITHUB_OUTPUT
 
       - name: "Check Upload - Chrome Extension for Serverless Workflow Editor"
         if: ${{ !inputs.dry_run }}
@@ -645,7 +641,7 @@ jobs:
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.swf_chrome_extension_id }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
           echo "$publishResponse"
-          echo ::set-output name=publish_status::$(echo "$publishResponse" | jq -r '.status | .[0]')
+          echo "publish_status=$(echo "$publishResponse" | jq -r '.status | .[0]')" >> $GITHUB_OUTPUT
 
       - name: "Check Publish - Chrome Extension for Serverless Workflow Editor"
         if: ${{ !inputs.dry_run }}
@@ -918,7 +914,9 @@ jobs:
         run: |
           export PNPM_FILTER_STRING_FOR_BUILDING=$(pnpm -r exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json) PKG_IS_PVT=$(jq -r ".private" package.json); if [ "$PKG_IS_PVT" != "true" ]; then echo "-F $PKG_NAME..."; fi')
           echo $PNPM_FILTER_STRING_FOR_BUILDING
-          echo ::set-output name=filter::$PNPM_FILTER_STRING_FOR_BUILDING
+          echo 'filter<<EOF' >> $GITHUB_OUTPUT
+          echo $PNPM_FILTER_STRING_FOR_BUILDING >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       - name: "Bootstrap"
         id: bootstrap
