@@ -88,7 +88,7 @@
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "copy-webpack-plugin": "^8.1.1",
-    "cypress": "^10.7.0",
+    "cypress": "^10.11.0",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
     "html-replace-webpack-plugin": "^2.6.0",
