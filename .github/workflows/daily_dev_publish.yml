@@ -71,7 +71,7 @@ jobs:
         id: version
         run: |
           cd kie-tools
-          echo ::set-output name=version::$(node -e "console.log(require('./package.json').version);")
+          echo "version=$(node -e "console.log(require('./package.json').version);")" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: "Cache Maven packages"
