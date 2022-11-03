@@ -37,7 +37,7 @@
     "start": "cross-env ENV=dev go run main.go"
   },
   "dependencies": {
-    "@kie-tools/jitexecutor-native": "1.28.0-Final"
+    "@kie-tools/jitexecutor-native": "1.29.0-Final"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
