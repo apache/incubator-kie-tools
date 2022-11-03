@@ -24,6 +24,7 @@ import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog
 import { ArtifactType, SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
+import { isSpec } from "../../extension";
 import {
   isServiceAccountConfigValid,
   ServiceAccountSettingsConfig,
@@ -38,6 +39,7 @@ import {
   VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX,
 } from "../../virtualServiceRegistry/VirtualServiceRegistryConstants";
 import { VirtualServiceRegistryContextType } from "../../virtualServiceRegistry/VirtualServiceRegistryContext";
+import { toVsrFunctionPathFromWorkspaceFilePath } from "../../virtualServiceRegistry/VirtualServiceRegistryPathConverter";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ArtifactWithContent, RemoteArtifactCatalogApi, UploadArtifactArgs } from "./RemoteServiceRegistryCatalogApi";
 
@@ -151,11 +153,36 @@ export class SwfServiceCatalogStore {
       })
     );
 
+    const isFromCurrentFile = (metadata: SearchedArtifact) => {
+      return (
+        this.currentFile &&
+        metadata.id ===
+          toVsrFunctionPathFromWorkspaceFilePath({
+            vsrWorkspaceId: this.currentFile?.workspaceId,
+            relativePath: this.currentFile?.relativePath,
+          })
+      );
+    };
+
+    const isForeignArtifact = (metadata: SearchedArtifact) => {
+      return !isSpec(metadata.id) && metadata.groupId !== this.currentFile?.workspaceId;
+    };
+
+    const isLocalSpec = (metadata: SearchedArtifact) => {
+      return isSpec(metadata.id) && metadata.groupId === this.currentFile?.workspaceId;
+    };
+
+    // The list should:
+    // - Show workflows from other workspaces
+    // - Show specs from same workspace
+    // - Hide current file workflow
+    // - Hide specs from other workspaces
+    // - Hide workflows from the same workspace since they need to be added as subFlowRefs
     return vsrWorkspacesWithEagerFiles.flat().filter((file) => {
       return (
         file.content &&
-        `${file.metadata.id}` !==
-          `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${this.currentFile?.workspaceId}/${this.currentFile?.relativePath}`
+        !isFromCurrentFile(file.metadata) &&
+        (isForeignArtifact(file.metadata) || isLocalSpec(file.metadata))
       );
     });
   }

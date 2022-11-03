@@ -100,15 +100,26 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
               relativePath: data.relativePath,
             });
 
-            if (!workspaceFile || !vsrFile) {
+            if (!workspaceFile) {
               return;
             }
 
             const vsrFunction = new VirtualServiceRegistryFunction(workspaceFile);
-            await virtualServiceRegistry.updateVsrFile({
-              vsrFile,
-              getNewContents: async () => vsrFunction.getOpenApiSpec(),
-            });
+            const newContents = await vsrFunction.getOpenApiSpec();
+
+            if (newContents) {
+              if (vsrFile) {
+                await virtualServiceRegistry.updateVsrFile({
+                  vsrFile,
+                  getNewContents: async () => Promise.resolve(newContents),
+                });
+              } else {
+                await virtualServiceRegistry.addVsrFileForWorkspaceFile(workspaceFile);
+              }
+            } else if (vsrFile) {
+              // Existing vsrFile but invalid new contents -> delete the file
+              await virtualServiceRegistry.deleteVsrFile({ vsrFile });
+            }
           } else if (data.type === "WS_ADD_FILE") {
             if (!isSupportedByVirtualServiceRegistry(data.relativePath)) {
               return;
