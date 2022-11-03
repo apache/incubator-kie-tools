@@ -103,6 +103,7 @@ public class TextBoundsWrap extends TextNoWrap implements ITextWrapperWithBounda
                     maxWidth = width;
                 }
             } else {
+                maxWidth = width;
                 nextLine.setLength(words[i].length());
                 nextLine.replace(0,
                                  words[i].length(),
@@ -110,6 +111,11 @@ public class TextBoundsWrap extends TextNoWrap implements ITextWrapperWithBounda
                 numOfLines++;
             }
         }
+
+        if (words.length == 1) {
+            maxWidth = Math.min(getBoundingBoxForString(firstWord).getWidth(), getWrapBoundaries().getWidth());
+        }
+
         final double height = getBoundingBoxForString(textSupplier.get()).getHeight() * numOfLines;
         return new double[]{maxWidth, height};
     }

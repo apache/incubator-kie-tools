@@ -22,6 +22,8 @@ export enum QueryParams {
   BRANCH = "branch",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
   EXPAND = "expand",
+  AUTH_SOURCE = "authSource",
+  CONFIRM = "confirm",
 }
 
 export enum PathParams {
@@ -115,7 +117,7 @@ export const routes = {
   }>(() => `/`),
 
   /** @deprecated
-   * Use importModel instead */
+   * Use import instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
     queryParams: QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
@@ -125,8 +127,13 @@ export const routes = {
     pathParams: PathParams.EXTENSION;
   }>(({ extension }) => `/new/${extension}`),
 
-  importModel: new Route<{
-    queryParams: QueryParams.URL | QueryParams.DMN_RUNNER_FORM_INPUTS | QueryParams.BRANCH;
+  import: new Route<{
+    queryParams:
+      | QueryParams.URL
+      | QueryParams.DMN_RUNNER_FORM_INPUTS
+      | QueryParams.BRANCH
+      | QueryParams.AUTH_SOURCE
+      | QueryParams.CONFIRM;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{

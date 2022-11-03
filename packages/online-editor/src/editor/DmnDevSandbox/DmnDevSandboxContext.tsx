@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 export interface DeploymentFile {
   path: string;

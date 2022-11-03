@@ -61,6 +61,10 @@ public interface StateMarshalling {
             (context, state) -> {
                 // Parse common fields.
                 String name = state.getName();
+                if (context.isStateAlreadyExist(name)) {
+                    context.getContext().addMessage(new Message(MessageCode.DUPLICATE_STATE_NAME,
+                                                                name));
+                }
                 final Node stateNode = context.addNode(name, state);
 
                 context.sourceNode = stateNode;

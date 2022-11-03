@@ -29,8 +29,8 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-icon";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
-import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
+import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
+import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();

@@ -28,14 +28,15 @@ import { NoMatchPage } from "./NoMatchPage";
 import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { HomePage } from "./home/HomePage";
-import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspaceWithEmptyFilePage";
-import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
+import { NewWorkspaceWithEmptyFilePage } from "./importFromUrl/NewWorkspaceWithEmptyFilePage";
+import { NewWorkspaceFromUrlPage } from "./importFromUrl/NewWorkspaceFromUrlPage";
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
-import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
+import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
-import { DmnRunnerInputsContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsContextProvider";
+import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
+import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 
 export function App() {
   return (
@@ -46,10 +47,11 @@ export function App() {
         [EnvContextProvider, {}],
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
-        [WorkspacesContextProvider, {}],
-        [DmnRunnerInputsContextProvider, {}],
+        [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js" }],
+        [DmnRunnerInputsDispatchContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
         [NavigationContextProvider, {}],
+        [PreviewSvgsContextProvider, {}],
         [RoutesSwitch, {}]
       )}
     </HashRouter>
@@ -70,7 +72,7 @@ function RoutesSwitch() {
       <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
       </Route>
-      <Route path={routes.importModel.path({})}>
+      <Route path={routes.import.path({})}>
         <NewWorkspaceFromUrlPage />
       </Route>
       <Route

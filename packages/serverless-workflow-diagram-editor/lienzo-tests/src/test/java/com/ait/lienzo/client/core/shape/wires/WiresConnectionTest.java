@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
@@ -30,6 +32,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,16 +51,23 @@ public class WiresConnectionTest {
     @Mock
     private MultiPathDecorator tailDecorator;
 
+    @Mock
+    private Layer layer;
+
     private WiresConnection tested;
+
+    private IDirectionalMultiPointShape<?> line;
 
     @Before
     public void setup() {
         when(headDecorator.getPath()).thenReturn(headPath);
         when(tailDecorator.getPath()).thenReturn(tailPath);
-        WiresConnector connector = new WiresConnector(new PolyLine(CP0, CP1, CP2),
+
+        line = spy(new PolyLine(CP0, CP1, CP2));
+        WiresConnector connector = new WiresConnector(line,
                                                       headDecorator,
                                                       tailDecorator);
-        tested = new WiresConnection(connector, new MultiPath().circle(15), ArrowEnd.HEAD);
+        tested = spy(new WiresConnection(connector, new MultiPath().circle(15), ArrowEnd.HEAD));
     }
 
     @Test
@@ -67,5 +77,12 @@ public class WiresConnectionTest {
         tested.destroy();
         assertNull(tested.getMagnet());
         verify(magnet, never()).destroy();
+    }
+
+    @Test
+    public void testMoveNoBatch() {
+        when(line.getLayer()).thenReturn(layer);
+        tested.move(10d, 10d);
+        verify(line.getLayer(), never()).batch();
     }
 }

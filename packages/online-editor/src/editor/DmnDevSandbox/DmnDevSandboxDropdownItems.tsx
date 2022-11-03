@@ -27,9 +27,9 @@ import {
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { FileLabel } from "../../workspace/components/FileLabel";
+import { FileLabel } from "../../filesList/FileLabel";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";

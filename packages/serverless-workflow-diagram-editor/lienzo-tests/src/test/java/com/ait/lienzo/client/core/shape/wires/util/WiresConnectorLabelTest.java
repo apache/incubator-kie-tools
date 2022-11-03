@@ -19,8 +19,11 @@ package com.ait.lienzo.client.core.shape.wires.util;
 import java.util.function.BiConsumer;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle;
+import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -45,6 +48,33 @@ public class WiresConnectorLabelTest {
 
     @Mock
     private WiresConnector connector;
+
+    @Mock
+    private IControlHandleList iControlHandleList;
+
+    @Mock
+    private IControlHandle iControlHandle1;
+
+    @Mock
+    private IControlHandle iControlHandle2;
+
+    @Mock
+    private IControlHandle iControlHandle3;
+
+    @Mock
+    private IControlHandle iControlHandle4;
+
+    @Mock
+    private IPrimitive point1;
+
+    @Mock
+    private IPrimitive point2;
+
+    @Mock
+    private IPrimitive point3;
+
+    @Mock
+    private IPrimitive point4;
 
     @Mock
     private HandlerRegistrationManager registrationManager;
@@ -94,20 +124,22 @@ public class WiresConnectorLabelTest {
             configured[0] = true;
         });
         assertTrue(configured[0]);
-        verifyRefresh();
+        verifyAccept();
+
     }
 
     @Test
     public void testShow() {
         tested.show();
         verify(text, times(1)).setAlpha(eq(1d));
-        verifyRefresh();
+        verifyAccept();
     }
 
     @Test
     public void testHide() {
         tested.hide();
         verify(text, times(1)).setAlpha(eq(0d));
+        verifyAccept();
         verifyRefresh();
     }
 
@@ -118,8 +150,51 @@ public class WiresConnectorLabelTest {
         verify(registrationManager, times(1)).destroy();
     }
 
+
+    // P1(10,10)
+    // P2(10,20)
+    // P3(100, 20)
+    // P4(100, 40)
+    @Test
+    public void testGetLargestSegment() {
+        when(connector.getPointHandles()).thenReturn(iControlHandleList);
+        when(iControlHandleList.size()).thenReturn(4);
+        when(iControlHandleList.getHandle(0)).thenReturn(iControlHandle1);
+        when(iControlHandleList.getHandle(1)).thenReturn(iControlHandle2);
+        when(iControlHandleList.getHandle(2)).thenReturn(iControlHandle3);
+        when(iControlHandleList.getHandle(3)).thenReturn(iControlHandle4);
+        when(iControlHandle1.getControl()).thenReturn(point1);
+        when(iControlHandle2.getControl()).thenReturn(point2);
+        when(iControlHandle3.getControl()).thenReturn(point3);
+        when(iControlHandle4.getControl()).thenReturn(point4);
+
+        when(point1.getX()).thenReturn(10d);
+        when(point1.getY()).thenReturn(10d);
+
+        when(point2.getX()).thenReturn(10d);
+        when(point2.getY()).thenReturn(20d);
+
+        when(point3.getX()).thenReturn(100d);
+        when(point3.getY()).thenReturn(20d);
+
+        when(point4.getX()).thenReturn(100d);
+        when(point4.getY()).thenReturn(40d);
+
+        final WiresConnectorLabelFactory.Segment largestSegment = WiresConnectorLabel.getLargestSegment(connector);
+        assertEquals(largestSegment.getStart().getX(), 10d, 0d);
+        assertEquals(largestSegment.getStart().getY(), 20d, 0d);
+        assertEquals(largestSegment.getEnd().getX(), 100d, 0d);
+        assertEquals(largestSegment.getEnd().getY(), 20d, 0d);
+
+
+
+    }
+
     private void verifyRefresh() {
-        verify(executor, atLeastOnce()).accept(eq(connector), eq(text));
         verify(layer, atLeastOnce()).batch();
+    }
+
+    private void verifyAccept() {
+        verify(executor, atLeastOnce()).accept(eq(connector), eq(text));
     }
 }

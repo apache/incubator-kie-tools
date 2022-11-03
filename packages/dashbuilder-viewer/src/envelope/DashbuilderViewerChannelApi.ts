@@ -16,4 +16,6 @@
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 
-export interface DashbuilderViewerChannelApi extends KogitoEditorChannelApi {}
+export interface DashbuilderViewerChannelApi extends KogitoEditorChannelApi {
+  getComponentsServerUrl(): Promise<string | undefined>;
+}

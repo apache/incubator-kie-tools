@@ -27,12 +27,9 @@ import com.ait.lienzo.client.core.shape.AbstractImageShape;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.lienzo.client.widget.RootPanel;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.google.gwt.resources.client.ImageResource;
-import elemental2.dom.HTMLImageElement;
-import elemental2.dom.Image;
 import elemental2.dom.ImageData;
 
 /**
@@ -40,11 +37,9 @@ import elemental2.dom.ImageData;
  */
 public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFilterable<ImageProxy<T>> {
 
+    private JsImageBitmap m_jsimg;
+
     private final T m_image;
-
-    private Image m_img;
-
-    private HTMLImageElement m_jsimg;
 
     private final ScratchPad m_normalImage;
 
@@ -91,17 +86,20 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         this(image,
              new ScratchPad(0, 0),
              new ScratchPad(0, 0),
-             new ScratchPad(0, 0));
+             new ScratchPad(0, 0),
+             null);
     }
 
     ImageProxy(final T image,
                final ScratchPad normalImage,
                final ScratchPad filterImage,
-               final ScratchPad selectionImage) {
+               final ScratchPad selectionImage,
+               final JsImageBitmap imageBitmap) {
         m_image = image;
         m_normalImage = normalImage;
         m_filterImage = filterImage;
         m_selectImage = selectionImage;
+        m_jsimg = imageBitmap;
     }
 
     public final void load(final String url) {
@@ -119,20 +117,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
         m_dest_high = m_obounds.getDestHigh();
 
-        m_img = new Image();
-
-        new ImageLoader(url,
-                        m_img) {
-            @Override
-            public final void onImageElementLoad(final HTMLImageElement elem) {
-                doInitialize(elem);
-            }
-
-            @Override
-            public final void onImageElementError(final String message) {
-                doneLoading(false, message);
-            }
-        };
+        loadImageBitmap(url);
     }
 
     public final void load(final ImageResource resource) {
@@ -150,30 +135,31 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
         m_dest_high = m_obounds.getDestHigh();
 
-        m_img = new Image();
-
-        new ImageLoader(resource,
-                        m_img) {
-            @Override
-            public final void onImageElementLoad(final HTMLImageElement elem) {
-                doInitialize(elem);
-            }
-
-            @Override
-            public final void onImageElementError(final String message) {
-                doneLoading(false, message);
-            }
-        };
+        loadImageBitmap(resource.getSafeUri().asString());
     }
 
-    private final void doInitialize(final HTMLImageElement image) {
+    private void loadImageBitmap(final String url) {
+        JsImageBitmap.loadImageBitmap(url, new JsImageBitmapCallback() {
+            @Override
+            public void onSuccess(JsImageBitmap image) {
+                doInitialize(image);
+            }
+
+            @Override
+            public void onError(Object error) {
+                doneLoading(false, error.toString());
+            }
+        });
+    }
+
+    private final void doInitialize(final JsImageBitmap image) {
         m_jsimg = image;
 
         if (m_clip_wide == 0) {
-            m_clip_wide = m_jsimg.width;
+            m_clip_wide = m_jsimg.getWidth();
         }
         if (m_clip_high == 0) {
-            m_clip_high = m_jsimg.height;
+            m_clip_high = m_jsimg.getHeight();
         }
         if (m_dest_wide == 0) {
             m_dest_wide = m_clip_wide;
@@ -249,13 +235,6 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     public ImageDataFilterChain getFilterChain() {
         return m_filters;
-    }
-
-    public String getImageElementURL() {
-        if (null != m_jsimg) {
-            return m_jsimg.src;
-        }
-        return null;
     }
 
     /**
@@ -427,10 +406,10 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
             m_dest_high = m_obounds.getDestHigh();
 
             if (m_clip_wide == 0) {
-                m_clip_wide = m_jsimg.width;
+                m_clip_wide = m_jsimg.getWidth();
             }
             if (m_clip_high == 0) {
-                m_clip_high = m_jsimg.height;
+                m_clip_high = m_jsimg.getHeight();
             }
             if (m_dest_wide == 0) {
                 m_dest_wide = m_clip_wide;
@@ -541,7 +520,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
             return null;
         }
         if ((m_fastout) || (!filtered)) {
-            final ScratchPad temp = new ScratchPad(m_jsimg.width, m_jsimg.height);
+            final ScratchPad temp = new ScratchPad(m_jsimg.getWidth(), m_jsimg.getHeight());
 
             temp.getContext().drawImage(m_jsimg, 0, 0);
 
@@ -569,7 +548,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         return m_dest_high;
     }
 
-    public HTMLImageElement getImage() {
+    public JsImageBitmap getImage() {
         return m_jsimg;
     }
 
@@ -578,12 +557,6 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     public void destroy() {
-        destroy(m_img);
-        m_img = null;
-    }
-
-    void destroy(final Image image) {
-        RootPanel.get().remove(image);
         m_image.removeFromParent();
         m_normalImage.clear();
         m_filterImage.clear();
@@ -591,7 +564,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         m_filters.clearFilters();
         m_handler = null;
         m_obounds = null;
-        m_jsimg = null;
+        m_jsimg.close();
     }
 
     private static final class ClearFilter implements ImageDataFilter<ClearFilter> {

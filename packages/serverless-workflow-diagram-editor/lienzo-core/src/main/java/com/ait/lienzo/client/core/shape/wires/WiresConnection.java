@@ -71,10 +71,9 @@ public class WiresConnection extends AbstractControlHandle {
 
             handle.getControl().setY(y + m_yOffset);
         }
-        if (m_line.getLayer() != null) {
-            m_line.getLayer().batch();
-        }
+
         m_connector.firePointsUpdated();
+
         return this;
     }
 

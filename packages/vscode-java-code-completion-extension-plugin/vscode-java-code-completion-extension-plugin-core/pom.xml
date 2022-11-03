@@ -14,8 +14,8 @@
   <properties>
     <version.org.freemarker>2.3.31</version.org.freemarker>
     <version.org.assertj>3.23.1</version.org.assertj>
-    <version.org.junit.jupiter>5.8.2</version.org.junit.jupiter>
-    <version.org.mockito>4.6.1</version.org.mockito>
+    <version.org.junit.jupiter>5.9.1</version.org.junit.jupiter>
+    <version.org.mockito>4.8.0</version.org.mockito>
   </properties>
 
   <dependencyManagement>
@@ -37,7 +37,7 @@
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
+        <artifactId>mockito-inline</artifactId>
         <version>${version.org.mockito}</version>
       </dependency>
     </dependencies>
@@ -59,7 +59,7 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <artifactId>mockito-inline</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

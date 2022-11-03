@@ -1,0 +1,101 @@
+{
+  "init": [
+    {
+      "key": "_projection",
+      "value": "geoOrthographic"
+    },
+    {
+      "key": "enableZoom",
+      "value": "true"
+    },
+    {
+      "key": "zoom",
+      "value": "1"
+    },
+    {
+      "key": "zoomCenterLong",
+      "value": "0"
+    },
+    {
+      "key": "zoomCenterLat",
+      "value": "0"
+    },
+    {
+      "key": "_fill",
+      "value": "blue"
+    },
+    {
+      "key": "_hover",
+      "value": "darkred"
+    },
+    {
+      "key": "_stroke",
+      "value": "black"
+    },
+    {
+      "key": "_strokeWidth",
+      "value": "0.5"
+    },
+    {
+      "key": "_hoverStrokeWidth",
+      "value": "2"
+    },
+    {
+      "key": "_hoverStrokeFill",
+      "value": "yellow"
+    },
+    {
+      "key": "disabledFill",
+      "value": "darkgray"
+    },
+    {
+      "key": "_bubbleFill",
+      "value": "GREEN"
+    },
+
+    {
+      "key": "fillBegin",
+      "value": "#ffbaba"
+    },
+    {
+      "key": "fillEnd",
+      "value": "#a70000"
+    }
+  ],
+  "dataSet": {
+    "columns": [
+      {
+        "name": "COUNTRY",
+        "type": "LABEL",
+        "settings": {
+          "columnId": "COUNTRY",
+          "columnName": "COUNTRY",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      },
+      {
+        "name": "VALUE",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "VALUE",
+          "columnName": "VALUE",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      }
+    ],
+    "data": [
+      ["Brazil", "200"],
+      ["United States of America", "300"],
+      ["Canada", "38"],
+      ["Uruguay", "10"],
+      ["Russia", "120"],
+      ["China", "1200"],
+      ["India", "1000"],
+      ["Australia", "25"]
+    ]
+  }
+}

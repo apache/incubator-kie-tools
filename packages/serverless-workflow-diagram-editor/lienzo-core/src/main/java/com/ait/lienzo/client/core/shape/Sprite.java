@@ -21,7 +21,8 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.image.ImageLoader;
+import com.ait.lienzo.client.core.image.JsImageBitmap;
+import com.ait.lienzo.client.core.image.JsImageBitmapCallback;
 import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
 import com.ait.lienzo.client.core.image.SpriteOnRollHandler;
 import com.ait.lienzo.client.core.image.SpriteOnTickHandler;
@@ -31,7 +32,6 @@ import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.Timer;
 import com.google.gwt.resources.client.ImageResource;
-import elemental2.dom.HTMLImageElement;
 import jsinterop.annotations.JsProperty;
 
 public class Sprite extends Shape<Sprite> {
@@ -40,7 +40,7 @@ public class Sprite extends Shape<Sprite> {
 
     private BoundingBox[] m_frames = null;
 
-    private HTMLImageElement m_sprite = null;
+    private JsImageBitmap m_sprite = null;
 
     private SpriteLoadedHandler m_loaded = null;
 
@@ -75,21 +75,7 @@ public class Sprite extends Shape<Sprite> {
 
         setURL(url).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
 
-        new ImageLoader(url) {
-            @Override
-            public void onImageElementLoad(final HTMLImageElement elem) {
-                m_sprite = elem;
-
-                if (null != m_loaded) {
-                    m_loaded.onSpriteLoaded(Sprite.this);
-                }
-            }
-
-            @Override
-            public void onImageElementError(String message) {
-                LienzoCore.get().error("Sprite could not load URL " + url + " " + message);
-            }
-        };
+        loadImageBitmap(url);
     }
 
     public Sprite(final ImageResource resource, double rate, SpriteBehaviorMap bmap, String behavior) {
@@ -97,27 +83,13 @@ public class Sprite extends Shape<Sprite> {
 
         setURL(resource.getSafeUri().asString()).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
 
-        new ImageLoader(resource) {
-            @Override
-            public void onImageElementLoad(final HTMLImageElement elem) {
-                m_sprite = elem;
-
-                if (null != m_loaded) {
-                    m_loaded.onSpriteLoaded(Sprite.this);
-                }
-            }
-
-            @Override
-            public void onImageElementError(String message) {
-                LienzoCore.get().error("Sprite could not load resource " + resource.getName() + " " + message);
-            }
-        };
+        loadImageBitmap(resource.getSafeUri().asString());
     }
 
-    public Sprite(HTMLImageElement sprite, double rate, SpriteBehaviorMap bmap, String behavior) {
+    public Sprite(JsImageBitmap sprite, double rate, SpriteBehaviorMap bmap, String behavior) {
         super(ShapeType.SPRITE);
 
-        setURL(sprite.src).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
+        setURL("").setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
 
         m_sprite = sprite;
 
@@ -134,23 +106,27 @@ public class Sprite extends Shape<Sprite> {
         } else {
             final String url = getURL();
 
-            new ImageLoader(url) {
-                @Override
-                public void onImageElementLoad(final HTMLImageElement elem) {
-                    m_sprite = elem;
-
-                    if (null != m_loaded) {
-                        m_loaded.onSpriteLoaded(Sprite.this);
-                    }
-                }
-
-                @Override
-                public void onImageElementError(String message) {
-                    LienzoCore.get().error("Sprite could not load URL " + url + " " + message);
-                }
-            };
+            loadImageBitmap(url);
         }
         return this;
+    }
+
+    private void loadImageBitmap(final String url) {
+        JsImageBitmap.loadImageBitmap(url, new JsImageBitmapCallback() {
+            @Override
+            public void onSuccess(JsImageBitmap image) {
+                m_sprite = image;
+
+                if (null != m_loaded) {
+                    m_loaded.onSpriteLoaded(Sprite.this);
+                }
+            }
+
+            @Override
+            public void onError(Object error) {
+                LienzoCore.get().error("Sprite could not load URL " + url + " " + error.toString());
+            }
+        });
     }
 
     @Override

@@ -60,6 +60,10 @@ export class DummyEditor implements Editor {
   public setTheme(theme: EditorTheme): Promise<void> {
     return Promise.resolve();
   }
+
+  public selectStateByName(_name: string): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 interface Props {

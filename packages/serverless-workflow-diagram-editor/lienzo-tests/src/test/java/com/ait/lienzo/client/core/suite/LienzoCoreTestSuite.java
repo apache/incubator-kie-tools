@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.suite;
 
-import com.ait.lienzo.client.core.image.ImageElementProxyTest;
+import com.ait.lienzo.client.core.image.ImageBitmapProxyTest;
 import com.ait.lienzo.client.core.image.ImageProxyTest;
 import com.ait.lienzo.client.core.image.ImageStripsTest;
 import com.ait.lienzo.client.core.image.ImageTest;
@@ -42,7 +42,7 @@ import org.junit.runners.Suite;
         GeometryTest.class,
         BoundingBoxTest.class,
         BoundingBoxComputationsTest.class,
-        ImageElementProxyTest.class,
+        ImageBitmapProxyTest.class,
         ImageProxyTest.class,
         ImageStripsTest.class,
         ImageTest.class,

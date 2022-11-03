@@ -462,7 +462,7 @@ jobs:
         run: |
           echo "Reset deployment dir"
           shopt -s extglob
-          rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|"swf-chrome-extension"|".nojekyll"|"CNAME")
+          rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|"swf-chrome-extension"|".nojekyll"|"CNAME"|"0.23.0")
 
           echo "Copy Editor resources"
           rm -rf $EDITORS_DIR
@@ -730,6 +730,7 @@ jobs:
             -F vscode-extension-red-hat-business-automation-bundle...
             -F vscode-extension-serverless-workflow-editor...
             -F vscode-extension-kie-ba-bundle...
+            -F vscode-extension-dashbuilder-editor...
 
       - name: "Build"
         run: |
@@ -810,6 +811,17 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension - Dashbuilder Editor (prod)"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_dashbuilder_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
   desktop:
@@ -1400,7 +1412,7 @@ jobs:
         run: |
           echo "Reset deployment dir"
           shopt -s extglob
-          rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME")
+          rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0")
           echo "Copy resources"
           cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist/* .
           echo "Commit changes and push"

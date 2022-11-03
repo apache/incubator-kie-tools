@@ -53,6 +53,7 @@
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
       { "id": "@kie-tools/dashbuilder-component-echarts" },
+      { "id": "@kie-tools/dashbuilder-component-map" },
       { "id": "@kie-tools/dashbuilder-component-svg-heatmap" },
       { "id": "@kie-tools/dashbuilder-component-table" },
       { "id": "@kie-tools/dashbuilder-component-timeseries" },
@@ -86,9 +87,11 @@
       { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools/kie-sandbox-image" },
       { "id": "@kie-tools/online-editor" },
+      { "id": "@kie-tools-core/workspaces-git-fs" },
       { "id": "@kie-tools/pmml-editor" },
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
+      { "id": "@kie-tools-core/react-hooks" },
       { "id": "@kie-tools/unitables" },
       { "id": "@kie-tools/openjdk11-mvn-image" },
       { "id": "@kie-tools/openjdk11-mvn-image-env" },
@@ -103,6 +106,7 @@
       { "id": "vscode-extension-backend" },
       { "id": "vscode-extension-bpmn-editor" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
+      { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-dmn-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -324,6 +328,11 @@
       },
       {
         "source": "@kie-tools/dashbuilder-component-assembler",
+        "target": "@kie-tools/dashbuilder-component-map",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-component-assembler",
         "target": "@kie-tools/dashbuilder-component-svg-heatmap",
         "weight": 1
       },
@@ -360,6 +369,13 @@
       { "source": "@kie-tools/dashbuilder-component-echarts", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-echarts",
+        "target": "@kie-tools/dashbuilder-component-dev",
+        "weight": 1
+      },
+      { "source": "@kie-tools/dashbuilder-component-map", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-component-map", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      {
+        "source": "@kie-tools/dashbuilder-component-map",
         "target": "@kie-tools/dashbuilder-component-dev",
         "weight": 1
       },
@@ -518,8 +534,8 @@
       { "source": "@kie-tools/kie-sandbox-fs", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/online-editor", "weight": 1 },
+      { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
-      { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-sandbox-fs", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/unitables-dmn", "weight": 1 },
       {
@@ -529,6 +545,10 @@
       },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/extended-services", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/stunner-editors", "weight": 1 },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/envelope-bus", "weight": 1 },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/react-hooks", "weight": 1 },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/workspace", "weight": 1 },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools/kie-sandbox-fs", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
@@ -536,13 +556,16 @@
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
       { "source": "@kie-tools/openjdk11-mvn-image", "target": "@kie-tools/openjdk11-mvn-image-env", "weight": 1 },
       { "source": "@kie-tools/openjdk11-mvn-image-env", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/kie-sandbox-fs", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-sandbox",
         "target": "@kie-tools/serverless-workflow-combined-editor",
@@ -624,6 +647,8 @@
         "target": "@kie-tools/root-env",
         "weight": 1
       },
+      { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
+      { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools/dashbuilder-viewer", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       {
@@ -688,8 +713,7 @@
       { "source": "vscode-extension-yard-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-yard-editor", "target": "@kie-tools/yard-editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
-      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 }
+      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 }
     ]
   },
   "serializedPackagesLocationByName": [
@@ -717,6 +741,7 @@
     ["@kie-tools/dashbuilder-component-dev", "packages/dashbuilder-component-dev"],
     ["@kie-tools/dashbuilder-component-echarts", "packages/dashbuilder-component-echarts"],
     ["@kie-tools/dashbuilder-component-echarts-base", "packages/dashbuilder-component-echarts-base"],
+    ["@kie-tools/dashbuilder-component-map", "packages/dashbuilder-component-map"],
     ["@kie-tools/dashbuilder-component-svg-heatmap", "packages/dashbuilder-component-svg-heatmap"],
     ["@kie-tools/dashbuilder-component-table", "packages/dashbuilder-component-table"],
     ["@kie-tools/dashbuilder-component-timeseries", "packages/dashbuilder-component-timeseries"],
@@ -762,6 +787,7 @@
     ["@kie-tools-core/patternfly-base", "packages/patternfly-base"],
     ["@kie-tools/pmml-editor", "packages/pmml-editor"],
     ["@kie-tools/pmml-editor-marshaller", "packages/pmml-editor-marshaller"],
+    ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/serverless-logic-sandbox", "packages/serverless-logic-sandbox"],
     ["@kie-tools/serverless-logic-sandbox-base-image", "packages/serverless-logic-sandbox-base-image"],
@@ -786,6 +812,7 @@
     ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],
     ["vscode-extension-backend", "packages/vscode-extension-backend"],
     ["vscode-extension-bpmn-editor", "packages/vscode-extension-bpmn-editor"],
+    ["vscode-extension-dashbuilder-editor", "packages/vscode-extension-dashbuilder-editor"],
     ["vscode-extension-dmn-editor", "packages/vscode-extension-dmn-editor"],
     ["vscode-extension-kie-ba-bundle", "packages/vscode-extension-kie-ba-bundle"],
     ["vscode-extension-kogito-bundle", "packages/vscode-extension-kogito-bundle"],
@@ -804,6 +831,7 @@
     ],
     ["@kie-tools-core/webpack-base", "packages/webpack-base"],
     ["@kie-tools-core/workspace", "packages/workspace"],
+    ["@kie-tools-core/workspaces-git-fs", "packages/workspaces-git-fs"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
     ["@kie-tools-scripts/bootstrap", "scripts/bootstrap"],
     ["@kie-tools-scripts/build-env", "scripts/build-env"],

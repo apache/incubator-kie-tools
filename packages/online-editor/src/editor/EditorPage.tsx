@@ -29,12 +29,14 @@ import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandbox/DmnDevSandboxMo
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { AlertsController, useAlert } from "../alerts/Alerts";
-import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
-import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
-import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
@@ -45,6 +47,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 
 export interface Props {
   workspaceId: string;
@@ -59,6 +62,7 @@ export function EditorPage(props: Props) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
+  const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
@@ -180,18 +184,11 @@ export function EditorPage(props: Props) {
     console.debug(`Saving @ new version (${saveVersion}).`);
 
     const content = await editor.getContent();
-    // FIXME: Uncomment when working on KOGITO-7805
-    // const svgString = await editor.getPreview();
-
     if (version + 1 < saveVersion) {
       console.debug(`Saving @ stale version (${version}); ignoring before writing.`);
       return;
     }
 
-    // FIXME: Uncomment when working on KOGITO-7805
-    // if (svgString) {
-    //   await svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
-    // }
     console.debug(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
 
@@ -224,8 +221,31 @@ export function EditorPage(props: Props) {
     ),
     { throttle: 200 }
   );
-
   // end (AUTO-SAVE)
+
+  // being (UPDATE PREVIEW SVGS)
+  const updatePreviewSvg = useCallback(() => {
+    editor?.getPreview().then((svgString) => {
+      if (!workspaceFilePromise.data || !svgString) {
+        return;
+      }
+
+      return previewSvgService.companionFsService.createOrOverwrite(
+        {
+          workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+          workspaceFileRelativePath: workspaceFilePromise.data.workspaceFile.relativePath,
+        },
+        svgString
+      );
+    });
+  }, [editor, previewSvgService, workspaceFilePromise.data]);
+
+  // Update the SVG
+  useStateControlSubscription(editor, updatePreviewSvg, { throttle: 200 });
+
+  // Save SVG when opening a file for the first time, even without changing it.
+  useEffect(updatePreviewSvg, [updatePreviewSvg]);
+  //end (UPDATE PREVIEW SVGS)
 
   useEffect(() => {
     alerts?.closeAll();
@@ -334,7 +354,9 @@ export function EditorPage(props: Props) {
             </TextContent>
           </Bullseye>
         }
-        rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
+        rejected={(errors) => (
+          <EditorPageErrorPage title={"Can't open file"} errors={errors} path={props.fileRelativePath} />
+        )}
         resolved={(file) => (
           <>
             <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>

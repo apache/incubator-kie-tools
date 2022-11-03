@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { LocalFile, useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import { useCallback, useEffect, useState } from "react";
@@ -27,13 +27,15 @@ import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
-import { WorkspaceKind } from "../model/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../commonServices/GitService";
-import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { encoder } from "../commonServices/BaseFile";
+import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
+import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
+import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -41,6 +43,7 @@ export function NewWorkspaceFromUrlPage() {
   const history = useHistory();
   const githubAuthInfo = useGitHubAuthInfo();
   const settingsDispatch = useSettingsDispatch();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const [importingError, setImportingError] = useState("");
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
@@ -72,17 +75,16 @@ export function NewWorkspaceFromUrlPage() {
       const { workspace, suggestedFirstFile } = res;
 
       if (removeRemote) {
-        workspaces.gitService.deleteRemote({
-          fs: await workspaces.fsService.getFs(workspace.workspaceId),
-          dir: workspaces.getAbsolutePath({ workspaceId: workspace.workspaceId }),
+        workspaces.deleteRemote({
+          workspaceId: workspace.workspaceId,
           name: "origin",
         });
 
-        await workspaces.descriptorService.turnIntoLocal(workspace.workspaceId);
+        await workspaces.initLocalOnWorkspace({ workspaceId: workspace.workspaceId });
       }
 
       if (renameWorkspace) {
-        await workspaces.descriptorService.rename(workspace.workspaceId, renameWorkspace);
+        await workspaces.renameWorkspace({ workspaceId: workspace.workspaceId, newName: renameWorkspace });
       }
 
       if (!suggestedFirstFile) {
@@ -104,25 +106,26 @@ export function NewWorkspaceFromUrlPage() {
 
   const createWorkspaceForFile = useCallback(
     async (file: LocalFile) => {
-      workspaces
-        .createWorkspaceFromLocal({ useInMemoryFs: false, localFiles: [file] })
-        .then(({ workspace, suggestedFirstFile }) => {
-          if (!suggestedFirstFile) {
-            return;
-          }
-          history.replace({
-            pathname: routes.workspaceWithFilePath.path({
-              workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
-            }),
-          });
+      workspaces.createWorkspaceFromLocal({ localFiles: [file] }).then(({ workspace, suggestedFirstFile }) => {
+        if (!suggestedFirstFile) {
+          return;
+        }
+        history.replace({
+          pathname: routes.workspaceWithFilePath.path({
+            workspaceId: workspace.workspaceId,
+            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+            extension: suggestedFirstFile.extension,
+          }),
         });
+      });
     },
     [routes, history, workspaces]
   );
 
-  const importableUrl = useImportableUrl(queryParamUrl);
+  const importableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: queryParamUrl,
+  });
 
   useEffect(() => {
     async function run() {
@@ -137,7 +140,7 @@ export function NewWorkspaceFromUrlPage() {
             await importGitWorkspace({
               origin: {
                 kind: WorkspaceKind.GIT,
-                url,
+                url: url.toString(),
                 branch: queryParamBranch ?? GIT_DEFAULT_BRANCH,
               },
               gitConfig: githubAuthInfo,
@@ -165,7 +168,7 @@ export function NewWorkspaceFromUrlPage() {
           await importGitWorkspace({
             origin: {
               kind: WorkspaceKind.GIT,
-              url: importableUrl.url,
+              url: importableUrl.url.toString(),
               branch: queryParamBranch ?? importableUrl.branch ?? GIT_DEFAULT_BRANCH,
             },
             gitConfig: githubAuthInfo,
@@ -175,7 +178,7 @@ export function NewWorkspaceFromUrlPage() {
           await importGitWorkspace({
             origin: {
               kind: WorkspaceKind.GIT,
-              url: importableUrl.url,
+              url: importableUrl.url.toString(),
               branch: GIT_DEFAULT_BRANCH,
             },
             gitConfig: githubAuthInfo,
@@ -187,7 +190,7 @@ export function NewWorkspaceFromUrlPage() {
           importableUrl.url.hash = "";
 
           const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
-            origin: { kind: WorkspaceKind.GITHUB_GIST, url: importableUrl.url, branch: GIST_DEFAULT_BRANCH },
+            origin: { kind: WorkspaceKind.GITHUB_GIST, url: importableUrl.url.toString(), branch: GIST_DEFAULT_BRANCH },
           });
 
           if (!suggestedFirstFile) {
@@ -239,7 +242,7 @@ export function NewWorkspaceFromUrlPage() {
 
           await createWorkspaceForFile({
             path: basename(decodeURIComponent(rawUrl.pathname)),
-            getFileContents: () => Promise.resolve(encoder.encode(content)),
+            fileContents: encoder.encode(content),
           });
         }
 

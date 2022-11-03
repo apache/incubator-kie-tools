@@ -34,6 +34,17 @@ import elemental2.dom.UIEvent;
  */
 public class MousePanMediator extends AbstractMediator {
 
+    public interface Callback {
+
+        void onActivate();
+
+        void onDragStart();
+
+        void onDragEnd();
+
+        void onDeactivate();
+    }
+
     private Point2D m_last = new Point2D(0, 0);
 
     private boolean m_dragging = false;
@@ -43,6 +54,10 @@ public class MousePanMediator extends AbstractMediator {
     private boolean m_yconstrained = false;
 
     private Transform m_inverseTransform = null;
+
+    private boolean m_active = false;
+
+    private MousePanMediator.Callback m_callback = null;
 
     public MousePanMediator() {
     }
@@ -69,13 +84,33 @@ public class MousePanMediator extends AbstractMediator {
         return m_yconstrained;
     }
 
+    public MousePanMediator setCallback(final MousePanMediator.Callback m_callback) {
+        this.m_callback = m_callback;
+        return this;
+    }
+
+    public boolean isActive() {
+        return m_active;
+    }
+
+    public boolean isDragging() {
+        return m_dragging;
+    }
+
     @Override
     public void cancel() {
-        m_dragging = false;
+        stop_dragging();
     }
 
     @Override
     public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y) {
+        final IEventFilter filter = getEventFilter();
+        if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
+            attempt_activate();
+        } else {
+            attempt_deactivate();
+        }
+
         if (type == NodeMouseMoveEvent.getType()) {
             if (m_dragging) {
                 onMouseMove(x, y);
@@ -84,9 +119,7 @@ public class MousePanMediator extends AbstractMediator {
             }
             return false;
         } else if (type == NodeMouseDownEvent.getType()) {
-            final IEventFilter filter = getEventFilter();
-
-            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
+            if (isActive()) {
                 onMouseDown(x, y);
 
                 return true;
@@ -102,10 +135,43 @@ public class MousePanMediator extends AbstractMediator {
         return false;
     }
 
+    public void attempt_activate() {
+        if (!m_active) {
+            m_active = true;
+            if (m_callback != null) {
+                m_callback.onActivate();
+            }
+        }
+    }
+
+    public void attempt_deactivate() {
+        if (m_active) {
+            m_active = false;
+            if (m_callback != null) {
+                m_callback.onDeactivate();
+            }
+        }
+    }
+
+    private void start_dragging() {
+        m_dragging = true;
+        if (m_callback != null) {
+            m_callback.onDragStart();
+        }
+
+    }
+
+    private void stop_dragging() {
+        m_dragging = false;
+        if (m_callback != null) {
+            m_callback.onDragEnd();
+        }
+    }
+
     protected void onMouseDown(int x, int y) {
         m_last = new Point2D(x, y);
 
-        m_dragging = true;
+        start_dragging();
 
         Transform transform = getTransform();
 
@@ -123,10 +189,10 @@ public class MousePanMediator extends AbstractMediator {
 
         m_inverseTransform.transform(curr, curr);
 
-        final double traslatedX = m_xconstrained && transform.getTranslateX() > 0 ? getTransform().getTranslateX() * -1 : curr.getX() - m_last.getX();
-        final double traslatedY = m_yconstrained && transform.getTranslateY() > 0 ? getTransform().getTranslateY() * -1 : curr.getY() - m_last.getY();
+        final double translatedX = m_xconstrained && transform.getTranslateX() > 0 ? getTransform().getTranslateX() * -1 : curr.getX() - m_last.getX();
+        final double translatedY = m_yconstrained && transform.getTranslateY() > 0 ? getTransform().getTranslateY() * -1 : curr.getY() - m_last.getY();
 
-        setTransform(getTransform().copy().translate(traslatedX, traslatedY));
+        setTransform(getTransform().copy().translate(translatedX, translatedY));
 
         m_last = curr;
 

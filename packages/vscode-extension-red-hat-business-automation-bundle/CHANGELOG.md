@@ -1,3 +1,11 @@
+# 0.25.0 (alpha)
+
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+
+# 0.24.0 (alpha)
+
+- _(No new features)_
+
 # 0.23.0 (alpha)
 
 - [KOGITO-7797](https://issues.redhat.com/browse/KOGITO-7797) - [DMN Designer] Improving \"Import Java Classes\" button's tooltip message

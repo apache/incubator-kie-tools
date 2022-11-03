@@ -32,6 +32,17 @@ import elemental2.dom.WheelEvent;
  */
 public class MouseWheelZoomMediator extends AbstractMediator {
 
+    public interface Callback {
+
+        void onActivate();
+
+        void onZoomIn();
+
+        void onZoomOut();
+
+        void onDeactivate();
+    }
+
     private double m_minScale = 0;
 
     private double m_maxScale = Double.MAX_VALUE;
@@ -42,6 +53,14 @@ public class MouseWheelZoomMediator extends AbstractMediator {
 
     private boolean m_scaleAboutPoint = true;
 
+    private boolean m_xconstrained = false;
+
+    private boolean m_yconstrained = false;
+
+    private boolean m_active = false;
+
+    private Callback m_callback = null;
+
     public MouseWheelZoomMediator() {
     }
 
@@ -49,23 +68,50 @@ public class MouseWheelZoomMediator extends AbstractMediator {
         setEventFilter(EventFilter.and(filters));
     }
 
+    public MouseWheelZoomMediator setXConstrained(final boolean m_constrained) {
+        this.m_xconstrained = m_constrained;
+        return this;
+    }
+
+    public boolean isXConstrained() {
+        return m_xconstrained;
+    }
+
+    public MouseWheelZoomMediator setYConstrained(final boolean m_constrained) {
+        this.m_yconstrained = m_constrained;
+        return this;
+    }
+
+    public boolean isYConstrained() {
+        return m_yconstrained;
+    }
+
+    public MouseWheelZoomMediator setCallback(final Callback m_callback) {
+        this.m_callback = m_callback;
+        return this;
+    }
+
     @Override
     public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y) {
-        if (type == NodeMouseWheelEvent.getType()) {
-            final IEventFilter filter = getEventFilter();
+        final IEventFilter filter = getEventFilter();
 
-            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
-                onMouseWheel((WheelEvent) event, x, y);
+        if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
+            attempt_activate();
+        } else {
+            attempt_deactivate();
+        }
 
-                return true;
-            }
+        if (type == NodeMouseWheelEvent.getType() && isActive()) {
+            onMouseWheel((WheelEvent) event, x, y);
+
+            return true;
         }
         return false;
     }
 
     @Override
     public void cancel() {
-        // nothing to do
+        attempt_deactivate();
     }
 
     public MouseWheelZoomMediator setScaleAboutPoint(final boolean s) {
@@ -129,17 +175,6 @@ public class MouseWheelZoomMediator extends AbstractMediator {
     }
 
     /**
-     * Returns whether rolling the mouse wheel down will zoom out.
-     * <p>
-     * The default value is true.
-     *
-     * @return boolean
-     */
-    public boolean isDownZoomOut() {
-        return m_downZoomOut;
-    }
-
-    /**
      * Sets whether rolling the mouse wheel down will zoom out.
      * <p>
      * The default value is true.
@@ -150,6 +185,21 @@ public class MouseWheelZoomMediator extends AbstractMediator {
         m_downZoomOut = downZoomOut;
 
         return this;
+    }
+
+    /**
+     * Returns whether rolling the mouse wheel down will zoom out.
+     * <p>
+     * The default value is true.
+     *
+     * @return boolean
+     */
+    public boolean isDownZoomOut() {
+        return m_downZoomOut;
+    }
+
+    public boolean isActive() {
+        return m_active;
     }
 
     /**
@@ -177,6 +227,24 @@ public class MouseWheelZoomMediator extends AbstractMediator {
         return this;
     }
 
+    public void attempt_activate() {
+        if (!m_active) {
+            m_active = true;
+            if (m_callback != null) {
+                m_callback.onActivate();
+            }
+        }
+    }
+
+    public void attempt_deactivate() {
+        if (m_active) {
+            m_active = false;
+            if (m_callback != null) {
+                m_callback.onDeactivate();
+            }
+        }
+    }
+
     protected void onMouseWheel(WheelEvent event, int x, int y) {
         Transform transform = getTransform();
 
@@ -189,9 +257,15 @@ public class MouseWheelZoomMediator extends AbstractMediator {
         {
             // zoom out
             scaleDelta = 1 / (1 + m_zoomFactor);
+            if (m_callback != null) {
+                m_callback.onZoomOut();
+            }
         } else {
             // zoom in
             scaleDelta = 1 + m_zoomFactor;
+            if (m_callback != null) {
+                m_callback.onZoomIn();
+            }
         }
         // ASSUMPTION: scaleX == scaleY
 
@@ -215,6 +289,13 @@ public class MouseWheelZoomMediator extends AbstractMediator {
             transform = transform.copy();
 
             transform.scaleAboutPoint(scaleDelta, p.getX(), p.getY());
+
+            final double translatedX = m_xconstrained && transform.getTranslateX() > 0 ? transform.getTranslateX() * -1 / transform.getScaleX(): 0.0;
+
+            final double translatedY = m_yconstrained && transform.getTranslateY() > 0 ? transform.getTranslateY() * -1 / transform.getScaleY(): 0.0;
+
+            transform.translate(translatedX, translatedY);
+
         } else {
             transform.scale(scaleDelta);
         }

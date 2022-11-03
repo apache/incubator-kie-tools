@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
@@ -32,10 +32,9 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
 
   useEffect(() => {
     workspaces
-      .createWorkspaceFromLocal({ useInMemoryFs: false, localFiles: [] })
+      .createWorkspaceFromLocal({ localFiles: [] })
       .then(async ({ workspace }) =>
         workspaces.addEmptyFile({
-          fs: await workspaces.fsService.getFs(workspace.workspaceId),
           workspaceId: workspace.workspaceId,
           destinationDirRelativePath: "",
           extension: props.extension,

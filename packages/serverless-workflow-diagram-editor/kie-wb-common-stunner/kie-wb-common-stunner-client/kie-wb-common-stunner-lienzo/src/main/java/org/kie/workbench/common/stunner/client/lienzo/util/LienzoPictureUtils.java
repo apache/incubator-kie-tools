@@ -50,7 +50,7 @@ public class LienzoPictureUtils {
     public static boolean retryDestroy(final Picture picture) {
         if (picture != null && picture.isLoaded()) {
             picture.removeFromParent();
-            picture.getImageProxy().getImage().remove();
+            picture.getImageProxy().getImage().close();
             return true;
         }
         return false;

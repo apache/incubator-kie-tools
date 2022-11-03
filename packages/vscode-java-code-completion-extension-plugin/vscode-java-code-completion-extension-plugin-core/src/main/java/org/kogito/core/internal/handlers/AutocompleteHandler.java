@@ -16,6 +16,7 @@
 
 package org.kogito.core.internal.handlers;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +52,7 @@ public class AutocompleteHandler {
 
         JDTLanguageServer languageServer = (JDTLanguageServer) JavaLanguageServerPlugin.getInstance().getProtocol();
 
-        String uri = this.getUri();
+        String uri = buildInformation.getPath().toUri().toASCIIString();
         JavaLanguageServerPlugin.logInfo(uri);
 
         System.setProperty("java.lsp.joinOnCompletion", "true");
@@ -62,7 +63,7 @@ public class AutocompleteHandler {
             TextDocumentItem textDocumentItem = new TextDocumentItem();
             textDocumentItem.setLanguageId("java");
             textDocumentItem.setText(buildInformation.getOriginalText());
-            textDocumentItem.setUri(buildInformation.getUri());
+            textDocumentItem.setUri(uri);
             textDocumentItem.setVersion(1);
             didOpenTextDocumentParams.setTextDocument(textDocumentItem);
             languageServer.didOpen(didOpenTextDocumentParams);
@@ -73,7 +74,7 @@ public class AutocompleteHandler {
             TextDocumentContentChangeEvent textDocumentContentChangeEvent = new TextDocumentContentChangeEvent();
             textDocumentContentChangeEvent.setText(buildInformation.getText());
             VersionedTextDocumentIdentifier versionedTextDocumentIdentifier = new VersionedTextDocumentIdentifier();
-            versionedTextDocumentIdentifier.setUri(buildInformation.getUri());
+            versionedTextDocumentIdentifier.setUri(uri);
             versionedTextDocumentIdentifier.setVersion(2);
             didChangeTextDocumentParams.setTextDocument(versionedTextDocumentIdentifier);
             didChangeTextDocumentParams.setContentChanges(Collections.singletonList(textDocumentContentChangeEvent));
@@ -116,7 +117,7 @@ public class AutocompleteHandler {
         }
     }
 
-    public String getUri() {
-        return this.activationChecker.getActivatorUri();
+    public Path getActivatorPath() {
+        return this.activationChecker.getActivatorPath();
     }
 }

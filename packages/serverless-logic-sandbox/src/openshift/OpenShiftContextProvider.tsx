@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import JSZip from "jszip";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GLOB_PATTERN } from "../extension";
@@ -24,9 +25,9 @@ import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsC
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { encoder } from "../workspace/commonServices/BaseFile";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/services/WorkspaceDescriptorService";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import {
   createDockerfileContentForBaseJdk11MvnImage,
   createDockerfileContentForBaseQuarkusProjectImage,
@@ -78,11 +79,9 @@ export function OpenShiftContextProvider(props: Props) {
       }
 
       try {
-        const descriptor = await workspaces.descriptorService.get(args.workspaceFile.workspaceId);
-        const fs = await workspaces.fsService.getFs(args.workspaceFile.workspaceId);
+        const descriptor = await workspaces.getWorkspace({ workspaceId: args.workspaceFile.workspaceId });
         const filesToBeDeployed = (
           await workspaces.getFiles({
-            fs,
             workspaceId: args.workspaceFile.workspaceId,
             globPattern: !args.shouldDeployAsProject ? GLOB_PATTERN.sw : undefined,
           })
@@ -93,12 +92,15 @@ export function OpenShiftContextProvider(props: Props) {
             ? descriptor.name
             : args.workspaceFile.name;
 
+        const deploymentResourceName = settingsDispatch.openshift.service.newResourceName();
+
         const dockerfileFile = new WorkspaceFile({
           workspaceId: args.workspaceFile.workspaceId,
           relativePath: PROJECT_FILES.dockerFile,
           getFileContents: async () => {
             const dockerfileContent = args.shouldDeployAsProject
               ? createDockerfileContentForBaseJdk11MvnImage({
+                  deploymentResourceName,
                   projectName: workspaceName,
                   openShiftConfig: settings.openshift.config,
                 })
@@ -115,12 +117,22 @@ export function OpenShiftContextProvider(props: Props) {
 
         filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile);
 
-        const zipBlob = await workspaces.prepareZipWithFiles({
-          workspaceId: args.workspaceFile.workspaceId,
-          files: filesToBeDeployed,
-        });
+        const filesToZip = await Promise.all(
+          filesToBeDeployed.map(async (file) => ({
+            relativePath: file.relativePath,
+            content: await file.getFileContentsAsString(),
+          }))
+        );
+
+        const zip = new JSZip();
+        for (const file of filesToZip) {
+          zip.file(file.relativePath, file.content);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
 
         return settingsDispatch.openshift.service.deploy({
+          deploymentResourceName,
           workspaceName: workspaceName,
           targetFilePath: args.workspaceFile.relativePath,
           workspaceZipBlob: zipBlob,
@@ -169,7 +181,7 @@ export function OpenShiftContextProvider(props: Props) {
         throw new Error("Invalid service registry config");
       }
 
-      settingsDispatch.serviceRegistry.catalogStore.uploadArtifact({
+      await settingsDispatch.serviceRegistry.catalogStore.uploadArtifact({
         artifactId: artifactId,
         groupId: DEFAULT_GROUP_ID,
         content: content,

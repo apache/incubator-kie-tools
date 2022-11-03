@@ -16,12 +16,12 @@
 
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
+  isNodeUncompleted,
   SwfYamlLanguageService,
   YamlCodeCompletionStrategy,
-  isNodeUncompleted,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
+import { CodeLens, Position } from "vscode-languageserver-types";
 import {
   defaultConfig,
   defaultServiceCatalogConfig,
@@ -33,12 +33,6 @@ import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTeste
 const documentUri = "test.sw.yaml";
 
 describe("YamlCodeCompletionStrategy", () => {
-  const ls = new SwfYamlLanguageService({
-    fs: {},
-    serviceCatalog: defaultServiceCatalogConfig,
-    config: defaultConfig,
-  });
-
   describe("getStartNodeValuePosition", () => {
     const codeCompletionStrategy = new YamlCodeCompletionStrategy();
     const ls = new SwfYamlLanguageService({
@@ -255,24 +249,7 @@ functions: []
       expect(rootNode!.children![0].children![1].type).toBe("array");
       expect(rootNode!.children![0].children![1].children).toEqual([]);
 
-      expect(rootNode).toMatchObject({
-        type: "object",
-        children: [
-          {
-            type: "property",
-            children: [
-              {
-                type: "string",
-                value: "functions",
-              },
-              {
-                type: "array",
-                children: [],
-              },
-            ],
-          },
-        ],
-      });
+      expect(rootNode).toMatchSnapshot();
     });
 
     test("parsing content with one state and one function", () => {
@@ -288,7 +265,7 @@ functions:
 - name: myFunc
   operation: "./specs/myService#myFunc"
   type: rest
-states:
+"states":
 - name: testState
   type: operation
   transition: end
@@ -304,193 +281,17 @@ states:
       expect(rootNode!.type).toBe("object");
       expect(rootNode!.children).toHaveLength(2);
       expect(rootNode!.children![0].type).toBe("property");
+      expect(rootNode!.children![0].colonOffset).toBe(13);
       expect(rootNode!.children![0].children).toHaveLength(2);
       expect(rootNode!.children![0].children![0]).not.toBeUndefined();
       expect(rootNode!.children![0].children![0].value).toBe("functions");
+      expect(rootNode!.children![0].children![0].colonOffset).toBeUndefined();
       expect(rootNode!.children![0].children![1]).not.toBeUndefined();
       expect(rootNode!.children![0].children![1].type).toBe("array");
+      expect(rootNode!.children![1].colonOffset).toBe(91);
       expect(rootNode!.children![1].children![1].children![0].children![0].children![1].value).toBe("testState");
 
-      expect(rootNode).toMatchObject({
-        type: "object",
-        children: [
-          {
-            type: "property",
-            children: [
-              {
-                type: "string",
-                value: "functions",
-              },
-              {
-                type: "array",
-                children: [
-                  {
-                    type: "object",
-                    children: [
-                      {
-                        type: "property",
-                        children: [
-                          {
-                            type: "string",
-                            value: "name",
-                          },
-                          {
-                            type: "string",
-                            value: "myFunc",
-                          },
-                        ],
-                      },
-                      {
-                        type: "property",
-                        children: [
-                          {
-                            type: "string",
-                            value: "operation",
-                          },
-                          {
-                            type: "string",
-                            value: "./specs/myService#myFunc",
-                          },
-                        ],
-                      },
-                      {
-                        type: "property",
-                        children: [
-                          {
-                            type: "string",
-                            value: "type",
-                          },
-                          {
-                            type: "string",
-                            value: "rest",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            type: "property",
-            children: [
-              {
-                type: "string",
-                value: "states",
-              },
-              {
-                type: "array",
-                children: [
-                  {
-                    type: "object",
-                    children: [
-                      {
-                        type: "property",
-                        children: [
-                          {
-                            type: "string",
-                            value: "name",
-                          },
-                          {
-                            type: "string",
-                            value: "testState",
-                          },
-                        ],
-                      },
-                      {
-                        type: "property",
-                        children: [
-                          {
-                            type: "string",
-                            value: "type",
-                          },
-                          {
-                            type: "string",
-                            value: "operation",
-                          },
-                        ],
-                      },
-                      {
-                        type: "property",
-                        children: [
-                          {
-                            type: "string",
-                            value: "transition",
-                          },
-                          {
-                            type: "string",
-                            value: "end",
-                          },
-                        ],
-                      },
-                      {
-                        type: "property",
-                        children: [
-                          {
-                            type: "string",
-                            value: "actions",
-                          },
-                          {
-                            type: "array",
-                            children: [
-                              {
-                                type: "object",
-                                children: [
-                                  {
-                                    type: "property",
-                                    children: [
-                                      {
-                                        type: "string",
-                                        value: "name",
-                                      },
-                                      {
-                                        type: "string",
-                                        value: "testStateAction",
-                                      },
-                                    ],
-                                  },
-                                  {
-                                    type: "property",
-                                    children: [
-                                      {
-                                        type: "string",
-                                        value: "functionRef",
-                                      },
-                                      {
-                                        type: "object",
-                                        children: [
-                                          {
-                                            type: "property",
-                                            children: [
-                                              {
-                                                type: "string",
-                                                value: "refName",
-                                              },
-                                              {
-                                                type: "string",
-                                                value: "myFunc",
-                                              },
-                                            ],
-                                          },
-                                        ],
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      });
+      expect(rootNode).toMatchSnapshot();
     });
 
     test("parsing content with an incomplete functionRef object", async () => {
@@ -657,52 +458,128 @@ states:
     expect(codeLenses).toStrictEqual([]);
   });
 
-  describe("functions code lenses", () => {
-    test("add function", async () => {
+  describe("code lenses", () => {
+    describe("emtpy file code lenses", () => {
+      test.each([
+        ["empty object / using JSON format", `{}`],
+        ["empty object / with cursor before the object / using JSON format", `{}`],
+        ["empty object / with cursor after the object / using JSON format", `{}`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+        expect(codeLenses).toHaveLength(0);
+      });
+
+      test.each([
+        ["total empty file", ``],
+        ["empty file with a newline before the cursor", `\n`],
+        ["empty file with a newline after the cursor", `\n`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+        const position = Position.create(0, 0);
+
+        expect(codeLenses).toHaveLength(1);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: position, end: position },
+          command: {
+            title: "Create a Serverless Workflow",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: position }],
+          },
+        } as CodeLens);
+      });
+    });
+
+    describe("functions code lenses", () => {
+      test("add function", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const { content } = trim(`functions:\n- `);
+
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+        expect(codeLenses).toHaveLength(1);
+        expect(codeLenses[0]).toStrictEqual({
+          range: { start: { line: 1, character: 0 }, end: { line: 1, character: 0 } },
+          command: {
+            title: "+ Add function...",
+            command: "swf.ls.commands.OpenCompletionItems",
+            arguments: [{ newCursorPosition: { character: 0, line: 1 } }],
+          },
+        } as CodeLens);
+      });
+
+      test("add function - using JSON format", async () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+
+        const { content } = trim(`functions: [] `);
+
+        const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+        expect(codeLenses).toHaveLength(0);
+      });
+    });
+
+    test("add event", async () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
       });
 
-      const { content } = trim(`
----
-functions: 
-- `);
+      const { content } = trim(`events:\n- `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
+        range: { start: { line: 1, character: 0 }, end: { line: 1, character: 0 } },
         command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
+          title: "+ Add event...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 0, line: 1 } }],
         },
       } as CodeLens);
     });
 
-    test("add function - using JSON format", async () => {
+    test("add state", async () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
       });
 
-      const { content } = trim(`
----
-functions: [] `);
+      const { content } = trim(`states:\n- `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 1, character: 0 }, end: { line: 1, character: 0 } },
         command: {
-          title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          title: "+ Add state...",
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 0, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -722,18 +599,18 @@ functions: [] `);
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
@@ -747,26 +624,26 @@ functions: []
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.LogInServiceRegistries",
           title: "↪ Log in Service Registries...",
-          arguments: [{ position: { character: 11, line: 1 } }],
+          arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
       expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
@@ -783,26 +660,26 @@ functions: []
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.OpenServiceRegistriesConfig",
           title: "↪ Setup Service Registries...",
-          arguments: [{ position: { character: 11, line: 1 } }],
+          arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
       expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
@@ -819,26 +696,26 @@ functions: []
 
       const { content } = trim(`
 ---
-functions: []
-`);
+functions: 
+- name: getGreetingFunction `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.RefreshServiceRegistries",
           title: "↺ Refresh Service Registries...",
-          arguments: [{ position: { character: 11, line: 1 } }],
+          arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
       expect(codeLenses[1]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          command: "swf.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
@@ -854,460 +731,65 @@ functions: []
       config: defaultConfig,
     });
 
-    describe("function completion", () => {
-      test("empty completion items", async () => {
-        const { completionItems } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
--🎯`
-        );
+    describe("empty file completion", () => {
+      test.each([
+        ["empty object / using JSON format", `{🎯}`],
+        ["empty object / with cursor before the object / using JSON format", `🎯{}`],
+        ["empty object / with cursor after the object / using JSON format", `{}🎯`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems).toHaveLength(0);
       });
 
-      test.skip("using JSON format", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions: [🎯]`
-        );
+      test.each([
+        ["total empty file", `🎯`],
+        ["empty file with a newline before the cursor", `\n🎯`],
+        ["empty file with a newline after the cursor", `🎯\n`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
-      });
-
-      test("add at the end", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: getGreetingFunction
-- 🎯`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
-      });
-
-      test("add at the beginning", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- 🎯
-- name: getGreetingFunction`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
-      });
-
-      test("add in the middle", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: getGreetingFunction
-- 🎯
-- name: helloWorldFunction`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
-      });
-
-      test("add in a new line", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- 🎯`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
-      });
-
-      test("add at the beginning, using the code lenses", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-🎯- name: helloWorldFunction`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Reference,
-          label: "specs»testRelativeService1.yml#testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          textEdit: {
-            range: { start: cursorPosition, end: cursorPosition },
-            newText: `- name: '\${1:testRelativeFunction1}'
-  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-  type: rest\n`,
-          },
-          snippet: true,
-          insertTextFormat: InsertTextFormat.Snippet,
-          command: {
-            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
-            title: "Import function from completion item",
-            arguments: [
-              {
-                documentUri,
-                containingService: {
-                  ...testRelativeService1,
-                  functions: [
-                    {
-                      ...testRelativeFunction1,
-                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
 
     describe("operation completion", () => {
-      test("not in quotes / without space after property name", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation:🎯`
-        );
+      test.each([
+        ["using JSON format", `functions: [{"name": "getGreetingFunction", "operation": 🎯 }]`],
+        ["using JSON format", `functions: [{\n      "name": "getGreetingFunction",\n      "operation": "🎯"\n      }]`],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems).toHaveLength(0);
       });
 
-      test("not in quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: 🎯`
-        );
+      test.each([
+        [
+          "not in quotes / without space after property name",
+          `functions:\n- name: testRelativeFunction1\n  operation: 🎯`,
+        ],
+        [
+          "not in quotes / with same level content after",
+          `functions:\n- name: testRelativeFunction1\n  operation: 🎯\n  type: rest`,
+        ],
+        [
+          "inside single quotes / without same level content after",
+          `functions:\n- name: testRelativeFunction1\n  operation: '🎯'`,
+        ],
+        [
+          "inside single quotes / with same level content after",
+          `functions:\n- name: testRelativeFunction1\n  operation: '🎯'\n  type: 'rest'`,
+        ],
+        [
+          "inside double quotes / without same level content after",
+          `functions:\n- name: testRelativeFunction1\n  operation: "🎯"`,
+        ],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        let { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          textEdit: {
-            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        });
-      });
-
-      test("not in quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: 🎯
-  type: rest`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          textEdit: {
-            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
-      });
-
-      test("inside single quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: '🎯'`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          textEdit: {
-            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
-      });
-
-      test("inside single quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: '🎯'
-  type: 'rest'`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          textEdit: {
-            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
-      });
-
-      test("inside double quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: "🎯"`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Folder,
-          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-          textEdit: {
-            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
 
@@ -1334,7 +816,7 @@ states:
       });
 
       test("without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `---
@@ -1351,27 +833,12 @@ states:
     functionRef: 🎯`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: "testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1",
-          textEdit: {
-            newText: `
-  refName: 'testRelativeFunction1'
-  arguments:
-    argString: '\${1:}'
-    argNumber: '\${2:}'
-    argBoolean: '\${3:}'`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
       test("with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `---
@@ -1389,27 +856,12 @@ states:
           `
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: "testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1",
-          textEdit: {
-            newText: `
-  refName: 'testRelativeFunction1'
-  arguments:
-    argString: '\${1:}'
-    argNumber: '\${2:}'
-    argBoolean: '\${3:}'`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
-      test.skip("using JSON format", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+      test("using JSON format", async () => {
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `---
@@ -1425,30 +877,20 @@ states:
   - functionRef: {🎯}`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: "testRelativeFunction1",
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1",
-          textEdit: {
-            newText: `{
-  "refName": "testRelativeFunction1",
-  "arguments": {\n    "argString": "\${1:}",\n    "argNumber": "\${2:}",\n    "argBoolean": "\${3:}"\n  }
-}`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems).toHaveLength(0);
       });
     });
 
     describe("functionRef refName completion", () => {
-      test("not in quotes / without space after property name", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
+      test.each([
+        ["not in quotes / without space after property name", `🎯`],
+        ["not in quotes / without same level content after", ` 🎯 `],
+        ["not in quotes / with same level content after", ` 🎯\n      arguments: {}`],
+        ["inside single quotes / without same level content after", ` '🎯'`],
+        ["inside double quotes / without same level content after", ` "🎯"`],
+        ["inside double quotes / with same level content after", ` "🎯"\n      arguments: {}`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `---
 functions:
 - name: myFunc
   operation: "./specs/myService#myFunc"
@@ -1460,227 +902,11 @@ states:
   actions:
   - name: testStateAction
     functionRef:
-      refName:🎯`
-        );
+      refName:${nodeValue}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(0);
-      });
-
-      test("not in quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: 🎯`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Value,
-          label: `myFunc`,
-          detail: `"myFunc"`,
-          filterText: `myFunc`,
-          sortText: `myFunc`,
-          textEdit: {
-            newText: `myFunc`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
-      });
-
-      test("not in quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: 🎯
-      arguments: {}`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Value,
-          label: `myFunc`,
-          detail: `"myFunc"`,
-          filterText: `myFunc`,
-          sortText: `myFunc`,
-          textEdit: {
-            newText: `myFunc`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
-      });
-
-      test("inside single quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: '🎯'`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Value,
-          label: `myFunc`,
-          detail: `"myFunc"`,
-          filterText: `myFunc`,
-          sortText: `myFunc`,
-          textEdit: {
-            newText: `myFunc`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
-      });
-
-      test("inside double quotes / without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: "🎯"`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Value,
-          label: `myFunc`,
-          detail: `"myFunc"`,
-          filterText: `myFunc`,
-          sortText: `myFunc`,
-          textEdit: {
-            newText: `myFunc`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
-      });
-
-      test("inside double quotes / with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: "🎯"
-      arguments: {}`
-        );
-
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Value,
-          label: `myFunc`,
-          detail: `"myFunc"`,
-          filterText: `myFunc`,
-          sortText: `myFunc`,
-          textEdit: {
-            newText: `myFunc`,
-            range: {
-              start: {
-                ...cursorPosition,
-                character: cursorPosition.character - 1,
-              },
-              end: {
-                ...cursorPosition,
-                character: cursorPosition.character + 1,
-              },
-            },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
 
@@ -1688,7 +914,7 @@ states:
       test("without any function arguments to complete", async () => {
         const testRelativeService1WithEmptyFunctionArgs = {
           ...testRelativeService1,
-          functions: [{ ...testRelativeFunction1, arguments: {} }],
+          functions: [],
         };
 
         const ls = new SwfYamlLanguageService({
@@ -1700,7 +926,7 @@ states:
           config: defaultConfig,
         });
 
-        const { completionItems, cursorPosition } = await codeCompletionTester(
+        const { completionItems } = await codeCompletionTester(
           ls,
           documentUri,
           `---
@@ -1719,25 +945,17 @@ states:
       arguments: 🎯`
         );
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: `'testRelativeFunction1' arguments`,
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: `'testRelativeFunction1' arguments`,
-          textEdit: {
-            newText: `{}`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
 
-      test("without same level content after / without space after property name", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
+      test.each([
+        ["without same level content after / without space after property name", `🎯`],
+        ["without same level content after", ` 🎯`],
+        ["with same level content after", ` 🎯\n      invoke: sync`],
+        ["using JSON format", ` {🎯}`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `---
 functions:
 - name: testRelativeFunction1
   operation: specs/testRelativeService1.yml#testRelativeFunction1
@@ -1750,122 +968,180 @@ states:
   - name: testStateAction
     functionRef:
       refName: testRelativeFunction1
-      arguments:🎯`
-        );
+      arguments:${nodeValue}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(0);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
+
+    describe.each([["functions"], ["events"], ["states"]])(`%s completion`, (nodeName: string) => {
+      describe("using JSON format", () => {
+        test.each([
+          [`using JSON format`, `${nodeName}: [🎯]`],
+          [`using JSON format / before a ${nodeName}`, `${nodeName}: [🎯{ }]`],
+          [`using JSON format / after a ${nodeName}`, `${nodeName}: [{  },🎯]`],
+          [`pointing before the array of ${nodeName} / using JSON format`, `${nodeName}: 🎯[] `],
+          [
+            `pointing before the array of ${nodeName} / with extra space after ':' / using JSON format`,
+            `${nodeName}: 🎯 [] `,
+          ],
+          [`pointing after the array of ${nodeName} / using JSON format`, `${nodeName}: []🎯 `],
+          [`pointing inside an object of the array of ${nodeName} / using JSON format`, `${nodeName}: [ {🎯 }]`],
+        ])(`%s`, async (_description, content: ContentWithCursor) => {
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems).toHaveLength(0);
+        });
       });
 
-      test("without same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: specs/testRelativeService1.yml#testRelativeFunction1
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: testRelativeFunction1
-      arguments: 🎯`
-        );
+      test.each([
+        [`empty completion items`, `${nodeName}:\n-🎯`],
+        [`empty completion items / with extra space`, `${nodeName}:\n- 🎯`],
+        [`add at the end`, `${nodeName}:\n- name: itemName\n- 🎯`],
+        [`add at the beginning`, `${nodeName}:\n- 🎯\n- name: itemName`],
+        [`add in the middle`, `${nodeName}:\n- name: itemName1\n- 🎯\n- name: itemName2`],
+        [`add in the middle / without dash character`, `${nodeName}:\n- name: itemName1\n🎯\n- name: itemName2`],
+        [`add at the beginning, using the code lenses`, `${nodeName}:\n🎯- name: itemName`],
+        [`add at the beginning / with extra indentation / using the code lenses`, `${nodeName}:\n  🎯- name: itemName`],
+        [
+          `add at the beginning / with double extra indentation / using the code lenses`,
+          `${nodeName}:\n    🎯- name: itemName`,
+        ],
+      ])("%s", async (_description, content: ContentWithCursor) => {
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: `'testRelativeFunction1' arguments`,
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: `'testRelativeFunction1' arguments`,
-          textEdit: {
-            newText: `
-  argString: '\${1:}'
-  argNumber: '\${2:}'
-  argBoolean: '\${3:}'`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
+
+    describe("eventRefs completion", () => {
+      describe("using JSON format", () => {
+        test.each([
+          ["pointing inside an object of the array", ` [ "🎯" ]`],
+          ["pointing before the array", `🎯 []`],
+          ["pointing before the array", ` 🎯 []`],
+          ["pointing after the array", ` []🎯`],
+          ["add into empty array", ` [🎯]`],
+          ["add at the beginning of the array", ` [🎯, ""]`],
+          ["add at the end of the array", ` ["", 🎯 ]`],
+        ])("%s", async (_description, nodeValue) => {
+          const content = `events:
+- name: GreetEvent
+states:
+- onEvents:
+  - eventRefs:${nodeValue}` as ContentWithCursor;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems).toHaveLength(0);
+        });
       });
 
-      test("with same level content after", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: specs/testRelativeService1.yml#testRelativeFunction1
-  type: rest
+      test.each([
+        [`empty completion items`, `-🎯`],
+        [`empty completion items / with extra space`, `- 🎯`],
+        [`add at the end`, `- name: itemName\n    - 🎯`],
+        [`add at the beginning`, `- 🎯\n- itemName`],
+        [`add in the middle`, `- itemName1\n    - 🎯\n    - itemName2`],
+        [`add in the middle / without dash character`, `- itemName1\n    🎯\n    - itemName2`],
+        [`add at the beginning, using the code lenses`, `🎯- itemName`],
+        [`add at the beginning / with extra indentation / using the code lenses`, `  🎯- itemName`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `events:
+- name: GreetEvent
 states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      arguments: 🎯
-      refName: testRelativeFunction1`
-        );
+- onEvents:
+  - eventRefs:
+    ${nodeValue}` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: `'testRelativeFunction1' arguments`,
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: `'testRelativeFunction1' arguments`,
-          textEdit: {
-            newText: `
-  argString: '\${1:}'
-  argNumber: '\${2:}'
-  argBoolean: '\${3:}'`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
+      });
+    });
+
+    describe("transition completion", () => {
+      describe("state transition completion", () => {
+        test.each([
+          ["not in quotes / without space after property name", `🎯`],
+          ["not in quotes / without same level content after", ` 🎯 `],
+          ["not in quotes / with same level content after", ` 🎯\n  type: inject`],
+          ["inside single quotes / without same level content after", ` '🎯'`],
+          ["inside double quotes / without same level content after", ` "🎯"`],
+          ["inside double quotes / with same level content after", ` "🎯"\n  type: inject`],
+        ])("%s", async (_description, nodeValue) => {
+          const content = `states:
+- name: Inject Hello World
+  transition:${nodeValue}
+- name: Inject Mantra` as ContentWithCursor;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
       });
 
-      test.skip("using JSON format", async () => {
-        const { completionItems, cursorPosition } = await codeCompletionTester(
-          ls,
-          documentUri,
-          `---
-functions:
-- name: testRelativeFunction1
-  operation: specs/testRelativeService1.yml#testRelativeFunction1
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: testRelativeFunction1
-      arguments: {🎯}`
-        );
+      describe("dataConditions transition completion", () => {
+        test("simple case", async () => {
+          const content = `states:
+- name: Inject Hello World
+  dataConditions:
+  - transition: 🎯
+- name: Inject Mantra` as ContentWithCursor;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
-        expect(completionItems).toHaveLength(1);
-        expect(completionItems[0]).toStrictEqual({
-          kind: CompletionItemKind.Module,
-          label: `'testRelativeFunction1' arguments`,
-          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: `'testRelativeFunction1' arguments`,
-          textEdit: {
-            newText: `{
-  "argString": "\${1:}",
-  "argNumber": "\${2:}",
-  "argBoolean": "\${3:}"
-}`,
-            range: { start: cursorPosition, end: cursorPosition },
-          },
-          insertTextFormat: InsertTextFormat.Snippet,
-        } as CompletionItem);
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
+      });
+
+      describe("defaultCondition transition completion", () => {
+        test("simple case", async () => {
+          const content = `states:
+- name: Inject Hello World
+  defaultCondition:
+    transition: 🎯
+- name: Inject Mantra` as ContentWithCursor;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
+      });
+
+      describe("eventConditions transition completion", () => {
+        test("simple case", async () => {
+          const content = `states:
+- name: Inject Hello World
+  eventConditions:
+  - transition: 🎯
+- name: Inject Mantra` as ContentWithCursor;
+          const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+          expect(completionItems.length).toMatchSnapshot();
+          expect(completionItems).toMatchSnapshot();
+        });
+      });
+    });
+
+    describe("start completion", () => {
+      test.each([
+        ["not in quotes / without space after property name", `🎯`],
+        ["not in quotes", ` 🎯 `],
+        ["inside single quotes", ` '🎯'`],
+        ["inside double quotes", ` "🎯"`],
+      ])("%s", async (_description, nodeValue) => {
+        const content = `start:${nodeValue}
+states:
+- name: GreetInEnglish
+- name: GreetInSpanish
+` as ContentWithCursor;
+        const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
+
+        expect(completionItems.length).toMatchSnapshot();
+        expect(completionItems).toMatchSnapshot();
       });
     });
   });

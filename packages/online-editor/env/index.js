@@ -52,7 +52,7 @@ module.exports = composeEnv(
         description: "",
       },
       ONLINE_EDITOR__corsProxyUrl: {
-        default: "https://cors.isomorphic-git.org",
+        default: "http://localhost:3000",
         description: "",
       },
       DMN_DEV_SANDBOX__baseImageTag: {
