@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { FileLabel } from "../filesList/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -43,8 +43,10 @@ import { useRoutes } from "../navigation/Hooks";
 import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
 import { fetchSingleFileContent } from "../importFromUrl/fetchSingleFileContent";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
-import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
 import { useOctokit } from "../github/Hooks";
+import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -155,15 +157,36 @@ export function NewFileDropdownMenu(props: {
   );
 
   const [url, setUrl] = useState("");
+  const [authSessionId, setAuthSessionId] = useState(props.workspaceDescriptor.gitAuthSessionId);
 
-  const importableUrl = useImportableUrl(url, [
-    UrlType.FILE,
-    UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
-    UrlType.GITHUB_DOT_COM_FILE,
-  ]);
+  const importableUrl = useImportableUrl(
+    url,
+    useMemo(() => [UrlType.FILE, UrlType.GIST_DOT_GITHUB_DOT_COM_FILE, UrlType.GITHUB_DOT_COM_FILE], [])
+  );
 
-  const { authSession } = useAuthSession(props.workspaceDescriptor.gitAuthSessionId);
+  const { authSession } = useAuthSession(authSessionId);
   const octokit = useOctokit(authSession);
+
+  // Select authSession based on the importableUrl domain (begin)
+  const authProviders = useAuthProviders();
+  const { authSessions, authSessionStatus } = useAuthSessions();
+
+  useEffect(() => {
+    if (importableUrl.error) {
+      return;
+    }
+
+    const urlDomain = importableUrl.url?.hostname;
+
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain,
+    });
+    setAuthSessionId(compatible[0]!.id);
+  }, [authProviders, authSessionStatus, authSessions, importableUrl]);
+  // Select authSession based on the importableUrl domain (end)
 
   const importFromUrl = useCallback(
     async (importableUrl: ImportableUrl) => {
@@ -325,10 +348,12 @@ export function NewFileDropdownMenu(props: {
                     importableUrl={importableUrl}
                     urlInputRef={urlInputRef}
                     url={url}
-                    onChange={(url) => {
+                    setUrl={(url) => {
                       setUrl(url);
                       setImportingError(undefined);
                     }}
+                    authSessionId={authSessionId}
+                    setAuthSessionId={setAuthSessionId}
                     onSubmit={() => importFromUrl(importableUrl)}
                   />
                 </MenuInput>

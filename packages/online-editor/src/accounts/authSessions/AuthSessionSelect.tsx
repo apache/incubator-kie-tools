@@ -20,6 +20,7 @@ import {
   SelectGroup,
   SelectOption,
   SelectPosition,
+  SelectProps,
   SelectVariant,
 } from "@patternfly/react-core/dist/js/components/Select";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
@@ -70,9 +71,10 @@ export function AuthSessionSelect(props: {
   title: string;
   position?: SelectPosition;
   filter: AuthSessionSelectFilter;
+  menuAppendTo?: SelectProps["menuAppendTo"];
 }) {
   const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
-  const [showAll, setShowAll] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const { authSessions, authSessionStatus } = useAuthSessions();
   const authProviders = useAuthProviders();
@@ -124,15 +126,15 @@ export function AuthSessionSelect(props: {
     return { filteredItemsByGroup, groups: filtered?.groups };
   }, [props, unfilteredItems]);
 
-  // Always start the Select with showAll = false.
+  // Always start the Select with showMore = false.
   useEffect(() => {
     if (!isAuthSessionSelectorOpen) {
-      setShowAll(false);
+      setShowMore(false);
     }
   }, [isAuthSessionSelectorOpen]);
 
   const showedGroups = groups?.filter((s) => !s.hidden);
-  const shouldShowGroups = showAll || (showedGroups?.length ?? 0) > 1;
+  const shouldShowGroups = showMore || (showedGroups?.length ?? 0) > 1;
 
   return (
     <Select
@@ -149,7 +151,7 @@ export function AuthSessionSelect(props: {
         setAuthSessionSelectorOpen(false);
       }}
       className={props.isPlain ? "kie-tools--masthead-hoverable" : ""}
-      menuAppendTo={"parent"}
+      menuAppendTo={props.menuAppendTo ?? "parent"}
       maxHeight={"400px"}
       style={{ minWidth: "400px" }}
       footer={
@@ -161,10 +163,10 @@ export function AuthSessionSelect(props: {
                 isInline={true}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setShowAll((prev) => !prev);
+                  setShowMore((prev) => !prev);
                 }}
               >
-                Show {showAll ? "less" : "all"}
+                Show {showMore ? "less" : "more"}
               </Button>
               <Divider />
             </>
@@ -198,7 +200,7 @@ export function AuthSessionSelect(props: {
           if (
             !items.find((a) => a.authSession.id === props.authSessionId) &&
             groups?.find(({ label }) => label === groupLabel)?.hidden &&
-            !showAll
+            !showMore
           ) {
             return [];
           }
@@ -228,7 +230,7 @@ export function AuthSessionSelect(props: {
                 if (
                   authSession.id !== props.authSessionId &&
                   groups?.find(({ label }) => label === groupLabel)?.hidden &&
-                  !showAll
+                  !showMore
                 ) {
                   return [];
                 }
