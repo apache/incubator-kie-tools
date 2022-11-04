@@ -59,10 +59,10 @@ export function isAuthSessionCompatibleWithUrlDomain(args: {
   urlDomain: string | undefined;
 }) {
   if (!args.urlDomain) {
-    return args.authSession.id === AUTH_SESSION_NONE.id;
+    return args.authSession.type === "none";
   }
 
-  if (args.authSession.id === AUTH_SESSION_NONE.id) {
+  if (args.authSession.type === "none") {
     return true;
   }
 
