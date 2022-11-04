@@ -96,8 +96,8 @@ export function CreateGitHubRepositoryModal(props: {
       await workspaces.push({
         workspaceId: props.workspace.workspaceId,
         remote: GIT_ORIGIN_REMOTE_NAME,
-        ref: GIT_DEFAULT_BRANCH,
-        remoteRef: `refs/heads/${GIT_DEFAULT_BRANCH}`,
+        ref: props.workspace.origin.branch,
+        remoteRef: `refs/heads/${props.workspace.origin.branch}`,
         force: false,
         authInfo,
       });

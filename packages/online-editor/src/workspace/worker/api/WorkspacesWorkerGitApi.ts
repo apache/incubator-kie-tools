@@ -106,7 +106,11 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
 
-  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
+  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+  }): Promise<void>;
 
   kieSandboxWorkspacesGit_changeGitAuthSessionId(args: {
     workspaceId: string;

@@ -204,7 +204,7 @@ export interface WorkspacesContextType {
 
   initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
 
-  initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
+  initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
 
   changeGitAuthSessionId(args: { workspaceId: string; gitAuthSessionId: string | undefined }): Promise<void>;
 }

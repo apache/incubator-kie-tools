@@ -71,11 +71,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import {
-  GIST_DEFAULT_BRANCH,
-  GIST_ORIGIN_REMOTE_NAME,
-  GIT_ORIGIN_REMOTE_NAME,
-} from "../workspace/constants/GitConstants";
+import { GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
 import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -368,7 +364,7 @@ export function EditorToolbar(props: Props) {
 
   const forceUpdateGitHubGist = useCallback(async () => {
     try {
-      if (!authInfo) {
+      if (!authInfo || !workspacePromise.data) {
         return;
       }
 
@@ -377,8 +373,8 @@ export function EditorToolbar(props: Props) {
       await workspaces.push({
         workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
-        ref: GIST_DEFAULT_BRANCH,
-        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        ref: workspacePromise.data.descriptor.origin.branch,
+        remoteRef: `refs/heads/${workspacePromise.data.descriptor.origin.branch}`,
         force: true,
         authInfo,
       });
@@ -395,7 +391,14 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [workspaces, props.workspaceFile.workspaceId, authInfo, successfullyUpdateGistAlert, errorAlert]);
+  }, [
+    successfullyUpdateGistAlert,
+    authInfo,
+    workspacePromise.data,
+    workspaces,
+    props.workspaceFile.workspaceId,
+    errorAlert,
+  ]);
 
   const errorPushingGist = useAlert(
     props.alerts,
@@ -429,7 +432,7 @@ export function EditorToolbar(props: Props) {
 
   const updateGitHubGist = useCallback(async () => {
     try {
-      if (!authInfo) {
+      if (!authInfo || !workspacePromise.data) {
         return;
       }
 
@@ -443,8 +446,8 @@ export function EditorToolbar(props: Props) {
       await workspaces.push({
         workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
-        ref: GIST_DEFAULT_BRANCH,
-        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        ref: workspacePromise.data.descriptor.origin.branch,
+        remoteRef: `refs/heads/${workspacePromise.data.descriptor.origin.branch}`,
         force: false,
         authInfo,
       });
@@ -462,7 +465,15 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [successfullyUpdateGistAlert, authInfo, workspaces, props.workspaceFile.workspaceId, gitConfig, errorPushingGist]);
+  }, [
+    successfullyUpdateGistAlert,
+    authInfo,
+    workspacePromise.data,
+    workspaces,
+    props.workspaceFile.workspaceId,
+    gitConfig,
+    errorPushingGist,
+  ]);
 
   const createGitHubGist = useCallback(async () => {
     try {
@@ -491,9 +502,19 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         throw new Error("Gist creation failed.");
       }
 
+      const gistDefaultBranch = (
+        await workspaces.getGitServerRefs({
+          url: new URL(gist.data.git_push_url).toString(),
+          authInfo,
+        })
+      )
+        .find((serverRef) => serverRef.ref === "HEAD")!
+        .target!.replace("refs/heads/", "");
+
       await workspaces.initGistOnWorkspace({
         workspaceId: props.workspaceFile.workspaceId,
         remoteUrl: new URL(gist.data.git_push_url),
+        branch: gistDefaultBranch,
       });
 
       await workspaces.addRemote({
@@ -506,7 +527,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.branch({
         workspaceId: props.workspaceFile.workspaceId,
         checkout: true,
-        name: GIST_DEFAULT_BRANCH,
+        name: gistDefaultBranch,
       });
 
       await workspaces.createSavePoint({
@@ -517,8 +538,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.push({
         workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
-        ref: GIST_DEFAULT_BRANCH,
-        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        ref: gistDefaultBranch,
+        remoteRef: `refs/heads/${gistDefaultBranch}`,
         force: true,
         authInfo,
       });
@@ -550,7 +571,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const forkGitHubGist = useCallback(async () => {
     try {
-      if (!authInfo || !gitHubGist?.id) {
+      if (!authInfo || !gitHubGist?.id || !workspacePromise.data) {
         return;
       }
       setGitHubGistLoading(true);
@@ -580,8 +601,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.push({
         workspaceId: props.workspaceFile.workspaceId,
         remote: remoteName,
-        ref: GIST_DEFAULT_BRANCH,
-        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        ref: workspacePromise.data.descriptor.origin.branch,
+        remoteRef: `refs/heads/${workspacePromise.data.descriptor.origin.branch}`,
         force: true,
         authInfo,
       });
@@ -602,6 +623,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   }, [
     authInfo,
     gitHubGist,
+    workspacePromise.data,
     octokit.gists,
     workspaces,
     props.workspaceFile.workspaceId,

@@ -302,11 +302,12 @@ export function WorkspacesContextProvider(props: Props) {
     });
   }, []);
 
-  const initGistOnWorkspace = useCallback(async (args: { workspaceId: string; remoteUrl: URL }) => {
+  const initGistOnWorkspace = useCallback(async (args: { workspaceId: string; remoteUrl: URL; branch: string }) => {
     await ready;
     return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
       workspaceId: args.workspaceId,
       remoteUrl: args.remoteUrl.toString(),
+      branch: args.branch,
     });
   }, []);
 

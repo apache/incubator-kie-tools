@@ -112,9 +112,10 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
     async kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
       workspaceId: string;
       remoteUrl: string;
+      branch: string;
     }): Promise<void> {
       return descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
-        return descriptorService.turnIntoGist(fs, args.workspaceId, new URL(args.remoteUrl));
+        return descriptorService.turnIntoGist(fs, args.workspaceId, new URL(args.remoteUrl), args.branch);
       });
     },
     async kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
@@ -440,7 +441,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       return await createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
-        gitAuthSessionId: undefined,
+        gitAuthSessionId: "none", // FIXME: Tiago
         storeFiles: async (fs, schema, workspace) => {
           const files = args.localFiles
             .filter((file) => !file.path.startsWith(".git/"))

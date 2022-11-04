@@ -19,7 +19,7 @@ import { v4 as uuid } from "uuid";
 import { StorageFile, StorageService } from "./StorageService";
 import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { WorkspaceKind, WorkspaceOrigin } from "../worker/api/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
+import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { join } from "path";
@@ -102,13 +102,13 @@ export class WorkspaceDescriptorService {
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
   }
 
-  public async turnIntoGist(fs: KieSandboxWorkspacesFs, workspaceId: string, gistUrl: URL) {
+  public async turnIntoGist(fs: KieSandboxWorkspacesFs, workspaceId: string, gistUrl: URL, branch: string) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       origin: {
         kind: WorkspaceKind.GITHUB_GIST,
         url: gistUrl.toString(),
-        branch: GIST_DEFAULT_BRANCH,
+        branch,
       },
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
