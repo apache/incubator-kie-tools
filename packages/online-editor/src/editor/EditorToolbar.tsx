@@ -1488,6 +1488,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       justifyContent={{ default: "justifyContentFlexStart" }}
                       flexWrap={{ default: "nowrap" }}
                       spaceItems={{ default: "spaceItemsSm" }}
+                      alignItems={{ default: "alignItemsCenter" }}
                     >
                       <FlexItem>
                         <Button
@@ -1513,11 +1514,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       <FlexItem>
                         <WorkspaceLabel descriptor={workspace.descriptor} />
                       </FlexItem>
-                      <FlexItem style={{ minWidth: 0 }}>
+                      <FlexItem
+                        style={{ minWidth: 0, padding: "0 8px 0 8px" }}
+                        className={"kie-tools--masthead-hoverable"}
+                      >
+                        <FolderIcon style={{ marginRight: "8px", verticalAlign: "middle" }} />
                         <div
                           data-testid={"toolbar-title-workspace"}
                           className={"kogito--editor__toolbar-name-container"}
-                          style={{ width: "100%" }}
+                          style={{ display: "inline-block", verticalAlign: "middle" }}
                         >
                           <Title
                             aria-label={"EmbeddedEditorFile name"}
@@ -1536,7 +1541,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             onKeyDown={onWorkspaceNameKeyDown}
                             className={"kogito--editor__toolbar-subtitle"}
                             onBlur={(e) => onRenameWorkspace(e.target.value)}
-                            style={{ fontStyle: "italic" }}
+                            style={{ fontStyle: "italic", top: "4px", height: "calc(100% - 8px)" }}
                           />
                         </div>
                       </FlexItem>

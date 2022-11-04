@@ -45,7 +45,6 @@ export type AuthSessionSelectItem = {
   groupLabel: string;
   authSession: AuthSession;
   authProvider: AuthProvider | undefined;
-  warn?: string;
 };
 
 export type AuthSessionSelectGroup = {
@@ -87,24 +86,20 @@ export function AuthSessionSelect(props: {
       return "Authentication expired"; // authSession doesn't exist anymore
     } else if (!props.authSessionId) {
       return "Select authentication"; // no authSession selected
-    } else if (authSessionStatus.get(props.authSessionId) === AuthSessionStatus.INVALID) {
-      return props.authSessionId; // invalid authSession
     } else if (authSession) {
       return props.authSessionId;
     }
-  }, [authSession, authSessionStatus, props.authSessionId]);
+  }, [authSession, props.authSessionId]);
 
   const validated = useMemo(() => {
     if (props.authSessionId && !authSession) {
       return ValidatedOptions.warning; // authSession doesn't exist anymore
     } else if (!props.authSessionId) {
       return ValidatedOptions.warning; // no authSession selected
-    } else if (authSessionStatus.get(props.authSessionId) === AuthSessionStatus.INVALID) {
-      return ValidatedOptions.error; // invalid authSession
     } else if (authSession) {
       return ValidatedOptions.default;
     }
-  }, [authSession, authSessionStatus, props.authSessionId]);
+  }, [authSession, props.authSessionId]);
 
   const unfilteredItems = useMemo(() => {
     return [AUTH_SESSION_NONE, ...authSessions.values()].map((authSession) => {
@@ -253,12 +248,11 @@ export function AuthSessionSelect(props: {
                         &nbsp;&nbsp;
                         {authSession.login}
                       </FlexItem>
-                      {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID &&
-                        isAuthSessionSelectorOpen && (
-                          <FlexItem style={{ zIndex: 99999 }}>
-                            <InvalidAuthSessionIcon />
-                          </FlexItem>
-                        )}
+                      {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID && (
+                        <FlexItem style={{ zIndex: 99999 }}>
+                          <InvalidAuthSessionIcon />
+                        </FlexItem>
+                      )}
                     </Flex>
                   </SelectOption>,
                 ];
