@@ -92,14 +92,15 @@ import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatu
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
-import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
+import { AuthSessionSelect, AuthSessionSelectFilter } from "../accounts/authSessions/AuthSessionSelect";
 import { useAuthProvider } from "../accounts/authProviders/AuthProvidersContext";
 import { useOctokit } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import {
-  authSessionsSelectFilterForCompatibleGitUrlDomain,
+  authSessionsSelectFilterCompatibleWithGistUrlDomain,
+  authSessionsSelectFilterCompatibleWithGitUrlDomain,
   noOpAuthSessionSelectFilter,
 } from "../accounts/authSessions/CompatibleAuthSessions";
 
@@ -172,6 +173,31 @@ export function EditorToolbar(props: Props) {
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
   const [flushes] = useSharedValue(workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes);
+
+  const authSessionSelectFilter = useMemo(() => {
+    if (!workspacePromise.data) {
+      return noOpAuthSessionSelectFilter();
+    }
+
+    if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.LOCAL) {
+      return noOpAuthSessionSelectFilter();
+    }
+
+    if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.GIT) {
+      return authSessionsSelectFilterCompatibleWithGitUrlDomain(
+        new URL(workspacePromise.data.descriptor.origin.url).hostname
+      );
+    }
+
+    if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST) {
+      return authSessionsSelectFilterCompatibleWithGistUrlDomain(
+        new URL(workspacePromise.data.descriptor.origin.url).hostname,
+        gitHubGist?.owner?.login
+      );
+    }
+
+    return noOpAuthSessionSelectFilter();
+  }, [gitHubGist, workspacePromise.data]);
 
   const isSaved = useMemo(() => {
     return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));
@@ -809,13 +835,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           setSmallKebabOpen(true);
                         }, 0);
                       }}
-                      filter={
-                        workspacePromise.data.descriptor.origin.url
-                          ? authSessionsSelectFilterForCompatibleGitUrlDomain(
-                              new URL(workspacePromise.data.descriptor.origin.url).hostname
-                            )
-                          : noOpAuthSessionSelectFilter()
-                      }
+                      filter={authSessionSelectFilter}
                     />
                   }
                 >
@@ -843,6 +863,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       canCreateGitHubGist,
       createGitHubGist,
       canPushToGitRepository,
+      authSessionSelectFilter,
       changeGitAuthSessionId,
       accountsDispatch,
     ]
@@ -1206,13 +1227,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
                 accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
               }}
-              filter={
-                workspacePromise.data.descriptor.origin.url
-                  ? authSessionsSelectFilterForCompatibleGitUrlDomain(
-                      new URL(workspacePromise.data.descriptor.origin.url).hostname
-                    )
-                  : noOpAuthSessionSelectFilter()
-              }
+              filter={authSessionSelectFilter}
             />
 
             <br />
@@ -1233,6 +1248,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       },
       [
         accountsDispatch,
+        authSessionSelectFilter,
         canPushToGitRepository,
         changeGitAuthSessionId,
         // pullFromGitRepository,
@@ -1377,6 +1393,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   workspaceDescriptor={workspacePromise.data?.descriptor}
                   canPush={isGistWorkspace ? canUpdateGitHubGist : canPushToGitRepository}
                   remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
+                  authSessionSelectFilter={authSessionSelectFilter}
                   onPush={() => {
                     navigationStatusToggle.unblock();
                     return isGistWorkspace ? updateGitHubGist() : pushToGitRepository();
@@ -1412,6 +1429,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         isGistWorkspace,
         canUpdateGitHubGist,
         canPushToGitRepository,
+        authSessionSelectFilter,
         downloadWorkspaceZip,
         updateGitHubGist,
         pushToGitRepository,
@@ -1489,13 +1507,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             changeGitAuthSessionId(newAuthSessionId, workspace.descriptor.gitAuthSessionId);
                             accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                           }}
-                          filter={
-                            workspace.descriptor.origin.url
-                              ? authSessionsSelectFilterForCompatibleGitUrlDomain(
-                                  new URL(workspace.descriptor.origin.url).hostname
-                                )
-                              : noOpAuthSessionSelectFilter()
-                          }
+                          filter={authSessionSelectFilter}
                         />
                       </FlexItem>
                       <FlexItem>
@@ -1600,6 +1612,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                         changeGitAuthSessionId={changeGitAuthSessionId}
                                         workspaceDescriptor={workspace.descriptor}
                                         canPush={canPushToGitRepository}
+                                        authSessionSelectFilter={authSessionSelectFilter}
                                         remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`}
                                         onPush={pushToGitRepository}
                                       />
@@ -1846,9 +1859,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     setSyncGitHubGistDropdownOpen(true);
                                                   }, 0);
                                                 }}
-                                                filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
-                                                  new URL(workspace.descriptor.origin.url).hostname
-                                                )}
+                                                filter={authSessionSelectFilter}
                                               />
                                             </Alert>
                                           </li>
@@ -1876,9 +1887,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     setSyncGitHubGistDropdownOpen(true);
                                                   }, 0);
                                                 }}
-                                                filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
-                                                  new URL(workspace.descriptor.origin.url).hostname
-                                                )}
+                                                filter={authSessionSelectFilter}
                                               />
                                             }
                                           >
@@ -1955,9 +1964,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     setSyncGitRepositoryDropdownOpen(true);
                                                   });
                                                 }}
-                                                filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
-                                                  new URL(workspace.descriptor.origin.url).hostname
-                                                )}
+                                                filter={authSessionSelectFilter}
                                               />
                                             }
                                           >
@@ -2055,6 +2062,7 @@ export function PushToGitHubAlertActionLinks(props: {
   remoteRef?: string;
   workspaceDescriptor: WorkspaceDescriptor | undefined;
   changeGitAuthSessionId: (a: React.SetStateAction<string | undefined>, b: string | undefined) => void;
+  authSessionSelectFilter: AuthSessionSelectFilter;
 }) {
   const accountsDispatch = useAccountsDispatch();
   if (props.workspaceDescriptor?.origin.kind === WorkspaceKind.GIT && !props.remoteRef) {
@@ -2088,13 +2096,7 @@ export function PushToGitHubAlertActionLinks(props: {
                   props.changeGitAuthSessionId(newAuthSessionId, props.workspaceDescriptor?.gitAuthSessionId);
                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                 }}
-                filter={
-                  props.workspaceDescriptor?.origin.url
-                    ? authSessionsSelectFilterForCompatibleGitUrlDomain(
-                        new URL(props.workspaceDescriptor?.origin.url).hostname
-                      )
-                    : noOpAuthSessionSelectFilter()
-                }
+                filter={props.authSessionSelectFilter}
               />
               <br />
               <br />

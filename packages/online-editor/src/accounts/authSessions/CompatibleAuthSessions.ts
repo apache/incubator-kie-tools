@@ -79,10 +79,10 @@ export function isAuthSessionCompatibleWithUrlDomain(args: {
   return false;
 }
 
-export function authSessionsSelectFilterForCompatibleGitUrlDomain(
-  urlDomain: string | undefined
+export function authSessionsSelectFilterCompatibleWithGitUrlDomain(
+  gitUrlDomain: string | undefined
 ): AuthSessionSelectFilter {
-  if (!urlDomain) {
+  if (!gitUrlDomain) {
     return noOpAuthSessionSelectFilter();
   }
 
@@ -93,8 +93,43 @@ export function authSessionsSelectFilterForCompatibleGitUrlDomain(
           authSession,
           authProvider,
           status,
-          urlDomain,
+          urlDomain: gitUrlDomain,
         })
+      ) {
+        return { authSession, authProvider, groupLabel: "Compatible" };
+      } else {
+        return { authSession, authProvider: authProvider!, groupLabel: "Other" };
+      }
+    });
+
+    return {
+      items: compatibleItemsWithUrl,
+      groups: [
+        { label: "Compatible", hidden: false },
+        { label: "Other", hidden: true },
+      ],
+    };
+  };
+}
+
+export function authSessionsSelectFilterCompatibleWithGistUrlDomain(
+  gitUrlDomain: string | undefined,
+  gistOwner: string | undefined
+): AuthSessionSelectFilter {
+  if (!gitUrlDomain) {
+    return noOpAuthSessionSelectFilter();
+  }
+
+  return (items) => {
+    const compatibleItemsWithUrl = items.map(({ authSession, authProvider, status }) => {
+      if (
+        isAuthSessionCompatibleWithUrlDomain({
+          authSession,
+          authProvider,
+          status,
+          urlDomain: gitUrlDomain,
+        }) &&
+        gistOwner === authSession.login
       ) {
         return { authSession, authProvider, groupLabel: "Compatible" };
       } else {

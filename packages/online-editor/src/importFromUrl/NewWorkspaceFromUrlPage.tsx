@@ -46,7 +46,9 @@ import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
 import { useOctokit } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
-import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -63,6 +65,8 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamAuthSessionId = useQueryParam(QueryParams.AUTH_SESSION_ID);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
+  const authProviders = useAuthProviders();
+  const { authSessions, authSessionStatus } = useAuthSessions();
   const { authSession, gitConfig, authInfo } = useAuthSession(queryParamAuthSessionId);
 
   const importableUrl = useImportableUrl(queryParamUrl);
@@ -136,17 +140,36 @@ export function NewWorkspaceFromUrlPage() {
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    if (!selectedGitRefName) {
+    if (!selectedGitRefName || !queryParamUrl) {
       return;
     }
+
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain: new URL(queryParamUrl).hostname,
+    });
+
     history.replace({
       pathname: routes.import.path({}),
       search: queryParams
         .with(QueryParams.BRANCH, selectedGitRefName)
-        .with(QueryParams.AUTH_SESSION_ID, authSession?.id)
+        .with(QueryParams.AUTH_SESSION_ID, authSession?.id ?? compatible[0].id)
         .toString(),
     });
-  }, [authSession?.id, history, queryParams, routes.import, selectedGitRefName, setGitRefName]);
+  }, [
+    authProviders,
+    authSession?.id,
+    authSessionStatus,
+    authSessions,
+    history,
+    queryParamUrl,
+    queryParams,
+    routes.import,
+    selectedGitRefName,
+    setGitRefName,
+  ]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {

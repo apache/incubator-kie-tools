@@ -38,6 +38,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
+import { v4 as uuid } from "uuid";
 
 export type AuthSessionSelectItem = {
   groupLabel: string;
@@ -132,7 +133,6 @@ export function AuthSessionSelect(props: {
 
   const showedGroups = groups?.filter((s) => !s.hidden);
   const shouldShowGroups = showAll || (showedGroups?.length ?? 0) > 1;
-  const totalNumberOfFilteredAuthSessions = [...filteredItemsByGroup.values()].reduce((acc, s) => acc + s.length, 0);
 
   return (
     <Select
@@ -215,14 +215,14 @@ export function AuthSessionSelect(props: {
                   ]
                 : [
                     <div
-                      key={"shadow-top-1st-item"}
+                      key={uuid()}
                       style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
                     />,
                   ]),
             ],
 
             ...intercalate(
-              (i) => <Divider key={`${i}-divider`} inset={{ default: "insetMd" }} />,
+              (id) => <Divider key={`${id}-divider`} inset={{ default: "insetMd" }} />,
               items.flatMap(({ authSession, authProvider }) => {
                 // The selected item should always be rendered as an option.
                 if (
@@ -283,7 +283,7 @@ export function InvalidAuthSessionIcon() {
   );
 }
 
-export function intercalate<T>(divider: (index: number) => T, arr: T[]) {
+export function intercalate<T>(divider: (id: string) => T, arr: T[]) {
   const ret: T[] = [];
 
   let index = 0;
@@ -291,7 +291,7 @@ export function intercalate<T>(divider: (index: number) => T, arr: T[]) {
     if (index === 0) {
       ret.push(elem);
     } else {
-      ret.push(divider(index));
+      ret.push(divider(uuid()));
       ret.push(elem);
     }
 

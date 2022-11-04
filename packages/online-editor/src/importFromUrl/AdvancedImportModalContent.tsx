@@ -27,7 +27,7 @@ import { ServerRef } from "isomorphic-git";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useState } from "react";
 import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
-import { authSessionsSelectFilterForCompatibleGitUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
+import { authSessionsSelectFilterCompatibleWithGitUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
 
@@ -51,7 +51,7 @@ export interface AdvancedImportModalProps {
 export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, AdvancedImportModalProps>(
   (props, forwardedRef) => {
     const [isModalOpen, setModalOpen] = useState(false);
-    const [isBranchSelectorOpen, setBranchSelectorOpen] = useState(false);
+    const [isGitRefNameSelectorOpen, setGitRefNameSelectorOpen] = useState(false);
 
     useImperativeHandle(
       forwardedRef,
@@ -123,7 +123,7 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   authSessionId={props.authSessionId}
                   setAuthSessionId={props.setAuthSessionId}
                   isPlain={false}
-                  filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
+                  filter={authSessionsSelectFilterCompatibleWithGitUrlDomain(
                     props.clonableUrl.clonableUrl.url?.hostname
                   )}
                 />
@@ -170,12 +170,12 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   isDisabled={props.validation.option !== ValidatedOptions.success}
                   variant={SelectVariant.typeahead}
                   selections={props.gitRefName}
-                  isOpen={isBranchSelectorOpen}
-                  onToggle={setBranchSelectorOpen}
+                  isOpen={isGitRefNameSelectorOpen}
+                  onToggle={setGitRefNameSelectorOpen}
                   isGrouped={true}
                   onSelect={(e, value) => {
                     props.setGitRefName(value as string);
-                    setBranchSelectorOpen(false);
+                    setGitRefNameSelectorOpen(false);
                   }}
                   menuAppendTo={document.body}
                   maxHeight={"400px"}
