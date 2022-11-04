@@ -188,7 +188,7 @@ export function AuthSessionSelect(props: {
       {[
         // Title
         <div key={"title"}>
-          <TextContent style={{ fontStyle: "italic", padding: "0 8px 8px 8px", opacity: "0.8" }}>
+          <TextContent style={{ fontStyle: "italic", padding: "8px", opacity: "0.8" }}>
             <Text component={TextVariants.small}>{props.title}</Text>
           </TextContent>
         </div>,
@@ -210,13 +210,13 @@ export function AuthSessionSelect(props: {
                     <SelectGroup
                       key={groupLabel}
                       label={groupLabel}
-                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)" }}
+                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px" }}
                     ></SelectGroup>,
                   ]
                 : [
                     <div
                       key={"shadow-top-1st-item"}
-                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", height: "8px" }}
+                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
                     />,
                   ]),
             ],
