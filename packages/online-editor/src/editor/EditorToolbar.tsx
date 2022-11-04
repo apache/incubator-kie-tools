@@ -571,9 +571,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const forkGitHubGist = useCallback(async () => {
     try {
-      if (!authInfo || !gitHubGist?.id || !workspacePromise.data) {
+      if (!authSession || !authInfo || !gitHubGist?.id || !workspacePromise.data) {
         return;
       }
+
       setGitHubGistLoading(true);
 
       // Fork Gist
@@ -611,7 +612,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       navigationBlockersBypass.execute(() => {
         history.push({
           pathname: routes.import.path({}),
-          search: routes.import.queryString({ url: gist.data.html_url }),
+          search: routes.import.queryString({
+            url: gist.data.html_url,
+            authSessionId: authSession.id,
+          }),
         });
       });
     } catch (err) {
@@ -621,6 +625,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       setGitHubGistLoading(false);
     }
   }, [
+    authSession,
     authInfo,
     gitHubGist,
     workspacePromise.data,
