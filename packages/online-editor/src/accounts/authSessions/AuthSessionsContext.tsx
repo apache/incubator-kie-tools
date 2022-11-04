@@ -49,6 +49,7 @@ export function useAuthSessionsDispatch() {
 
 const fsCache = new LfsFsCache();
 const fsService = new LfsStorageService();
+const broadcastChannel = new BroadcastChannel("auth_sessions");
 
 const AUTH_SESSIONS_FILE_PATH = "/authSessions.json";
 const AUTH_SESSIONS_FS_NAME = "auth_sessions";
@@ -58,43 +59,68 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
   const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
-  const add = useCallback((authSession: AuthSession) => {
-    setAuthSessions((prev) => new Map(prev?.entries() ?? []).set(authSession.id, authSession));
-  }, []);
-
-  const remove = useCallback((authSession: AuthSession) => {
-    setAuthSessions((prev) => {
-      prev?.delete(authSession.id);
-      return new Map(prev?.entries() ?? []);
-    });
-  }, []);
-
-  const persistAuthSessions = useCallback(async (map: Map<string, AuthSession>) => {
+  const refresh = useCallback(async () => {
     const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
-    await fsService.createOrOverwriteFile(
-      fs,
-      new LfsStorageFile({
-        path: AUTH_SESSIONS_FILE_PATH,
-        getFileContents: async () => encoder.encode(JSON.stringify([...map.entries()])),
-      })
-    );
+    const content = await (await fsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();
+    setAuthSessions(new Map(JSON.parse(decoder.decode(content))));
   }, []);
 
+  const persistAuthSessions = useCallback(
+    async (map: Map<string, AuthSession>) => {
+      const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
+      await fsService.createOrOverwriteFile(
+        fs,
+        new LfsStorageFile({
+          path: AUTH_SESSIONS_FILE_PATH,
+          getFileContents: async () => encoder.encode(JSON.stringify([...map.entries()])),
+        })
+      );
+
+      // This goes to other broadcast channel instances, on other tabs
+      broadcastChannel.postMessage("UPDATE_AUTH_SESSIONS");
+
+      // This updates this tab
+      refresh();
+    },
+    [refresh]
+  );
+
+  const add = useCallback(
+    (authSession: AuthSession) => {
+      const n = new Map(authSessions?.entries() ?? []);
+      n?.set(authSession.id, authSession);
+      persistAuthSessions(n);
+    },
+    [authSessions, persistAuthSessions]
+  );
+
+  const remove = useCallback(
+    (authSession: AuthSession) => {
+      const n = new Map(authSessions?.entries() ?? []);
+      n?.delete(authSession.id);
+      persistAuthSessions(n);
+    },
+    [authSessions, persistAuthSessions]
+  );
+
+  // Update after persisted
+  useEffect(() => {
+    broadcastChannel.onmessage = refresh;
+  }, [refresh]);
+
+  // Init
   useEffect(() => {
     async function run() {
       const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
       if (!(await fsService.exists(fs, AUTH_SESSIONS_FILE_PATH))) {
         await persistAuthSessions(new Map());
+      } else {
+        refresh();
       }
-
-      const content = await (await fsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();
-      setAuthSessions(new Map(JSON.parse(decoder.decode(content))));
-
-      // TODO: Tiago -> BROADCAST CHANNEL EVENT TO NOTIFY OTHER TABS PLEASE
     }
 
     run();
-  }, [persistAuthSessions]);
+  }, [persistAuthSessions, refresh]);
 
   const recalculateAuthSessionStatus = useCallback(
     (args?: { canceled: Holder<boolean> }) => {
@@ -131,14 +157,6 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   );
 
   useCancelableEffect(recalculateAuthSessionStatus);
-
-  useEffect(() => {
-    if (!authSessions) {
-      return;
-    }
-
-    persistAuthSessions(authSessions ?? new Map());
-  }, [persistAuthSessions, authSessions]);
 
   const dispatch = useMemo(() => {
     return { add, remove, recalculateAuthSessionStatus };
