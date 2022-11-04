@@ -39,8 +39,9 @@ import {
   useAccountsDispatch,
 } from "./AccountsDispatchContext";
 import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
-import { GitAuthSession, useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
+import { useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 import { AuthSessionDescriptionList } from "./authSessions/AuthSessionsList";
+import { GitAuthSession } from "./authSessions/AuthSessionApi";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 

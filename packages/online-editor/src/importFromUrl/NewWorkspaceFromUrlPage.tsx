@@ -43,9 +43,10 @@ import {
 } from "./ImportableUrlHooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
-import { AuthSession, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
 import { useOctokit } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();

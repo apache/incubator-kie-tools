@@ -25,14 +25,9 @@ import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ServerRef } from "isomorphic-git";
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useState } from "react";
-import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { AuthSessionStatus, AUTH_SESSION_NONE, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
-import { AuthSessionSelect, AuthSessionSelectFilter } from "../accounts/authSessions/AuthSessionSelect";
-import {
-  authSessionsSelectFilterForCompatibleGitUrlDomain,
-  isAuthSessionCompatibleWithUrlDomain,
-} from "../accounts/authSessions/CompatibleAuthSessions";
+import { useImperativeHandle, useMemo, useState } from "react";
+import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
+import { authSessionsSelectFilterForCompatibleGitUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
 

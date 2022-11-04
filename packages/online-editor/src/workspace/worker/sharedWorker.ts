@@ -45,6 +45,7 @@ import { FsFlushManager } from "../services/FsFlushManager";
 import { WorkspacesWorkerChannelApi } from "./api/WorkspacesWorkerChannelApi";
 import { FsSchema } from "../services/FsCache";
 import { GitServerRef } from "./api/GitServerRef";
+import { AUTH_SESSION_NONE } from "../../accounts/authSessions/AuthSessionApi";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -441,7 +442,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       return await createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
-        gitAuthSessionId: "none", // FIXME: Tiago
+        gitAuthSessionId: AUTH_SESSION_NONE.id,
         storeFiles: async (fs, schema, workspace) => {
           const files = args.localFiles
             .filter((file) => !file.path.startsWith(".git/"))

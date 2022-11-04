@@ -17,7 +17,7 @@
 import { Octokit } from "@octokit/rest";
 import { useMemo } from "react";
 import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { AuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
 
 export function useOctokit(authSession: AuthSession | undefined): Octokit {
   const authProviders = useAuthProviders();

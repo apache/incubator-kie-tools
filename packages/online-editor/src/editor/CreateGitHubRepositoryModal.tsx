@@ -30,10 +30,10 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
+import { GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { AUTH_SESSION_NONE, useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { useOctokit } from "../github/Hooks";
 
 const getSuggestedRepositoryName = (name: string) =>

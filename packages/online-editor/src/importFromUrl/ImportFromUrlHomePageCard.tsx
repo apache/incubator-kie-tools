@@ -22,21 +22,15 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { TumblrSquareIcon } from "@patternfly/react-icons";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
-import { AuthProvider, useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import {
-  AuthSession,
-  AuthSessionStatus,
-  AUTH_SESSION_NONE,
-  useAuthSession,
-  useAuthSessions,
-} from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
+import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";

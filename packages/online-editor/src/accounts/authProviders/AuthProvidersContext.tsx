@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useMemo } from "react";
-import { AuthSession } from "../authSessions/AuthSessionsContext";
+import { AuthSession } from "../authSessions/AuthSessionApi";
 
 export type OpenShiftAuthProvider = {
   id: string;

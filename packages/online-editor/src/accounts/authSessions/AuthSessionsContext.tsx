@@ -23,38 +23,7 @@ import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { decoder, encoder } from "../../workspace/encoderdecoder/EncoderDecoder";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { fetchAuthenticatedGitHubUser } from "../ConnectToGitHubSection";
-
-export const AUTH_SESSION_NONE: AuthSession = {
-  id: "none",
-  name: "Unauthenticated",
-  type: "none",
-  login: "Unauthenticated",
-};
-
-export type GitAuthSession = {
-  type: "git";
-  id: string;
-  token: string;
-  login: string;
-  email?: string;
-  name?: string;
-  authProviderId: string;
-  createdAtDateISO: string;
-};
-
-export enum AuthSessionStatus {
-  VALID,
-  INVALID,
-}
-
-export type NoneAuthSession = {
-  type: "none";
-  name: "Unauthenticated";
-  id: "none";
-  login: "Unauthenticated";
-};
-
-export type AuthSession = GitAuthSession | NoneAuthSession;
+import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;

@@ -26,7 +26,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Card";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
-import { AuthSession, AuthSessionStatus, useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
+import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
 import { useMemo, useState } from "react";
 import {
   DescriptionList,
@@ -42,6 +42,7 @@ import { WorkspaceDescriptor } from "../../workspace/worker/api/WorkspaceDescrip
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { AuthSession, AuthSessionStatus } from "./AuthSessionApi";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();

@@ -17,7 +17,8 @@
 import * as React from "react";
 import { useCallback, useContext, useReducer } from "react";
 import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
-import { AuthSession, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
+import { AuthSession } from "./authSessions/AuthSessionApi";
+import { useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 
 // State
 

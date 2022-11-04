@@ -15,8 +15,8 @@
  */
 
 import { AuthProvider } from "../authProviders/AuthProvidersContext";
-import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionsContext";
-import { AuthSessionSelectFilter, AuthSessionSelectItem } from "./AuthSessionSelect";
+import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
+import { AuthSessionSelectFilter } from "./AuthSessionSelect";
 
 export function getCompatibleAuthSessionWithUrlDomain(args: {
   authProviders: AuthProvider[];

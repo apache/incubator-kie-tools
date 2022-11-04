@@ -23,13 +23,7 @@ import {
   SelectVariant,
 } from "@patternfly/react-core/dist/js/components/Select";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
-import {
-  AuthSession,
-  AuthSessionStatus,
-  AUTH_SESSION_NONE,
-  useAuthSession,
-  useAuthSessions,
-} from "./AuthSessionsContext";
+import { useAuthSession, useAuthSessions } from "./AuthSessionsContext";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import { AuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { useEffect, useMemo, useState } from "react";
@@ -43,6 +37,7 @@ import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclama
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 
 export type AuthSessionSelectItem = {
   groupLabel: string;
