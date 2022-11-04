@@ -116,7 +116,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     @Override
     public BoundingBox getBoundingBox() {
-        if (m_box != null) {
+        if (m_box != null && m_box.nonEmpty()) {
             return m_box;
         }
 

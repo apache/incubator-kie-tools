@@ -41,5 +41,6 @@ public class StartShapeView extends ServerlessWorkflowBasicShape<StartShapeView>
         setTitleStrokeWidth(0);
         setTitleStrokeAlpha(0);
         setTitleStrokeColor("#929292");
+        isTitleListening(false);
     }
 }

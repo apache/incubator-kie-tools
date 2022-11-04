@@ -154,7 +154,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
                 hasTitle.setTitleRotation(rotation);
             }
             if (wrapperStrategy != null) {
-                hasTitle.setTextWrapper(wrapperStrategy);
+                hasTitle.setTitleWrapper(wrapperStrategy);
             }
 
             Optional.ofNullable(margins).ifPresent(m -> this.margins.putAll(m));
@@ -163,7 +163,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             }
 
             if (sizeConstraints != null) {
-                hasTitle.setTextSizeConstraints(sizeConstraints);
+                hasTitle.setTitleSizeConstraints(sizeConstraints);
             }
 
             applyTextPosition(hasTitle, rotation, verticalAlignment, horizontalAlignment, referencePosition,

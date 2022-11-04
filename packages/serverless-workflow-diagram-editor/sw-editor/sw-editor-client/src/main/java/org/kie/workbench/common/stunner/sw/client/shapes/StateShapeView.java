@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -33,27 +32,27 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
 
     private Circle backgroundCircle;
 
-    private Rectangle mainRectangle;
-
     public StateShapeView(String name) {
         this(new MultiPath()
                      .rect(0, 0, 250, 90)
-                     .setCornerRadius(0.00)
+                     .setCornerRadius(5.00)
                      .setDraggable(false)
                      .setAlpha(1.00)
                      .setListening(true)
                      .setScale(1.00, 1.00)
                      .setOffset(0.00, 0.00)
                      .setStrokeWidth(2.00)
-                     .setStrokeColor("#f2f2f2")
-                     .setStrokeAlpha(0)
+                     .setFillColor("#fff")
+                     .setStrokeColor("#ccc")
+                     .setStrokeWidth(2.00)
+                     .setStrokeAlpha(1)
+                     .moveToBottom()
                      .setListening(true), name);
     }
 
     public StateShapeView(MultiPath path, String name) {
         super(path);
         initialize(name);
-        getShape().moveToTop();
     }
 
     public void addIconElement(String path) {
@@ -65,8 +64,8 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
                                .setListening(false)
                                .setScale(1.00, 1.00)
                                .setOffset(0.00, 0.00)
-                               .setFillColor("#ffffff")
-                               .setStrokeColor("#ffffff")
+                               .setFillColor("#fff")
+                               .setStrokeColor("#fff")
                                .setStrokeWidth(2.00));
     }
 
@@ -75,19 +74,6 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
     }
 
     private void initialize(String name) {
-        mainRectangle = new Rectangle(250, 90)
-                .setCornerRadius(5.00)
-                .setDraggable(false)
-                .setAlpha(1.00)
-                .setListening(true)
-                .setScale(1.00, 1.00)
-                .setOffset(0.00, 0.00)
-                .setFillColor("#fff")
-                .setStrokeColor("#ccc")
-                .setStrokeWidth(2.00)
-                .setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR)
-                .setListening(true);
-        addChild(mainRectangle);
         Text title = new Text(name)
                 .setX(90)
                 .setY(35)
@@ -98,14 +84,13 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
                 .setTextBaseLine(TextBaseLine.MIDDLE)
                 .setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR)
                 .setFontSize(12)
-                .setListening(true);
+                .setListening(false);
         TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 160, 44));
 
         title.setWrapper(textWrapper);
 
         addChild(title);
         addChild(createIconCircle());
-        this.moveToTop();
     }
 
     private Group createIconCircle() {
@@ -134,11 +119,5 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
         icon.setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR);
 
         return icon;
-    }
-
-    @Override
-    public StateShapeView setFillColor(String color) {
-        mainRectangle.setFillColor(color);
-        return this;
     }
 }

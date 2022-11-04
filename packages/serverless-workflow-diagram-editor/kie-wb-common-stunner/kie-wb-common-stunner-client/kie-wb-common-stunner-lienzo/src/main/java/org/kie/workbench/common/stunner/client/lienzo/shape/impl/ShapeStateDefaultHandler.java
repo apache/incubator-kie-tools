@@ -35,17 +35,12 @@ public class ShapeStateDefaultHandler
         implements ShapeStateHandler {
 
     public enum RenderType {
-        FILL(ShapeStateAttributesFactory::buildFillAttributes),
-        STROKE(ShapeStateAttributesFactory::buildStrokeAttributes);
+        STROKE(ShapeStateAttributesFactory::buildStateAttributes);
 
         private final Function<ShapeState, ShapeStateAttributes> stateAttributesProvider;
 
         RenderType(final Function<ShapeState, ShapeStateAttributes> stateAttributesProvider) {
             this.stateAttributesProvider = stateAttributesProvider::apply;
-        }
-
-        public Function<ShapeState, ShapeStateAttributes> stateAttributesProvider() {
-            return stateAttributesProvider;
         }
     }
 

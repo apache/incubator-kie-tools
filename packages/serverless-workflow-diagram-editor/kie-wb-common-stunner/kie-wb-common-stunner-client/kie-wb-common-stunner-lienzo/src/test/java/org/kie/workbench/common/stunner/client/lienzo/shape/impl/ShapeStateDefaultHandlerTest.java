@@ -95,23 +95,6 @@ public class ShapeStateDefaultHandlerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSelectedStateFill() {
-        reset(delegateHandler);
-
-        when(handler.getShapeState()).thenReturn(ShapeState.SELECTED);
-
-        tested.setRenderType(ShapeStateDefaultHandler.RenderType.FILL);
-
-        verify(delegateHandler).useAttributes(stateAttributesProviderCaptor.capture());
-
-        final Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> stateAttributesProvider = stateAttributesProviderCaptor.getValue();
-        final ShapeStateAttributeHandler.ShapeStateAttributes attributes = stateAttributesProvider.apply(ShapeState.SELECTED);
-
-        assertNotNull(attributes.getValues().get(ShapeStateAttributeHandler.ShapeStateAttribute.FILL_COLOR));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void testSelectedStateShadow() {
         when(handler.getShapeState()).thenReturn(ShapeState.SELECTED);
         tested.setBackgroundShape(() -> backgroundShape);

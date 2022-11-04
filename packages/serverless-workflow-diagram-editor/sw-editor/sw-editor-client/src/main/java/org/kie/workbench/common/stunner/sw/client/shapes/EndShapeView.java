@@ -34,7 +34,7 @@ public class EndShapeView extends ServerlessWorkflowBasicShape<EndShapeView> {
                       .setStrokeColor("#ccc")
                       .setStrokeWidth(2.00));
         setTitle("End");
-        setTextBoundaries(46, 46);
+        setTitleBoundaries(46, 46);
         setTitleXOffsetPosition(0.0);
         setTitlePosition(VerticalAlignment.MIDDLE, HorizontalAlignment.CENTER, ReferencePosition.INSIDE, Orientation.HORIZONTAL);
         setTitleFontColor("#929292");
@@ -43,5 +43,6 @@ public class EndShapeView extends ServerlessWorkflowBasicShape<EndShapeView> {
         setTitleStrokeWidth(0);
         setTitleStrokeAlpha(0);
         setTitleStrokeColor("#929292");
+        isTitleListening(false);
     }
 }

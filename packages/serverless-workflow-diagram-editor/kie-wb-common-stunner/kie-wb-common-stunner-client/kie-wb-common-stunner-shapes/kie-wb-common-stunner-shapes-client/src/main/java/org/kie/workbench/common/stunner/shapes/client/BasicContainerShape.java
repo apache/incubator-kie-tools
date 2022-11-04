@@ -31,7 +31,7 @@ public class BasicContainerShape<W, V extends LienzoShapeView<?>>
         super(new LienzoShape<V>(view,
                                  new ShapeStateAttributeAnimationHandler<>()
                                          .getAttributesHandler()
-                                         .useAttributes(ShapeStateAttributesFactory::buildStrokeAttributes)
+                                         .useAttributes(ShapeStateAttributesFactory::buildStateAttributes)
                                          .setView(() -> view)));
     }
 }
