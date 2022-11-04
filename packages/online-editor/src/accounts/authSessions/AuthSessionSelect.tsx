@@ -132,6 +132,7 @@ export function AuthSessionSelect(props: {
 
   const showedGroups = groups?.filter((s) => !s.hidden);
   const shouldShowGroups = showAll || (showedGroups?.length ?? 0) > 1;
+  const totalNumberOfFilteredAuthSessions = [...filteredItemsByGroup.values()].reduce((acc, s) => acc + s.length, 0);
 
   return (
     <Select
@@ -192,7 +193,7 @@ export function AuthSessionSelect(props: {
           </TextContent>
         </div>,
 
-        ...[...filteredItemsByGroup.entries()].flatMap(([groupLabel, items]) => {
+        ...[...filteredItemsByGroup.entries()].flatMap(([groupLabel, items], indexGroups) => {
           // The selected item should always be rendered as an option.
           if (
             !items.find((a) => a.authSession.id === props.authSessionId) &&
@@ -209,49 +210,58 @@ export function AuthSessionSelect(props: {
                     <SelectGroup
                       key={groupLabel}
                       label={groupLabel}
-                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px" }}
+                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)" }}
                     ></SelectGroup>,
                   ]
-                : []),
+                : [
+                    <div
+                      key={"shadow-top-1st-item"}
+                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", height: "8px" }}
+                    />,
+                  ]),
             ],
 
-            ...items.flatMap(({ authSession, authProvider }, index) => {
-              // The selected item should always be rendered as an option.
-              if (
-                authSession.id !== props.authSessionId &&
-                groups?.find(({ label }) => label === groupLabel)?.hidden &&
-                !showAll
-              ) {
-                return [];
-              }
+            ...intercalate(
+              (i) => <Divider key={`${i}-divider`} inset={{ default: "insetMd" }} />,
+              items.flatMap(({ authSession, authProvider }) => {
+                // The selected item should always be rendered as an option.
+                if (
+                  authSession.id !== props.authSessionId &&
+                  groups?.find(({ label }) => label === groupLabel)?.hidden &&
+                  !showAll
+                ) {
+                  return [];
+                }
 
-              if (authSession.type === "none") {
+                if (authSession.type === "none") {
+                  return [
+                    <SelectOption key={AUTH_SESSION_NONE.id} value={AUTH_SESSION_NONE.id} description={<i>{}</i>}>
+                      <AuthProviderIcon authProvider={undefined} size={IconSize.sm} />
+                      &nbsp;&nbsp;
+                      {AUTH_SESSION_NONE.login}
+                    </SelectOption>,
+                  ];
+                }
+
                 return [
-                  <SelectOption key={AUTH_SESSION_NONE.id} value={AUTH_SESSION_NONE.id} description={<i>{}</i>}>
-                    <AuthProviderIcon authProvider={undefined} size={IconSize.sm} />
-                    &nbsp;&nbsp;
-                    {AUTH_SESSION_NONE.login}
+                  <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
+                    <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                      <FlexItem>
+                        <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+                        &nbsp;&nbsp;
+                        {authSession.login}
+                      </FlexItem>
+                      {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID &&
+                        isAuthSessionSelectorOpen && (
+                          <FlexItem style={{ zIndex: 99999 }}>
+                            <InvalidAuthSessionIcon />
+                          </FlexItem>
+                        )}
+                    </Flex>
                   </SelectOption>,
                 ];
-              }
-
-              return [
-                <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
-                  <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                    <FlexItem>
-                      <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
-                      &nbsp;&nbsp;
-                      {authSession.login}
-                    </FlexItem>
-                    {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID && isAuthSessionSelectorOpen && (
-                      <FlexItem style={{ zIndex: 99999 }}>
-                        <InvalidAuthSessionIcon />
-                      </FlexItem>
-                    )}
-                  </Flex>
-                </SelectOption>,
-              ];
-            }),
+              })
+            ),
           ];
         }),
       ]}
@@ -271,4 +281,22 @@ export function InvalidAuthSessionIcon() {
       </>
     </Tooltip>
   );
+}
+
+export function intercalate<T>(divider: (index: number) => T, arr: T[]) {
+  const ret: T[] = [];
+
+  let index = 0;
+  for (const elem of arr) {
+    if (index === 0) {
+      ret.push(elem);
+    } else {
+      ret.push(divider(index));
+      ret.push(elem);
+    }
+
+    index++;
+  }
+
+  return ret;
 }

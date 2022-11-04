@@ -797,7 +797,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   title={"Can't Create Repository or Gist without selecting an authentication source"}
                   actionLinks={
                     <AuthSessionSelect
-                      title={`Select Git authentication for '${workspacePromise.data.descriptor.name}'`}
+                      title={`Select Git authentication for '${workspacePromise.data.descriptor.name}'...`}
                       position={SelectPosition.right}
                       isPlain={false}
                       authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
@@ -1199,7 +1199,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             <br />
 
             <AuthSessionSelect
-              title={`Select Git authentication for '${workspacePromise.data?.descriptor.name}'`}
+              title={`Select Git authentication for '${workspacePromise.data?.descriptor.name}'...`}
               isPlain={false}
               authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
               setAuthSessionId={(newAuthSessionId) => {
@@ -1482,7 +1482,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       </FlexItem>
                       <FlexItem>
                         <AuthSessionSelect
-                          title={`Select Git authentication for '${workspace.descriptor.name}'`}
+                          title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                           isPlain={true}
                           authSessionId={workspace.descriptor.gitAuthSessionId}
                           setAuthSessionId={(newAuthSessionId) => {
@@ -1833,7 +1833,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                               <br />
                                               <br />
                                               <AuthSessionSelect
-                                                title={`Select Git authentication for '${workspace.descriptor.name}'`}
+                                                title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
@@ -1863,7 +1863,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                             title={"Can't Update Gist without selecting an authentication source"}
                                             actionLinks={
                                               <AuthSessionSelect
-                                                title={`Select Git authentication for '${workspace.descriptor.name}'`}
+                                                title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
@@ -1942,7 +1942,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                             title={"Can't Push without selecting an authentication source"}
                                             actionLinks={
                                               <AuthSessionSelect
-                                                title={`Select Git authentication for '${workspace.descriptor.name}'`}
+                                                title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
@@ -2080,7 +2080,7 @@ export function PushToGitHubAlertActionLinks(props: {
           actionLinks={
             <>
               <AuthSessionSelect
-                title={`Select Git authentication for '${props.workspaceDescriptor?.name}'`}
+                title={`Select Git authentication for '${props.workspaceDescriptor?.name}'...`}
                 position={SelectPosition.right}
                 isPlain={false}
                 authSessionId={props.workspaceDescriptor?.gitAuthSessionId}
