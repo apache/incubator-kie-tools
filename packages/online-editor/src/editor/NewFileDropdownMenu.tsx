@@ -344,6 +344,7 @@ export function NewFileDropdownMenu(props: {
                 {/* Allows for arrows to work when editing the text. */}
                 <MenuInput onKeyDown={(e) => e.stopPropagation()}>
                   <ImportSingleFileFromUrlForm
+                    authSessionSelectHelperText={`Changing it here won't change it on '${props.workspaceDescriptor.name}'`}
                     importingError={importingError}
                     importableUrl={importableUrl}
                     urlInputRef={urlInputRef}

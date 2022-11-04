@@ -34,6 +34,7 @@ export function ImportSingleFileFromUrlForm(props: {
   onSubmit: () => void;
   urlInputRef?: React.RefObject<HTMLInputElement>;
   importableUrl: ImportableUrl;
+  authSessionSelectHelperText: string;
 }) {
   const onSubmit = useCallback(
     (e: FormEvent) => {
@@ -75,7 +76,12 @@ export function ImportSingleFileFromUrlForm(props: {
 
   return (
     <Form onSubmit={onSubmit}>
-      <FormGroup fieldId="auth-source" label="Authentication" isRequired={true}>
+      <FormGroup
+        fieldId="auth-source"
+        label="Authentication"
+        isRequired={true}
+        helperText={props.authSessionSelectHelperText}
+      >
         <AuthSessionSelect
           menuAppendTo={document.body}
           title={"Select authentication source for importing..."}
