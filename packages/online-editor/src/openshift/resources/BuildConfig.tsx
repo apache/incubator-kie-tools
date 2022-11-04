@@ -18,56 +18,6 @@ import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, ResourceFetch } fr
 
 const API_ENDPOINT = "apis/build.openshift.io/v1";
 
-export class CreateBuildConfig extends ResourceFetch {
-  protected method(): HttpMethod {
-    return "POST";
-  }
-
-  protected async requestBody(): Promise<string | undefined> {
-    return `
-      kind: BuildConfig
-      apiVersion: build.openshift.io/v1
-      metadata:
-        name: ${this.args.resourceName}
-        namespace: ${this.args.namespace}
-        labels:
-          app: ${this.args.resourceName}
-          app.kubernetes.io/component: ${this.args.resourceName}
-          app.kubernetes.io/instance: ${this.args.resourceName}
-          app.kubernetes.io/part-of: ${this.args.resourceName}
-          app.kubernetes.io/name: java
-          app.openshift.io/runtime: quarkus
-          app.openshift.io/runtime-version: ${JAVA_RUNTIME_VERSION}
-          ${KOGITO_CREATED_BY}: ${this.args.createdBy}
-      spec:
-        output:
-          to:
-            kind: ImageStreamTag
-            name: '${this.args.resourceName}:latest'
-        strategy:
-          type: Source
-          sourceStrategy:
-            from:
-              kind: ImageStreamTag
-              namespace: openshift
-              name: 'java:${JAVA_RUNTIME_VERSION}'
-        source:
-          dockerfile:
-        resources:
-          limits:
-            memory: 4Gi
-    `;
-  }
-
-  public name(): string {
-    return CreateBuildConfig.name;
-  }
-
-  public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/buildconfigs`;
-  }
-}
-
 export class DeleteBuildConfig extends ResourceFetch {
   protected method(): HttpMethod {
     return "DELETE";
