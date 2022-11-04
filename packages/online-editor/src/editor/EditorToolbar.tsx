@@ -1517,7 +1517,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         <WorkspaceLabel descriptor={workspace.descriptor} />
                       </FlexItem>
                       <FlexItem
-                        style={{ minWidth: 0, padding: "0 8px 0 8px" }}
+                        style={{ minWidth: 0, padding: "0 8px 0 8px", flexShrink: 0 }}
                         className={"kie-tools--masthead-hoverable"}
                       >
                         <FolderIcon style={{ marginRight: "8px", verticalAlign: "middle" }} />

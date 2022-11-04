@@ -56,6 +56,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
   const authSessionsDispatch = useAuthSessionsDispatch();
 
   const [githubToken, setGitHubToken] = useState("");
+  const [success, setSuccess] = useState(false);
   const [newAuthSession, setNewAuthSession] = usePromiseState<GitAuthSession>();
 
   useCancelableEffect(
@@ -65,6 +66,11 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
           return;
         }
 
+        if (success) {
+          return;
+        }
+
+        setSuccess(false);
         setNewAuthSession({ loading: true });
 
         if (
@@ -105,6 +111,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
             setTimeout(() => {
               authSessionsDispatch.add(newAuthSession);
               setNewAuthSession({ data: newAuthSession });
+              setSuccess(true);
             }, 0);
           })
           .catch((e) => {
@@ -122,6 +129,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
         props.authProvider.domain,
         props.authProvider.id,
         setNewAuthSession,
+        success,
       ]
     )
   );
