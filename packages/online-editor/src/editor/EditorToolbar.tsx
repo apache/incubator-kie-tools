@@ -1158,8 +1158,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             authSessionId: workspacePromise.data.descriptor.gitAuthSessionId,
           }),
         });
+      } catch (e) {
+        pushErrorAlert.show();
       } finally {
-        // TODO: Tiago -> Show push error message
         pushingAlert.close();
       }
     },
@@ -1172,6 +1173,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       gitConfig,
       history,
       routes.import,
+      pushErrorAlert,
     ]
   );
 
