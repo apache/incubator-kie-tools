@@ -22,14 +22,22 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { TumblrSquareIcon } from "@patternfly/react-icons";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
-import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { AUTH_SESSION_NONE, useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { AuthProvider, useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import {
+  AuthSession,
+  AuthSessionStatus,
+  AUTH_SESSION_NONE,
+  useAuthSession,
+  useAuthSessions,
+} from "../accounts/authSessions/AuthSessionsContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
@@ -51,28 +59,19 @@ export function ImportFromUrlCard() {
   const clonableUrl = useClonableUrl(url, authInfo, gitRefName);
 
   // Select authSession based on the importableUrl domain (begin)
-  const { authSessions } = useAuthSessions();
   const authProviders = useAuthProviders();
+  const { authSessions, authSessionStatus } = useAuthSessions();
 
   useEffect(() => {
-    const gitRemoteDomain = importableUrl.url?.hostname;
-    if (!gitRemoteDomain) {
-      return;
-    }
-
-    [...authSessions.values()].forEach((authSession) => {
-      if (authSession.type === "git") {
-        const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId);
-        if (
-          authProvider &&
-          authProvider.type === "github" && // Need to support other Git providers as well
-          new Set(authProvider.supportedGitRemoteDomains).has(gitRemoteDomain)
-        ) {
-          setAuthSessionId(authSession.id);
-        }
-      }
+    const urlDomain = importableUrl.url?.hostname;
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain,
     });
-  }, [authProviders, authSessions, importableUrl]);
+    setAuthSessionId(compatible[0]!.id);
+  }, [authProviders, authSessionStatus, authSessions, importableUrl]);
   // Select authSession based on the importableUrl domain (end)
 
   useEffect(() => {

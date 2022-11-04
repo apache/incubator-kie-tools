@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ServerRef } from "isomorphic-git";
 import * as React from "react";
-import { useImperativeHandle, useMemo, useState } from "react";
-import { getGitRefName, getGitRefTypeLabel, getGitRefType, GitRefType } from "../gitRefs/GitRefs";
-import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
-import { AUTH_SESSION_NONE, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
-import { AuthProviderIcon } from "../accounts/authProviders/AuthProviderIcon";
+import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
-import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
+import { AuthSessionStatus, AUTH_SESSION_NONE, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { AuthSessionSelect, AuthSessionSelectFilter } from "../accounts/authSessions/AuthSessionSelect";
+import {
+  authSessionsSelectFilterForCompatibleGitUrlDomain,
+  isAuthSessionCompatibleWithUrlDomain,
+} from "../accounts/authSessions/CompatibleAuthSessions";
+import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
+import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -122,9 +124,13 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
             <Form onSubmit={props.onSubmit}>
               <FormGroup fieldId="auth-source" label="Authentication" isRequired={true}>
                 <AuthSessionSelect
+                  title={"Select authentication source for importing..."}
                   authSessionId={props.authSessionId}
                   setAuthSessionId={props.setAuthSessionId}
                   isPlain={false}
+                  filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
+                    props.clonableUrl.clonableUrl.url?.hostname
+                  )}
                 />
               </FormGroup>
               <FormGroup

@@ -35,13 +35,6 @@ export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbo
 export const OPENSHIFT_HOST_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-host";
 export const OPENSHIFT_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-token";
 
-export enum AuthStatus {
-  SIGNED_OUT,
-  TOKEN_EXPIRED,
-  LOADING,
-  SIGNED_IN,
-}
-
 export class ExtendedServicesConfig {
   constructor(public readonly host: string, public readonly port: string) {}
 

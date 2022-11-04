@@ -102,6 +102,10 @@ import { useOctokit } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import {
+  authSessionsSelectFilterForCompatibleGitUrlDomain,
+  noOpAuthSessionSelectFilter,
+} from "../accounts/authSessions/CompatibleAuthSessions";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -766,6 +770,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   title={"Can't Create Repository or Gist without selecting an authentication source"}
                   actionLinks={
                     <AuthSessionSelect
+                      title={`Select Git authentication for '${workspacePromise.data.descriptor.name}'`}
                       position={SelectPosition.right}
                       isPlain={false}
                       authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
@@ -777,6 +782,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           setSmallKebabOpen(true);
                         }, 0);
                       }}
+                      filter={
+                        workspacePromise.data.descriptor.origin.url
+                          ? authSessionsSelectFilterForCompatibleGitUrlDomain(
+                              new URL(workspacePromise.data.descriptor.origin.url).hostname
+                            )
+                          : noOpAuthSessionSelectFilter()
+                      }
                     />
                   }
                 >
@@ -1160,12 +1172,20 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             <br />
 
             <AuthSessionSelect
+              title={`Select Git authentication for '${workspacePromise.data?.descriptor.name}'`}
               isPlain={false}
               authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
               setAuthSessionId={(newAuthSessionId) => {
                 changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
                 accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
               }}
+              filter={
+                workspacePromise.data.descriptor.origin.url
+                  ? authSessionsSelectFilterForCompatibleGitUrlDomain(
+                      new URL(workspacePromise.data.descriptor.origin.url).hostname
+                    )
+                  : noOpAuthSessionSelectFilter()
+              }
             />
 
             <br />
@@ -1435,12 +1455,20 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       </FlexItem>
                       <FlexItem>
                         <AuthSessionSelect
+                          title={`Select Git authentication for '${workspace.descriptor.name}'`}
                           isPlain={true}
                           authSessionId={workspace.descriptor.gitAuthSessionId}
                           setAuthSessionId={(newAuthSessionId) => {
                             changeGitAuthSessionId(newAuthSessionId, workspace.descriptor.gitAuthSessionId);
                             accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                           }}
+                          filter={
+                            workspace.descriptor.origin.url
+                              ? authSessionsSelectFilterForCompatibleGitUrlDomain(
+                                  new URL(workspace.descriptor.origin.url).hostname
+                                )
+                              : noOpAuthSessionSelectFilter()
+                          }
                         />
                       </FlexItem>
                       <FlexItem>
@@ -1778,6 +1806,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                               <br />
                                               <br />
                                               <AuthSessionSelect
+                                                title={`Select Git authentication for '${workspace.descriptor.name}'`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
@@ -1790,6 +1819,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     setSyncGitHubGistDropdownOpen(true);
                                                   }, 0);
                                                 }}
+                                                filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
+                                                  new URL(workspace.descriptor.origin.url).hostname
+                                                )}
                                               />
                                             </Alert>
                                           </li>
@@ -1804,6 +1836,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                             title={"Can't Update Gist without selecting an authentication source"}
                                             actionLinks={
                                               <AuthSessionSelect
+                                                title={`Select Git authentication for '${workspace.descriptor.name}'`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
@@ -1816,6 +1849,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     setSyncGitHubGistDropdownOpen(true);
                                                   }, 0);
                                                 }}
+                                                filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
+                                                  new URL(workspace.descriptor.origin.url).hostname
+                                                )}
                                               />
                                             }
                                           >
@@ -1879,6 +1915,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                             title={"Can't Push without selecting an authentication source"}
                                             actionLinks={
                                               <AuthSessionSelect
+                                                title={`Select Git authentication for '${workspace.descriptor.name}'`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
                                                 setAuthSessionId={(newAuthSessionId) => {
@@ -1891,6 +1928,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                     setSyncGitRepositoryDropdownOpen(true);
                                                   });
                                                 }}
+                                                filter={authSessionsSelectFilterForCompatibleGitUrlDomain(
+                                                  new URL(workspace.descriptor.origin.url).hostname
+                                                )}
                                               />
                                             }
                                           >
@@ -2013,6 +2053,7 @@ export function PushToGitHubAlertActionLinks(props: {
           actionLinks={
             <>
               <AuthSessionSelect
+                title={`Select Git authentication for '${props.workspaceDescriptor?.name}'`}
                 position={SelectPosition.right}
                 isPlain={false}
                 authSessionId={props.workspaceDescriptor?.gitAuthSessionId}
@@ -2020,6 +2061,13 @@ export function PushToGitHubAlertActionLinks(props: {
                   props.changeGitAuthSessionId(newAuthSessionId, props.workspaceDescriptor?.gitAuthSessionId);
                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                 }}
+                filter={
+                  props.workspaceDescriptor?.origin.url
+                    ? authSessionsSelectFilterForCompatibleGitUrlDomain(
+                        new URL(props.workspaceDescriptor?.origin.url).hostname
+                      )
+                    : noOpAuthSessionSelectFilter()
+                }
               />
               <br />
               <br />

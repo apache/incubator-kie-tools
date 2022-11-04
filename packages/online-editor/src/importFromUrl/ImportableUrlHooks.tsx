@@ -26,7 +26,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
 import { AuthProviderIcon } from "../accounts/authProviders/AuthProviderIcon";
-import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
 import { AuthInfo, AuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { getGitRefName, getGitRefType, GitRefTypeIcon } from "../gitRefs/GitRefs";
@@ -319,7 +319,11 @@ export function useClonableUrl(
   }, [gitRefName, gitRefNameFromUrl, gitServerRefsPromise.data]);
 
   const clonableUrl: ImportableUrl = useMemo(() => {
-    if (!isPotentiallyGit(importableUrl.type) || gitServerRefsPromise.status === PromiseStateStatus.PENDING) {
+    if (
+      !isPotentiallyGit(importableUrl.type) ||
+      gitServerRefsPromise.status === PromiseStateStatus.PENDING ||
+      importableUrl.type === UrlType.INVALID
+    ) {
       return importableUrl;
     }
 
@@ -328,15 +332,17 @@ export function useClonableUrl(
         return importableUrl;
       } else {
         return {
-          type: UrlType.INVALID,
+          type: UrlType.NOT_SUPPORTED,
+          url: importableUrl.url,
           error: `Selected ref '${gitRefName || gitRefNameFromUrl}' does not exist.`,
         };
       }
     }
 
     return {
-      type: UrlType.INVALID,
-      error: `Can't determine Git refs for '${importableUrl.url?.toString()}'`,
+      type: UrlType.NOT_SUPPORTED,
+      url: importableUrl.url,
+      error: `Can't determine Git refs for '${importableUrl.url.toString()}'`,
     };
   }, [
     importableUrl,
@@ -383,8 +389,7 @@ export function useImportableUrlValidation(
   clonableUrl: ReturnType<typeof useClonableUrl>,
   advancedImportModalRef?: React.RefObject<AdvancedImportModalRef>
 ) {
-  const authProviders = useAuthProviders();
-  const authProvider = authProviders.find((a) => authSession?.type !== "none" && a.id === authSession?.authProviderId);
+  const authProvider = useAuthProvider(authSession);
 
   return useMemo(() => {
     if (!url) {

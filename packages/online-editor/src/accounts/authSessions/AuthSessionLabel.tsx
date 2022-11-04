@@ -17,16 +17,13 @@
 import * as React from "react";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AuthSession } from "./AuthSessionsContext";
-import { useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 
 export function AuthSessionLabel(props: { authSession: AuthSession }) {
-  const authProviders = useAuthProviders();
-  const authProvider = authProviders.find(
-    (a) => props.authSession.type !== "none" && a.id === props.authSession.authProviderId
-  );
+  const authProvider = useAuthProvider(props.authSession);
 
   return (
     <>
