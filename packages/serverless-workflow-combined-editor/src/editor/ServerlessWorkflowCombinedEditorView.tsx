@@ -35,7 +35,7 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowCombinedEditorChannelApi>,
-    private readonly initArgs: EditorInitArgs
+    private readonly initArgs: EditorInitArgs & { isDiagramOnly: boolean }
   ) {
     this.editorRef = React.createRef<EditorApi>();
   }
@@ -65,6 +65,7 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
         channelType={this.initArgs.channel}
         resourcesPathPrefix={this.initArgs.resourcesPathPrefix}
         onNewEdit={this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send}
+        isDiagramOnly={this.initArgs.isDiagramOnly ?? false}
       />
     );
   }

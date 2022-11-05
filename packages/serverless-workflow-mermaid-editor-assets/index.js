@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-export * from "./SwfCombinedEditorChannelApiImpl";
-export * from "./SwfFeatureToggleChannelApiImpl";
-export * from "./SwfLanguageServiceChannelApiImpl";
-export * from "./SwfServiceCatalogChannelApiImpl";
-export * from "./SwfPreviewOptionsChannelApiImpl";
-export * from "./NoOpSwfStaticEnvelopeContentProviderChannelApiImpl";
-export * from "./SwfStaticEnvelopeContentProviderChannelApiImpl";
+const nodePath = require("path");
+const nodeFs = require("fs");
+
+module.exports = {
+  swEditorPath: () => {
+    const path = nodePath.resolve(__dirname, "dist", "sw-mermaid");
+
+    if (!nodeFs.existsSync(path)) {
+      throw new Error(`Serverless Workflow Editor :: Serverless Editor path doesn't exist: ${path}`);
+    }
+
+    console.info(`Serverless Workflow Editor :: Serverless Editor path: ${path}`);
+
+    return path;
+  },
+};

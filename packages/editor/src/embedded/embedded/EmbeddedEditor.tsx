@@ -18,6 +18,7 @@ import {
   ChannelType,
   EditorApi,
   EditorEnvelopeLocator,
+  EnvelopeMapping,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
 } from "../../api";
@@ -25,7 +26,7 @@ import { useSyncedKeyboardEvents } from "@kie-tools-core/keyboard-shortcuts/dist
 import { useGuidedTourPositionProvider } from "@kie-tools-core/guided-tour/dist/channel";
 import type * as CSS from "csstype";
 import * as React from "react";
-import { useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { EmbeddedEditorFile, StateControl } from "../../channel";
 import { useEffectAfterFirstRender } from "../common";
 import { EmbeddedEditorChannelApiImpl } from "./EmbeddedEditorChannelApiImpl";
@@ -181,6 +182,21 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     [props.isReady, isReady, stateControl, envelopeServer]
   );
 
+  const getIframeContentProps = useCallback(() => {
+    if (!envelopeMapping) {
+      return undefined;
+    }
+
+    if (envelopeMapping.envelopeStaticContent) {
+      return {
+        srcDoc: envelopeMapping.envelopeStaticContent,
+      };
+    }
+    return {
+      src: envelopeMapping.envelopePath,
+    };
+  }, [envelopeMapping]);
+
   return (
     <>
       {!envelopeMapping && (
@@ -198,6 +214,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
           title="Kogito editor"
           style={containerStyles}
           data-envelope-channel={props.channelType}
+          {...getIframeContentProps()}
         />
       )}
     </>

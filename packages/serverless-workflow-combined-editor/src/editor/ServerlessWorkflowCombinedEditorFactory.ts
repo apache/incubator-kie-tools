@@ -28,7 +28,7 @@ export class ServerlessWorkflowCombinedEditorFactory
 {
   public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowCombinedEditorChannelApi>,
-    initArgs: EditorInitArgs
+    initArgs: EditorInitArgs & { isDiagramOnly: boolean }
   ) {
     return new ServerlessWorkflowCombinedEditorView(ctx, initArgs);
   }

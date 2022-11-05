@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-export * from "./SwfCombinedEditorChannelApiImpl";
-export * from "./SwfFeatureToggleChannelApiImpl";
-export * from "./SwfLanguageServiceChannelApiImpl";
-export * from "./SwfServiceCatalogChannelApiImpl";
-export * from "./SwfPreviewOptionsChannelApiImpl";
-export * from "./NoOpSwfStaticEnvelopeContentProviderChannelApiImpl";
-export * from "./SwfStaticEnvelopeContentProviderChannelApiImpl";
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {
+      standaloneEditors: {
+        dev: {
+          port: 9006,
+        },
+      },
+    };
+  },
+});

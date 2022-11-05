@@ -14,10 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./SwfCombinedEditorChannelApiImpl";
-export * from "./SwfFeatureToggleChannelApiImpl";
-export * from "./SwfLanguageServiceChannelApiImpl";
-export * from "./SwfServiceCatalogChannelApiImpl";
-export * from "./SwfPreviewOptionsChannelApiImpl";
-export * from "./NoOpSwfStaticEnvelopeContentProviderChannelApiImpl";
-export * from "./SwfStaticEnvelopeContentProviderChannelApiImpl";
+export declare const swEditorPath: () => string;

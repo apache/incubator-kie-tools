@@ -28,6 +28,7 @@ import { PingPongReactDivViewsPage } from "./Pages/PingPong/React/PingPongReactD
 import { Home } from "./Home";
 import "../static/resources/styles.css";
 import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandaloneEditorPage";
+import { SwfStandaloneEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneEditorPage";
 import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPongAngularIFrameViewsPage";
 import { PingPongMixedViewsPage } from "./Pages/PingPong/Mixed/PingPongMixedViewsPage";
 import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
@@ -42,7 +43,9 @@ enum Location {
   PING_PONG_ANGULAR_IFRAME_PAGES = "/page/ping-pong-angular/iframe-pages",
   PING_PONG_ANGULAR_DIV_PAGES = "/page/ping-pong-angular/div-pages",
   PING_PONG_MIXED_PAGES = "/page/ping-pong-mixed",
-  STANDALONE_EDITORS = "/page/standalone-editors",
+  DMN_STANDALONE_EDITOR = "/page/dmn-standalone-editor",
+  SWF_STANDALONE_EDITOR = "/page/swf-standalone-editor",
+  SWF_STANDALONE_EDITOR_DIAGRAM_ONLY = "/page/swf-standalone-editor-diagram-only",
   HOME = "/",
 }
 
@@ -113,8 +116,23 @@ export function App() {
                   >
                     <Link to={Location.PING_PONG_MIXED_PAGES}>Ping-Pong Mixed Views</Link>
                   </NavItem>
-                  <NavItem itemId={Location.STANDALONE_EDITORS} isActive={location === Location.STANDALONE_EDITORS}>
-                    <Link to={Location.STANDALONE_EDITORS}>DMN Standalone Editor</Link>
+                  <NavItem
+                    itemId={Location.DMN_STANDALONE_EDITOR}
+                    isActive={location === Location.DMN_STANDALONE_EDITOR}
+                  >
+                    <Link to={Location.DMN_STANDALONE_EDITOR}>DMN Standalone Editor</Link>
+                  </NavItem>
+                  <NavItem
+                    itemId={Location.SWF_STANDALONE_EDITOR}
+                    isActive={location === Location.SWF_STANDALONE_EDITOR}
+                  >
+                    <Link to={Location.SWF_STANDALONE_EDITOR}>SWF Standalone Editor</Link>
+                  </NavItem>
+                  <NavItem
+                    itemId={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}
+                    isActive={location === Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}
+                  >
+                    <Link to={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>SWF Standalone Editor - Diagram only</Link>
                   </NavItem>
                 </NavList>
               </Nav>
@@ -153,8 +171,14 @@ export function App() {
           <Route path={Location.PING_PONG_MIXED_PAGES}>
             <PingPongMixedViewsPage />
           </Route>
-          <Route path={Location.STANDALONE_EDITORS}>
+          <Route path={Location.DMN_STANDALONE_EDITOR}>
             <DmnStandaloneEditorPage />
+          </Route>
+          <Route path={Location.SWF_STANDALONE_EDITOR}>
+            <SwfStandaloneEditorPage isDiagramOnlyEditor={false} />
+          </Route>
+          <Route path={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>
+            <SwfStandaloneEditorPage isDiagramOnlyEditor={true} />
           </Route>
         </Switch>
       </Page>
