@@ -475,6 +475,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.initGistOnWorkspace({
         workspaceId: props.workspaceFile.workspaceId,
         remoteUrl: new URL(gist.data.git_push_url),
+        branch: GIST_DEFAULT_BRANCH,
       });
 
       await workspaces.addRemote({

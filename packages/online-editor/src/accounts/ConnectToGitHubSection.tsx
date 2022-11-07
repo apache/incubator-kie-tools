@@ -227,7 +227,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
           </Form>
           <br />
           <h3>
-            <a href={generateNewTokenUrl(props.authProvider.domain)} target={"_blank"}>
+            <a href={generateNewTokenUrl(props.authProvider.domain)} target={"_blank"} rel={"noopener"}>
               {i18n.githubTokenModal.footer.createNewToken}
               &nbsp;
               <ExternalLinkAltIcon className="pf-u-mx-sm" />
@@ -240,7 +240,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
               <InfoAltIcon />
               &nbsp;
               <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}&nbsp;</span>
-              <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
+              <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"} rel={"noopener"}>
                 {i18n.githubTokenModal.body.learnMore}
                 &nbsp;
                 <ExternalLinkAltIcon className="pf-u-mx-sm" />
