@@ -25,13 +25,13 @@ export type AuthProvider = OpenShiftAuthProvider | GitAuthProvider;
 
 export const AUTH_PROVIDERS: AuthProvider[] = [
   {
-    id: "github_dot_com", // Primary Key
+    id: "github_dot_com",
     domain: "github.com",
     supportedGitRemoteDomains: ["github.com", "gist.github.com"],
     type: "github",
     name: "GitHub",
     enabled: true,
-    iconPath: "", // (Optional). Each type has a default icon path that is always part of the webapp.
+    iconPath: "",
   },
   {
     id: "gitlab_dot_com",
@@ -40,7 +40,7 @@ export const AUTH_PROVIDERS: AuthProvider[] = [
     type: "gitlab",
     name: "GitLab",
     enabled: false,
-    iconPath: "", // (Optional). Each type has a default icon path that is always part of the webapp.
+    iconPath: "",
   },
   {
     id: "bitbucket_dot_com",
@@ -49,17 +49,22 @@ export const AUTH_PROVIDERS: AuthProvider[] = [
     type: "bitbucket",
     name: "Bitbucket",
     enabled: false,
-    iconPath: "", // (Optional). Each type has a default icon path that is always part of the webapp.
+    iconPath: "",
   },
-  {
-    id: "github_at_ibm",
-    domain: "github.ibm.com",
-    supportedGitRemoteDomains: ["github.ibm.com", "gist.github.ibm.com"],
-    type: "github",
-    name: "GitHub @ IBM",
-    enabled: true,
-    iconPath: "assets/ibm-github-icon.png", // Always relative path
-  },
+  //
+  //
+  // Templates for next PR
+  //
+  //
+  // {
+  //   id: "github_at_ibm",
+  //   domain: "github.ibm.com",
+  //   supportedGitRemoteDomains: ["github.ibm.com", "gist.github.ibm.com"],
+  //   type: "github",
+  //   name: "GitHub @ IBM",
+  //   enabled: true,
+  //   iconPath: "assets/ibm-github-icon.png", // Always relative path
+  // },
   //   {
   //     id: "bitbucket_at_my_customer",
   //     domain: "bitbucket.my-customer.com",
