@@ -49,6 +49,7 @@ import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/Loc
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -199,18 +200,23 @@ export function NewWorkspaceFromUrlPage() {
 
   const createWorkspaceForFile = useCallback(
     async (file: LocalFile) => {
-      workspaces.createWorkspaceFromLocal({ localFiles: [file] }).then(({ workspace, suggestedFirstFile }) => {
-        if (!suggestedFirstFile) {
-          return;
-        }
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
-          }),
+      workspaces
+        .createWorkspaceFromLocal({
+          localFiles: [file],
+          gitAuthSessionId: AUTH_SESSION_NONE.id,
+        })
+        .then(({ workspace, suggestedFirstFile }) => {
+          if (!suggestedFirstFile) {
+            return;
+          }
+          history.replace({
+            pathname: routes.workspaceWithFilePath.path({
+              workspaceId: workspace.workspaceId,
+              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+              extension: suggestedFirstFile.extension,
+            }),
+          });
         });
-      });
     },
     [routes, history, workspaces]
   );

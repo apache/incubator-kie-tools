@@ -170,7 +170,12 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (args: { localFiles: LocalFile[]; preferredName?: string; gitConfig?: { email: string; name: string } }) => {
+    async (args: {
+      localFiles: LocalFile[];
+      preferredName?: string;
+      gitAuthSessionId: string | undefined;
+      gitConfig?: { email: string; name: string };
+    }) => {
       const workspaceInit = await workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args)
       );

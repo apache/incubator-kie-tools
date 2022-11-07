@@ -526,12 +526,13 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   public async kieSandboxWorkspacesGit_init(args: {
     localFiles: LocalFile[];
     preferredName?: string;
+    gitAuthSessionId: string | undefined;
     gitConfig?: { email: string; name: string };
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
     return this.createWorkspace({
       preferredName: args.preferredName,
       origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
-      gitAuthSessionId: "none", // FIXME: Tiago
+      gitAuthSessionId: args.gitAuthSessionId,
       storeFiles: async (fs, schema, workspace) => {
         const files = args.localFiles
           .filter((file) => !file.path.startsWith(".git/"))

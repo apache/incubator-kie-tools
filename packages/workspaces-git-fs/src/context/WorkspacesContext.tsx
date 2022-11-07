@@ -88,7 +88,11 @@ export interface WorkspacesContextType {
 
   // git
 
-  createWorkspaceFromLocal: (args: { localFiles: LocalFile[]; preferredName?: string }) => Promise<{
+  createWorkspaceFromLocal: (args: {
+    localFiles: LocalFile[];
+    preferredName?: string;
+    gitAuthSessionId?: string;
+  }) => Promise<{
     workspace: WorkspaceDescriptor;
     suggestedFirstFile?: WorkspaceFile;
   }>;
@@ -215,6 +219,8 @@ export interface WorkspacesContextType {
   initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
 
   changeGitAuthSessionId(args: { workspaceId: string; gitAuthSessionId: string | undefined }): Promise<void>;
+
+  initLocalOnWorkspace(args: { workspaceId: string }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

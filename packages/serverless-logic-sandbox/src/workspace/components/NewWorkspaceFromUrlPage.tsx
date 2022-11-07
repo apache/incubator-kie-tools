@@ -138,6 +138,7 @@ export function NewWorkspaceFromUrlPage() {
           const url = new URL(queryParamUrl!);
           if (url.host !== window.location.host) {
             await importGitWorkspace({
+              gitAuthSessionId: undefined,
               origin: {
                 kind: WorkspaceKind.GIT,
                 url: url.toString(),
@@ -166,6 +167,7 @@ export function NewWorkspaceFromUrlPage() {
         // github
         if (importableUrl.type === UrlType.GITHUB) {
           await importGitWorkspace({
+            gitAuthSessionId: undefined,
             origin: {
               kind: WorkspaceKind.GIT,
               url: importableUrl.url.toString(),
@@ -176,6 +178,7 @@ export function NewWorkspaceFromUrlPage() {
           });
         } else if (importableUrl.type === UrlType.GIT) {
           await importGitWorkspace({
+            gitAuthSessionId: undefined,
             origin: {
               kind: WorkspaceKind.GIT,
               url: importableUrl.url.toString(),
@@ -190,7 +193,12 @@ export function NewWorkspaceFromUrlPage() {
           importableUrl.url.hash = "";
 
           const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
-            origin: { kind: WorkspaceKind.GITHUB_GIST, url: importableUrl.url.toString(), branch: GIST_DEFAULT_BRANCH },
+            gitAuthSessionId: undefined,
+            origin: {
+              kind: WorkspaceKind.GITHUB_GIST,
+              url: importableUrl.url.toString(),
+              branch: GIST_DEFAULT_BRANCH,
+            },
           });
 
           if (!suggestedFirstFile) {

@@ -38,6 +38,7 @@ export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_init(args: {
     localFiles: LocalFile[];
     preferredName?: string;
+    gitAuthSessionId: string | undefined;
     gitConfig?: {
       email: string;
       name: string;
