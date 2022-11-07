@@ -15,10 +15,11 @@
  */
 
 import { GetProject } from "../api/kubernetes/Project";
-import { BuildDescriptor, BuildPhase, DeploymentCondition, DeploymentDescriptor, Resource } from "../api/types";
+import { Resource } from "../api/types";
 import { ResourceFetcher } from "../fetch/ResourceFetcher";
+import { KNativeService } from "./KNativeService";
+import { KubernetesService } from "./KubernetesService";
 import { isOpenShiftConnectionValid, OpenShiftConnection } from "./OpenShiftConnection";
-import { OpenShiftDeploymentState } from "./types";
 
 export interface OpenShiftServiceArgs {
   connection: OpenShiftConnection;
@@ -26,10 +27,22 @@ export interface OpenShiftServiceArgs {
 }
 
 export class OpenShiftService {
+  private readonly kubernetesService: KubernetesService;
+  private readonly knativeService: KNativeService;
   private readonly fetcher: ResourceFetcher;
 
   constructor(private readonly args: OpenShiftServiceArgs) {
     this.fetcher = new ResourceFetcher({ proxyUrl: args.proxyUrl, connection: this.args.connection });
+    this.kubernetesService = new KubernetesService({ fetcher: this.fetcher, namespace: args.connection.namespace });
+    this.knativeService = new KNativeService({ fetcher: this.fetcher, namespace: args.connection.namespace });
+  }
+
+  public get kubernetes(): KubernetesService {
+    return this.kubernetesService;
+  }
+
+  public get knative(): KNativeService {
+    return this.knativeService;
   }
 
   public async withFetch<T = Resource>(callback: (fetcher: ResourceFetcher) => Promise<T>): Promise<T> {
@@ -42,9 +55,8 @@ export class OpenShiftService {
 
   public async isConnectionEstablished(connection: OpenShiftConnection): Promise<boolean> {
     try {
-      await this.withFetch((fetcher: ResourceFetcher) =>
-        fetcher.fetchIt({ target: new GetProject({ namespace: connection.namespace }) })
-      );
+      const testConnectionFetcher = new ResourceFetcher({ connection, proxyUrl: this.args.proxyUrl });
+      await testConnectionFetcher.execute({ target: new GetProject({ namespace: connection.namespace }) });
 
       return true;
     } catch (error) {
@@ -57,44 +69,5 @@ export class OpenShiftService {
     const milliseconds = new Date().getMilliseconds();
     const suffix = `${randomPart}${milliseconds}`;
     return `${prefix}-${suffix}`;
-  }
-
-  public extractDeploymentState(args: {
-    deployment?: DeploymentDescriptor;
-    build?: BuildDescriptor;
-  }): OpenShiftDeploymentState {
-    if (args.build) {
-      if (!args.build.status || (["Failed", "Error", "Cancelled"] as BuildPhase[]).includes(args.build.status.phase)) {
-        return OpenShiftDeploymentState.DOWN;
-      }
-
-      if ((["New", "Pending"] as BuildPhase[]).includes(args.build.status.phase)) {
-        return OpenShiftDeploymentState.PREPARING;
-      }
-
-      if (args.build.status.phase === "Running") {
-        return OpenShiftDeploymentState.IN_PROGRESS;
-      }
-
-      // At this point, BuildPhase is `Complete`.
-    }
-
-    if (!args.deployment || !args.deployment.status || !args.deployment.status.replicas) {
-      return OpenShiftDeploymentState.DOWN;
-    }
-
-    const progressingCondition = args.deployment.status.conditions?.find(
-      (condition: DeploymentCondition) => condition.type === "Progressing"
-    );
-
-    if (!progressingCondition || progressingCondition.status !== "True") {
-      return OpenShiftDeploymentState.DOWN;
-    }
-
-    if (!args.deployment.status.readyReplicas) {
-      return OpenShiftDeploymentState.IN_PROGRESS;
-    }
-
-    return OpenShiftDeploymentState.UP;
   }
 }

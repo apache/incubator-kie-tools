@@ -15,7 +15,7 @@
  */
 
 import { PROJECT_FILES } from "../project";
-import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 
 const CONTAINER_IMAGES = {
   baseQuarkusProject: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl,
@@ -56,7 +56,7 @@ export function createDockerfileContentForBaseQuarkusProjectImage(): string {
 export function createDockerfileContentForBaseJdk11MvnImage(args: {
   deploymentResourceName: string;
   projectName: string;
-  openShiftConfig: OpenShiftSettingsConfig;
+  openShiftConnection: OpenShiftConnection;
 }): string {
   const sanitizedProjectName = args.projectName.replace(/[^A-Z0-9]/gi, "_"); // Replace whitespaces and special chars
   const projectFolder = `${SANDBOX_FOLDER}/${sanitizedProjectName}`;
@@ -66,9 +66,9 @@ export function createDockerfileContentForBaseJdk11MvnImage(args: {
   ${DEFAULT_ENV}
   RUN mkdir ${projectPaths.root}/
   COPY --chown=185:root . ${projectPaths.root}/
-  RUN ${OC_PATH} login --token=${args.openShiftConfig.token} --server=${args.openShiftConfig.host} --insecure-skip-tls-verify \
+  RUN ${OC_PATH} login --token=${args.openShiftConnection.token} --server=${args.openShiftConnection.host} --insecure-skip-tls-verify \
     && ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} -Dquarkus.knative.name=${args.deploymentResourceName} \
-    && if [ -f ${projectPaths.kubernetes}/kogito.yml ]; then ${OC_PATH} apply -n ${args.openShiftConfig.namespace} -f ${projectPaths.kubernetes}/kogito.yml; fi \
+    && if [ -f ${projectPaths.kubernetes}/kogito.yml ]; then ${OC_PATH} apply -n ${args.openShiftConnection.namespace} -f ${projectPaths.kubernetes}/kogito.yml; fi \
     && cp ${projectPaths.quarkusApp}/*.jar ${DEPLOYMENTS_FOLDER} \
     && cp -R ${projectPaths.quarkusApp}/lib/ ${DEPLOYMENTS_FOLDER} \
     && cp -R ${projectPaths.quarkusApp}/app/ ${DEPLOYMENTS_FOLDER} \

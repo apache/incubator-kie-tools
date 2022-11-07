@@ -28,11 +28,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import {
-  EMPTY_CONFIG,
-  isOpenShiftConfigValid,
-  OpenShiftSettingsConfig,
-  saveConfigCookie,
-} from "./OpenShiftSettingsConfig";
+  isOpenShiftConnectionValid,
+  OpenShiftConnection,
+} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
@@ -64,7 +63,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
   }, [settings.openshift.config, settings.openshift.status]);
 
   const resetConfig = useCallback(
-    (config: OpenShiftSettingsConfig) => {
+    (config: OpenShiftConnection) => {
       setConfigValidated(
         settings.openshift.status === OpenShiftInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
           ? FormValiationOptions.CONFIG_EXPIRED
@@ -81,13 +80,13 @@ export function OpenShiftSettingsTabSimpleConfig() {
       return;
     }
 
-    if (!isOpenShiftConfigValid(config)) {
+    if (!isOpenShiftConnectionValid(config)) {
       setConfigValidated(FormValiationOptions.INVALID);
       return;
     }
 
     setConnecting(true);
-    const isConfigOk = await settingsDispatch.openshift.service.onCheckConfig(config);
+    const isConfigOk = await settingsDispatch.openshift.service.isConnectionEstablished(config);
 
     if (isConfigOk) {
       saveConfigCookie(config);

@@ -50,7 +50,7 @@ export interface ObjectMeta {
   namespace: string;
   creationTimestamp?: string;
   labels?: Record<string, string>;
-  annotations?: Record<string, string | object>;
+  annotations?: Record<string, string>;
   finalizers?: string[];
 }
 
@@ -110,7 +110,7 @@ export type BuildGroupDescriptor = ResourceGroupDescriptor<BuildDescriptor>;
 // BuildConfig
 
 export interface DockerBuildStrategy {
-  type: "docker";
+  type: "Docker";
 }
 
 export interface BinaryBuildSource {
@@ -263,9 +263,15 @@ export interface KafkaSourceSpec {
     };
     sasl: {
       enable: boolean;
-      type: SecretKeyRef;
-      password: SecretKeyRef;
-      user: SecretKeyRef;
+      type: {
+        secretKeyRef: SecretKeyRef;
+      };
+      password: {
+        secretKeyRef: SecretKeyRef;
+      };
+      user: {
+        secretKeyRef: SecretKeyRef;
+      };
     };
   };
   sink: {

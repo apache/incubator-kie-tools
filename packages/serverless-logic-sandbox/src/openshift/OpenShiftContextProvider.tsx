@@ -21,7 +21,7 @@ import { GLOB_PATTERN } from "../extension";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { PROJECT_FILES } from "../project";
-import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsConfig";
+import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
@@ -34,7 +34,7 @@ import {
   createDockerIgnoreContent,
 } from "./FileTemplate";
 import { OpenShiftContext } from "./OpenShiftContext";
-import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
+import { WebToolsOpenShiftDeployedModel } from "./WebToolsOpenShiftService";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 
 interface Props {
@@ -49,7 +49,7 @@ export function OpenShiftContextProvider(props: Props) {
   const settingsDispatch = useSettingsDispatch();
   const workspaces = useWorkspaces();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
+  const [deployments, setDeployments] = useState([] as WebToolsOpenShiftDeployedModel[]);
   const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
@@ -74,7 +74,7 @@ export function OpenShiftContextProvider(props: Props) {
       shouldAttachKafkaSource: boolean;
       shouldDeployAsProject: boolean;
     }) => {
-      if (!isOpenShiftConfigValid(settings.openshift.config)) {
+      if (!isOpenShiftConnectionValid(settings.openshift.config)) {
         throw new Error("Invalid OpenShift config");
       }
 
@@ -102,7 +102,7 @@ export function OpenShiftContextProvider(props: Props) {
               ? createDockerfileContentForBaseJdk11MvnImage({
                   deploymentResourceName,
                   projectName: workspaceName,
-                  openShiftConfig: settings.openshift.config,
+                  openShiftConnection: settings.openshift.config,
                 })
               : createDockerfileContentForBaseQuarkusProjectImage();
             return encoder.encode(dockerfileContent);
@@ -131,32 +131,51 @@ export function OpenShiftContextProvider(props: Props) {
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
 
-        return settingsDispatch.openshift.service.deploy({
-          deploymentResourceName,
+        const kafkaSourceArgs = args.shouldAttachKafkaSource
+          ? {
+              bootstrapServers: [settings.apacheKafka.config.bootstrapServer],
+              serviceAccount: {
+                clientId: settings.serviceAccount.config.clientId,
+                clientSecret: settings.serviceAccount.config.clientSecret,
+              },
+              topics: [settings.apacheKafka.config.topic],
+            }
+          : undefined;
+
+        await settingsDispatch.openshift.service.deployBuilderWithBinary({
+          resourceName: deploymentResourceName,
           workspaceName: workspaceName,
-          targetFilePath: args.workspaceFile.relativePath,
+          targetUri: args.workspaceFile.relativePath,
           workspaceZipBlob: zipBlob,
-          shouldAttachKafkaSource: args.shouldAttachKafkaSource,
+          kafkaSourceArgs,
         });
+
+        return deploymentResourceName;
       } catch (e) {
         console.error(e);
       }
     },
-    [settings.openshift.config, settingsDispatch.openshift.service, workspaces]
+    [
+      settings.apacheKafka.config,
+      settings.openshift.config,
+      settings.serviceAccount.config,
+      settingsDispatch.openshift.service,
+      workspaces,
+    ]
   );
 
   const fetchOpenApiFile = useCallback(
     async (resourceName: string) => {
-      if (!isOpenShiftConfigValid(settings.openshift.config)) {
+      if (!isOpenShiftConnectionValid(settings.openshift.config)) {
         throw new Error("Invalid OpenShift config");
       }
 
-      try {
-        const routeUrl = await settingsDispatch.openshift.service.getDeploymentRoute(resourceName);
-        if (!routeUrl) {
-          return;
-        }
+      const routeUrl = await settingsDispatch.openshift.service.getKNativeDeploymentRoute(resourceName);
+      if (!routeUrl) {
+        throw new Error(`No route found for ${resourceName}`);
+      }
 
+      try {
         const response = await fetch(`${routeUrl}/q/openapi?format=json`);
         if (!response.ok) {
           return;
@@ -164,7 +183,7 @@ export function OpenShiftContextProvider(props: Props) {
 
         return await response.text();
       } catch (error) {
-        console.error(error);
+        console.debug(error);
         return;
       }
     },
@@ -196,7 +215,7 @@ export function OpenShiftContextProvider(props: Props) {
       return;
     }
 
-    if (!isOpenShiftConfigValid(settings.openshift.config)) {
+    if (!isOpenShiftConnectionValid(settings.openshift.config)) {
       if (deployments.length > 0) {
         setDeployments([]);
       }
@@ -210,7 +229,7 @@ export function OpenShiftContextProvider(props: Props) {
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-          return isConfigOk ? settingsDispatch.openshift.service.loadDeployments() : [];
+          return isConfigOk ? settingsDispatch.openshift.service.loadKNativeDeployments() : [];
         })
         .then((ds) => setDeployments(ds))
         .catch((error) => console.error(error));
@@ -220,7 +239,7 @@ export function OpenShiftContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
         settingsDispatch.openshift.service
-          .loadDeployments()
+          .loadKNativeDeployments()
           .then((ds) => setDeployments(ds))
           .catch((error) => {
             onDisconnect(true);

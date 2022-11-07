@@ -32,7 +32,12 @@ export enum KNativeApiVersions {
 
 export type ApiVersions = `${KubernetesApiVersions}` | `${KNativeApiVersions}`;
 
-export const baseEndpoint = (apiVersion: ApiVersions) => `apis/${apiVersion}`;
+export const baseEndpoint = (apiVersion: ApiVersions) => {
+  if (apiVersion === KubernetesApiVersions.SECRET) {
+    return `api/${apiVersion}`;
+  }
+  return `apis/${apiVersion}`;
+};
 
 export const KubernetesLabelNames = {
   APP: "app",

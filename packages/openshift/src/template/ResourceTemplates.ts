@@ -60,7 +60,7 @@ export const BUILD_CONFIG_TEMPLATE = (args: CommonTemplateArgs): BuildConfigDesc
       },
     },
     strategy: {
-      type: "docker",
+      type: "Docker",
     },
     source: {
       type: "Binary",
@@ -237,16 +237,22 @@ export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSour
       sasl: {
         enable: true,
         type: {
-          name: args.secret.name,
-          key: args.secret.keyMechanism,
+          secretKeyRef: {
+            name: args.secret.name,
+            key: args.secret.keyMechanism,
+          },
         },
         user: {
-          name: args.secret.name,
-          key: args.secret.keyId,
+          secretKeyRef: {
+            name: args.secret.name,
+            key: args.secret.keyId,
+          },
         },
         password: {
-          name: args.secret.name,
-          key: args.secret.keySecret,
+          secretKeyRef: {
+            name: args.secret.name,
+            key: args.secret.keySecret,
+          },
         },
       },
     },
@@ -271,11 +277,11 @@ export const KNATIVE_SERVICE_TEMPLATE = (
       kind: "ImageStreamTag",
     },
     pause: false,
-    fieldPath: `spec.template.spec.containers[?(@.name==\\"${args.resourceName}\\")].image`,
+    fieldPath: `spec.template.spec.containers[?(@.name=="${args.resourceName}")].image`,
   };
 
   const annotations = {
-    [OpenShiftLabelNames.TRIGGERS]: [imageStreamTrigger],
+    [OpenShiftLabelNames.TRIGGERS]: JSON.stringify([imageStreamTrigger]),
     [ResourceLabelNames.URI]: args.uri,
     [ResourceLabelNames.WORKSPACE_NAME]: args.workspaceName,
   };

@@ -17,7 +17,12 @@
 import { KubernetesLabelNames, OpenShiftLabelNames } from "../api/ApiConstants";
 
 export const BUILD_IMAGE_TAG_VERSION = "1.0";
+
 export const KAFKA_SOURCE_FINALIZER = "kafkasources.sources.knative.dev";
+export const KAFKA_SOURCE_CLIENT_ID_KEY = "kafka-source-client-id";
+export const KAFKA_SOURCE_CLIENT_SECRET_KEY = "kafka-source-client-secret";
+export const KAFKA_SOURCE_CLIENT_MECHANISM_KEY = "kafka-source-client-mechanism";
+export const KAFKA_SOURCE_CLIENT_MECHANISM_PLAIN = "PLAIN";
 
 export const ResourceLabelNames = {
   URI: "kogito.kie.org/uri",

@@ -22,7 +22,7 @@ import { ResourceFetch } from "./ResourceFetch";
 export class ResourceFetcher {
   constructor(private readonly args: { connection: OpenShiftConnection; proxyUrl?: string }) {}
 
-  public async fetchIt<T = Resource>(args: {
+  public async execute<T = Resource>(args: {
     target: ResourceFetch;
     rollbacks?: ResourceFetch[];
   }): Promise<Readonly<T>> {
@@ -55,7 +55,7 @@ export class ResourceFetcher {
 
     if (args.rollbacks && args.rollbacks.length > 0) {
       for (const resource of args.rollbacks) {
-        await this.fetchIt({ target: resource });
+        await this.execute({ target: resource });
       }
     }
 

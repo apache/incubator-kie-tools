@@ -21,9 +21,10 @@ import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
-import { OpenShiftSettingsConfig, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
+import { readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
-import { OpenShiftService } from "../openshift/OpenShiftService";
+import { WebToolsOpenShiftService } from "../openshift/WebToolsOpenShiftService";
 import { useHistory } from "react-router";
 import { QueryParams } from "../navigation/Routes";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
@@ -72,7 +73,7 @@ export interface SettingsContextType {
   activeTab: SettingsTabs;
   openshift: {
     status: OpenShiftInstanceStatus;
-    config: OpenShiftSettingsConfig;
+    config: OpenShiftConnection;
   };
   kieSandboxExtendedServices: {
     config: ExtendedServicesConfig;
@@ -101,9 +102,9 @@ export interface SettingsDispatchContextType {
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
   openshift: {
-    service: OpenShiftService;
+    service: WebToolsOpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
-    setConfig: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
+    setConfig: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
   };
   kieSandboxExtendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
@@ -236,13 +237,11 @@ export function SettingsContextProvider(props: any) {
 
   const openshiftService = useMemo(
     () =>
-      new OpenShiftService({
-        openShift: openshiftConfig,
-        kafka: kafkaConfig,
-        serviceAccount: serviceAccountConfig,
-        extendedServicesConfig: kieSandboxExtendedServices.config,
+      new WebToolsOpenShiftService({
+        connection: openshiftConfig,
+        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/devsandbox`,
       }),
-    [kafkaConfig, openshiftConfig, serviceAccountConfig, kieSandboxExtendedServices.config]
+    [openshiftConfig, kieSandboxExtendedServices.config]
   );
 
   const serviceCatalogStore = useMemo(
