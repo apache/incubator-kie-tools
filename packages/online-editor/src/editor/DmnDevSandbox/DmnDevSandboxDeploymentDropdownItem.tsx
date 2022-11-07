@@ -24,11 +24,12 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { basename } from "path";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "../../openshift/OpenShiftDeployedModel";
+import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
+import { KieSandboxOpenShiftDeployedModel } from "../../openshift/KieSandboxOpenShiftService";
 
 interface Props {
   id: number;
-  deployment: OpenShiftDeployedModel;
+  deployment: KieSandboxOpenShiftDeployedModel;
 }
 
 export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
@@ -54,7 +55,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   }, [props.deployment.uri, props.deployment.workspaceName]);
 
   const stateIcon = useMemo(() => {
-    if (props.deployment.state === OpenShiftDeployedModelState.UP) {
+    if (props.deployment.state === OpenShiftDeploymentState.UP) {
       return (
         <Tooltip key={`deployment-up-${props.id}`} position="left" content={i18n.dmnDevSandbox.dropdown.item.upTooltip}>
           <CheckCircleIcon
@@ -66,8 +67,8 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
     }
 
     if (
-      props.deployment.state === OpenShiftDeployedModelState.IN_PROGRESS ||
-      props.deployment.state === OpenShiftDeployedModelState.PREPARING
+      props.deployment.state === OpenShiftDeploymentState.IN_PROGRESS ||
+      props.deployment.state === OpenShiftDeploymentState.PREPARING
     ) {
       return (
         <Tooltip
@@ -83,7 +84,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
       );
     }
 
-    if (props.deployment.state === OpenShiftDeployedModelState.ERROR) {
+    if (props.deployment.state === OpenShiftDeploymentState.ERROR) {
       return (
         <Tooltip
           key={`deployment-error-${props.id}`}
@@ -113,13 +114,13 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
-    window.open(`${props.deployment.baseUrl}/#/form/${props.deployment.uri}`, "_blank");
-  }, [props.deployment.baseUrl, props.deployment.uri]);
+    window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
+  }, [props.deployment.routeUrl, props.deployment.uri]);
 
   return (
     <DropdownItem
       id="dmn-dev-sandbox-deployment-item-button"
-      isDisabled={props.deployment.state !== OpenShiftDeployedModelState.UP}
+      isDisabled={props.deployment.state !== OpenShiftDeploymentState.UP}
       key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
       onClick={onItemClicked}
       description={i18n.dmnDevSandbox.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}

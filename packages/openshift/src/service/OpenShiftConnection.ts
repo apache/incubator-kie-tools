@@ -23,9 +23,9 @@ export interface OpenShiftConnection {
 export const isOpenShiftConnectionValid = (connection: OpenShiftConnection) =>
   isNamespaceValid(connection.namespace) && isHostValid(connection.host) && isTokenValid(connection.token);
 
-const isNamespaceValid = (namespace: string) => namespace.trim().length > 0;
-const isTokenValid = (token: string) => token.trim().length > 0;
-const isHostValid = (host: string) => {
+export const isNamespaceValid = (namespace: string) => namespace.trim().length > 0;
+export const isTokenValid = (token: string) => token.trim().length > 0;
+export const isHostValid = (host: string) => {
   if (host.trim().length === 0) {
     return false;
   }

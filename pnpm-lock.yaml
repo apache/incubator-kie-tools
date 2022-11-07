@@ -3206,6 +3206,7 @@ importers:
       "@kie-tools-core/keyboard-shortcuts": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/openshift": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/react-hooks": workspace:*
@@ -3284,6 +3285,7 @@ importers:
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/monaco-editor": link:../monaco-editor
       "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/openshift": link:../openshift
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/react-hooks": link:../react-hooks
@@ -14196,7 +14198,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -24026,7 +24028,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0
     dev: true
 
   /rc/1.2.8:

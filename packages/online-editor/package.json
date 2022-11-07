@@ -35,6 +35,7 @@
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/openshift": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
