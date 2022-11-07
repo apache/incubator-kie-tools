@@ -1177,7 +1177,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     ]
   );
 
-  const pullErrorAlert = useAlert<{ newBranchName: string }>(
+  const pullErrorAlert = useAlert<{ newBranchName: string; onTryAgain: () => any }>(
     props.alerts,
     useCallback(
       ({ close }, { newBranchName }) => {
@@ -1219,44 +1219,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
             {`Or change the authentication source for '${workspacePromise.data?.descriptor.name}' and try again`}
             <br />
-            <br />
-
-            <AuthSessionSelect
-              title={`Select Git authentication for '${workspacePromise.data?.descriptor.name}'...`}
-              isPlain={false}
-              authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
-              setAuthSessionId={(newAuthSessionId) => {
-                changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
-                accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-              }}
-              filter={authSessionSelectFilter}
-            />
-
-            <br />
-            <br />
-
-            <Button
-              // TODO: Tiago -> Resolve this cycle
-              // onClick={() => pullFromGitRepository({ showAlerts: true })}
-              variant={ButtonVariant.link}
-              style={{ paddingLeft: 0 }}
-              isSmall={true}
-              isDisabled={!canPushToGitRepository}
-            >
-              {`Try again`}
-            </Button>
           </Alert>
         );
       },
-      [
-        accountsDispatch,
-        authSessionSelectFilter,
-        canPushToGitRepository,
-        changeGitAuthSessionId,
-        // pullFromGitRepository,
-        pushNewBranch,
-        workspacePromise.data,
-      ]
+      [canPushToGitRepository, pushNewBranch, workspacePromise.data]
     )
   );
 
@@ -1288,7 +1254,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         if (args.showAlerts) {
           const randomString = (Math.random() + 1).toString(36).substring(7);
           const newBranchName = `${workspacePromise.data?.descriptor.origin.branch}-${randomString}`;
-          pullErrorAlert.show({ newBranchName });
+          pullErrorAlert.show({ newBranchName, onTryAgain: () => pullFromGitRepository({ showAlerts: true }) });
         }
       } finally {
         if (args.showAlerts) {
@@ -1679,6 +1645,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                             >
                               <Text
+                                style={{ display: "flex" }}
                                 aria-label={"Saving in memory..."}
                                 data-testid="is-saving-in-memory-indicator"
                                 component={TextVariants.small}
@@ -1693,6 +1660,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                             >
                               <Text
+                                style={{ display: "flex" }}
                                 aria-label={"File is in memory."}
                                 data-testid="is-saved-in-memory-indicator"
                                 component={TextVariants.small}
@@ -1710,6 +1678,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                             >
                               <Text
+                                style={{ display: "flex" }}
                                 aria-label={"Writing file..."}
                                 data-testid="is-writing-indicator"
                                 component={TextVariants.small}
@@ -1724,6 +1693,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                             >
                               <Text
+                                style={{ display: "flex" }}
                                 aria-label={"File is written on disk."}
                                 data-testid="is-written-indicator"
                                 component={TextVariants.small}

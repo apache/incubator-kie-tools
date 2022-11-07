@@ -163,7 +163,7 @@ export function AuthSessionSelect(props: {
               >
                 Show {showMore ? "less" : "more"}
               </Button>
-              <Divider />
+              <Divider style={{ margin: "16px 0" }} />
             </>
           )}
           <Button
