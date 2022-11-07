@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { basename, extname } from "path";
+import { basename } from "path";
 import { PROJECT_FILES } from "../project";
 
 const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
@@ -62,16 +62,6 @@ export const supportedFileExtensionArray = [
   FileTypes.DASH_YML,
 ];
 
-export function resolveExtension(path: string): string {
-  const fileName = basename(path);
-  if (fileName.startsWith(".")) {
-    return fileName.slice(1);
-  }
-  const match = REGEX.supported.exec(path);
-  const extension = match ? match[1] : extname(path);
-  return extension ? extension.slice(1) : "";
-}
-
 export function isServerlessWorkflow(path: string): boolean {
   return REGEX.sw.test(path);
 }
@@ -96,7 +86,7 @@ export function isModel(path: string): boolean {
   return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
 }
 
-export function isSandboxAsset(path: string): boolean {
+export function isEditable(path: string): boolean {
   return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path));
 }
 

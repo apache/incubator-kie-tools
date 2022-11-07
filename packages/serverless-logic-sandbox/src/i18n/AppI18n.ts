@@ -275,6 +275,12 @@ interface AppDictionary extends ReferenceDictionary {
       expandAll: string;
     };
   };
+  deployments: {
+    virtualServiceRegistry: {
+      dependencyWarning: string;
+      dependencyWarningTooltip: string;
+    };
+  };
 }
 
 export interface AppI18n extends AppDictionary, CommonI18n {}

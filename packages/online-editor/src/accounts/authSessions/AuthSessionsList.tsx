@@ -37,12 +37,12 @@ import {
 import { obfuscate } from "../ConnectToGitHubSection";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { useWorkspaceDescriptorsPromise } from "../../workspace/hooks/WorkspacesHooks";
-import { WorkspaceDescriptor } from "../../workspace/worker/api/WorkspaceDescriptor";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { AuthSession, AuthSessionStatus } from "./AuthSessionApi";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();

@@ -30,8 +30,7 @@ import { useCallback, useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { getGithubInstanceApiUrl } from "../github/Hooks";
 import { useOnlineI18n } from "../i18n";
-import { useCancelableEffect } from "../reactExt/Hooks";
-import { PromiseStateStatus, usePromiseState } from "../workspace/hooks/PromiseState";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import {
   AccountsDispatchActionKind,
   AccountsSection,
@@ -42,6 +41,7 @@ import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
 import { useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 import { AuthSessionDescriptionList } from "./authSessions/AuthSessionsList";
 import { GitAuthSession } from "./authSessions/AuthSessionApi";
+import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 

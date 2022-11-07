@@ -18,7 +18,7 @@ import * as React from "react";
 import { DmnRunnerDrawerPanelContent } from "./DmnRunnerDrawerPanelContent";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunnerState } from "./DmnRunnerContext";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "../workspace/WorkspacesContext";
 import * as React from "react";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";

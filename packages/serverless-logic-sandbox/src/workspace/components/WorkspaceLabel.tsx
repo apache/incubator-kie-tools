@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { GitlabIcon } from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
@@ -22,13 +22,18 @@ import { CodeBranchIcon } from "@patternfly/react-icons/dist/js/icons/code-branc
 import { PendingIcon } from "@patternfly/react-icons/dist/js/icons/pending-icon";
 import * as React from "react";
 import { useMemo } from "react";
-import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
-  const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const workspaceImportableUrl = useImportableUrl({
+    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
+    urlString: props.descriptor?.origin.url?.toString(),
+  });
 
   const gitLabel = useMemo(() => {
     if (props.descriptor?.origin.kind !== WorkspaceKind.GIT) {

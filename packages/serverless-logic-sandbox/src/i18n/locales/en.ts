@@ -313,4 +313,10 @@ export const en: AppI18n = {
       expandAll: "Expand All",
     },
   },
+  deployments: {
+    virtualServiceRegistry: {
+      dependencyWarning: "Has foreign workspace dependencies!",
+      dependencyWarningTooltip: "Models in this workspace may depend on deployments from other workspaces.",
+    },
+  },
 };

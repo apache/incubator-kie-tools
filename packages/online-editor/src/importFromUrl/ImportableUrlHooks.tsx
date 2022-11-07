@@ -30,13 +30,12 @@ import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/Aut
 import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
 import { AuthInfo } from "../accounts/authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { getGitRefName, getGitRefType } from "../gitRefs/GitRefs";
-import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
-import { useSettings } from "../settings/SettingsContext";
-import { PromiseStateStatus, useLivePromiseState } from "../workspace/hooks/PromiseState";
-import { GitServerRef } from "../workspace/worker/api/GitServerRef";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
+import { getGitRefName, getGitRefType } from "../gitRefs/GitRefs";
+import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
+import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
 
 export enum UrlType {
   //git

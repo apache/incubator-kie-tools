@@ -20,7 +20,6 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
-import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import {
   DataList,
   DataListCell,

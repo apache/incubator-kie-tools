@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
+import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import * as React from "react";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { LfsFsCache } from "../../companionFs/LfsFsCache";
-import { LfsStorageFile, LfsStorageService } from "../../companionFs/LfsStorageService";
 import { getGithubInstanceApiUrl } from "../../github/Hooks";
-import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
-import { decoder, encoder } from "../../workspace/encoderdecoder/EncoderDecoder";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { fetchAuthenticatedGitHubUser } from "../ConnectToGitHubSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";

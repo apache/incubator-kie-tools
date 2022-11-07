@@ -17,15 +17,14 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { GLOB_PATTERN } from "../extension";
-import { useCancelableEffect } from "../reactExt/Hooks";
-import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
-import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
-import { LfsWorkspaceDescriptorService } from "../workspace/lfs/LfsWorkspaceDescriptorService";
-import { LfsWorkspaceFsService } from "../workspace/lfs/LfsWorkspaceFsService";
-import { LfsWorkspaceService } from "../workspace/lfs/LfsWorkspaceService";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
-import { WorkspacesEvents, WORKSPACES_BROADCAST_CHANNEL } from "../workspace/worker/api/WorkspacesEvents";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
+import { LfsWorkspaceDescriptorService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsWorkspaceDescriptorService";
+import { LfsWorkspaceFsService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsWorkspaceFsService";
+import { LfsWorkspaceService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsWorkspaceService";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { VirtualServiceRegistryFunction } from "./models/VirtualServiceRegistryFunction";
 import {
   VIRTUAL_SERVICE_REGISTRY_DESCRIPTOR_DATABASE_NAME,
@@ -34,6 +33,10 @@ import {
 } from "./VirtualServiceRegistryConstants";
 import { VirtualServiceRegistryContext } from "./VirtualServiceRegistryContext";
 import { toVsrFunctionPathFromWorkspaceFilePath, toVsrMountPoint } from "./VirtualServiceRegistryPathConverter";
+import {
+  WorkspacesBroadcastEvents,
+  WORKSPACES_BROADCAST_CHANNEL,
+} from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 
@@ -131,6 +134,10 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
       });
       const vsrFunctionContent = await vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content));
 
+      if (!vsrFunctionContent) {
+        return;
+      }
+
       const fs = await vsrFsService.getFs(workspaceId);
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         if (
@@ -162,11 +169,11 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
       ({ canceled }) => {
         const workspacesBroadcastChannel = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
 
-        workspacesBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesEvents>) => {
+        workspacesBroadcastChannel.onmessage = async ({ data }: MessageEvent<WorkspacesBroadcastEvents>) => {
           if (canceled.get()) {
             return;
           }
-          if (data.type === "ADD_WORKSPACE") {
+          if (data.type === "WSS_ADD_WORKSPACE") {
             if (await vsrDescriptorService.exists(data.workspaceId)) {
               return;
             }
@@ -198,11 +205,11 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
               descriptorArgs: workspaceDescriptor,
               broadcastArgs: { broadcast: true },
             });
-          } else if (data.type === "DELETE_WORKSPACE") {
+          } else if (data.type === "WSS_DELETE_WORKSPACE") {
             if (await vsrDescriptorService.exists(data.workspaceId)) {
               await vsrService.delete({ workspaceId: data.workspaceId, broadcastArgs: { broadcast: true } });
             }
-          } else if (data.type === "RENAME_WORKSPACE") {
+          } else if (data.type === "WSS_RENAME_WORKSPACE") {
             const workspaceDescriptor = await workspaces.getWorkspace({ workspaceId: data.workspaceId });
             const vsrDescriptor = await vsrDescriptorService.get(data.workspaceId);
             if (vsrDescriptor.name === workspaceDescriptor.name) {

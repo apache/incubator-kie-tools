@@ -20,7 +20,7 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tools-core/monaco-editor");
 

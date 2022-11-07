@@ -16,13 +16,13 @@
 
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 export interface VirtualServiceRegistryContextType {
   listVsrWorkspaces(): Promise<WorkspaceDescriptor[]>;
 
-  addVsrFileForWorkspaceFile(workspaceFile: WorkspaceFile): Promise<WorkspaceFile>;
+  addVsrFileForWorkspaceFile(workspaceFile: WorkspaceFile): Promise<WorkspaceFile | undefined>;
 
   deleteVsrFile(args: { vsrFile: WorkspaceFile }): Promise<void>;
 

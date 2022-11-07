@@ -17,14 +17,14 @@
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
-import { usePrevious } from "../../reactExt/Hooks";
+import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
@@ -34,7 +34,7 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
-import { decoder } from "../../workspace/encoderdecoder/EncoderDecoder";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;

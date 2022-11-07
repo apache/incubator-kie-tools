@@ -23,14 +23,14 @@ import { useOnlineI18n } from "../i18n";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerTable } from "./DmnRunner/DmnRunnerTable";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DecisionResult } from "@kie-tools/form-dmn";
 import {
   NotificationsPanelDockToggle,
   NotificationsPanelDockToggleRef,
 } from "./NotificationsPanel/NotificationsPanelDockToggle";
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
-import { useController } from "../reactExt/Hooks";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";

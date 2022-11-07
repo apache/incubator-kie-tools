@@ -17,8 +17,8 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
@@ -30,7 +30,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
+import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";

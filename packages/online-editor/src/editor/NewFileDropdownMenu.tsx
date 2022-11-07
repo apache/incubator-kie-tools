@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { FileLabel } from "../filesList/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -40,13 +40,13 @@ import { basename, extname } from "path";
 import { ImportSingleFileFromUrlForm } from "../importFromUrl/ImportSingleFileFromUrlForm";
 import { ImportableUrl, UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
-import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
 import { fetchSingleFileContent } from "../importFromUrl/fetchSingleFileContent";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
 import { useOctokit } from "../github/Hooks";
 import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
