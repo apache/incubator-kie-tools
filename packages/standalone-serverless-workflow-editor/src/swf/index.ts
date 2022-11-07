@@ -25,6 +25,7 @@ import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@k
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import {
+  NoOpSwfStaticEnvelopeContentProviderChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
   SwfPreviewOptionsChannelApiImpl,
   SwfServiceCatalogChannelApiImpl,
@@ -129,7 +130,8 @@ export const open = (args: {
       diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex,
       mermaidEnvelopeContent: swfMermaidViewerEnvelopeIndex,
       textEditorEnvelopeContent: swfTextEditorEnvelopeIndex,
-    })
+    }),
+    new NoOpSwfStaticEnvelopeContentProviderChannelApiImpl()
   );
 
   const listener = (message: MessageEvent) => {
