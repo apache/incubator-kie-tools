@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import elemental.client.Browser;
-import elemental.html.ButtonElement;
+//import elemental.client.Browser;
+//import elemental.html.ButtonElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -55,8 +55,8 @@ public class CompositeElementFormComponent extends Composite implements ElementF
   @DataField
   private Button submit;
 
-  @DataField
-  private ButtonElement cancel = Browser.getDocument().createButtonElement();
+  /*@DataField
+  private ButtonElement cancel = Browser.getDocument().createButtonElement();*/
 
   @Inject
   @DataField
@@ -87,10 +87,10 @@ public class CompositeElementFormComponent extends Composite implements ElementF
     return submit;
   }
 
-  @Override
+  /*@Override
   public ButtonElement getCancel() {
     return cancel;
-  }
+  }*/
 
   @Override
   public ElementPresenter getElementPresenter() {
