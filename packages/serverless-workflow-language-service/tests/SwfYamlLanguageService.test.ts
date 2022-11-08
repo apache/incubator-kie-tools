@@ -22,18 +22,10 @@ import {
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import {
-  defaultConfig,
-  defaultServiceCatalogConfig,
-  testRelativeFunction1,
-  testRelativeService1,
-} from "./SwfLanguageServiceConfigs";
+import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
 const documentUri = "test.sw.yaml";
-
-// required to test yaml-language-service
-process.argv.push("--node-ipc");
 
 describe("YamlCodeCompletionStrategy", () => {
   describe("getStartNodeValuePosition", () => {
@@ -1163,7 +1155,6 @@ states:
       test.each([
         [
           "unclosed brackets",
-          "unclosed_brackets.sw.yaml",
           `id: hello_world
 specVersion: "0.1"
 start: Inject Hello World
@@ -1172,10 +1163,9 @@ states: [{
             "data": {},
             "type": "inject",
             "end": true
-        ]
-        `,
+        ]`,
         ],
-      ])("%s", async (_description, documentUri, content) => {
+      ])("%s", async (_description, content) => {
         const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
 
         expect(diagnostic.length).toMatchSnapshot();
@@ -1186,7 +1176,6 @@ states: [{
     test.each([
       [
         "missing state type",
-        "missing_state_type.sw.yaml",
         `id: hello_world
 specVersion: "0.1"
 start: Inject Hello World
@@ -1197,14 +1186,12 @@ states:
       ],
       [
         "wrong states type",
-        "wrong_states_type.sw.yaml",
         `id: hello_world
 specVersion: "0.1"
 states: Wrong states type`,
       ],
       [
         "wrong start state",
-        "wrong_start_state.sw.yaml",
         `id: hello_world
 specVersion: "0.1"
 start: Wrong state name
@@ -1216,7 +1203,6 @@ states:
       ],
       [
         "valid",
-        "valid.sw.yaml",
         `id: hello_world
 specVersion: "0.1"
 start: Inject Hello World
@@ -1226,7 +1212,7 @@ states:
     data: {}
     end: true`,
       ],
-    ])("%s", async (_description, documentUri, content) => {
+    ])("%s", async (_description, content) => {
       const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
 
       expect(diagnostic.length).toMatchSnapshot();

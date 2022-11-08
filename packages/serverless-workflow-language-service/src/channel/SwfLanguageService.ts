@@ -157,10 +157,13 @@ export class SwfLanguageService {
       return [];
     }
 
+    // this ensure the document is validated again
+    const docVersion = Math.floor(Math.random() * 1000);
+
     const textDocument = TextDocument.create(
       args.uriPath,
       `serverless-workflow-${this.args.lang.fileLanguage}`,
-      1,
+      docVersion,
       args.content
     );
 

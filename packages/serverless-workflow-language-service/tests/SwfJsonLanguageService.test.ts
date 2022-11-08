@@ -810,7 +810,6 @@ describe("SWF LS JSON", () => {
     test.each([
       [
         "valid",
-        "valid.sw.json",
         `{
         "id": "hello_world", 
         "specVersion": "0.1",
@@ -827,7 +826,6 @@ describe("SWF LS JSON", () => {
       ],
       [
         "unclosed brackets",
-        "unclosed_brackets.sw.json",
         `{
         "id": "hello_world", 
         "specVersion": "0.1",
@@ -843,7 +841,6 @@ describe("SWF LS JSON", () => {
       ],
       [
         "missing property value",
-        "missing_property_value.sw.json",
         `{
         "id": "hello_world", 
         "specVersion": "0.1",
@@ -859,7 +856,6 @@ describe("SWF LS JSON", () => {
       ],
       [
         "missing state type",
-        "missing_state_type.sw.json",
         `{
         "id": "hello_world", 
         "specVersion": "0.1",
@@ -875,7 +871,6 @@ describe("SWF LS JSON", () => {
       ],
       [
         "wrong states type",
-        "wrong_states_type.sw.json",
         `{
         "id": "hello_world", 
         "specVersion": "0.1",
@@ -884,7 +879,6 @@ describe("SWF LS JSON", () => {
       ],
       [
         "wrong start state",
-        "wrong_start_state.sw.json",
         `{
         "id": "hello_world", 
         "specVersion": "0.1",
@@ -898,7 +892,7 @@ describe("SWF LS JSON", () => {
           }
         ]}`,
       ],
-    ])("%s", async (_description, documentUri, content) => {
+    ])("%s", async (_description, content) => {
       const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
 
       expect(diagnostic.length).toMatchSnapshot();
