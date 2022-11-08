@@ -29,15 +29,18 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
-import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/commonServices/GitService";
+import {
+  GIT_DEFAULT_BRANCH,
+  GIT_ORIGIN_REMOTE_NAME,
+} from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { dirname, join } from "path";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { isProject } from "../project";
 
@@ -98,35 +101,26 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
-      const fs = await workspaces.fsService.getFs(props.workspace.descriptor.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.descriptor.workspaceId });
-
       let currentFileAfterMoving: WorkspaceFile | undefined;
 
       if (!isProjectStructure && shouldUseQuarkusAccelerator) {
-        await workspaces.gitService.addRemote({
-          fs: fs,
-          dir: workspaceRootDirPath,
+        await workspaces.addRemote({
+          workspaceId: props.workspace.descriptor.workspaceId,
           url: KOGITO_QUARKUS_TEMPLATE.url,
           name: KOGITO_QUARKUS_TEMPLATE.remoteName,
           force: true,
         });
 
-        await workspaces.gitService.fetch({
-          fs: fs,
-          dir: workspaceRootDirPath,
+        await workspaces.fetch({
+          workspaceId: props.workspace.descriptor.workspaceId,
           remote: KOGITO_QUARKUS_TEMPLATE.remoteName,
           ref: KOGITO_QUARKUS_TEMPLATE.branch,
         });
 
         for (const file of props.workspace.files) {
-          const movedFile = await workspaces.service.moveFile({
-            fs: fs,
+          const movedFile = await workspaces.moveFile({
             file: file,
             newDirPath: join(RESOURCES_FOLDER, dirname(file.relativePath)),
-            broadcastArgs: {
-              broadcast: false,
-            },
           });
 
           if (file.relativePath === props.currentFile.relativePath) {
@@ -138,30 +132,26 @@ export function CreateGitHubRepositoryModal(props: {
           throw new Error("Failed to find current file after moving.");
         }
 
-        await workspaces.gitService.checkout({
-          fs: fs,
-          dir: workspaceRootDirPath,
+        await workspaces.checkout({
+          workspaceId: props.workspace.descriptor.workspaceId,
           ref: KOGITO_QUARKUS_TEMPLATE.branch,
           remote: KOGITO_QUARKUS_TEMPLATE.remoteName,
         });
 
-        await workspaces.gitService.deleteRemote({
-          fs,
-          dir: workspaceRootDirPath,
+        await workspaces.deleteRemote({
+          workspaceId: props.workspace.descriptor.workspaceId,
           name: KOGITO_QUARKUS_TEMPLATE.remoteName,
         });
       }
 
-      await workspaces.gitService.addRemote({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.addRemote({
+        workspaceId: props.workspace.descriptor.workspaceId,
         url: cloneUrl,
         name: GIT_ORIGIN_REMOTE_NAME,
         force: true,
       });
 
       await workspaces.createSavePoint({
-        fs: fs,
         workspaceId: props.workspace.descriptor.workspaceId,
         gitConfig: {
           name: githubAuthInfo.name,
@@ -169,9 +159,8 @@ export function CreateGitHubRepositoryModal(props: {
         },
       });
 
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
+      await workspaces.push({
+        workspaceId: props.workspace.descriptor.workspaceId,
         remote: GIT_ORIGIN_REMOTE_NAME,
         ref: GIT_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIT_DEFAULT_BRANCH}`,
@@ -179,7 +168,11 @@ export function CreateGitHubRepositoryModal(props: {
         authInfo: githubAuthInfo,
       });
 
-      await workspaces.descriptorService.turnIntoGit(props.workspace.descriptor.workspaceId, new URL(cloneUrl));
+      await workspaces.initGitOnWorkspace({
+        workspaceId: props.workspace.descriptor.workspaceId,
+        remoteUrl: new URL(cloneUrl),
+      });
+
       await workspaces.renameWorkspace({
         workspaceId: props.workspace.descriptor.workspaceId,
         newName: new URL(repo.data.html_url).pathname.substring(1),

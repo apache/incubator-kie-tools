@@ -268,14 +268,17 @@ interface AppDictionary extends ReferenceDictionary {
       };
     };
   };
-  browserAlert: {
-    warning: string;
-  };
   notificationsPanel: {
     name: string;
     tooltip: {
       retractAll: string;
       expandAll: string;
+    };
+  };
+  deployments: {
+    virtualServiceRegistry: {
+      dependencyWarning: string;
+      dependencyWarningTooltip: string;
     };
   };
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { basename, extname } from "path";
+import { basename } from "path";
 import { PROJECT_FILES } from "../project";
 
 const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
@@ -28,7 +28,7 @@ const REGEX = {
   dash: /^.*\.dash\.(yml|yaml)$/i,
   json: /^.*\.json$/i,
   yaml: /^.*\.(yml|yaml)$/i,
-  spec: /^.*(spec|specs)\/.*(.json|.yml|.yaml)$/i,
+  spec: /^.*(\.spec|\.specs|spec|specs)\.(json|yml|yaml)$/i,
 };
 
 export const GLOB_PATTERN = {
@@ -36,6 +36,8 @@ export const GLOB_PATTERN = {
   sw: "**/*.sw.+(json|yml|yaml)",
   yard: "**/*.yard.+(json|yml|yaml)",
   dash: "**/*.dash.+(yml|yaml)",
+  spec: "**/+(*.spec?(s)|spec?(s)).+(yml|yaml|json)",
+  sw_spec: "**/+(*.sw|*.spec?(s)|spec?(s)).+(yml|yaml|json)",
 };
 
 export enum FileTypes {
@@ -59,16 +61,6 @@ export const supportedFileExtensionArray = [
   FileTypes.DASH_YAML,
   FileTypes.DASH_YML,
 ];
-
-export function resolveExtension(path: string): string {
-  const fileName = basename(path);
-  if (fileName.startsWith(".")) {
-    return fileName.slice(1);
-  }
-  const match = REGEX.supported.exec(path);
-  const extension = match ? match[1] : extname(path);
-  return extension ? extension.slice(1) : "";
-}
 
 export function isServerlessWorkflow(path: string): boolean {
   return REGEX.sw.test(path);
@@ -94,8 +86,12 @@ export function isModel(path: string): boolean {
   return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
 }
 
-export function isSandboxAsset(path: string): boolean {
+export function isEditable(path: string): boolean {
   return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path));
+}
+
+export function isSupportedByVirtualServiceRegistry(path: string): boolean {
+  return isServerlessWorkflow(path) || isSpec(path);
 }
 
 export function isSpec(path: string): boolean {

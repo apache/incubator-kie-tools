@@ -131,13 +131,18 @@ export class OpenShiftService {
     }
   }
 
+  public newResourceName(): string {
+    return `sandbox-${this.generateRandomId()}`;
+  }
+
   public async deploy(args: {
+    deploymentResourceName?: string;
     targetFilePath: string;
     workspaceName: string;
     workspaceZipBlob: Blob;
     shouldAttachKafkaSource: boolean;
   }): Promise<string | undefined> {
-    const resourceName = `sandbox-${this.generateRandomId()}`;
+    const resourceName = args.deploymentResourceName ?? this.newResourceName();
 
     const resourceArgs = {
       ...this.prepareCommonResourceArgs(),

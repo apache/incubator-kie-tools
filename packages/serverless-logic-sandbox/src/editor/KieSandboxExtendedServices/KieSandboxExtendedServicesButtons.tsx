@@ -26,13 +26,13 @@ import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServic
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings } from "../../settings/SettingsContext";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
-  workspace: ActiveWorkspace | undefined;
+  workspace: ActiveWorkspace;
 }
 
 export function KieSandboxExtendedServicesButtons(props: Props) {

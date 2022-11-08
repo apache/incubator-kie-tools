@@ -1,3 +1,8 @@
+# 0.25.0 (alpha)
+
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+- [KOGITO-8092](https://issues.redhat.com/browse/KOGITO-8092) - [SWF Editor] Improve the creation of workflow from an empty file
+
 # 0.24.0 (alpha)
 
 - [KOGITO-7365](https://issues.redhat.com/browse/KOGITO-7365) - [SWF Editor] Defining an API to get the node name of text line selected

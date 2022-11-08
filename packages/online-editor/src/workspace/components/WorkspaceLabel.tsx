@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { CodeBranchIcon } from "@patternfly/react-icons/dist/js/icons/code-branch-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { GitlabIcon } from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
-import { CodeBranchIcon } from "@patternfly/react-icons/dist/js/icons/code-branch-icon";
 import { PendingIcon } from "@patternfly/react-icons/dist/js/icons/pending-icon";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import * as React from "react";
 import { useMemo } from "react";
-import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
-import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
+import { UrlType, useImportableUrl } from "../../importFromUrl/ImportableUrlHooks";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());
@@ -36,7 +37,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
       return <></>;
     }
 
-    if (workspaceImportableUrl.type === UrlType.GITHUB) {
+    if (workspaceImportableUrl.type === UrlType.GITHUB_DOT_COM) {
       return (
         <Label>
           <GithubIcon />
@@ -47,6 +48,13 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
       return (
         <Label>
           <GitlabIcon />
+          &nbsp;&nbsp;Repository
+        </Label>
+      );
+    } else if (props.descriptor?.origin.url.toString().includes("bitbucket")) {
+      return (
+        <Label>
+          <BitbucketIcon />
           &nbsp;&nbsp;Repository
         </Label>
       );

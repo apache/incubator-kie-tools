@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
-import { WorkspaceFile } from "../WorkspacesContext";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { WorkspaceLabel } from "./WorkspaceLabel";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";

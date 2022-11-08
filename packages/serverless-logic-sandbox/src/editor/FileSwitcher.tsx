@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -45,16 +45,19 @@ import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
-import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
+import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import {
+  PromiseStateWrapper,
+  useCombinedPromiseState,
+  usePromiseState,
+} from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
-import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
+import { useWorkspacesFilesPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -62,8 +65,8 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { isSandboxAsset } from "../extension";
-import { decoder } from "../workspace/commonServices/BaseFile";
+import { isEditable } from "../extension";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -102,7 +105,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       );
 
       const hasConflictingFileName = await workspaces.existsFile({
-        fs: await workspaces.fsService.getFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
@@ -128,7 +130,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       }
 
       await workspaces.renameFile({
-        fs: await workspaces.fsService.getFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
         newFileNameWithoutExtension: trimmedNewFileName.trim(),
       });
@@ -424,7 +425,7 @@ export function WorkspacesMenuItems(props: {
                     <MenuItem
                       itemId={descriptor.workspaceId}
                       description={`${
-                        workspaceFiles.get(descriptor.workspaceId)!.filter((f) => isSandboxAsset(f.relativePath)).length
+                        workspaceFiles.get(descriptor.workspaceId)!.filter((f) => isEditable(f.relativePath)).length
                       } editable file(s) in ${workspaceFiles.get(descriptor.workspaceId)!.length} file(s)`}
                       direction={"down"}
                       drilldownMenu={
@@ -464,19 +465,19 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        Promise.resolve()
-          .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
-          .then(async (file) => {
-            if (canceled.get()) {
-              return;
-            }
-
-            if (file) {
-              setSvg({ data: decoder.decode(await file.getFileContents()) });
-            } else {
-              setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
-            }
-          });
+        // FIXME: Uncomment when working on KOGITO-7805
+        // Promise.resolve()
+        //   .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
+        //   .then(async (file) => {
+        //     if (canceled.get()) {
+        //       return;
+        //     }
+        //     if (file) {
+        //       setSvg({ data: decoder.decode(await file.getFileContents()) });
+        //     } else {
+        //       setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
+        //     }
+        //   });
       },
       [props.workspaceFile, workspaces, setSvg]
     )
@@ -586,12 +587,12 @@ export function FilesMenuItems(props: {
   );
 
   const editableFiles = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => isSandboxAsset(file.relativePath)),
+    () => sortedAndFilteredFiles.filter((file) => isEditable(file.relativePath)),
     [sortedAndFilteredFiles]
   );
 
   const readonlyFiles = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => !isSandboxAsset(file.relativePath)),
+    () => sortedAndFilteredFiles.filter((file) => !isEditable(file.relativePath)),
     [sortedAndFilteredFiles]
   );
 
@@ -603,7 +604,7 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        {/* FIXME: Uncomment when KOGITO-6181 is fixed */}
+        {/* FIXME: Uncomment when working on KOGITO-7805 */}
         {/*<SplitItem>*/}
         {/*  <FilesDropdownModeIcons*/}
         {/*    filesDropdownMode={props.filesDropdownMode}*/}
@@ -731,7 +732,8 @@ export function FilesMenuItems(props: {
                         </CardHeaderMain>
                       </CardHeader>
                       <CardBody style={{ padding: 0 }}>
-                        <FileSvg workspaceFile={file} />
+                        {/* FIXME: Uncomment when working on KOGITO-7805 */}
+                        {/* <FileSvg workspaceFile={file} />*/}
                       </CardBody>
                     </Card>
                   ))}

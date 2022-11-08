@@ -54,6 +54,7 @@ export function createDockerfileContentForBaseQuarkusProjectImage(): string {
 }
 
 export function createDockerfileContentForBaseJdk11MvnImage(args: {
+  deploymentResourceName: string;
   projectName: string;
   openShiftConfig: OpenShiftSettingsConfig;
 }): string {
@@ -66,7 +67,7 @@ export function createDockerfileContentForBaseJdk11MvnImage(args: {
   RUN mkdir ${projectPaths.root}/
   COPY --chown=185:root . ${projectPaths.root}/
   RUN ${OC_PATH} login --token=${args.openShiftConfig.token} --server=${args.openShiftConfig.host} --insecure-skip-tls-verify \
-    && ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} \
+    && ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} -Dquarkus.knative.name=${args.deploymentResourceName} \
     && if [ -f ${projectPaths.kubernetes}/kogito.yml ]; then ${OC_PATH} apply -n ${args.openShiftConfig.namespace} -f ${projectPaths.kubernetes}/kogito.yml; fi \
     && cp ${projectPaths.quarkusApp}/*.jar ${DEPLOYMENTS_FOLDER} \
     && cp -R ${projectPaths.quarkusApp}/lib/ ${DEPLOYMENTS_FOLDER} \

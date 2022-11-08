@@ -16,13 +16,14 @@
 
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
-import { useCancelableEffect, usePreviousRef } from "../reactExt/Hooks";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { InputRow } from "@kie-tools/form-dmn";
 import { useDmnRunnerInputsDispatch } from "./DmnRunnerInputsDispatchContext";
-import { decoder } from "../workspace/encoderdecoder/EncoderDecoder";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { CompanionFsServiceBroadcastEvents } from "../companionFs/CompanionFsService";
 import { EMPTY_DMN_RUNNER_INPUTS } from "./DmnRunnerInputsService";
+import { usePreviousRef } from "@kie-tools-core/react-hooks/dist/usePreviousRef";
 
 interface DmnRunnerInputs {
   inputRows: Array<InputRow>;

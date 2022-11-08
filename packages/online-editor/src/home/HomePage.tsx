@@ -40,13 +40,13 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
-import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { FileLabel } from "../filesList/FileLabel";
-import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -66,16 +66,16 @@ import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext
 import { QueryParams } from "../navigation/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { UploadCard } from "./UploadCard";
-import { ImportFromUrlCard } from "./ImportFromUrlCard";
-import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
+import { ImportFromUrlCard } from "../importFromUrl/ImportFromUrlHomePageCard";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
 import { Alerts, AlertsController } from "../alerts/Alerts";
-import { useController } from "../reactExt/Hooks";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
-import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FileDataList, FileLink, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
@@ -458,8 +458,8 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
           </Link>
           <Link
             to={{
-              pathname: routes.importModel.path({}),
-              search: routes.importModel.queryString({
+              pathname: routes.import.path({}),
+              search: routes.import.queryString({
                 url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
                   type: props.extension,
                 })}`,

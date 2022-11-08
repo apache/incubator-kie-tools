@@ -24,8 +24,8 @@ import { NavigationContextProvider } from "./navigation/NavigationContextProvide
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
 import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
-import { VirtualServiceRegistryContextProvider } from "./workspace/services/virtualServiceRegistry/VirtualServiceRegistryContextProvider";
-import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
+import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
+import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 
 export const App = () => (
   <HashRouter>
@@ -35,7 +35,7 @@ export const App = () => (
       [EnvContextProvider, {}],
       [KieSandboxExtendedServicesContextProvider, {}],
       [SettingsContextProvider, {}],
-      [WorkspacesContextProvider, {}],
+      [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js" }],
       [OpenShiftContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
       [NavigationContextProvider, {}],

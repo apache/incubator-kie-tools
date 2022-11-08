@@ -50,131 +50,155 @@ module.exports = async (env) => {
     kieSandboxExtendedServices_compatibleVersion,
   ] = getKieSandboxExtendedServicesArgs();
 
-  return merge(common(env), {
-    entry: {
-      index: "./src/index.tsx",
-      "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
-      "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
-      "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
-      "serverless-workflow-combined-editor-envelope": "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
-      "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
-      "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
-      "serverless-workflow-mermaid-viewer-envelope": "./src/envelope/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./static/index.html",
-        inject: false,
-        minify: false,
-      }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
-          replacement: (match, gtm, type) => {
-            if (gtmResource) {
-              return gtmResource[type] ?? `${match}`;
-            }
-            return `${match}`;
-          },
-        },
-      ]),
-      new EnvironmentPlugin({
-        WEBPACK_REPLACE__buildInfo: buildInfo,
-        WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl: `${serverlessLogicSandbox_baseImageRegistry}/${serverlessLogicSandbox_baseImageAccount}/${serverlessLogicSandbox_baseImageName}:${serverlessLogicSandbox_baseImageTag}`,
-        WEBPACK_REPLACE__serverlessLogicSandbox_openJdk11MvnImageFullUrl: `${serverlessLogicSandbox_openJdk11MvnImageRegistry}/${serverlessLogicSandbox_openJdk11MvnImageAccount}/${serverlessLogicSandbox_openJdk11MvnImageName}:${serverlessLogicSandbox_openJdk11MvnImageTag}`,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-        WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicSandbox.corsProxyUrl,
-      }),
-      new CopyPlugin({
-        patterns: [
-          { from: "./static/resources", to: "./resources" },
-          { from: "./static/images", to: "./images" },
-          { from: "./static/samples", to: "./samples" },
+  return [
+    merge(common(env), {
+      entry: {
+        "workspace/worker/sharedWorker": "./src/workspace/worker/sharedWorker.ts",
+      },
+      target: "webworker",
+      plugins: [
+        new ProvidePlugin({
+          Buffer: ["buffer", "Buffer"],
+        }),
+        new EnvironmentPlugin({
+          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicSandbox.corsProxyUrl,
+        }),
+        new CopyPlugin({
+          patterns: [
+            {
+              from: path.join(path.dirname(require.resolve("@kie-tools/emscripten-fs/package.json")), "/dist"),
+              to: "workspace/worker",
+            },
+          ],
+        }),
+      ],
+    }),
+    merge(common(env), {
+      entry: {
+        index: "./src/index.tsx",
+        "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
+        "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
+        "serverless-workflow-combined-editor-envelope": "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
+        "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
+        "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
+        "serverless-workflow-mermaid-viewer-envelope": "./src/envelope/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
+      },
+      plugins: [
+        new HtmlWebpackPlugin({
+          template: "./static/index.html",
+          inject: false,
+          minify: false,
+        }),
+        new HtmlReplaceWebpackPlugin([
           {
-            from: "./static/envelope/serverless-workflow-combined-editor-envelope.html",
-            to: "./serverless-workflow-combined-editor-envelope.html",
-          },
-          {
-            from: "./static/envelope/serverless-workflow-diagram-editor-envelope.html",
-            to: "./serverless-workflow-diagram-editor-envelope.html",
-          },
-          {
-            from: "./static/envelope/serverless-workflow-mermaid-viewer-envelope.html",
-            to: "./serverless-workflow-mermaid-viewer-envelope.html",
-          },
-          {
-            from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
-            to: "./serverless-workflow-text-editor-envelope.html",
-          },
-          { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
-          { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
-          { from: "./static/favicon.svg", to: "./favicon.svg" },
-          { from: "./static/env.json", to: "./env.json" },
-          // This is used for development only.
-          {
-            from: swEditor.swEditorPath(),
-            to: "./diagram",
-            globOptions: { ignore: ["**/WEB-INF/**/*"] },
-          },
-          // dashbuilder bundle
-          {
-            from: "../dashbuilder-client/dist/",
-            to: "./dashbuilder-client",
-            globOptions: { ignore: ["**/WEB-INF/**/*"] },
-          },
-        ],
-      }),
-      new ProvidePlugin({
-        Buffer: ["buffer", "Buffer"],
-      }),
-      new MonacoWebpackPlugin({
-        languages: ["json"],
-        customLanguages: [
-          {
-            label: "yaml",
-            entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
-            worker: {
-              id: "monaco-yaml/yamlWorker",
-              entry: "monaco-yaml/yaml.worker.js",
+            pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+            replacement: (match, gtm, type) => {
+              if (gtmResource) {
+                return gtmResource[type] ?? `${match}`;
+              }
+              return `${match}`;
             },
           },
-        ],
-      }),
-    ],
-    module: {
-      rules: [
-        {
-          test: /\.svg$/,
-          use: [
+        ]),
+        new EnvironmentPlugin({
+          WEBPACK_REPLACE__buildInfo: buildInfo,
+          WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl: `${serverlessLogicSandbox_baseImageRegistry}/${serverlessLogicSandbox_baseImageAccount}/${serverlessLogicSandbox_baseImageName}:${serverlessLogicSandbox_baseImageTag}`,
+          WEBPACK_REPLACE__serverlessLogicSandbox_openJdk11MvnImageFullUrl: `${serverlessLogicSandbox_openJdk11MvnImageRegistry}/${serverlessLogicSandbox_openJdk11MvnImageAccount}/${serverlessLogicSandbox_openJdk11MvnImageName}:${serverlessLogicSandbox_openJdk11MvnImageTag}`,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
+          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicSandbox.corsProxyUrl,
+        }),
+        new CopyPlugin({
+          patterns: [
+            { from: "./static/resources", to: "./resources" },
+            { from: "./static/images", to: "./images" },
+            { from: "./static/samples", to: "./samples" },
+            { from: "./static/favicon.svg", to: "./favicon.svg" },
+            { from: "./static/env.json", to: "./env.json" },
             {
-              loader: require.resolve("@svgr/webpack"),
-              options: {
-                prettier: false,
-                svgo: false,
-                svgoConfig: {
-                  plugins: [{ removeViewBox: false }],
-                },
-                titleProp: true,
-                ref: true,
+              from: "./static/envelope/serverless-workflow-combined-editor-envelope.html",
+              to: "./serverless-workflow-combined-editor-envelope.html",
+            },
+            {
+              from: "./static/envelope/serverless-workflow-diagram-editor-envelope.html",
+              to: "./serverless-workflow-diagram-editor-envelope.html",
+            },
+            {
+              from: "./static/envelope/serverless-workflow-mermaid-viewer-envelope.html",
+              to: "./serverless-workflow-mermaid-viewer-envelope.html",
+            },
+            {
+              from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
+              to: "./serverless-workflow-text-editor-envelope.html",
+            },
+            { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
+            { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
+            { from: "./static/favicon.svg", to: "./favicon.svg" },
+            { from: "./static/env.json", to: "./env.json" },
+            // These below are used for development only.
+            {
+              from: swEditor.swEditorPath(),
+              to: "./diagram",
+              globOptions: { ignore: ["**/WEB-INF/**/*"] },
+            },
+            {
+              from: "../dashbuilder-client/dist/",
+              to: "./dashbuilder-client",
+              globOptions: { ignore: ["**/WEB-INF/**/*"] },
+            },
+          ],
+        }),
+        new ProvidePlugin({
+          Buffer: ["buffer", "Buffer"],
+        }),
+        new MonacoWebpackPlugin({
+          languages: ["json"],
+          customLanguages: [
+            {
+              label: "yaml",
+              entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
+              worker: {
+                id: "monaco-yaml/yamlWorker",
+                entry: "monaco-yaml/yaml.worker.js",
               },
             },
           ],
-        },
-        ...patternflyBase.webpackModuleRules,
+        }),
       ],
-    },
-    ignoreWarnings: [/Failed to parse source map/],
-    devServer: {
-      server: "https",
-      historyApiFallback: false,
-      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
-      compress: true,
-      port: buildEnv.serverlessLogicSandbox.dev.port,
-    },
-  });
+      module: {
+        rules: [
+          {
+            test: /\.svg$/,
+            use: [
+              {
+                loader: require.resolve("@svgr/webpack"),
+                options: {
+                  prettier: false,
+                  svgo: false,
+                  svgoConfig: {
+                    plugins: [{ removeViewBox: false }],
+                  },
+                  titleProp: true,
+                  ref: true,
+                },
+              },
+            ],
+          },
+          ...patternflyBase.webpackModuleRules,
+        ],
+      },
+      ignoreWarnings: [/Failed to parse source map/],
+      devServer: {
+        https: true,
+        historyApiFallback: false,
+        static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
+        compress: true,
+        port: buildEnv.serverlessLogicSandbox.dev.port,
+      },
+    }),
+  ];
 };
 
 function getServerlessLogicSandboxBaseImageArgs() {

@@ -306,14 +306,17 @@ export const en: AppI18n = {
       },
     },
   },
-  browserAlert: {
-    warning: "To get the best experience, please prefer using Chromium based browsers.",
-  },
   notificationsPanel: {
     name: "Notifications Panel",
     tooltip: {
       retractAll: "Retract All",
       expandAll: "Expand All",
+    },
+  },
+  deployments: {
+    virtualServiceRegistry: {
+      dependencyWarning: "Has foreign workspace dependencies!",
+      dependencyWarningTooltip: "Models in this workspace may depend on deployments from other workspaces.",
     },
   },
 };

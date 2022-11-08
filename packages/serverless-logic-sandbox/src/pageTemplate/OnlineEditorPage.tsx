@@ -26,13 +26,12 @@ import { useRoutes } from "../navigation/Hooks";
 import { OpenshiftDeploymentsDropdown } from "../openshift/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../settings/SettingsButton";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ExclamationIcon, ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons";
-import { useAppI18n } from "../i18n";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
+import { APP_NAME } from "../AppConstants";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
-  const { i18n } = useAppI18n();
 
   const isChromiumBased = useMemo(() => {
     const agent = window.navigator.userAgent.toLowerCase();
@@ -50,7 +49,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 style={{ textDecoration: "none" }}
               >
                 <TextContent>
-                  <Text component={TextVariants.h1}>Serverless Logic Web Tools</Text>
+                  <Text component={TextVariants.h1}>{APP_NAME}</Text>
                 </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>
@@ -74,7 +73,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 <Tooltip
                   className="kogito--editor__light-tooltip"
                   key={"not-chromium"}
-                  content={i18n.browserAlert.warning}
+                  content={"To get the best experience, please prefer using Chromium based browsers."}
                   flipBehavior={["left"]}
                   distance={20}
                 >

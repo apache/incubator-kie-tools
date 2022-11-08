@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -33,10 +33,11 @@ import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
-import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
-import { FileTypes, isSandboxAsset, resolveExtension, SupportedFileExtensions } from "../extension";
-import { decoder } from "../workspace/commonServices/BaseFile";
+import { FileTypes, isEditable, SupportedFileExtensions } from "../extension";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
+import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -74,7 +75,6 @@ export function NewFileDropdownMenu(props: {
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
       const file = await workspaces.addEmptyFile({
-        fs: await workspaces.fsService.getFs(props.workspaceId),
         workspaceId: props.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
         extension,
@@ -107,7 +107,7 @@ export function NewFileDropdownMenu(props: {
 
       try {
         const url = new URL(urlString);
-        const extension = resolveExtension(url.pathname);
+        const extension = extractExtension(url.pathname);
         const name = decodeURIComponent(basename(url.pathname, `.${extension}`));
 
         const response = await fetch(urlString);
@@ -119,7 +119,6 @@ export function NewFileDropdownMenu(props: {
         const content = await response.text();
 
         const file = await workspaces.addFile({
-          fs: await workspaces.fsService.getFs(props.workspaceId),
           workspaceId: props.workspaceId,
           name,
           extension,
@@ -180,10 +179,9 @@ export function NewFileDropdownMenu(props: {
 
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (file) => {
-          const extension = resolveExtension(file.path);
+          const extension = extractExtension(file.path);
           const name = decodeURIComponent(basename(file.path, `.${extension}`));
           return workspaces.addFile({
-            fs: await workspaces.fsService.getFs(props.workspaceId),
             workspaceId: props.workspaceId,
             name: name,
             extension: extension,
@@ -193,7 +191,7 @@ export function NewFileDropdownMenu(props: {
         })
       );
 
-      const fileToGoTo = uploadedFiles.filter((file) => isSandboxAsset(file.relativePath)).pop();
+      const fileToGoTo = uploadedFiles.filter((file) => isEditable(file.relativePath)).pop();
 
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });

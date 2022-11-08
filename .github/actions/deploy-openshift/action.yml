@@ -93,4 +93,4 @@ runs:
       run: |
         url=https://$(oc get route ${{ inputs.app_name }} -o jsonpath='{.spec.host}')
         echo "Route URL: $url"
-        echo ::set-output name=route_url::$url
+        echo "route_url=$url" >> $GITHUB_OUTPUT
