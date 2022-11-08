@@ -2815,34 +2815,20 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML diagnostic using JSON format unclosed brackets 1`] = `2`;
+exports[`SWF LS YAML diagnostic using JSON format unclosed brackets 1`] = `1`;
 
 exports[`SWF LS YAML diagnostic using JSON format unclosed brackets 2`] = `
 Array [
   Object {
-    "message": "JS-YAML: missed comma between flow collection entries at line 9, column 9",
-    "range": Object {
-      "end": Object {
-        "character": 8,
-        "line": 8,
-      },
-      "start": Object {
-        "character": 8,
-        "line": 8,
-      },
-    },
-    "severity": 1,
-  },
-  Object {
-    "message": "JS-YAML: unexpected end of the stream within a flow collection at line 10, column 1",
+    "message": "JS-YAML: missed comma between flow collection entries at line 13, column 1",
     "range": Object {
       "end": Object {
         "character": 0,
-        "line": 9,
+        "line": 12,
       },
       "start": Object {
         "character": 0,
-        "line": 9,
+        "line": 12,
       },
     },
     "severity": 1,

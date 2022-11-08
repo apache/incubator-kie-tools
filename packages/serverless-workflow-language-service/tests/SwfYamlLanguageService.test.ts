@@ -1155,15 +1155,23 @@ states:
       test.each([
         [
           "unclosed brackets",
-          `id: hello_world
-specVersion: "0.1"
-start: Inject Hello World
-states: [{
-            "name": "Inject Hello World",
-            "data": {},
-            "type": "inject",
-            "end": true
-        ]`,
+          `id: jsongreet
+version: '1.0'
+specVersion: '0.8'
+name: Greeting workflow
+expressionLang: jsonpath
+description: JSON based greeting workflow
+start: HandleNewGreet
+functions: [{
+      "name": "printMessage",
+      "type": "custom",
+      "operation": "sysout"
+  }
+states:
+- name: 'HandleNewGreet'
+  type: inject
+  data: {}
+  end: true`,
         ],
       ])("%s", async (_description, content) => {
         const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });

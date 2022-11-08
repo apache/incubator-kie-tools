@@ -140,14 +140,16 @@ export class SwfYamlLanguageService {
 
     //check the syntax
     if (loadErrors.length > 0) {
-      return loadErrors.map((e) => {
-        const position = Position.create(e.mark.line, e.mark.column);
-        return {
-          message: e.message,
+      const error = loadErrors[0];
+      const position = Position.create(error.mark.line, error.mark.column);
+      // show only the first error because syntax erorrs are repeated for each line, after the error.
+      return [
+        {
+          message: error.message,
           range: Range.create(position, position),
           severity: DiagnosticSeverity.Error,
-        };
-      });
+        },
+      ];
     }
 
     return this.ls.getDiagnostics({
