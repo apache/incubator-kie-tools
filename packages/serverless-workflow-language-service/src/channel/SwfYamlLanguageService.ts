@@ -22,7 +22,7 @@ import {
   Telemetry,
   WorkspaceContextService,
 } from "@kie-tools/yaml-language-server";
-import { TextDocument } from "vscode-json-languageservice";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import {
   CodeLens,
   CompletionItem,
