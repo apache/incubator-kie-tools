@@ -258,7 +258,6 @@ digraph G {
   "@kie-tools-core/notifications" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
-  "@kie-tools/online-editor" -> "@kie-tools/cors-proxy-image" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
