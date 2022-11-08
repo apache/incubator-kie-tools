@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
-import * as SwfEditor from "@kie-tools/standalone-serverless-workflow-editor/dist/swf";
+import * as SwfEditor from "@kie-tools/serverless-workflow-standalone-editor/dist/swf";
 import { ServerlessWorkflowEmptyState } from "./SwfEditorEmptyState";
-import { StandaloneEditorApi } from "@kie-tools/standalone-serverless-workflow-editor/dist/common/Editor";
+import { StandaloneEditorApi } from "@kie-tools/serverless-workflow-standalone-editor/dist/common/Editor";
 import { extname } from "path";
 
 export type ServerlessWorkflowType = "json" | "yaml";
@@ -52,8 +52,8 @@ export const SwfStandaloneEditorPage = (props: Props) => {
 
     setEditor(editorContent);
   }, []);
-
-  const onNewContent = (serverlessWorkflowType: ServerlessWorkflowType) => {
+  console.log("editor", editor);
+  const onNewContent = useCallback((serverlessWorkflowType: ServerlessWorkflowType) => {
     const editorContent = SwfEditor.open({
       container: swfEditorContainer.current!,
       initialContent: Promise.resolve(""),
@@ -61,23 +61,25 @@ export const SwfStandaloneEditorPage = (props: Props) => {
       languageType: serverlessWorkflowType,
     });
     setEditor(editorContent);
-  };
+  }, []);
 
-  undo.current?.addEventListener("click", () => {
-    editor?.undo();
-  });
+  useEffect(() => {
+    undo.current?.addEventListener("click", () => {
+      editor?.undo();
+    });
 
-  redo.current?.addEventListener("click", () => {
-    editor?.redo();
-  });
+    redo.current?.addEventListener("click", () => {
+      editor?.redo();
+    });
 
-  editor?.subscribeToContentChanges((isDirty) => {
-    if (isDirty) {
-      unsavedChanges.current!.style.display = "";
-    } else {
-      unsavedChanges.current!.style.display = "none";
-    }
-  });
+    editor?.subscribeToContentChanges((isDirty) => {
+      if (isDirty) {
+        unsavedChanges.current!.style.display = "";
+      } else {
+        unsavedChanges.current!.style.display = "none";
+      }
+    });
+  }, [editor]);
 
   return (
     <Page>
@@ -91,7 +93,7 @@ export const SwfStandaloneEditorPage = (props: Props) => {
         </PageSection>
       )}
       <PageSection padding={{ default: "noPadding" }}>
-        {editor && (
+        {editor && swfEditorContainer && (
           <div style={{ height: "40px", padding: "5px" }}>
             <button ref={undo}>Undo</button>
             <button ref={redo}>Redo</button>

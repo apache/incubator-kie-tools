@@ -330,7 +330,7 @@ importers:
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/kie-editors-standalone": workspace:*
       "@kie-tools/root-env": workspace:*
-      "@kie-tools/standalone-serverless-workflow-editor": workspace:*
+      "@kie-tools/serverless-workflow-standalone-editor": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -362,7 +362,7 @@ importers:
       "@kie-tools-examples/todo-list-view": link:../todo-list-view
       "@kie-tools/kie-bc-editors": link:../../packages/kie-bc-editors
       "@kie-tools/kie-editors-standalone": link:../../packages/kie-editors-standalone
-      "@kie-tools/standalone-serverless-workflow-editor": link:../../packages/standalone-serverless-workflow-editor
+      "@kie-tools/serverless-workflow-standalone-editor": link:../../packages/serverless-workflow-standalone-editor
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       monaco-editor: 0.33.0
@@ -4573,110 +4573,7 @@ importers:
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
 
-  packages/serverless-workflow-text-editor:
-    specifiers:
-      "@babel/core": ^7.16.0
-      "@babel/preset-env": ^7.16.0
-      "@babel/preset-react": ^7.16.0
-      "@kie-tools-core/editor": workspace:*
-      "@kie-tools-core/envelope": workspace:*
-      "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/guided-tour": workspace:*
-      "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:*
-      "@kie-tools/root-env": workspace:*
-      "@kie-tools/serverless-workflow-language-service": workspace:*
-      "@kie-tools/serverless-workflow-service-catalog": workspace:*
-      "@kie-tools/tsconfig": workspace:*
-      "@patternfly/react-core": ^4.157.3
-      "@patternfly/react-icons": ^4.11.17
-      "@testing-library/jest-dom": ^5.16.1
-      "@types/jest": ^26.0.23
-      "@types/jest-when": ^2.7.4
-      "@types/json-schema": ^7.0.11
-      "@types/react": ^17.0.6
-      "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^11.0.0
-      cypress: ^11.0.1
-      cypress-file-upload: ^5.0.8
-      cypress-iframe: ^1.0.1
-      cypress-log-to-output: ^1.1.2
-      jest: ^26.6.3
-      jest-junit: ^14.0.0
-      jest-when: ^3.5.0
-      json-schema: ^0.4.0
-      monaco-editor: ^0.33.0
-      monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^4.0.0
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      rimraf: ^3.0.2
-      start-server-and-test: ^1.12.1
-      ts-jest: ^26.5.6
-      typescript: ^4.4.2
-      vscode-json-languageservice: ^4.2.1
-      vscode-languageserver-types: ^3.16.0
-      webpack: ^5.36.2
-      webpack-cli: ^4.10.0
-      webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.8.0
-    dependencies:
-      "@kie-tools-core/editor": link:../editor
-      "@kie-tools-core/envelope": link:../envelope
-      "@kie-tools-core/envelope-bus": link:../envelope-bus
-      "@kie-tools-core/guided-tour": link:../guided-tour
-      "@kie-tools-core/notifications": link:../notifications
-      "@kie-tools-core/operating-system": link:../operating-system
-      "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
-      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
-      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
-      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      json-schema: 0.4.0
-      monaco-editor: 0.33.0
-      monaco-yaml: 4.0.0_monaco-editor@0.33.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      vscode-languageserver-types: 3.16.0
-    devDependencies:
-      "@babel/core": 7.16.12
-      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
-      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
-      "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/eslint": link:../eslint
-      "@kie-tools/root-env": link:../root-env
-      "@kie-tools/tsconfig": link:../tsconfig
-      "@testing-library/jest-dom": 5.16.1
-      "@types/jest": 26.0.23
-      "@types/jest-when": 2.7.4
-      "@types/json-schema": 7.0.11
-      "@types/react": 17.0.21
-      "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 11.0.0_webpack@5.70.0
-      cypress: 11.0.1
-      cypress-file-upload: 5.0.8_cypress@11.0.1
-      cypress-iframe: 1.0.1
-      cypress-log-to-output: 1.1.2
-      jest: 26.6.3
-      jest-junit: 14.0.0
-      jest-when: 3.5.0_jest@26.6.3
-      monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
-      rimraf: 3.0.2
-      start-server-and-test: 1.12.1
-      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
-      typescript: 4.5.4
-      vscode-json-languageservice: 4.2.1
-      webpack: 5.70.0_webpack-cli@4.10.0
-      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
-      webpack-merge: 5.8.0
-
-  packages/standalone-serverless-workflow-editor:
+  packages/serverless-workflow-standalone-editor:
     specifiers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
@@ -4799,6 +4696,109 @@ importers:
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
       webpack-merge: 5.8.0
       yaml-language-server-parser: 0.1.3
+
+  packages/serverless-workflow-text-editor:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/serverless-workflow-language-service": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@testing-library/jest-dom": ^5.16.1
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/json-schema": ^7.0.11
+      "@types/react": ^17.0.6
+      "@types/testing-library__jest-dom": ^5.9.1
+      copy-webpack-plugin: ^8.1.1
+      cypress: ^10.7.0
+      cypress-file-upload: ^5.0.8
+      cypress-iframe: ^1.0.1
+      cypress-log-to-output: ^1.1.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      json-schema: ^0.4.0
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^4.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      rimraf: ^3.0.2
+      start-server-and-test: ^1.12.1
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      vscode-json-languageservice: ^4.2.1
+      vscode-languageserver-types: ^3.16.0
+      webpack: ^5.36.2
+      webpack-cli: ^4.7.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.7.3
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      json-schema: 0.4.0
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      vscode-languageserver-types: 3.16.0
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@testing-library/jest-dom": 5.16.1
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/json-schema": 7.0.11
+      "@types/react": 17.0.21
+      "@types/testing-library__jest-dom": 5.9.5
+      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      cypress: 10.7.0
+      cypress-file-upload: 5.0.8_cypress@10.7.0
+      cypress-iframe: 1.0.1
+      cypress-log-to-output: 1.1.2
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
+      rimraf: 3.0.2
+      start-server-and-test: 1.12.1
+      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      typescript: 4.5.4
+      vscode-json-languageservice: 4.2.1
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack-merge: 5.8.0
 
   packages/stunner-editors:
     specifiers:
@@ -24919,6 +24919,7 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+    dev: false
 
   /prop-types/15.8.1:
     resolution:
@@ -25359,7 +25360,7 @@ packages:
       "@babel/runtime": 7.16.7
       history: 4.10.1
       loose-envify: 1.4.0
-      prop-types: 15.7.2
+      prop-types: 15.8.1
       react: 17.0.2
       react-router: 5.2.1_react@17.0.2
       tiny-invariant: 1.1.0
