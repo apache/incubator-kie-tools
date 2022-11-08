@@ -152,9 +152,8 @@ export function EditorToolbar(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
-  const [gitHubGist, setGitHubGist] = useState<
-    OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined
-  >(undefined);
+  const [gitHubGist, setGitHubGist] =
+    useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const githubAuthInfo = useGitHubAuthInfo();

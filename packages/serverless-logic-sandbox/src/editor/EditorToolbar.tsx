@@ -148,9 +148,8 @@ export function EditorToolbar(props: Props) {
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
-  const [gitHubGist, setGitHubGist] = useState<
-    OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined
-  >(undefined);
+  const [gitHubGist, setGitHubGist] =
+    useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
   const workspaceImportableUrl = useImportableUrl({
     isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
     urlString: workspacePromise.data?.descriptor.origin.url?.toString(),
