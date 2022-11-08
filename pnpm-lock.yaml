@@ -3709,6 +3709,7 @@ importers:
       "@patternfly/react-tokens": ^4.33.1
       "@rhoas/registry-instance-sdk": ^0.34.1
       "@svgr/webpack": 6.2.1
+      "@testing-library/jest-dom": ^5.16.1
       "@types/history": ^4.7.3
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -3805,6 +3806,7 @@ importers:
       "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
       "@kie-tools/tsconfig": link:../tsconfig
       "@svgr/webpack": 6.2.1
+      "@testing-library/jest-dom": 5.16.1
       "@types/history": 4.7.5
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
