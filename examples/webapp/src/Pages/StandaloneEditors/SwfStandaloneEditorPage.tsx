@@ -34,7 +34,6 @@ export const SwfStandaloneEditorPage = (props: Props) => {
   const undo = useRef<HTMLButtonElement>(null);
   const redo = useRef<HTMLButtonElement>(null);
   const download = useRef<HTMLButtonElement>(null);
-  const downloadSvg = useRef<HTMLButtonElement>(null);
   const [workflowType, setWorkflowType] = useState<ServerlessWorkflowType>();
   const [editor, setEditor] = useState<StandaloneEditorApi>();
 
@@ -53,7 +52,7 @@ export const SwfStandaloneEditorPage = (props: Props) => {
     setWorkflowType(extension as ServerlessWorkflowType);
     setEditor(editorContent);
   }, []);
-  console.log("editor", editor);
+
   const onNewContent = useCallback((serverlessWorkflowType: ServerlessWorkflowType) => {
     const editorContent = SwfEditor.open({
       container: swfEditorContainer.current!,
@@ -110,7 +109,7 @@ export const SwfStandaloneEditorPage = (props: Props) => {
           <div style={{ height: "40px", padding: "5px" }}>
             <button ref={undo}>Undo</button>
             <button ref={redo}>Redo</button>
-            <button ref={download}>Get Content</button>
+            {!props.isDiagramOnlyEditor && <button ref={download}>Get Content</button>}
             <span ref={unsavedChanges} style={{ display: "none" }}>
               File contains unsaved changes.
             </span>

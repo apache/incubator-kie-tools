@@ -382,46 +382,60 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   return (
     <div style={{ height: "100%" }}>
       <LoadingScreen loading={!isCombinedEditorReady} />
-      <Drawer isExpanded={true} isInline={true}>
-        <DrawerContent
-          panelContent={
-            <DrawerPanelContent isResizable={true} defaultSize={previewOptions?.diagramDefaultWidth ?? "50%"}>
-              <DrawerPanelBody style={{ padding: 0 }}>
-                {embeddedDiagramEditorFile && (
-                  <EmbeddedEditor
-                    ref={diagramEditorRef}
-                    file={embeddedDiagramEditorFile}
-                    channelType={props.channelType}
-                    kogitoEditor_ready={onDiagramEditorReady}
-                    kogitoEditor_setContentError={onDiagramEditorSetContentError}
-                    editorEnvelopeLocator={diagramEditorEnvelopeLocator}
-                    locale={props.locale}
-                    customChannelApiImpl={diagramEditorChannelApi}
-                    stateControl={diagramEditorStateControl}
-                  />
-                )}
-              </DrawerPanelBody>
-            </DrawerPanelContent>
-          }
-        >
-          <DrawerContentBody>
-            {embeddedTextEditorFile && !props.isDiagramOnly && (
-              <EmbeddedEditor
-                ref={textEditorRef}
-                file={embeddedTextEditorFile}
-                channelType={props.channelType}
-                kogitoEditor_ready={onTextEditorReady}
-                kogitoEditor_setContentError={onTextEditorSetContentError}
-                editorEnvelopeLocator={textEditorEnvelopeLocator}
-                locale={props.locale}
-                customChannelApiImpl={textEditorChannelApi}
-                stateControl={textEditorStateControl}
-                isReady={isTextEditorReady}
-              />
-            )}
-          </DrawerContentBody>
-        </DrawerContent>
-      </Drawer>
+      {embeddedDiagramEditorFile && props.isDiagramOnly ? (
+        <EmbeddedEditor
+          ref={diagramEditorRef}
+          file={embeddedDiagramEditorFile}
+          channelType={props.channelType}
+          kogitoEditor_ready={onDiagramEditorReady}
+          kogitoEditor_setContentError={onDiagramEditorSetContentError}
+          editorEnvelopeLocator={diagramEditorEnvelopeLocator}
+          locale={props.locale}
+          customChannelApiImpl={diagramEditorChannelApi}
+          stateControl={diagramEditorStateControl}
+        />
+      ) : (
+        <Drawer isExpanded={true} isInline={true}>
+          <DrawerContent
+            panelContent={
+              <DrawerPanelContent isResizable={true} defaultSize={previewOptions?.diagramDefaultWidth ?? "50%"}>
+                <DrawerPanelBody style={{ padding: 0 }}>
+                  {embeddedDiagramEditorFile && (
+                    <EmbeddedEditor
+                      ref={diagramEditorRef}
+                      file={embeddedDiagramEditorFile}
+                      channelType={props.channelType}
+                      kogitoEditor_ready={onDiagramEditorReady}
+                      kogitoEditor_setContentError={onDiagramEditorSetContentError}
+                      editorEnvelopeLocator={diagramEditorEnvelopeLocator}
+                      locale={props.locale}
+                      customChannelApiImpl={diagramEditorChannelApi}
+                      stateControl={diagramEditorStateControl}
+                    />
+                  )}
+                </DrawerPanelBody>
+              </DrawerPanelContent>
+            }
+          >
+            <DrawerContentBody>
+              {embeddedTextEditorFile && !props.isDiagramOnly && (
+                <EmbeddedEditor
+                  ref={textEditorRef}
+                  file={embeddedTextEditorFile}
+                  channelType={props.channelType}
+                  kogitoEditor_ready={onTextEditorReady}
+                  kogitoEditor_setContentError={onTextEditorSetContentError}
+                  editorEnvelopeLocator={textEditorEnvelopeLocator}
+                  locale={props.locale}
+                  customChannelApiImpl={textEditorChannelApi}
+                  stateControl={textEditorStateControl}
+                  isReady={isTextEditorReady}
+                />
+              )}
+            </DrawerContentBody>
+          </DrawerContent>
+        </Drawer>
+      )}
     </div>
   );
 };
