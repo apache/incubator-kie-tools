@@ -46,7 +46,7 @@ export type AccountsState =
   | {
       section: AccountsSection.CONNECT_TO_NEW_GITHUB_ACC;
       selectedAuthProvider: GitAuthProvider;
-      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVDER | AccountsDispatchActionKind.GO_HOME;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     };
 
@@ -55,7 +55,7 @@ export type AccountsState =
 export enum AccountsDispatchActionKind {
   CLOSE = "CLOSE",
   GO_HOME = "GO_HOME",
-  SELECT_AUTH_PROVDER = "SELECT_AUTH_PROVDER",
+  SELECT_AUTH_PROVIDER = "SELECT_AUTH_PROVIDER",
   SETUP_GITHUB_TOKEN = "SETUP_GITHUB_TOKEN",
 }
 
@@ -67,13 +67,13 @@ export type AccountsDispatchAction =
       kind: AccountsDispatchActionKind.GO_HOME;
     }
   | {
-      kind: AccountsDispatchActionKind.SELECT_AUTH_PROVDER;
+      kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_GITHUB_TOKEN;
       selectedAuthProvider: GitAuthProvider;
-      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVDER | AccountsDispatchActionKind.GO_HOME;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     };
 
@@ -100,7 +100,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             section: AccountsSection.HOME,
             selectedAuthProvider: undefined,
           };
-        case AccountsDispatchActionKind.SELECT_AUTH_PROVDER:
+        case AccountsDispatchActionKind.SELECT_AUTH_PROVIDER:
           return {
             section: AccountsSection.CONNECT_TO_NEW_ACC,
             selectedAuthProvider: undefined,

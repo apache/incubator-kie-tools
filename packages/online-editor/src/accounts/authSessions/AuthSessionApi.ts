@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-export const AUTH_SESSION_NONE: AuthSession = {
+export const AUTH_SESSION_NONE = {
   id: "none",
   name: "Unauthenticated",
   type: "none",
   login: "Unauthenticated",
-};
+} as const;
+
+export type NoneAuthSession = typeof AUTH_SESSION_NONE;
 
 export type GitAuthSession = {
   type: "git";
@@ -36,12 +38,5 @@ export enum AuthSessionStatus {
   VALID,
   INVALID,
 }
-
-export type NoneAuthSession = {
-  type: "none";
-  name: "Unauthenticated";
-  id: "none";
-  login: "Unauthenticated";
-};
 
 export type AuthSession = GitAuthSession | NoneAuthSession;

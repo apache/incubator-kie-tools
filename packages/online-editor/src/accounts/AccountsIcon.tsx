@@ -99,7 +99,7 @@ export function AccountsIcon() {
                         <Button
                           icon={<PlusIcon />}
                           variant={ButtonVariant.link}
-                          onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVDER })}
+                          onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER })}
                         >
                           Add
                         </Button>
@@ -175,7 +175,7 @@ export function AccountsIcon() {
                   </>
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_NEW_ACC && (
-                  <AuthProvidersGallery backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVDER} />
+                  <AuthProvidersGallery backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER} />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC && (
                   <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />

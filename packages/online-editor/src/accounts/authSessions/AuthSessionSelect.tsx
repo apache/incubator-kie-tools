@@ -172,7 +172,7 @@ export function AuthSessionSelect(props: {
             icon={<PlusIcon />}
             onClick={() =>
               accountsDispatch({
-                kind: AccountsDispatchActionKind.SELECT_AUTH_PROVDER,
+                kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
                 onNewAuthSession: (newAuthSession) => props.setAuthSessionId(newAuthSession.id),
               })
             }
