@@ -5791,10 +5791,13 @@ importers:
       vscode-languageserver-types: ^3.16.0
       yaml-language-server: ^1.10.0
     dependencies:
+      esbuild: 0.15.13
       path-browserify: 1.0.1
+      vscode-json-languageservice: 4.2.1
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.17.2
+      yaml-language-server: 1.10.0
     devDependencies:
       "@babel/core": 7.16.12
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
@@ -5802,15 +5805,12 @@ importers:
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/jest": 26.0.23
-      esbuild: 0.15.13
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      vscode-json-languageservice: 4.2.1
-      yaml-language-server: 1.10.0
 
   packages/yard-editor:
     specifiers:
@@ -7956,7 +7956,6 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-loong64/0.15.13:
@@ -7966,7 +7965,6 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@eslint/eslintrc/0.4.1:
@@ -11645,7 +11643,7 @@ packages:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
       uri-js: 4.4.1
-    dev: true
+    dev: false
 
   /ajv/8.8.2:
     resolution:
@@ -16407,7 +16405,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-android-arm64/0.14.22:
@@ -16427,7 +16424,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-darwin-64/0.14.22:
@@ -16447,7 +16443,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-darwin-arm64/0.14.22:
@@ -16467,7 +16462,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-freebsd-64/0.14.22:
@@ -16487,7 +16481,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-freebsd-arm64/0.14.22:
@@ -16507,7 +16500,6 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-32/0.14.22:
@@ -16527,7 +16519,6 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-64/0.14.22:
@@ -16547,7 +16538,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-arm/0.14.22:
@@ -16567,7 +16557,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-arm64/0.14.22:
@@ -16587,7 +16576,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-mips64le/0.14.22:
@@ -16607,7 +16595,6 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-ppc64le/0.14.22:
@@ -16627,7 +16614,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-riscv64/0.14.22:
@@ -16647,7 +16633,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-linux-s390x/0.14.22:
@@ -16667,7 +16652,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-netbsd-64/0.14.22:
@@ -16687,7 +16671,6 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-openbsd-64/0.14.22:
@@ -16707,7 +16690,6 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-sunos-64/0.14.22:
@@ -16727,7 +16709,6 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-wasm/0.14.22:
@@ -16754,7 +16735,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-windows-64/0.14.22:
@@ -16774,7 +16754,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild-windows-arm64/0.14.22:
@@ -16794,7 +16773,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /esbuild/0.14.22:
@@ -16855,7 +16833,6 @@ packages:
       esbuild-windows-32: 0.15.13
       esbuild-windows-64: 0.15.13
       esbuild-windows-arm64: 0.15.13
-    dev: true
 
   /escalade/3.1.1:
     resolution:
@@ -23890,7 +23867,7 @@ packages:
     engines: { node: ">=10.13.0" }
     hasBin: true
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /prettier/2.3.0:
@@ -24969,7 +24946,7 @@ packages:
   /request-light/0.5.8:
     resolution:
       { integrity: sha512-3Zjgh+8b5fhRJBQZoy+zbVKpAQGLyka0MPgW3zruTF4dFFJ8Fqcfu9YsAvi/rvdcaTeWG3MkbZv4WKxAn/84Lg== }
-    dev: true
+    dev: false
 
   /request-progress/3.0.0:
     resolution:
@@ -28132,7 +28109,7 @@ packages:
       vscode-languageserver-types: 3.17.2
       vscode-nls: 5.2.0
       vscode-uri: 3.0.6
-    dev: true
+    dev: false
 
   /vscode-json-languageservice/4.2.1:
     resolution:
@@ -28148,6 +28125,7 @@ packages:
     resolution:
       { integrity: sha512-wnJA4BnEjOSyFMvjZdpiOwhSq9uDoK8e/kpRJDTaMYzwlkrhG1fwDIZI94CLsLzlCK5cIbMMtFlJlfR57Lavmg== }
     engines: { node: ">=8.0.0 || >=10.0.0" }
+    dev: false
 
   /vscode-languageserver-protocol/3.16.0:
     resolution:
@@ -28155,6 +28133,7 @@ packages:
     dependencies:
       vscode-jsonrpc: 6.0.0
       vscode-languageserver-types: 3.16.0
+    dev: false
 
   /vscode-languageserver-textdocument/1.0.4:
     resolution:
@@ -28178,6 +28157,7 @@ packages:
     hasBin: true
     dependencies:
       vscode-languageserver-protocol: 3.16.0
+    dev: false
 
   /vscode-nls/5.2.0:
     resolution:
@@ -28994,7 +28974,7 @@ packages:
       yaml: 2.0.0-11
     optionalDependencies:
       prettier: 2.0.5
-    dev: true
+    dev: false
 
   /yaml/1.10.2:
     resolution:
@@ -29006,7 +28986,7 @@ packages:
     resolution:
       { integrity: sha512-5kGSQrzDyjCk0BLuFfjkoUE9vYcoyrwZIZ+GnpOSM9vhkvPjItYiWJ1jpRSo0aU4QmsoNrFwDT4O7XS2UGcBQg== }
     engines: { node: ">= 12" }
-    dev: true
+    dev: false
 
   /yaml/2.0.1:
     resolution:
