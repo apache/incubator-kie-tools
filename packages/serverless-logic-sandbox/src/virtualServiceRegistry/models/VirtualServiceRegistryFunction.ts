@@ -20,7 +20,6 @@ import { generateOpenApiSpec } from "./BaseOpenApiSpec";
 import * as yaml from "yaml";
 import { toWorkspaceIdFromVsrFunctionPath } from "../VirtualServiceRegistryPathConverter";
 import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../VirtualServiceRegistryConstants";
-import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 export class VirtualServiceRegistryFunction {
   constructor(private readonly file: WorkspaceFile) {}
@@ -36,6 +35,10 @@ export class VirtualServiceRegistryFunction {
     }
 
     const content = await this.file.getFileContentsAsString();
+    if (!content) {
+      return;
+    }
+
     if (isSpec(this.relativePath)) {
       return content;
     }
