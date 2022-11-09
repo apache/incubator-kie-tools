@@ -146,7 +146,7 @@ export class SwfYamlLanguageService {
     if (loadErrors.length > 0) {
       const error = loadErrors[0];
       const position = Position.create(error.mark.line, error.mark.column);
-      // show only the first error because syntax erorrs are repeated for each line, after the error.
+      // show only the first error because syntax errors are repeated for each line, after the error.
       return [
         {
           message: error.message,
