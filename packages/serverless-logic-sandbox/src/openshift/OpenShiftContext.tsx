@@ -17,10 +17,10 @@
 import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
+import { WebToolsOpenShiftDeployedModel } from "./WebToolsOpenShiftService";
 
 export interface OpenShiftContextType {
-  deployments: OpenShiftDeployedModel[];
+  deployments: WebToolsOpenShiftDeployedModel[];
 
   isDeployDropdownOpen: boolean;
   setDeployDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;

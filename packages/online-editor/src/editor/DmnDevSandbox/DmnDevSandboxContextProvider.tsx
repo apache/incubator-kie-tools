@@ -19,11 +19,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
+import { KieSandboxOpenShiftDeployedModel } from "../../openshift/KieSandboxOpenShiftService";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
+import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
@@ -43,7 +43,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
-  const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
+  const [deployments, setDeployments] = useState([] as KieSandboxOpenShiftDeployedModel[]);
 
   const onDisconnect = useCallback(
     (closeModals: boolean) => {
@@ -62,7 +62,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
     async (workspaceFile: WorkspaceFile) => {
       if (
         !(
-          isConfigValid(settings.openshift.config) &&
+          isOpenShiftConnectionValid(settings.openshift.config) &&
           (await settingsDispatch.openshift.service.isConnectionEstablished(settings.openshift.config))
         )
       ) {
@@ -84,7 +84,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
           targetFilePath: workspaceFile.relativePath,
           workspaceName,
           workspaceZipBlob: zipBlob,
-          config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>
             routes.import.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
@@ -107,7 +106,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
       return;
     }
 
-    if (!isConfigValid(settings.openshift.config)) {
+    if (!isOpenShiftConnectionValid(settings.openshift.config)) {
       if (deployments.length > 0) {
         setDeployments([]);
       }
@@ -121,7 +120,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-          return isConfigOk ? settingsDispatch.openshift.service.loadDeployments(settings.openshift.config) : [];
+          return isConfigOk ? settingsDispatch.openshift.service.loadDeployments() : [];
         })
         .then((deployments) => setDeployments(deployments))
         .catch((error) => console.error(error));
@@ -131,7 +130,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
         settingsDispatch.openshift.service
-          .loadDeployments(settings.openshift.config)
+          .loadDeployments()
           .then((deployments) => setDeployments(deployments))
           .catch((error) => {
             setDeployments([]);

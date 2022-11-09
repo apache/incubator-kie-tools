@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,4 @@
  * limitations under the License.
  */
 
-import { HttpMethod, ResourceFetch } from "./Resource";
-
-const API_ENDPOINT = "apis/project.openshift.io/v1";
-
-export class GetProject extends ResourceFetch {
-  protected method(): HttpMethod {
-    return "GET";
-  }
-
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
-  public name(): string {
-    return GetProject.name;
-  }
-
-  public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/projects/${this.args.namespace}`;
-  }
-}
+import "@testing-library/jest-dom";

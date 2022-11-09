@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-export enum OpenShiftDeployedModelState {
-  UP = "UP",
-  DOWN = "DOWN",
-  IN_PROGRESS = "IN_PROGRESS",
-  PREPARING = "PREPARING",
-  ERROR = "ERROR",
-}
+import { baseEndpoint, KubernetesApiVersions } from "../ApiConstants";
+import { HttpMethod } from "../../fetch/FetchConstants";
+import { ResourceFetch } from "../../fetch/ResourceFetch";
 
-export interface OpenShiftDeployedModel {
-  resourceName: string;
-  uri: string;
-  baseUrl: string;
-  creationTimestamp: Date;
-  state: OpenShiftDeployedModelState;
-  workspaceName: string;
+export class GetProject extends ResourceFetch {
+  public method(): HttpMethod {
+    return HttpMethod.GET;
+  }
+
+  public endpoint(): string {
+    return `/${baseEndpoint(KubernetesApiVersions.PROJECT)}/projects/${this.args.namespace}`;
+  }
 }

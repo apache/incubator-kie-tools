@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
+import { KieSandboxOpenShiftDeployedModel } from "../../openshift/KieSandboxOpenShiftService";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 export interface DeploymentFile {
@@ -25,11 +25,11 @@ export interface DeploymentFile {
 }
 
 export interface DmnDevSandboxContextType {
-  deployments: OpenShiftDeployedModel[];
+  deployments: KieSandboxOpenShiftDeployedModel[];
   isDropdownOpen: boolean;
   isDeploymentsDropdownOpen: boolean;
   isConfirmDeployModalOpen: boolean;
-  setDeployments: React.Dispatch<React.SetStateAction<OpenShiftDeployedModel[]>>;
+  setDeployments: React.Dispatch<React.SetStateAction<KieSandboxOpenShiftDeployedModel[]>>;
   setDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;

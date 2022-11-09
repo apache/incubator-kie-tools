@@ -78,7 +78,7 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
           className="pf-u-mb-md"
           variant="danger"
           title={
-            "Something went wrong while deploying. Check your OpenShift connection and resource limits, and try again."
+            "Something went wrong while creating the deployment resources. Check your OpenShift connection and resource limits, and then try again."
           }
           aria-live="polite"
           data-testid="alert-deploy-error"
@@ -126,6 +126,22 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
           title={"Your deployment is up and running."}
           aria-live="polite"
           data-testid="alert-upload-success"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const deployEndError = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="danger"
+          title={"Something went wrong while deploying. Check the logs on your OpenShift instance for more details."}
+          aria-live="polite"
+          data-testid="alert-deploy-end-error"
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
@@ -188,18 +204,24 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
       setDeployStartedSuccess.show();
 
       const fetchOpenApiTask = window.setInterval(async () => {
-        const success = await fetchOpenApiSpec(resourceName);
-        if (!success) {
-          return;
+        try {
+          const success = await fetchOpenApiSpec(resourceName);
+          if (!success) {
+            return;
+          }
+
+          setDeployStartedSuccess.close();
+          if (shouldUploadOpenApi) {
+            openApiUploadSuccess.show();
+          } else {
+            deployEndSuccess.show();
+          }
+        } catch (e) {
+          setDeployStartedSuccess.close();
+          deployEndError.show();
         }
 
         window.clearInterval(fetchOpenApiTask);
-        setDeployStartedSuccess.close();
-        if (shouldUploadOpenApi) {
-          openApiUploadSuccess.show();
-        } else {
-          deployEndSuccess.show();
-        }
       }, FETCH_OPEN_API_POLLING_TIME);
     } else {
       setDeployStartedError.show();
@@ -216,6 +238,7 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
     openApiUploadSuccess,
     deployEndSuccess,
     setDeployStartedError,
+    deployEndError,
   ]);
 
   const onCancel = useCallback(() => {

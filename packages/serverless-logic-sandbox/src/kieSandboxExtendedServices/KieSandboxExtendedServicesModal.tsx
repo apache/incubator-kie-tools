@@ -38,7 +38,7 @@ import { useAppI18n } from "../i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { DEVELOPER_SANDBOX_URL } from "../openshift/OpenShiftService";
+import { DEVELOPER_SANDBOX_URL } from "@kie-tools-core/openshift/dist/service/OpenShiftConstants";
 import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";

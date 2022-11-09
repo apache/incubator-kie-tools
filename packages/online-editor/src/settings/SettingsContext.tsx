@@ -19,9 +19,10 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../cookies";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
-import { OpenShiftSettingsConfig, readConfigCookie } from "../openshift/OpenShiftSettingsConfig";
+import { readConfigCookie } from "../openshift/OpenShiftSettingsConfig";
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
-import { OpenShiftService } from "../openshift/OpenShiftService";
+import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
@@ -51,7 +52,7 @@ export interface SettingsContextType {
   activeTab: SettingsTabs;
   openshift: {
     status: OpenShiftInstanceStatus;
-    config: OpenShiftSettingsConfig;
+    config: OpenShiftConnection;
   };
   kieSandboxExtendedServices: {
     config: ExtendedServicesConfig;
@@ -67,9 +68,9 @@ export interface SettingsDispatchContextType {
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
   openshift: {
-    service: OpenShiftService;
+    service: KieSandboxOpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
-    setConfig: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
+    setConfig: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
   };
   kieSandboxExtendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
@@ -129,8 +130,12 @@ export function SettingsContextProvider(props: any) {
   );
 
   const openshiftService = useMemo(
-    () => new OpenShiftService(`${kieSandboxExtendedServices.config.buildUrl()}/devsandbox`),
-    [kieSandboxExtendedServices.config]
+    () =>
+      new KieSandboxOpenShiftService({
+        connection: openshiftConfig,
+        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/devsandbox`,
+      }),
+    [openshiftConfig, kieSandboxExtendedServices.config]
   );
 
   const dispatch = useMemo(() => {

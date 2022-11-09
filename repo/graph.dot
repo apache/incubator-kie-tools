@@ -83,6 +83,7 @@ digraph G {
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools-core/openshift" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/workspaces-git-fs" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -257,6 +258,7 @@ digraph G {
   "@kie-tools-core/monaco-editor" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
+  "@kie-tools/online-editor" -> "@kie-tools-core/openshift" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
@@ -266,6 +268,9 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools/openjdk11-mvn-image" -> "@kie-tools/openjdk11-mvn-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/openjdk11-mvn-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools-core/openshift" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
+  "@kie-tools-core/openshift" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
+  "@kie-tools-core/openshift" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
@@ -280,6 +285,7 @@ digraph G {
   "@kie-tools-core/react-hooks" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
+  "@kie-tools/serverless-logic-sandbox" -> "@kie-tools-core/openshift" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];

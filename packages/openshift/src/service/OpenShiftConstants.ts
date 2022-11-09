@@ -14,30 +14,5 @@
  * limitations under the License.
  */
 
-import { HttpMethod, Resource, ResourceFetch } from "./Resource";
-
-const API_ENDPOINT = "apis/build.openshift.io/v1";
-
-export interface Build extends Resource {
-  status: {
-    phase: "New" | "Pending" | "Running" | "Complete" | "Failed" | "Error" | "Cancelled";
-  };
-}
-
-export interface Builds {
-  items: Build[];
-}
-
-export class ListBuilds extends ResourceFetch {
-  protected method(): HttpMethod {
-    return "GET";
-  }
-
-  public name(): string {
-    return ListBuilds.name;
-  }
-
-  public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/builds`;
-  }
-}
+export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
+export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
