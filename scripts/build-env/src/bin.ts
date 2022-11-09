@@ -58,7 +58,7 @@ async function requireEnv(curDir: string): Promise<EnvAndVarsWithName<any> | und
   const envPathCJSExist = fs.existsSync(envPathCJS);
   const envPath = envPathJSExist ? envPathJS : envPathCJS;
 
-  if (!envPathJSExist && !envPathCJS) {
+  if (!envPathJSExist && !envPathCJSExist) {
     // console.debug(logs.envNotFound(envPath));
     return undefined;
   }
