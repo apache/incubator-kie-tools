@@ -28,7 +28,7 @@ interface ServerlessWorkflowResources extends EditorResources {
 }
 
 export class ServerlessworkflowTextEditorResources extends BaseEditorResources {
-  private readonly JS_RESOURCES_EXPR = "(\\wmonaco-edito.*)(\\wjso|\\wyaml)";
+  private readonly JS_RESOURCES_EXPR = "(\\wmonaco-editor.*)(\\wjso|\\wyaml)";
   private readonly JS_WORKER_EXPR = ".worker.js";
 
   public get(args: { resourcesPathPrefix: string }) {

@@ -210,7 +210,6 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
           ref={iframeRef}
           id={"kogito-iframe"}
           data-testid={"kogito-iframe"}
-          src={envelopeMapping.envelopePath}
           title="Kogito editor"
           style={containerStyles}
           data-envelope-channel={props.channelType}
