@@ -116,10 +116,14 @@ public class EChartsDisplayerView<P extends EChartsDisplayer<?>>
                 .init(Js.cast(displayerPanel.getElement()),
                         theme,
                         initParams);
-        DomGlobal.window.onresize = e -> {
-            chart.resize();
-            return chart;
-        };
+        if (resizable) {
+            DomGlobal.window.onresize = e -> {
+                Scheduler.get().scheduleDeferred(() -> {
+                    chart.resize();
+                });
+                return chart;
+            };
+        }
 
     }
 

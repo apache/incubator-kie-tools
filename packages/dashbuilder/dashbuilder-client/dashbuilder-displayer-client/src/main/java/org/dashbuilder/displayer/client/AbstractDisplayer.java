@@ -60,6 +60,12 @@ import org.dashbuilder.displayer.client.formatter.ValueFormatter;
  */
 public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implements Displayer {
 
+    public static final String[] COLOR_PATTERN = {
+                                                  "#0088CE", "#CC0000", "#EC7A08", "#3F9C35", "#F0AB00", "#703FEC",
+                                                  "#007A87", "#92D400", "#35CAED",
+                                                  "#00659C", "#A30000", "#B35C00", "#B58100", "#6CA100", "#2D7623",
+                                                  "#005C66", "#008BAD", "#40199A"};
+
     public interface View extends IsWidget {
 
         void errorMissingSettings();
@@ -983,8 +989,13 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     }
 
     protected String evaluateValueToString(Object mightBeNull, ColumnSettings settings) {
-        String value = columnValueToString(mightBeNull);
-        return getEvaluator().evalExpression(value, settings.getValueExpression());
+        var value = columnValueToString(mightBeNull);
+        var expression = settings.getValueExpression();
+        if (expression != null && !expression.trim().isEmpty()) {
+            return getEvaluator().evalExpression(value, expression);
+        }
+
+        return value;
     }
 
     protected String columnValueToString(Object mightBeNull) {

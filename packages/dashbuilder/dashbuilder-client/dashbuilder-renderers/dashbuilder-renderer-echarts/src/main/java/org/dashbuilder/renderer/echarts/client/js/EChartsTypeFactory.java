@@ -85,6 +85,17 @@ public class EChartsTypeFactory {
         ECharts.Legend legend = Js.cast(new Object());
         return legend;
     }
+    
+    public ECharts.Tooltip newTooltip() {
+        ECharts.Tooltip tooltip = Js.cast(new Object());
+        return tooltip;
+    }
+    
+    public ECharts.Encode newEncode() {
+        ECharts.Encode encode = Js.cast(new Object());
+        return encode;
+    }
+
 
     public ECharts.Dataset newDataset() {
         ECharts.Dataset dataset = Js.cast(new Object());
@@ -101,9 +112,10 @@ public class EChartsTypeFactory {
                 return SeriesType.line;
             case PIECHART:
                 return SeriesType.pie;
+            case METERCHART:
+                return SeriesType.gauge;
             case BUBBLECHART:
             case MAP:
-            case METERCHART:
             case METRIC:
             case SELECTOR:
             case TABLE:

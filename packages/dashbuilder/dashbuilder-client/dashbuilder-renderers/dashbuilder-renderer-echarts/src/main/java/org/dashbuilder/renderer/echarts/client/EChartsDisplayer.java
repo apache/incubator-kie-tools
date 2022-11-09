@@ -18,6 +18,7 @@ package org.dashbuilder.renderer.echarts.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
@@ -28,7 +29,7 @@ import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Option;
-import org.dashbuilder.renderer.echarts.client.js.ECharts.Series;
+import org.dashbuilder.renderer.echarts.client.js.ECharts.ValueFormatterCallback;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.XAxisType;
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 
@@ -147,7 +148,18 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         for (var i = 0; i < dataSet.getRowCount(); i++) {
             source[i] = new String[columns.size()];
             for (int j = 0; j < columns.size(); j++) {
-                source[i][j] = dataSet.getValueAt(i, j);
+                var column = columns.get(j);
+                if (column.getColumnType() != ColumnType.NUMBER) {
+                    source[i][j] = super.formatValue(i, j);
+                } else {
+                    var settings = displayerSettings.getColumnSettings(column);
+                    var value = super.evaluateValueToString(dataSet.getValueAt(i, j), settings);
+                    try {                        
+                        source[i][j] = Double.parseDouble(value);
+                    } catch (Exception e) {
+                        source[i][j] = value;
+                    }
+                }
             }
         }
         echartsDataSet.setDimensions(dimensions);
@@ -157,23 +169,22 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
 
     void updateVisualizationWithData() {
         var option = echartsFactory.newOption();
-        var series = echartsFactory.newSeries();
         var title = echartsFactory.newTitle();
-        var grid = echartsFactory.newGrid();
         var legend = echartsFactory.newLegend();
+        var tooltip = echartsFactory.newTooltip();
+
         var width = displayerSettings.getChartWidth();
         var height = displayerSettings.getChartHeight();
+
         var echartsDataSet = buildDataSet();
         var bgColor = displayerSettings.getChartBackgroundColor();
-        var type = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
 
         title.setText(displayerSettings.getTitle());
+        title.setLeft("center");
         title.setShow(displayerSettings.isTitleVisible());
 
-        series.setType(type);
-
         legend.setShow(displayerSettings.isChartShowLegend());
-        switch(displayerSettings.getChartLegendPosition()) {
+        switch (displayerSettings.getChartLegendPosition()) {
             case BOTTOM:
                 legend.setTop("bottom");
                 legend.setLeft("center");
@@ -192,7 +203,140 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
                 legend.setTop("top");
                 legend.setLeft("center");
                 break;
+        }
+
+        if (bgColor != null && !bgColor.isEmpty()) {
+            option.setBackgroundColor(bgColor);
+        }
+
+        if (displayerSettings.isZoomEnabled()) {
+            option.setDataZoom(echartsFactory.newDataZoom());
+        }
+
+        if (isXYChart()) {
+            setupXYChart(option);
+        } else {
+            setupOtherCharts(option);
+
+        }
+
+        tooltip.setValueFormatter(buildNumberLabelFormatterForColumn(1));
+
+        option.setColor(COLOR_PATTERN);
+        option.setTooltip(tooltip);
+        option.setDataset(echartsDataSet);
+        option.setTitle(title);
+        option.setLegend(legend);
+
+        view.setSize(width, height, displayerSettings.isResizable());
+        view.applyOption(option);
+
+    }
+
+    private ValueFormatterCallback buildNumberLabelFormatterForColumn(int i) {
+        return value -> {
+            if (dataSet.getColumns().size() > i) {
+                var column = dataSet.getColumns().get(i);
+                if (column.getColumnType() == ColumnType.NUMBER) {
+                    var settings = displayerSettings.getColumnSettings(column);
+                    try {
+                        return getFormatter().formatNumber(settings.getValuePattern(),
+                                Double.parseDouble(value.toString()));
+                    } catch (NumberFormatException e) {
+                        DomGlobal.console.log("Error formatting value: " + e.getMessage());
+                        DomGlobal.console.debug(e);
+                    }
+                }
+            }
+            return value;
         };
+    }
+
+    private boolean isXYChart() {
+        return displayerSettings.getType() == DisplayerType.LINECHART ||
+               displayerSettings.getType() == DisplayerType.BARCHART ||
+               displayerSettings.getType() == DisplayerType.AREACHART ||
+               displayerSettings.getType() == DisplayerType.BUBBLECHART;
+    }
+
+    private void setupXYChart(ECharts.Option option) {
+        var type = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
+
+        // XY charts setup
+        var xAxis = echartsFactory.newXAxis();
+        var yAxis = echartsFactory.newYAxis();
+        var axisLabelX = echartsFactory.newAxisLabel();
+        var axisLabelY = echartsFactory.newAxisLabel();
+
+        // XY Grid
+        var grid = echartsFactory.newGrid();
+
+        var splitLineX = echartsFactory.newSplitLine();
+        var splitLineY = echartsFactory.newSplitLine();
+        var subType = displayerSettings.getSubtype();
+        boolean isBar = subType != null && (subType == DisplayerSubType.BAR || subType == DisplayerSubType.BAR_STACKED);
+        var isStack = subType != null && (subType == DisplayerSubType.BAR_STACKED ||
+                                          subType == DisplayerSubType.AREA_STACKED);
+
+        if (!isBar) {
+            axisLabelX.setInterval(0);
+        }
+        axisLabelX.setRotate(displayerSettings.getXAxisLabelsAngle());
+        splitLineX.setShow(displayerSettings.isGridXOn(true));
+        axisLabelX.setShow(displayerSettings.isXAxisShowLabels());
+        // must format columns 0 if number
+        axisLabelX.setFormatter(buildNumberLabelFormatterForColumn(0));
+        xAxis.setSplitLine(splitLineX);
+        xAxis.setName(displayerSettings.getXAxisTitle());
+        xAxis.setAxisLabel(axisLabelX);
+        xAxis.setType(isBar ? XAxisType.value.name() : XAxisType.category.name());
+
+        axisLabelY.setShow(displayerSettings.isYAxisShowLabels());
+        splitLineY.setShow(displayerSettings.isGridYOn(true));
+        axisLabelY.setFormatter(buildNumberLabelFormatterForColumn(1));
+        yAxis.setSplitLine(splitLineY);
+        yAxis.setName(displayerSettings.getYAxisTitle());
+        yAxis.setAxisLabel(axisLabelY);
+        yAxis.setType(isBar ? XAxisType.category.name() : XAxisType.value.name());
+
+        // perhaps only do this for XY subtypes
+        var nColumns = dataSet.getColumns().size();
+        var allSeries = new ECharts.Series[nColumns - 1];
+        if (nColumns > 0) {
+            var catColumn = displayerSettings.getColumnSettings(dataSet.getColumnByIndex(0)).getColumnName();
+            for (int i = 1; i < nColumns; i++) {
+                var series = echartsFactory.newSeries();
+                var encode = echartsFactory.newEncode();
+                var column = dataSet.getColumnByIndex(i);
+                var settings = displayerSettings.getColumnSettings(column);
+                var seriesColumn = settings.getColumnName();
+
+                if (displayerSettings.getType() == DisplayerType.AREACHART) {
+                    series.setAreaStyle(echartsFactory.newAreaStyle());
+                }
+
+                if (displayerSettings.getSubtype() == DisplayerSubType.SMOOTH) {
+                    series.setSmooth(true);
+                }
+                if (isBar) {
+                    encode.setX(seriesColumn);
+                    encode.setY(catColumn);
+                } else {
+                    encode.setX(catColumn);
+                    encode.setY(seriesColumn);
+                }
+
+                if (isStack) {
+                    series.setStack(catColumn);
+                }
+
+                series.setName(seriesColumn);
+                series.setEncode(encode);
+                series.setType(type);
+
+                allSeries[i - 1] = series;
+            }
+        }
 
         if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_BOTTOM)) {
             grid.setBottom(displayerSettings.getChartMarginBottom());
@@ -206,81 +350,37 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_RIGHT)) {
             grid.setRight(displayerSettings.getChartMarginRight());
         }
-        
-        option.setSeries(series);
-        option.setDataset(echartsDataSet);
-        option.setTitle(title);
-        option.setLegend(legend);
+
         option.setGrid(grid);
-
-        if (bgColor != null) {
-            option.setBackgroundColor(bgColor);
-        }
-
-        if (displayerSettings.isZoomEnabled()) {
-            option.setDataZoom(echartsFactory.newDataZoom());
-        }
-
-        if (isXYChart()) {
-            setupXYChart(option, series);
-        }
-
-        view.setSize(width, height, displayerSettings.isResizable());
-        view.applyOption(option);
-
-    }
-
-    private boolean isXYChart() {
-        return displayerSettings.getType() == DisplayerType.LINECHART ||
-               displayerSettings.getType() == DisplayerType.BARCHART ||
-               displayerSettings.getType() == DisplayerType.AREACHART ||
-               displayerSettings.getType() == DisplayerType.BUBBLECHART;
-    }
-
-    private void setupXYChart(ECharts.Option option, Series series) {
-        // XY charts setup
-        var xAxis = echartsFactory.newXAxis();
-        var yAxis = echartsFactory.newYAxis();
-        var axisLabelX = echartsFactory.newAxisLabel();
-        var axisLabelY = echartsFactory.newAxisLabel();
-        
-
-        var splitLineX = echartsFactory.newSplitLine();
-        var splitLineY = echartsFactory.newSplitLine();
-
-        axisLabelX.setInterval(0);
-        axisLabelX.setRotate(displayerSettings.getXAxisLabelsAngle());
-        splitLineX.setShow(displayerSettings.isGridXOn(true));
-        axisLabelX.setShow(displayerSettings.isXAxisShowLabels());
-        xAxis.setSplitLine(splitLineX);
-        xAxis.setName(displayerSettings.getXAxisTitle());
-        xAxis.setAxisLabel(axisLabelX);
-        xAxis.setType(XAxisType.category.name());
-
-        axisLabelY.setShow(displayerSettings.isYAxisShowLabels());
-        splitLineY.setShow(displayerSettings.isGridYOn(true));
-        yAxis.setSplitLine(splitLineY);
-        yAxis.setName(displayerSettings.getYAxisTitle());
-        yAxis.setAxisLabel(axisLabelY);
-
         option.setXAxis(xAxis);
         option.setYAxis(yAxis);
-
-        if (displayerSettings.getType() == DisplayerType.AREACHART) {
-            series.setAreaStyle(echartsFactory.newAreaStyle());
-        }
-
-        if (displayerSettings.getSubtype() == DisplayerSubType.SMOOTH) {
-            series.setSmooth(true);
-        }
-
-        // perhaps only do this for XY subtypes
-        var nSeries = dataSet.getColumns().size() - 1;
-        var allSeries = new ECharts.Series[nSeries];
-        for (int i = 0; i < nSeries; i++) {
-            allSeries[i] = series;
-        }
         option.setSeries(allSeries);
+    }
+
+    private void setupOtherCharts(Option option) {
+        var series = echartsFactory.newSeries();
+        var type = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
+        series.setType(type);
+
+        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_BOTTOM)) {
+            series.setBottom(displayerSettings.getChartMarginBottom());
+        }
+        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_TOP)) {
+            series.setTop(displayerSettings.getChartMarginTop());
+        }
+        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_LEFT)) {
+            series.setLeft(displayerSettings.getChartMarginLeft());
+        }
+        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_RIGHT)) {
+            series.setRight(displayerSettings.getChartMarginRight());
+        }
+
+        if (displayerSettings.getSubtype() == DisplayerSubType.DONUT) {
+            var radius = new String[]{};
+            series.setRadius(radius);
+        }
+        option.setSeries(series);
+
     }
 
 }

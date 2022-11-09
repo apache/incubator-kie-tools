@@ -74,10 +74,8 @@ public class C3BubbleChartDisplayer extends C3XYDisplayer<C3BubbleChartDisplayer
     @Override
     public DisplayerConstraints createDisplayerConstraints() {
         DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setGroupRequired(true)
-                .setGroupColumn(true)
                 .setMaxColumns(5)
-                .setMinColumns(5)
+                .setMinColumns(2)
                 .setExtraColumnsAllowed(false)
                 .setGroupsTitle(view.getGroupsTitle())
                 .setColumnsTitle(view.getColumnsTitle())

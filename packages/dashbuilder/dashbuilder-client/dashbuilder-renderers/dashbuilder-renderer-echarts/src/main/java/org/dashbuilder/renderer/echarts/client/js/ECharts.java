@@ -16,6 +16,7 @@
 package org.dashbuilder.renderer.echarts.client.js;
 
 import elemental2.dom.HTMLElement;
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -87,6 +88,9 @@ public interface ECharts {
         @JsProperty
         public native void setLegend(Legend legend);
 
+        @JsProperty
+        public native void setColor(String[] colors);
+
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -106,6 +110,9 @@ public interface ECharts {
 
         @JsProperty
         public native void setText(String title);
+
+        @JsProperty
+        public native void setLeft(String left);
 
         @JsProperty
         public native void setShow(boolean show);
@@ -157,12 +164,15 @@ public interface ECharts {
 
         @JsProperty
         public native void setSplitLine(SplitLine splitLine);
-        
+
         @JsProperty
         public native void setAxisLabel(AxisLabel axisLabel);
-        
+
         @JsProperty
         public native void setName(String name);
+
+        @JsProperty
+        public native void setType(String xAxisType);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -172,9 +182,6 @@ public interface ECharts {
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class XAxis extends Axis {
-
-        @JsProperty
-        public native void setType(String xAxisType);
 
     }
 
@@ -186,10 +193,12 @@ public interface ECharts {
 
         @JsProperty
         public native void setRotate(int rotate);
-        
-        
+
         @JsProperty
         public native void setShow(boolean show);
+
+        @JsProperty
+        public native void setFormatter(ValueFormatterCallback valueFormatter);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -197,6 +206,9 @@ public interface ECharts {
 
         @JsProperty
         public native void setType(String seriesType);
+        
+        @JsProperty
+        public native void setName(String name);
 
         @JsProperty
         public native void setAreaStyle(AreaStyle areaStyle);
@@ -204,10 +216,52 @@ public interface ECharts {
         @JsProperty
         public native void setSmooth(boolean smooth);
 
+        @JsProperty
+        public native void setRadius(String[] radius);
+
+        @JsProperty
+        public native void setLeft(int left);
+
+        @JsProperty
+        public native void setTop(int top);
+
+        @JsProperty
+        public native void setBottom(int bottom);
+
+        @JsProperty
+        public native void setRight(int right);
+
+        @JsProperty
+        public native void setEncode(Encode encode);
+        
+        @JsProperty
+        public native void setStack(String stackType);
+
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class Encode {
+
+        @JsProperty
+        public native void setX(String x);
+
+        @JsProperty
+        public native void setY(String y);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class Tooltip {
+
+        @JsProperty
+        public native void setValueFormatter(ValueFormatterCallback callback);
+
+    }
+
+    @JsFunction
+    @FunctionalInterface
+    interface ValueFormatterCallback {
+
+        Object execute(Object object);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -226,14 +280,15 @@ public interface ECharts {
     public enum SeriesType {
         bar,
         line,
-        pie;
+        pie,
+        gauge;
 
     }
 
     public enum XAxisType {
-        category;
-
-    }
+        category,
+        value;
+    }    
 
     public class Builder {
 

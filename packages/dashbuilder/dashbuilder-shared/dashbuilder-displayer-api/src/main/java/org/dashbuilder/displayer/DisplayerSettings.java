@@ -284,7 +284,7 @@ public class DisplayerSettings {
     }
 
     public DisplayerSubType getSubtype() {
-        String strSubtype = settings.get(getSettingPath(DisplayerAttributeDef.SUBTYPE));
+        var strSubtype = settings.get(getSettingPath(DisplayerAttributeDef.SUBTYPE));
         return DisplayerSubType.getByName(strSubtype);
     }
 
@@ -505,7 +505,7 @@ public class DisplayerSettings {
     }
 
     public boolean isChartShowLegend() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.CHART_SHOWLEGEND)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.CHART_SHOWLEGEND)), true);
     }
 
     public void setChartShowLegend(boolean chartShowLegend) {
