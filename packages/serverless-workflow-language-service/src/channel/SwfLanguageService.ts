@@ -22,7 +22,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
-import { TextDocument } from "vscode-json-languageservice";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import { findNodesAtLocation } from "./findNodesAtLocation";
