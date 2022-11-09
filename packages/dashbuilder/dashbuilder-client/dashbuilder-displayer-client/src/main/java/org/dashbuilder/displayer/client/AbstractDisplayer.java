@@ -102,14 +102,13 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         String evalExpression(String value, String expression);
     }
 
-
     protected DataSet dataSet;
     protected DataSetHandler dataSetHandler;
     protected DisplayerSettings displayerSettings;
     protected DisplayerConstraints displayerConstraints;
     protected List<DisplayerListener> listenerList = new ArrayList<>();
-    protected Map<String,List<Interval>> columnSelectionMap = new HashMap<>();
-    protected Map<String,ValueFormatter> formatterMap = new HashMap<>();
+    protected Map<String, List<Interval>> columnSelectionMap = new HashMap<>();
+    protected Map<String, ValueFormatter> formatterMap = new HashMap<>();
     protected Formatter formatter = null;
     protected ExpressionEval evaluator = null;
     protected DataSetFilter currentFilter = null;
@@ -218,7 +217,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         id = displayerSettings.getTitle();
         if (!StringUtils.isBlank(id)) {
             int hash = id.hashCode();
-            return Integer.toString(hash < 0 ? hash*-1 : hash);
+            return Integer.toString(hash < 0 ? hash * -1 : hash);
         }
         return null;
     }
@@ -229,7 +228,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     public boolean isDrawn() {
         return drawn;
     }
-    
+
     /**
      * Draw the displayer by executing first the lookup call to retrieve the target data set
      */
@@ -237,11 +236,9 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     public void draw() {
         if (displayerSettings == null) {
             getView().errorMissingSettings();
-        }
-        else if (dataSetHandler == null) {
+        } else if (dataSetHandler == null) {
             getView().errorMissingHandler();
-        }
-        else if (!isDrawn()) {
+        } else if (!isDrawn()) {
             try {
                 drawn = true;
                 getView().showLoading();
@@ -249,6 +246,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                 beforeLoad();
                 beforeDataSetLookup();
                 dataSetHandler.lookupDataSet(new DataSetReadyCallback() {
+
                     public void callback(DataSet result) {
                         try {
                             dataSet = result;
@@ -270,6 +268,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                             showError(new ClientRuntimeError(e));
                         }
                     }
+
                     public void notFound() {
                         getView().errorDataSetNotFound(displayerSettings.getDataSetLookup().getDataSetUUID());
                     }
@@ -298,6 +297,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                 beforeLoad();
                 beforeDataSetLookup();
                 dataSetHandler.lookupDataSet(new DataSetReadyCallback() {
+
                     public void callback(DataSet result) {
                         try {
                             dataSet = result;
@@ -311,6 +311,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                             showError(new ClientRuntimeError(e));
                         }
                     }
+
                     public void notFound() {
                         String uuid = displayerSettings.getDataSetLookup().getDataSetUUID();
                         getView().errorDataSetNotFound(uuid);
@@ -330,7 +331,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
             }
         }
     }
-    
+
     private void requestDraw() {
         drawn = false;
     }
@@ -354,14 +355,12 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     /**
      * Call back method invoked just before the data set lookup is executed.
      */
-    protected void beforeDataSetLookup() {
-    }
+    protected void beforeDataSetLookup() {}
 
     /**
      * Call back method invoked just after the data set lookup is executed.
      */
-    protected void afterDataSetLookup(DataSet dataSet) {
-    }
+    protected void afterDataSetLookup(DataSet dataSet) {}
 
     // REFRESH TIMER
 
@@ -433,6 +432,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     public void handleError(final String message, final Throwable error) {
         handleError(new ClientRuntimeError(message, error));
     }
+
     public void handleError(final Throwable error) {
         handleError(new ClientRuntimeError(error));
     }
@@ -616,8 +616,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                 selectedIntervals.remove(intervalFiltered);
                 if (!selectedIntervals.isEmpty()) {
                     filterApply(columnId, selectedIntervals);
-                }
-                else {
+                } else {
                     filterReset(columnId);
                 }
             }
@@ -811,7 +810,6 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         dataSetHandler.sort(columnId, sortOrder);
     }
 
-
     // DATA FORMATTING
 
     public String formatInterval(Interval interval, DataColumn column) {
@@ -822,12 +820,15 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         }
         // Date interval
         String type = interval.getType();
-        if (StringUtils.isBlank(type)) type = column.getIntervalType();
-        if (StringUtils.isBlank(type)) type = column.getColumnGroup().getIntervalSize();
+        if (StringUtils.isBlank(type))
+            type = column.getIntervalType();
+        if (StringUtils.isBlank(type))
+            type = column.getColumnGroup().getIntervalSize();
         DateIntervalType intervalType = DateIntervalType.getByName(type);
         if (intervalType != null) {
             ColumnSettings columnSettings = displayerSettings.getColumnSettings(column.getId());
-            String pattern = columnSettings != null ? columnSettings.getValuePattern() : ColumnSettings.getDatePattern(intervalType);
+            String pattern = columnSettings != null ? columnSettings.getValuePattern() : ColumnSettings.getDatePattern(
+                    intervalType);
             String expression = columnSettings != null ? columnSettings.getValueExpression() : null;
 
             if (pattern == null) {
@@ -844,7 +845,8 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         // Label interval
         ColumnSettings columnSettings = displayerSettings.getColumnSettings(column);
         String expression = columnSettings.getValueExpression();
-        if (StringUtils.isBlank(expression)) return interval.getName();
+        if (StringUtils.isBlank(expression))
+            return interval.getName();
         return getEvaluator().evalExpression(interval.getName(), expression);
     }
 
@@ -896,8 +898,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
             if (ColumnType.DATE.equals(columnType)) {
                 Date d = (Date) value;
                 return getFormatter().formatDate(pattern, d);
-            }
-            else if (ColumnType.NUMBER.equals(columnType)) {
+            } else if (ColumnType.NUMBER.equals(columnType)) {
                 OptionalDouble od = OptionalDouble.empty();
                 if (value instanceof Number) {
                     od = OptionalDouble.of(((Number) value).doubleValue());
@@ -911,8 +912,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                     }
                 }
                 return getFormatter().formatNumber(pattern, od.getAsDouble());
-            }
-            else {
+            } else {
                 if (StringUtils.isBlank(expression)) {
                     return value.toString();
                 }
@@ -923,11 +923,16 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
 
     // DATE FORMATTING
 
-    protected String formatDate(DateIntervalType type, GroupStrategy strategy, String date, String pattern, String expression) {
+    protected String formatDate(DateIntervalType type,
+                                GroupStrategy strategy,
+                                String date,
+                                String pattern,
+                                String expression) {
         if (date == null) {
             return null;
         }
-        String str = GroupStrategy.FIXED.equals(strategy) ? formatDateFixed(type, date) : formatDateDynamic(type, date, pattern);
+        String str = GroupStrategy.FIXED.equals(strategy) ? formatDateFixed(type, date) : formatDateDynamic(type, date,
+                pattern);
         if (StringUtils.isBlank(expression)) {
             return str;
         }
@@ -970,9 +975,19 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         if (dataSetHandler == null) {
             callback.noData();
         } else {
-            Map<String,String> columnNameMap = new HashMap<>();
-            displayerSettings.getColumnSettingsList().forEach(cs -> columnNameMap.put(cs.getColumnId(), cs.getColumnName()));
+            Map<String, String> columnNameMap = new HashMap<>();
+            displayerSettings.getColumnSettingsList().forEach(cs -> columnNameMap.put(cs.getColumnId(), cs
+                    .getColumnName()));
             dataSetHandler.exportCurrentDataSetLookup(format, maxRows, callback, columnNameMap);
         }
+    }
+
+    protected String evaluateValueToString(Object mightBeNull, ColumnSettings settings) {
+        String value = columnValueToString(mightBeNull);
+        return getEvaluator().evalExpression(value, settings.getValueExpression());
+    }
+
+    protected String columnValueToString(Object mightBeNull) {
+        return mightBeNull == null ? "" : mightBeNull.toString();
     }
 }

@@ -576,7 +576,7 @@ public class DisplayerSettings {
     }
 
     public boolean isXAxisShowLabels() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.XAXIS_SHOWLABELS)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.XAXIS_SHOWLABELS)), true);
     }
 
     public void setXAxisShowLabels(boolean axisShowLabels) {
@@ -600,7 +600,7 @@ public class DisplayerSettings {
     }
 
     public boolean isYAxisShowLabels() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.YAXIS_SHOWLABELS)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.YAXIS_SHOWLABELS)), true);
     }
 
     public void setYAxisShowLabels(boolean axisShowLabels) {
@@ -689,6 +689,11 @@ public class DisplayerSettings {
 
     public void setMapColorScheme(MapColorScheme colorScheme) {
         settings.put(getSettingPath(DisplayerAttributeDef.MAP_COLOR_SCHEME), colorScheme.toString());
+
+    }
+
+    public boolean isAttributeDefinedByUser(DisplayerAttributeDef attr) {
+        return settings.get(getSettingPath(attr)) != null;
 
     }
 

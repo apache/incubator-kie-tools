@@ -27,6 +27,8 @@ export function FilteredTableComponent(props: Props) {
   const [dataset, setDataset] = useState<DataSet>();
   const [filterColumn, setFilterColumn] = useState(0);
   const [selectable, setSelectable] = useState<boolean>(false);
+  const [hideHeader, setHideHeader] = useState<boolean>(false);
+  const [linkTargetSelf, setLinkTargetSelf] = useState<boolean>(false);
   const [linkColumn, setLinkColumn] = useState<LinkColumn | undefined>();
   const alerts = useMemo(() => new Map<number, Alert>(), []);
 
@@ -36,10 +38,15 @@ export function FilteredTableComponent(props: Props) {
       const selectableParam = params.get("selectable") === "true";
       const filterColumnParam = +params.get("filterColumn") || 0;
       const columnStr = params.get("alertColumn");
+      const hideHeader = params.get("hideHeader") === "true";
+
+      // TODO: Use a proper Props object..
 
       // link to drill down
       const linkColumn = params.get("linkColumn");
       const linkTemplate = params.get("linkTemplate");
+      const linkTargetSelf = params.get("linkTargetSelf") === "true";
+
       if (linkColumn && linkTemplate) {
         setLinkColumn({ column: linkColumn, linkTemplate: linkTemplate });
       }
@@ -54,6 +61,8 @@ export function FilteredTableComponent(props: Props) {
 
       setSelectable(selectableParam);
       setFilterColumn(filterColumnParam);
+      setHideHeader(hideHeader);
+      setLinkTargetSelf(linkTargetSelf);
     });
     props.controller.setOnDataSet((_dataset: DataSet) => {
       setDataset(_dataset);
@@ -90,6 +99,8 @@ export function FilteredTableComponent(props: Props) {
         alerts={alerts}
         selectable={selectable}
         linkColumn={linkColumn}
+        hideHeader={hideHeader}
+        linkTargetSelf={linkTargetSelf}
         onRowSelected={(i: number) => {
           console.log(i);
           if (i === -1) {

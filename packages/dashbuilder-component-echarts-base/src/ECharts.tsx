@@ -16,33 +16,51 @@
 
 import * as React from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { EChartsType, init } from "echarts";
+import { EChartOption, EChartsType, init } from "echarts";
 
 const OPTION_PARAM = "option";
 const DATASET_PARAM = "dataSet";
+const INIT_OPTIONS: EChartOption = {
+  tooltip: {},
+  xAxis: { type: "category" },
+  yAxis: {},
+  series: [],
+};
 
 export interface Props {
   option?: any;
   params?: Map<string, any>;
+  theme?: string;
+  refresh?: boolean;
 }
+
+type EChartsTypeWithTheme = EChartsType & { theme?: string };
 
 export function ECharts(props: Props) {
   const container = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<EChartsType | undefined>();
+  const [chart, setChart] = useState<EChartsTypeWithTheme | undefined>();
 
   useEffect(() => {
     if (container.current && !chart) {
-      const chart = init(container.current);
-      setChart(chart);
+      const _chart = init(container.current, props.theme) as EChartsTypeWithTheme;
+      _chart.setOption(INIT_OPTIONS);
+      _chart.theme = props.theme;
+      setChart(_chart);
     }
-  }, [chart]);
+  }, [chart, props]);
 
   window.onresize = useCallback(() => {
     if (chart) chart.resize();
   }, [chart]);
 
   useEffect(() => {
-    if (chart) {
+    if (!chart) {
+      return;
+    }
+    if (chart.theme != props.theme) {
+      chart.dispose();
+      setChart(undefined);
+    } else {
       console.log(props);
       let option = props.option || {};
       if (props.params) {

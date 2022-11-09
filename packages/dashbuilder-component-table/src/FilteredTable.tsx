@@ -44,6 +44,8 @@ interface Props {
   columns: string[];
   rows: any[][];
   onRowSelected?: (i: number) => void;
+  hideHeader: boolean;
+  linkTargetSelf: boolean;
   selectable?: boolean;
   alerts?: Map<number, Alert>;
   linkColumn?: LinkColumn;
@@ -151,27 +153,29 @@ export const FilteredTable = (props: Props) => {
 
   return (
     <>
-      <Flex>
-        <FlexItem>
-          {" "}
-          <SearchInput
-            placeholder="Filter"
-            value={search}
-            onChange={(v: any) => onSearch(v as string)}
-            onClear={() => onSearch("")}
-          />
-        </FlexItem>
-        <FlexItem align={{ default: "alignRight" }}>
-          <Pagination
-            itemCount={rows.length}
-            perPage={perPage}
-            page={page}
-            onSetPage={(evt: any, _page: any) => setPage(_page)}
-            onPerPageSelect={(evt: any, _perPage: any) => setPerPage(_perPage)}
-            widgetId="pagination-options-menu-top"
-          />
-        </FlexItem>
-      </Flex>
+      {!props.hideHeader && (
+        <Flex>
+          <FlexItem>
+            {" "}
+            <SearchInput
+              placeholder="Filter"
+              value={search}
+              onChange={(v: any) => onSearch(v as string)}
+              onClear={() => onSearch("")}
+            />
+          </FlexItem>
+          <FlexItem align={{ default: "alignRight" }}>
+            <Pagination
+              itemCount={rows.length}
+              perPage={perPage}
+              page={page}
+              onSetPage={(evt: any, _page: any) => setPage(_page)}
+              onPerPageSelect={(evt: any, _perPage: any) => setPerPage(_perPage)}
+              widgetId="pagination-options-menu-top"
+            />
+          </FlexItem>
+        </Flex>
+      )}
       <TableComposable aria-label="Filtered Table" variant="compact">
         <Thead>
           <Tr>
@@ -228,7 +232,7 @@ export const FilteredTable = (props: Props) => {
                   {props.linkColumn && props.columns[cellIndex] == props.linkColumn.column ? (
                     <a
                       href={props.linkColumn.linkTemplate.replace(LINK_TEMPLATE_VALUE_KEY, cell)}
-                      target="_blank"
+                      target={props.linkTargetSelf ? "_parent" : "_blank"}
                       rel={"noopener noreferrer"}
                     >
                       {" "}

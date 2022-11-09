@@ -25,6 +25,14 @@
       "value": "Country"
     },
     {
+      "key": "hideHeader",
+      "value": "true"
+    },
+    {
+      "key": "linkTargetSelf",
+      "value": "_true"
+    },
+    {
       "key": "linkTemplate",
       "value": "https://www.google.com/search?q=${value}"
     }
