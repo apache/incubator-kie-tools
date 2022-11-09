@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,18 @@
  * limitations under the License.
  */
 
-export const GIST_ORIGIN_REMOTE_NAME = "origin";
-export const GIT_ORIGIN_REMOTE_NAME = "origin";
-export const GIT_DEFAULT_BRANCH = "main";
-export const GIST_DEFAULT_BRANCH = "main";
+import * as React from "react";
+import CodeBranchIcon from "@patternfly/react-icons/dist/js/icons/code-branch-icon";
+import TagIcon from "@patternfly/react-icons/dist/js/icons/tag-icon";
+import { GitRefType } from "./GitRefs";
+
+export function GitRefTypeIcon(props: { type: GitRefType }) {
+  if (props.type === GitRefType.BRANCH) {
+    return <CodeBranchIcon />;
+  }
+  if (props.type === GitRefType.TAG) {
+    return <TagIcon />;
+  }
+
+  return <CodeBranchIcon />;
+}

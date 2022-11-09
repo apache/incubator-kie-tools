@@ -38,6 +38,7 @@ export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_init(args: {
     localFiles: LocalFile[];
     preferredName?: string;
+    gitAuthSessionId: string | undefined;
     gitConfig?: {
       email: string;
       name: string;
@@ -49,6 +50,7 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_clone(args: {
     origin: GistOrigin | GitHubOrigin;
+    gitAuthSessionId: string | undefined;
     gitConfig?: {
       email: string;
       name: string;
@@ -111,7 +113,16 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
 
-  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
+  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_changeGitAuthSessionId(args: {
+    workspaceId: string;
+    gitAuthSessionId: string | undefined;
+  }): Promise<void>;
 
   kieSandboxWorkspacesGit_initLocalOnExistingWorkspace(args: { workspaceId: string }): Promise<void>;
 }

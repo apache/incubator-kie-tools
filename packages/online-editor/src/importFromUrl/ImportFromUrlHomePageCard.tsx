@@ -27,7 +27,11 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AuthSourceKeys, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
+import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
@@ -35,27 +39,40 @@ import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlVal
 export function ImportFromUrlCard() {
   const routes = useRoutes();
   const history = useHistory();
+  const accountsDispatch = useAccountsDispatch();
 
-  const [authSource, setAuthSource] = useState<AuthSourceKeys>();
+  const [authSessionId, setAuthSessionId] = useState<string | undefined>(AUTH_SESSION_NONE.id);
   const [url, setUrl] = useState("");
   const [gitRefName, setGitRef] = useState("");
 
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
 
-  const { authSource: selectedAuthSource } = useSelectedAuthSession(authSource);
+  const { authInfo, authSession } = useAuthSession(authSessionId);
 
   const importableUrl = useImportableUrl(url);
-  const clonableUrl = useClonableUrl(url, authSource, gitRefName);
+  const clonableUrl = useClonableUrl(url, authInfo, gitRefName);
+
+  // Select authSession based on the importableUrl domain (begin)
+  const authProviders = useAuthProviders();
+  const { authSessions, authSessionStatus } = useAuthSessions();
 
   useEffect(() => {
-    setAuthSource(selectedAuthSource);
-  }, [selectedAuthSource]);
+    const urlDomain = importableUrl.url?.hostname;
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain,
+    });
+    setAuthSessionId(compatible[0]!.id);
+  }, [authProviders, authSessionStatus, authSessions, importableUrl]);
+  // Select authSession based on the importableUrl domain (end)
 
   useEffect(() => {
     setGitRef(clonableUrl.selectedGitRefName ?? "");
   }, [clonableUrl.selectedGitRefName]);
 
-  const validation = useImportableUrlValidation(authSource, url, gitRefName, clonableUrl, advancedImportModalRef);
+  const validation = useImportableUrlValidation(authSession, url, gitRefName, clonableUrl, advancedImportModalRef);
 
   const isValid = useMemo(() => {
     return validation.option === ValidatedOptions.success;
@@ -72,10 +89,10 @@ export function ImportFromUrlCard() {
 
       history.push({
         pathname: routes.import.path({}),
-        search: routes.import.queryString({ url, branch: gitRefName, authSource }),
+        search: routes.import.queryString({ url, branch: gitRefName, authSessionId }),
       });
     },
-    [authSource, gitRefName, history, isValid, routes.import, url]
+    [authSessionId, gitRefName, history, isValid, routes.import, url]
   );
 
   const buttonLabel = useMemo(() => {
@@ -161,8 +178,11 @@ export function ImportFromUrlCard() {
         validation={validation}
         onSubmit={onSubmit}
         onClose={undefined}
-        authSource={authSource}
-        setAuthSource={setAuthSource}
+        authSessionId={authSessionId}
+        setAuthSessionId={(newAuthSessionId) => {
+          setAuthSessionId(newAuthSessionId);
+          accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+        }}
         url={url}
         setUrl={setUrl}
         gitRefName={gitRefName}

@@ -25,6 +25,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { AccountsIcon } from "../accounts/AccountsIcon";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
@@ -70,6 +71,11 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
               <FlexItem>
                 <PageHeaderToolsItem>
                   <KieSandboxExtendedServicesIcon />
+                </PageHeaderToolsItem>
+              </FlexItem>
+              <FlexItem>
+                <PageHeaderToolsItem>
+                  <AccountsIcon />
                 </PageHeaderToolsItem>
               </FlexItem>
             </Flex>

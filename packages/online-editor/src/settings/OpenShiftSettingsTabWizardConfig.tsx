@@ -161,6 +161,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
                   <Text component={TextVariants.p}>
                     <a href={DEVELOPER_SANDBOX_GET_STARTED_URL} target={"_blank"}>
                       {i18n.dmnDevSandbox.configWizard.steps.first.goToGetStartedPage}
+                      &nbsp;
                       <ExternalLinkAltIcon className="pf-u-mx-sm" />
                     </a>
                   </Text>

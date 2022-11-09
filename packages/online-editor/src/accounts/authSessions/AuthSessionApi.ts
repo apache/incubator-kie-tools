@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,29 @@
  * limitations under the License.
  */
 
-export const GIST_ORIGIN_REMOTE_NAME = "origin";
-export const GIT_ORIGIN_REMOTE_NAME = "origin";
-export const GIT_DEFAULT_BRANCH = "main";
-export const GIST_DEFAULT_BRANCH = "main";
+export const AUTH_SESSION_NONE = {
+  id: "none",
+  name: "Unauthenticated",
+  type: "none",
+  login: "Unauthenticated",
+} as const;
+
+export type NoneAuthSession = typeof AUTH_SESSION_NONE;
+
+export type GitAuthSession = {
+  type: "git";
+  id: string;
+  token: string;
+  login: string;
+  email?: string;
+  name?: string;
+  authProviderId: string;
+  createdAtDateISO: string;
+};
+
+export enum AuthSessionStatus {
+  VALID,
+  INVALID,
+}
+
+export type AuthSession = GitAuthSession | NoneAuthSession;

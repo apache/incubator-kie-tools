@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
@@ -23,15 +21,20 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
+import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
+import { noOpAuthSessionSelectFilter } from "../accounts/authSessions/CompatibleAuthSessions";
 import { ImportableUrl } from "./ImportableUrlHooks";
 
 export function ImportSingleFileFromUrlForm(props: {
-  url?: string;
-  onChange: (url: string) => void;
+  url: string;
+  setUrl: React.Dispatch<React.SetStateAction<string>>;
+  authSessionId: string | undefined;
+  setAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
   importingError?: string;
   onSubmit: () => void;
   urlInputRef?: React.RefObject<HTMLInputElement>;
   importableUrl: ImportableUrl;
+  authSessionSelectHelperText: string;
 }) {
   const onSubmit = useCallback(
     (e: FormEvent) => {
@@ -74,7 +77,24 @@ export function ImportSingleFileFromUrlForm(props: {
   return (
     <Form onSubmit={onSubmit}>
       <FormGroup
-        label={"Import file from URL"}
+        fieldId="auth-source"
+        label="Authentication"
+        isRequired={true}
+        helperText={props.authSessionSelectHelperText}
+      >
+        <AuthSessionSelect
+          menuAppendTo={document.body}
+          title={"Select authentication source for importing..."}
+          authSessionId={props.authSessionId}
+          setAuthSessionId={props.setAuthSessionId}
+          isPlain={false}
+          filter={noOpAuthSessionSelectFilter()}
+        />
+      </FormGroup>
+      <FormGroup
+        autoFocus={true}
+        label={"URL"}
+        isRequired={true}
         helperTextInvalid={helperTextInvalid}
         helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
         helperTextInvalidIcon={<ExclamationCircleIcon />}
@@ -87,9 +107,9 @@ export function ImportSingleFileFromUrlForm(props: {
           ouiaId={"url"}
           validated={validatedOption}
           isRequired={true}
-          placeholder={"URL"}
+          placeholder={"File URL"}
           value={props.url}
-          onChange={props.onChange}
+          onChange={props.setUrl}
         />
       </FormGroup>
     </Form>

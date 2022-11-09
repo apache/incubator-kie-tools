@@ -37,6 +37,8 @@ import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dis
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
 import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
+import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
+import { AccountsContextProvider } from "./accounts/AccountsDispatchContext";
 
 export function App() {
   return (
@@ -47,6 +49,8 @@ export function App() {
         [EnvContextProvider, {}],
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
+        [AuthSessionsContextProvider, {}],
+        [AccountsContextProvider, {}],
         [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js" }],
         [DmnRunnerInputsDispatchContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
@@ -60,9 +64,7 @@ export function App() {
 
 function RoutesSwitch() {
   const routes = useRoutes();
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
-
-  const supportedExtensions = useMemo(() => "bpmn|bpmn2|dmn|pmml", [editorEnvelopeLocator]);
+  const supportedExtensions = useMemo(() => "bpmn|bpmn2|dmn|pmml", []);
 
   return (
     <Switch>

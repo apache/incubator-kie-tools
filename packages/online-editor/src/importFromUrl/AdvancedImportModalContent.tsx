@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ServerRef } from "isomorphic-git";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useState } from "react";
-import { AuthSourceKeys, useAuthSources } from "../authSources/AuthSourceHooks";
-import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
-import { getGitRefName, getGitRefTypeLabel, getGitRefType, GitRefType } from "../gitRefs/GitRefs";
+import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
+import { authSessionsSelectFilterCompatibleWithGitUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
+import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
 
 export interface AdvancedImportModalRef {
@@ -42,18 +42,16 @@ export interface AdvancedImportModalProps {
   onClose: (() => void) | undefined;
   url: string;
   setUrl: React.Dispatch<React.SetStateAction<string>>;
-  authSource: AuthSourceKeys | undefined;
-  setAuthSource: React.Dispatch<React.SetStateAction<AuthSourceKeys>>;
+  authSessionId: string | undefined;
+  setAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
   gitRefName: string;
   setGitRefName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, AdvancedImportModalProps>(
   (props, forwardedRef) => {
-    const authSources = useAuthSources();
     const [isModalOpen, setModalOpen] = useState(false);
-    const [isBranchSelectorOpen, setBranchSelectorOpen] = useState(false);
-    const [isAuthSourceSelectorOpen, setAuthSourceSelectorOpen] = useState(false);
+    const [isGitRefNameSelectorOpen, setGitRefNameSelectorOpen] = useState(false);
 
     useImperativeHandle(
       forwardedRef,
@@ -120,33 +118,15 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
             <br />
             <Form onSubmit={props.onSubmit}>
               <FormGroup fieldId="auth-source" label="Authentication" isRequired={true}>
-                <Select
-                  variant={SelectVariant.single}
-                  selections={props.authSource}
-                  isOpen={isAuthSourceSelectorOpen}
-                  onToggle={setAuthSourceSelectorOpen}
-                  onSelect={(e, value) => {
-                    props.setAuthSource(value as AuthSourceKeys);
-                    setAuthSourceSelectorOpen(false);
-                  }}
-                  menuAppendTo={document.body}
-                  maxHeight={"400px"}
-                >
-                  {[
-                    ...[...authSources.entries()].map(([authSourceKey, authSource]) => (
-                      <SelectOption
-                        key={authSourceKey}
-                        value={authSourceKey}
-                        isDisabled={!authSource.enabled}
-                        description={<i>{authSource.description}</i>}
-                      >
-                        <AuthSourceIcon authSource={authSourceKey} />
-                        &nbsp;&nbsp;
-                        {authSource.label}
-                      </SelectOption>
-                    )),
-                  ]}
-                </Select>
+                <AuthSessionSelect
+                  title={"Select authentication source for importing..."}
+                  authSessionId={props.authSessionId}
+                  setAuthSessionId={props.setAuthSessionId}
+                  isPlain={false}
+                  filter={authSessionsSelectFilterCompatibleWithGitUrlDomain(
+                    props.clonableUrl.clonableUrl.url?.hostname
+                  )}
+                />
               </FormGroup>
               <FormGroup
                 fieldId="url"
@@ -190,12 +170,12 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   isDisabled={props.validation.option !== ValidatedOptions.success}
                   variant={SelectVariant.typeahead}
                   selections={props.gitRefName}
-                  isOpen={isBranchSelectorOpen}
-                  onToggle={setBranchSelectorOpen}
+                  isOpen={isGitRefNameSelectorOpen}
+                  onToggle={setGitRefNameSelectorOpen}
                   isGrouped={true}
                   onSelect={(e, value) => {
                     props.setGitRefName(value as string);
-                    setBranchSelectorOpen(false);
+                    setGitRefNameSelectorOpen(false);
                   }}
                   menuAppendTo={document.body}
                   maxHeight={"400px"}

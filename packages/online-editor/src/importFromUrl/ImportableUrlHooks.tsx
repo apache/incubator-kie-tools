@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
+import CheckCircleIcon from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { extname } from "path";
+import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
-import { AuthSource, AuthSourceKeys, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
+import { AuthProviderIcon } from "../accounts/authProviders/AuthProviderIcon";
+import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
+import { AuthInfo } from "../accounts/authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useSettings } from "../settings/SettingsContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
-import CheckCircleIcon from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { AuthSourceIcon } from "../authSources/AuthSourceIcon";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { getGitRefName, getGitRefType, GitRefTypeIcon } from "../gitRefs/GitRefs";
+import { getGitRefName, getGitRefType } from "../gitRefs/GitRefs";
 import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
+import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
 
 export enum UrlType {
   //git
@@ -284,14 +287,14 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
 export function useClonableUrl(
   url: string | undefined,
-  authSource: AuthSource | undefined,
+  authInfo: AuthInfo | undefined,
   gitRefName: string | undefined
 ) {
   const importableUrl = useImportableUrl(url);
 
   const gitServerRefsPromise = useGitServerRefs(
     isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined,
-    authSource
+    authInfo
   );
 
   const gitRefNameFromUrl = useMemo(() => {
@@ -317,7 +320,11 @@ export function useClonableUrl(
   }, [gitRefName, gitRefNameFromUrl, gitServerRefsPromise.data]);
 
   const clonableUrl: ImportableUrl = useMemo(() => {
-    if (!isPotentiallyGit(importableUrl.type) || gitServerRefsPromise.status === PromiseStateStatus.PENDING) {
+    if (
+      !isPotentiallyGit(importableUrl.type) ||
+      gitServerRefsPromise.status === PromiseStateStatus.PENDING ||
+      importableUrl.type === UrlType.INVALID
+    ) {
       return importableUrl;
     }
 
@@ -326,15 +333,17 @@ export function useClonableUrl(
         return importableUrl;
       } else {
         return {
-          type: UrlType.INVALID,
+          type: UrlType.NOT_SUPPORTED,
+          url: importableUrl.url,
           error: `Selected ref '${gitRefName || gitRefNameFromUrl}' does not exist.`,
         };
       }
     }
 
     return {
-      type: UrlType.INVALID,
-      error: `Can't determine Git refs for '${importableUrl.url?.toString()}'`,
+      type: UrlType.NOT_SUPPORTED,
+      url: importableUrl.url,
+      error: `Can't determine Git refs for '${importableUrl.url.toString()}'`,
     };
   }, [
     importableUrl,
@@ -348,9 +357,8 @@ export function useClonableUrl(
   return { clonableUrl, selectedGitRefName, gitServerRefsPromise };
 }
 
-export function useGitServerRefs(url: URL | undefined, authSource: AuthSource | undefined) {
+export function useGitServerRefs(url: URL | undefined, authInfo: AuthInfo | undefined) {
   const workspaces = useWorkspaces();
-  const { authInfo } = useSelectedAuthSession(authSource);
 
   const gitServerRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
     useMemo(() => {
@@ -376,13 +384,13 @@ export function useGitServerRefs(url: URL | undefined, authSource: AuthSource | 
 }
 
 export function useImportableUrlValidation(
-  authSource: AuthSourceKeys | undefined,
+  authSession: AuthSession | undefined,
   url: string | undefined,
   gitRefName: string | undefined,
   clonableUrl: ReturnType<typeof useClonableUrl>,
   advancedImportModalRef?: React.RefObject<AdvancedImportModalRef>
 ) {
-  const settings = useSettings();
+  const authProvider = useAuthProvider(authSession);
 
   return useMemo(() => {
     if (!url) {
@@ -425,9 +433,9 @@ export function useImportableUrlValidation(
               {getGitRefName(gitRefName)}
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
-              <AuthSourceIcon authSource={authSource} />
+              <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
               &nbsp;&nbsp;
-              {authSource === AuthSourceKeys.GITHUB ? settings.github.user?.login ?? "Not logged in" : "Anonymous"}
+              {authSession?.login}
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
               <Button
@@ -448,8 +456,8 @@ export function useImportableUrlValidation(
     clonableUrl.gitServerRefsPromise.status,
     clonableUrl.clonableUrl.error,
     gitRefName,
-    authSource,
-    settings.github.user?.login,
+    authProvider,
+    authSession?.login,
     advancedImportModalRef,
   ]);
 }

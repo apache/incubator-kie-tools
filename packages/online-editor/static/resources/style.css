@@ -587,8 +587,9 @@ section.kie-tools--settings-tab {
   height: calc(100% - 40px);
 }
 
-.kie-tools--masthead-hoverable:hover {
-  background-color: rgba(0, 0, 0, 0.08);
+.kie-tools--masthead-hoverable:hover,
+.kie-tools--masthead-hoverable > .pf-c-select__toggle:hover {
+  background-color: rgb(235, 235, 235);
   border-radius: 8px;
 }
 

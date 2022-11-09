@@ -33,14 +33,14 @@ export const en: OnlineI18n = {
       copy: "Content copied to clipboard",
       updateGist: "Gist successfully updated.",
       createGist: "Gist successfully created.",
-      errorPushingGist: "Failed to push an update to your current Gist. Attempt to force push?",
+      errorPushingGist: "Failed to Push an update to your current Gist. Attempt to Push forcefully?",
       forcePushWarning: "WARNING: This will overwrite your Gist with the local changes!",
       invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
       invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
       error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
       unsaved: {
         titleLocal: "You have new changes since your last download.",
-        titleGit: "You have new changes since your last push.",
+        titleGit: "You have new changes since your last Push.",
         proceedAnyway: "Proceed anyway",
         message: "Your files are temporarily persisted on your browser, but may be erased before you come back.",
       },
@@ -179,7 +179,7 @@ export const en: OnlineI18n = {
       subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`,
     },
     footer: {
-      createNewToken: "Create a new token",
+      createNewToken: "Generate new token",
       placeHolder: "Paste your token here",
     },
     body: {
