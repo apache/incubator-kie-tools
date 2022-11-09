@@ -2787,6 +2787,10 @@ exports[`SWF LS YAML code completion transition completion state transition comp
 
 exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / without space after property name 2`] = `Array []`;
 
+exports[`SWF LS YAML diagnostic empty file 1`] = `0`;
+
+exports[`SWF LS YAML diagnostic empty file 2`] = `Array []`;
+
 exports[`SWF LS YAML diagnostic missing state type 1`] = `1`;
 
 exports[`SWF LS YAML diagnostic missing state type 2`] = `

@@ -808,6 +808,7 @@ describe("SWF LS JSON", () => {
     });
 
     test.each([
+      ["empty file", ``],
       [
         "valid",
         `{

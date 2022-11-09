@@ -135,6 +135,10 @@ export class SwfYamlLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
+    if (!args.content.trim()) {
+      return [];
+    }
+
     const rootNode = this.parseContent(args.content);
     const loadErrors = !rootNode ? load(args.content).errors : [];
 

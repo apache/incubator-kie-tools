@@ -1182,6 +1182,7 @@ states:
     });
 
     test.each([
+      ["empty file", ``],
       [
         "missing state type",
         `id: hello_world

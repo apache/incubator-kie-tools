@@ -1888,6 +1888,10 @@ Array [
 ]
 `;
 
+exports[`SWF LS JSON diagnostic empty file 1`] = `0`;
+
+exports[`SWF LS JSON diagnostic empty file 2`] = `Array []`;
+
 exports[`SWF LS JSON diagnostic missing property value 1`] = `2`;
 
 exports[`SWF LS JSON diagnostic missing property value 2`] = `
