@@ -33,10 +33,9 @@ export interface Editor {
     container: Element;
     initialContent: Promise<string>;
     readOnly: boolean;
+    languageType: ServerlessWorkflowType;
     isDiagramOnly: boolean;
     origin?: string;
-    resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
-    languageType?: ServerlessWorkflowType;
   }) => StandaloneEditorApi;
 }
 

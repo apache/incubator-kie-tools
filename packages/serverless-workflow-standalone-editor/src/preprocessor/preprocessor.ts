@@ -17,17 +17,17 @@
 import * as _ from "underscore";
 import * as fs from "fs";
 import { BaseEditorResources } from "../common/EditorResources";
-import { ServerlessworkflowDiagramEditorResources } from "../swf/resources/SwfDiagramEditorResources";
-import { ServerlessworkflowMermaidViewerResources } from "../swf/resources/SwfMermaidViewerResources";
-import { ServerlessworkflowTextEditorResources } from "../swf/resources/SwfTextEditorResources";
-import { ServerlessworkflowCombinedEditorResources } from "../swf/resources/SwfCombinedEditorResources";
+import { ServerlessWorkflowDiagramEditorResources } from "../swf/resources/SwfDiagramEditorResources";
+import { ServerlessWorkflowMermaidViewerResources } from "../swf/resources/SwfMermaidViewerResources";
+import { ServerlessWorkflowTextEditorResources } from "../swf/resources/SwfTextEditorResources";
+import { ServerlessWorkflowCombinedEditorResources } from "../swf/resources/SwfCombinedEditorResources";
 
 function main() {
   const editorsResources: BaseEditorResources[] = [
-    new ServerlessworkflowCombinedEditorResources(),
-    new ServerlessworkflowDiagramEditorResources(),
-    new ServerlessworkflowMermaidViewerResources(),
-    new ServerlessworkflowTextEditorResources(),
+    new ServerlessWorkflowCombinedEditorResources(),
+    new ServerlessWorkflowDiagramEditorResources(),
+    new ServerlessWorkflowMermaidViewerResources(),
+    new ServerlessWorkflowTextEditorResources(),
   ];
 
   editorsResources.forEach((editorResources) => {

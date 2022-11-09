@@ -16,7 +16,7 @@
 
 import { BaseEditorResources } from "../../common/EditorResources";
 
-export class ServerlessworkflowCombinedEditorResources extends BaseEditorResources {
+export class ServerlessWorkflowCombinedEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
     const swfCombinedEditorResources: any = {
       envelopeJsResource: this.createResource({ path: `dist/envelope/swf-combined-editor-envelope.js` }),

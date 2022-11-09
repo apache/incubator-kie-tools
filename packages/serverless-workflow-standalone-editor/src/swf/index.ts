@@ -75,11 +75,10 @@ const createEnvelopeServer = (
 export const open = (args: {
   container: Element;
   initialContent: Promise<string>;
+  languageType: ServerlessWorkflowType;
   readOnly?: boolean;
   origin?: string;
   onError?: () => any;
-  resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
-  languageType?: ServerlessWorkflowType;
   isDiagramOnly?: boolean;
 }): StandaloneEditorApi => {
   const iframe = document.createElement("iframe");
@@ -115,8 +114,7 @@ export const open = (args: {
             receivedSetContentError = true;
           }
         },
-      },
-      args.resources
+      }
     ),
     new SwfFeatureToggleChannelApiImpl({ stunnerEnabled: true }),
     new SwfServiceCatalogChannelApiImpl(

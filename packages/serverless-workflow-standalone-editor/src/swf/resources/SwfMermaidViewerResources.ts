@@ -16,7 +16,7 @@
 
 import { BaseEditorResources } from "../../common/EditorResources";
 
-export class ServerlessworkflowMermaidViewerResources extends BaseEditorResources {
+export class ServerlessWorkflowMermaidViewerResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
     const swfMermaidViewerResources: any = {
       envelopeJsResource: this.createResource({ path: `dist/envelope/swf-mermaid-viewer-envelope.js` }),

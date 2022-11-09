@@ -28,11 +28,10 @@
       { "id": "kie-tools-examples-todo-list-view-vscode-extension" },
       { "id": "@kie-tools-examples/webapp" },
       { "id": "@kie-tools/kie-editors-standalone" },
-      { "id": "@kie-tools/standalone-serverless-workflow-editor" },
+      { "id": "@kie-tools/serverless-workflow-standalone-editor" },
       { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
-      { "id": "@kie-tools/serverless-workflow-mermaid-editor-assets" },
       { "id": "@kie-tools-core/notifications" },
       { "id": "@kie-tools-core/i18n" },
       { "id": "@kie-tools-core/workspace" },
@@ -220,19 +219,14 @@
       { "source": "@kie-tools-examples/webapp", "target": "@kie-tools/kie-editors-standalone", "weight": 1 },
       {
         "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools/standalone-serverless-workflow-editor",
+        "target": "@kie-tools/serverless-workflow-standalone-editor",
         "weight": 1
       },
       { "source": "@kie-tools/kie-editors-standalone", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/kie-editors-standalone", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
-        "source": "@kie-tools/standalone-serverless-workflow-editor",
+        "source": "@kie-tools/serverless-workflow-standalone-editor",
         "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/standalone-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-mermaid-editor-assets",
         "weight": 1
       },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools-core/editor", "weight": 1 },
@@ -258,11 +252,6 @@
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
         "target": "@kie-tools/serverless-workflow-text-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-mermaid-editor-assets",
-        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
         "weight": 1
       },
       { "source": "@kie-tools-core/notifications", "target": "@kie-tools-core/i18n", "weight": 1 },
@@ -905,11 +894,10 @@
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
-    ["@kie-tools/serverless-workflow-mermaid-editor-assets", "packages/serverless-workflow-mermaid-editor-assets"],
     ["@kie-tools/serverless-workflow-mermaid-viewer", "packages/serverless-workflow-mermaid-viewer"],
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],
+    ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
-    ["@kie-tools/standalone-serverless-workflow-editor", "packages/standalone-serverless-workflow-editor"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
     ["@kie-tools/text-editor", "packages/text-editor"],

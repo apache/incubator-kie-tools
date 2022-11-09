@@ -22,7 +22,7 @@ digraph G {
   "kie-tools-examples-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/kie-editors-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/standalone-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/backend-extended-services" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -107,10 +107,13 @@ digraph G {
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
 <<<<<<< HEAD
+<<<<<<< HEAD
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
 =======
   "@kie-tools/serverless-workflow-mermaid-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];
 >>>>>>> 3d6b649e80 (KOGITO-6875: Serverless workflow standalone package)
+=======
+>>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -150,7 +153,7 @@ digraph G {
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-react" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/webapp" -> "@kie-tools/standalone-serverless-workflow-editor" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "solid", color = "orange" ];
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
@@ -328,18 +331,20 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
 <<<<<<< HEAD
+<<<<<<< HEAD
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
 =======
   "@kie-tools/serverless-workflow-mermaid-editor-assets" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "dashed", color = "blue" ];
 >>>>>>> 3d6b649e80 (KOGITO-6875: Serverless workflow standalone package)
+=======
+>>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-standalone-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/standalone-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "blue" ];
-  "@kie-tools/standalone-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-mermaid-editor-assets" [ style = "dashed", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "blue" ];

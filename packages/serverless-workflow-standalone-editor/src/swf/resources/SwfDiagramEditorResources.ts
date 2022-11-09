@@ -19,7 +19,7 @@ import { BaseEditorResources } from "../../common/EditorResources";
 import { getServerlessWorkflowLanguageData } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import * as swfEditorAssets from "@kie-tools/serverless-workflow-diagram-editor-assets";
 
-export class ServerlessworkflowDiagramEditorResources extends BaseEditorResources {
+export class ServerlessWorkflowDiagramEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
     const swfLanguageData = getServerlessWorkflowLanguageData(args.resourcesPathPrefix);
     const swfEditorResources: any = {
