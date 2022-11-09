@@ -33,8 +33,9 @@ More information about annotations can be found via the [Kubebuilder Documentati
 
 In order to build the project, you need to comply with the following requirements:
 
-- [operator-sdk-v1.24.0+](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)
-- [Go 1.19](https://go.dev/dl/)
+- [operator-sdk-v1.25.0+](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)
+- [Go 1.19+](https://go.dev/dl/)
+- [Kubebuilder 3.7.0+](https://github.com/kubernetes-sigs/kubebuilder/releases)
 
 
 GNU Make: 
