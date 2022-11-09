@@ -55,6 +55,10 @@ export class VirtualServiceRegistryFunction {
 
 export async function getVirtualServiceRegistryDependencies(file: WorkspaceFile) {
   const content = await file.getFileContentsAsString();
+  if (!content) {
+    return [];
+  }
+
   let parsedContent: Record<string, unknown>;
   try {
     parsedContent = isJson(file.relativePath) ? JSON.parse(content) : yaml.parse(content);
