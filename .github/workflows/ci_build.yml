@@ -132,7 +132,7 @@ jobs:
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
-        uses: mikepenz/action-junit-report@1b47bb811362f3d8d753fc148cb7a13ec9e55570
+        uses: mikepenz/action-junit-report@ab07dd7abefd456d92ecbeb22f81392fafe3d528
         with:
           check_name: "-"
           annotate_only: true
