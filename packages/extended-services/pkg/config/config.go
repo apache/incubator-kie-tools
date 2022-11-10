@@ -29,6 +29,7 @@ var f embed.FS
 type Config struct {
 	App struct {
 		Version string `yaml:"version"`
+		Starded bool   `yaml:"running"`
 	} `yaml:"app"`
 	Proxy struct {
 		IP                 string `yaml:"ip"`

@@ -106,10 +106,10 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       // Check the running version of the KieSandboxExtendedServices, cancel polling if up-to-date.
       bridge
         .version()
-        .then((receivedVersion) => {
-          if (receivedVersion !== version) {
+        .then((response) => {
+          if (response.App.Version !== version) {
             setOutdated(true);
-          } else {
+          } else if (response.App.Starded) {
             window.clearInterval(detectKieSandboxExtendedServices);
             setOutdated(false);
             setStatus(KieSandboxExtendedServicesStatus.RUNNING);
