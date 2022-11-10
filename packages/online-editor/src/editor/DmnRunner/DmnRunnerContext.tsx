@@ -34,7 +34,7 @@ export interface DmnRunnerContextType {
 }
 
 export interface DmnRunnerCallbacksContextType {
-  preparePayload: (formData?: any) => Promise<DmnRunnerModelPayload>;
+  preparePayload: (formData?: InputRow) => Promise<DmnRunnerModelPayload>;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;

@@ -76,18 +76,22 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
     const newConfig = new ExtendedServicesConfig(host, port);
     setConfig(newConfig);
 
-    new KieSandboxExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
-      if (checked) {
-        saveNewConfig(newConfig);
-      }
-    });
+    new KieSandboxExtendedServicesBridge(newConfig.buildUrl())
+      .check()
+      .then((checked) => {
+        if (checked) {
+          saveNewConfig(newConfig);
+        }
+      })
+      .catch((error) => {
+        setStatus(KieSandboxExtendedServicesStatus.STOPPED);
+      });
   }, [env.vars.KIE_SANDBOX_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if KieSandboxExtendedServices is running or has stopped
-    let detectCrashesOrStops: number | undefined;
     if (status === KieSandboxExtendedServicesStatus.RUNNING) {
-      detectCrashesOrStops = window.setInterval(() => {
+      const detectCrashesOrStops: number | undefined = window.setInterval(() => {
         bridge.check().catch(() => {
           setStatus(KieSandboxExtendedServicesStatus.STOPPED);
           setModalOpen(true);
