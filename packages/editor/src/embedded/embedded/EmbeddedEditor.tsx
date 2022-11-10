@@ -18,7 +18,6 @@ import {
   ChannelType,
   EditorApi,
   EditorEnvelopeLocator,
-  EnvelopeMapping,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
 } from "../../api";
@@ -32,6 +31,7 @@ import { useEffectAfterFirstRender } from "../common";
 import { EmbeddedEditorChannelApiImpl } from "./EmbeddedEditorChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { useConnectedEnvelopeServer } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { getEditorIframeProps } from "../../channel/editorIframeProps";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -182,21 +182,6 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     [props.isReady, isReady, stateControl, envelopeServer]
   );
 
-  const getIframeContentProps = useCallback(() => {
-    if (!envelopeMapping) {
-      return undefined;
-    }
-
-    if (envelopeMapping.envelopeStaticContent) {
-      return {
-        srcDoc: envelopeMapping.envelopeStaticContent,
-      };
-    }
-    return {
-      src: envelopeMapping.envelopePath,
-    };
-  }, [envelopeMapping]);
-
   return (
     <>
       {!envelopeMapping && (
@@ -206,14 +191,13 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       )}
       {envelopeMapping && (
         <iframe
-          key={envelopeMapping.envelopePath}
           ref={iframeRef}
           id={"kogito-iframe"}
           data-testid={"kogito-iframe"}
           title="Kogito editor"
           style={containerStyles}
           data-envelope-channel={props.channelType}
-          {...getIframeContentProps()}
+          {...getEditorIframeProps(envelopeMapping)}
         />
       )}
     </>

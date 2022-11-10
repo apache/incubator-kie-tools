@@ -16,6 +16,21 @@
 
 import { IMinimatch, Minimatch } from "minimatch";
 
+export enum EnvelopeContentType {
+  PATH,
+  CONTENT,
+}
+
+export type EnvelopeContent =
+  | {
+      type: EnvelopeContentType.PATH;
+      path: string;
+    }
+  | {
+      type: EnvelopeContentType.CONTENT;
+      content: string;
+    };
+
 export class EnvelopeMapping {
   public matcher: IMinimatch;
 
@@ -23,9 +38,8 @@ export class EnvelopeMapping {
     private readonly args: {
       type: string;
       filePathGlob: string;
-      resourcesPathPrefix?: string;
-      envelopePath?: string;
-      envelopeStaticContent?: string;
+      resourcesPathPrefix: string;
+      envelopeContent: EnvelopeContent;
     }
   ) {
     this.matcher = new Minimatch(args.filePathGlob, { nocase: true, dot: true });
@@ -39,16 +53,12 @@ export class EnvelopeMapping {
     return this.args.filePathGlob;
   }
 
-  get resourcesPathPrefix(): string | undefined {
+  get resourcesPathPrefix(): string {
     return this.args.resourcesPathPrefix;
   }
 
-  get envelopePath(): string | undefined {
-    return this.args.envelopePath;
-  }
-
-  get envelopeStaticContent(): string | undefined {
-    return this.args.envelopeStaticContent;
+  get envelopeContent(): EnvelopeContent {
+    return this.args.envelopeContent;
   }
 }
 
