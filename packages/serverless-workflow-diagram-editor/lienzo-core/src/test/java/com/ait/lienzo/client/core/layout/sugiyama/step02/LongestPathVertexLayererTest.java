@@ -49,10 +49,10 @@ public class LongestPathVertexLayererTest {
 
         assertEquals(2, result.size());
 
-        final GraphLayer layer01 = result.get(0);
+        final GraphLayer layer01 = result.get(1);
         match(new String[]{"A", "B", "C", "D"}, layer01);
 
-        final GraphLayer layer02 = result.get(1);
+        final GraphLayer layer02 = result.get(0);
         match(new String[]{"E", "F", "G", "H"}, layer02);
     }
 
@@ -74,13 +74,13 @@ public class LongestPathVertexLayererTest {
 
         assertEquals(3, result.size());
 
-        final GraphLayer layer01 = result.get(0);
-        match(new String[]{"A"}, layer01);
+        final GraphLayer layer01 = result.get(2);
+        match(new String[]{"A", "D"}, layer01);
 
         final GraphLayer layer02 = result.get(1);
-        match(new String[]{"D", "B", "C"}, layer02);
+        match(new String[]{"B", "C"}, layer02);
 
-        final GraphLayer layer03 = result.get(2);
+        final GraphLayer layer03 = result.get(0);
         match(new String[]{"E", "F", "G", "H"}, layer03);
     }
 
@@ -107,17 +107,17 @@ public class LongestPathVertexLayererTest {
         /* We're ensuring that the default algorithm behaviour is "good enough" and is not break by some change,
          * but If we changed it to a better one we'll have to modify this test to the new better expected result.
          */
-        final GraphLayer layer01 = result.get(0);
+        final GraphLayer layer01 = result.get(3);
         match(new String[]{"A"}, layer01);
 
-        final GraphLayer layer02 = result.get(1);
-        match(new String[]{"C"}, layer02);
+        final GraphLayer layer02 = result.get(2);
+        match(new String[]{"C", "B"}, layer02);
 
-        final GraphLayer layer03 = result.get(2);
-        match(new String[]{"B", "G", "H"}, layer03);
+        final GraphLayer layer03 = result.get(1);
+        match(new String[]{"E", "F", "G", "H"}, layer03);
 
-        final GraphLayer layer04 = result.get(3);
-        match(new String[]{"F", "I", "E"}, layer04);
+        final GraphLayer layer04 = result.get(0);
+        match(new String[]{"I"}, layer04);
     }
 
     @Test
@@ -145,13 +145,13 @@ public class LongestPathVertexLayererTest {
                 .isEqualTo(3);
 
         match(new String[]{"A1", "A2"},
-              result.get(0));
+              result.get(2));
 
-        match(new String[]{"C1", "B2", "D2"},
+        match(new String[]{"B1", "C1", "B2", "C2", "D2"},
               result.get(1));
 
-        match(new String[]{"B1", "D1", "E1", "E2", "C2", "F2"},
-              result.get(2));
+        match(new String[]{"D1", "E1", "E2", "F2"},
+              result.get(0));
     }
 
     @Test
@@ -163,11 +163,11 @@ public class LongestPathVertexLayererTest {
         Assertions.assertThat(result.size())
                 .as("TwoSeparateTreesToRoots graph vertices should be placed into three layers")
                 .isEqualTo(3);
-        match(new String[]{"A1", "A2"},
+        match(new String[]{"B1", "E1", "D1", "E2", "F2", "C2"},
               result.get(2));
-        match(new String[]{"B1", "C1", "B2", "C2", "D2"},
+        match(new String[]{"C1", "B2", "D2"},
               result.get(1));
-        match(new String[]{"D1", "E1", "E2", "F2"},
+        match(new String[]{"A1", "A2"},
               result.get(0));
     }
 
