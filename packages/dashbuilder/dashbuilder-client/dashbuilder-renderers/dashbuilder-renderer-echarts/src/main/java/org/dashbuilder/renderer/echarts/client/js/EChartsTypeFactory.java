@@ -25,7 +25,6 @@ import org.dashbuilder.renderer.echarts.client.js.ECharts.SeriesType;
 public class EChartsTypeFactory {
 
     public ECharts.Option newOption() {
-
         ECharts.Option option = Js.cast(new Object());
         return option;
     }
@@ -85,17 +84,36 @@ public class EChartsTypeFactory {
         ECharts.Legend legend = Js.cast(new Object());
         return legend;
     }
-    
+
     public ECharts.Tooltip newTooltip() {
         ECharts.Tooltip tooltip = Js.cast(new Object());
         return tooltip;
     }
-    
+
+    public ECharts.Toolbox newToolbox() {
+        ECharts.Toolbox toolbox = Js.cast(new Object());
+        return toolbox;
+    }
+
+    public ECharts.DataView newDataView() {
+        ECharts.DataView dataView = Js.cast(new Object());
+        return dataView;
+    }
+
+    public ECharts.SaveAsImage newSaveAsImage() {
+        ECharts.SaveAsImage saveAsImage = Js.cast(new Object());
+        return saveAsImage;
+    }
+
+    public ECharts.ToolBoxFeature newToolBoxFeature() {
+        ECharts.ToolBoxFeature toolBoxFeature = Js.cast(new Object());
+        return toolBoxFeature;
+    }
+
     public ECharts.Encode newEncode() {
         ECharts.Encode encode = Js.cast(new Object());
         return encode;
     }
-
 
     public ECharts.Dataset newDataset() {
         ECharts.Dataset dataset = Js.cast(new Object());

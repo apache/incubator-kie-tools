@@ -80,6 +80,9 @@ public interface ECharts {
         public native void setTooltip(Tooltip tooltip);
 
         @JsProperty
+        public native void setToolbox(Toolbox toolbox);
+
+        @JsProperty
         public native void setGrid(Grid grid);
 
         @JsProperty
@@ -113,6 +116,9 @@ public interface ECharts {
 
         @JsProperty
         public native void setLeft(String left);
+        
+        @JsProperty
+        public native void setTop(String top);
 
         @JsProperty
         public native void setShow(boolean show);
@@ -206,7 +212,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setType(String seriesType);
-        
+
         @JsProperty
         public native void setName(String name);
 
@@ -233,7 +239,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setEncode(Encode encode);
-        
+
         @JsProperty
         public native void setStack(String stackType);
 
@@ -265,6 +271,43 @@ public interface ECharts {
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class SaveAsImage {
+
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class DataView {
+
+        @JsProperty
+        public native void setReadOnly(boolean readOnly);
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class ToolBoxFeature {
+
+        @JsProperty
+        public native void setSaveAsImage(SaveAsImage saveAsImage);
+
+        @JsProperty
+        public native void setDataView(DataView dataView);
+        
+        @JsProperty
+        public native void setDataZoom(DataZoom dataZoom);
+
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class Toolbox {
+
+        @JsProperty
+        public native void setShow(boolean show);
+
+        @JsProperty
+        public native void setFeature(ToolBoxFeature dataView);
+
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class Dataset {
 
         @JsProperty
@@ -274,8 +317,6 @@ public interface ECharts {
         public native void setSource(Object[][] source);
 
     }
-
-    // Split line
 
     public enum SeriesType {
         bar,
@@ -288,7 +329,7 @@ public interface ECharts {
     public enum XAxisType {
         category,
         value;
-    }    
+    }
 
     public class Builder {
 

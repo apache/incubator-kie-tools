@@ -302,6 +302,11 @@ public class DisplayerSettings {
     public void setRenderer(String renderer) {
         settings.put(getSettingPath(DisplayerAttributeDef.RENDERER), renderer);
     }
+    
+    public Mode getMode() {
+        var modeStr = settings.get(getSettingPath(DisplayerAttributeDef.MODE));
+        return Mode.getByName(modeStr);
+    }
 
     public String getTitle() {
         return parseString(settings.get(getSettingPath(DisplayerAttributeDef.TITLE)));
@@ -312,7 +317,7 @@ public class DisplayerSettings {
     }
 
     public boolean isTitleVisible() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.TITLE_VISIBLE)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.TITLE_VISIBLE)), true);
     }
 
     public void setTitleVisible(boolean titleVisible) {
@@ -331,6 +336,18 @@ public class DisplayerSettings {
     public boolean isExcelExportAllowed() {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EXPORT_EXCEL))) || parseBoolean(
                 settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_XLS)));
+    }
+    
+    public boolean isPngExportAllowed() {
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_PNG)));
+    }
+    
+    public boolean isEditAllowed() {
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EDIT)));
+    }
+
+    public String getExtraConfiguration() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.EXTRA_CONFIGURATION)));
     }
 
     public void setExcelExportAllowed(boolean excelExportAllowed) {
@@ -505,7 +522,7 @@ public class DisplayerSettings {
     }
 
     public boolean isChartShowLegend() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.CHART_SHOWLEGEND)), true);
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.CHART_SHOWLEGEND)));
     }
 
     public void setChartShowLegend(boolean chartShowLegend) {
@@ -515,7 +532,7 @@ public class DisplayerSettings {
     public Position getChartLegendPosition() {
         Position pos = Position.getByName(settings.get(getSettingPath(DisplayerAttributeDef.CHART_LEGENDPOSITION)));
         if (pos == null)
-            return Position.RIGHT;
+            return Position.BOTTOM;
         return pos;
     }
 

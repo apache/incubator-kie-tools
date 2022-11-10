@@ -18,7 +18,9 @@ package org.dashbuilder.renderer.echarts.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.json.client.JSONParser;
 import elemental2.dom.DomGlobal;
+import jsinterop.base.Js;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
@@ -26,6 +28,8 @@ import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.Mode;
+import org.dashbuilder.displayer.Position;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Option;
@@ -45,7 +49,7 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
 
         void applyOption(Option option);
 
-        void setSize(int width, int height, boolean resizable);
+        void configureChart(int width, int height, boolean resizable, Mode mode);
 
     }
 
@@ -154,7 +158,7 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
                 } else {
                     var settings = displayerSettings.getColumnSettings(column);
                     var value = super.evaluateValueToString(dataSet.getValueAt(i, j), settings);
-                    try {                        
+                    try {
                         source[i][j] = Double.parseDouble(value);
                     } catch (Exception e) {
                         source[i][j] = value;
@@ -172,36 +176,55 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         var title = echartsFactory.newTitle();
         var legend = echartsFactory.newLegend();
         var tooltip = echartsFactory.newTooltip();
+        var toolbox = echartsFactory.newToolbox();
+        var toolboxFeature = echartsFactory.newToolBoxFeature();
 
         var width = displayerSettings.getChartWidth();
         var height = displayerSettings.getChartHeight();
+        var bgColor = displayerSettings.getChartBackgroundColor();
+        var legendPosition = displayerSettings.getChartLegendPosition();
+        var mode = displayerSettings.getMode() == null ? Mode.LIGHT : displayerSettings.getMode();
+        var extraConfiguration = displayerSettings.getExtraConfiguration();
 
         var echartsDataSet = buildDataSet();
-        var bgColor = displayerSettings.getChartBackgroundColor();
 
         title.setText(displayerSettings.getTitle());
+        if (DisplayerSubType.DONUT == displayerSettings.getSubtype()) {
+            title.setTop("center");
+        } 
         title.setLeft("center");
         title.setShow(displayerSettings.isTitleVisible());
 
         legend.setShow(displayerSettings.isChartShowLegend());
-        switch (displayerSettings.getChartLegendPosition()) {
+        legend.setTop(legendPosition == Position.TOP ? "top" : "bottom");
+
+        if (displayerSettings.isPngExportAllowed()) {
+            toolboxFeature.setSaveAsImage(echartsFactory.newSaveAsImage());
+        }
+        if (displayerSettings.isEditAllowed()) {
+            var dataView = echartsFactory.newDataView();
+            dataView.setReadOnly(false);
+            toolboxFeature.setDataView(dataView);
+        }
+        if (displayerSettings.isZoomEnabled()) {
+            var dataZoom = echartsFactory.newDataZoom();
+            toolboxFeature.setDataZoom(dataZoom);
+        }
+        toolbox.setShow(true);
+        toolbox.setFeature(toolboxFeature);
+
+        switch (legendPosition) {
             case BOTTOM:
-                legend.setTop("bottom");
+            case TOP:
                 legend.setLeft("center");
                 break;
             case IN:
                 break;
             case LEFT:
-                legend.setTop("bottom");
                 legend.setLeft("left");
                 break;
             case RIGHT:
-                legend.setTop("bottom");
                 legend.setLeft("right");
-                break;
-            case TOP:
-                legend.setTop("top");
-                legend.setLeft("center");
                 break;
         }
 
@@ -227,9 +250,22 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         option.setDataset(echartsDataSet);
         option.setTitle(title);
         option.setLegend(legend);
+        option.setToolbox(toolbox);
 
-        view.setSize(width, height, displayerSettings.isResizable());
+        view.configureChart(width,
+                height,
+                displayerSettings.isResizable(),
+                mode);
         view.applyOption(option);
+        
+        if (extraConfiguration != null && !extraConfiguration.isEmpty()) {
+            try {
+                option = Js.cast(JSONParser.parseStrict(extraConfiguration).isObject().getJavaScriptObject());
+                view.applyOption(option);
+            } catch (Exception e) {
+                DomGlobal.console.log("Extra configuration not valid: \n" + extraConfiguration);
+            }
+        }
 
     }
 
@@ -243,8 +279,7 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
                         return getFormatter().formatNumber(settings.getValuePattern(),
                                 Double.parseDouble(value.toString()));
                     } catch (NumberFormatException e) {
-                        DomGlobal.console.log("Error formatting value: " + e.getMessage());
-                        DomGlobal.console.debug(e);
+                        // do nothing
                     }
                 }
             }
@@ -276,7 +311,8 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         var subType = displayerSettings.getSubtype();
         boolean isBar = subType != null && (subType == DisplayerSubType.BAR || subType == DisplayerSubType.BAR_STACKED);
         var isStack = subType != null && (subType == DisplayerSubType.BAR_STACKED ||
-                                          subType == DisplayerSubType.AREA_STACKED);
+                                          subType == DisplayerSubType.AREA_STACKED ||
+                                          subType == DisplayerSubType.COLUMN_STACKED);
 
         if (!isBar) {
             axisLabelX.setInterval(0);
@@ -376,11 +412,10 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         }
 
         if (displayerSettings.getSubtype() == DisplayerSubType.DONUT) {
-            var radius = new String[]{};
+            var radius = new String[]{"50%", "70%"};
             series.setRadius(radius);
         }
         option.setSeries(series);
-
     }
 
 }

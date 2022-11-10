@@ -46,10 +46,7 @@ import static org.dashbuilder.displayer.DisplayerSubType.PIE_3D;
 import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
 import static org.dashbuilder.displayer.DisplayerType.AREACHART;
 import static org.dashbuilder.displayer.DisplayerType.BARCHART;
-import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
 import static org.dashbuilder.displayer.DisplayerType.LINECHART;
-import static org.dashbuilder.displayer.DisplayerType.MAP;
-import static org.dashbuilder.displayer.DisplayerType.METERCHART;
 import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 
 @ApplicationScoped
@@ -57,7 +54,13 @@ public class EChartsRenderer extends AbstractRendererLibrary {
 
     private static final DisplayerType DEFAULT_CHART = BARCHART;
 
-    public static final String UUID = "echarts";
+    public static final String UUID = "echarts";    
+
+    private static List<DisplayerType> SUPPORTED_TYPES = Arrays.asList(LINECHART,
+            BARCHART,
+            PIECHART,
+            AREACHART);    
+
 
     @PostConstruct
     public void prepare() {
@@ -67,13 +70,6 @@ public class EChartsRenderer extends AbstractRendererLibrary {
     @Inject
     protected SyncBeanManager beanManager;
 
-    private static List<DisplayerType> SUPPORTED_TYPES = Arrays.asList(LINECHART,
-            BARCHART,
-            PIECHART,
-            AREACHART,
-            BUBBLECHART,
-            METERCHART,
-            MAP);
 
     @Override
     public String getUUID() {

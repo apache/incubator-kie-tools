@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
+import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Chart;
@@ -41,11 +42,11 @@ public class EChartsDisplayerView<P extends EChartsDisplayer<?>>
     protected Panel displayerPanel = GWT.create(FlowPanel.class);
 
     private Chart chart;
-    private String theme;
 
     int width;
     int height;
     boolean resizable;
+    Mode mode;
 
     @Inject
     EChartsTypeFactory echartsFactory;
@@ -54,7 +55,7 @@ public class EChartsDisplayerView<P extends EChartsDisplayer<?>>
     public void init(P presenter) {
         super.setPresenter(presenter);
         super.setVisualization(displayerPanel);
-        theme = "dark";
+        mode = Mode.LIGHT;
     }
 
     @Override
@@ -85,13 +86,15 @@ public class EChartsDisplayerView<P extends EChartsDisplayer<?>>
     }
 
     @Override
-    public void setSize(int width, int height, boolean resizable) {
+    public void configureChart(int width, int height, boolean resizable, Mode mode) {
         if (this.width != width ||
             this.height != height ||
-            this.resizable != resizable) {
+            this.resizable != resizable ||
+            this.mode != mode) {
             this.width = width;
             this.height = height;
             this.resizable = resizable;
+            this.mode = mode;
             initChart();
         }
     }
@@ -114,13 +117,13 @@ public class EChartsDisplayerView<P extends EChartsDisplayer<?>>
         chart = ECharts.Builder
                 .get()
                 .init(Js.cast(displayerPanel.getElement()),
-                        theme,
+                        mode.name().toLowerCase(),
                         initParams);
         if (resizable) {
+
             DomGlobal.window.onresize = e -> {
-                Scheduler.get().scheduleDeferred(() -> {
-                    chart.resize();
-                });
+                DomGlobal.console.log("Resizing Chart!");
+                chart.resize();
                 return chart;
             };
         }

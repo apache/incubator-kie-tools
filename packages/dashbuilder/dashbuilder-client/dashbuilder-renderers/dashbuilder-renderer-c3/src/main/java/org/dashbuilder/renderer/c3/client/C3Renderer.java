@@ -83,6 +83,11 @@ public class C3Renderer extends AbstractRendererLibrary {
                                                                        METERCHART,
                                                                        MAP);
     
+    private static List<DisplayerType> DEFAULT_TYPES = Arrays.asList(
+            BUBBLECHART,
+            METERCHART,
+            MAP);
+    
     @Override
     public String getUUID() {
         return UUID;
@@ -222,6 +227,6 @@ public class C3Renderer extends AbstractRendererLibrary {
     
     @Override
     public boolean isDefault(DisplayerType type) {
-        return SUPPORTED_TYPES.contains(type);
+        return DEFAULT_TYPES.contains(type);
     }
 }
