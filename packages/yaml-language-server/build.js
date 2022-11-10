@@ -17,6 +17,7 @@
 import { fileURLToPath } from "url";
 import { build } from "esbuild";
 
+/* TODO: Remove the esbuild dependency in yaml-language-server (https://issues.redhat.com/browse/KOGITO-8221) */
 await build({
   entryPoints: ["src/index.ts"],
   bundle: true,
