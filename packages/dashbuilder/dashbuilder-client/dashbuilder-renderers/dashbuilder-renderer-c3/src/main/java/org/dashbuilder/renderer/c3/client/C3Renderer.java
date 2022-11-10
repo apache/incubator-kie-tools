@@ -84,7 +84,6 @@ public class C3Renderer extends AbstractRendererLibrary {
                                                                        MAP);
     
     private static List<DisplayerType> DEFAULT_TYPES = Arrays.asList(
-            BUBBLECHART,
             METERCHART,
             MAP);
     

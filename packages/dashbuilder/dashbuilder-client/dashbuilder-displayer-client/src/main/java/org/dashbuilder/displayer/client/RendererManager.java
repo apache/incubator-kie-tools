@@ -16,7 +16,6 @@
 package org.dashbuilder.displayer.client;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;

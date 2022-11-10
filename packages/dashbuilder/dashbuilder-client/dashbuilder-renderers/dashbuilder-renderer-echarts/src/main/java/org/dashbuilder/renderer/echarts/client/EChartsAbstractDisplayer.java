@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.dashbuilder.renderer.echarts.client;
 
 import javax.annotation.PostConstruct;
@@ -27,23 +28,24 @@ import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.displayer.DisplayerSubType;
-import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.Position;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Option;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.ValueFormatterCallback;
-import org.dashbuilder.renderer.echarts.client.js.ECharts.XAxisType;
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 
-public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?>>> extends AbstractGwtDisplayer<V> {
+public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplayer.View> extends
+                                              AbstractGwtDisplayer<V> {
 
     V view;
 
     EChartsTypeFactory echartsFactory;
 
-    public interface View<P extends EChartsDisplayer<?>> extends AbstractGwtDisplayer.View<P> {
+    protected Option option;
+
+    public interface View<P extends EChartsAbstractDisplayer<?>> extends AbstractGwtDisplayer.View<P> {
 
         void noData();
 
@@ -54,7 +56,7 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
     }
 
     @Inject
-    public EChartsDisplayer(V view, EChartsTypeFactory echartsFactory) {
+    public EChartsAbstractDisplayer(V view, EChartsTypeFactory echartsFactory) {
         this.view = view;
         this.echartsFactory = echartsFactory;
     }
@@ -81,32 +83,6 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         } else {
             updateVisualizationWithData();
         }
-    }
-
-    @Override
-    public DisplayerConstraints createDisplayerConstraints() {
-        DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setMaxColumns(20)
-                .setMinColumns(2)
-                .setExtraColumnsAllowed(true)
-                .setExtraColumnsType(ColumnType.NUMBER)
-                .setColumnTypes(new ColumnType[]{
-                                                 ColumnType.LABEL,
-                                                 ColumnType.NUMBER});
-
-        return new DisplayerConstraints(lookupConstraints)
-                .supportsAttribute(DisplayerAttributeDef.TYPE)
-                .supportsAttribute(DisplayerAttributeDef.RENDERER)
-                .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.GENERAL_GROUP)
-                .supportsAttribute(DisplayerAttributeDef.CHART_WIDTH)
-                .supportsAttribute(DisplayerAttributeDef.CHART_HEIGHT)
-                .supportsAttribute(DisplayerAttributeDef.CHART_BGCOLOR)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_MARGIN_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_LEGEND_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.AXIS_GROUP);
     }
 
     // TODO: need some action to clear filter
@@ -172,7 +148,6 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
     }
 
     void updateVisualizationWithData() {
-        var option = echartsFactory.newOption();
         var title = echartsFactory.newTitle();
         var legend = echartsFactory.newLegend();
         var tooltip = echartsFactory.newTooltip();
@@ -188,11 +163,14 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
 
         var echartsDataSet = buildDataSet();
 
-        title.setText(displayerSettings.getTitle());
+        this.option = echartsFactory.newOption();
+
         if (DisplayerSubType.DONUT == displayerSettings.getSubtype()) {
             title.setTop("center");
-        } 
+        }
         title.setLeft("center");
+        title.setText(displayerSettings.getTitle());
+        title.setSubtext(displayerSettings.getSubtitle());
         title.setShow(displayerSettings.isTitleVisible());
 
         legend.setShow(displayerSettings.isChartShowLegend());
@@ -236,13 +214,6 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
             option.setDataZoom(echartsFactory.newDataZoom());
         }
 
-        if (isXYChart()) {
-            setupXYChart(option);
-        } else {
-            setupOtherCharts(option);
-
-        }
-
         tooltip.setValueFormatter(buildNumberLabelFormatterForColumn(1));
 
         option.setColor(COLOR_PATTERN);
@@ -256,8 +227,11 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
                 height,
                 displayerSettings.isResizable(),
                 mode);
+
+        chartSetup();
+
         view.applyOption(option);
-        
+
         if (extraConfiguration != null && !extraConfiguration.isEmpty()) {
             try {
                 option = Js.cast(JSONParser.parseStrict(extraConfiguration).isObject().getJavaScriptObject());
@@ -269,7 +243,26 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
 
     }
 
-    private ValueFormatterCallback buildNumberLabelFormatterForColumn(int i) {
+    @Override
+    public DisplayerConstraints createDisplayerConstraints() {
+        var lookupConstraints = getDataSetLookupConstraints();
+
+        return new DisplayerConstraints(lookupConstraints)
+                .supportsAttribute(DisplayerAttributeDef.TYPE)
+                .supportsAttribute(DisplayerAttributeDef.RENDERER)
+                .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.GENERAL_GROUP)
+                .supportsAttribute(DisplayerAttributeDef.CHART_WIDTH)
+                .supportsAttribute(DisplayerAttributeDef.CHART_HEIGHT)
+                .supportsAttribute(DisplayerAttributeDef.CHART_BGCOLOR)
+                .supportsAttribute(DisplayerAttributeGroupDef.CHART_MARGIN_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.CHART_LEGEND_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.AXIS_GROUP);
+    }
+
+    ValueFormatterCallback buildNumberLabelFormatterForColumn(int i) {
         return value -> {
             if (dataSet.getColumns().size() > i) {
                 var column = dataSet.getColumns().get(i);
@@ -287,135 +280,7 @@ public class EChartsDisplayer<V extends EChartsDisplayer.View<EChartsDisplayer<?
         };
     }
 
-    private boolean isXYChart() {
-        return displayerSettings.getType() == DisplayerType.LINECHART ||
-               displayerSettings.getType() == DisplayerType.BARCHART ||
-               displayerSettings.getType() == DisplayerType.AREACHART ||
-               displayerSettings.getType() == DisplayerType.BUBBLECHART;
-    }
+    abstract DataSetLookupConstraints getDataSetLookupConstraints();
 
-    private void setupXYChart(ECharts.Option option) {
-        var type = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
-
-        // XY charts setup
-        var xAxis = echartsFactory.newXAxis();
-        var yAxis = echartsFactory.newYAxis();
-        var axisLabelX = echartsFactory.newAxisLabel();
-        var axisLabelY = echartsFactory.newAxisLabel();
-
-        // XY Grid
-        var grid = echartsFactory.newGrid();
-
-        var splitLineX = echartsFactory.newSplitLine();
-        var splitLineY = echartsFactory.newSplitLine();
-        var subType = displayerSettings.getSubtype();
-        boolean isBar = subType != null && (subType == DisplayerSubType.BAR || subType == DisplayerSubType.BAR_STACKED);
-        var isStack = subType != null && (subType == DisplayerSubType.BAR_STACKED ||
-                                          subType == DisplayerSubType.AREA_STACKED ||
-                                          subType == DisplayerSubType.COLUMN_STACKED);
-
-        if (!isBar) {
-            axisLabelX.setInterval(0);
-        }
-        axisLabelX.setRotate(displayerSettings.getXAxisLabelsAngle());
-        splitLineX.setShow(displayerSettings.isGridXOn(true));
-        axisLabelX.setShow(displayerSettings.isXAxisShowLabels());
-        // must format columns 0 if number
-        axisLabelX.setFormatter(buildNumberLabelFormatterForColumn(0));
-        xAxis.setSplitLine(splitLineX);
-        xAxis.setName(displayerSettings.getXAxisTitle());
-        xAxis.setAxisLabel(axisLabelX);
-        xAxis.setType(isBar ? XAxisType.value.name() : XAxisType.category.name());
-
-        axisLabelY.setShow(displayerSettings.isYAxisShowLabels());
-        splitLineY.setShow(displayerSettings.isGridYOn(true));
-        axisLabelY.setFormatter(buildNumberLabelFormatterForColumn(1));
-        yAxis.setSplitLine(splitLineY);
-        yAxis.setName(displayerSettings.getYAxisTitle());
-        yAxis.setAxisLabel(axisLabelY);
-        yAxis.setType(isBar ? XAxisType.category.name() : XAxisType.value.name());
-
-        // perhaps only do this for XY subtypes
-        var nColumns = dataSet.getColumns().size();
-        var allSeries = new ECharts.Series[nColumns - 1];
-        if (nColumns > 0) {
-            var catColumn = displayerSettings.getColumnSettings(dataSet.getColumnByIndex(0)).getColumnName();
-            for (int i = 1; i < nColumns; i++) {
-                var series = echartsFactory.newSeries();
-                var encode = echartsFactory.newEncode();
-                var column = dataSet.getColumnByIndex(i);
-                var settings = displayerSettings.getColumnSettings(column);
-                var seriesColumn = settings.getColumnName();
-
-                if (displayerSettings.getType() == DisplayerType.AREACHART) {
-                    series.setAreaStyle(echartsFactory.newAreaStyle());
-                }
-
-                if (displayerSettings.getSubtype() == DisplayerSubType.SMOOTH) {
-                    series.setSmooth(true);
-                }
-                if (isBar) {
-                    encode.setX(seriesColumn);
-                    encode.setY(catColumn);
-                } else {
-                    encode.setX(catColumn);
-                    encode.setY(seriesColumn);
-                }
-
-                if (isStack) {
-                    series.setStack(catColumn);
-                }
-
-                series.setName(seriesColumn);
-                series.setEncode(encode);
-                series.setType(type);
-
-                allSeries[i - 1] = series;
-            }
-        }
-
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_BOTTOM)) {
-            grid.setBottom(displayerSettings.getChartMarginBottom());
-        }
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_TOP)) {
-            grid.setTop(displayerSettings.getChartMarginTop());
-        }
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_LEFT)) {
-            grid.setLeft(displayerSettings.getChartMarginLeft());
-        }
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_RIGHT)) {
-            grid.setRight(displayerSettings.getChartMarginRight());
-        }
-
-        option.setGrid(grid);
-        option.setXAxis(xAxis);
-        option.setYAxis(yAxis);
-        option.setSeries(allSeries);
-    }
-
-    private void setupOtherCharts(Option option) {
-        var series = echartsFactory.newSeries();
-        var type = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
-        series.setType(type);
-
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_BOTTOM)) {
-            series.setBottom(displayerSettings.getChartMarginBottom());
-        }
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_TOP)) {
-            series.setTop(displayerSettings.getChartMarginTop());
-        }
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_LEFT)) {
-            series.setLeft(displayerSettings.getChartMarginLeft());
-        }
-        if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_RIGHT)) {
-            series.setRight(displayerSettings.getChartMarginRight());
-        }
-
-        if (displayerSettings.getSubtype() == DisplayerSubType.DONUT) {
-            var radius = new String[]{"50%", "70%"};
-            series.setRadius(radius);
-        }
-        option.setSeries(series);
-    }
-
+    abstract void chartSetup();
 }

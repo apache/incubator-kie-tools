@@ -89,6 +89,11 @@ public class EChartsTypeFactory {
         ECharts.Tooltip tooltip = Js.cast(new Object());
         return tooltip;
     }
+    
+    public ECharts.Label newLabel() {
+        ECharts.Label label = Js.cast(new Object());
+        return label;
+    }
 
     public ECharts.Toolbox newToolbox() {
         ECharts.Toolbox toolbox = Js.cast(new Object());
@@ -133,6 +138,7 @@ public class EChartsTypeFactory {
             case METERCHART:
                 return SeriesType.gauge;
             case BUBBLECHART:
+                return SeriesType.scatter;
             case MAP:
             case METRIC:
             case SELECTOR:

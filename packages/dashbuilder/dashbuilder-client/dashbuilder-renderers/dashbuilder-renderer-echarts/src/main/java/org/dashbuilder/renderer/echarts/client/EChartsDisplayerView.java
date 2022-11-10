@@ -21,9 +21,9 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
-import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
@@ -35,9 +35,9 @@ import org.dashbuilder.renderer.echarts.client.resources.i18n.EChartsDisplayerCo
 import org.gwtbootstrap3.client.ui.Label;
 
 @Dependent
-public class EChartsDisplayerView<P extends EChartsDisplayer<?>>
+public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
                                  extends AbstractGwtDisplayerView<P>
-                                 implements EChartsDisplayer.View<P> {
+                                 implements EChartsAbstractDisplayer.View<P> {
 
     protected Panel displayerPanel = GWT.create(FlowPanel.class);
 
@@ -120,12 +120,7 @@ public class EChartsDisplayerView<P extends EChartsDisplayer<?>>
                         mode.name().toLowerCase(),
                         initParams);
         if (resizable) {
-
-            DomGlobal.window.onresize = e -> {
-                DomGlobal.console.log("Resizing Chart!");
-                chart.resize();
-                return chart;
-            };
+            Window.addResizeHandler(v -> chart.resize());
         }
 
     }

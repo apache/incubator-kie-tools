@@ -42,10 +42,10 @@ import static org.dashbuilder.displayer.DisplayerSubType.LINE;
 import static org.dashbuilder.displayer.DisplayerSubType.MAP_MARKERS;
 import static org.dashbuilder.displayer.DisplayerSubType.MAP_REGIONS;
 import static org.dashbuilder.displayer.DisplayerSubType.PIE;
-import static org.dashbuilder.displayer.DisplayerSubType.PIE_3D;
 import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
 import static org.dashbuilder.displayer.DisplayerType.AREACHART;
 import static org.dashbuilder.displayer.DisplayerType.BARCHART;
+import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
 import static org.dashbuilder.displayer.DisplayerType.LINECHART;
 import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 
@@ -54,13 +54,13 @@ public class EChartsRenderer extends AbstractRendererLibrary {
 
     private static final DisplayerType DEFAULT_CHART = BARCHART;
 
-    public static final String UUID = "echarts";    
+    public static final String UUID = "echarts";
 
     private static List<DisplayerType> SUPPORTED_TYPES = Arrays.asList(LINECHART,
             BARCHART,
             PIECHART,
-            AREACHART);    
-
+            AREACHART,
+            BUBBLECHART);
 
     @PostConstruct
     public void prepare() {
@@ -69,7 +69,6 @@ public class EChartsRenderer extends AbstractRendererLibrary {
 
     @Inject
     protected SyncBeanManager beanManager;
-
 
     @Override
     public String getUUID() {
@@ -82,16 +81,15 @@ public class EChartsRenderer extends AbstractRendererLibrary {
     }
 
     @Override
-    public List<DisplayerSubType> getSupportedSubtypes(DisplayerType displayerType) {
-        displayerType = displayerType == null ? DEFAULT_CHART : displayerType;
-        displayerType = displayerType == null ? DEFAULT_CHART : displayerType;
+    public List<DisplayerSubType> getSupportedSubtypes(DisplayerType type) {
+        var displayerType = type == null ? DEFAULT_CHART : type;
         switch (displayerType) {
             case LINECHART:
                 return Arrays.asList(LINE, SMOOTH);
             case BARCHART:
                 return Arrays.asList(BAR, BAR_STACKED, COLUMN, COLUMN_STACKED);
             case PIECHART:
-                return Arrays.asList(PIE, DONUT, PIE_3D);
+                return Arrays.asList(PIE, DONUT);
             case AREACHART:
                 return Arrays.asList(AREA, AREA_STACKED);
             case MAP:
@@ -102,7 +100,21 @@ public class EChartsRenderer extends AbstractRendererLibrary {
     }
 
     public Displayer lookupDisplayer(DisplayerSettings displayerSettings) {
-        return beanManager.lookupBean(EChartsDisplayer.class).newInstance();
+        var displayerType = displayerSettings.getType() == null ? DEFAULT_CHART : displayerSettings.getType();
+        switch (displayerType) {
+            case LINECHART:
+            case BARCHART:
+            case AREACHART:
+                return beanManager.lookupBean(EChartsXYChartDisplayer.class).newInstance();
+            case BUBBLECHART:
+                return beanManager.lookupBean(EChartsBubbleChartDisplayer.class).newInstance();
+            case PIECHART:
+                return beanManager.lookupBean(EChartsPieChartDisplayer.class).newInstance();
+            case METERCHART:
+            case MAP:
+            default:
+                throw new IllegalArgumentException("Type not supported by ECharts");
+        }
     }
 
     @Override

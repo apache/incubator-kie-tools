@@ -72,6 +72,9 @@ public interface ECharts {
 
         @JsProperty
         public native void setSeries(Series series);
+        
+        @JsProperty
+        public native Series[] getSeries();
 
         @JsProperty
         public native void setTitle(Title title);
@@ -114,6 +117,9 @@ public interface ECharts {
         @JsProperty
         public native void setText(String title);
 
+        @JsProperty
+        public native void setSubtext(String subText);
+        
         @JsProperty
         public native void setLeft(String left);
         
@@ -242,6 +248,15 @@ public interface ECharts {
 
         @JsProperty
         public native void setStack(String stackType);
+        
+        @JsProperty
+        public native void setSymbolSize(SymbolSizeCallback callback);
+        
+        @JsProperty
+        public native void setSymbolSize(int value);
+        
+        @JsProperty
+        public native void setLabel(Label label);
 
     }
 
@@ -253,6 +268,18 @@ public interface ECharts {
 
         @JsProperty
         public native void setY(String y);
+    }
+    
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class Label {
+
+        @JsProperty
+        public native void setFormatter(LabelFormatterCallback callback);
+        
+        
+        @JsProperty
+        public native void setShow(boolean show);
+
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -268,6 +295,31 @@ public interface ECharts {
     interface ValueFormatterCallback {
 
         Object execute(Object object);
+    }
+    
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    class CallbackParams {       
+        
+        @JsProperty
+        public native int getDataIndex();
+        
+        @JsProperty
+        public native Object[] getData();
+
+    }
+    
+    @JsFunction
+    @FunctionalInterface
+    interface LabelFormatterCallback {
+
+        Object execute(CallbackParams params);
+    }
+    
+    @JsFunction
+    @FunctionalInterface
+    interface SymbolSizeCallback {
+
+        double execute(Number value, CallbackParams params);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -322,7 +374,8 @@ public interface ECharts {
         bar,
         line,
         pie,
-        gauge;
+        gauge,
+        scatter;
 
     }
 

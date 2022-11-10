@@ -20,8 +20,6 @@ public class DisplayerAttributeDef {
     public static final DisplayerAttributeDef TYPE = new DisplayerAttributeDef("type");
     public static final DisplayerAttributeDef SUBTYPE = new DisplayerAttributeDef("subtype");
     public static final DisplayerAttributeDef RENDERER = new DisplayerAttributeDef("renderer");
-    public static final DisplayerAttributeDef MODE = new DisplayerAttributeDef("mode");
-    public static final DisplayerAttributeDef ALLOW_EDIT = new DisplayerAttributeDef("allowEdit");
     public static final DisplayerAttributeDef EXTRA_CONFIGURATION = new DisplayerAttributeDef("extraConfiguration");
 
     public static final DisplayerAttributeDef COLUMN_EXPRESSION = new DisplayerAttributeDef("expression", DisplayerAttributeGroupDef.COLUMNS_GROUP);
@@ -29,8 +27,10 @@ public class DisplayerAttributeDef {
     public static final DisplayerAttributeDef COLUMN_EMPTY = new DisplayerAttributeDef("empty", DisplayerAttributeGroupDef.COLUMNS_GROUP);
 
     public static final DisplayerAttributeDef TITLE = new DisplayerAttributeDef("title", DisplayerAttributeGroupDef.GENERAL_GROUP);
+    public static final DisplayerAttributeDef SUB_TITLE = new DisplayerAttributeDef("subtitle", DisplayerAttributeGroupDef.GENERAL_GROUP);
     public static final DisplayerAttributeDef TITLE_VISIBLE = new DisplayerAttributeDef("visible", DisplayerAttributeGroupDef.GENERAL_GROUP);
-    
+    public static final DisplayerAttributeDef MODE = new DisplayerAttributeDef("mode", DisplayerAttributeGroupDef.GENERAL_GROUP);
+    public static final DisplayerAttributeDef ALLOW_EDIT = new DisplayerAttributeDef("allowEdit", DisplayerAttributeGroupDef.GENERAL_GROUP);
 
     /**
      * @deprecated Replaced by {@link #EXPORT_TO_CSV}. (Kept for backward compatibility)
@@ -102,6 +102,11 @@ public class DisplayerAttributeDef {
     public static final DisplayerAttributeDef JS_TEMPLATE = new DisplayerAttributeDef("javascript", DisplayerAttributeGroupDef.HTML_GROUP);
     
     public static final DisplayerAttributeDef MAP_COLOR_SCHEME = new DisplayerAttributeDef("color_scheme", DisplayerAttributeGroupDef.MAP_GROUP);
+    
+    
+    public static final DisplayerAttributeDef BUBBLE_MIN_RADIUS = new DisplayerAttributeDef("minRadius", DisplayerAttributeGroupDef.BUBBLE_GROUP);
+    public static final DisplayerAttributeDef BUBBLE_MAX_RADIUS = new DisplayerAttributeDef("maxRadius", DisplayerAttributeGroupDef.BUBBLE_GROUP);
+    public static final DisplayerAttributeDef BUBBLE_COLOR = new DisplayerAttributeDef("color", DisplayerAttributeGroupDef.BUBBLE_GROUP);
 
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID_DEPRECATED = new DisplayerAttributeDef("external_component_id");
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID = new DisplayerAttributeDef("component");

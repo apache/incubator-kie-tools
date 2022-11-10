@@ -302,7 +302,7 @@ public class DisplayerSettings {
     public void setRenderer(String renderer) {
         settings.put(getSettingPath(DisplayerAttributeDef.RENDERER), renderer);
     }
-    
+
     public Mode getMode() {
         var modeStr = settings.get(getSettingPath(DisplayerAttributeDef.MODE));
         return Mode.getByName(modeStr);
@@ -310,6 +310,10 @@ public class DisplayerSettings {
 
     public String getTitle() {
         return parseString(settings.get(getSettingPath(DisplayerAttributeDef.TITLE)));
+    }
+
+    public String getSubtitle() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.SUB_TITLE)));
     }
 
     public void setTitle(String title) {
@@ -337,11 +341,11 @@ public class DisplayerSettings {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EXPORT_EXCEL))) || parseBoolean(
                 settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_XLS)));
     }
-    
+
     public boolean isPngExportAllowed() {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_PNG)));
     }
-    
+
     public boolean isEditAllowed() {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EDIT)));
     }
@@ -709,13 +713,20 @@ public class DisplayerSettings {
 
     }
 
-    public boolean isAttributeDefinedByUser(DisplayerAttributeDef attr) {
-        return settings.get(getSettingPath(attr)) != null;
-
-    }
-
     public MapColorScheme getMapColorScheme() {
         return MapColorScheme.from(settings.get(getSettingPath(DisplayerAttributeDef.MAP_COLOR_SCHEME)));
+    }
+
+    public long getBubbleMinRadius() {
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.BUBBLE_MIN_RADIUS)), 5);
+    }
+
+    public long getBubbleMaxRadius() {
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.BUBBLE_MAX_RADIUS)), 60);
+    }
+
+    public String getBubbleColor() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.BUBBLE_COLOR)));
     }
 
     public String getComponentId() {
@@ -800,6 +811,11 @@ public class DisplayerSettings {
 
     private String removeComponentPrefix(String componentId, String key) {
         return key.replaceAll(componentId + ".", "");
+    }
+
+    public boolean isAttributeDefinedByUser(DisplayerAttributeDef attr) {
+        return settings.get(getSettingPath(attr)) != null;
+
     }
 
 }
