@@ -29,12 +29,12 @@
     "copy-jitexecutor:darwin": "cp ./node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor jitexecutor && chmod +x jitexecutor",
     "copy-jitexecutor:linux": "cp ./node_modules/@kie-tools/jitexecutor-native/dist/linux/jitexecutor jitexecutor && chmod +x jitexecutor",
     "copy-jitexecutor:win32": "COPY /B /Y .\\node_modules\\@kie-tools\\jitexecutor-native\\dist\\win32\\jitexecutor.exe jitexecutor",
-    "install": "node install.js && go mod tidy",
+    "install": "go mod tidy",
     "pack-app": "run-script-os",
     "pack-app:darwin": "cd ./scripts/macos && ./build.sh",
     "pack-app:linux": "cd ./dist/linux && tar -pcvzf kie_sandbox_extended_services.tar.gz kie_sandbox_extended_services",
     "pack-app:win32": "echo 'Nothing to do'",
-    "start": "cross-env ENV=dev go run main.go"
+    "start": "cross-env ENV=dev make start"
   },
   "dependencies": {
     "@kie-tools/jitexecutor-native": "1.29.0-Final"

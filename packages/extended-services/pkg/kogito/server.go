@@ -37,46 +37,46 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/kiegroup/kie-tools/extended-services/pkg/config"
-	"github.com/kiegroup/kie-tools/extended-services/pkg/utils"
+	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
 	"github.com/phayes/freeport"
 )
 
 type Proxy struct {
 	view               *KogitoSystray
-	srv                *http.Server
+	server             *http.Server
 	cmd                *exec.Cmd
 	Started            bool
 	URL                string
-	Port               int
-	RunnerPort         int
+	Port               string
+	RunnerPort         string
 	jitexecutorPath    string
 	InsecureSkipVerify bool
 }
 
-func NewProxy(port int, jitexecutor []byte, insecureSkipVerify bool) *Proxy {
-	proxy := &Proxy{Started: false}
-	proxy.jitexecutorPath = proxy.createJitExecutor(jitexecutor)
-	proxy.Port = port
-	proxy.InsecureSkipVerify = insecureSkipVerify
-	return proxy
+func NewProxy(port string, jitexecutor []byte) *Proxy {
+	return &Proxy{
+		jitexecutorPath:    createJitExecutor(jitexecutor),
+		Started:            false,
+		Port:               port,
+		InsecureSkipVerify: false,
+	}
 }
 
-func (self *Proxy) Start() {
+func (p *Proxy) Start() {
+	port, err := freeport.GetFreePort()
+	if err != nil {
+		log.Fatal(err)
+	}
+	p.RunnerPort = strconv.Itoa(port)
+	p.URL = "http://127.0.0.1:" + p.RunnerPort
+	target, err := url.Parse(p.URL)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	var config config.Config
-	conf := config.GetConfig()
+	p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort)
 
-	self.RunnerPort = getFreePort()
-	runnerPort := strconv.Itoa(self.RunnerPort)
-	self.URL = "http://127.0.0.1:" + runnerPort
-	target, err := url.Parse(self.URL)
-	utils.Check(err)
-
-	self.cmd = exec.Command(self.jitexecutorPath, "-Dquarkus.http.port="+runnerPort)
-
-	stdout, _ := self.cmd.StdoutPipe()
-
+	stdout, _ := p.cmd.StdoutPipe()
 	go func() {
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
@@ -85,19 +85,22 @@ func (self *Proxy) Start() {
 		}
 	}()
 
-	go startRunner(self.cmd)
+	err = p.cmd.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	proxy := httputil.NewSingleHostReverseProxy(target)
 
-	r := mux.NewRouter()
-	r.PathPrefix("/devsandbox").HandlerFunc(devSandboxHandler(self))
-	r.PathPrefix("/ping").HandlerFunc(self.pingHandler())
-	r.PathPrefix("/").HandlerFunc(proxyHandler(proxy, self.cmd))
+	router := mux.NewRouter()
+	router.PathPrefix("/devsandbox").HandlerFunc(p.devSandboxHandler())
+	router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
+	router.PathPrefix("/").HandlerFunc(p.proxyHandler(proxy))
 
-	addr := conf.Proxy.IP + ":" + strconv.Itoa(self.Port)
+	addr := metadata.IP + ":" + p.Port
 
-	self.srv = &http.Server{
-		Handler:      r,
+	p.server = &http.Server{
+		Handler:      router,
 		Addr:         addr,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -105,51 +108,51 @@ func (self *Proxy) Start() {
 
 	fmt.Printf("Server started: %s \n", addr)
 
-	go self.srv.ListenAndServe()
-	go self.GracefulShutdown()
+	go p.server.ListenAndServe()
+	go p.GracefulShutdown()
 
-	self.Refresh()
+	p.Refresh()
 }
 
-func (self *Proxy) GracefulShutdown() {
+func (p *Proxy) GracefulShutdown() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	log.Println("Signal detected, shutting down...")
-	self.Stop()
-	self.srv.Shutdown(ctx)
+	p.Stop()
+	p.server.Shutdown(ctx)
 	os.Exit(0)
 }
 
-func (self *Proxy) Stop() {
+func (p *Proxy) Stop() {
 	log.Println("Shutting down")
 
-	stopRunner(self.cmd)
+	p.cmd.Process.Kill()
 
 	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*15)
 	defer cancel()
 
-	if err := self.srv.Shutdown(ctx); err != nil {
+	if err := p.server.Shutdown(ctx); err != nil {
 		log.Fatalf("Server Shutdown Failed:%+v", err)
 	}
 	log.Println("Shutdown complete")
 
-	self.RunnerPort = 0
-	self.view.Refresh()
+	p.RunnerPort = "0"
+	p.view.Refresh()
 }
 
-func (self *Proxy) Refresh() {
+func (p *Proxy) Refresh() {
 
-	self.view.SetLoading()
+	p.view.SetLoading()
 
 	started := false
 	countDown := 5
 	retry := true
 
 	for countDown > 0 && retry {
-		resp, err := http.Get(self.URL)
+		resp, err := http.Get(p.URL)
 		if err != nil {
 			fmt.Println(err.Error())
 			retry = true
@@ -164,13 +167,83 @@ func (self *Proxy) Refresh() {
 		time.Sleep(1 * time.Second)
 	}
 
-	self.Started = started
-	self.view.Refresh()
+	p.Started = started
+	p.view.Refresh()
 }
 
-func (self *Proxy) createJitExecutor(jitexecutor []byte) string {
-	cacheDir, cacheError := os.UserCacheDir()
-	utils.Check(cacheError)
+func (p *Proxy) devSandboxHandler() func(rw http.ResponseWriter, req *http.Request) {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		if req.Method == "OPTIONS" {
+			rw.Header().Add("Access-Control-Allow-Origin", "*")
+			rw.Header().Add("Access-Control-Allow-Methods", "*")
+			rw.Header().Add("Access-Control-Allow-Headers", "*")
+			return
+		}
+
+		targetUrl, err := url.Parse(req.Header.Get("Target-Url"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		emptyUrl, _ := url.Parse("")
+		req.URL = emptyUrl
+		req.Host = req.URL.Host
+
+		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+
+		// tolerate p-signed certificates
+		proxy.Transport = &http.Transport{
+			Proxy: http.ProxyFromEnvironment,
+			DialContext: (&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).DialContext,
+			ForceAttemptHTTP2:     true,
+			MaxIdleConns:          10,
+			IdleConnTimeout:       60 * time.Second,
+			TLSHandshakeTimeout:   10 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: p.InsecureSkipVerify,
+			},
+		}
+
+		proxy.ModifyResponse = func(resp *http.Response) error {
+			resp.Header.Add("Access-Control-Allow-Origin", "*")
+			resp.Header.Add("Access-Control-Allow-Methods", "*")
+			resp.Header.Add("Access-Control-Allow-Headers", "*")
+			return nil
+		}
+		proxy.ServeHTTP(rw, req)
+	}
+}
+
+func (p *Proxy) proxyHandler(proxy *httputil.ReverseProxy) func(rw http.ResponseWriter, req *http.Request) {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		req.Host = req.URL.Host
+		proxy.ServeHTTP(rw, req)
+	}
+}
+
+func (p *Proxy) pingHandler() func(rw http.ResponseWriter, req *http.Request) {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		rw.Header().Add("Access-Control-Allow-Origin", "*")
+		rw.Header().Add("Access-Control-Allow-Methods", "GET")
+
+		conf := metadata.GetConfig(p.InsecureSkipVerify)
+		rw.WriteHeader(http.StatusOK)
+		json, _ := json.Marshal(conf)
+		_, err := rw.Write(json)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func createJitExecutor(jitexecutor []byte) string {
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	cachePath := filepath.Join(cacheDir, "org.kogito")
 
@@ -186,103 +259,24 @@ func (self *Proxy) createJitExecutor(jitexecutor []byte) string {
 		jitexecutorPath = filepath.Join(cachePath, "runner")
 	}
 
-	if _, err := os.Stat(jitexecutorPath); err == nil {
+	_, err = os.Stat(jitexecutorPath)
+	if err == nil {
 		os.Remove(jitexecutorPath)
+	} else {
+		log.Fatal(err)
 	}
 
 	f, err := os.Create(jitexecutorPath)
-	utils.Check(err)
-
+	if err != nil {
+		log.Fatal(err)
+	}
 	f.Chmod(0777)
 
 	_, err = f.Write(jitexecutor)
-	utils.Check(err)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	f.Close()
 	return jitexecutorPath
-}
-
-func devSandboxHandler(self *Proxy) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "OPTIONS" {
-			w.Header().Add("Access-Control-Allow-Origin", "*")
-			w.Header().Add("Access-Control-Allow-Methods", "*")
-			w.Header().Add("Access-Control-Allow-Headers", "*")
-			return
-		}
-
-		targetUrl, err := url.Parse(r.Header.Get("Target-Url"))
-		utils.Check(err)
-		emptyUrl, _ := url.Parse("")
-		r.URL = emptyUrl
-		r.Host = r.URL.Host
-
-		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
-
-		// tolerate self-signed certificates
-		proxy.Transport = &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-			}).DialContext,
-			ForceAttemptHTTP2:     true,
-			MaxIdleConns:          10,
-			IdleConnTimeout:       60 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: self.InsecureSkipVerify,
-			},
-		}
-
-		proxy.ModifyResponse = func(resp *http.Response) error {
-			resp.Header.Add("Access-Control-Allow-Origin", "*")
-			resp.Header.Add("Access-Control-Allow-Methods", "*")
-			resp.Header.Add("Access-Control-Allow-Headers", "*")
-			return nil
-		}
-		proxy.ServeHTTP(w, r)
-	}
-}
-
-func proxyHandler(proxy *httputil.ReverseProxy, cmd *exec.Cmd) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "OPTIONS" {
-			w.Header().Add("Access-Control-Allow-Origin", "*")
-			w.Header().Add("Access-Control-Allow-Methods", "*")
-			w.Header().Add("Access-Control-Allow-Headers", "*")
-			return
-		}
-
-		r.Host = r.URL.Host
-		proxy.ServeHTTP(w, r)
-	}
-}
-
-func (self *Proxy) pingHandler() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Add("Access-Control-Allow-Methods", "GET")
-		var config config.Config
-		conf := config.GetConfig()
-		conf.App.Started = self.Started
-		conf.Proxy.Port = self.Port
-		w.WriteHeader(http.StatusOK)
-		json, _ := json.Marshal(conf)
-		w.Write(json)
-	}
-}
-
-func startRunner(cmd *exec.Cmd) {
-	utils.Check(cmd.Start())
-}
-
-func stopRunner(cmd *exec.Cmd) {
-	cmd.Process.Kill()
-}
-
-func getFreePort() int {
-	port, err := freeport.GetFreePort()
-	utils.Check(err)
-	return port
 }

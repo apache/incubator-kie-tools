@@ -24,124 +24,120 @@ import (
 	"log"
 	"os/exec"
 	"runtime"
-	"strconv"
 
 	"github.com/getlantern/systray"
-	"github.com/kiegroup/kie-tools/extended-services/pkg/config"
-	"github.com/kiegroup/kie-tools/extended-services/pkg/images"
+	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/images"
+	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
 )
 
 type KogitoSystray struct {
-	controller               *Proxy
+	server                   *Proxy
 	runnerPortItem           *systray.MenuItem
 	openModeler              *systray.MenuItem
 	StartStopItem            *systray.MenuItem
 	ToggleInsecureSkipVerify *systray.MenuItem
 }
 
-func (self *KogitoSystray) Run() {
-	systray.Run(self.onReady, self.onExit)
+func (ks *KogitoSystray) Run() {
+	systray.Run(ks.onReady, ks.onExit)
 }
 
-func (self *KogitoSystray) onReady() {
+func (ks *KogitoSystray) onReady() {
 	systray.SetTemplateIcon(images.DataStarted, images.DataStarted)
 	systray.SetTooltip(APPNAME)
 
-	self.mainSection()
+	ks.mainSection()
 	systray.AddSeparator()
-	self.operationSection()
+	ks.operationSection()
 	systray.AddSeparator()
 	quitItem := systray.AddMenuItem(QUIT, "")
 
-	self.StartStopItem.SetTitle(STARTING)
-	go self.controller.Start()
+	ks.StartStopItem.SetTitle(STARTING)
+	go ks.server.Start()
 
 	for {
 		select {
-		case <-self.openModeler.ClickedCh:
-			self.openBrowser(MODELER_LINK)
-		case <-self.StartStopItem.ClickedCh:
-			if self.controller.Started {
-				self.Stop()
+		case <-ks.openModeler.ClickedCh:
+			ks.openBrowser(MODELER_LINK)
+		case <-ks.StartStopItem.ClickedCh:
+			if ks.server.Started {
+				ks.Stop()
 			} else {
-				self.Start()
+				ks.Start()
 			}
-		case <-self.ToggleInsecureSkipVerify.ClickedCh:
-			if self.controller.InsecureSkipVerify {
-				self.controller.InsecureSkipVerify = false
-				self.ToggleInsecureSkipVerify.SetTitle(ALLOW_INSECURE_SKIP_VERIFY)
+		case <-ks.ToggleInsecureSkipVerify.ClickedCh:
+			if ks.server.InsecureSkipVerify {
+				ks.server.InsecureSkipVerify = false
+				ks.ToggleInsecureSkipVerify.SetTitle(ALLOW_INSECURE_SKIP_VERIFY)
 			} else {
-				self.controller.InsecureSkipVerify = true
-				self.ToggleInsecureSkipVerify.SetTitle(DISALLOW_INSECURE_SKIP_VERIFY)
+				ks.server.InsecureSkipVerify = true
+				ks.ToggleInsecureSkipVerify.SetTitle(DISALLOW_INSECURE_SKIP_VERIFY)
 			}
 		case <-quitItem.ClickedCh:
-			self.Stop()
+			ks.Stop()
 			systray.Quit()
 			return
 		}
 	}
 }
 
-func (self *KogitoSystray) onExit() {
+func (ks *KogitoSystray) onExit() {
 
 }
 
-func (self *KogitoSystray) Start() {
+func (ks *KogitoSystray) Start() {
 	fmt.Println("Executing Start command")
-	self.StartStopItem.SetTitle(STARTING)
-	self.controller.Start()
+	ks.StartStopItem.SetTitle(STARTING)
+	ks.server.Start()
 }
 
-func (self *KogitoSystray) Stop() {
+func (ks *KogitoSystray) Stop() {
 	fmt.Println("Executing Stop command")
-	self.StartStopItem.SetTitle(STOPPING)
-	self.controller.Stop()
+	ks.StartStopItem.SetTitle(STOPPING)
+	ks.server.Stop()
 }
 
-func (self *KogitoSystray) mainSection() {
-	self.openModeler = systray.AddMenuItem(BUSINESS_MODELER, "")
+func (ks *KogitoSystray) mainSection() {
+	ks.openModeler = systray.AddMenuItem(BUSINESS_MODELER, "")
 
 	systray.AddSeparator()
 
-	var config config.Config
-	conf := config.GetConfig()
-
-	version := systray.AddMenuItem(VERSION+": "+conf.GetConfig().App.Version, "")
+	version := systray.AddMenuItem(VERSION+": "+metadata.Version, "")
 	version.Disable()
 
-	self.runnerPortItem = systray.AddMenuItem(INFORMATION_PORTS+": "+strconv.Itoa(self.controller.Port)+" -> "+self.getRunnerPortStatus(), "")
-	self.runnerPortItem.Disable()
+	ks.runnerPortItem = systray.AddMenuItem(INFORMATION_PORTS+": "+ks.server.Port+" -> "+ks.getRunnerPortStatus(), "")
+	ks.runnerPortItem.Disable()
 }
 
-func (self *KogitoSystray) operationSection() {
-	if self.controller.InsecureSkipVerify {
-		self.ToggleInsecureSkipVerify = systray.AddMenuItem(DISALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of self-signed certificates")
+func (ks *KogitoSystray) operationSection() {
+	if ks.server.InsecureSkipVerify {
+		ks.ToggleInsecureSkipVerify = systray.AddMenuItem(DISALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of ks-signed certificates")
 	} else {
-		self.ToggleInsecureSkipVerify = systray.AddMenuItem(ALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of self-signed certificates")
+		ks.ToggleInsecureSkipVerify = systray.AddMenuItem(ALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of ks-signed certificates")
 	}
-	self.StartStopItem = systray.AddMenuItem(START, "")
+	ks.StartStopItem = systray.AddMenuItem(START, "")
 
 }
 
-func (self *KogitoSystray) Refresh() {
-	self.refreshRunnerPort()
-	self.changeStartStop()
-	self.changeIcon()
+func (ks *KogitoSystray) Refresh() {
+	ks.refreshRunnerPort()
+	ks.changeStartStop()
+	ks.changeIcon()
 }
 
-func (self *KogitoSystray) refreshRunnerPort() {
-	self.runnerPortItem.SetTitle(INFORMATION_PORTS + ": " + strconv.Itoa(self.controller.Port) + " -> " + self.getRunnerPortStatus())
+func (ks *KogitoSystray) refreshRunnerPort() {
+	ks.runnerPortItem.SetTitle(INFORMATION_PORTS + ": " + ks.server.Port + " -> " + ks.getRunnerPortStatus())
 }
 
-func (self *KogitoSystray) getRunnerPortStatus() string {
+func (ks *KogitoSystray) getRunnerPortStatus() string {
 	status := NOT_STARTED
-	if self.controller.RunnerPort != 0 {
-		status = strconv.Itoa(self.controller.RunnerPort)
+	if ks.server.RunnerPort != "0" {
+		status = ks.server.RunnerPort
 	}
 	return status
 }
 
-func (self *KogitoSystray) SetLoading() {
+func (ks *KogitoSystray) SetLoading() {
 	if runtime.GOOS == "linux" {
 		systray.SetTemplateIcon(images.DataLoadingLinux, images.DataLoadingLinux)
 	} else {
@@ -149,16 +145,16 @@ func (self *KogitoSystray) SetLoading() {
 	}
 }
 
-func (self *KogitoSystray) changeStartStop() {
-	if self.controller.Started {
-		self.StartStopItem.SetTitle(STOP)
+func (ks *KogitoSystray) changeStartStop() {
+	if ks.server.Started {
+		ks.StartStopItem.SetTitle(STOP)
 	} else {
-		self.StartStopItem.SetTitle(START)
+		ks.StartStopItem.SetTitle(START)
 	}
 }
 
-func (self *KogitoSystray) changeIcon() {
-	if self.controller.Started {
+func (ks *KogitoSystray) changeIcon() {
+	if ks.server.Started {
 		if runtime.GOOS == "linux" {
 			systray.SetTemplateIcon(images.DataStartedLinux, images.DataStartedLinux)
 		} else {
@@ -173,7 +169,7 @@ func (self *KogitoSystray) changeIcon() {
 	}
 }
 
-func (self *KogitoSystray) openBrowser(url string) {
+func (ks *KogitoSystray) openBrowser(url string) {
 	var err error
 
 	switch runtime.GOOS {

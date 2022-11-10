@@ -1,3 +1,4 @@
+//go:build headless
 // +build headless
 
 /*
