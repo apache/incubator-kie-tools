@@ -30,8 +30,8 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonArray;
+import org.dashbuilder.json.JsonNull;
 import org.dashbuilder.json.JsonObject;
-import org.dashbuilder.json.JsonString;
 import org.dashbuilder.json.JsonType;
 import org.dashbuilder.json.JsonValue;
 
@@ -275,8 +275,8 @@ public class DisplayerSettingsJSONMarshaller {
             JsonValue value = json.get(key);
             if (value instanceof JsonObject) {
                 fillRecursive(path, (JsonObject) value, settings);
-            } else if (value instanceof JsonString) {
-                settings.put(path, ((JsonString) value).getString());
+            } else if (!(value instanceof JsonNull)) {
+                settings.put(path, value.asString());
             }
         }
     }
