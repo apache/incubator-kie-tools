@@ -10,6 +10,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefau
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
+import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
@@ -47,6 +48,30 @@ public abstract class ServerlessWorkflowBasicShape<T extends ServerlessWorkflowB
 
     public ShapeStateHandler getShapeStateHandler() {
         return shapeStateHandler;
+    }
+
+    public AbstractShape<ServerlessWorkflowBasicShape> asAbstractShape() {
+        return new AbstractShape<ServerlessWorkflowBasicShape>() {
+            @Override
+            public ShapeStateHandler getShapeStateHandler() {
+                return ServerlessWorkflowBasicShape.this.getShapeStateHandler();
+            }
+
+            @Override
+            public void setUUID(String uuid) {
+                ServerlessWorkflowBasicShape.this.setUUID(uuid);
+            }
+
+            @Override
+            public String getUUID() {
+                return ServerlessWorkflowBasicShape.this.getUUID();
+            }
+
+            @Override
+            public ServerlessWorkflowBasicShape getShapeView() {
+                return ServerlessWorkflowBasicShape.this;
+            }
+        };
     }
 
     @Override

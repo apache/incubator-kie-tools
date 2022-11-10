@@ -1005,11 +1005,8 @@ public final class Geometry {
     }
 
     public static final Point2DArray getCardinalIntersects(final AbstractMultiPathPartShape<?> shape, Direction[] requestedCardinals) {
-        double corner = shape.getCornerRadius();
-        shape.setCornerRadius(0);
         final Point2DArray cardinals = getCardinals(shape.getBoundingBox(), requestedCardinals);
         final Set<Point2D>[] intersections = getCardinalIntersects(shape, cardinals);
-        shape.setCornerRadius(corner);
         return removeInnerPoints(cardinals.get(0), intersections);
     }
 

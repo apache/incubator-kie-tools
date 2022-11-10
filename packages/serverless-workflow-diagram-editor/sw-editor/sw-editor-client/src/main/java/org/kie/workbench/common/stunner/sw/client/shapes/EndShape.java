@@ -16,46 +16,11 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
-import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 
 public class EndShape extends NodeShapeImpl {
 
     public EndShape() {
-        super(new AbstractShape<EndShapeView>() {
-            final EndShapeView shape = new EndShapeView();
-
-            @Override
-            public ShapeStateHandler getShapeStateHandler() {
-                return shape.getShapeStateHandler();
-            }
-
-            @Override
-            public void setUUID(String uuid) {
-                shape.setUUID(uuid);
-            }
-
-            @Override
-            public String getUUID() {
-                return shape.getUUID();
-            }
-
-            @Override
-            public EndShapeView getShapeView() {
-                return shape;
-            }
-        });
-    }
-
-    @Override
-    public void applyState(ShapeState shapeState) {
-        super.applyState(shapeState);
-        if (ShapeState.SELECTED == shapeState) {
-            getShapeView().setFillColor("#E7F1FA");
-        } else {
-            getShapeView().setFillColor("#fff");
-        }
+        super(new EndShapeView().asAbstractShape());
     }
 }
