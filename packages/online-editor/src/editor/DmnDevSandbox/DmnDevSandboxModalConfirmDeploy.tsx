@@ -92,7 +92,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
     <Modal
       data-testid={"confirm-deploy-modal"}
       variant={ModalVariant.small}
-      title={i18n.dmnDevSandbox.confirmModal.title}
+      title={i18n.dmnDevSandbox.deployConfirmModal.title}
       isOpen={dmnDevSandboxContext.isConfirmDeployModalOpen}
       aria-label={"Confirm deploy modal"}
       onClose={onCancel}
@@ -112,7 +112,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
         </Button>,
       ]}
     >
-      {i18n.dmnDevSandbox.confirmModal.body}
+      {i18n.dmnDevSandbox.deployConfirmModal.body}
     </Modal>
   );
 }

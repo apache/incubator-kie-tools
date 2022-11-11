@@ -30,7 +30,7 @@ export function DmnDevSandboxModalConfirmDelete() {
   const { alerts } = useAlerts();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
-  const deployStartedErrorAlert = useAlert(
+  const deleteErrorAlert = useAlert(
     alerts,
     useCallback(
       ({ close }) => (
@@ -44,7 +44,7 @@ export function DmnDevSandboxModalConfirmDelete() {
     )
   );
 
-  const deployStartedSuccessAlert = useAlert(
+  const deleteSuccessAlert = useAlert(
     alerts,
     useCallback(
       ({ close }) => (
@@ -74,14 +74,15 @@ export function DmnDevSandboxModalConfirmDelete() {
     dmnDevSandboxContext.setDeploymentsDropdownOpen(true);
 
     if (deleteStarted) {
-      deployStartedSuccessAlert.show();
+      deleteSuccessAlert.show();
     } else {
-      deployStartedErrorAlert.show();
+      deleteErrorAlert.show();
     }
-  }, [isConfirmLoading, dmnDevSandboxContext, deployStartedSuccessAlert, deployStartedErrorAlert]);
+  }, [isConfirmLoading, dmnDevSandboxContext, deleteSuccessAlert, deleteErrorAlert]);
 
   const onCancel = useCallback(() => {
     dmnDevSandboxContext.setConfirmDeleteModalOpen(false);
+    dmnDevSandboxContext.setDeploymentsToBeDeleted([]);
     setConfirmLoading(false);
   }, [dmnDevSandboxContext]);
 
@@ -89,7 +90,7 @@ export function DmnDevSandboxModalConfirmDelete() {
     <Modal
       data-testid={"confirm-delete-modal"}
       variant={ModalVariant.small}
-      title={i18n.dmnDevSandbox.confirmModal.title}
+      title={i18n.dmnDevSandbox.deleteConfirmModal.title}
       isOpen={dmnDevSandboxContext.isConfirmDeleteModalOpen}
       aria-label={"Confirm delete modal"}
       onClose={onCancel}
@@ -102,14 +103,14 @@ export function DmnDevSandboxModalConfirmDelete() {
           isLoading={isConfirmLoading}
           spinnerAriaValueText={isConfirmLoading ? "Loading" : undefined}
         >
-          {isConfirmLoading ? i18n.dmnDevSandbox.common.deploying : i18n.terms.confirm}
+          {isConfirmLoading ? i18n.dmnDevSandbox.common.deleting : i18n.terms.confirm}
         </Button>,
         <Button key="cancel" variant="link" onClick={onCancel}>
           {i18n.terms.cancel}
         </Button>,
       ]}
     >
-      {i18n.dmnDevSandbox.confirmModal.body}
+      {i18n.dmnDevSandbox.deleteConfirmModal.body}
     </Modal>
   );
 }

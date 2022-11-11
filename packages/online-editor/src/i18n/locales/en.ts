@@ -68,12 +68,16 @@ export const en: OnlineI18n = {
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
+      deleting: "Deleting ...",
       saving: "Saving ...",
       setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
     },
     dropdown: {
       noDeployments: "Your deployments show up here",
       connectedTo: (username: string) => `Connected to  '${username}'`,
+      connectedToAction: "Change...",
+      deleteDeployments: "Delete deployments",
+      deleteDeploymentsDescription: "All deployments will be deleted",
       item: {
         upTooltip: "This deployment is up and running.",
         downTooltip: "This deployment is not running.",
@@ -92,17 +96,21 @@ export const en: OnlineI18n = {
       configExpiredWarning: "Token or account expired. Please update your configuration.",
       useWizard: "Configure through the guided wizard instead",
     },
-    confirmModal: {
+    deployConfirmModal: {
       title: "Deploy",
       body: "Are you sure you want to deploy your model to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+    },
+    deleteConfirmModal: {
+      title: "Delete deployment(s)",
+      body: "Are you sure you want to delete your deployment(s)? This action is not reversible and you will need to create a new deployment if you need to test your model(s).",
     },
     alerts: {
       deployStartedError:
         "Something went wrong when creating your deployment. Please check your configuration and try again.",
       deployStartedSuccess:
         "Your deployment has been successfully started and will be available shortly. Please do not close your browser tab until this operation is completed.",
-      deleteError: "Failed to delete deployment. Please check your configuration and try again.",
-      deleteSuccess: "Your deployment has been successfully deleted.",
+      deleteError: "Failed to delete deployment(s). Please try again via Openshift Console or CLI.",
+      deleteSuccess: "Deployment(s) successfully deleted.",
     },
     introduction: {
       explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,

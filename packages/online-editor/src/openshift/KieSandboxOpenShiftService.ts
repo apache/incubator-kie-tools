@@ -204,7 +204,7 @@ export class KieSandboxOpenShiftService {
   }
 
   public async deleteDeployment(resourceName: string) {
-    const deploymentResponse = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
         target: new DeleteDeployment({
           resourceName,
@@ -213,7 +213,7 @@ export class KieSandboxOpenShiftService {
       })
     );
 
-    const serviceResponse = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
         target: new DeleteService({
           resourceName,
@@ -222,7 +222,7 @@ export class KieSandboxOpenShiftService {
       })
     );
 
-    const routeResponse = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
         target: new DeleteRoute({
           resourceName,
@@ -230,7 +230,6 @@ export class KieSandboxOpenShiftService {
         }),
       })
     );
-    console.log({ deploymentResponse, serviceResponse, routeResponse });
   }
 
   private extractDeploymentStateWithUploadStatus(
