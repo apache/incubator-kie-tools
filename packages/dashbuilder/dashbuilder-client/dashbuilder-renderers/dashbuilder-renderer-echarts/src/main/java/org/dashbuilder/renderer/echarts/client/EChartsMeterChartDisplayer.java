@@ -29,10 +29,11 @@ import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 @Dependent
 public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<EChartsDisplayerView<?>> {
 
-    private static final int LEGEND_TITLE_DISTANCE = 20;
+    private static final int LEGEND_TITLE_DISTANCE = 15;
     private static final int LEGEND_ITEM_MIN_POS_Y = 20;
     private static final int LEGEND_ITEM_MIN_POS_X = -100;
     private static final int LEGEND_ITEM_MAX_POS = 100;
+    
     private static final int LEGEND_ITEM_Y_GAP = 50;
     private static final int LEGEND_ITEM_X_GAP = 50;
 
@@ -59,21 +60,28 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
         var inRange = echartsFactory.newInRange();
         var pointer = echartsFactory.newPointer();
         var progress = echartsFactory.newProgress();
+        var axisTick = echartsFactory.newAxisTick();
         var axisLabel = echartsFactory.newAxisLabel();
         var axisLine = echartsFactory.newAxisLine();
         var lineStyle = echartsFactory.newLineStyle();
         var detail = echartsFactory.newItemStyle();
         var seriesTitle = echartsFactory.newTitle();
         var legend = echartsFactory.newLegend();
+        
 
+        axisTick.setShow(displayerSettings.isXAxisShowLabels());
+        axisLabel.setFormatter(v -> Math.ceil(Double.valueOf(v.toString())));
+        axisLabel.setShow(displayerSettings.isXAxisShowLabels());
         legend.setShow(false);
         pointer.setShow(false);
-        lineStyle.setWidth(50);
+        lineStyle.setWidth(40);
+        axisLabel.setFontSize(12);
         axisLine.setLineStyle(lineStyle);
-        axisLabel.setDistance(50);
+        axisLabel.setDistance(50);        
         progress.setShow(true);
         progress.setOverlap(false);
 
+        seriesTitle.setShow(showLegend);
         detail.setValueAnimation(true);
         detail.setShow(showLegend);
         detail.setWidth(40);
@@ -112,7 +120,7 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
             var titleYPos = legendBasePosY + "%";
 
             var detailXPos = titleXPos;
-            var detailYPos = legendBasePosY + LEGEND_TITLE_DISTANCE + "%";
+            var detailYPos = (legendBasePosY + LEGEND_TITLE_DISTANCE) + "%";
             dataTitle.setOffsetCenter(new String[]{titleXPos, titleYPos});
             dataDetail.setOffsetCenter(new String[]{detailXPos, detailYPos});
 
@@ -127,6 +135,11 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
             seriesData[i] = data;
         }
 
+        var radius = showLegend ? "110%" : "150%";
+        var centerY = showLegend ? "65%" :  "85%";
+        series.setCenter(new String[] {"50%", centerY});
+        series.setRadius(radius);
+        series.setSplitNumber(4);
         series.setData(seriesData);
         series.setDetail(detail);
         series.setStartAngle(180);
@@ -138,9 +151,11 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
         series.setAxisLabel(axisLabel);
         series.setProgress(progress);
         series.setPointer(pointer);
+        series.setAxisTick(axisTick);
         series.setName("Meter");
         series.setType(this.echartsType);
 
+        option.getTitle().setTop(showLegend ? "center" : "70%");
         option.setLegend(legend);
         option.setVisualMap(visualMap);        
         option.setSeries(series);

@@ -78,7 +78,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setTitle(Title title);
-        
+
         @JsProperty
         public native Title getTitle();
 
@@ -135,6 +135,13 @@ public interface ECharts {
         @JsProperty
         public native void setShow(boolean show);
 
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class AxisTick {
+
+        @JsProperty
+        public native void setShow(boolean show);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -204,7 +211,7 @@ public interface ECharts {
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-    public class AxisLabel {
+    public class AxisLabel extends ItemStyle {
 
         @JsProperty
         public native void setInterval(int interval);
@@ -220,6 +227,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setFormatter(ValueFormatterCallback valueFormatter);
+        
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -239,7 +247,16 @@ public interface ECharts {
 
         @JsProperty
         public native void setRadius(String[] radius);
+        
+        @JsProperty
+        public native void setCenter(String[] radius);
 
+        @JsProperty
+        public native void setRadius(String radius);
+        
+        @JsProperty
+        public native void setSplitNumber(int splitNumber);
+        
         @JsProperty
         public native void setLeft(int left);
 
@@ -293,34 +310,36 @@ public interface ECharts {
 
         @JsProperty
         public native void setAxisLine(AxisLine axisLine);
-        
+
+        @JsProperty
+        public native void setAxisTick(AxisTick axisTick);
+
         @JsProperty
         public native void setDetail(ItemStyle detail);
-        
+
         @JsProperty
         public native void setData(Data[] data);
-        
+
         @JsProperty
         public native void setData(Object[] data);
 
     }
-    
+
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class Data {
 
         @JsProperty
         public native void setValue(Object value);
-        
+
         @JsProperty
         public native void setName(String name);
-        
+
         @JsProperty
         public native void setDetail(ItemStyle detail);
-        
+
         @JsProperty
         public native void setTitle(ItemStyle title);
     }
-
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class AxisLine {
@@ -329,49 +348,50 @@ public interface ECharts {
         public native void setLineStyle(LineStyle lineStyle);
     }
 
-    
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class ItemStyle {
-        
+
         @JsProperty
         public native void setShow(boolean show);
 
         @JsProperty
         public native void setValueAnimation(boolean valueAnimation);
-        
+
         @JsProperty
         public native void setWidth(int width);
-        
+
         @JsProperty
         public native void setHeight(int height);
-        
+
         @JsProperty
         public native void setFontSize(int fontSize);
-        
+
         @JsProperty
         public native void setColor(String color);
-        
+
         @JsProperty
         public native void setBackgroundColor(String bgCOlor);
-        
+
         @JsProperty
         public native void setBorderRadius(int borderRadius);
-        
+
         @JsProperty
         public native void setFormatter(String formatter);
         
         @JsProperty
+        public native void setFormatter(Object formatter);
+
+        @JsProperty
         public native void setOffsetCenter(String[] offsetCenter);
 
-    }    
+    }
 
-    
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class Piece {
 
         @JsProperty
         public native void setMin(double min);
-        
+
         @JsProperty
         public native void setMax(double max);
 
@@ -379,7 +399,6 @@ public interface ECharts {
         public native void setColor(String color);
     }
 
-    
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class LineStyle {
 
@@ -529,7 +548,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setMax(double min);
-        
+
         @JsProperty
         public native void setPieces(Piece[] pieces);
 

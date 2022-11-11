@@ -168,6 +168,11 @@ public class EChartsTypeFactory {
         ECharts.AxisLine axisLine = Js.cast(new Object());
         return axisLine;
     }
+    
+    public ECharts.AxisTick newAxisTick() {
+        ECharts.AxisTick axisTick = Js.cast(new Object());
+        return axisTick;
+    }
 
     public ECharts.LineStyle newLineStyle() {
         ECharts.LineStyle lineStyle = Js.cast(new Object());
