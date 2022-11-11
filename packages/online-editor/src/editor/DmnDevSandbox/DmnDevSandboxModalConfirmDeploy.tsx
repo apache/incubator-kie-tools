@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { useAlerts } from "../../alerts/AlertsContext";
+import { useAlert, useAlertsContext } from "../../alerts";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -32,7 +31,7 @@ interface Props {
 export function DmnDevSandboxModalConfirmDeploy(props: Props) {
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
-  const { alerts } = useAlerts();
+  const { alerts } = useAlertsContext();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
   const deployStartedErrorAlert = useAlert(

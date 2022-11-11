@@ -47,7 +47,6 @@ import {
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
-import { useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
@@ -105,7 +104,7 @@ import {
   noOpAuthSessionSelectFilter,
 } from "../accounts/authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { useAlerts } from "../alerts/AlertsContext";
+import { useAlert, useAlertsContext } from "../alerts";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -150,7 +149,7 @@ export function EditorToolbar(props: Props) {
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
-  const { alerts } = useAlerts();
+  const { alerts } = useAlertsContext();
   const isEdited = useDirtyState(props.editor);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadAllRef = useRef<HTMLAnchorElement>(null);
@@ -1732,7 +1731,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             }
                           >
                             <NewFileDropdownMenu
-                              alerts={alerts}
                               workspaceDescriptor={workspace.descriptor}
                               destinationDirPath={props.workspaceFile.relativeDirPath}
                               onAddFile={async (file) => {

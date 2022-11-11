@@ -36,7 +36,7 @@ import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRun
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
 import { AccountsContextProvider } from "./accounts/AccountsDispatchContext";
-import { AlertsContextProvider } from "./alerts/AlertsContextProvider";
+import { AlertsContextProvider } from "./alerts";
 
 export function App() {
   return (

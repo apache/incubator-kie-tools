@@ -28,7 +28,7 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandbox/DmnDevSandboxModalConfirmDeploy";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
-import { useAlert } from "../alerts/Alerts";
+import { useAlert, useAlertsContext } from "../alerts";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
@@ -48,7 +48,6 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
-import { useAlerts } from "../alerts/AlertsContext";
 
 export interface Props {
   workspaceId: string;
@@ -66,7 +65,7 @@ export function EditorPage(props: Props) {
   const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
-  const { alerts, alertsRef } = useAlerts();
+  const { alerts } = useAlertsContext();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [isFileBroken, setFileBroken] = useState(false);

@@ -82,7 +82,6 @@ import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCa
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { useAlerts } from "../alerts/AlertsContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -504,7 +503,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   }, [models, otherFiles]);
 
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
-  const { alerts } = useAlerts();
 
   return (
     <PromiseStateWrapper
@@ -543,7 +541,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                   }
                 >
                   <NewFileDropdownMenu
-                    alerts={alerts}
                     workspaceDescriptor={workspace.descriptor}
                     destinationDirPath={""}
                     onAddFile={async () => setNewFileDropdownMenuOpen(false)}

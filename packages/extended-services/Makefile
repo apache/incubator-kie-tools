@@ -21,5 +21,5 @@ linux-headless:
 	GOOS=linux GOARCH=amd64 go build -tags headless -o dist/linux/kie_sandbox_extended_services_headless main.go
 
 win32:
-	GOOS=windows GOARCH=amd64 go build -o dist/win32/kie_sandbox_extended_services.exe main.go
+	cross-env GOOS=windows GOARCH=amd64 go build -o dist/win32/kie_sandbox_extended_services.exe main.go
 	

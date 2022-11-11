@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useContext } from "react";
-import { AlertsController } from "./Alerts";
-
-export interface DeploymentFile {
-  path: string;
-  getFileContents: () => Promise<string>;
-}
-
-export interface AlertsContextType {
-  alerts: AlertsController | undefined;
-  alertsRef: (controller: AlertsController) => void;
-}
-
-export const AlertsContext = React.createContext<AlertsContextType>({} as any);
-
-export function useAlertsContext() {
-  return useContext(AlertsContext);
-}
+export * from "./Alerts";
+export * from "./AlertsContext";
+export * from "./AlertsContextProvider";

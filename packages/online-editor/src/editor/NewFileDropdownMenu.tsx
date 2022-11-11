@@ -34,7 +34,6 @@ import {
   useEditorEnvelopeLocator,
 } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
 import { ImportSingleFileFromUrlForm } from "../importFromUrl/ImportSingleFileFromUrlForm";
@@ -47,13 +46,15 @@ import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext
 import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useAlert, useAlertsContext } from "../alerts";
 
 export function NewFileDropdownMenu(props: {
-  alerts: AlertsController | undefined;
   destinationDirPath: string;
   workspaceDescriptor: WorkspaceDescriptor;
   onAddFile: (file?: WorkspaceFile) => Promise<void>;
 }) {
+  const { alerts } = useAlertsContext();
+
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
 
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
@@ -107,7 +108,7 @@ export function NewFileDropdownMenu(props: {
   const [importingError, setImportingError] = useState<string>();
 
   const successfullyUploadedAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(({ close }, staticArgs: { qtt: number }) => {
       return (
         <Alert

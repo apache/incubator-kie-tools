@@ -26,13 +26,12 @@ import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/Ki
 import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
-import { useAlerts } from "../alerts/AlertsContext";
-import { Alerts } from "../alerts/Alerts";
+import { useAlertsContext, Alerts } from "../alerts";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
-  const { alertsRef } = useAlerts();
+  const { alertsRef } = useAlertsContext();
 
   return (
     <Page
