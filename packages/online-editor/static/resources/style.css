@@ -91,7 +91,6 @@
 }
 
 .kogito--alert-container {
-  margin-top: 1em; /* FIXME: This is causing a weird horizontal scroll on the HomePage drawer after uploading a file. */
   position: fixed;
   display: flex;
   width: 100%;
@@ -99,6 +98,16 @@
   align-items: center;
   pointer-events: none;
   z-index: 99999;
+}
+
+.kogito--alert-list {
+  max-width: 900px;
+  min-width: 200px;
+  z-index: 999999;
+  position: absolute;
+  display: block;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .kogito--alert-container .pf-c-alert {

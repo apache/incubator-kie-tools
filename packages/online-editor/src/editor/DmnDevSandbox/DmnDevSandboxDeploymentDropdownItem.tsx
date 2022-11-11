@@ -15,17 +15,21 @@
  */
 
 import * as React from "react";
+import { useCallback, useMemo, useState } from "react";
+import { basename } from "path";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { basename } from "path";
-import { useCallback, useMemo } from "react";
-import { useOnlineI18n } from "../../i18n";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
+import { useOnlineI18n } from "../../i18n";
 import { KieSandboxOpenShiftDeployedModel } from "../../openshift/KieSandboxOpenShiftService";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 
 interface Props {
   id: number;
@@ -34,6 +38,7 @@ interface Props {
 
 export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
+  const dmnDevSandbox = useDmnDevSandbox();
 
   const deploymentName = useMemo(() => {
     const maxSize = 30;
@@ -117,16 +122,37 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
     window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
   }, [props.deployment.routeUrl, props.deployment.uri]);
 
+  const onDelete = useCallback(() => {
+    dmnDevSandbox.setDeploymentsToBeDeleted((prevValue) => [...prevValue, props.deployment.resourceName]);
+    dmnDevSandbox.setConfirmDeleteModalOpen(true);
+  }, [dmnDevSandbox, props.deployment.resourceName]);
+
+  const isDisabled = useMemo(() => props.deployment.state !== OpenShiftDeploymentState.UP, [props.deployment.state]);
+
   return (
-    <DropdownItem
-      id="dmn-dev-sandbox-deployment-item-button"
-      isDisabled={props.deployment.state !== OpenShiftDeploymentState.UP}
-      key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
-      onClick={onItemClicked}
-      description={i18n.dmnDevSandbox.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
-      icon={stateIcon}
-    >
-      {deploymentName}
-    </DropdownItem>
+    <Flex>
+      <FlexItem grow={{ default: "grow" }} style={{ margin: "0" }}>
+        <DropdownItem
+          id="dmn-dev-sandbox-deployment-item-button"
+          isDisabled={isDisabled}
+          key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
+          onClick={onItemClicked}
+          description={i18n.dmnDevSandbox.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
+          icon={stateIcon}
+        >
+          {deploymentName}
+        </DropdownItem>
+      </FlexItem>
+      <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+        <Button
+          style={{ color: "var(--pf-global--BackgroundColor--dark-100)" }}
+          variant={ButtonVariant.link}
+          isDanger={true}
+          onClick={onDelete}
+          icon={<TrashIcon />}
+          isDisabled={props.deployment.state !== OpenShiftDeploymentState.UP}
+        />
+      </FlexItem>
+    </Flex>
   );
 }

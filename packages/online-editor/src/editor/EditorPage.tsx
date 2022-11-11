@@ -28,7 +28,7 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandbox/DmnDevSandboxModalConfirmDeploy";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
-import { AlertsController, useAlert } from "../alerts/Alerts";
+import { useAlert } from "../alerts/Alerts";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
@@ -48,6 +48,7 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
+import { useAlerts } from "../alerts/AlertsContext";
 
 export interface Props {
   workspaceId: string;
@@ -65,7 +66,7 @@ export function EditorPage(props: Props) {
   const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
-  const [alerts, alertsRef] = useController<AlertsController>();
+  const { alerts, alertsRef } = useAlerts();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [isFileBroken, setFileBroken] = useState(false);
@@ -361,13 +362,7 @@ export function EditorPage(props: Props) {
           <>
             <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
               <Page>
-                <EditorToolbar
-                  workspaceFile={file.workspaceFile}
-                  editor={editor}
-                  alerts={alerts}
-                  alertsRef={alertsRef}
-                  editorPageDock={editorPageDock}
-                />
+                <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
                 <Divider />
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
                   <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
@@ -404,7 +399,7 @@ export function EditorPage(props: Props) {
               refreshEditor={refreshEditor}
               isOpen={isTextEditorModalOpen}
             />
-            <DmnDevSandboxModalConfirmDeploy workspaceFile={file.workspaceFile} alerts={alerts} />
+            <DmnDevSandboxModalConfirmDeploy workspaceFile={file.workspaceFile} />
           </>
         )}
       />

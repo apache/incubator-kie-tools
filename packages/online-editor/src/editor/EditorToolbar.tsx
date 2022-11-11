@@ -47,7 +47,7 @@ import {
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
-import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
+import { useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
@@ -105,10 +105,9 @@ import {
   noOpAuthSessionSelectFilter,
 } from "../accounts/authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useAlerts } from "../alerts/AlertsContext";
 
 export interface Props {
-  alerts: AlertsController | undefined;
-  alertsRef: (controller: AlertsController) => void;
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -151,6 +150,7 @@ export function EditorToolbar(props: Props) {
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
+  const { alerts } = useAlerts();
   const isEdited = useDirtyState(props.editor);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadAllRef = useRef<HTMLAnchorElement>(null);
@@ -247,7 +247,7 @@ export function EditorToolbar(props: Props) {
   );
 
   const successfullyCreateGistAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
@@ -270,7 +270,7 @@ export function EditorToolbar(props: Props) {
   );
 
   const loadingGistAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
@@ -305,7 +305,7 @@ export function EditorToolbar(props: Props) {
   }, [isGitHubGistLoading, loadingGistAlert]);
 
   const successfullyUpdateGistAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
@@ -328,7 +328,7 @@ export function EditorToolbar(props: Props) {
   );
 
   const errorAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => (
         <Alert
@@ -351,7 +351,7 @@ export function EditorToolbar(props: Props) {
 
   const onDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
-    props.alerts?.closeAll();
+    alerts?.closeAll();
     props.workspaceFile.getFileContents().then((content) => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
@@ -359,7 +359,7 @@ export function EditorToolbar(props: Props) {
         downloadRef.current.click();
       }
     });
-  }, [props.editor, props.workspaceFile, props.alerts]);
+  }, [props.editor, props.workspaceFile, alerts]);
 
   const downloadWorkspaceZip = useCallback(async () => {
     if (!props.editor) {
@@ -431,7 +431,7 @@ export function EditorToolbar(props: Props) {
   ]);
 
   const errorPushingGist = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => (
         <Alert
@@ -986,7 +986,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   }, [deleteWorkspaceFile, props.workspaceFile]);
 
   const pushingAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1010,7 +1010,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const comittingAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(({ close }) => {
       return (
         <Alert
@@ -1027,7 +1027,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const commitSuccessAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(({ close }) => {
       return <Alert variant="success" title={`Commit created.`} />;
     }, []),
@@ -1056,7 +1056,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   }, [comittingAlert, workspaces, props.workspaceFile.workspaceId, gitConfig, commitSuccessAlert]);
 
   const pushSuccessAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1071,7 +1071,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const pushErrorAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1091,7 +1091,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const pullingAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1115,7 +1115,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const pullSuccessAlert = useAlert(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1182,7 +1182,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const pullErrorAlert = useAlert<{ newBranchName: string; onTryAgain: () => any }>(
-    props.alerts,
+    alerts,
     useCallback(
       ({ close }, { newBranchName }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1330,7 +1330,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const navigationStatus = useNavigationStatus();
   const navigationStatusToggle = useNavigationStatusToggle();
   const confirmNavigationAlert = useAlert<{ lastBlockedLocation: Location }>(
-    props.alerts,
+    alerts,
     useCallback(
       (_, { lastBlockedLocation }) => (
         <Alert
@@ -1422,7 +1422,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const [isVsCodeDropdownOpen, setVsCodeDropdownOpen] = useState(false);
 
   const createRepositorySuccessAlert = useAlert<{ url: string }>(
-    props.alerts,
+    alerts,
     useCallback(({ close }, { url }) => {
       return (
         <Alert
@@ -1447,7 +1447,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       resolved={(workspace) => {
         return (
           <>
-            <Alerts ref={props.alertsRef} width={"500px"} />
             <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
               {workspace && canSeeWorkspaceToolbar && (
                 <Flex
@@ -1733,7 +1732,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             }
                           >
                             <NewFileDropdownMenu
-                              alerts={props.alerts}
+                              alerts={alerts}
                               workspaceDescriptor={workspace.descriptor}
                               destinationDirPath={props.workspaceFile.relativeDirPath}
                               onAddFile={async (file) => {

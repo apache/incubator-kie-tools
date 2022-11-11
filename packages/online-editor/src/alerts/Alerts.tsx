@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState, CSSProperties } from "react";
 import { AlertGroup } from "@patternfly/react-core/dist/js/components/AlertGroup";
 
 type MapValueType<A> = A extends Map<any, infer V> ? V : never;
@@ -46,9 +46,7 @@ type AlertControl = {
   staticArgs: unknown;
 };
 
-type Props = { width: string };
-
-export const Alerts = React.forwardRef<AlertsController, Props>((props, forwardedRef) => {
+export const Alerts = React.forwardRef<AlertsController>((_, forwardedRef) => {
   const [alerts, setAlerts] = useState(new Map<string, AlertControl>());
   const [autoCloseAlertsControl, setAutoCloseAlertsControl] = useState(
     new Map<string, { secondsLeft: number; interval: ReturnType<typeof setInterval> }>()
@@ -145,7 +143,7 @@ export const Alerts = React.forwardRef<AlertsController, Props>((props, forwarde
 
   return (
     <AlertGroup className={"kogito--alert-container"}>
-      <div style={{ width: props.width }}>
+      <div className={"kogito--alert-list"}>
         {[...alerts.entries()]
           .filter(([_, { isShowing }]) => isShowing)
           .sort(([_, a], [__, b]) => a.lastShowedAt!.getTime() - b.lastShowedAt!.getTime()) // show newest at the bottom

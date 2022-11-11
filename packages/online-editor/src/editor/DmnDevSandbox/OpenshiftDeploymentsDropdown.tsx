@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
@@ -95,7 +95,7 @@ export function OpenshiftDeploymentsDropdown() {
     }
   }, [
     dmnDevSandbox.deployments,
-    i18n,
+    i18n.dmnDevSandbox.dropdown,
     isDmnDevSandboxConnected,
     openOpenShiftSettings,
     settings.openshift.config.namespace,

@@ -16,6 +16,7 @@
 
 import {
   CreateDeployment,
+  DeleteDeployment,
   GetDeployment,
   ListDeployments,
 } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
@@ -27,6 +28,7 @@ import {
   RouteDescriptor,
   RouteGroupDescriptor,
 } from "@kie-tools-core/openshift/dist/api/types";
+import { HttpMethod } from "@kie-tools-core/openshift/dist/fetch/FetchConstants";
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftService, OpenShiftServiceArgs } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
@@ -199,6 +201,36 @@ export class KieSandboxOpenShiftService {
         }
       }, CHECK_UPLOAD_STATUS_POLLING_TIME);
     });
+  }
+
+  public async deleteDeployment(resourceName: string) {
+    const deploymentResponse = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteDeployment({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
+
+    const serviceResponse = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteService({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
+
+    const routeResponse = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteRoute({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
+    console.log({ deploymentResponse, serviceResponse, routeResponse });
   }
 
   private extractDeploymentStateWithUploadStatus(

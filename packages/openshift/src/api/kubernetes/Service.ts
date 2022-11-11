@@ -53,6 +53,12 @@ export class DeleteService extends ResourceFetch {
     super(args);
   }
 
+  public body(): string {
+    return JSON.stringify({
+      propagationPolicy: "Background",
+    });
+  }
+
   public method(): HttpMethod {
     return HttpMethod.DELETE;
   }

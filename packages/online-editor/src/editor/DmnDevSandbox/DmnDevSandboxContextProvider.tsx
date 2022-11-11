@@ -26,6 +26,10 @@ import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext
 import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { DmnDevSandboxModalConfirmDelete } from "./DmnDevSandboxModalConfirmDelete";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { AlertsController } from "../../alerts/Alerts";
+import { useAlerts } from "../../alerts/AlertsContext";
 
 interface Props {
   children: React.ReactNode;
@@ -43,6 +47,8 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
+  const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  const [deploymentsToBeDeleted, setDeploymentsToBeDeleted] = useState<string[]>([]);
   const [deployments, setDeployments] = useState([] as KieSandboxOpenShiftDeployedModel[]);
 
   const onDisconnect = useCallback(
@@ -100,6 +106,39 @@ export function DmnDevSandboxContextProvider(props: Props) {
     [settings.openshift.config, settingsDispatch.openshift.service, workspaces, routes.import]
   );
 
+  const deleteDeployment = useCallback(
+    async (resourceName: string) => {
+      try {
+        await settingsDispatch.openshift.service.deleteDeployment(resourceName);
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    },
+    [settingsDispatch.openshift.service]
+  );
+
+  const deleteDeployments = useCallback(async () => {
+    const result = await Promise.all(deploymentsToBeDeleted.map((resourceName) => deleteDeployment(resourceName)));
+    setDeploymentsToBeDeleted([]);
+    return result.every(Boolean);
+  }, [deleteDeployment, deploymentsToBeDeleted]);
+
+  const loadDeployments = useCallback(
+    async (errCallback?: () => void) => {
+      return settingsDispatch.openshift.service
+        .loadDeployments()
+        .then((deployments) => setDeployments(deployments))
+        .catch((error) => {
+          setDeployments([]);
+          errCallback?.();
+          console.error(error);
+        });
+    },
+    [settingsDispatch.openshift.service]
+  );
+
   useEffect(() => {
     if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
       onDisconnect(true);
@@ -129,14 +168,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
-        settingsDispatch.openshift.service
-          .loadDeployments()
-          .then((deployments) => setDeployments(deployments))
-          .catch((error) => {
-            setDeployments([]);
-            window.clearInterval(loadDeploymentsTask);
-            console.error(error);
-          });
+        loadDeployments(() => window.clearInterval(loadDeploymentsTask));
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
       return () => window.clearInterval(loadDeploymentsTask);
     }
@@ -148,6 +180,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
     deployments.length,
     settingsDispatch.openshift,
     isDeploymentsDropdownOpen,
+    loadDeployments,
   ]);
 
   const value = useMemo(
@@ -156,14 +189,37 @@ export function DmnDevSandboxContextProvider(props: Props) {
       isDropdownOpen,
       isDeploymentsDropdownOpen,
       isConfirmDeployModalOpen,
+      isConfirmDeleteModalOpen,
+      deploymentsToBeDeleted,
       setDeployments,
       setDropdownOpen,
       setConfirmDeployModalOpen,
+      setConfirmDeleteModalOpen,
       setDeploymentsDropdownOpen,
+      setDeploymentsToBeDeleted,
       deploy,
+      deleteDeployment,
+      deleteDeployments,
+      loadDeployments,
     }),
-    [deploy, deployments, isConfirmDeployModalOpen, isDeploymentsDropdownOpen, isDropdownOpen]
+    [
+      deployments,
+      isDropdownOpen,
+      isDeploymentsDropdownOpen,
+      isConfirmDeployModalOpen,
+      isConfirmDeleteModalOpen,
+      deploymentsToBeDeleted,
+      deploy,
+      deleteDeployment,
+      deleteDeployments,
+      loadDeployments,
+    ]
   );
 
-  return <DmnDevSandboxContext.Provider value={value}>{props.children}</DmnDevSandboxContext.Provider>;
+  return (
+    <DmnDevSandboxContext.Provider value={value}>
+      {props.children}
+      <DmnDevSandboxModalConfirmDelete />
+    </DmnDevSandboxContext.Provider>
+  );
 }

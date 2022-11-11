@@ -100,6 +100,8 @@ interface OnlineDictionary extends ReferenceDictionary {
     alerts: {
       deployStartedError: string;
       deployStartedSuccess: string;
+      deleteError: string;
+      deleteSuccess: string;
     };
     configWizard: {
       header: {
