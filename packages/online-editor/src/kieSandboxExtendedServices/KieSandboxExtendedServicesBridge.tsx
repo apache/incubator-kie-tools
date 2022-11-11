@@ -17,7 +17,7 @@
 interface ExtendedServicesPingResponse {
   App: {
     Version: string;
-    Starded: boolean;
+    Started: boolean;
   };
 }
 

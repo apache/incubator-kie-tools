@@ -265,7 +265,7 @@ func (self *Proxy) pingHandler() func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Methods", "GET")
 		var config config.Config
 		conf := config.GetConfig()
-		conf.App.Starded = self.Started
+		conf.App.Started = self.Started
 		conf.Proxy.Port = self.Port
 		w.WriteHeader(http.StatusOK)
 		json, _ := json.Marshal(conf)
