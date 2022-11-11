@@ -27,9 +27,6 @@ import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/servi
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DmnDevSandboxModalConfirmDelete } from "./DmnDevSandboxModalConfirmDelete";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
-import { AlertsController } from "../../alerts/Alerts";
-import { useAlerts } from "../../alerts/AlertsContext";
 
 interface Props {
   children: React.ReactNode;

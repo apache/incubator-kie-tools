@@ -28,7 +28,6 @@ import {
   RouteDescriptor,
   RouteGroupDescriptor,
 } from "@kie-tools-core/openshift/dist/api/types";
-import { HttpMethod } from "@kie-tools-core/openshift/dist/fetch/FetchConstants";
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftService, OpenShiftServiceArgs } from "@kie-tools-core/openshift/dist/service/OpenShiftService";

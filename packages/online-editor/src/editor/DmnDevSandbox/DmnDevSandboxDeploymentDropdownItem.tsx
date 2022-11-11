@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { basename } from "path";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
