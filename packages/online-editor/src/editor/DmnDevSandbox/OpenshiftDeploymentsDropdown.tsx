@@ -32,6 +32,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
@@ -49,7 +50,14 @@ export function OpenshiftDeploymentsDropdown() {
   }, [settingsDispatch]);
 
   const deleteAllDeployments = useCallback(() => {
-    dmnDevSandbox.setDeploymentsToBeDeleted(dmnDevSandbox.deployments.map((deployment) => deployment.resourceName));
+    dmnDevSandbox.setDeploymentsToBeDeleted(
+      dmnDevSandbox.deployments
+        .filter(
+          (deployment) =>
+            ![OpenShiftDeploymentState.IN_PROGRESS, OpenShiftDeploymentState.PREPARING].includes(deployment.state)
+        )
+        .map((deployment) => deployment.resourceName)
+    );
     dmnDevSandbox.setConfirmDeleteModalOpen(true);
   }, [dmnDevSandbox]);
 
