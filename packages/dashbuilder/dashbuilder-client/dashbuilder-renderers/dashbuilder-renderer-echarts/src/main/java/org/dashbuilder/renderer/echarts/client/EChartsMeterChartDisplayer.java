@@ -33,7 +33,7 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
     private static final int LEGEND_ITEM_MIN_POS_Y = 20;
     private static final int LEGEND_ITEM_MIN_POS_X = -100;
     private static final int LEGEND_ITEM_MAX_POS = 100;
-    
+
     private static final int LEGEND_ITEM_Y_GAP = 50;
     private static final int LEGEND_ITEM_X_GAP = 50;
 
@@ -52,7 +52,7 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
         var visualMap = echartsFactory.newVisualMap();
         var valuesColumn = dataSet.getColumnByIndex(nColumns - 1);
 
-        var min = displayerSettings.getMeterStart();        
+        var min = displayerSettings.getMeterStart();
         var max = displayerSettings.getMeterEnd();
 
         var showLegend = displayerSettings.isChartShowLegend();
@@ -67,7 +67,6 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
         var detail = echartsFactory.newItemStyle();
         var seriesTitle = echartsFactory.newTitle();
         var legend = echartsFactory.newLegend();
-        
 
         axisTick.setShow(displayerSettings.isXAxisShowLabels());
         axisLabel.setFormatter(v -> Math.ceil(Double.valueOf(v.toString())));
@@ -77,7 +76,7 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
         lineStyle.setWidth(40);
         axisLabel.setFontSize(12);
         axisLine.setLineStyle(lineStyle);
-        axisLabel.setDistance(50);        
+        axisLabel.setDistance(50);
         progress.setShow(true);
         progress.setOverlap(false);
 
@@ -90,16 +89,19 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
         detail.setColor("#fff");
         detail.setBackgroundColor("auto");
         detail.setBorderRadius(3);
-        
+
         visualMap.setShow(false);
         visualMap.setType(VisualMapType.piecewise.name());
         visualMap.setMin(min);
         visualMap.setMax(max);
         visualMap.setInRange(inRange);
-        visualMap.setPieces(new ECharts.Piece[] {
-            echartsFactory.newPiece(displayerSettings.getMeterStart(), displayerSettings.getMeterWarning(), "green"),
-            echartsFactory.newPiece(displayerSettings.getMeterWarning(), displayerSettings.getMeterCritical(),  "orange"),
-            echartsFactory.newPiece(displayerSettings.getMeterCritical(), displayerSettings.getMeterEnd(), "red")
+        visualMap.setPieces(new ECharts.Piece[]{
+                                                echartsFactory.newPiece(displayerSettings.getMeterStart(),
+                                                        displayerSettings.getMeterWarning(), "green"),
+                                                echartsFactory.newPiece(displayerSettings.getMeterWarning(),
+                                                        displayerSettings.getMeterCritical(), "orange"),
+                                                echartsFactory.newPiece(displayerSettings.getMeterCritical(),
+                                                        displayerSettings.getMeterEnd(), "red")
         });
 
         var names = getNames(nColumns);
@@ -124,7 +126,7 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
             dataTitle.setOffsetCenter(new String[]{titleXPos, titleYPos});
             dataDetail.setOffsetCenter(new String[]{detailXPos, detailYPos});
 
-            legendBasePosX += LEGEND_ITEM_X_GAP; 
+            legendBasePosX += LEGEND_ITEM_X_GAP;
             if (legendBasePosX > LEGEND_ITEM_MAX_POS) {
                 legendBasePosX = LEGEND_ITEM_MIN_POS_X;
                 legendBasePosY += LEGEND_ITEM_Y_GAP;
@@ -136,8 +138,8 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
         }
 
         var radius = showLegend ? "110%" : "150%";
-        var centerY = showLegend ? "65%" :  "85%";
-        series.setCenter(new String[] {"50%", centerY});
+        var centerY = showLegend ? "65%" : "85%";
+        series.setCenter(new String[]{"50%", centerY});
         series.setRadius(radius);
         series.setSplitNumber(4);
         series.setData(seriesData);
@@ -157,7 +159,7 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
 
         option.getTitle().setTop(showLegend ? "center" : "70%");
         option.setLegend(legend);
-        option.setVisualMap(visualMap);        
+        option.setVisualMap(visualMap);
         option.setSeries(series);
 
     }
