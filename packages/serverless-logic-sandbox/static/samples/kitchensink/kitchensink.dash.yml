@@ -77,7 +77,7 @@ pages:
           component: timeseries
           external:
             width: 100%
-          datasetlookup:
+          lookup:
             uuid: timeseries
   - name: Forms
     components:
@@ -127,7 +127,7 @@ pages:
                 <path id="svg_5" d="m461,24l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
                 <path id="svg_6" d="m566,26l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
               </svg>
-          datasetlookup:
+          lookup:
             uuid: svg-data
   - name: ECharts
     components:
@@ -172,12 +172,12 @@ pages:
                         }
                 ]
                 }
-          datasetlookup:
+          lookup:
             uuid: products
             group:
               - columnGroup:
                   source: product
-                groupFunctions:
+                functions:
                   - source: product
                   - source: quantity
                   - source: quantity2
@@ -187,8 +187,22 @@ pages:
           component: table
           external:
             width: 100%
-          datasetlookup:
+          lookup:
             uuid: products
+  - name: Geo Map
+    components:
+      - settings:
+          component: map
+          chart:
+            height: 400
+          lookup:
+            uuid: countries
+            group:
+              - columnGroup:
+                  source: Country
+                functions:
+                  - source: Country
+                  - source: Value
   - name: External Components
     components:
       - properties:
@@ -223,12 +237,12 @@ pages:
             end: "4120"
             critical: "3000"
             warning: "2000"
-          dataSetLookup:
+          lookup:
             uuid: memory_usage
             group:
               - columnGroup:
                   source: Server
-                groupFunctions:
+                functions:
                   - source: Server
                   - source: Usage
                     function: SUM
@@ -247,12 +261,12 @@ pages:
           filter:
             enabled: "true"
             notification: "true"
-          datasetlookup:
+          lookup:
             uuid: products
             group:
               - columnGroup:
                   source: Section
-                groupFunctions:
+                functions:
                   - source: Section
       - html: >-
           <br /><strong>subtype SELECTOR_LABELS (used only with LABEL column types)</strong>
@@ -262,12 +276,12 @@ pages:
           filter:
             enabled: "true"
             notification: "true"
-          datasetlookup:
+          lookup:
             uuid: products
             group:
               - columnGroup:
                   source: Section
-                groupFunctions:
+                functions:
                   - source: Section
       - html: >-
           <br /><strong> subtype SELECTOR_SLIDER (can't be used with LABEL columns)</strong>
@@ -277,22 +291,22 @@ pages:
           filter:
             enabled: "true"
             notification: "true"
-          datasetlookup:
+          lookup:
             uuid: products
             group:
-              - groupFunctions:
+              - functions:
                   - source: Quantity
       - settings:
           type: BARCHART
           filter:
             enabled: "true"
             listening: "true"
-          datasetlookup:
+          lookup:
             uuid: products
             group:
               - columnGroup:
                   source: Product
-                groupFunctions:
+                functions:
                   - source: Product
                   - source: Quantity
                   - source: Quantity2
@@ -308,10 +322,10 @@ pages:
           general:
             visible: "true"
             title: Total Products
-          dataSetLookup:
+          lookup:
             uuid: products
             group:
-              - groupFunctions:
+              - functions:
                   - source: Quantity
                     function: SUM
       - html: >-
@@ -332,10 +346,10 @@ pages:
           general:
             visible: "true"
             title: Total Products
-          dataSetLookup:
+          lookup:
             uuid: products
             group:
-              - groupFunctions:
+              - functions:
                   - source: Quantity
                     function: SUM
   - name: Map
@@ -346,12 +360,12 @@ pages:
               - html: "<h4><strong>subtype MAP_REGIONS (default)</strong></h4><br />"
               - settings:
                   type: MAP
-                  dataSetLookup:
+                  lookup:
                     uuid: countries
                     group:
                       - columnGroup:
                           source: Country
-                        groupFunctions:
+                        functions:
                           - source: Country
                           - source: Value
           - span: "6"
@@ -360,12 +374,12 @@ pages:
               - settings:
                   type: MAP
                   subtype: MAP_MARKERS
-                  dataSetLookup:
+                  lookup:
                     uuid: countries
                     group:
                       - columnGroup:
                           source: Country
-                        groupFunctions:
+                        functions:
                           - source: Country
                           - source: Value
   - name: Pie Chart
@@ -376,12 +390,12 @@ pages:
               - html: "<h4><strong>subtype PIE (default)</strong></h4><br />"
               - settings:
                   type: PIECHART
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
           - span: "6"
@@ -390,14 +404,32 @@ pages:
               - settings:
                   type: PIECHART
                   subtype: DONUT
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
+  - name: Bubble Chart
+    rows:
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>Bubble Chart</strong></h4><br />"
+              - settings:
+                  type: BUBBLECHART
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+                          - source: Product
   - name: Area Chart
     rows:
       - columns:
@@ -407,12 +439,12 @@ pages:
 
               - settings:
                   type: AREACHART
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -422,12 +454,12 @@ pages:
               - settings:
                   type: AREACHART
                   subtype: AREA_STACKED
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -439,12 +471,12 @@ pages:
               - html: "<h4><strong>subtype COLUMN (default)</strong></h4><br />"
               - settings:
                   type: BARCHART
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -454,12 +486,12 @@ pages:
               - settings:
                   type: BARCHART
                   subtype: BAR
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -470,12 +502,12 @@ pages:
               - settings:
                   type: BARCHART
                   subtype: COLUMN_STACKED
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -485,12 +517,12 @@ pages:
               - settings:
                   type: BARCHART
                   subtype: BAR_STACKED
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -502,12 +534,12 @@ pages:
               - html: "<h4><strong>subtype line (default)</strong></h4><br />"
               - settings:
                   type: LINECHART
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -517,12 +549,12 @@ pages:
               - settings:
                   type: LINECHART
                   subtype: SMOOTH
-                  dataSetLookup:
+                  lookup:
                     uuid: products
                     group:
                       - columnGroup:
                           source: Product
-                        groupFunctions:
+                        functions:
                           - source: Product
                           - source: Quantity
                           - source: Quantity2
@@ -699,6 +731,7 @@ navTree:
         - page: Line Chart
         - page: Area Chart
         - page: Pie Chart
+        - page: Bubble Chart
         - page: Meter
         - page: Map
         - page: Metric
@@ -710,6 +743,7 @@ navTree:
         - page: Timeseries
         - page: SVG Heatmap
         - page: Rich Table
+        - page: Geo Map
         - page: Forms
     - type: GROUP
       id: Navigation
