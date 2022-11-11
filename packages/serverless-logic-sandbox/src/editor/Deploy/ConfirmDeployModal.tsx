@@ -33,6 +33,8 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { isSingleModuleProject } from "../../project";
+import { useOpenApi } from "../../openshift/hooks/useOpenApi";
+import { useRemoteServiceRegistry } from "../../openshift/hooks/useRemoteServiceRegistry";
 
 const FETCH_OPEN_API_POLLING_TIME = 5000;
 
@@ -45,6 +47,8 @@ interface ConfirmDeployModalProps {
 export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
   const openshift = useOpenShift();
   const settings = useSettings();
+  const { fetchOpenApiContent } = useOpenApi();
+  const { uploadArtifact } = useRemoteServiceRegistry();
   const { i18n } = useAppI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
   const [shouldUploadOpenApi, setShouldUploadOpenApi] = useState(false);
@@ -166,22 +170,22 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
 
   const fetchOpenApiSpec = useCallback(
     async (deploymentResourceName: string) => {
-      const openApiContents = await openshift.fetchOpenApiFile(deploymentResourceName);
+      const openApiContent = await fetchOpenApiContent(deploymentResourceName);
 
-      if (!openApiContents) {
+      if (!openApiContent) {
         return false;
       }
 
       if (shouldUploadOpenApi) {
-        await openshift.uploadArtifactToServiceRegistry(
-          `${props.workspaceFile.nameWithoutExtension} ${deploymentResourceName}`,
-          openApiContents
-        );
+        await uploadArtifact({
+          artifactId: `${props.workspaceFile.nameWithoutExtension} ${deploymentResourceName}`,
+          content: openApiContent,
+        });
       }
 
       return true;
     },
-    [openshift, props.workspaceFile.nameWithoutExtension, shouldUploadOpenApi]
+    [fetchOpenApiContent, props.workspaceFile.nameWithoutExtension, shouldUploadOpenApi, uploadArtifact]
   );
 
   const onConfirm = useCallback(async () => {
@@ -191,9 +195,10 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
 
     setConfirmLoading(true);
     const resourceName = await openshift.deploy({
-      workspaceFile: props.workspaceFile,
-      shouldAttachKafkaSource,
-      shouldDeployAsProject,
+      targetFile: props.workspaceFile,
+      factoryArgs: shouldDeployAsProject
+        ? { kind: "KOGITO_PROJECT", shouldAttachKafkaSource }
+        : { kind: "KOGITO_SWF_MODEL", shouldAttachKafkaSource },
     });
     setConfirmLoading(false);
 

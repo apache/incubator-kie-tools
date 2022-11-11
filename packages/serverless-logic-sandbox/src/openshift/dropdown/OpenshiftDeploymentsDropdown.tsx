@@ -23,13 +23,13 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-icon";
 import { useCallback, useMemo } from "react";
-import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
-import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsModalBody";
-import { useOpenShift } from "./OpenShiftContext";
+import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
+import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
+import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
+import { SettingsTabs } from "../../settings/SettingsModalBody";
+import { useOpenShift } from "../OpenShiftContext";
 import { OpenShiftDeploymentDropdownItem } from "./OpenShiftDeploymentDropdownItem";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
