@@ -263,6 +263,7 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/cors-proxy-image" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/dmn-dev-sandbox-deployment-base-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];

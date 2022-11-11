@@ -540,6 +540,7 @@
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/unitables-dmn", "weight": 1 },
+      { "source": "@kie-tools/online-editor", "target": "@kie-tools/cors-proxy-image", "weight": 1 },
       {
         "source": "@kie-tools/online-editor",
         "target": "@kie-tools/dmn-dev-sandbox-deployment-base-image-env",

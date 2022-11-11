@@ -3214,6 +3214,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
+      "@kie-tools/cors-proxy-image": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
@@ -3325,6 +3326,7 @@ importers:
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/cors-proxy-image": link:../cors-proxy-image
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/extended-services": link:../extended-services
@@ -12069,7 +12071,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -12078,7 +12080,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -17468,7 +17470,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
+  /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -17477,6 +17479,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -18470,7 +18474,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
