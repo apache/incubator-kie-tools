@@ -74,6 +74,7 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/cors-proxy-image": "workspace:*",
     "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/extended-services": "workspace:*",

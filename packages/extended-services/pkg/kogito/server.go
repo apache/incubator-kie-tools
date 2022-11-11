@@ -91,7 +91,7 @@ func (self *Proxy) Start() {
 
 	r := mux.NewRouter()
 	r.PathPrefix("/devsandbox").HandlerFunc(devSandboxHandler(self))
-	r.PathPrefix("/ping").HandlerFunc(pingHandler(self.Port))
+	r.PathPrefix("/ping").HandlerFunc(self.pingHandler())
 	r.PathPrefix("/").HandlerFunc(proxyHandler(proxy, self.cmd))
 
 	addr := conf.Proxy.IP + ":" + strconv.Itoa(self.Port)
@@ -137,7 +137,7 @@ func (self *Proxy) Stop() {
 	log.Println("Shutdown complete")
 
 	self.RunnerPort = 0
-	self.Refresh()
+	self.view.Refresh()
 }
 
 func (self *Proxy) Refresh() {
@@ -247,18 +247,26 @@ func devSandboxHandler(self *Proxy) func(w http.ResponseWriter, r *http.Request)
 
 func proxyHandler(proxy *httputil.ReverseProxy, cmd *exec.Cmd) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "OPTIONS" {
+			w.Header().Add("Access-Control-Allow-Origin", "*")
+			w.Header().Add("Access-Control-Allow-Methods", "*")
+			w.Header().Add("Access-Control-Allow-Headers", "*")
+			return
+		}
+
 		r.Host = r.URL.Host
 		proxy.ServeHTTP(w, r)
 	}
 }
 
-func pingHandler(port int) func(w http.ResponseWriter, r *http.Request) {
+func (self *Proxy) pingHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Add("Access-Control-Allow-Methods", "GET")
 		var config config.Config
 		conf := config.GetConfig()
-		conf.Proxy.Port = port
+		conf.App.Started = self.Started
+		conf.Proxy.Port = self.Port
 		w.WriteHeader(http.StatusOK)
 		json, _ := json.Marshal(conf)
 		w.Write(json)

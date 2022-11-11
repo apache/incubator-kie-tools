@@ -40,9 +40,9 @@ export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChi
           workspaceId: workspaceFile.workspaceId,
           workspaceFileRelativePath: workspaceFile.relativePath,
         });
-        const previousInputRows = await inputs
-          ?.getFileContents()
-          .then((content) => dmnRunnerInputsService.parseDmnRunnerInputs(decoder.decode(content)));
+
+        const content = await inputs?.getFileContents();
+        const previousInputRows = dmnRunnerInputsService.parseDmnRunnerInputs(decoder.decode(content));
         await dmnRunnerInputsService.companionFsService.update(
           { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
           dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows, previousInputRows)
