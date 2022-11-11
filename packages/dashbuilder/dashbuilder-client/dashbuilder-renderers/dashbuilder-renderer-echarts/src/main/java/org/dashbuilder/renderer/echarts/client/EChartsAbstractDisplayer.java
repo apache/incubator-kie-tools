@@ -27,7 +27,6 @@ import org.dashbuilder.dataset.DataSetLookupConstraints;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.Position;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
@@ -44,6 +43,8 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
     EChartsTypeFactory echartsFactory;
 
     protected Option option;
+
+    protected String echartsType;
 
     public interface View<P extends EChartsAbstractDisplayer<?>> extends AbstractGwtDisplayer.View<P> {
 
@@ -162,12 +163,11 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         var extraConfiguration = displayerSettings.getExtraConfiguration();
 
         var echartsDataSet = buildDataSet();
+        
+        this.echartsType = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
 
         this.option = echartsFactory.newOption();
 
-        if (DisplayerSubType.DONUT == displayerSettings.getSubtype()) {
-            title.setTop("center");
-        }
         title.setLeft("center");
         title.setText(displayerSettings.getTitle());
         title.setSubtext(displayerSettings.getSubtitle());

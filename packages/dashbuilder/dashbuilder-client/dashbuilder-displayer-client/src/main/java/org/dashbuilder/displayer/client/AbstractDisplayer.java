@@ -1001,8 +1001,27 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     protected String columnValueToString(Object mightBeNull) {
         return mightBeNull == null ? "" : mightBeNull.toString();
     }
-    
+
+    protected OptionalDouble max(DataColumn column) {
+        var values = getNumberValues(column);
+        return Arrays.stream(values).reduce((v1, v2) -> v1 >= v2 ? v1 : v2);
+    }
+
+    protected OptionalDouble min(DataColumn column) {
+        var values = getNumberValues(column);
+        return Arrays.stream(values).reduce((v1, v2) -> v1 <= v2 ? v1 : v2);
+    }
+
     protected double map(double value, double start1, double stop1, double start2, double stop2) {
         return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+    }
+
+    protected double[] getNumberValues(DataColumn column) {
+        var values = new double[0];
+        if (column.getColumnType() == ColumnType.NUMBER) {
+            values = column.getValues().stream().mapToDouble(v -> Double
+                    .valueOf(v.toString())).toArray();
+        }
+        return values;
     }
 }

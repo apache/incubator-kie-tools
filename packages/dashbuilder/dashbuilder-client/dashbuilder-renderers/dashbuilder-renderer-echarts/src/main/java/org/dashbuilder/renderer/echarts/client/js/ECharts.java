@@ -72,12 +72,15 @@ public interface ECharts {
 
         @JsProperty
         public native void setSeries(Series series);
-        
+
         @JsProperty
         public native Series[] getSeries();
 
         @JsProperty
         public native void setTitle(Title title);
+        
+        @JsProperty
+        public native Title getTitle();
 
         @JsProperty
         public native void setTooltip(Tooltip tooltip);
@@ -96,6 +99,9 @@ public interface ECharts {
 
         @JsProperty
         public native void setColor(String[] colors);
+
+        @JsProperty
+        public native void setVisualMap(VisualMap visualMap);
 
     }
 
@@ -119,10 +125,10 @@ public interface ECharts {
 
         @JsProperty
         public native void setSubtext(String subText);
-        
+
         @JsProperty
         public native void setLeft(String left);
-        
+
         @JsProperty
         public native void setTop(String top);
 
@@ -207,6 +213,9 @@ public interface ECharts {
         public native void setRotate(int rotate);
 
         @JsProperty
+        public native void setDistance(int distance);
+
+        @JsProperty
         public native void setShow(boolean show);
 
         @JsProperty
@@ -248,16 +257,134 @@ public interface ECharts {
 
         @JsProperty
         public native void setStack(String stackType);
-        
+
         @JsProperty
         public native void setSymbolSize(SymbolSizeCallback callback);
-        
+
         @JsProperty
         public native void setSymbolSize(int value);
-        
+
         @JsProperty
         public native void setLabel(Label label);
 
+        @JsProperty
+        public native void setAxisLabel(AxisLabel label);
+
+        @JsProperty
+        public native void setStartAngle(int startAngle);
+
+        @JsProperty
+        public native void setEndAngle(int endAngle);
+
+        @JsProperty
+        public native void setMin(double min);
+
+        @JsProperty
+        public native void setMax(double max);
+
+        @JsProperty
+        public native void setPointer(Pointer pointer);
+
+        @JsProperty
+        public native void setProgress(Progress progress);
+
+        @JsProperty
+        public native void setTitle(Title title);
+
+        @JsProperty
+        public native void setAxisLine(AxisLine axisLine);
+        
+        @JsProperty
+        public native void setDetail(ItemStyle detail);
+        
+        @JsProperty
+        public native void setData(Data[] data);
+        
+        @JsProperty
+        public native void setData(Object[] data);
+
+    }
+    
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class Data {
+
+        @JsProperty
+        public native void setValue(Object value);
+        
+        @JsProperty
+        public native void setName(String name);
+        
+        @JsProperty
+        public native void setDetail(ItemStyle detail);
+        
+        @JsProperty
+        public native void setTitle(ItemStyle title);
+    }
+
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class AxisLine {
+
+        @JsProperty
+        public native void setLineStyle(LineStyle lineStyle);
+    }
+
+    
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class ItemStyle {
+        
+        @JsProperty
+        public native void setShow(boolean show);
+
+        @JsProperty
+        public native void setValueAnimation(boolean valueAnimation);
+        
+        @JsProperty
+        public native void setWidth(int width);
+        
+        @JsProperty
+        public native void setHeight(int height);
+        
+        @JsProperty
+        public native void setFontSize(int fontSize);
+        
+        @JsProperty
+        public native void setColor(String color);
+        
+        @JsProperty
+        public native void setBackgroundColor(String bgCOlor);
+        
+        @JsProperty
+        public native void setBorderRadius(int borderRadius);
+        
+        @JsProperty
+        public native void setFormatter(String formatter);
+        
+        @JsProperty
+        public native void setOffsetCenter(String[] offsetCenter);
+
+    }    
+
+    
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class Piece {
+
+        @JsProperty
+        public native void setMin(double min);
+        
+        @JsProperty
+        public native void setMax(double max);
+
+        @JsProperty
+        public native void setColor(String color);
+    }
+
+    
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class LineStyle {
+
+        @JsProperty
+        public native void setWidth(int width);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -269,14 +396,32 @@ public interface ECharts {
         @JsProperty
         public native void setY(String y);
     }
-    
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class Pointer {
+
+        @JsProperty
+        public native void setShow(boolean show);
+
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class Progress {
+
+        @JsProperty
+        public native void setShow(boolean show);
+
+        @JsProperty
+        public native void setOverlap(boolean overlap);
+
+    }
+
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class Label {
 
         @JsProperty
         public native void setFormatter(LabelFormatterCallback callback);
-        
-        
+
         @JsProperty
         public native void setShow(boolean show);
 
@@ -296,25 +441,25 @@ public interface ECharts {
 
         Object execute(Object object);
     }
-    
+
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-    class CallbackParams {       
-        
+    class CallbackParams {
+
         @JsProperty
         public native int getDataIndex();
-        
+
         @JsProperty
         public native Object[] getData();
 
     }
-    
+
     @JsFunction
     @FunctionalInterface
     interface LabelFormatterCallback {
 
         Object execute(CallbackParams params);
     }
-    
+
     @JsFunction
     @FunctionalInterface
     interface SymbolSizeCallback {
@@ -342,7 +487,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setDataView(DataView dataView);
-        
+
         @JsProperty
         public native void setDataZoom(DataZoom dataZoom);
 
@@ -367,6 +512,42 @@ public interface ECharts {
 
         @JsProperty
         public native void setSource(Object[][] source);
+
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class VisualMap {
+
+        @JsProperty
+        public native void setShow(boolean show);
+
+        @JsProperty
+        public native void setType(String visualMapType);
+
+        @JsProperty
+        public native void setMin(double min);
+
+        @JsProperty
+        public native void setMax(double min);
+        
+        @JsProperty
+        public native void setPieces(Piece[] pieces);
+
+        @JsProperty
+        public native void setInRange(InRange inRange);
+
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public class InRange {
+
+        @JsProperty
+        public native void setColor(String[] color);
+    }
+
+    public enum VisualMapType {
+        piecewise,
+        continuous
 
     }
 

@@ -29,7 +29,6 @@ public abstract class EChartsXYDisplayer extends EChartsAbstractDisplayer<EChart
 
     protected boolean isBar;
     protected boolean isStack;
-    protected String echartsType;
 
     @Inject
     public EChartsXYDisplayer(EChartsDisplayerView<?> view, EChartsTypeFactory echartsFactory) {
@@ -52,7 +51,7 @@ public abstract class EChartsXYDisplayer extends EChartsAbstractDisplayer<EChart
         var splitLineX = echartsFactory.newSplitLine();
         var splitLineY = echartsFactory.newSplitLine();
 
-        this.echartsType = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
+        
         this.isBar = subType != null && (subType == DisplayerSubType.BAR || subType == DisplayerSubType.BAR_STACKED);
         this.isStack = subType != null && (subType == DisplayerSubType.BAR_STACKED ||
                                            subType == DisplayerSubType.AREA_STACKED ||

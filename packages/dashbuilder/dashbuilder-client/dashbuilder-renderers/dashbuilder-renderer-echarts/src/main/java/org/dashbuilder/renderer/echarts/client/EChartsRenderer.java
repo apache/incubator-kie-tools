@@ -47,6 +47,7 @@ import static org.dashbuilder.displayer.DisplayerType.AREACHART;
 import static org.dashbuilder.displayer.DisplayerType.BARCHART;
 import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
 import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.dashbuilder.displayer.DisplayerType.METERCHART;
 import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 
 @ApplicationScoped
@@ -60,7 +61,8 @@ public class EChartsRenderer extends AbstractRendererLibrary {
             BARCHART,
             PIECHART,
             AREACHART,
-            BUBBLECHART);
+            BUBBLECHART,
+            METERCHART);
 
     @PostConstruct
     public void prepare() {
@@ -111,6 +113,7 @@ public class EChartsRenderer extends AbstractRendererLibrary {
             case PIECHART:
                 return beanManager.lookupBean(EChartsPieChartDisplayer.class).newInstance();
             case METERCHART:
+                return beanManager.lookupBean(EChartsMeterChartDisplayer.class).newInstance();
             case MAP:
             default:
                 throw new IllegalArgumentException("Type not supported by ECharts");

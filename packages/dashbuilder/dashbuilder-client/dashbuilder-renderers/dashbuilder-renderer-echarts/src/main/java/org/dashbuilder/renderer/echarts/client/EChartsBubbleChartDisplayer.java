@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.renderer.echarts.client;
 
-import java.util.Arrays;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -55,17 +53,14 @@ public class EChartsBubbleChartDisplayer extends EChartsXYDisplayer {
             series.setEncode(encode);
             series.setType(this.echartsType);
 
-            if (dataSet.getColumns().size() > RADIUS_INDEX) {
-                @SuppressWarnings("unchecked")
-                var radiusValues = dataSet.getColumnByIndex(RADIUS_INDEX).getValues().stream().mapToDouble(v -> Double
-                        .valueOf(v.toString())).toArray();
-                var min = Arrays.stream(radiusValues).reduce((v1, v2) -> v1 <= v2 ? v1 : v2).orElse(bubbleMinRadius);
-                var max = Arrays.stream(radiusValues).reduce((v1, v2) -> v1 >= v2 ? v1 : v2).orElse(bubbleMaxRadius);
+            if (dataSet.getColumns().size() > RADIUS_INDEX) {                
+                var radiusColumn = dataSet.getColumnByIndex(RADIUS_INDEX);
+                var min = min(radiusColumn).orElse(bubbleMinRadius);
+                var max = max(radiusColumn).orElse(bubbleMaxRadius);
                 series.setSymbolSize((v, params) -> {
                     var radiusValueObj = dataSet.getValueAt(params.getDataIndex(), RADIUS_INDEX);
                     if (radiusValueObj != null) {
                         var radiusValue = Double.valueOf(radiusValueObj.toString());
-                        // TODO: allow users to setup bubble size
                         return map(radiusValue, min, max, bubbleMinRadius, bubbleMaxRadius);
                     }
                     return bubbleMinRadius;
@@ -84,6 +79,7 @@ public class EChartsBubbleChartDisplayer extends EChartsXYDisplayer {
         return new Series[]{};
     }
 
+    
     @Override
     DataSetLookupConstraints getDataSetLookupConstraints() {
         return new DataSetLookupConstraints()

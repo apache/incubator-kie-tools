@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import jsinterop.base.Js;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.renderer.echarts.client.js.ECharts.InRange;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.SeriesType;
 
 @ApplicationScoped
@@ -89,7 +90,7 @@ public class EChartsTypeFactory {
         ECharts.Tooltip tooltip = Js.cast(new Object());
         return tooltip;
     }
-    
+
     public ECharts.Label newLabel() {
         ECharts.Label label = Js.cast(new Object());
         return label;
@@ -123,6 +124,59 @@ public class EChartsTypeFactory {
     public ECharts.Dataset newDataset() {
         ECharts.Dataset dataset = Js.cast(new Object());
         return dataset;
+    }
+
+    public ECharts.ItemStyle newItemStyle() {
+        ECharts.ItemStyle itemStyle = Js.cast(new Object());
+        return itemStyle;
+    }
+
+    public ECharts.Data newData() {
+        ECharts.Data data = Js.cast(new Object());
+        return data;
+    }
+
+    public ECharts.VisualMap newVisualMap() {
+        ECharts.VisualMap visualMap = Js.cast(new Object());
+        return visualMap;
+    }
+
+    public ECharts.Piece newPiece(long min, long max, String color) {
+        ECharts.Piece piece = newPiece();
+        piece.setMin(min);
+        piece.setMax(max);
+        piece.setColor(color);
+        return piece;
+    }
+    
+    public ECharts.Piece newPiece() {
+        ECharts.Piece piece = Js.cast(new Object());
+        return piece;
+    }
+
+    public ECharts.Pointer newPointer() {
+        ECharts.Pointer visualMap = Js.cast(new Object());
+        return visualMap;
+    }
+
+    public ECharts.Progress newProgress() {
+        ECharts.Progress progress = Js.cast(new Object());
+        return progress;
+    }
+
+    public ECharts.AxisLine newAxisLine() {
+        ECharts.AxisLine axisLine = Js.cast(new Object());
+        return axisLine;
+    }
+
+    public ECharts.LineStyle newLineStyle() {
+        ECharts.LineStyle lineStyle = Js.cast(new Object());
+        return lineStyle;
+    }
+
+    public InRange newInRange() {
+        ECharts.InRange inRange = Js.cast(new Object());
+        return inRange;
     }
 
     public ECharts.SeriesType convertDisplayerType(DisplayerType displayerType) {

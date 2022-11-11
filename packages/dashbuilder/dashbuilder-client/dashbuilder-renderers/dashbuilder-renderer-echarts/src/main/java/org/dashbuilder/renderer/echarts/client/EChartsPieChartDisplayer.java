@@ -35,8 +35,7 @@ public class EChartsPieChartDisplayer extends EChartsAbstractDisplayer<EChartsDi
     @Override
     void chartSetup() {
         var series = echartsFactory.newSeries();
-        var type = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
-        series.setType(type);
+        
 
         if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.CHART_MARGIN_BOTTOM)) {
             series.setBottom(displayerSettings.getChartMarginBottom());
@@ -53,10 +52,12 @@ public class EChartsPieChartDisplayer extends EChartsAbstractDisplayer<EChartsDi
 
         if (displayerSettings.getSubtype() == DisplayerSubType.DONUT) {
             var radius = new String[]{"50%", "70%"};
+            option.getTitle().setTop("center");            
             series.setRadius(radius);
         }
+        
+        series.setType(this.echartsType);
         option.setSeries(series);
-
     }
 
     @Override
