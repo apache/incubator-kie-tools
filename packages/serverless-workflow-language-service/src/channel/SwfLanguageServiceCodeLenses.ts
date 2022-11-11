@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TextDocument } from "vscode-json-languageservice";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
 import {
   SwfLanguageServiceCommandArgs,

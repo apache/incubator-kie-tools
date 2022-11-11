@@ -104,6 +104,7 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
+      { "id": "@kie-tools/yaml-language-server" },
       { "id": "vscode-extension-backend" },
       { "id": "vscode-extension-bpmn-editor" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
@@ -628,10 +629,18 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-workflow-language-service",
+        "target": "@kie-tools/yaml-language-server",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-service-catalog",
         "target": "@kie-tools-core/envelope-bus",
         "weight": 1
       },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools/backend-extended-services", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -839,6 +848,7 @@
     ["@kie-tools-core/webpack-base", "packages/webpack-base"],
     ["@kie-tools-core/workspace", "packages/workspace"],
     ["@kie-tools-core/workspaces-git-fs", "packages/workspaces-git-fs"],
+    ["@kie-tools/yaml-language-server", "packages/yaml-language-server"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
     ["@kie-tools-scripts/bootstrap", "scripts/bootstrap"],
     ["@kie-tools-scripts/build-env", "scripts/build-env"],
