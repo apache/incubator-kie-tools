@@ -20,7 +20,13 @@ import * as __path from "path";
 import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
-import { EditorEnvelopeLocator, EnvelopeMapping, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import {
+  EditorEnvelopeLocator,
+  EnvelopeContent,
+  EnvelopeContentType,
+  EnvelopeMapping,
+  KogitoEditorChannelApi,
+} from "@kie-tools-core/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeKieEditorController, KogitoEditorDocument } from "./VsCodeKieEditorController";
 import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
@@ -122,12 +128,23 @@ export class VsCodeKieEditorControllerFactory {
             type: mapping.type,
             filePathGlob: mapping.filePathGlob,
             resourcesPathPrefix: this.getWebviewPath(webview, mapping.resourcesPathPrefix),
-            envelopePath: this.getWebviewPath(webview, mapping.envelopePath),
+            envelopeContent: {
+              type: EnvelopeContentType.PATH,
+              path: this.getWebViewPathFromEnvelopeContent(webview, mapping.envelopeContent),
+            },
           })
         );
         return envelopeMappings;
       }, [] as EnvelopeMapping[])
     );
+  }
+
+  private getWebViewPathFromEnvelopeContent(webview: Webview, envelopeContent: EnvelopeContent) {
+    if ("path" in envelopeContent) {
+      return this.getWebviewPath(webview, envelopeContent.path);
+    }
+
+    return "";
   }
 
   private getWebviewPath(webview: Webview, relativePath: string) {

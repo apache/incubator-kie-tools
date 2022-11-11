@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorEnvelopeLocator, EditorTheme, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorEnvelopeLocator,
+  EditorTheme,
+  EnvelopeContentType,
+  EnvelopeMapping,
+} from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -48,7 +54,7 @@ export const App = () => {
           type: "dash",
           filePathGlob: "**/*.dash.+(yml|yaml)",
           resourcesPathPrefix: "",
-          envelopePath: "dashbuilder-editor-envelope.html",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "dashbuilder-editor-envelope.html" },
         }),
       ]),
     []
