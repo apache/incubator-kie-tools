@@ -187,23 +187,27 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
     );
   }
 
-  public kogitoSwfGetDiagramEditorEnvelopeContent(): Promise<string> {
+  public kogitoSwfGetDiagramEditorEnvelopeContent(): SharedValueProvider<string> {
     return (
-      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetDiagramEditorEnvelopeContent() ??
-      Promise.reject("no op")
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetDiagramEditorEnvelopeContent() ?? {
+        defaultValue: "",
+      }
     );
   }
 
-  public kogitoSwfGetMermaidEnvelopeContent(): Promise<string> {
+  public kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
     return (
-      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetMermaidEnvelopeContent() ?? Promise.reject("no op")
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetMermaidEnvelopeContent() ?? {
+        defaultValue: "",
+      }
     );
   }
 
-  public kogitoSwfGetTextEditorEnvelopeContent(): Promise<string> {
+  public kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
     return (
-      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ??
-      Promise.reject("no op")
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ?? {
+        defaultValue: "",
+      }
     );
   }
 }

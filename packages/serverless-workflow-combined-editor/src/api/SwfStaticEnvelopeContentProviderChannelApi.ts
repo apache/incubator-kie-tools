@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+
 export interface SwfStaticEnvelopeContentProviderChannelApi {
-  kogitoSwfGetDiagramEditorEnvelopeContent(): Promise<string>;
-  kogitoSwfGetMermaidEnvelopeContent(): Promise<string>;
-  kogitoSwfGetTextEditorEnvelopeContent(): Promise<string>;
+  kogitoSwfGetDiagramEditorEnvelopeContent(): SharedValueProvider<string>;
+  kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string>;
+  kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string>;
 }

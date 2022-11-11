@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfStaticEnvelopeContentProviderChannelApi } from "../api";
 
 export class NoOpSwfStaticEnvelopeContentProviderChannelApiImpl implements SwfStaticEnvelopeContentProviderChannelApi {
-  kogitoSwfGetDiagramEditorEnvelopeContent(): Promise<string> {
-    return Promise.reject("no op.");
+  kogitoSwfGetDiagramEditorEnvelopeContent(): SharedValueProvider<string> {
+    return { defaultValue: "" };
   }
 
-  kogitoSwfGetMermaidEnvelopeContent(): Promise<string> {
-    return Promise.reject("no op.");
+  kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
+    return { defaultValue: "" };
   }
 
-  kogitoSwfGetTextEditorEnvelopeContent(): Promise<string> {
-    return Promise.reject("no op.");
+  kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
+    return { defaultValue: "" };
   }
 }

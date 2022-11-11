@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfStaticEnvelopeContentProviderChannelApi } from "../api";
 
 export class SwfStaticEnvelopeContentProviderChannelApiImpl implements SwfStaticEnvelopeContentProviderChannelApi {
@@ -25,15 +26,15 @@ export class SwfStaticEnvelopeContentProviderChannelApiImpl implements SwfStatic
     }
   ) {}
 
-  public kogitoSwfGetDiagramEditorEnvelopeContent(): Promise<string> {
-    return Promise.resolve(this.args.diagramEditorEnvelopeContent);
+  public kogitoSwfGetDiagramEditorEnvelopeContent(): SharedValueProvider<string> {
+    return { defaultValue: this.args.diagramEditorEnvelopeContent };
   }
 
-  public kogitoSwfGetMermaidEnvelopeContent(): Promise<string> {
-    return Promise.resolve(this.args.mermaidEnvelopeContent);
+  public kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
+    return { defaultValue: this.args.mermaidEnvelopeContent };
   }
 
-  public kogitoSwfGetTextEditorEnvelopeContent(): Promise<string> {
-    return Promise.resolve(this.args.textEditorEnvelopeContent);
+  public kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
+    return { defaultValue: this.args.textEditorEnvelopeContent };
   }
 }
