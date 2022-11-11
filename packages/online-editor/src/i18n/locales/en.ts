@@ -102,7 +102,7 @@ export const en: OnlineI18n = {
     },
     deleteConfirmModal: {
       title: "Delete deployment(s)",
-      body: "Are you sure you want to delete your deployment(s)? This action is not reversible and you will need to create a new deployment if you need to test your model(s).",
+      body: "Are you sure you want to delete your deployment(s)? This action is not reversible and you will need to create a new deployment if you want to test your model(s) again.",
     },
     alerts: {
       deployStartedError:
