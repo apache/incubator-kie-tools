@@ -145,12 +145,15 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
       </FlexItem>
       <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
         <Button
-          style={{ color: "var(--pf-global--BackgroundColor--dark-100)" }}
+          className="kogito--editor__dmn-dev-sandbox-dropdown-item-delete"
+          style={{
+            color: isDisabled ? "var(--pf-global--palette--black-300)" : "var(--pf-global--palette--black-500)",
+          }}
           variant={ButtonVariant.link}
           isDanger={true}
           onClick={onDelete}
           icon={<TrashIcon />}
-          isDisabled={props.deployment.state !== OpenShiftDeploymentState.UP}
+          isDisabled={isDisabled}
         />
       </FlexItem>
     </Flex>

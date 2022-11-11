@@ -501,6 +501,10 @@
   align-items: center;
 }
 
+.kogito--editor__dmn-dev-sandbox-dropdown-item-delete:not(disabled):hover {
+  color: var(--pf-global--palette--black-800) !important;
+}
+
 .kogito--editor__dmn-dev-sandbox-dropdown-item-status {
   pointer-events: auto;
 }
