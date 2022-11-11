@@ -42,15 +42,16 @@ import (
 )
 
 type Proxy struct {
-	view               *KogitoSystray
-	server             *http.Server
-	cmd                *exec.Cmd
+	View               *Systray
 	Started            bool
 	URL                string
 	Port               string
 	RunnerPort         string
-	jitexecutorPath    string
 	InsecureSkipVerify bool
+
+	cmd             *exec.Cmd
+	jitexecutorPath string
+	server          *http.Server
 }
 
 func NewProxy(port string, jitexecutor []byte) *Proxy {
@@ -69,13 +70,8 @@ func (p *Proxy) Start() {
 	}
 	p.RunnerPort = strconv.Itoa(port)
 	p.URL = "http://127.0.0.1:" + p.RunnerPort
-	target, err := url.Parse(p.URL)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort)
-
 	stdout, _ := p.cmd.StdoutPipe()
 	go func() {
 		scanner := bufio.NewScanner(stdout)
@@ -90,12 +86,10 @@ func (p *Proxy) Start() {
 		log.Fatal(err)
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(target)
-
 	router := mux.NewRouter()
 	router.PathPrefix("/devsandbox").HandlerFunc(p.devSandboxHandler())
 	router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
-	router.PathPrefix("/").HandlerFunc(p.proxyHandler(proxy))
+	router.PathPrefix("/").HandlerFunc(p.jitExecutorHandler())
 
 	addr := metadata.IP + ":" + p.Port
 
@@ -140,12 +134,12 @@ func (p *Proxy) Stop() {
 	log.Println("Shutdown complete")
 
 	p.RunnerPort = "0"
-	p.view.Refresh()
+	p.View.Refresh()
 }
 
 func (p *Proxy) Refresh() {
 
-	p.view.SetLoading()
+	p.View.SetLoading()
 
 	started := false
 	countDown := 5
@@ -168,7 +162,7 @@ func (p *Proxy) Refresh() {
 	}
 
 	p.Started = started
-	p.view.Refresh()
+	p.View.Refresh()
 }
 
 func (p *Proxy) devSandboxHandler() func(rw http.ResponseWriter, req *http.Request) {
@@ -217,8 +211,21 @@ func (p *Proxy) devSandboxHandler() func(rw http.ResponseWriter, req *http.Reque
 	}
 }
 
-func (p *Proxy) proxyHandler(proxy *httputil.ReverseProxy) func(rw http.ResponseWriter, req *http.Request) {
+func (p *Proxy) jitExecutorHandler() func(rw http.ResponseWriter, req *http.Request) {
 	return func(rw http.ResponseWriter, req *http.Request) {
+		if req.Method == "OPTIONS" {
+			rw.Header().Add("Access-Control-Allow-Origin", "*")
+			rw.Header().Add("Access-Control-Allow-Methods", "*")
+			rw.Header().Add("Access-Control-Allow-Headers", "*")
+			return
+		}
+
+		target, err := url.Parse(p.URL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		proxy := httputil.NewSingleHostReverseProxy(target)
+
 		req.Host = req.URL.Host
 		proxy.ServeHTTP(rw, req)
 	}

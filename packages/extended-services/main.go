@@ -32,5 +32,12 @@ var jitexecutor []byte
 func main() {
 	port := flag.String("p", metadata.Port, "KIE Sandbox Extended Services Port")
 	flag.Parse()
-	kogito.Systray(*port, jitexecutor)
+
+	server := kogito.NewProxy(*port, jitexecutor)
+	view := &kogito.Systray{}
+
+	server.View = view
+	view.Server = server
+
+	view.Run()
 }
