@@ -3228,7 +3228,6 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/cors-proxy-image": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
@@ -3313,7 +3312,6 @@ importers:
       "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn
-      "@kie-tools/git-cors-proxy-image": link:../git-cors-proxy-image
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@kie-tools/pmml-editor": link:../pmml-editor
@@ -3342,10 +3340,10 @@ importers:
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/cors-proxy-image": link:../cors-proxy-image
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/extended-services": link:../extended-services
+      "@kie-tools/git-cors-proxy-image": link:../git-cors-proxy-image
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig

@@ -538,17 +538,16 @@
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/online-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/openshift", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
-      { "source": "@kie-tools/online-editor", "target": "@kie-tools/git-cors-proxy-image", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/unitables-dmn", "weight": 1 },
-      { "source": "@kie-tools/online-editor", "target": "@kie-tools/cors-proxy-image", "weight": 1 },
       {
         "source": "@kie-tools/online-editor",
         "target": "@kie-tools/dmn-dev-sandbox-deployment-base-image-env",
         "weight": 1
       },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/extended-services", "weight": 1 },
+      { "source": "@kie-tools/online-editor", "target": "@kie-tools/git-cors-proxy-image", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/stunner-editors", "weight": 1 },
       { "source": "@kie-tools-core/openshift", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/openshift", "target": "@kie-tools/root-env", "weight": 1 },
