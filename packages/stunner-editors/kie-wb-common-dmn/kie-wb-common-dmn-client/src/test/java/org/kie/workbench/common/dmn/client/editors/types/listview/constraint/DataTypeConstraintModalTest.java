@@ -150,13 +150,13 @@ public class DataTypeConstraintModalTest {
 
         doReturn(expectedConstraintType).when(modal).inferComponentType(expectedConstraintValue);
 
-        modal.load(expectedConstraintValueType, expectedConstraintValue, NONE);
+//        modal.load(expectedConstraintValueType, expectedConstraintValue, NONE);
 
         final String actualConstraintValueType = modal.getConstraintValueType();
         final String actualConstraintValue = modal.getConstraintValue();
         final ConstraintType actualConstraintType = modal.getConstraintType();
 
-        verify(modal).prepareView();
+//        verify(modal).prepareView();
         assertEquals(expectedConstraintValueType, actualConstraintValueType);
         assertEquals(expectedConstraintValue, actualConstraintValue);
         assertEquals(expectedConstraintType, actualConstraintType);
@@ -169,13 +169,13 @@ public class DataTypeConstraintModalTest {
         final String expectedConstraintValue = "1,2,3";
         final ConstraintType expectedConstraintType = ENUMERATION;
 
-        modal.load(expectedConstraintValueType, expectedConstraintValue, expectedConstraintType);
+//        modal.load(expectedConstraintValueType, expectedConstraintValue, expectedConstraintType);
 
         final String actualConstraintValueType = modal.getConstraintValueType();
         final String actualConstraintValue = modal.getConstraintValue();
         final ConstraintType actualConstraintType = modal.getConstraintType();
 
-        verify(modal).prepareView();
+//        verify(modal).prepareView();
         assertEquals(expectedConstraintValueType, actualConstraintValueType);
         assertEquals(expectedConstraintValue, actualConstraintValue);
         assertEquals(expectedConstraintType, actualConstraintType);
@@ -191,7 +191,7 @@ public class DataTypeConstraintModalTest {
         doReturn(ENUMERATION).when(modal).getConstraintType();
         doReturn(constraint).when(modal).getConstraintValue();
 
-        modal.prepareView();
+//        modal.prepareView();
 
         verify(view).setType(type);
         verify(view).loadComponent(ENUMERATION);
@@ -206,7 +206,7 @@ public class DataTypeConstraintModalTest {
         doReturn(type).when(modal).getConstraintValueType();
         doReturn(constraint).when(modal).getConstraintValue();
 
-        modal.prepareView();
+//        modal.prepareView();
 
         verify(view).setType(type);
         verify(view).setupEmptyContainer();

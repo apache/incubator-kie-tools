@@ -26,6 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
@@ -106,7 +107,8 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
         hide();
     }
 
-    void load(final String type,
+    void load(final DataType dataType,
+              final String type,
               final String value,
               final ConstraintType constraintType) {
 
@@ -119,7 +121,7 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
             this.constraintType = constraintType;
         }
 
-        prepareView();
+        prepareView(dataType);
     }
 
     void setupComponent(final ConstraintType type) {
@@ -167,9 +169,10 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
         }
     }
 
-    void prepareView() {
+    void prepareView(final DataType dataType) {
 
         getView().setType(getConstraintValueType());
+        getView().setDataType(dataType);
 
         if (!isEmpty(getConstraintValue()) || !isNone(getConstraintType())) {
             getView().loadComponent(getConstraintType());
@@ -287,6 +290,8 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     public interface View extends Elemental2Modal.View<DataTypeConstraintModal> {
 
         void setType(final String type);
+
+        void setDataType(final DataType dataType);
 
         void setupEmptyContainer();
 

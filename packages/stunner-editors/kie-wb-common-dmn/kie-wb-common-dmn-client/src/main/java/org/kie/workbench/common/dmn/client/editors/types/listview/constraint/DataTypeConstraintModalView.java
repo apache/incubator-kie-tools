@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
+import java.util.Objects;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -27,12 +29,14 @@ import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLSelectElement;
 import elemental2.dom.Node;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
@@ -82,19 +86,20 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     private final HTMLButtonElement closeConstraintWarningMessage;
 
     private DataTypeConstraintModal presenter;
+    private DataType dataType;
 
     @Inject
     public DataTypeConstraintModalView(final HTMLDivElement header,
-                                       final HTMLDivElement body,
-                                       final HTMLDivElement footer,
-                                       final HTMLDivElement componentContainer,
-                                       final HTMLButtonElement okButton,
-                                       final HTMLButtonElement cancelButton,
-                                       final HTMLAnchorElement clearAllAnchor,
-                                       final @Named("span") HTMLElement type,
-                                       final HTMLDivElement selectConstraint,
-                                       final HTMLDivElement constraintWarningMessage,
-                                       final HTMLButtonElement closeConstraintWarningMessage) {
+            final HTMLDivElement body,
+            final HTMLDivElement footer,
+            final HTMLDivElement componentContainer,
+            final HTMLButtonElement okButton,
+            final HTMLButtonElement cancelButton,
+            final HTMLAnchorElement clearAllAnchor,
+            final @Named("span") HTMLElement type,
+            final HTMLDivElement selectConstraint,
+            final HTMLDivElement constraintWarningMessage,
+            final HTMLButtonElement closeConstraintWarningMessage) {
         this.header = header;
         this.body = body;
         this.footer = footer;
@@ -165,6 +170,11 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
         this.type.textContent = type;
     }
 
+    @Override
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+    }
+
     void onSelectChange(final JQuerySelectPickerEvent event) {
 
         final String constraintType = event.target.value;
@@ -191,7 +201,17 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Override
     public void onShow() {
-        setPickerValue(getSelectPicker(), getConstraintType());
+        final HTMLSelectElement selectElement = (HTMLSelectElement) getSelectPicker();
+        if (Objects.equals("Any", dataType.getType())) {
+            selectElement.options.getAt(1).disabled = true;
+            selectElement.options.getAt(3).disabled = true;
+        } else {
+            selectElement.options.getAt(1).disabled = false;
+            selectElement.options.getAt(3).disabled = false;
+        }
+
+        triggerPickerAction(selectElement, "refresh");
+        setPickerValue(selectElement, getConstraintType());
     }
 
     @Override
