@@ -55,9 +55,6 @@ module.exports = async (env, argv) => {
         new ProvidePlugin({
           Buffer: ["buffer", "Buffer"],
         }),
-        new EnvironmentPlugin({
-          WEBPACK_REPLACE__corsProxyUrl: buildEnv.onlineEditor.corsProxyUrl,
-        }),
         new CopyPlugin({
           patterns: [
             {
@@ -102,7 +99,6 @@ module.exports = async (env, argv) => {
           WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
           WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
           WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
-          WEBPACK_REPLACE__corsProxyUrl: buildEnv.onlineEditor.corsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -110,7 +106,51 @@ module.exports = async (env, argv) => {
             { from: "./static/images", to: "./images" },
             { from: "./static/samples", to: "./samples" },
             { from: "./static/favicon.svg", to: "./favicon.svg" },
-            { from: "./static/env.json", to: "./env.json" },
+            {
+              from: "./static/env.json",
+              to: "./env.json",
+              transform: () => {
+                //FIXME: Tiago -> This needs to be type-checked.
+                return JSON.stringify(
+                  {
+                    KIE_SANDBOX_GIT_CORS_PROXY_URL: buildEnv.onlineEditor.gitCorsProxyUrl,
+                    KIE_SANDBOX_EXTENDED_SERVICES_URL:
+                      buildEnv.onlineEditor.kieSandboxExtendedServices.extendedServicesUrl,
+                    KIE_SANDBOX_AUTH_PROVIDERS: [
+                      {
+                        id: "github_dot_com",
+                        domain: "github.com",
+                        supportedGitRemoteDomains: ["github.com", "gist.github.com"],
+                        type: "github",
+                        name: "GitHub",
+                        enabled: true,
+                        iconPath: "",
+                      },
+                      {
+                        id: "gitlab_dot_com",
+                        domain: "gitlab.com",
+                        supportedGitRemoteDomains: ["gitlab.com"],
+                        type: "gitlab",
+                        name: "GitLab",
+                        enabled: false,
+                        iconPath: "",
+                      },
+                      {
+                        id: "bitbucket_dot_com",
+                        domain: "bitbucket.com",
+                        supportedGitRemoteDomains: ["bitbucket.com"],
+                        type: "bitbucket",
+                        name: "Bitbucket",
+                        enabled: false,
+                        iconPath: "",
+                      },
+                    ],
+                  },
+                  null,
+                  2
+                );
+              },
+            },
             {
               from: stunnerEditors.dmnEditorPath(),
               to: "./gwt-editors/dmn",

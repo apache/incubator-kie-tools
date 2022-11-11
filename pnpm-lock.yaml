@@ -2532,6 +2532,20 @@ importers:
       webpack-merge: 5.8.0
       webpack-node-externals: 3.0.0
 
+  packages/git-cors-proxy-image:
+    specifiers:
+      "@isomorphic-git/cors-proxy": ^2.7.1
+      "@kie-tools/root-env": workspace:*
+      patch-package: ^6.4.7
+      rimraf: ^3.0.2
+      run-script-os: ^1.1.6
+    devDependencies:
+      "@isomorphic-git/cors-proxy": 2.7.1
+      "@kie-tools/root-env": link:../root-env
+      patch-package: 6.4.7
+      rimraf: 3.0.2
+      run-script-os: 1.1.6
+
   packages/guided-tour:
     specifiers:
       "@babel/core": ^7.16.0
@@ -3221,6 +3235,7 @@ importers:
       "@kie-tools/extended-services": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/form-dmn": workspace:*
+      "@kie-tools/git-cors-proxy-image": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/pmml-editor": workspace:*
@@ -3298,6 +3313,7 @@ importers:
       "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn
+      "@kie-tools/git-cors-proxy-image": link:../git-cors-proxy-image
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@kie-tools/pmml-editor": link:../pmml-editor
@@ -15772,7 +15788,8 @@ packages:
     dev: true
 
   /depd/1.1.1:
-    resolution: { integrity: sha1-V4O04cRZ8G+lyif5kfPQbnoxA1k= }
+    resolution:
+      { integrity: sha512-Jlk9xvkTDGXwZiIDyoM7+3AsuvJVoyOpRupvEVy9nX3YO3/ieZxhlgh8GpLNZ8AY7HjO6y2YwpMSh1ejhu3uIw== }
     engines: { node: ">= 0.6" }
     dev: true
 
@@ -17724,7 +17741,7 @@ packages:
     resolution:
       { integrity: sha512-1IMnbjt4KzsQfnhnzNd8wUEgXZ44IzZaZmnLYx7D5FZlaHt2gW20Cri8Q+E/t5tIj4+epTBub+2Zxu/vNILzqQ== }
     dependencies:
-      micromatch: 4.0.4
+      micromatch: 4.0.5
     dev: true
 
   /flat-cache/3.0.4:
@@ -18675,7 +18692,8 @@ packages:
     dev: true
 
   /http-errors/1.6.2:
-    resolution: { integrity: sha1-CgAsyFcHGSp+eUbO7cERVfYOxzY= }
+    resolution:
+      { integrity: sha512-STnYGcKMXL9CGdtpeTFnLmgMSHTTNQJSHxiC4DETHKf934Q160Ht5pljrNeH24S0O9xUN+9vsDJZdZtk5js6Ww== }
     engines: { node: ">= 0.6" }
     dependencies:
       depd: 1.1.1
@@ -24295,7 +24313,8 @@ packages:
     dev: true
 
   /raw-body/2.3.2:
-    resolution: { integrity: sha1-vNYMd9Prk83gBQKVw/N5OJvIj4k= }
+    resolution:
+      { integrity: sha512-Ss0DsBxqLxCmQkfG5yazYhtbVVTJqS9jTsZG2lhrNwqzOk2SUC7O/NB/M//CkEBqsrtmlNgJCPccJGuYSFr6Vg== }
     engines: { node: ">= 0.8" }
     dependencies:
       bytes: 3.0.0
@@ -25718,7 +25737,8 @@ packages:
     dev: true
 
   /setprototypeof/1.0.3:
-    resolution: { integrity: sha1-ZlZ+NwQ+608E2RvWWMDL77VbjgQ= }
+    resolution:
+      { integrity: sha512-9jphSf3UbIgpOX/RKvX02iw/rN2TKdusnsPpGfO/rkcsrd+IRqgHZb4VGnmL0Cynps8Nj2hN45wsi30BzrHDIw== }
     dev: true
 
   /setprototypeof/1.1.0:

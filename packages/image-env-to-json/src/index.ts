@@ -21,6 +21,22 @@ import { version as packageVersion } from "../package.json";
 
 const ENV_JSON_FILE = "env.json";
 
+function getEnvVarValueAsJson(name: string) {
+  const envVarStringValue = process.env[name];
+  if (!envVarStringValue) {
+    return undefined;
+  }
+
+  try {
+    const envVarJsonValue = JSON.parse(envVarStringValue);
+    console.info(`[image-env-to-json] '${name}' is a valid JSON. Using parsed JSON from '${name}'.`);
+    return envVarJsonValue;
+  } catch (e) {
+    console.info(`[image-env-to-json] '${name}' is not a valid JSON. Using '${name}' as string.`);
+    return envVarStringValue;
+  }
+}
+
 function main() {
   const program = createCommand();
 
@@ -33,16 +49,18 @@ function main() {
 
   const options = program.opts();
 
-  console.info(`Looking for environment variables: ${options.names.join(", ")}`);
+  console.info(`[image-env-to-json] Looking for environment variables: ${options.names.join(", ")}`);
 
   if (!existsSync(options.directory)) {
-    console.error(`Directory '${options.directory}' does not exist. Please provide an existing directory.`);
+    console.error(
+      `[image-env-to-json] Directory '${options.directory}' does not exist. Please provide an existing directory.`
+    );
     process.exit(1);
   }
 
   const envJsonPath = join(options.directory, ENV_JSON_FILE);
   if (!existsSync(envJsonPath)) {
-    console.info(`Creating ${ENV_JSON_FILE} file in '${options.directory}'`);
+    console.info(`[image-env-to-json] Creating '${ENV_JSON_FILE}' file in '${options.directory}'`);
     writeFileSync(envJsonPath, JSON.stringify({}));
   }
 
@@ -51,10 +69,10 @@ function main() {
   let isUpdated = false;
 
   for (const name of options.names) {
-    const value = process.env[name];
+    const value = getEnvVarValueAsJson(name);
     if (value !== undefined) {
       isUpdated = true;
-      console.info(`Setting environment variable '${name}' with value '${value}'`);
+      console.info(`[image-env-to-json] Setting environment variable '${name}' with value '${JSON.stringify(value)}'`);
       envJson[name] = value;
     }
   }
@@ -62,9 +80,9 @@ function main() {
   writeFileSync(envJsonPath, JSON.stringify(envJson, null, 2));
 
   if (isUpdated) {
-    console.info(`${ENV_JSON_FILE} file has been updated in '${options.directory}'`);
+    console.info(`[image-env-to-json] '${ENV_JSON_FILE}' file has been updated in '${options.directory}'`);
   } else {
-    console.info(`No environment variables have been updated in '${options.directory}'`);
+    console.info(`[image-env-to-json] No environment variables have been updated in '${options.directory}'`);
   }
 }
 

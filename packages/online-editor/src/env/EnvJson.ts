@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useContext } from "react";
-import { EnvJson } from "../EnvJson";
+import { AuthProvider } from "../accounts/authProviders/AuthProvidersContext";
 
-export interface EnvContextType {
-  env: EnvJson;
-}
-
-export const EnvContext = React.createContext<EnvContextType>({} as any);
-
-export function useEnv() {
-  return useContext(EnvContext);
+export interface EnvJson {
+  KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
+  KIE_SANDBOX_GIT_CORS_PROXY_URL: string;
+  KIE_SANDBOX_AUTH_PROVIDERS: AuthProvider[];
 }

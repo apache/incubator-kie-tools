@@ -16,14 +16,14 @@ FROM registry.access.redhat.com/ubi8/nodejs-16
 
 USER root
 
-COPY dist-dev/cors-proxy /tmp/cors-proxy
+COPY dist-dev/git-cors-proxy /tmp/git-cors-proxy
 
 RUN mkdir /kie-sandbox \
-  && mv /tmp/cors-proxy /kie-sandbox \
+  && mv /tmp/git-cors-proxy /kie-sandbox \
   && chgrp -R 0 /kie-sandbox \
   && chmod -R g=u /kie-sandbox \
-  && npm install --production --silent --prefix /kie-sandbox/cors-proxy
+  && npm install --production --silent --prefix /kie-sandbox/git-cors-proxy
 
 EXPOSE 8080
 
-CMD [ "/kie-sandbox/cors-proxy/bin.js", "start", "-p", "8080" ]
+CMD [ "/kie-sandbox/git-cors-proxy/bin.js", "start", "-p", "8080" ]

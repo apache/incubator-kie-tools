@@ -25,43 +25,48 @@ module.exports = composeEnv(
     vars: varsWithName({
       ONLINE_EDITOR__buildInfo: {
         default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
-        description: "",
+        description: "Build information to be shown at the bottom of Home page.",
       },
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
-        description: "",
+        description: "Download URL for Extended Services for Linux.",
       },
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
-        description: "",
+        description: "Download URL for Extended Services for macOS.",
       },
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
-        description: "",
+        description: "Download URL for Extended Services for Windows.",
       },
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
         default: extendedServicesEnv.env.extendedServices.version,
-        description: "",
+        description:
+          "Version Extended Services compatile with KIE Sandbox. Exact match only. No version ranges are supported.",
       },
       ONLINE_EDITOR__gtmId: {
         default: undefined,
-        description: "",
+        description: "Google Tag Manager ID. Used for analytics.",
       },
       ONLINE_EDITOR__cypressUrl: {
-        default: "https://localhost:9001/",
-        description: "",
+        default: "https://localhost:9001/", //FIXME: Tiago port
+        description: "Cypress URL to be used on integrationt tests.",
       },
-      ONLINE_EDITOR__corsProxyUrl: {
-        default: "http://localhost:3000",
-        description: "",
+      ONLINE_EDITOR__gitCorsProxyUrl: {
+        default: "http://localhost:3000", //FIXME: Tiago port
+        description: "Git CORS Proxy URL.",
+      },
+      ONLINE_EDITOR__extendedServicesUrl: {
+        default: "http://localhost:21345", //FIXME: Tiago port
+        description: "Extended Services URL.",
       },
       DMN_DEV_SANDBOX__baseImageTag: {
         default: "latest",
-        description: "",
+        description: "Image tag to be used by DMN Dev Sandbox when deploying DMN models to OpenShift.",
       },
       DMN_DEV_SANDBOX__onlineEditorUrl: {
-        default: `https://0.0.0.0:9001`,
-        description: "",
+        default: `https://0.0.0.0:9001`, //FIXME: Tiago port
+        description: "URL that DMN Dev Sandbox deployments will use to open KIE Sandbox from its deployments.",
       },
     }),
     get env() {
@@ -81,7 +86,8 @@ module.exports = composeEnv(
               windows: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
             },
           },
-          corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
+          extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
+          gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
         },
         dmnDevSandbox: {
           onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_SANDBOX__onlineEditorUrl),

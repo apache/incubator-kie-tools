@@ -61,7 +61,7 @@ module.exports = async (env) => {
           Buffer: ["buffer", "Buffer"],
         }),
         new EnvironmentPlugin({
-          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicSandbox.corsProxyUrl,
+          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicSandbox.gitCorsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -108,7 +108,7 @@ module.exports = async (env) => {
           WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicSandbox.corsProxyUrl,
+          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicSandbox.gitCorsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [

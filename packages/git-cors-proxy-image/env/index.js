@@ -18,19 +18,19 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    CORS_PROXY__imageRegistry: {
+    GIT_CORS_PROXY__imageRegistry: {
       default: "quay.io",
       description: "",
     },
-    CORS_PROXY__imageAccount: {
+    GIT_CORS_PROXY__imageAccount: {
       default: "kie-tools",
       description: "",
     },
-    CORS_PROXY__imageName: {
-      default: "cors-proxy-image",
+    GIT_CORS_PROXY__imageName: {
+      default: "git-cors-proxy-image",
       description: "",
     },
-    CORS_PROXY__imageBuildTags: {
+    GIT_CORS_PROXY__imageBuildTags: {
       default: "latest",
       description: "",
     },
@@ -39,10 +39,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       corsProxy: {
         image: {
-          registry: getOrDefault(this.vars.CORS_PROXY__imageRegistry),
-          account: getOrDefault(this.vars.CORS_PROXY__imageAccount),
-          name: getOrDefault(this.vars.CORS_PROXY__imageName),
-          buildTags: getOrDefault(this.vars.CORS_PROXY__imageBuildTags),
+          registry: getOrDefault(this.vars.GIT_CORS_PROXY__imageRegistry),
+          account: getOrDefault(this.vars.GIT_CORS_PROXY__imageAccount),
+          name: getOrDefault(this.vars.GIT_CORS_PROXY__imageName),
+          buildTags: getOrDefault(this.vars.GIT_CORS_PROXY__imageBuildTags),
         },
       },
     };
