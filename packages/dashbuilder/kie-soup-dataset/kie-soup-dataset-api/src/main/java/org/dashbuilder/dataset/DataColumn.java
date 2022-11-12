@@ -79,8 +79,8 @@ public interface DataColumn {
     /**
      * @return A List of the values for this DataColumn.
      */
-    List<?> getValues();
-    void setValues(List<?> values);
+    List getValues();
+    void setValues(List values);
 
     /**
      * The group function settings

@@ -39,8 +39,6 @@ import static org.dashbuilder.displayer.DisplayerSubType.COLUMN;
 import static org.dashbuilder.displayer.DisplayerSubType.COLUMN_STACKED;
 import static org.dashbuilder.displayer.DisplayerSubType.DONUT;
 import static org.dashbuilder.displayer.DisplayerSubType.LINE;
-import static org.dashbuilder.displayer.DisplayerSubType.MAP_MARKERS;
-import static org.dashbuilder.displayer.DisplayerSubType.MAP_REGIONS;
 import static org.dashbuilder.displayer.DisplayerSubType.PIE;
 import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
 import static org.dashbuilder.displayer.DisplayerType.AREACHART;
@@ -49,6 +47,7 @@ import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
 import static org.dashbuilder.displayer.DisplayerType.LINECHART;
 import static org.dashbuilder.displayer.DisplayerType.METERCHART;
 import static org.dashbuilder.displayer.DisplayerType.PIECHART;
+import static org.dashbuilder.displayer.DisplayerType.SCATTERCHART;
 
 @ApplicationScoped
 public class EChartsRenderer extends AbstractRendererLibrary {
@@ -62,7 +61,8 @@ public class EChartsRenderer extends AbstractRendererLibrary {
             PIECHART,
             AREACHART,
             BUBBLECHART,
-            METERCHART);
+            METERCHART, 
+            SCATTERCHART);
 
     @PostConstruct
     public void prepare() {
@@ -94,8 +94,6 @@ public class EChartsRenderer extends AbstractRendererLibrary {
                 return Arrays.asList(PIE, DONUT);
             case AREACHART:
                 return Arrays.asList(AREA, AREA_STACKED);
-            case MAP:
-                return Arrays.asList(MAP_MARKERS, MAP_REGIONS);
             default:
                 return Collections.emptyList();
         }
@@ -107,6 +105,7 @@ public class EChartsRenderer extends AbstractRendererLibrary {
             case LINECHART:
             case BARCHART:
             case AREACHART:
+            case SCATTERCHART:
                 return beanManager.lookupBean(EChartsXYChartDisplayer.class).newInstance();
             case BUBBLECHART:
                 return beanManager.lookupBean(EChartsBubbleChartDisplayer.class).newInstance();

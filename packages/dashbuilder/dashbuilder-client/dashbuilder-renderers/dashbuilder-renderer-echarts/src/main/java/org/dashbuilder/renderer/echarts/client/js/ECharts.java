@@ -101,6 +101,9 @@ public interface ECharts {
         public native void setColor(String[] colors);
 
         @JsProperty
+        public native void setColor(String color);
+
+        @JsProperty
         public native void setVisualMap(VisualMap visualMap);
 
     }
@@ -227,7 +230,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setFormatter(ValueFormatterCallback valueFormatter);
-        
+
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -247,16 +250,16 @@ public interface ECharts {
 
         @JsProperty
         public native void setRadius(String[] radius);
-        
+
         @JsProperty
         public native void setCenter(String[] radius);
 
         @JsProperty
         public native void setRadius(String radius);
-        
+
         @JsProperty
         public native void setSplitNumber(int splitNumber);
-        
+
         @JsProperty
         public native void setLeft(int left);
 
@@ -377,7 +380,7 @@ public interface ECharts {
 
         @JsProperty
         public native void setFormatter(String formatter);
-        
+
         @JsProperty
         public native void setFormatter(Object formatter);
 

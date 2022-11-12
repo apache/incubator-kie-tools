@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.renderer.echarts.client;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.enterprise.context.Dependent;
@@ -165,15 +166,15 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
     }
 
     private String[] getNames(int n) {
-        return n == 1
-                ? IntStream.rangeClosed(0, n)
-                        .mapToObj(i -> "Series " + i)
-                        .toArray(String[]::new)
-                : dataSet.getColumnByIndex(0)
-                        .getValues()
-                        .stream()
-                        .map(o -> o.toString())
-                        .toArray(String[]::new);
+        if (n == 1) {
+            return IntStream.rangeClosed(0, n)
+                    .mapToObj(i -> "Series " + i)
+                    .toArray(String[]::new);
+        }
+        List<?> list = dataSet.getColumnByIndex(0).getValues();
+        return list.stream()
+                .map(o -> o.toString())
+                .toArray(String[]::new);
     }
 
     @Override

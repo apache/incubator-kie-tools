@@ -192,10 +192,12 @@ public class EChartsTypeFactory {
             case AREACHART:
             case LINECHART:
                 return SeriesType.line;
-            case PIECHART:
+            case PIECHART:                
                 return SeriesType.pie;
+                
             case METERCHART:
                 return SeriesType.gauge;
+            case SCATTERCHART:
             case BUBBLECHART:
                 return SeriesType.scatter;
             case MAP:

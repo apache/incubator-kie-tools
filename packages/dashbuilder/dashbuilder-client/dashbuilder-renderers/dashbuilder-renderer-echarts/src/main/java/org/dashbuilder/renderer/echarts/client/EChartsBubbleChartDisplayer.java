@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.dashbuilder.dataset.DataSetLookupConstraints;
+import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Series;
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 
@@ -46,6 +47,10 @@ public class EChartsBubbleChartDisplayer extends EChartsXYDisplayer {
             var seriesColumn = settings.getColumnName();
             var catColumn = displayerSettings.getColumnSettings(dataSet.getColumnByIndex(0)).getColumnName();
 
+            if (displayerSettings.isAttributeDefinedByUser(DisplayerAttributeDef.BUBBLE_COLOR)) {
+                this.option.setColor(displayerSettings.getBubbleColor());
+            }
+
             encode.setX(catColumn);
             encode.setY(seriesColumn);
 
@@ -53,7 +58,7 @@ public class EChartsBubbleChartDisplayer extends EChartsXYDisplayer {
             series.setEncode(encode);
             series.setType(this.echartsType);
 
-            if (dataSet.getColumns().size() > RADIUS_INDEX) {                
+            if (dataSet.getColumns().size() > RADIUS_INDEX) {
                 var radiusColumn = dataSet.getColumnByIndex(RADIUS_INDEX);
                 var min = min(radiusColumn).orElse(bubbleMinRadius);
                 var max = max(radiusColumn).orElse(bubbleMaxRadius);
@@ -66,20 +71,19 @@ public class EChartsBubbleChartDisplayer extends EChartsXYDisplayer {
                     return bubbleMinRadius;
                 });
             }
-            
+
             if (dataSet.getColumns().size() > LABEL_INDEX) {
                 var label = echartsFactory.newLabel();
                 label.setShow(true);
                 label.setFormatter(params -> dataSet.getValueAt(params.getDataIndex(), LABEL_INDEX));
                 series.setLabel(label);
             }
-            
+
             return new Series[]{series};
         }
         return new Series[]{};
     }
 
-    
     @Override
     DataSetLookupConstraints getDataSetLookupConstraints() {
         return new DataSetLookupConstraints()
