@@ -199,37 +199,39 @@ export class VsCodeKieEditorController implements EditorApi {
   }
 
   public setupWebviewContent() {
-    this.panel.webview.html = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <style>
-                html, body, div#envelope-app {
-                    margin: 0;
-                    border: 0;
-                    padding: 0;
-                    overflow: hidden;
-                    height: 100%;
-                }
-                .panel-heading.uf-listbar-panel-header span {
-                    color: white !important;
-                }
-                body {
-                    background-color: #fff !important
-                }
-            </style>
+    if ("path" in this.envelopeMapping.envelopeContent) {
+      this.panel.webview.html = `
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <style>
+                  html, body, div#envelope-app {
+                      margin: 0;
+                      border: 0;
+                      padding: 0;
+                      overflow: hidden;
+                      height: 100%;
+                  }
+                  .panel-heading.uf-listbar-panel-header span {
+                      color: white !important;
+                  }
+                  body {
+                      background-color: #fff !important
+                  }
+              </style>
 
-            <title></title>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        </head>
-        <body>
-        <div id="envelope-app"></div>
-        <script src="${this.envelopeMapping.envelopePath}"></script>
-        </body>
-        </html>
-    `;
+              <title></title>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+          </head>
+          <body>
+          <div id="envelope-app"></div>
+          <script src="${this.envelopeMapping.envelopeContent?.path}"></script>
+          </body>
+          </html>
+      `;
+    }
   }
 
   public startListeningToThemeChanges() {
