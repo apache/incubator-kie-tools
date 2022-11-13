@@ -140,10 +140,9 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return new Promise<CompletionItem[]>(async (resolve, reject) => {
+    return new Promise<CompletionItem[]>((resolve, reject) => {
       try {
-        const result =
-          (await this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCompletionItems(args)) ?? [];
+        const result = this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCompletionItems(args) ?? [];
         resolve(result);
       } catch (err) {
         reject(err);
