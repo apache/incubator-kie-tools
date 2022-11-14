@@ -46,7 +46,7 @@ export const SwfStandaloneEditorPage = (props: Props) => {
       container: swfEditorContainer.current!,
       initialContent: Promise.resolve(content),
       readOnly: false,
-      languageType: extension as any,
+      languageType: extension as ServerlessWorkflowType,
       isDiagramOnly: props.isDiagramOnlyEditor,
     });
     setWorkflowType(extension as ServerlessWorkflowType);

@@ -18,7 +18,7 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev --config webpack.editor-resources.config.js && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --env dev --config webpack.editor-resources.config.js && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js && pnpm test:it",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --env dev --config webpack.editor-resources.config.js && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js",
     "build:productization": "pnpm build:prod",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
