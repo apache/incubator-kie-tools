@@ -31,6 +31,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "jsonschema": "^1.4.1",
     "pkg": "^5.5.2",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

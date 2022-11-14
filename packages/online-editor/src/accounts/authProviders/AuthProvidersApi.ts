@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-import { AuthProvider } from "../accounts/authProviders/AuthProvidersApi";
+export type OpenShiftAuthProvider = {
+  id: string;
+  type: "openshift";
+  name: string;
+  domain: undefined;
+  iconPath?: string;
+  enabled: true;
+};
 
-export interface EnvJson {
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
-  KIE_SANDBOX_GIT_CORS_PROXY_URL: string;
-  KIE_SANDBOX_AUTH_PROVIDERS: AuthProvider[];
-}
+export type GitAuthProvider = {
+  id: string;
+  type: "github" | "bitbucket" | "gitlab";
+  name: string;
+  domain: string;
+  iconPath?: string;
+  enabled: boolean;
+  supportedGitRemoteDomains: string[];
+};
+
+export type AuthProvider = OpenShiftAuthProvider | GitAuthProvider;

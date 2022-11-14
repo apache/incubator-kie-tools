@@ -18,27 +18,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
-
-export type OpenShiftAuthProvider = {
-  id: string;
-  type: "openshift";
-  name: string;
-  domain: undefined;
-  iconPath?: string;
-  enabled: true;
-};
-
-export type GitAuthProvider = {
-  id: string;
-  type: "github" | "bitbucket" | "gitlab";
-  name: string;
-  domain: string;
-  iconPath?: string;
-  enabled: boolean;
-  supportedGitRemoteDomains: string[];
-};
-
-export type AuthProvider = OpenShiftAuthProvider | GitAuthProvider;
+import { AuthProvider } from "./AuthProvidersApi";
 
 export function useAuthProviders() {
   const { env } = useEnv();

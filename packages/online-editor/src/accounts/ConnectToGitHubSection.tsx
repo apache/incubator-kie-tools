@@ -37,11 +37,11 @@ import {
   useAccounts,
   useAccountsDispatch,
 } from "./AccountsDispatchContext";
-import { GitAuthProvider } from "./authProviders/AuthProvidersContext";
 import { useAuthSessions, useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 import { AuthSessionDescriptionList } from "./authSessions/AuthSessionsList";
 import { GitAuthSession } from "./authSessions/AuthSessionApi";
 import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { GitAuthProvider } from "./authProviders/AuthProvidersApi";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
