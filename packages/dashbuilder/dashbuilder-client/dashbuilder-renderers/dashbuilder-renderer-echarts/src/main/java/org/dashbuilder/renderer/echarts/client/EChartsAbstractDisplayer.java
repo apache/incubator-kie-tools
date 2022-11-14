@@ -86,7 +86,6 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         }
     }
 
-    // TODO: need some action to clear filter
     void onFilterClearAll() {
         super.filterReset();
 

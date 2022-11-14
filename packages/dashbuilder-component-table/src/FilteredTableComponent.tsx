@@ -40,8 +40,6 @@ export function FilteredTableComponent(props: Props) {
       const columnStr = params.get("alertColumn");
       const hideHeader = params.get("hideHeader") === "true";
 
-      // TODO: Use a proper Props object..
-
       // link to drill down
       const linkColumn = params.get("linkColumn");
       const linkTemplate = params.get("linkTemplate");
