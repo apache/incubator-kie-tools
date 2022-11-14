@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.google.gwt.core.shared.GWT;
@@ -52,7 +51,7 @@ public class C3BubbleChartDisplayer extends C3XYDisplayer<C3BubbleChartDisplayer
 
     private static final int X_INDEX = 1;
     private static final int Y_INDEX = 2;
-    private static final int R_INDEX = 4;
+    private static final int R_INDEX = 3;
 
     private View view;
 
@@ -71,7 +70,7 @@ public class C3BubbleChartDisplayer extends C3XYDisplayer<C3BubbleChartDisplayer
     @Override
     public DisplayerConstraints createDisplayerConstraints() {
         DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setMaxColumns(5)
+                .setMaxColumns(4)
                 .setMinColumns(2)
                 .setExtraColumnsAllowed(false)
                 .setGroupsTitle(view.getGroupsTitle())
@@ -83,8 +82,7 @@ public class C3BubbleChartDisplayer extends C3XYDisplayer<C3BubbleChartDisplayer
                                                  ColumnType.LABEL,
                                                  ColumnType.NUMBER,
                                                  ColumnType.NUMBER,
-                                                 ColumnType.LABEL,
-                                                 ColumnType.NUMBER});
+                                                 ColumnType.LABEL});
 
         return new CommonC3DisplayerConstants(lookupConstraints).create()
                 .supportsAttribute(DisplayerAttributeGroupDef.AXIS_GROUP);
