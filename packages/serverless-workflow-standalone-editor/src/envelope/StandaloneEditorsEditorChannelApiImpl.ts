@@ -29,7 +29,7 @@ import {
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
-import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 

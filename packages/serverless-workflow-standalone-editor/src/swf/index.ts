@@ -21,9 +21,8 @@ import swfTextEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/sw
 import { createEditor, Editor, ServerlessWorkflowType, StandaloneEditorApi } from "../common/Editor";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import {
   NoOpSwfStaticEnvelopeContentProviderChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
