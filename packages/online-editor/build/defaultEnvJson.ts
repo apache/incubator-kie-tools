@@ -19,9 +19,7 @@ import { EnvJson } from "../src/env/EnvJson";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../env";
-
-// build-env is not typed
-const buildEnv: any = env;
+const buildEnv: any = env; // build-env is not typed
 
 export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_GIT_CORS_PROXY_URL: buildEnv.onlineEditor.gitCorsProxyUrl,

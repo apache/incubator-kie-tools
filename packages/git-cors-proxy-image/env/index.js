@@ -37,12 +37,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   }),
   get env() {
     return {
-      corsProxy: {
+      gitCorsProxy: {
         image: {
           registry: getOrDefault(this.vars.GIT_CORS_PROXY__imageRegistry),
           account: getOrDefault(this.vars.GIT_CORS_PROXY__imageAccount),
           name: getOrDefault(this.vars.GIT_CORS_PROXY__imageName),
           buildTags: getOrDefault(this.vars.GIT_CORS_PROXY__imageBuildTags),
+        },
+        dev: {
+          port: 3000,
         },
       },
     };

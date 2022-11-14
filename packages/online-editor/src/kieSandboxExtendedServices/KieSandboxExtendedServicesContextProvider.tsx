@@ -41,12 +41,18 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
 
-  // FIXME: Tiago
-  const extservicesUrl = new URL(env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL ?? "");
-  extservicesUrl.port = "";
-  const [config, setConfig] = useState(
-    new ExtendedServicesConfig(extservicesUrl.href, new URL(env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL ?? "").port)
-  );
+  const { port, host } = useMemo(() => {
+    const url = new URL(env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL);
+    const port = url.port;
+    url.port = "";
+
+    return {
+      port,
+      host: url.href,
+    };
+  }, [env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL]);
+
+  const [config, setConfig] = useState(new ExtendedServicesConfig(host, port));
   const bridge = useMemo(() => new KieSandboxExtendedServicesBridge(config.buildUrl()), [config]);
   const version = useMemo(
     () => process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion ?? "0.0.0",

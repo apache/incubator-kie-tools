@@ -18,9 +18,17 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
+const gitCorsProxyImageEnv = require("@kie-tools/git-cors-proxy-image/env");
+
+const devPort = 9001;
 
 module.exports = composeEnv(
-  [buildEnv, require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env"), extendedServicesEnv],
+  [
+    buildEnv,
+    require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env"),
+    extendedServicesEnv,
+    gitCorsProxyImageEnv,
+  ],
   {
     vars: varsWithName({
       ONLINE_EDITOR__buildInfo: {
@@ -49,15 +57,15 @@ module.exports = composeEnv(
         description: "Google Tag Manager ID. Used for analytics.",
       },
       ONLINE_EDITOR__cypressUrl: {
-        default: "https://localhost:9001/", //FIXME: Tiago port
+        default: `https://localhost:${devPort}/`,
         description: "Cypress URL to be used on integrationt tests.",
       },
       ONLINE_EDITOR__gitCorsProxyUrl: {
-        default: "http://localhost:3000", //FIXME: Tiago port
+        default: `http://localhost:${gitCorsProxyImageEnv.env.gitCorsProxy.dev.port}`,
         description: "Git CORS Proxy URL.",
       },
       ONLINE_EDITOR__extendedServicesUrl: {
-        default: "http://localhost:21345", //FIXME: Tiago port
+        default: `http://localhost:${extendedServicesEnv.env.extendedServices.dev.port}`,
         description: "Extended Services URL.",
       },
       DMN_DEV_SANDBOX__baseImageTag: {
@@ -65,7 +73,7 @@ module.exports = composeEnv(
         description: "Image tag to be used by DMN Dev Sandbox when deploying DMN models to OpenShift.",
       },
       DMN_DEV_SANDBOX__onlineEditorUrl: {
-        default: `https://0.0.0.0:9001`, //FIXME: Tiago port
+        default: `https://0.0.0.0:${devPort}`,
         description: "URL that DMN Dev Sandbox deployments will use to open KIE Sandbox from its deployments.",
       },
     }),
@@ -74,7 +82,7 @@ module.exports = composeEnv(
         onlineEditor: {
           dev: {
             cypressUrl: getOrDefault(this.vars.ONLINE_EDITOR__cypressUrl),
-            port: 9001,
+            port: devPort,
           },
           gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
           buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),

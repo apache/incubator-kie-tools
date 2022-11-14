@@ -16,8 +16,7 @@
     "esm": true,
     "compilerOptions": {
       "esModuleInterop": true,
-      "module": "CommonJS",
-      "moduleResolution": "NodeNext"
+      "module": "CommonJS"
     }
   }
 }
