@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useCallback, useMemo } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { KogitoSwfModelDeployment } from "../deploy/strategies/KogitoSwfModelDeployment";
 import { KogitoProjectDeployment } from "../deploy/strategies/KogitoProjectDeployment";
-import { DeploymentStrategyFactoryArgs } from "../deploy/types";
+import { KogitoSwfModelDeployment } from "../deploy/strategies/KogitoSwfModelDeployment";
+import { DeploymentStrategyKind, InitDeployArgs } from "../deploy/types";
 
 const RESOURCE_PREFIX = "webtools";
 
@@ -41,11 +41,11 @@ export function useDeploymentStrategy() {
   );
 
   const createDeploymentStrategy = useCallback(
-    async (args: { factoryArgs: DeploymentStrategyFactoryArgs; targetFile: WorkspaceFile }) => {
+    async (args: InitDeployArgs) => {
       const resourceName = settingsDispatch.openshift.service.newResourceName(RESOURCE_PREFIX);
       const workspace = await workspaces.getWorkspace({ workspaceId: args.targetFile.workspaceId });
 
-      if (args.factoryArgs.kind === "KOGITO_SWF_MODEL") {
+      if (args.factoryArgs.kind === DeploymentStrategyKind.KOGITO_SWF_MODEL) {
         return new KogitoSwfModelDeployment({
           resourceName,
           workspace,
@@ -57,7 +57,7 @@ export function useDeploymentStrategy() {
         });
       }
 
-      if (args.factoryArgs.kind === "KOGITO_PROJECT") {
+      if (args.factoryArgs.kind === DeploymentStrategyKind.KOGITO_PROJECT) {
         return new KogitoProjectDeployment({
           resourceName,
           workspace,

@@ -15,16 +15,17 @@
  */
 
 import * as React from "react";
+import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { InitDeployArgs, InitSwfDeployArgs, WebToolsOpenShiftDeployedModel } from "./deploy/types";
+import { useDeploymentStrategy } from "./hooks/useDeploymentStrategy";
+import { useOpenApi } from "./hooks/useOpenApi";
+import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { useDeploymentStrategy } from "./hooks/useDeploymentStrategy";
-import { DeploymentStrategyFactoryArgs, WebToolsOpenShiftDeployedModel } from "./deploy/types";
-import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { KNativeDeploymentLoaderPipeline } from "./pipelines/KNativeDeploymentLoaderPipeline";
 
 interface Props {
@@ -32,12 +33,15 @@ interface Props {
 }
 
 const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
+const FETCH_OPEN_API_POLLING_TIME = 5000;
 
 export function OpenShiftContextProvider(props: Props) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const { createDeploymentStrategy } = useDeploymentStrategy();
+  const { fetchOpenApiContent } = useOpenApi();
+  const { uploadArtifact } = useRemoteServiceRegistry();
 
   const [deployments, setDeployments] = useState([] as WebToolsOpenShiftDeployedModel[]);
   const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
@@ -63,7 +67,7 @@ export function OpenShiftContextProvider(props: Props) {
   }, [settingsDispatch.openshift]);
 
   const deploy = useCallback(
-    async (args: { factoryArgs: DeploymentStrategyFactoryArgs; targetFile: WorkspaceFile }) => {
+    async (args: InitDeployArgs) => {
       try {
         const strategy = await createDeploymentStrategy({ ...args });
         const pipeline = await strategy.buildPipeline();
@@ -74,6 +78,34 @@ export function OpenShiftContextProvider(props: Props) {
       }
     },
     [createDeploymentStrategy]
+  );
+
+  const deploySwf = useCallback(
+    async (args: InitSwfDeployArgs) => {
+      const resourceName = await deploy({ ...args });
+
+      if (resourceName && args.shouldUploadOpenApi) {
+        const fetchOpenApiTask = window.setInterval(async () => {
+          try {
+            const openApiContent = await fetchOpenApiContent(resourceName);
+            if (!openApiContent) {
+              return;
+            }
+
+            await uploadArtifact({
+              artifactId: `${args.targetFile.nameWithoutExtension} ${resourceName}`,
+              content: openApiContent,
+            });
+          } catch (e) {
+            console.error(e);
+          }
+          window.clearInterval(fetchOpenApiTask);
+        }, FETCH_OPEN_API_POLLING_TIME);
+      }
+
+      return resourceName;
+    },
+    [deploy, fetchOpenApiContent, uploadArtifact]
   );
 
   useEffect(() => {
@@ -135,8 +167,9 @@ export function OpenShiftContextProvider(props: Props) {
       isConfirmDeployModalOpen,
       setConfirmDeployModalOpen,
       deploy,
+      deploySwf,
     }),
-    [deployments, isDeployDropdownOpen, isDeploymentsDropdownOpen, isConfirmDeployModalOpen, deploy]
+    [deployments, isDeployDropdownOpen, isDeploymentsDropdownOpen, isConfirmDeployModalOpen, deploy, deploySwf]
   );
 
   return <OpenShiftContext.Provider value={value}>{props.children}</OpenShiftContext.Provider>;

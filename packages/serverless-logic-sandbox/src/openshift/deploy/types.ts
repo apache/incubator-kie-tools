@@ -28,16 +28,6 @@ export interface KafkaSourceArgs {
   topics: string[];
 }
 
-export type DeploymentStrategyFactoryArgs =
-  | {
-      kind: "KOGITO_SWF_MODEL";
-      shouldAttachKafkaSource: boolean;
-    }
-  | {
-      kind: "KOGITO_PROJECT";
-      shouldAttachKafkaSource: boolean;
-    };
-
 export interface DeploymentStrategyArgs {
   resourceName: string;
   namespace: string;
@@ -51,4 +41,33 @@ export interface DeploymentStrategyArgs {
 export type WebToolsOpenShiftDeployedModel = OpenShiftDeployedModel & {
   uri: string;
   workspaceName: string;
+};
+
+export type CompletedDeployOperation = string | undefined;
+
+export enum DeploymentStrategyKind {
+  KOGITO_SWF_MODEL,
+  KOGITO_PROJECT,
+}
+
+export type DeploymentStrategyFactoryArgs =
+  | {
+      kind: DeploymentStrategyKind.KOGITO_SWF_MODEL;
+      shouldAttachKafkaSource: boolean;
+    }
+  | {
+      kind: DeploymentStrategyKind.KOGITO_PROJECT;
+      shouldAttachKafkaSource: boolean;
+    };
+
+export interface InitDeployArgs {
+  factoryArgs: DeploymentStrategyFactoryArgs;
+  targetFile: WorkspaceFile;
+}
+
+export type InitSwfDeployArgs = InitDeployArgs & {
+  shouldUploadOpenApi: boolean;
+  factoryArgs: DeploymentStrategyFactoryArgs & {
+    kind: DeploymentStrategyKind.KOGITO_PROJECT | DeploymentStrategyKind.KOGITO_SWF_MODEL;
+  };
 };

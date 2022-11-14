@@ -16,8 +16,12 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { DeploymentStrategyFactoryArgs, WebToolsOpenShiftDeployedModel } from "./deploy/types";
+import {
+  InitDeployArgs,
+  WebToolsOpenShiftDeployedModel,
+  InitSwfDeployArgs,
+  CompletedDeployOperation,
+} from "./deploy/types";
 
 export interface OpenShiftContextType {
   deployments: WebToolsOpenShiftDeployedModel[];
@@ -31,7 +35,8 @@ export interface OpenShiftContextType {
   isConfirmDeployModalOpen: boolean;
   setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
-  deploy(args: { factoryArgs: DeploymentStrategyFactoryArgs; targetFile: WorkspaceFile }): Promise<string | undefined>;
+  deploy(args: InitDeployArgs): Promise<CompletedDeployOperation>;
+  deploySwf(args: InitSwfDeployArgs): Promise<CompletedDeployOperation>;
 }
 
 export const OpenShiftContext = React.createContext<OpenShiftContextType>({} as any);

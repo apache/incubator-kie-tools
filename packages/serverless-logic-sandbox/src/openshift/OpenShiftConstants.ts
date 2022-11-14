@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export const RESOURCE_OWNER = "kie-tools__web-tools";
+export const RESOURCE_OWNER = "kie-tools__serverless-logic-web-tools";

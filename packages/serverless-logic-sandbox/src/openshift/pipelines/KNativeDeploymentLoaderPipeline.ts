@@ -48,7 +48,7 @@ export class KNativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
         return [];
       }
 
-      const [deployments, builds] = await Promise.all([
+      const [allDeployments, allBuilds] = await Promise.all([
         this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
           fetcher.execute<DeploymentGroupDescriptor>({
             target: new ListDeployments({
@@ -65,6 +65,9 @@ export class KNativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
         ),
       ]);
 
+      const sortDeploymentsByCreationTimeFn = (a: DeploymentDescriptor, b: DeploymentDescriptor) =>
+        new Date(a.metadata.creationTimestamp!).getTime() - new Date(b.metadata.creationTimestamp!).getTime();
+
       return knServices.items
         .filter(
           (kns: KNativeServiceDescriptor) =>
@@ -74,21 +77,24 @@ export class KNativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
             kns.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
         )
         .map((kns: KNativeServiceDescriptor) => {
-          const build = builds.items.find(
+          const build = allBuilds.items.find(
             (b: BuildDescriptor) =>
               b.metadata.labels &&
               kns.metadata.labels &&
               b.metadata.labels[KubernetesLabelNames.APP] === kns.metadata.labels[KubernetesLabelNames.APP]
           );
-          const deployment = deployments.items.find(
-            (d: DeploymentDescriptor) =>
-              d.metadata.labels && d.metadata.labels[KNativeLabelNames.SERVICE] === kns.metadata.name
-          );
+          const resourceDeployments = allDeployments.items
+            .filter(
+              (d: DeploymentDescriptor) =>
+                d.metadata.labels && d.metadata.labels[KNativeLabelNames.SERVICE] === kns.metadata.name
+            )
+            .sort(sortDeploymentsByCreationTimeFn);
+          const deployment = resourceDeployments.length > 0 ? resourceDeployments[0] : undefined;
           return {
             resourceName: kns.metadata.name,
             uri: kns.metadata.annotations![ResourceLabelNames.URI],
             routeUrl: kns.status!.url,
-            creationTimestamp: new Date(kns.metadata.creationTimestamp ?? Date.now()),
+            creationTimestamp: new Date(kns.metadata.creationTimestamp!),
             state: this.args.openShiftService.kubernetes.extractDeploymentState({ deployment, build }),
             workspaceName: kns.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
           };
