@@ -3459,15 +3459,17 @@ importers:
       sass-loader: ^12.3.0
       style-loader: ^2.0.0
       url-loader: ^4.1.1
+      webpack: ^5.36.2
     devDependencies:
       "@kie-tools/root-env": link:../root-env
-      css-loader: 5.2.7
-      file-loader: 6.2.0
-      raw-loader: 4.0.2
+      css-loader: 5.2.7_webpack@5.70.0
+      file-loader: 6.2.0_webpack@5.70.0
+      raw-loader: 4.0.2_webpack@5.70.0
       sass: 1.49.9
-      sass-loader: 12.4.0_sass@1.49.9
-      style-loader: 2.0.0
-      url-loader: 4.1.1_file-loader@6.2.0
+      sass-loader: 12.4.0_sass@1.49.9+webpack@5.70.0
+      style-loader: 2.0.0_webpack@5.70.0
+      url-loader: 4.1.1_plzek67nbn24rjxjp577ruq77e
+      webpack: 5.70.0
 
   packages/pmml-editor:
     specifiers:
@@ -14666,25 +14668,6 @@ packages:
       postcss-selector-parser: 6.0.10
     dev: true
 
-  /css-loader/5.2.7:
-    resolution:
-      { integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.27.0 || ^5.0.0
-    dependencies:
-      icss-utils: 5.1.0_postcss@8.4.12
-      loader-utils: 2.0.2
-      postcss: 8.4.12
-      postcss-modules-extract-imports: 3.0.0_postcss@8.4.12
-      postcss-modules-local-by-default: 4.0.0_postcss@8.4.12
-      postcss-modules-scope: 3.0.0_postcss@8.4.12
-      postcss-modules-values: 4.0.0_postcss@8.4.12
-      postcss-value-parser: 4.2.0
-      schema-utils: 3.1.1
-      semver: 7.3.7
-    dev: true
-
   /css-loader/5.2.7_webpack@5.70.0:
     resolution:
       { integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg== }
@@ -17729,17 +17712,6 @@ packages:
       flat-cache: 3.0.4
     dev: true
 
-  /file-loader/6.2.0:
-    resolution:
-      { integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
-    dev: true
-
   /file-loader/6.2.0_webpack@5.70.0:
     resolution:
       { integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw== }
@@ -17749,7 +17721,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack: 5.70.0
     dev: true
 
   /file-selector/0.2.4:
@@ -24692,17 +24664,6 @@ packages:
       unpipe: 1.0.0
     dev: true
 
-  /raw-loader/4.0.2:
-    resolution:
-      { integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
-    dev: true
-
   /raw-loader/4.0.2_webpack@5.70.0:
     resolution:
       { integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA== }
@@ -25778,28 +25739,6 @@ packages:
       truncate-utf8-bytes: 1.0.2
     dev: true
 
-  /sass-loader/12.4.0_sass@1.49.9:
-    resolution:
-      { integrity: sha512-7xN+8khDIzym1oL9XyS6zP6Ges+Bo2B2xbPrjdMHEYyV3AQYhd/wXeru++3ODHF0zMjYmVadblSKrPrjEkL8mg== }
-    engines: { node: ">= 12.13.0" }
-    peerDependencies:
-      fibers: ">= 3.1.0"
-      node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
-      sass: ^1.3.0
-      webpack: ^5.0.0
-    peerDependenciesMeta:
-      fibers:
-        optional: true
-      node-sass:
-        optional: true
-      sass:
-        optional: true
-    dependencies:
-      klona: 2.0.5
-      neo-async: 2.6.2
-      sass: 1.49.9
-    dev: true
-
   /sass-loader/12.4.0_sass@1.49.9+webpack@5.70.0:
     resolution:
       { integrity: sha512-7xN+8khDIzym1oL9XyS6zP6Ges+Bo2B2xbPrjdMHEYyV3AQYhd/wXeru++3ODHF0zMjYmVadblSKrPrjEkL8mg== }
@@ -25820,7 +25759,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.70.0_esbuild@0.14.22
+      webpack: 5.70.0
     dev: true
 
   /sass/1.49.9:
@@ -26896,17 +26835,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       escape-string-regexp: 1.0.5
-    dev: true
-
-  /style-loader/2.0.0:
-    resolution:
-      { integrity: sha512-Z0gYUJmzZ6ZdRUqpg1r8GsaFKypE+3xAzuFeMuoHgjc9KZv3wMyCRjQIWEbhoFSq7+7yoHXySDJyyWQaPajeiQ== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
     dev: true
 
   /style-loader/2.0.0_webpack@5.70.0:
@@ -28040,7 +27968,7 @@ packages:
       { integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA== }
     dev: true
 
-  /url-loader/4.1.1_file-loader@6.2.0:
+  /url-loader/4.1.1_plzek67nbn24rjxjp577ruq77e:
     resolution:
       { integrity: sha512-3BTV812+AVHHOJQO8O5MkWgZ5aosP7GnROJwvzLS9hWDj00lZ6Z0wNak423Lp9PBZN05N+Jk/N5Si8jRAlGyWA== }
     engines: { node: ">= 10.13.0" }
@@ -28051,10 +27979,11 @@ packages:
       file-loader:
         optional: true
     dependencies:
-      file-loader: 6.2.0
+      file-loader: 6.2.0_webpack@5.70.0
       loader-utils: 2.0.2
       mime-types: 2.1.34
       schema-utils: 3.1.1
+      webpack: 5.70.0
     dev: true
 
   /url-loader/4.1.1_webpack@5.70.0:

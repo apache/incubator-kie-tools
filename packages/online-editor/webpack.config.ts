@@ -24,19 +24,17 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import { ProvidePlugin } from "webpack";
 import { defaultEnvJson } from "./build/defaultEnvJson";
 
-/* eslint-disable  @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import patternflyBase from "@kie-tools-core/patternfly-base";
-// @ts-ignore
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
+import patternflyBase from "@kie-tools-core/patternfly-base";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import HtmlReplaceWebpackPlugin from "html-replace-webpack-plugin";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "./env";
-/* eslint-enable  @typescript-eslint/ban-ts-comment */
-
-// build-env is not typed
-const buildEnv: any = env;
+const buildEnv: any = env; // build-env is not typed
 
 export default async (env: any, argv: any) => {
   const buildInfo = getBuildInfo();
