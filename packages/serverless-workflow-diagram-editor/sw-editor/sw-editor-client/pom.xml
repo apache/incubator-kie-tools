@@ -70,17 +70,6 @@
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-svg-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- GWT and GWT Extensions -->
 
     <dependency>
@@ -124,7 +113,6 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
     </dependency>
-
 
 
     <dependency>

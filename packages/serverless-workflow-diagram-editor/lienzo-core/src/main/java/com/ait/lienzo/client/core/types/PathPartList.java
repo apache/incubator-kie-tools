@@ -207,13 +207,15 @@ public class PathPartList {
 
         final double c = r * 2;
 
-        A(x + r, y, x + r, y + r, r);
+        M(x + r, y);
 
-        A(x + r, y + c, x, y + c, r);
+        A(x + c, y, x + c, y + r, r);
 
-        A(x - r, y + c, x - r, y + r, r);
+        A(x + c, y + c, x + r, y + c, r);
 
-        A(x - r, y, x, y, r);
+        A(x, y + c, x, y + r, r);
+
+        A(x, y, x + r, y, r);
 
         Z();
 

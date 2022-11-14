@@ -90,14 +90,14 @@ public class FontHandlerTest {
         verify(view).setTitleRotation(270d);
         verify(view).setTitleXOffsetPosition(X_OFFSET);
         verify(view).setTitleYOffsetPosition(Y_OFFSET);
-        verify(view).setTextWrapper(TextWrapperStrategy.NO_WRAP);
+        verify(view).setTitleWrapper(TextWrapperStrategy.NO_WRAP);
         verify(view).setTitlePosition(HasTitle.VerticalAlignment.TOP, HasTitle.HorizontalAlignment.LEFT,
                                       HasTitle.ReferencePosition.OUTSIDE, HasTitle.Orientation.VERTICAL);
         verify(view).setMargins(Stream.of(new AbstractMap.SimpleEntry<>(HasTitle.VerticalAlignment.TOP, 10d),
                                           new AbstractMap.SimpleEntry<>(HasTitle.HorizontalAlignment.LEFT, 10d),
                                           new AbstractMap.SimpleEntry<>(HasTitle.HorizontalAlignment.RIGHT, 50d))
                                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        verify(view).setTextSizeConstraints(SIZE_CONSTRAINTS);
+        verify(view).setTitleSizeConstraints(SIZE_CONSTRAINTS);
     }
 
     @Test
@@ -134,9 +134,9 @@ public class FontHandlerTest {
         verify(view, never()).setTitleRotation(anyDouble());
         verify(view, never()).setTitleXOffsetPosition(anyDouble());
         verify(view, never()).setTitleYOffsetPosition(anyDouble());
-        verify(view, never()).setTextWrapper(any());
+        verify(view, never()).setTitleWrapper(any());
         verify(view, never()).setTitlePosition(any(), any(), any(), any());
         verify(view, never()).setMargins(any());
-        verify(view, never()).setTextSizeConstraints(any());
+        verify(view, never()).setTitleSizeConstraints(any());
     }
 }

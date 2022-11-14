@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.core.client.shape.NodeShape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -39,18 +38,16 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
  * view to a ShapeDefViewHandler type.
  * @param <W> The bean type.
  * @param <V> The view type.
- * @param <D> The mutable shape definition type..
  */
-public class NodeShapeImpl<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
-        extends AbstractElementShape<W, View<W>, Node<View<W>, Edge>, D, V>
+public class NodeShapeImpl<W, V extends ShapeView>
+        extends AbstractElementShape<W, View<W>, Node<View<W>, Edge>, V>
         implements NodeShape<W, View<W>, Node<View<W>, Edge>, V>,
                    Lifecycle {
 
     private final AbstractShape<V> shape;
 
-    public NodeShapeImpl(final D shapeDef,
-                         final AbstractShape<V> shape) {
-        super(shapeDef);
+    public NodeShapeImpl(final AbstractShape<V> shape) {
+        super();
         this.shape = shape;
     }
 

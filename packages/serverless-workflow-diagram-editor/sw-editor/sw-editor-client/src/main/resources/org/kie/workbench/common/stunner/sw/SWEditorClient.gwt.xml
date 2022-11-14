@@ -19,10 +19,10 @@
 
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="com.google.gwt.user.User"/>
   <inherits name="org.uberfire.UberfireClientAPI"/>
   <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
-  <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.uberfire.UberfireAPI"/>
   <inherits name="org.kie.workbench.common.stunner.sw.SWEditorApi"/>

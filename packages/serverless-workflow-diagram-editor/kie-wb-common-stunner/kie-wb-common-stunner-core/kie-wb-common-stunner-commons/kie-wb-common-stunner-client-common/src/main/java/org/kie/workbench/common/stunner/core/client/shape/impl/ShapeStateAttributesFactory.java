@@ -22,29 +22,25 @@ import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttribu
 
 public class ShapeStateAttributesFactory {
 
-    static final String COLOR_SELECTED = "#0088CE";
-    static final String COLOR_HIGHLIGHT = "#3366CC";
+    static final String COLOR_SELECTED = "#0066CC";
+    static final String COLOR_HIGHLIGHT = "#4F5255";
     static final String COLOR_INVALID = "#FF0000";
 
-    public static ShapeStateAttributes buildStrokeAttributes(final ShapeState state) {
+    static final String FILL_COLOR_SELECTED = "#E7F1FA";
+    static final String FILL_COLOR_HIGHLIGHT = "#fff";
+    static final String FILL_COLOR_INVALID = "#fff";
+
+    public static ShapeStateAttributes buildStateAttributes(final ShapeState state) {
         final String COLOR = getAttributeColorByState(state);
+        final String FILL_COLOR = getFillAttributeColorByState(state);
         if (null == COLOR) {
             return buildAttributes();
         }
 
         return buildAttributes()
                 .set(ShapeStateAttribute.STROKE_ALPHA, 1d)
-                .set(ShapeStateAttribute.STROKE_COLOR, COLOR);
-    }
-
-    public static ShapeStateAttributes buildFillAttributes(final ShapeState state) {
-        final String COLOR = getAttributeColorByState(state);
-        if (null == COLOR) {
-            return buildAttributes();
-        }
-
-        return buildAttributes()
-                .set(ShapeStateAttribute.FILL_COLOR, COLOR)
+                .set(ShapeStateAttribute.STROKE_COLOR, COLOR)
+                .set(ShapeStateAttribute.FILL_COLOR, FILL_COLOR)
                 .set(ShapeStateAttribute.FILL_ALPHA, 1d);
     }
 
@@ -56,6 +52,19 @@ public class ShapeStateAttributesFactory {
                 return COLOR_HIGHLIGHT;
             case INVALID:
                 return COLOR_INVALID;
+            default:
+                return null;
+        }
+    }
+
+    private static String getFillAttributeColorByState(final ShapeState state) {
+        switch (state) {
+            case SELECTED:
+                return FILL_COLOR_SELECTED;
+            case HIGHLIGHT:
+                return FILL_COLOR_HIGHLIGHT;
+            case INVALID:
+                return FILL_COLOR_INVALID;
             default:
                 return null;
         }
