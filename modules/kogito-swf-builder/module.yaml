@@ -14,7 +14,7 @@ envs:
     value: "1.0.0-SNAPSHOT"
     description: Please do not change
   - name: QUARKUS_VERSION
-    value: "2.13.3.Final"
+    value: "2.14.0.Final"
     description: Please do not change
   - name: QUARKUS_EXTENSIONS
     example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing'

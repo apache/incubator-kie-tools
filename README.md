@@ -28,11 +28,12 @@ Table of Contents
   - [Kogito Images Requirements](#kogito-images-requirements)
   - [Kogito Images JVM Memory Management](#kogito-images-jvm-memory-management)
   - [Kogito Runtime and Builder Images](#kogito-runtime-and-builder-images)
-    - [Kogito s2i Builder Images](#kogito-s2i-builder-images)
+    - [Kogito Builder Images](#kogito-builder-images)
+      - [Kogito swf Builder Image usage](#kogito-swf-builder-image-usage)
       - [Kogito s2i Builder Image usage](#kogito-s2i-builder-image-usage)
       - [Kogito s2i Builder Image example](#kogito-s2i-builder-image-example)
-        - [Builder Image Examples with Quarkus](#builder-image-example-with-quarkus)
-        - [Builder Image Examples with Springboot](#builder-image-example-with-springboot)
+        - [S2i Builder Image Example with Quarkus](#s2i-builder-image-example-with-quarkus)
+        - [S2i Builder Image Example with Springboot](#s2i-builder-image-example-with-springboot)
       - [Improving Build Time](#improving-build-time)
         - [Using incremental builds](#using-incremental-builds)
         - [Using a Maven mirror](#using-a-maven-mirror)
@@ -44,13 +45,13 @@ Table of Contents
         - [Kogito Runtime JVM Image usage](#kogito-runtime-jvm-image-usage)
         - [Kogito Runtime JVM Image examples](#kogito-runtime-jvm-image-examples)
       - [Kogito Runtime Native Image](#kogito-runtime-native-image)
-        - [Kogito Runtime Native Image usage](#kogito-runtime-native-image-usage)
-        - [Kogito Runtime Native Image example](#kogito-runtime-native-image-example)
+        - [Kogito Runtime Native Image Usage](#kogito-runtime-native-image-usage)
+        - [Kogito Runtime Native Image Example](#kogito-runtime-native-image-example)
   - [Kogito Component Images](#kogito-component-images)
     - [Kogito Data Index Component Images](#kogito-data-index-component-images)
-    - [Kogito Trusty Component Image](#kogito-trusty-component-image)
     - [Kogito Explainability Component Image](#kogito-explainability-component-image)
-    - [Kogito Jobs Service Component Image](#kogito-jobs-service-component-image)
+    - [Kogito Trusty Component Image](#kogito-trusty-component-image)
+    - [Kogito Jobs Service Component Images](#kogito-jobs-service-component-images)
     - [Kogito Management Console Component Image](#kogito-management-console-component-image)
     - [Kogito Task Console Component Image](#kogito-task-console-component-image)
     - [Kogito Trusty UI Component Image](#kogito-trusty-ui-component-image)
@@ -100,7 +101,7 @@ To interact with Kogito images, you would need to install the needed dependencie
 * Optional dependencies:
     * [source-to-image](https://github.com/openshift/source-to-image)
         * used to perform local s2i images using some of the [builder images](#builder-images)
-    * [GraalVM 21.3.1](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.3.1) Java 11 or higher
+    * [GraalVM 22.2.0](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.2.0) Java 11 or higher
         * Useful to test Kogito apps on native mode before create a Container image with it.
     * [OpenShift Cli](https://docs.openshift.com/container-platform/4.3/cli_reference/openshift_cli/getting-started-cli.html)
         
@@ -166,8 +167,8 @@ When `RUNTIME_TYPE` quarkus is chosen, the Builder Image allows you to create a 
 
 The Kogito s2i Builder Image is equipped with the following components:
 
- * GraalVM 21.3.1-java11
- * OpenJDK 11.0.6
+ * GraalVM 22.2.0-java11
+ * OpenJDK 11+
  * Maven 3.8.6
  
 For more information about what is installed on this image, take a look [here](kogito-s2i-builder-overrides.yaml) in the
