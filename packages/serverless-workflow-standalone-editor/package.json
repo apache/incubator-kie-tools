@@ -20,19 +20,10 @@
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --env dev --config webpack.editor-resources.config.js && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js && pnpm test:it",
     "build:productization": "pnpm build:prod",
-    "cy:open": "run-script-os",
-    "cy:open:darwin:linux": "cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
-    "cy:open:win32": "pnpm powershell \"cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"\"",
-    "cy:run": "run-script-os",
-    "cy:run:darwin:linux": "cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
-    "cy:run:win32": "pnpm powershell \"cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"\"",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "postreport": "jrm ./dist-it-tests/junit-transformed.xml \"./dist-it-tests/junit-report*.xml\"",
-    "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
-    "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "devDependencies": {
     "@kie-tools-core/editor": "workspace:*",
