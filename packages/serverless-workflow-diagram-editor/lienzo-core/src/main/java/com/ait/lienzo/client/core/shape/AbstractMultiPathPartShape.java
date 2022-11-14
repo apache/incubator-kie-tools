@@ -120,11 +120,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             return m_box;
         }
 
-        NFastArrayList<PathPartList> points = m_points;
+        NFastArrayList<PathPartList> points = getActualPathPartListArray();
 
-        if (getCornerRadius() > 0) {
-            points = m_cornerPoints;
-        }
         final int size = points.size();
 
         if (size < 1) {
@@ -157,6 +154,12 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
         m_points.clear();
 
+        final int cornerSize = m_cornerPoints.size();
+        for (int i = 0; i < cornerSize; i++) {
+            m_cornerPoints.get(i).clear();
+        }
+        m_cornerPoints.clear();
+
         resetBoundingBox();
 
         return cast();
@@ -164,24 +167,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     @Override
     protected boolean prepare(Context2D context, double alpha) {
-        double radius = getCornerRadius();
-
-        if (radius != 0) {
-            m_cornerPoints = new NFastArrayList<PathPartList>();
-
-            for (int i = 0; i < m_points.size(); i++) {
-                PathPartList baseList = m_points.get(i);
-
-                Point2DArray basePoints = baseList.getPoints();
-
-                PathPartList cornerList = new PathPartList();
-
-                Geometry.drawArcJoinedLines(cornerList, baseList, basePoints, radius);
-
-                m_cornerPoints.add(cornerList);
-            }
-        }
-
         return true;
     }
 
@@ -194,7 +179,29 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     }
 
     public final NFastArrayList<PathPartList> getActualPathPartListArray() {
+        double radius = getCornerRadius();
+
         if (getCornerRadius() > 0) {
+
+            if (m_cornerPoints.size() > 0) {
+                return m_cornerPoints;
+            }
+
+            if (radius != 0) {
+                m_cornerPoints = new NFastArrayList<>();
+
+                for (int i = 0; i < m_points.size(); i++) {
+                    PathPartList baseList = m_points.get(i);
+
+                    Point2DArray basePoints = baseList.getPoints();
+
+                    PathPartList cornerList = new PathPartList();
+
+                    Geometry.drawArcJoinedLines(cornerList, baseList, basePoints, radius);
+
+                    m_cornerPoints.add(cornerList);
+                }
+            }
             return m_cornerPoints;
         } else {
             return m_points;

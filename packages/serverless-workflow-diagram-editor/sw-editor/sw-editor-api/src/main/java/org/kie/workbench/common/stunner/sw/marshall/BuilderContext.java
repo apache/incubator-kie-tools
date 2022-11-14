@@ -219,9 +219,9 @@ public class BuilderContext {
     private static double[] getBeanSize(Object bean) {
         Class<?> type = bean.getClass();
         if (Start.class.equals(type)) {
-            return new double[]{50d, 50d};
+            return new double[]{54d, 54d};
         } else if (End.class.equals(type)) {
-            return new double[]{49d, 47d};
+            return new double[]{50d, 50d};
         } else if (EventRef.class.equals(type)) {
             return new double[]{56d, 56d};
         } else if (EventState.class.equals(type)) {

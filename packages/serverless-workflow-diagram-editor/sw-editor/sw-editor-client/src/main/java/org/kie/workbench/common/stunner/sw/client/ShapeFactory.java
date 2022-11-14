@@ -16,21 +16,15 @@
 
 package org.kie.workbench.common.stunner.sw.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeDef;
-import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeFactory;
-import org.kie.workbench.common.stunner.sw.client.shapes.AnyStateShapeDef;
+import org.kie.workbench.common.stunner.sw.client.resources.GlyphFactory;
+import org.kie.workbench.common.stunner.sw.client.shapes.EndShape;
+import org.kie.workbench.common.stunner.sw.client.shapes.StartShape;
+import org.kie.workbench.common.stunner.sw.client.shapes.StateShape;
 import org.kie.workbench.common.stunner.sw.client.shapes.TransitionShape;
-import org.kie.workbench.common.stunner.sw.client.shapes.TransitionShapeDef;
-import org.kie.workbench.common.stunner.sw.client.shapes.TransitionView;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
@@ -53,6 +47,7 @@ import org.kie.workbench.common.stunner.sw.definition.ParallelState;
 import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.Start;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
+import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
@@ -63,62 +58,78 @@ import static org.kie.workbench.common.stunner.core.definition.adapter.binding.B
 public class ShapeFactory
         implements org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory<Object, Shape> {
 
-    // TODO: Refactor this, no need for storing state...
-    private final Map<Class<?>, ShapeViewDef> typeViewDefinitions = new HashMap<Class<?>, ShapeViewDef>() {{
-        put(Workflow.class, new AnyStateShapeDef());
-        put(Start.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER_WITH_AlPHA, true));
-        put(End.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER_WITH_AlPHA, true));
-        put(ActionsContainer.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
-        put(OnEvent.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER, true));
-        put(EventRef.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.OUTSIDE_CENTER_BOTTOM, true));
-        put(CallFunctionAction.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
-        put(CallSubflowAction.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
-        put(InjectState.class, new AnyStateShapeDef());
-        put(SwitchState.class, new AnyStateShapeDef());
-        put(OperationState.class, new AnyStateShapeDef());
-        put(EventState.class, new AnyStateShapeDef());
-        put(SleepState.class, new AnyStateShapeDef());
-        put(ParallelState.class, new AnyStateShapeDef());
-        put(ForEachState.class, new AnyStateShapeDef());
-        put(CallbackState.class, new AnyStateShapeDef());
-        put(Transition.class, new TransitionShapeDef());
-        put(StartTransition.class, new TransitionShapeDef());
-        put(ErrorTransition.class, new TransitionShapeDef());
-        put(EventConditionTransition.class, new TransitionShapeDef());
-        put(DataConditionTransition.class, new TransitionShapeDef());
-        put(DefaultConditionTransition.class, new TransitionShapeDef());
-        put(ActionTransition.class, new TransitionShapeDef());
-        put(CompensationTransition.class, new TransitionShapeDef());
-        put(EventTimeout.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.OUTSIDE_CENTER_BOTTOM, true));
-    }};
-
-    private final SVGShapeFactory svgShapeFactory;
-
-    @Inject
-    public ShapeFactory(final SVGShapeFactory svgShapeFactory) {
-        this.svgShapeFactory = svgShapeFactory;
-    }
-
     @Override
     @SuppressWarnings("all")
     public Shape newShape(Object instance) {
-        ShapeViewDef def = typeViewDefinitions.get(instance.getClass());
-        if (def instanceof TransitionShapeDef) {
-            return new TransitionShape((TransitionShapeDef) def, new TransitionView());
+        if (instance instanceof Start) {
+            return new StartShape();
+        } else if (instance instanceof End) {
+            return new EndShape();
+        } else if (instance instanceof State) {
+            State state = (State) instance;
+            return StateShape.create(state.getName()).setType(state.getType());
+        } else if (TransitionShape.isTransition(instance)) {
+            return TransitionShape.create(instance).setAppearance(instance);
         } else {
-            return svgShapeFactory.newShape(instance, (SVGShapeDef) def);
+            return null;
         }
     }
 
     @Override
     @SuppressWarnings("all")
     public Glyph getGlyph(String definitionId) {
-        Map.Entry<Class<?>, ShapeViewDef> typeDefs = typeViewDefinitions.entrySet().stream()
-                .filter(e -> getDefinitionId(e.getKey()).equals(definitionId))
-                .findAny()
-                .get();
-        Class<?> type = typeDefs.getKey();
-        ShapeViewDef def = typeDefs.getValue();
-        return def.getGlyph(type, definitionId);
+        if (definitionId.equals(getDefinitionId(InjectState.class))) {
+            return GlyphFactory.STATE_INJECT;
+        } else if (definitionId.equals(getDefinitionId(SwitchState.class))) {
+            return GlyphFactory.STATE_SWITCH;
+        } else if (definitionId.equals(getDefinitionId(EventState.class))) {
+            return GlyphFactory.STATE_EVENT;
+        } else if (definitionId.equals(getDefinitionId(OperationState.class))) {
+            return GlyphFactory.STATE_OPERATION;
+        } else if (definitionId.equals(getDefinitionId(SleepState.class))) {
+            return GlyphFactory.STATE_INJECT;
+        } else if (definitionId.equals(getDefinitionId(ParallelState.class))) {
+            return GlyphFactory.STATE_INJECT;
+        } else if (definitionId.equals(getDefinitionId(ForEachState.class))) {
+            return GlyphFactory.STATE_INJECT;
+        } else if (definitionId.equals(getDefinitionId(CallbackState.class))) {
+            return GlyphFactory.STATE_INJECT;
+        } else if (definitionId.equals(getDefinitionId(Workflow.class))) {
+            return GlyphFactory.TRANSITION;
+        } else if (definitionId.equals(getDefinitionId(Start.class))) {
+            return GlyphFactory.START;
+        } else if (definitionId.equals(getDefinitionId(End.class))) {
+            return GlyphFactory.END;
+        } else if (definitionId.equals(getDefinitionId(ActionsContainer.class))) {
+            return GlyphFactory.CALL_FUNCTION;
+        } else if (definitionId.equals(getDefinitionId(OnEvent.class))) {
+            return GlyphFactory.EVENTS;
+        } else if (definitionId.equals(getDefinitionId(EventRef.class))) {
+            return GlyphFactory.EVENT;
+        } else if (definitionId.equals(getDefinitionId(EventTimeout.class))) {
+            return GlyphFactory.EVENT_TIMEOUT;
+        } else if (definitionId.equals(getDefinitionId(CallFunctionAction.class))) {
+            return GlyphFactory.CALL_FUNCTION;
+        } else if (definitionId.equals(getDefinitionId(CallSubflowAction.class))) {
+            return GlyphFactory.CALL_SUBFLOW;
+        } else if (definitionId.equals(getDefinitionId(Transition.class))) {
+            return GlyphFactory.TRANSITION;
+        } else if (definitionId.equals(getDefinitionId(StartTransition.class))) {
+            return GlyphFactory.TRANSITION_START;
+        } else if (definitionId.equals(getDefinitionId(ErrorTransition.class))) {
+            return GlyphFactory.TRANSITION_ERROR;
+        } else if (definitionId.equals(getDefinitionId(EventConditionTransition.class))) {
+            return GlyphFactory.TRANSITION_CONDITION;
+        } else if (definitionId.equals(getDefinitionId(DataConditionTransition.class))) {
+            return GlyphFactory.TRANSITION_CONDITION;
+        } else if (definitionId.equals(getDefinitionId(DefaultConditionTransition.class))) {
+            return GlyphFactory.TRANSITION_CONDITION;
+        } else if (definitionId.equals(getDefinitionId(ActionTransition.class))) {
+            return GlyphFactory.TRANSITION_ACTION;
+        } else if (definitionId.equals(getDefinitionId(CompensationTransition.class))) {
+            return GlyphFactory.TRANSITION_COMPENSATION;
+        }
+
+        throw new IllegalArgumentException("Definition " + definitionId + " do not have a Glyph.");
     }
 }

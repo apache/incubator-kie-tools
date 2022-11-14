@@ -155,7 +155,7 @@ public class WiresConnectorViewExt<T>
     }
 
     @Override
-    public T setTextSizeConstraints(final Size sizeConstraints) {
+    public T setTitleSizeConstraints(final Size sizeConstraints) {
         // Do not apply here...
         return cast();
     }

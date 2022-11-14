@@ -58,6 +58,14 @@ public final class BoundingBox {
         return box;
     }
 
+    public boolean isEmpty() {
+        return getWidth() == 0 && getHeight() == 0;
+    }
+
+    public boolean nonEmpty() {
+        return !isEmpty();
+    }
+
     public static BoundingBox fromArrayOfPoint2D(final Point2D... points) {
         BoundingBox box = new BoundingBox();
         box.addDoubles(points);

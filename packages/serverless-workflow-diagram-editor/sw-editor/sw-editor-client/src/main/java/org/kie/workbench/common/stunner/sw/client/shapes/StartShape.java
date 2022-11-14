@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.shapes.client;
+package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
+import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
 
-public class ConnectorShape<W>
-        extends BasicConnectorShape<W, AbstractConnectorView> {
+public class StartShape extends NodeShapeImpl {
 
-    public ConnectorShape(final AbstractConnectorView view) {
-        super(view);
+    public StartShape() {
+        super(new StartShapeView().asAbstractShape());
     }
 }

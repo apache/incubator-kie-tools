@@ -17,64 +17,87 @@
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
-import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
+import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.StartTransition;
+import org.kie.workbench.common.stunner.sw.definition.Transition;
 
 public class TransitionShape<W>
-        extends ConnectorShape<W, TransitionShapeDef<W>, TransitionView> {
+        extends ConnectorShape<W, TransitionView> {
 
-    @SuppressWarnings("unchecked")
-    public TransitionShape(TransitionShapeDef<W> shapeDef,
-                           TransitionView view) {
-        super(shapeDef,
-              view,
+    private static final DashArray DASH_ARRAY = DashArray.create(8, 8);
+    private static final DashArray DOT_ARRAY = DashArray.create(4, 6);
+
+    public TransitionShape(TransitionView view) {
+        super(view,
               new ShapeStateDefaultHandler()
                       .setRenderType(ShapeStateDefaultHandler.RenderType.STROKE)
                       .setBorderShape(() -> view)
                       .setBackgroundShape(() -> view));
-
     }
 
-    @Override
-    protected void applyCustomProperties(Edge<ViewConnector<W>, Node> element, MutationContext mutationContext) {
-        super.applyCustomProperties(element, mutationContext);
-        DashArray dashArray = getShapeDefinition().getDashArray(getDefinition(element));
-        if (null != dashArray) {
-            getShapeView().setDashArray(dashArray);
-        }
-
-        if (element.getContent().getDefinition() instanceof ErrorTransition) {
-            final ErrorTransition definition = (ErrorTransition) element.getContent().getDefinition();
+    public TransitionShape<W> setAppearance(Object transitionType) {
+        if (transitionType instanceof ErrorTransition) {
+            getShapeView().setDashArray(DASH_ARRAY);
+            final ErrorTransition definition = (ErrorTransition) transitionType;
             getShapeView().setTitle(definition.getErrorRef());
             getShapeView().setTitleBackgroundColor("red");
-        } else if (element.getContent().getDefinition() instanceof EventConditionTransition) {
-            final EventConditionTransition definition = (EventConditionTransition) element.getContent().getDefinition();
+        } else if (transitionType instanceof ActionTransition || transitionType instanceof CompensationTransition) {
+            getShapeView().setDashArray(DOT_ARRAY);
+        } else if (transitionType instanceof EventConditionTransition) {
+            final EventConditionTransition definition = (EventConditionTransition) transitionType;
             getShapeView().setTitle(definition.getEventRef());
             getShapeView().setTitleBackgroundColor("orange");
-        } else if (element.getContent().getDefinition() instanceof DataConditionTransition) {
-            final DataConditionTransition definition = (DataConditionTransition) element.getContent().getDefinition();
+        } else if (transitionType instanceof DataConditionTransition) {
+            final DataConditionTransition definition = (DataConditionTransition) transitionType;
             getShapeView().setTitle(definition.getCondition());
             getShapeView().setTitleBackgroundColor("gray");
         }
+        getShapeView().setTitleFontColor(getColor(transitionType));
+        getShapeView().setTitleStrokeColor(getColor(transitionType));
+
+        return this;
     }
 
-    @Override
-    public void applyState(final ShapeState shapeState) {
-        super.applyState(shapeState);
-        if (!isSelected()) {
-            getShapeView().hideControlPoints();
+    public static TransitionShape<TransitionView> create(Object transitionType) {
+        return new TransitionShape<>(new TransitionView(getColor(transitionType)));
+    }
+
+    public static String getColor(Object transition) {
+        Class<?> clazz = transition.getClass();
+
+        if (clazz.equals(StartTransition.class)) {
+            return "#757575";
+        } else if (clazz.equals(ErrorTransition.class)) {
+            return "#c9190b";
+        } else if (clazz.equals(EventConditionTransition.class)) {
+            return "#828282";
+        } else if (clazz.equals(DataConditionTransition.class)) {
+            return "#757575";
+        } else if (clazz.equals(DefaultConditionTransition.class)) {
+            return "#3e8635";
+        } else if (clazz.equals(ActionTransition.class)) {
+            return "#757575";
+        } else if (clazz.equals(CompensationTransition.class)) {
+            return "#f0ab00";
         }
+        return "#757575";
     }
 
-    private boolean isSelected() {
-        return ShapeState.SELECTED.equals(getShape().getShapeStateHandler().getShapeState());
+    public static boolean isTransition(Object object) {
+        return object instanceof Transition
+                || object instanceof StartTransition
+                || object instanceof ErrorTransition
+                || object instanceof EventConditionTransition
+                || object instanceof DataConditionTransition
+                || object instanceof DefaultConditionTransition
+                || object instanceof ActionTransition
+                || object instanceof CompensationTransition;
     }
 }
