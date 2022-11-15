@@ -82,12 +82,14 @@ export class SwfLanguageService {
     rootNode: SwfLsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
-    if (!args.rootNode) {
-      return args.content.trim().length ? [] : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions(args);
-    }
-
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
+
+    if (!args.rootNode) {
+      return args.content.trim().length
+        ? []
+        : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions({ ...args, cursorOffset, document: doc });
+    }
 
     const currentNode = findNodeAtOffset(args.rootNode, cursorOffset, true);
     if (!currentNode) {
@@ -124,7 +126,7 @@ export class SwfLanguageService {
         cursorOffset: cursorOffset,
         cursorPosition: args.cursorPosition,
         node: currentNode,
-        path: path,
+        path,
         root: args.rootNode,
       })
     );
@@ -132,15 +134,16 @@ export class SwfLanguageService {
     const result = await Promise.all(
       matchedCompletions.map(([_, completionItemsDelegate]) => {
         return completionItemsDelegate({
-          document: doc,
-          cursorPosition: args.cursorPosition,
+          codeCompletionStrategy: args.codeCompletionStrategy,
           currentNode,
           currentNodeRange,
-          rootNode: args.rootNode!,
-          overwriteRange,
-          swfCompletionItemServiceCatalogServices,
+          cursorOffset,
+          cursorPosition: args.cursorPosition,
+          document: doc,
           langServiceConfig: this.args.config,
-          codeCompletionStrategy: args.codeCompletionStrategy,
+          overwriteRange,
+          rootNode: args.rootNode!,
+          swfCompletionItemServiceCatalogServices,
         });
       })
     );
@@ -271,15 +274,16 @@ export class SwfLanguageService {
 const completions = new Map<
   SwfJsonPath,
   (args: {
-    swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
-    document: TextDocument;
-    cursorPosition: Position;
-    currentNode: SwfLsNode;
-    overwriteRange: Range;
-    currentNodeRange: Range;
-    rootNode: SwfLsNode;
-    langServiceConfig: SwfLanguageServiceConfig;
     codeCompletionStrategy: CodeCompletionStrategy;
+    currentNode: SwfLsNode;
+    currentNodeRange: Range;
+    cursorOffset: number;
+    cursorPosition: Position;
+    document: TextDocument;
+    langServiceConfig: SwfLanguageServiceConfig;
+    overwriteRange: Range;
+    rootNode: SwfLsNode;
+    swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
   }) => Promise<CompletionItem[]>
 >([
   [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],
