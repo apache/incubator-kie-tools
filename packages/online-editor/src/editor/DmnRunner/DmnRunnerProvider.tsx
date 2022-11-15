@@ -74,51 +74,50 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   );
 
   const preparePayload = useCallback(
-    async (data?: any) => {
+    async (formData?: InputRow) => {
       const files = (
         await workspaces.getFiles({
           workspaceId: props.workspaceFile.workspaceId,
         })
       ).filter((f) => f.extension === "dmn");
 
-      const resourcePromises = files.map(async (f) => ({
-        URI: f.relativePath,
-        content: decoder.decode(await f.getFileContents()),
+      const contents = await Promise.all(files.map((file) => file.getFileContents()));
+      const resources = contents.map((content, i) => ({
+        URI: files[i].relativePath,
+        content: decoder.decode(content),
       }));
 
       return {
         mainURI: props.workspaceFile.relativePath,
-        resources: await Promise.all(resourcePromises),
-        context: data,
+        resources,
+        context: formData,
       } as DmnRunnerModelPayload;
     },
     [props.workspaceFile, workspaces]
   );
 
-  const updateFormSchema = useCallback(async () => {
-    if (props.workspaceFile.extension !== "dmn") {
-      return;
-    }
-
-    try {
-      const payload = await preparePayload();
-      setJsonSchema(await service.formSchema(payload));
-    } catch (err) {
-      console.error(err);
-      setError(true);
-    }
-  }, [props.workspaceFile.extension, preparePayload, service]);
-
   useEffect(() => {
-    if (props.workspaceFile.extension !== "dmn") {
+    if (
+      props.workspaceFile.extension !== "dmn" ||
+      kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
+    ) {
       setExpanded(false);
       return;
     }
 
-    updateFormSchema();
-  }, [updateFormSchema, props.workspaceFile.extension, props.workspaceFile]);
+    preparePayload()
+      .then((payload) => {
+        service.formSchema(payload).then((jsonSchema) => {
+          setJsonSchema(jsonSchema);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(true);
+      });
+  }, [kieSandboxExtendedServices.status, props.workspaceFile.extension, preparePayload, service]);
 
-  const validate = useCallback(async () => {
+  useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
       return;
     }
@@ -128,28 +127,31 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
-    const payload: DmnRunnerModelPayload = {
-      mainURI: props.workspaceFile.relativePath,
-      resources: [
-        {
-          URI: props.workspaceFile.relativePath,
-          content: decoder.decode(await props.workspaceFile.getFileContents()),
-        },
-      ],
-    };
-    const validationResults = await service.validate(payload);
-    const notifications: Notification[] = validationResults.map((validationResult: any) => ({
-      type: "PROBLEM",
-      path: "",
-      severity: validationResult.severity,
-      message: `${validationResult.messageType}: ${validationResult.message}`,
-    }));
-    props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-  }, [props.workspaceFile, props.editorPageDock, kieSandboxExtendedServices.status, service, i18n.terms.validation]);
+    props.workspaceFile
+      .getFileContents()
+      .then((fileContents) => {
+        const payload: DmnRunnerModelPayload = {
+          mainURI: props.workspaceFile.relativePath,
+          resources: [
+            {
+              URI: props.workspaceFile.relativePath,
+              content: decoder.decode(fileContents),
+            },
+          ],
+        };
 
-  useEffect(() => {
-    validate();
-  }, [validate]);
+        service.validate(payload).then((validationResults) => {
+          const notifications: Notification[] = validationResults.map((validationResult: any) => ({
+            type: "PROBLEM",
+            path: "",
+            severity: validationResult.severity,
+            message: `${validationResult.messageType}: ${validationResult.message}`,
+          }));
+          props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
+        });
+      })
+      .catch((err) => console.error(err));
+  }, [props.workspaceFile, props.editorPageDock, kieSandboxExtendedServices.status, service, i18n.terms.validation]);
 
   useEffect(() => {
     if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {

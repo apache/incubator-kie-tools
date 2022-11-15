@@ -516,7 +516,7 @@ public class Text extends Shape<Text> {
     /**
      * Sets the {@link TextBaseLine}
      *
-     * @param baseline
+     * @param baseLine
      * @return this Text
      */
     public Text setTextBaseLine(TextBaseLine baseLine) {

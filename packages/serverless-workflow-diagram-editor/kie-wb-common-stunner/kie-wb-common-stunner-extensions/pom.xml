@@ -32,7 +32,6 @@
 
   <modules>
     <module>kie-wb-common-stunner-lienzo-extensions</module>
-    <module>kie-wb-common-stunner-svg</module>
   </modules>
 
 </project>

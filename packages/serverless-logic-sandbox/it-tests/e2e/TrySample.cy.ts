@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-// KOGITO-8070 - Flaky test - TrySample.cy.ts at `serverless-logic-sandbox`
-describe.skip("Serverless Logic Web Tools - Try samples test", () => {
+describe("Serverless Logic Web Tools - Try samples test", () => {
   beforeEach(() => {
     cy.visit("/");
   });

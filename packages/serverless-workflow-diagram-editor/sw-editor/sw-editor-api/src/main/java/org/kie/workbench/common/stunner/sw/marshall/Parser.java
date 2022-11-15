@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
+import org.kie.workbench.common.stunner.sw.definition.Metadata;
 import org.kie.workbench.common.stunner.sw.definition.ModelUtils;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
@@ -105,6 +106,10 @@ public class Parser {
                     ErrorTransition et = parseErrorTransition(e);
                     state.onErrors[i] = et;
                 }
+            }
+            Metadata metadata = Js.uncheckedCast(Js.asPropertyMap(jso).get("metadata"));
+            if (null != metadata) {
+                state.metadata = metadata;
             }
         }
 

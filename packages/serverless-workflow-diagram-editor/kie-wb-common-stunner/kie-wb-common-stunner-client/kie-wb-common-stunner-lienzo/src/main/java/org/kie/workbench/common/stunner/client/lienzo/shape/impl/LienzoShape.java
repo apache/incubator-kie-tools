@@ -31,7 +31,7 @@ public class LienzoShape<V extends LienzoShapeView> extends ShapeWrapper<V, Shap
         this.wrapped = new ShapeImpl<>(view,
                                        new ShapeStateAttributeAnimationHandler<>()
                                                .getAttributesHandler()
-                                               .useAttributes(ShapeStateAttributesFactory::buildStrokeAttributes)
+                                               .useAttributes(ShapeStateAttributesFactory::buildStateAttributes)
                                                .setView(() -> view));
     }
 

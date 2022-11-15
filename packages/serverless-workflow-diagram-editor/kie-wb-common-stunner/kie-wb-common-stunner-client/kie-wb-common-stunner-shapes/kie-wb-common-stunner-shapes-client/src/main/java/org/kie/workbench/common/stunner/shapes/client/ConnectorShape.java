@@ -17,14 +17,11 @@
 package org.kie.workbench.common.stunner.shapes.client;
 
 import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
-import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 public class ConnectorShape<W>
-        extends BasicConnectorShape<W, ConnectorShapeDef<W, AbstractConnectorView>, AbstractConnectorView> {
+        extends BasicConnectorShape<W, AbstractConnectorView> {
 
-    public ConnectorShape(final ConnectorShapeDef<W, AbstractConnectorView> shapeDef,
-                          final AbstractConnectorView view) {
-        super(shapeDef,
-              view);
+    public ConnectorShape(final AbstractConnectorView view) {
+        super(view);
     }
 }

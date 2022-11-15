@@ -21,7 +21,6 @@ import {
   SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import { TextDocument } from "vscode-json-languageservice";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { getNodePath } from "./SwfLanguageService";
 import { SwfLanguageServiceCommandExecution } from "../api";
@@ -37,7 +36,8 @@ import {
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, SwfLsNode } from "./types";
+import { TextDocument } from "vscode-languageserver-textdocument";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
