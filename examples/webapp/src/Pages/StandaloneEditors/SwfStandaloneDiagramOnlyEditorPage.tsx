@@ -24,7 +24,7 @@ import { extname } from "path";
 
 export type ServerlessWorkflowType = "json" | "yaml";
 
-export const SwfStandaloneEditorPage = () => {
+export const SwfStandaloneDiagramOnlyEditorPage = () => {
   const swfEditorContainer = useRef<HTMLDivElement>(null);
   const unsavedChanges = useRef<HTMLSpanElement>(null);
   const undo = useRef<HTMLButtonElement>(null);
@@ -43,7 +43,7 @@ export const SwfStandaloneEditorPage = () => {
       initialContent: Promise.resolve(content),
       readOnly: false,
       languageType: extension as ServerlessWorkflowType,
-      isDiagramOnly: false,
+      isDiagramOnly: true,
     });
     setWorkflowType(extension as ServerlessWorkflowType);
     setEditor(editorApi);
@@ -94,15 +94,14 @@ export const SwfStandaloneEditorPage = () => {
     <Page>
       {!editor && (
         <PageSection isFilled={true}>
-          <ServerlessWorkflowEmptyState newContent={onNewContent} setContent={onSetContent} isDiagramOnly={false} />
+          <ServerlessWorkflowEmptyState newContent={onNewContent} setContent={onSetContent} isDiagramOnly={true} />
         </PageSection>
       )}
       <PageSection padding={{ default: "noPadding" }}>
-        {editor && swfEditorContainer && (
+        {editor && (
           <div style={{ height: "40px", padding: "5px" }}>
             <button ref={undo}>Undo</button>
             <button ref={redo}>Redo</button>
-            <button ref={download}>Get Content</button>
             <span ref={unsavedChanges} style={{ display: "none" }}>
               File contains unsaved changes.
             </span>

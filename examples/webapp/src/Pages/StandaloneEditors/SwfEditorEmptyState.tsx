@@ -26,8 +26,9 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ChangeEvent } from "react";
 
+type ServerlessWorkflowType = "json" | "yaml";
 interface NewProps {
-  newContent: (type: any) => void;
+  newContent: (type: ServerlessWorkflowType) => void;
   isDiagramOnly: boolean;
 }
 

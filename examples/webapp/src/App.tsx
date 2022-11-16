@@ -32,6 +32,7 @@ import { SwfStandaloneEditorPage } from "./Pages/StandaloneEditors/SwfStandalone
 import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPongAngularIFrameViewsPage";
 import { PingPongMixedViewsPage } from "./Pages/PingPong/Mixed/PingPongMixedViewsPage";
 import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
+import { SwfStandaloneDiagramOnlyEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneDiagramOnlyEditorPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
@@ -175,10 +176,10 @@ export function App() {
             <DmnStandaloneEditorPage />
           </Route>
           <Route path={Location.SWF_STANDALONE_EDITOR}>
-            <SwfStandaloneEditorPage isDiagramOnlyEditor={false} />
+            <SwfStandaloneEditorPage />
           </Route>
           <Route path={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>
-            <SwfStandaloneEditorPage isDiagramOnlyEditor={true} />
+            <SwfStandaloneDiagramOnlyEditorPage />
           </Route>
         </Switch>
       </Page>
