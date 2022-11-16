@@ -42,6 +42,7 @@
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools-core/workspaces-git-fs": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
+    "@kie-tools/cors-proxy-image": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
     "@kie-tools/form": "workspace:*",
     "@kie-tools/form-dmn": "workspace:*",
