@@ -12,13 +12,13 @@ A comprehensive API is also provided for setup and interaction with the Editor.
 
   - `npm install @kie-tools/serverless-workflow-standalone-editor`
 
-- To import each Editor library:
+- To import SWF Editor library:
 
   - `import * as SwfEditor from "@kie-tools/serverless-workflow-standalone-editor/dist/swf"`
 
 ### Usage
 
-The API is the same for both editors. Here is an example on how to open the Serverless Workflow standalone Editor:
+Here is an example on how to open the Serverless Workflow standalone Editor using the provided API:
 
 ```
 const editor = SwfEditor.open({
@@ -38,7 +38,7 @@ Available parameters:
   - `Promise.resolve("<SWF_CONTENT_DIRECTLY_HERE>")`
 - `readOnly` (optional, defaults to `false`): Use `false` to allow content edition, and `true` for read-only mode, in which the Editor will not allow changes.
 - `languageType` (required, defaults to `json`): Use `json` to render text editor with serverless workflow content in json format and stunner editor to display diagram. Use `yaml` to render text editor with serverless workflow content in yaml format and mermaid editor to display diagram.
-- `isDiagramOnly` (optional, defaults to `false`): If you want to render only the diagram editors into the web application and hide the text editor, you can use this parameter and set the valure `true`.
+- `isDiagramOnly` (optional, defaults to `false`): If you want to render only the diagram editors into the web application and hide the text editor, you can use this parameter and set the value `true`.
 
 The returned object will contain the methods needed to manipulate the Editor:
 
