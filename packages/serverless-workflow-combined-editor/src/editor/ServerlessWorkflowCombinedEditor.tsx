@@ -196,7 +196,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         filePathGlob: "**/*.sw.+(yml|yaml)",
         resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
         envelopeContent: buildEnvelopeContent(
-          textEditorEnvelopeContent ?? "",
+          mermaidEnvelopeContent ?? "",
           props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
         ),
       }),

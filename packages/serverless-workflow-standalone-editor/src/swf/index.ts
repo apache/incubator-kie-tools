@@ -43,6 +43,7 @@ declare global {
 
 const createEnvelopeServer = (
   iframe: HTMLIFrameElement,
+  languageType: ServerlessWorkflowType,
   isDiagramOnly?: boolean,
   readOnly?: boolean,
   origin?: string
@@ -60,7 +61,7 @@ const createEnvelopeServer = (
         },
         {
           resourcesPathPrefix: "",
-          fileExtension: "sw.json",
+          fileExtension: `sw.${languageType}`,
           initialLocale: "en-US",
           isReadOnly: readOnly ?? true,
           channel: ChannelType.STANDALONE,
@@ -86,7 +87,13 @@ export const open = (args: {
   iframe.style.height = "100%";
   iframe.style.border = "none";
 
-  const envelopeServer = createEnvelopeServer(iframe, args.isDiagramOnly, args.readOnly, args.origin);
+  const envelopeServer = createEnvelopeServer(
+    iframe,
+    args.languageType,
+    args.isDiagramOnly,
+    args.readOnly,
+    args.origin
+  );
 
   const stateControl = new StateControl();
 
