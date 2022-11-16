@@ -21,6 +21,7 @@ import {
   EditorApi,
   EditorEnvelopeLocator,
   EditorTheme,
+  EnvelopeContentType,
   EnvelopeMapping,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
@@ -199,7 +200,7 @@ export class VsCodeKieEditorController implements EditorApi {
   }
 
   public setupWebviewContent() {
-    if ("path" in this.envelopeMapping.envelopeContent) {
+    if (this.envelopeMapping.envelopeContent.type === EnvelopeContentType.PATH) {
       this.panel.webview.html = `
           <!DOCTYPE html>
           <html lang="en">

@@ -18,7 +18,7 @@ A comprehensive API is also provided for setup and interaction with the Editor.
 
 ### Usage
 
-Here is an example on how to open the Serverless Workflow standalone Editor using the provided API:
+Here is an example on how to open the Serverless Workflow Standalone Editor using the provided API:
 
 ```
 const editor = SwfEditor.open({
@@ -33,7 +33,7 @@ const editor = SwfEditor.open({
 Available parameters:
 
 - `container`: HTML element in which the Editor will be appended to.
-- `initialContent`: Promise to a Swf content. Can be empty. Examples:
+- `initialContent`: Promise to a workflow content. Can be empty. Examples:
   - `Promise.resolve("")`
   - `Promise.resolve("<SWF_CONTENT_DIRECTLY_HERE>")`
 - `readOnly` (optional, defaults to `false`): Use `false` to allow content edition, and `true` for read-only mode, in which the Editor will not allow changes.

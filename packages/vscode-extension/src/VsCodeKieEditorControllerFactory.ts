@@ -140,7 +140,7 @@ export class VsCodeKieEditorControllerFactory {
   }
 
   private getWebViewPathFromEnvelopeContent(webview: Webview, envelopeContent: EnvelopeContent) {
-    if ("path" in envelopeContent) {
+    if (envelopeContent.type === EnvelopeContentType.PATH) {
       return this.getWebviewPath(webview, envelopeContent.path);
     }
 

@@ -578,6 +578,9 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
+  packages/build-env:
+    specifiers: {}
+
   packages/chrome-extension:
     specifiers:
       "@babel/core": ^7.16.0
@@ -783,6 +786,20 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       zip-webpack-plugin: 4.0.1_webpack@5.70.0
+
+  packages/cors-proxy-image:
+    specifiers:
+      "@isomorphic-git/cors-proxy": ^2.7.1
+      "@kie-tools/root-env": workspace:*
+      patch-package: ^6.4.7
+      rimraf: ^3.0.2
+      run-script-os: ^1.1.6
+    devDependencies:
+      "@isomorphic-git/cors-proxy": 2.7.1
+      "@kie-tools/root-env": link:../root-env
+      patch-package: 6.4.7
+      rimraf: 3.0.2
+      run-script-os: 1.1.6
 
   packages/dashbuilder:
     specifiers:
@@ -1597,6 +1614,101 @@ importers:
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
+      webpack-merge: 5.8.0
+
+  packages/dashbuilder-editor-viewer:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@testing-library/jest-dom": ^5.16.1
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/react": ^17.0.6
+      "@types/testing-library__jest-dom": ^5.9.1
+      copy-webpack-plugin: ^8.1.1
+      copyfiles: ^2.4.1
+      cpr: ^3.0.1
+      cypress: ^10.7.0
+      cypress-file-upload: ^5.0.8
+      cypress-iframe: ^1.0.1
+      cypress-log-to-output: ^1.1.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^4.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      rimraf: ^3.0.2
+      start-server-and-test: ^1.12.1
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      vscode-json-languageservice: ^4.2.1
+      webpack: ^5.36.2
+      webpack-cli: ^4.7.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.7.3
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@testing-library/jest-dom": 5.16.1
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/react": 17.0.21
+      "@types/testing-library__jest-dom": 5.9.5
+      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copyfiles: 2.4.1
+      cpr: 3.0.1
+      cypress: 10.7.0
+      cypress-file-upload: 5.0.8_cypress@10.7.0
+      cypress-iframe: 1.0.1
+      cypress-log-to-output: 1.1.2
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
+      rimraf: 3.0.2
+      start-server-and-test: 1.12.1
+      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      typescript: 4.5.4
+      vscode-json-languageservice: 4.2.1
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
       webpack-merge: 5.8.0
 
   packages/dashbuilder-images:
@@ -3867,6 +3979,15 @@ importers:
 
   packages/root-env:
     specifiers: {}
+
+  packages/run-script-if:
+    specifiers:
+      "@kie-tools/build-env": workspace:*
+      yargs: ^17.0.1
+    dependencies:
+      yargs: 17.3.1
+    devDependencies:
+      "@kie-tools/build-env": link:../build-env
 
   packages/serverless-logic-sandbox:
     specifiers:
@@ -6294,6 +6415,19 @@ importers:
     devDependencies:
       rimraf: 3.0.2
       typescript: 4.5.4
+
+  scripts/code-formatter:
+    specifiers:
+      "@nice-move/prettier-plugin-package-json": ^0.6.1
+      prettier: ^2.2.1
+      pretty-quick: ^3.1.0
+    devDependencies:
+      "@nice-move/prettier-plugin-package-json": 0.6.1_prettier@2.3.0
+      prettier: 2.3.0
+      pretty-quick: 3.1.0_prettier@2.3.0
+
+  scripts/maven-config-setup-helper:
+    specifiers: {}
 
   scripts/run-script-if:
     specifiers:
@@ -11632,6 +11766,17 @@ packages:
       "@xtuc/long": 4.2.2
     dev: true
 
+  /@webpack-cli/configtest/1.0.3_nc5o3ul7aks2kkztlwd2bfthda:
+    resolution:
+      { integrity: sha512-WQs0ep98FXX2XBAfQpRbY0Ma6ADw8JR6xoIkaIiJIzClGOMqVRvPCWqndTxf28DgFopWan0EKtHtg/5W1h0Zkw== }
+    peerDependencies:
+      webpack: 4.x.x || 5.x.x
+      webpack-cli: 4.x.x
+    dependencies:
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+    dev: true
+
   /@webpack-cli/configtest/1.2.0_arvjobxnuton62rnb6f22zdmlm:
     resolution:
       { integrity: sha512-4FB8Tj6xyVkyqjj1OaTqCjXYULB9FMkqQ8yGrZjRDrYh0nOE+7Lhs45WioWQQMV+ceFlE368Ukhe6xdvJM9Egg== }
@@ -11643,6 +11788,16 @@ packages:
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
     dev: true
 
+  /@webpack-cli/info/1.2.4_webpack-cli@4.7.0:
+    resolution:
+      { integrity: sha512-ogE2T4+pLhTTPS/8MM3IjHn0IYplKM4HbVNMCWA9N4NrdPzunwenpCsqKEXyejMfRu6K8mhauIPYf8ZxWG5O6g== }
+    peerDependencies:
+      webpack-cli: 4.x.x
+    dependencies:
+      envinfo: 7.8.1
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+    dev: true
+
   /@webpack-cli/info/1.5.0_webpack-cli@4.10.0:
     resolution:
       { integrity: sha512-e8tSXZpw2hPl2uMJY6fsMswaok5FdlGNRTktvFk2sD8RjH0hE2+XistawJx1vmKteh4NmGmNUrp+Tb2w+udPcQ== }
@@ -11651,6 +11806,20 @@ packages:
     dependencies:
       envinfo: 7.8.1
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+    dev: true
+
+  /@webpack-cli/serve/1.4.0_2vnqxgbce4ohauwx54aplu43om:
+    resolution:
+      { integrity: sha512-xgT/HqJ+uLWGX+Mzufusl3cgjAcnqYYskaB7o0vRcwOEfuu6hMzSILQpnIzFMGsTaeaX4Nnekl+6fadLbl1/Vg== }
+    peerDependencies:
+      webpack-cli: 4.x.x
+      webpack-dev-server: "*"
+    peerDependenciesMeta:
+      webpack-dev-server:
+        optional: true
+    dependencies:
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
     dev: true
 
   /@webpack-cli/serve/1.7.0_2pilh4owx6vit44ad4uthlnj3q:
@@ -14422,6 +14591,11 @@ packages:
     resolution:
       { integrity: sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg== }
     hasBin: true
+    dev: true
+
+  /colorette/1.2.2:
+    resolution:
+      { integrity: sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w== }
     dev: true
 
   /colorette/2.0.16:
@@ -18306,36 +18480,6 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /follow-redirects/1.14.9_debug@4.3.1:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-<<<<<<< HEAD
-    dependencies:
-      debug: 4.3.1
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    dependencies:
-      debug: 4.3.1
-=======
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-<<<<<<< HEAD
-=======
-=======
-
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -18347,27 +18491,13 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.1
-<<<<<<< HEAD
-<<<<<<< HEAD
-    dev: true
 
   /for-each/0.3.3:
     resolution:
       { integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw== }
     dependencies:
       is-callable: 1.2.7
->>>>>>> dfc4d526f2 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
     dev: true
-<<<<<<< HEAD
-=======
->>>>>>> fc06b54218 (included download content on webapp)
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-=======
->>>>>>> 5f82e3e25e (build fix)
 
   /for-in/1.0.2:
     resolution:
@@ -18770,16 +18900,6 @@ packages:
       path-is-absolute: 1.0.1
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /glob/8.0.3:
     resolution:
       { integrity: sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ== }
@@ -18822,25 +18942,6 @@ packages:
       serialize-error: 7.0.1
     optional: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-      boolean: 3.2.0
-=======
-      boolean: 3.0.4
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-      es6-error: 4.1.1
-      matcher: 3.0.0
-      roarr: 2.15.4
-      semver: 7.3.7
-      serialize-error: 7.0.1
-    optional: true
-
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /global-dirs/3.0.0:
     resolution:
       { integrity: sha512-v8ho2DS5RiCjftj1nD9NmnfaOzTdud7RRnVd9kFNOjqZbISlx5DQ+OrTkywgd0dIt7oFCvKetZSHoHcP3sDdiA== }
@@ -18910,14 +19011,6 @@ packages:
       slash: 3.0.0
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /globby/12.0.2:
     resolution:
       { integrity: sha512-lAsmb/5Lww4r7MM9nCCliDZVIKbZTavrsunAsHLr9oHthrZP1qi7/gAnHOsUs9bLvEt2vKVJhHmxuL7QbDuPdQ== }
@@ -18995,15 +19088,6 @@ packages:
       to-readable-stream: 1.0.0
       url-parse-lax: 3.0.0
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /graceful-fs/4.2.10:
     resolution:
       { integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA== }
@@ -19333,13 +19417,6 @@ packages:
       { integrity: sha512-LmpOGxTfbpgtGVxJrj5k7asXHCgNZp5nLfp+hWc8QQRqtb7fUy6kRY3BO1h9ddF6yIPYUARgxGOwB42DnxIaNw== }
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /http-errors/1.6.2:
     resolution:
       { integrity: sha512-STnYGcKMXL9CGdtpeTFnLmgMSHTTNQJSHxiC4DETHKf934Q160Ht5pljrNeH24S0O9xUN+9vsDJZdZtk5js6Ww== }
@@ -19351,15 +19428,6 @@ packages:
       statuses: 1.5.0
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /http-errors/1.6.3:
     resolution:
       { integrity: sha512-lks+lVC8dgGyh97jxvxeYTWQFvh4uw4yC12gVl63Cg30sjPX4wuGcdkICVXDAESr6OJGjqGA8Iz5mkeN6zlD7A== }
@@ -20322,7 +20390,7 @@ packages:
       { integrity: sha512-c16LpFRkR8vQXyHZ5nLpY35JZtzj1PQY1iZmesUbf1FZHbIupcWfjgOXBY9YHkLEQ6puz1u4Dgj6qmU/DisrZg== }
     engines: { node: ">=8" }
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.3
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -21252,20 +21320,6 @@ packages:
   /jsonc-parser/3.0.0:
     resolution:
       { integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA== }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    dev: true
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-  /jsonc-parser/3.2.0:
-    resolution:
-      { integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w== }
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
 
   /jsonc-parser/3.2.0:
     resolution:
@@ -21276,16 +21330,7 @@ packages:
       { integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg== }
     optionalDependencies:
       graceful-fs: 4.2.10
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     dev: true
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
 
   /jsonfile/6.1.0:
     resolution:
@@ -21296,13 +21341,6 @@ packages:
       graceful-fs: 4.2.10
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /jsonparse/1.3.1:
     resolution: { integrity: sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA= }
     engines: { "0": node >= 0.2.0 }
@@ -21313,19 +21351,6 @@ packages:
       { integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ== }
     dev: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-  /jsonparse/1.3.1:
-    resolution: { integrity: sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA= }
-    engines: { "0": node >= 0.2.0 }
-    dev: true
-
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /jsprim/1.4.2:
     resolution:
       { integrity: sha512-P2bSOMAc/ciLz6DzgjVlGJP9+BrJWu5UDGK70C2iweC5QBIeFf0ZXRvGjEj2uYgrY2MkAAhsSWHDWlFtEroZWw== }
@@ -22695,14 +22720,6 @@ packages:
     hasBin: true
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /mocha-jenkins-reporter/0.4.5_mocha@9.2.0:
     resolution:
       { integrity: sha512-QoKXaxWz3gpzCBgfaqu2OZKVyibAwRTD/BF7ApMfNgafzzch9s8hMNVPTxRom9smmUAfaDfzARWKvrQMK7XACA== }
@@ -22812,17 +22829,6 @@ packages:
       webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-      webpack: 5.70.0_webpack-cli@4.7.0
-    dev: true
-
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /monaco-editor/0.33.0:
     resolution:
       { integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw== }
@@ -24850,15 +24856,6 @@ packages:
     engines: { node: ">= 0.8.0" }
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /prelude-ls/1.2.1:
     resolution:
       { integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g== }
@@ -24879,25 +24876,6 @@ packages:
     dev: true
     optional: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-<<<<<<< HEAD
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-<<<<<<< HEAD
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-=======
-=======
->>>>>>> 264d0e558a (modified EnvelopeMapping across packages)
->>>>>>> 817f712db9 (modified EnvelopeMapping across packages)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /prettier/2.3.0:
     resolution:
       { integrity: sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w== }
@@ -25260,13 +25238,6 @@ packages:
     engines: { node: ">= 0.6" }
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /raw-body/2.3.2:
     resolution:
       { integrity: sha512-Ss0DsBxqLxCmQkfG5yazYhtbVVTJqS9jTsZG2lhrNwqzOk2SUC7O/NB/M//CkEBqsrtmlNgJCPccJGuYSFr6Vg== }
@@ -25278,15 +25249,6 @@ packages:
       unpipe: 1.0.0
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /raw-body/2.4.0:
     resolution:
       { integrity: sha512-4Oz8DUIwdvoa5qMJelxipzi/iJIi40O5cGV1wNYp5hvZP8ZN0T+jiNkL0QepXs+EsQ9XJ8ipEDoiH70ySUJP3Q== }
@@ -25298,14 +25260,6 @@ packages:
       unpipe: 1.0.0
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /raw-body/2.4.2:
     resolution:
       { integrity: sha512-RPMAFUJP19WIet/99ngh6Iv8fzAbqum4Li7AD6DtGaW2RpMB/11xDoalPiJMTbu6I3hkbMVkATvZrqb9EEqeeQ== }
@@ -25317,11 +25271,6 @@ packages:
       unpipe: 1.0.0
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
   /raw-loader/4.0.2:
     resolution:
       { integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA== }
@@ -25333,10 +25282,6 @@ packages:
       schema-utils: 3.1.1
     dev: true
 
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /raw-loader/4.0.2_webpack@5.70.0:
     resolution:
       { integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA== }
@@ -25992,15 +25937,6 @@ packages:
     engines: { node: ">=0.10" }
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /repeating/2.0.1:
     resolution:
       { integrity: sha512-ZqtSMuVybkISo2OWvqvm7iHSWngvdaW3IpsT9/uP8v4gMi591LY6h35wdOfvQdWCKFWZWm2Y1Opp4kV7vQKT6A== }
@@ -26020,25 +25956,6 @@ packages:
       { integrity: sha512-3Zjgh+8b5fhRJBQZoy+zbVKpAQGLyka0MPgW3zruTF4dFFJ8Fqcfu9YsAvi/rvdcaTeWG3MkbZv4WKxAn/84Lg== }
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-<<<<<<< HEAD
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-<<<<<<< HEAD
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-=======
-=======
->>>>>>> 264d0e558a (modified EnvelopeMapping across packages)
->>>>>>> 817f712db9 (modified EnvelopeMapping across packages)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /request-progress/3.0.0:
     resolution:
       { integrity: sha512-MnWzEHHaxHO2iWiQuHrUPBi/1WeBf5PkxQqNyNvLl9VAYSdXkP8tQ3pBSeCPD+yw0v0Aq1zosWLz0BdeXpWwZg== }
@@ -26439,15 +26356,6 @@ packages:
       walker: 1.0.7
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /sanitize-filename/1.6.3:
     resolution:
       { integrity: sha512-y/52Mcy7aw3gRm7IrcGDFx/bCk4AhRh2eI9luHOQM86nZsqwiRkkq2GekHXBBD+SmPidc8i2PqtYZl+pWJ8Oeg== }
@@ -26493,15 +26401,6 @@ packages:
     resolution:
       { integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw== }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /saxes/5.0.1:
     resolution:
       { integrity: sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw== }
@@ -26742,13 +26641,6 @@ packages:
       split-string: 3.1.0
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /setimmediate/1.0.5:
     resolution:
       { integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA== }
@@ -26759,23 +26651,6 @@ packages:
       { integrity: sha512-9jphSf3UbIgpOX/RKvX02iw/rN2TKdusnsPpGfO/rkcsrd+IRqgHZb4VGnmL0Cynps8Nj2hN45wsi30BzrHDIw== }
     dev: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-  /setimmediate/1.0.5:
-    resolution:
-      { integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA== }
-    dev: true
-
-  /setprototypeof/1.0.3:
-    resolution: { integrity: sha1-ZlZ+NwQ+608E2RvWWMDL77VbjgQ= }
-    dev: true
-
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /setprototypeof/1.1.0:
     resolution:
       { integrity: sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ== }
@@ -27034,14 +26909,6 @@ packages:
       websocket-driver: 0.7.4
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /socks-proxy-agent/6.1.1:
     resolution:
       { integrity: sha512-t8J0kG3csjA4g6FTbsMOWws+7R7vuRC8aQ/wy3/1OWmsgwA68zs/+cExQ0koSitUDXqhufF/YJr9wtNMZHw5Ew== }
@@ -27109,15 +26976,6 @@ packages:
       webpack: 5.70.0_esbuild@0.14.22
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /source-map-resolve/0.5.3:
     resolution:
       { integrity: sha512-Htz+RnsXWk5+P2slx5Jh3Q66vhQj1Cllm0zvnaY98+NFx+Dv2CF/f5O/t8x+KaNdrdIAsruNzoh/KpialbqAnw== }
@@ -27575,15 +27433,6 @@ packages:
     engines: { node: ">=6" }
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /strip-indent/3.0.0:
     resolution:
       { integrity: sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ== }
@@ -27673,22 +27522,6 @@ packages:
     engines: { node: ">=0.8.0" }
     dev: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-    resolution:
-      { integrity: sha512-KKNVtd6pCYgPIKU4cp2733HWYCpplQhddZLBUryaAHou723x+FRzQ5Df824Fj+IyyuiQTRoub4SnIFfIcrp70g== }
-=======
-    resolution: { integrity: sha1-U10EXOa2Nj+kARcIRimZXp3zJMc= }
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-    engines: { node: ">=0.8.0" }
-    dev: true
-
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /supports-color/5.5.0:
     resolution:
       { integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow== }
@@ -28250,15 +28083,6 @@ packages:
       yargs-parser: 20.2.7
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /ts-jest/26.5.6_jest@26.6.3:
     resolution:
       { integrity: sha512-rua+rCP8DxpA8b4DQD/6X2HQS8Zy/xzViVYfEs2OQu68tkCuKLV0Md8pmX55+W24uRIyAsf/BajRfxOs+R2MKA== }
@@ -28381,17 +28205,6 @@ packages:
       yn: 3.1.1
     dev: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-      webpack: 5.70.0_webpack-cli@4.7.0
-    dev: true
-
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /tslib/1.14.1:
     resolution:
       { integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg== }
@@ -28535,14 +28348,6 @@ packages:
     hasBin: true
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
   /typescript/4.8.4:
     resolution:
       { integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ== }
@@ -28593,15 +28398,6 @@ packages:
       through: 2.3.8
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /underscore/1.13.1:
     resolution:
       { integrity: sha512-hzSoAVtJF+3ZtiFX0VgfFPHEDRm7Y/QPjGyNo4TVdnDTdft3tr8hEkD25a1jC+TjTuE7tkHGKkhwCgs9dgBB2g== }
@@ -28836,15 +28632,6 @@ packages:
     deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /url-join/4.0.1:
     resolution:
       { integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA== }
@@ -28930,20 +28717,6 @@ packages:
       use-isomorphic-layout-effect: 1.1.1_75geth7gktso33xdagm7jwydtu
     dev: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-      use-isomorphic-layout-effect: 1.1.2_75geth7gktso33xdagm7jwydtu
-=======
-      use-isomorphic-layout-effect: 1.1.1_75geth7gktso33xdagm7jwydtu
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-    dev: true
-
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /use/3.1.1:
     resolution:
       { integrity: sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ== }
@@ -29044,15 +28817,6 @@ packages:
       extsprintf: 1.4.0
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /version-selector-type/3.0.0:
     resolution:
       { integrity: sha512-PSvMIZS7C1MuVNBXl/CDG2pZq8EXy/NW2dHIdm3bVP5N0PC8utDK8ttXLXj44Gn3J0lQE3U7Mpm1estAOd+eiA== }
@@ -29413,25 +29177,6 @@ packages:
       vscode-uri: 3.0.6
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-<<<<<<< HEAD
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-<<<<<<< HEAD
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-=======
-=======
->>>>>>> 264d0e558a (modified EnvelopeMapping across packages)
->>>>>>> 817f712db9 (modified EnvelopeMapping across packages)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /vscode-json-languageservice/4.2.1:
     resolution:
       { integrity: sha512-xGmv9QIWs2H8obGbWg+sIPI/3/pFgj/5OWBhNzs00BkYQ9UaB2F6JJaGB/2/YOZJ3BvLXQTC4Q7muqU25QgAhA== }
@@ -29453,30 +29198,6 @@ packages:
     dependencies:
       vscode-jsonrpc: 6.0.0
       vscode-languageserver-types: 3.16.0
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-      vscode-nls: 5.0.0
-      vscode-uri: 3.0.3
-<<<<<<< HEAD
-    dev: true
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-<<<<<<< HEAD
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-=======
->>>>>>> 5f82e3e25e (build fix)
 
   /vscode-languageserver-textdocument/1.0.4:
     resolution:
@@ -29493,15 +29214,6 @@ packages:
 
   /vscode-languageserver-types/3.17.2:
     resolution:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-=======
->>>>>>> 5f82e3e25e (build fix)
       { integrity: sha512-zHhCWatviizPIq9B7Vh9uvrH6x3sK8itC84HkamnBWoDFJtzBf7SWlpLCZUit72b3os45h6RWQNC9xHRDF8dRA== }
 
   /vscode-languageserver/7.0.0:
@@ -29527,34 +29239,6 @@ packages:
       unzipper: 0.10.11
     transitivePeerDependencies:
       - supports-color
-<<<<<<< HEAD
-=======
->>>>>>> 9e24040920 (EnvelopeMapping changes)
-      { integrity: sha512-u0Lw+IYlgbEJFF6/qAqG2d1jQmJl0eyAGJHoAJqr2HT4M2BNuQYSEiSE75f52pXHSJm8AlTjnLLbBFPrdz2hpA== }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> ef881f627c (included download content on webapp)
-=======
-=======
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-
-  /vscode-test/1.6.1:
-    resolution:
-      { integrity: sha512-086q88T2ca1k95mUzffvbzb7esqQNvJgiwY4h29ukPhFo8u+vXOOmelUoU5EQUHs3Of8+JuQ3oGdbVCqaxuTXA== }
-    engines: { node: ">=8.9.3" }
-    deprecated: This package has been renamed to @vscode/test-electron, please update to the new name
-    dependencies:
-      http-proxy-agent: 4.0.1
-      https-proxy-agent: 5.0.0
-      rimraf: 3.0.2
-      unzipper: 0.10.11
-    transitivePeerDependencies:
-      - supports-color
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
     dev: true
 
   /vscode-uri/3.0.3:
@@ -29569,7 +29253,6 @@ packages:
   /w3c-hr-time/1.0.2:
     resolution:
       { integrity: sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ== }
-    deprecated: Use your platform's native performance.now() and performance.timeOrigin.
     dependencies:
       browser-process-hrtime: 1.0.0
     dev: true
@@ -29733,6 +29416,44 @@ packages:
       webpack-merge: 5.8.0
     dev: true
 
+  /webpack-cli/4.7.0_yqwwn4zy7x4owjsib6p4jmcbki:
+    resolution:
+      { integrity: sha512-7bKr9182/sGfjFm+xdZSwgQuFjgEcy0iCTIBxRUeteJ2Kr8/Wz0qNJX+jw60LU36jApt4nmMkep6+W5AKhok6g== }
+    engines: { node: ">=10.13.0" }
+    hasBin: true
+    peerDependencies:
+      "@webpack-cli/generators": "*"
+      "@webpack-cli/migrate": "*"
+      webpack: 4.x.x || 5.x.x
+      webpack-bundle-analyzer: "*"
+      webpack-dev-server: "*"
+    peerDependenciesMeta:
+      "@webpack-cli/generators":
+        optional: true
+      "@webpack-cli/migrate":
+        optional: true
+      webpack-bundle-analyzer:
+        optional: true
+      webpack-dev-server:
+        optional: true
+    dependencies:
+      "@discoveryjs/json-ext": 0.5.6
+      "@webpack-cli/configtest": 1.0.3_nc5o3ul7aks2kkztlwd2bfthda
+      "@webpack-cli/info": 1.2.4_webpack-cli@4.7.0
+      "@webpack-cli/serve": 1.4.0_2vnqxgbce4ohauwx54aplu43om
+      colorette: 1.2.2
+      commander: 7.2.0
+      execa: 5.1.1
+      fastest-levenshtein: 1.0.12
+      import-local: 3.0.2
+      interpret: 2.2.0
+      rechoir: 0.7.0
+      v8-compile-cache: 2.3.0
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack-merge: 5.8.0
+    dev: true
+
   /webpack-dev-middleware/5.3.0_webpack@5.70.0:
     resolution:
       { integrity: sha512-MouJz+rXAm9B1OTOYaJnn6rtD/lWZPy2ufQCH3BPs8Rloh/Du6Jze4p7AeLYHkVi0giJnYLaSGDC7S+GM9arhg== }
@@ -29789,6 +29510,57 @@ packages:
       strip-ansi: 7.0.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-middleware: 5.3.0_webpack@5.70.0
+      ws: 8.4.2
+    transitivePeerDependencies:
+      - "@types/express"
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:
+    resolution:
+      { integrity: sha512-mlxq2AsIw2ag016nixkzUkdyOE8ST2GTy34uKSABp1c4nhjZvH90D5ZRR+UOLSsG4Z3TFahAi72a3ymRtfRm+Q== }
+    engines: { node: ">= 12.13.0" }
+    hasBin: true
+    peerDependencies:
+      webpack: ^4.37.0 || ^5.0.0
+      webpack-cli: "*"
+    peerDependenciesMeta:
+      webpack-cli:
+        optional: true
+    dependencies:
+      "@types/bonjour": 3.5.10
+      "@types/connect-history-api-fallback": 1.3.5
+      "@types/serve-index": 1.9.1
+      "@types/sockjs": 0.3.33
+      "@types/ws": 8.2.2
+      ansi-html-community: 0.0.8
+      bonjour: 3.5.0
+      chokidar: 3.5.3
+      colorette: 2.0.16
+      compression: 1.7.4
+      connect-history-api-fallback: 1.6.0
+      default-gateway: 6.0.3
+      del: 6.0.0
+      express: 4.17.1
+      graceful-fs: 4.2.10
+      html-entities: 2.3.2
+      http-proxy-middleware: 2.0.2
+      ipaddr.js: 2.0.1
+      open: 8.4.0
+      p-retry: 4.6.1
+      portfinder: 1.0.32
+      schema-utils: 4.0.0
+      selfsigned: 2.0.0
+      serve-index: 1.9.1
+      sockjs: 0.3.21
+      spdy: 4.0.2
+      strip-ansi: 7.0.1
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-middleware: 5.3.0_webpack@5.70.0
       ws: 8.4.2
     transitivePeerDependencies:
@@ -29877,15 +29649,6 @@ packages:
     engines: { node: ">=10.13.0" }
     dev: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
   /webpack-subresource-integrity/5.1.0_webpack@5.70.0:
     resolution:
       { integrity: sha512-sacXoX+xd8r4WKsy9MvH/q/vBtEHr86cpImXwyg74pFIpERKt6FmB8cXpeuh0ZLgclOlHI4Wcll7+R5L02xk9Q== }
@@ -30025,12 +29788,6 @@ packages:
       - uglify-js
     dev: true
 
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
   /webpack/5.70.0_webpack-cli@4.7.0:
     resolution:
       { integrity: sha512-ZMWWy8CeuTTjCxbeaQI21xSswseF2oNOwc70QSKNePvmxE7XW36i7vpBMYZFAUHPwQiEbNGCEYIOOlyRbdGmxw== }
@@ -30073,8 +29830,6 @@ packages:
       - uglify-js
     dev: true
 
-=======
->>>>>>> 5f82e3e25e (build fix)
   /websocket-driver/0.7.4:
     resolution:
       { integrity: sha512-b17KeDIQVjvb0ssuSDF2cYXSg2iztliJ4B9WdsuB6J952qCPKmnVq4DyW5motImXHDC1cBT/1UezrJVsKw5zjg== }
@@ -30396,13 +30151,6 @@ packages:
   /yaml-language-server-parser/0.1.3:
     resolution:
       { integrity: sha512-xD2I+6M/vqQvcy4ded8JpXUaDHXmZMdhIO3OpuiFxstutwnW4whrfDzNcrsfXVdgMWqOUpdv3747Q081PFN1+g== }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5f82e3e25e (build fix)
 
   /yaml-language-server/1.10.0:
     resolution:
@@ -30426,13 +30174,6 @@ packages:
     resolution:
       { integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg== }
     engines: { node: ">= 6" }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
     dev: true
 
   /yaml/2.0.0-11:
@@ -30559,15 +30300,6 @@ packages:
       { integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q== }
     engines: { node: ">=10" }
     dev: true
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
 
   /zip-stream/4.1.0:
     resolution:
@@ -30603,20 +30335,3 @@ packages:
     dependencies:
       tslib: 2.3.0
     dev: false
-<<<<<<< HEAD
-=======
->>>>>>> ef881f627c (included download content on webapp)
-=======
-  /zrender/5.4.0:
-=======
-  /zrender/5.3.1:
->>>>>>> 7c1aa999f9 (EnvelopeMapping changes)
-    resolution:
-      { integrity: sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw== }
-    dependencies:
-      tslib: 2.3.0
-    dev: false
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
->>>>>>> e93db74e5c (fixing languageType flag and lincense headers)
-=======
->>>>>>> 5f82e3e25e (build fix)
