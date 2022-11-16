@@ -16,7 +16,6 @@
   <description>Drools Workbench - Scenario Simulation Editor - Kogito - Testing Webapp</description>
 
   <properties>
-    <wildfly.home>${project.build.directory}/wildfly-${version.org.wildfly}</wildfly.home>
     <gwt.helper.includes>Client,Marshaller,KogitoEditor,WebappBase</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
   </properties>

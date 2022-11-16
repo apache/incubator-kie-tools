@@ -421,11 +421,6 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.wildfly.security</groupId>
-        <artifactId>wildfly-elytron</artifactId>
-        <version>${version.org.wildfly.security}</version>
-      </dependency>
-      <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-buffer</artifactId>
         <version>${version.io.netty}</version>
