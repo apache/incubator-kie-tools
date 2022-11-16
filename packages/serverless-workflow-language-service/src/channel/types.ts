@@ -64,8 +64,9 @@ export interface ShouldCreateCodelensArgs {
 export interface TranslateArgs {
   completion: object | string;
   completionItemKind: CompletionItemKind;
-  currentNode?: SwfLsNode;
   currentNodeRange?: Range;
+  cursorOffset: number;
+  document: TextDocument;
   overwriteRange?: Range;
 }
 

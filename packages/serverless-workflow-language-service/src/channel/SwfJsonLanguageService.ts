@@ -29,6 +29,31 @@ import {
   TranslateArgs,
 } from "./types";
 
+/**
+ * Check if a node has a comma after the end
+ *
+ * @param content -
+ * @param cursorOffset -
+ * @returns true if found, false otherwise
+ */
+export function hasNodeComma(content: string, cursorOffset: number): boolean {
+  return /^"?[\s\n]*,/.test(content.slice(cursorOffset));
+}
+
+/**
+ * Check if an offset is at the last child.
+ *
+ * @param content -
+ * @param cursorOffset -
+ * @returns true if yes, false otherwise. If the content is empty returns true.
+ */
+export function isOffsetAtLastChild(content: string, cursorOffset: number): boolean {
+  if (!content.trim()) {
+    return true;
+  }
+  return /^"?[\s\n]*[\]}]/.test(content.slice(cursorOffset));
+}
+
 export class SwfJsonLanguageService {
   private readonly ls: SwfLanguageService;
   private readonly codeCompletionStrategy: JsonCodeCompletionStrategy;
@@ -105,8 +130,13 @@ export class SwfJsonLanguageService {
 
 export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {
+    const content = args.document.getText();
+    const isContentEmpty = !content.trim();
+    const isLastChild = isOffsetAtLastChild(content, args.cursorOffset);
+    const hasNodeCommaAlready = !isContentEmpty ? hasNodeComma(content, args.cursorOffset) : false;
+
     return (
-      JSON.stringify(args.completion, null, 2) + (args.currentNode && args.currentNode.type === "object" ? "," : "")
+      JSON.stringify(args.completion, null, 2) + (!isContentEmpty && !isLastChild && !hasNodeCommaAlready ? "," : "")
     );
   }
 
