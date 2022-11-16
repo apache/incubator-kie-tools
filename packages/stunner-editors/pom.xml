@@ -291,7 +291,6 @@
     <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
-    <version.org.jboss.errai.wildfly>19.1.0.SP1</version.org.jboss.errai.wildfly> <!--  WildFly version used together with  the GWT's Super Dev Mode  -->
     <version.org.jboss.maven-jdocbook-plugin>2.3.5</version.org.jboss.maven-jdocbook-plugin>
     <version.org.jboss.pressbang>2.0.0</version.org.jboss.pressbang>
     <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>
@@ -568,12 +567,6 @@
         <groupId>org.gwtbootstrap3</groupId>
         <artifactId>gwtbootstrap3-extras</artifactId>
         <version>${version.org.gwtbootstrap3-extras}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>wildfly-dist</artifactId>
-        <version>${version.org.jboss.errai.wildfly}</version>
       </dependency>
 
       <dependency>
