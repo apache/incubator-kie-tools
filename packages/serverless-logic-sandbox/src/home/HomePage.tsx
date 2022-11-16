@@ -489,7 +489,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
   const routes = useRoutes();
 
   return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true}>
+    <Card isFullHeight={true} isPlain={true} isLarge={true} ouiaId={`${props.title}-card`}>
       <CardTitle>
         <FileLabel style={{ fontSize: "0.8em" }} extension={props.extension} />
       </CardTitle>
@@ -520,7 +520,7 @@ export function NewServerlessModelCard(props: {
   const routes = useRoutes();
 
   return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true}>
+    <Card isFullHeight={true} isPlain={true} isLarge={true} ouiaId={`${props.title}-card`}>
       <CardTitle>
         <FileLabel style={{ fontSize: "0.8em" }} extension={props.jsonExtension} />
       </CardTitle>
