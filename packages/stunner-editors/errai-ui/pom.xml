@@ -65,7 +65,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!--
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-elemental</artifactId>
@@ -76,7 +75,7 @@
           <artifactId>gwt-user</artifactId>
         </exclusion>
       </exclusions>
-    </dependency> -->
+    </dependency>
 
     <dependency>
       <groupId>org.gwtproject</groupId>

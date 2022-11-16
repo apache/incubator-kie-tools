@@ -66,6 +66,7 @@
     <guice.version>3.0</guice.version>
     <gwt.phonegap.version>3.5.0.1</gwt.phonegap.version>
     <gwt.version>2.10.0</gwt.version>
+    <gwt.elemental.version>2.9.0</gwt.elemental.version>
     <javaee.api.version>8.0.1</javaee.api.version>
 
     <!-- ip-bom uses artifact with groupId org.jboss.remoting3 -->
@@ -546,13 +547,13 @@
         <version>${version.org.jboss.spec.javax.xml.bind}</version>
       </dependency>
       <dependency>
-        <groupId>org.gwtproject</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${gwt.version}</version>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-elemental</artifactId>
+        <version>${gwt.elemental.version}</version>
       </dependency>
       <dependency>
         <groupId>org.gwtproject</groupId>
-        <artifactId>gwt-elemental</artifactId>
+        <artifactId>gwt-user</artifactId>
         <version>${gwt.version}</version>
       </dependency>
       <dependency>

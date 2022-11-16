@@ -21,8 +21,8 @@ import javax.inject.Inject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Label;
-//import elemental.client.Browser;
-//import elemental.html.SpanElement;
+import elemental.client.Browser;
+import elemental.html.SpanElement;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
@@ -44,7 +44,7 @@ public class NonCompositeStyleBoundTemplate implements StyleBoundTemplate {
   @Inject @Bound @ComponentBinding @DataField private CustomComponent testC;
   @Inject @AdminBinding @DataField private CustomNonCompositeComponent testD;
 
- // @AdminBinding @DataField private SpanElement elemental = Browser.getDocument().createSpanElement();
+  @AdminBinding @DataField private SpanElement elemental = Browser.getDocument().createSpanElement();
   @AdminBinding @DataField("user-element") private com.google.gwt.dom.client.SpanElement userElement = Document.get().createSpanElement();
   @AdminBinding @DataField private TextInputElement jstype = getDocument().createTextInputElement();
 
@@ -73,10 +73,10 @@ public class NonCompositeStyleBoundTemplate implements StyleBoundTemplate {
     return jstype;
   }
 
- /* @Override
+  @Override
   public SpanElement getElementalElement() {
     return elemental;
-  }*/
+  }
 
   @Override
   public com.google.gwt.dom.client.SpanElement getUserSpanElement() {

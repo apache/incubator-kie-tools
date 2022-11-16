@@ -77,14 +77,14 @@ public class StyleBindingTest extends AbstractErraiCDITest {
   }
 
   private void elementalStyleBindingAssertions(final StyleBoundTemplate instance) {
-    //assertEquals("hidden", instance.getElementalElement().getStyle().getVisibility());
+    assertEquals("hidden", instance.getElementalElement().getStyle().getVisibility());
 
     final SyncBeanDef<StyleControl> styleControl = IOC.getBeanManager().lookupBean(StyleControl.class);
     styleControl.getInstance().setAdmin(true);
 
     StyleBindingsRegistry.get().updateStyles();
 
-    //assertEquals("visible", instance.getElementalElement().getStyle().getVisibility());
+    assertEquals("visible", instance.getElementalElement().getStyle().getVisibility());
   }
 
   public void testStyleBindingWithGwtUserElementWithCompositeTemplate() {
