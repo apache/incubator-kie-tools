@@ -106,14 +106,7 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-<<<<<<< HEAD
-<<<<<<< HEAD
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-=======
-  "@kie-tools/serverless-workflow-mermaid-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];
->>>>>>> 3d6b649e80 (KOGITO-6875: Serverless workflow standalone package)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -330,14 +323,7 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
-<<<<<<< HEAD
-<<<<<<< HEAD
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
-=======
-  "@kie-tools/serverless-workflow-mermaid-editor-assets" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "dashed", color = "blue" ];
->>>>>>> 3d6b649e80 (KOGITO-6875: Serverless workflow standalone package)
-=======
->>>>>>> c9fd4f6a04 (fixing languageType flag and lincense headers)
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];
