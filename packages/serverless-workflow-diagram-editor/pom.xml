@@ -109,6 +109,7 @@
 
     <!-- SW-EDITOR -->
     <module>sw-editor</module>
+    <module>third_party</module>
 
   </modules>
 
@@ -299,6 +300,10 @@
     <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
     <version.org.xmlunit>2.9.0</version.org.xmlunit>
     <version.net.javacrumbs.json-unit>2.35.0</version.net.javacrumbs.json-unit>
+    <version.google.auto.service>1.0.1</version.google.auto.service>
+    <version.google.auto.common>1.2.1</version.google.auto.common>
+    <version.javaparser.core>3.24.4</version.javaparser.core>
+    <version.org.glassfish.jakarta.json>2.0.1</version.org.glassfish.jakarta.json>
   </properties>
 
   <dependencyManagement>
@@ -434,6 +439,12 @@
         <artifactId>guice</artifactId>
         <version>${version.com.google.inject.guice}</version>
         <classifier>no_aop</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>jakarta.json</artifactId>
+        <version>${version.org.glassfish.jakarta.json}</version>
       </dependency>
 
       <dependency>
@@ -649,6 +660,24 @@
         <version>${version.net.javacrumbs.json-unit}</version>
       </dependency>
 
+
+      <dependency>
+        <groupId>com.google.auto</groupId>
+        <artifactId>auto-common</artifactId>
+        <version>${version.google.auto.common}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.auto.service</groupId>
+        <artifactId>auto-service</artifactId>
+        <version>${version.google.auto.service}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-core</artifactId>
+        <version>${version.javaparser.core}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -1108,6 +1137,7 @@
                       <ignoreClass>org.dominokit.domino.logger.ConsoleLoggerAdapter</ignoreClass>
                       <ignoreClass>org.slf4j.*</ignoreClass>
                       <ignoreClass>org.antlr.v4.runtime.*</ignoreClass>
+                      <ignoreClass>jakarta.json.*</ignoreClass>
 
                       <!-- Classes from gwt-user duplicated in errai-uibinder -->
                       <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>

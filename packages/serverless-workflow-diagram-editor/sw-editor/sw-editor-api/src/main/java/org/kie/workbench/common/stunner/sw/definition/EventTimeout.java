@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 public class EventTimeout extends Timeout {
 
     @Property
-    public String eventTimeout;
+    private String eventTimeout;
 
     public String getEventTimeout() {
         return eventTimeout;

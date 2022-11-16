@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -40,25 +40,23 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
+@JSONMapper
 @JsType
 public class Transition {
 
     public static final String LABEL_TRANSITION = "transition";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.TRANSITIONS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(LABEL_TRANSITION).collect(Collectors.toSet());
 
     @Property
-    public String name;
+    private String name;
 
-    @JsIgnore
     // TODO: Do as DefaultConditionTransition?
-    public String to;
+    private String to;
 
     public Transition() {
     }

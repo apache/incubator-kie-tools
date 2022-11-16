@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
+import jakarta.json.bind.annotation.JsonbTransient;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
@@ -32,11 +32,10 @@ public class Timeout {
     public static final String LABEL_TIMEOUT = "timeout";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.TIMEOUTS;
 
     @Labels
-    @JsIgnore
+    @JsonbTransient
     private final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                  LABEL_TIMEOUT).collect(Collectors.toSet());
 
