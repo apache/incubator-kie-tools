@@ -18,20 +18,20 @@ import { createWorkspaceServices } from "@kie-tools-core/workspaces-git-fs/dist/
 import { setupWorkerConnection } from "@kie-tools-core/workspaces-git-fs/dist/worker/setupWorkerConnection";
 import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesWorkerApiImpl";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
-import { EnvVars } from "../../env/hooks/EnvContext";
+import { EnvJson } from "../../env/EnvJson";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
 
-async function corsProxyUrl(): Promise<string> {
+async function gitCorsProxyUrl(): Promise<string> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
-  const env = (await (await fetch(envFilePath)).json()) as EnvVars;
-  return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
+  const env = (await (await fetch(envFilePath)).json()) as EnvJson;
+  return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
 }
 
 const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
-const workspaceServices = createWorkspaceServices({ corsProxyUrl: corsProxyUrl() });
+const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
 
 // shared worker connection
 

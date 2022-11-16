@@ -33,7 +33,7 @@ export interface WorkspaceServices {
 }
 
 export interface CreateServicesArgs {
-  corsProxyUrl: Promise<string>;
+  gitCorsProxyUrl: Promise<string>;
 }
 
 export function createWorkspaceServices(args: CreateServicesArgs): WorkspaceServices {
@@ -42,7 +42,7 @@ export function createWorkspaceServices(args: CreateServicesArgs): WorkspaceServ
   const workspaceFsService = new WorkspaceFsService(fsFlushManager);
   const descriptorsFsService = new WorkspaceDescriptorFsService(fsFlushManager);
   const descriptorService = new WorkspaceDescriptorService(descriptorsFsService, storageService);
-  const gitService = new GitService(args.corsProxyUrl);
+  const gitService = new GitService(args.gitCorsProxyUrl);
   const workspaceService = new WorkspaceService(
     storageService,
     descriptorsFsService,

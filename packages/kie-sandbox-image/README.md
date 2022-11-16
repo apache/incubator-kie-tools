@@ -1,78 +1,87 @@
 # kie-sandbox-image
 
-This package contains the `Containerfile` and scripts to build a container image for the KIE Sandbox.
+This package contains the `Containerfile/Dockerfile` and scripts to build a container image for KIE Sandbox. It also generated a JSON Schema for the `env.json` file, enabling it to be validated.
 
 ## Additional requirements
 
-- podman
+- podman (for Linux)
+- docker (for macOS)
 
 ## Build
 
-Enable the image to be built:
+- Enable the image to be built:
 
-```bash
-$ export KIE_TOOLS_BUILD__buildContainerImages=true
-```
+  ```bash
+  export KIE_TOOLS_BUILD__buildContainerImages=true
+  ```
 
-The image name and tags can be customized by setting the following environment variables:
+- (Optional) The image name and tags can be customized by setting the following environment variables:
 
-```bash
-$ export KIE_SANDBOX__imageRegistry=<registry>
-$ export KIE_SANDBOX__imageAccount=<account>
-$ export KIE_SANDBOX__imageName=<image-name>
-$ export KIE_SANDBOX__imageBuildTags=<image-tags>
-```
+  ```bash
+  export KIE_SANDBOX__imageRegistry=<registry>
+  export KIE_SANDBOX__imageAccount=<account>
+  export KIE_SANDBOX__imageName=<image-name>
+  export KIE_SANDBOX__imageBuildTags=<image-tags>
+  ```
 
-Default values can be found [here](../build-env/index.js).
+  > Default values can be found [here](./env/index.js).
 
-After setting up the environment variables, run the following in the root folder of the repository to build the package:
+- After optionally setting up the environment variables, run the following in the root folder of the repository to build the package:
 
-```bash
-$ pnpm build:prod @kie-tools/kie-sandbox-image...
-```
+  ```bash
+  pnpm -F @kie-tools/kie-sandbox-image... build:prod
+  ```
 
-Then check out the image:
+- Then check if the image is correctly stored:
 
-```bash
-$ podman images
-```
+  ```bash
+  podman images
+  ```
 
 ## Run
 
-Start up a new container with:
+- Start up a clean container with:
 
-```bash
-$ podman run -p 8080:8080 -i --rm quay.io/kie-tools/kie-sandbox-image:latest
-```
+  ```bash
+  podman run -t -p 8080:8080 -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+  ```
 
-The KIE Sandbox will be up at http://localhost:8080
+  KIE Sandbox will be up at http://localhost:8080
 
 ## Customization
 
-Runtime environment variables can be passed to the containerized KIE Sandbox.
+1. Run a container with custom environment variables:
 
-Currently, the following environment variables are supported:
+   [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-|                Name                 |                              Description                              | Default                         |
-| :---------------------------------: | :-------------------------------------------------------------------: | ------------------------------- |
-| `KIE_SANDBOX_EXTENDED_SERVICES_URL` |       The URL that points to the KIE Sandbox Extended Services        | http://localhost:21345          |
-|          `CORS_PROXY_URL`           | The URL that points to the cors-proxy for the interaction with GitHub | https://cors.isomorphic-git.org |
+   |                Name                 |                                                     Description                                                      | Default                                                           |
+   | :---------------------------------: | :------------------------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------- |
+   | `KIE_SANDBOX_EXTENDED_SERVICES_URL` |                              The URL that points to the KIE Sandbox Extended Services.                               | See [defaultEnvJson.ts](../online-editor/build/defaultEnvJson.ts) |
+   |  `KIE_SANDBOX_GIT_CORS_PROXY_URL`   |                    The URL that points to the Git CORS proxy for interacting with Git providers.                     | See [defaultEnvJson.ts](../online-editor/build/defaultEnvJson.ts) |
+   |    `KIE_SANDBOX_AUTH_PROVIDERS`     | Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more. | See [defaultEnvJson.ts](../online-editor/build/defaultEnvJson.ts) |
 
-There are three options to set custom values. Check out the examples below.
+   ### Examples
 
-1. Run our image locally with a custom environment variable:
+   1. Using a different Extended Services deployment.
 
-```bash
-$ podman pull quay.io/kie-tools/kie-sandbox-image:latest
-$ podman run -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kie-tools/kie-sandbox-image:latest
-```
+      ```bash
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      ```
 
-2. Write a custom `Containerfile` from our image:
+   1. Enabling authentication with a GitHub Enterprise Server instance.
 
-```docker
-FROM quay.io/kie-tools/kie-sandbox-image:latest
+      ```bash
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{"id":"github_at_my_company","domain":"github.my-company.com","supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"],"type":"github","name":"GitHub @ MyCompany","enabled":true }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      ```
 
-ENV KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value>
-```
+1. Write a custom `Containerfile/Dockerfile` from the image:
 
-3. Create the application from our image in OpenShift and set the deployment environment variable right from the OpenShift UI.
+   ```docker
+   FROM quay.io/kie-tools/kie-sandbox-image:latest
+
+   ENV KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value>
+   ENV KIE_SANDBOX_GIT_CORS_PROXY_URL=<my_value>
+   ENV KIE_SANDBOX_AUTH_PROVIDERS=<my_value>
+   ```
+
+1. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.

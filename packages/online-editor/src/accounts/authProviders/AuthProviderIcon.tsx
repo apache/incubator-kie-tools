@@ -21,8 +21,8 @@ import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
 import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 import OpenshiftIcon from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import QuestionIcon from "@patternfly/react-icons/dist/js/icons/question-icon";
-import { AuthProvider } from "./AuthProvidersContext";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
+import { AuthProvider } from "./AuthProvidersApi";
 
 export function AuthProviderIcon(props: {
   authProvider: AuthProvider | undefined;

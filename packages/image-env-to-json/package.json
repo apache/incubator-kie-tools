@@ -15,8 +15,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build:dev": "rimraf -rf dist && webpack --env dev && pnpm build:standalone",
-    "build:prod": "pnpm lint && rimraf -rf dist && webpack && pnpm build:standalone",
+    "build:prod": "pnpm lint && rimraf -rf dist && webpack && pnpm build:standalone:all",
     "build:standalone": "run-script-os",
+    "build:standalone:all": "pnpm build:standalone:darwin && pnpm build:standalone:linux && pnpm build:standalone:win32",
     "build:standalone:darwin": "pkg dist/index.js -t node16-macos-x64 -o dist/macos/image-env-to-json-standalone",
     "build:standalone:linux": "pkg dist/index.js -t node16-linux-x64 -o dist/linux/image-env-to-json-standalone",
     "build:standalone:win32": "pkg dist/index.js -t node16-win-x64 -o dist/win/image-env-to-json-standalone",
@@ -30,14 +31,15 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "jsonschema": "^1.4.1",
     "pkg": "^5.5.2",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "typescript": "^4.4.2",
     "webpack": "^5.36.2",
-    "webpack-cli": "^4.7.0",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.7.3",
+    "webpack-merge": "^5.8.0",
     "webpack-node-externals": "^3.0.0"
   }
 }
