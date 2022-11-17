@@ -185,7 +185,7 @@ public class StringUtils {
     public static Set<String> getSetDataTypes(String value) {
         value = preFilterVariablesForGenerics(value);
         Set<String> types = new HashSet<>();
-        if (value == null) {
+        if (value == null || value.equals("")) {
             return types;
         }
         final String[] split = value.split(",");
