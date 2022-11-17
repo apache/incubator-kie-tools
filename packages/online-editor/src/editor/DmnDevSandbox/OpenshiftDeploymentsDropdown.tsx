@@ -107,10 +107,10 @@ export function OpenshiftDeploymentsDropdown() {
           }),
         <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments-3"} />,
         <DropdownItem
-          key={"delete-all-deplyments-dropdown-button"}
+          key={"delete-all-deployments-dropdown-button"}
           component={"button"}
           onClick={deleteAllDeployments}
-          ouiaId={"delete-all-deplyments-dropdown-button"}
+          ouiaId={"delete-all-deployments-dropdown-button"}
           style={{ color: "var(--pf-global--danger-color--100)" }}
           description={i18n.dmnDevSandbox.dropdown.deleteDeploymentsDescription}
           icon={<TrashIcon />}
