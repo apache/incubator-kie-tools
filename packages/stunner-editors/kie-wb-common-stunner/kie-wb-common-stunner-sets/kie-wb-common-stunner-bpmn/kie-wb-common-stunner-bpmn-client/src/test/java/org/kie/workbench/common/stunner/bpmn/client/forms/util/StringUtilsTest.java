@@ -310,5 +310,8 @@ public class StringUtilsTest {
 
         setDataTypes = StringUtils.getSetDataTypes(null);
         assertTrue("Data Types must be empty", setDataTypes.size() == 0);
+
+        setDataTypes = StringUtils.getSetDataTypes("");
+        assertTrue("Data Types must be empty", setDataTypes.size() == 0);
     }
 }
