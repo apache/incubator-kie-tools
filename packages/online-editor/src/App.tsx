@@ -36,7 +36,7 @@ import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRun
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
 import { AccountsContextProvider } from "./accounts/AccountsDispatchContext";
-import { AlertsContextProvider } from "./alerts";
+import { GlobalAlertsContextProvider } from "./alerts";
 
 export function App() {
   return (
@@ -45,7 +45,7 @@ export function App() {
         [OnlineI18nContextProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
         [EnvContextProvider, {}],
-        [AlertsContextProvider, []],
+        [GlobalAlertsContextProvider, []],
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [AuthSessionsContextProvider, {}],

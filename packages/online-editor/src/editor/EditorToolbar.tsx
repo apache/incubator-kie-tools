@@ -104,7 +104,7 @@ import {
   noOpAuthSessionSelectFilter,
 } from "../accounts/authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { useAlert, useAlertsContext } from "../alerts";
+import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -149,7 +149,7 @@ export function EditorToolbar(props: Props) {
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
-  const { alerts } = useAlertsContext();
+  const alertsDispatch = useGlobalAlertsDispatchContext();
   const isEdited = useDirtyState(props.editor);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadAllRef = useRef<HTMLAnchorElement>(null);
@@ -245,8 +245,7 @@ export function EditorToolbar(props: Props) {
     )
   );
 
-  const successfullyCreateGistAlert = useAlert(
-    alerts,
+  const successfullyCreateGistAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
@@ -268,8 +267,7 @@ export function EditorToolbar(props: Props) {
     { durationInSeconds: 4 }
   );
 
-  const loadingGistAlert = useAlert(
-    alerts,
+  const loadingGistAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
@@ -303,8 +301,7 @@ export function EditorToolbar(props: Props) {
     }
   }, [isGitHubGistLoading, loadingGistAlert]);
 
-  const successfullyUpdateGistAlert = useAlert(
-    alerts,
+  const successfullyUpdateGistAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
@@ -326,8 +323,7 @@ export function EditorToolbar(props: Props) {
     { durationInSeconds: 4 }
   );
 
-  const errorAlert = useAlert(
-    alerts,
+  const errorAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
@@ -350,7 +346,7 @@ export function EditorToolbar(props: Props) {
 
   const onDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
-    alerts?.closeAll();
+    alertsDispatch.closeAll();
     props.workspaceFile.getFileContents().then((content) => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
@@ -358,7 +354,7 @@ export function EditorToolbar(props: Props) {
         downloadRef.current.click();
       }
     });
-  }, [props.editor, props.workspaceFile, alerts]);
+  }, [props.editor, props.workspaceFile, alertsDispatch]);
 
   const downloadWorkspaceZip = useCallback(async () => {
     if (!props.editor) {
@@ -429,8 +425,7 @@ export function EditorToolbar(props: Props) {
     errorAlert,
   ]);
 
-  const errorPushingGist = useAlert(
-    alerts,
+  const errorPushingGist = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
@@ -984,33 +979,28 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [deleteWorkspaceFile, props.workspaceFile]);
 
-  const pushingAlert = useAlert(
-    alerts,
-    useCallback(
-      ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
-          return <></>;
-        }
+  const pushingAlert = useGlobalAlert(
+    useCallback(() => {
+      if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
+        return <></>;
+      }
 
-        return (
-          <Alert
-            variant="info"
-            title={
-              <>
-                <Spinner size={"sm"} />
-                &nbsp;&nbsp; {`Pushing to '${workspacePromise.data?.descriptor.origin.url}'...`}
-              </>
-            }
-          />
-        );
-      },
-      [workspacePromise]
-    )
+      return (
+        <Alert
+          variant="info"
+          title={
+            <>
+              <Spinner size={"sm"} />
+              &nbsp;&nbsp; {`Pushing to '${workspacePromise.data?.descriptor.origin.url}'...`}
+            </>
+          }
+        />
+      );
+    }, [workspacePromise])
   );
 
-  const comittingAlert = useAlert(
-    alerts,
-    useCallback(({ close }) => {
+  const comittingAlert = useGlobalAlert(
+    useCallback(() => {
       return (
         <Alert
           variant="info"
@@ -1025,9 +1015,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     }, [])
   );
 
-  const commitSuccessAlert = useAlert(
-    alerts,
-    useCallback(({ close }) => {
+  const commitSuccessAlert = useGlobalAlert(
+    useCallback(() => {
       return <Alert variant="success" title={`Commit created.`} />;
     }, []),
     { durationInSeconds: 2 }
@@ -1054,23 +1043,18 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [comittingAlert, workspaces, props.workspaceFile.workspaceId, gitConfig, commitSuccessAlert]);
 
-  const pushSuccessAlert = useAlert(
-    alerts,
-    useCallback(
-      ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
-          return <></>;
-        }
+  const pushSuccessAlert = useGlobalAlert(
+    useCallback(() => {
+      if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
+        return <></>;
+      }
 
-        return <Alert variant="success" title={`Pushed to '${workspacePromise.data?.descriptor.origin.url}'`} />;
-      },
-      [workspacePromise]
-    ),
+      return <Alert variant="success" title={`Pushed to '${workspacePromise.data?.descriptor.origin.url}'`} />;
+    }, [workspacePromise]),
     { durationInSeconds: 4 }
   );
 
-  const pushErrorAlert = useAlert(
-    alerts,
+  const pushErrorAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1089,42 +1073,34 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     )
   );
 
-  const pullingAlert = useAlert(
-    alerts,
-    useCallback(
-      ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
-          return <></>;
-        }
+  const pullingAlert = useGlobalAlert(
+    useCallback(() => {
+      if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
+        return <></>;
+      }
 
-        return (
-          <Alert
-            variant="info"
-            title={
-              <>
-                <Spinner size={"sm"} />
-                &nbsp;&nbsp; {`Pulling from '${workspacePromise.data?.descriptor.origin.url}'...`}
-              </>
-            }
-          />
-        );
-      },
-      [workspacePromise]
-    )
+      return (
+        <Alert
+          variant="info"
+          title={
+            <>
+              <Spinner size={"sm"} />
+              &nbsp;&nbsp; {`Pulling from '${workspacePromise.data?.descriptor.origin.url}'...`}
+            </>
+          }
+        />
+      );
+    }, [workspacePromise])
   );
 
-  const pullSuccessAlert = useAlert(
-    alerts,
-    useCallback(
-      ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
-          return <></>;
-        }
+  const pullSuccessAlert = useGlobalAlert(
+    useCallback(() => {
+      if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
+        return <></>;
+      }
 
-        return <Alert variant="success" title={`Pulled from '${workspacePromise.data?.descriptor.origin.url}'`} />;
-      },
-      [workspacePromise]
-    ),
+      return <Alert variant="success" title={`Pulled from '${workspacePromise.data?.descriptor.origin.url}'`} />;
+    }, [workspacePromise]),
     { durationInSeconds: 4 }
   );
 
@@ -1180,8 +1156,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     ]
   );
 
-  const pullErrorAlert = useAlert<{ newBranchName: string; onTryAgain: () => any }>(
-    alerts,
+  const pullErrorAlert = useGlobalAlert<{ newBranchName: string; onTryAgain: () => any }>(
     useCallback(
       ({ close }, { newBranchName }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
@@ -1328,8 +1303,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
   const navigationStatus = useNavigationStatus();
   const navigationStatusToggle = useNavigationStatusToggle();
-  const confirmNavigationAlert = useAlert<{ lastBlockedLocation: Location }>(
-    alerts,
+  const confirmNavigationAlert = useGlobalAlert<{ lastBlockedLocation: Location }>(
     useCallback(
       (_, { lastBlockedLocation }) => (
         <Alert
@@ -1420,8 +1394,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const [isVsCodeDropdownOpen, setVsCodeDropdownOpen] = useState(false);
 
-  const createRepositorySuccessAlert = useAlert<{ url: string }>(
-    alerts,
+  const createRepositorySuccessAlert = useGlobalAlert<{ url: string }>(
     useCallback(({ close }, { url }) => {
       return (
         <Alert

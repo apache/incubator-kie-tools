@@ -21,16 +21,14 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { useAlert, useAlertsContext } from "../../alerts";
+import { useGlobalAlert } from "../../alerts";
 
 export function DmnDevSandboxModalConfirmDelete() {
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
-  const { alerts } = useAlertsContext();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
-  const deleteErrorAlert = useAlert(
-    alerts,
+  const deleteErrorAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
@@ -43,8 +41,7 @@ export function DmnDevSandboxModalConfirmDelete() {
     )
   );
 
-  const deleteSuccessAlert = useAlert(
-    alerts,
+  const deleteSuccessAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert

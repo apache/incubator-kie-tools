@@ -46,7 +46,11 @@ type AlertControl = {
   staticArgs: unknown;
 };
 
-export const Alerts = React.forwardRef<AlertsController>((_, forwardedRef) => {
+type AlertsProps = {
+  className?: string;
+};
+
+export const Alerts = React.forwardRef<AlertsController, AlertsProps>((props, forwardedRef) => {
   const [alerts, setAlerts] = useState(new Map<string, AlertControl>());
   const [autoCloseAlertsControl, setAutoCloseAlertsControl] = useState(
     new Map<string, { secondsLeft: number; interval: ReturnType<typeof setInterval> }>()
@@ -142,7 +146,7 @@ export const Alerts = React.forwardRef<AlertsController>((_, forwardedRef) => {
   }, [alerts, startRefreshingAlertWithKey]);
 
   return (
-    <AlertGroup className={"kogito--alert-container"}>
+    <AlertGroup className={`kogito--alert-container ${props.className ?? ""}`}>
       <div className={"kogito--alert-list"}>
         {[...alerts.entries()]
           .filter(([_, { isShowing }]) => isShowing)

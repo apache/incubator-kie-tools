@@ -46,15 +46,13 @@ import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext
 import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { useAlert, useAlertsContext } from "../alerts";
+import { useGlobalAlert } from "../alerts";
 
 export function NewFileDropdownMenu(props: {
   destinationDirPath: string;
   workspaceDescriptor: WorkspaceDescriptor;
   onAddFile: (file?: WorkspaceFile) => Promise<void>;
 }) {
-  const { alerts } = useAlertsContext();
-
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
 
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
@@ -107,8 +105,7 @@ export function NewFileDropdownMenu(props: {
   const [isImporting, setImporting] = useState(false);
   const [importingError, setImportingError] = useState<string>();
 
-  const successfullyUploadedAlert = useAlert(
-    alerts,
+  const successfullyUploadedAlert = useGlobalAlert(
     useCallback(({ close }, staticArgs: { qtt: number }) => {
       return (
         <Alert

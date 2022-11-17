@@ -15,5 +15,4 @@
  */
 
 export * from "./Alerts";
-export * from "./AlertsContext";
-export * from "./AlertsContextProvider";
+export * from "./GlobalAlertsContext";

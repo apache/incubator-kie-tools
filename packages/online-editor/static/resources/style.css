@@ -90,6 +90,10 @@
   pointer-events: visible;
 }
 
+.kogito--global-alert-container {
+  top: 30px;
+}
+
 .kogito--alert-container {
   position: fixed;
   display: flex;

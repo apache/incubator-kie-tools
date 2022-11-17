@@ -26,12 +26,10 @@ import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/Ki
 import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
-import { useAlertsContext, Alerts } from "../alerts";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
-  const { alertsRef } = useAlertsContext();
 
   return (
     <Page
@@ -82,7 +80,6 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
               </FlexItem>
             </Flex>
           </MastheadMain>
-          <Alerts ref={alertsRef} />
         </Masthead>
       }
     >

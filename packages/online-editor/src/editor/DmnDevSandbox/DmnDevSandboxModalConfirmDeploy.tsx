@@ -22,7 +22,7 @@ import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { useAlert, useAlertsContext } from "../../alerts";
+import { useGlobalAlert } from "../../alerts";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -31,11 +31,9 @@ interface Props {
 export function DmnDevSandboxModalConfirmDeploy(props: Props) {
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
-  const { alerts } = useAlertsContext();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
-  const deployStartedErrorAlert = useAlert(
-    alerts,
+  const deployStartedErrorAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
@@ -48,8 +46,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
     )
   );
 
-  const deployStartedSuccessAlert = useAlert(
-    alerts,
+  const deployStartedSuccessAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
