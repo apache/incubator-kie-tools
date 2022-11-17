@@ -18,6 +18,8 @@ import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface SwfPreviewOptions {
   diagramDefaultWidth?: string;
+  isDiagramOnly?: boolean;
+  isTextEditorOnly?: boolean;
 }
 
 export interface SwfPreviewOptionsChannelApi {

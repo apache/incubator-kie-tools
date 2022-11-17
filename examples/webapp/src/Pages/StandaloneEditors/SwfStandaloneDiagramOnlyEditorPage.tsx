@@ -43,7 +43,7 @@ export const SwfStandaloneDiagramOnlyEditorPage = () => {
       initialContent: Promise.resolve(content),
       readOnly: false,
       languageType: extension as ServerlessWorkflowType,
-      isDiagramOnly: true,
+      swfPreviewOptions: { isDiagramOnly: true },
     });
     setWorkflowType(extension as ServerlessWorkflowType);
     setEditor(editorApi);

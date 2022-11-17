@@ -17,6 +17,7 @@
 import { EditorApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { SwfPreviewOptions } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 
 export interface StandaloneEditorApi extends EditorApi {
   subscribeToContentChanges: StateControl["subscribe"];
@@ -33,7 +34,7 @@ export interface Editor {
     initialContent: Promise<string>;
     readOnly: boolean;
     languageType: ServerlessWorkflowType;
-    isDiagramOnly: boolean;
+    swfPreviewOptions: SwfPreviewOptions;
     origin?: string;
   }) => StandaloneEditorApi;
 }

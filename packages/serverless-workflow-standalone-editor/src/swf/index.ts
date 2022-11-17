@@ -34,6 +34,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { StandaloneServerlessWorkflowCombinedEditorChannelApi } from "./channel";
 import { getLanguageServiceChannelApi } from "./languageService";
+import { SwfPreviewOptions } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 
 declare global {
   interface Window {
@@ -44,7 +45,7 @@ declare global {
 const createEnvelopeServer = (
   iframe: HTMLIFrameElement,
   languageType: ServerlessWorkflowType,
-  isDiagramOnly?: boolean,
+  swfPreviewOptions?: SwfPreviewOptions,
   readOnly?: boolean,
   origin?: string
 ) => {
@@ -65,7 +66,7 @@ const createEnvelopeServer = (
           initialLocale: "en-US",
           isReadOnly: readOnly ?? true,
           channel: ChannelType.STANDALONE,
-          isDiagramOnly,
+          swfPreviewOptions,
         }
       );
     }
@@ -79,7 +80,7 @@ export const open = (args: {
   readOnly?: boolean;
   origin?: string;
   onError?: () => any;
-  isDiagramOnly?: boolean;
+  swfPreviewOptions?: SwfPreviewOptions;
 }): StandaloneEditorApi => {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = swfCombinedEditorEnvelopeIndex;
@@ -90,7 +91,7 @@ export const open = (args: {
   const envelopeServer = createEnvelopeServer(
     iframe,
     args.languageType,
-    args.isDiagramOnly,
+    args.swfPreviewOptions,
     args.readOnly,
     args.origin
   );
@@ -129,7 +130,9 @@ export const open = (args: {
       { registries: [] }
     ),
     languageServiceChannelApiImpl,
-    new SwfPreviewOptionsChannelApiImpl(args.isDiagramOnly ? { diagramDefaultWidth: "100%" } : undefined),
+    new SwfPreviewOptionsChannelApiImpl(
+      args.swfPreviewOptions?.isDiagramOnly ? { diagramDefaultWidth: "100%" } : undefined
+    ),
     new SwfStaticEnvelopeContentProviderChannelApiImpl({
       diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex,
       mermaidEnvelopeContent: swfMermaidViewerEnvelopeIndex,
