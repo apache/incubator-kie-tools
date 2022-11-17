@@ -23,7 +23,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useHistory } from "react-router";
 import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../navigation/Hooks";
-import { OpenshiftDeploymentsDropdown } from "../openshift/OpenshiftDeploymentsDropdown";
+import { OpenshiftDeploymentsDropdown } from "../openshift/dropdown/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../settings/SettingsButton";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";

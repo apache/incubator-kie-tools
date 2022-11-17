@@ -21,13 +21,46 @@ export const PROJECT_FILES = {
   applicationProperties: "application.properties",
   dockerFile: "Dockerfile",
   dockerIgnore: ".dockerignore",
+  kogitoYml: "kogito.yml",
 };
 
 export function isProject(files: WorkspaceFile[]): boolean {
-  return !!files.find((f) => f.relativePath === PROJECT_FILES.pomXml);
+  return !!files.some((f) => f.relativePath === PROJECT_FILES.pomXml);
 }
 
 export function isSingleModuleProject(files: WorkspaceFile[]): boolean {
   const pomFiles = files.filter((f) => f.name === PROJECT_FILES.pomXml);
   return pomFiles.length === 1 && pomFiles[0].relativeDirPath === "";
 }
+
+export interface ProjectPaths {
+  folders: {
+    root: string;
+    mainResources: string;
+    metaInfResources: string;
+    kubernetes: string;
+    quarkusApp: string;
+  };
+  files: {
+    pomXml: string;
+    kogitoYaml: string;
+  };
+}
+
+export const buildProjectPaths = (projectFolder: string): ProjectPaths => ({
+  folders: {
+    root: `${projectFolder}`,
+    mainResources: `${projectFolder}/src/main/resources`,
+    metaInfResources: `${projectFolder}/src/main/resources/META-INF/resources`,
+    kubernetes: `${projectFolder}/target/kubernetes`,
+    quarkusApp: `${projectFolder}/target/quarkus-app`,
+  },
+  files: {
+    pomXml: `${projectFolder}/${PROJECT_FILES.pomXml}`,
+    kogitoYaml: `${projectFolder}/target/kubernetes/${PROJECT_FILES.kogitoYml}`,
+  },
+});
+
+export const DEFAULT_DOCKER_IGNORE_CONTENT = `
+${PROJECT_FILES.dockerFile}
+`;

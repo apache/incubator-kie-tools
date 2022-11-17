@@ -33,6 +33,7 @@ const REGEX = {
 
 export const GLOB_PATTERN = {
   all: "**/*",
+  allExceptDockerfiles: "**/!(Dockerfile|.dockerignore)",
   sw: "**/*.sw.+(json|yml|yaml)",
   yard: "**/*.yard.+(json|yml|yaml)",
   dash: "**/*.dash.+(yml|yaml)",
