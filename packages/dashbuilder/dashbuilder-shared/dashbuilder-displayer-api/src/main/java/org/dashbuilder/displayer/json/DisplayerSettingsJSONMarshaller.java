@@ -78,11 +78,25 @@ public class DisplayerSettingsJSONMarshaller {
     }
 
     public DisplayerSettings fromJsonObject(JsonObject jsonObject) {
+        return fromJsonObject(jsonObject, true);
+    }
+
+    /**
+     * 
+     * Parse JSON Object to DisplayerSettings.
+     * 
+     * @param jsonObject
+     * The object to be parsed
+     * @param strict
+     *  If true then the object will be parsed in a strict mode, not allow mandatory fields out of the parsing.
+     * @return
+     */
+    public DisplayerSettings fromJsonObject(JsonObject jsonObject, boolean strict) {
         var ds = new DisplayerSettings();
 
         if (jsonObject == null ||
             jsonObject.getType() != JsonType.OBJECT) {
-            throw new IllegalArgumentException("Displayer Settings are not a valid object");
+            throw new IllegalArgumentException("Displayer Settings is not using a valid object");
         }
 
         // UUID
@@ -109,7 +123,7 @@ public class DisplayerSettingsJSONMarshaller {
             ds.setDataSetLookup(lookup);
             // Remove from the json input so that it doesn't end up in the settings map.
             jsonObject.put(DATASET_LOOKUP_PREFIX, (JsonValue) null);
-        } else {
+        } else if (strict) {
             throw new RuntimeException("Dataset lookup for displayer settings is missing.");
         }
 

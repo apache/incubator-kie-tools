@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.dashbuilder.client.editor.DisplayerDragComponent;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.PerspectiveCoordinator;
 import org.dashbuilder.displayer.client.events.DisplayerSettingsChangedEvent;
 import org.dashbuilder.displayer.client.prototypes.DisplayerPrototypes;
@@ -52,11 +53,15 @@ public class ExternalDisplayerDragComponent extends DisplayerDragComponent imple
     DisplayerPrototypes displayerPrototypes;
 
     @Inject
+    GlobalDisplayerSettings globalDisplayerSettings;
+
+    @Inject
     public ExternalDisplayerDragComponent(SyncBeanManager beanManager,
                                           DisplayerViewer viewer,
                                           PlaceManager placeManager,
-                                          PerspectiveCoordinator perspectiveCoordinator) {
-        super(beanManager, viewer, placeManager, perspectiveCoordinator);
+                                          PerspectiveCoordinator perspectiveCoordinator,
+                                          GlobalDisplayerSettings globalDisplayerSettings) {
+        super(beanManager, viewer, placeManager, perspectiveCoordinator, globalDisplayerSettings);
     }
 
     @Override

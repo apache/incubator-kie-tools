@@ -303,6 +303,10 @@ public class DisplayerSettings {
         settings.put(getSettingPath(DisplayerAttributeDef.RENDERER), renderer);
     }
 
+    public void setMode(Mode mode) {
+        settings.put(getSettingPath(DisplayerAttributeDef.MODE), mode.name());
+    }
+
     public Mode getMode() {
         var modeStr = settings.get(getSettingPath(DisplayerAttributeDef.MODE));
         return Mode.getByName(modeStr);

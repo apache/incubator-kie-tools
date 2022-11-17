@@ -133,6 +133,10 @@ public class DisplayerAttributeDef {
             parent.addChild(this);
         }
     }
+    
+    public String getId() {
+        return id;
+    }
 
     public String getFullId() {
         return parent != null ? parent.getFullId() + "." + id : id;

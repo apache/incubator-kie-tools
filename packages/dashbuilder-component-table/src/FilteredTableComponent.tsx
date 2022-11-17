@@ -44,6 +44,7 @@ export function FilteredTableComponent(props: Props) {
       const linkColumn = params.get("linkColumn");
       const linkTemplate = params.get("linkTemplate");
       const linkTargetSelf = params.get("linkTargetSelf") === "true";
+      const mode = params.get("mode");
 
       if (linkColumn && linkTemplate) {
         setLinkColumn({ column: linkColumn, linkTemplate: linkTemplate });
@@ -55,6 +56,10 @@ export function FilteredTableComponent(props: Props) {
           good: params.get("alertGood"),
           great: params.get("alertGreat"),
         });
+      }
+
+      if (mode) {
+        document.body.setAttribute("mode", mode.toLowerCase());
       }
 
       setSelectable(selectableParam);

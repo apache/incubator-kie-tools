@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
+import org.dashbuilder.shared.model.GlobalSettings;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.junit.Test;
@@ -81,7 +82,8 @@ public class RuntimeServiceResponseJSONMarshallerTest {
                                               templates,
                                               123l,
                                               Collections.emptyList(),
-                                              Collections.emptyMap());
+                                              Collections.emptyMap(),
+                                              new GlobalSettings());
         RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.STATIC,
                                                                      Optional.of(model),
                                                                      Arrays.asList("rm1", "rm2"),

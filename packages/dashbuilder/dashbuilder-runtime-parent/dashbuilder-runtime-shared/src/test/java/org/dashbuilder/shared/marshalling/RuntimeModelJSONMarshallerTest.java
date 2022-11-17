@@ -21,6 +21,7 @@ import java.util.Collections;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.impl.ExternalDataSetDefBuilderImpl;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
+import org.dashbuilder.shared.model.GlobalSettings;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,7 +93,8 @@ public class RuntimeModelJSONMarshallerTest {
                 templates,
                 123l,
                 externalDefs,
-                Collections.singletonMap("TEST", "VALUE"));
+                Collections.singletonMap("TEST", "VALUE"),
+                new GlobalSettings());
 
         var parsed = marshaller.toJson(model).toJson();
         assertEquals(RUNTIME_MODEL_JSON, parsed);

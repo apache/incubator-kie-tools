@@ -18,7 +18,7 @@
     },
     {
       "key": "selectable",
-      "value": "truess"
+      "value": "true"
     },
     {
       "key": "linkColumn",
@@ -26,11 +26,15 @@
     },
     {
       "key": "hideHeader",
-      "value": "true"
+      "value": "_true"
     },
     {
       "key": "linkTargetSelf",
       "value": "_true"
+    },
+    {
+      "key": "mode",
+      "value": "dark"
     },
     {
       "key": "linkTemplate",

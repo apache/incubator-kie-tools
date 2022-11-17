@@ -20,6 +20,7 @@ import java.util.Map;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.widgets.DisplayerEditorPopup;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -61,6 +62,9 @@ public class DisplayerDragComponentTest {
     
     @Mock
     LayoutComponent layoutComponent;
+    
+    @Mock
+    GlobalDisplayerSettings globalDisplayerSettings;
 
     @InjectMocks
     LineChartDragComponent lineChartDragComponent;
