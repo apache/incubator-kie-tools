@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.regexp.shared.RegExp;
 import org.kie.workbench.common.stunner.core.util.Patterns;
 
@@ -185,13 +186,17 @@ public class StringUtils {
     public static Set<String> getSetDataTypes(String value) {
         value = preFilterVariablesForGenerics(value);
         Set<String> types = new HashSet<>();
+        System.out.println(value);
+        GWT.log(value);
         if (value == null || value.isEmpty()) {
             return types;
         }
         final String[] split = value.split(",");
-        for (String string : split) {
-            String type = string.substring(string.indexOf(':') + 1, string.lastIndexOf(':'));
-            types.add(postFilterForGenerics(type));
+        for (String dataType : split) {
+            if (dataType.chars().filter(ch -> ch == ':').count() == 2) {
+                String type = dataType.substring(dataType.indexOf(':') + 1, dataType.lastIndexOf(':'));
+                types.add(postFilterForGenerics(type));
+            }
         }
 
         return types;
