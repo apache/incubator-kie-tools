@@ -1525,6 +1525,7 @@ importers:
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
+      "@types/json-schema": 7.0.11
       "@types/react": ^17.0.6
       "@types/testing-library__jest-dom": ^5.9.1
       copy-webpack-plugin: ^11.0.0
@@ -1537,6 +1538,7 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
+      json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -1561,6 +1563,7 @@ importers:
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      json-schema: 0.4.0
       monaco-editor: 0.33.0
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
@@ -1576,6 +1579,7 @@ importers:
       "@testing-library/jest-dom": 5.16.1
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
+      "@types/json-schema": 7.0.11
       "@types/react": 17.0.21
       "@types/testing-library__jest-dom": 5.9.5
       copy-webpack-plugin: 11.0.0_webpack@5.70.0
@@ -12135,7 +12139,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -13538,6 +13542,7 @@ packages:
       schema-utils: 4.0.0
       serialize-javascript: 6.0.0
       webpack: 5.70.0
+      p-limit: 3.1.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -16824,6 +16829,17 @@ packages:
       tabbable: 5.1.5
     dev: false
 
+  /follow-redirects/1.14.9:
+    resolution:
+      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
+    engines: { node: ">=4.0" }
+    peerDependencies:
+      debug: "*"
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: true
+
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -16835,6 +16851,7 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.1
+    dev: false
 
   /for-in/1.0.2:
     resolution:
@@ -17740,7 +17757,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
