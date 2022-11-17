@@ -134,34 +134,27 @@ func (p *Proxy) Stop() {
 	log.Println("Shutdown complete")
 
 	p.RunnerPort = "0"
+	p.Started = false
 	p.View.Refresh()
 }
 
 func (p *Proxy) Refresh() {
-
 	p.View.SetLoading()
 
-	started := false
-	countDown := 5
-	retry := true
-
-	for countDown > 0 && retry {
+	for !p.Started {
 		resp, err := http.Get(p.URL)
 		if err != nil {
 			fmt.Println(err.Error())
-			retry = true
-			countDown--
 		} else {
-			fmt.Println(strconv.Itoa(resp.StatusCode) + " -> " + resp.Status)
 			if resp.StatusCode == 200 {
-				started = true
+				p.Started = true
+			} else {
+				fmt.Println(strconv.Itoa(resp.StatusCode) + " -> " + resp.Status)
 			}
-			retry = false
 		}
 		time.Sleep(1 * time.Second)
 	}
 
-	p.Started = started
 	p.View.Refresh()
 }
 
