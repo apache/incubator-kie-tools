@@ -22,7 +22,6 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -42,17 +41,16 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
  * @param <V> The view type.
  * @param <D> The mutable shape definition type..
  */
-public class ConnectorShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
-        extends AbstractElementShape<W, ViewConnector<W>, Edge<ViewConnector<W>, Node>, D, V>
+public class ConnectorShape<W, V extends ShapeView>
+        extends AbstractElementShape<W, ViewConnector<W>, Edge<ViewConnector<W>, Node>, V>
         implements EdgeShape<W, ViewConnector<W>, Edge<ViewConnector<W>, Node>, V>,
                    Lifecycle {
 
     private final ShapeImpl<V> shape;
 
-    public ConnectorShape(final D shapeDef,
-                          final V view,
+    public ConnectorShape(final V view,
                           final ShapeStateHandler shapeStateHelper) {
-        super(shapeDef);
+        super();
         this.shape = new ShapeImpl<>(view,
                                      shapeStateHelper);
     }

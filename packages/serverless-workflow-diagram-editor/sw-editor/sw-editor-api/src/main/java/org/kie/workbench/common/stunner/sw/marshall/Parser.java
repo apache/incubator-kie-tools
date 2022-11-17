@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.CallEventAction;
@@ -33,6 +32,7 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
+import org.kie.workbench.common.stunner.sw.definition.Metadata;
 import org.kie.workbench.common.stunner.sw.definition.ModelUtils;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
@@ -54,7 +54,6 @@ public class Parser {
     public Workflow parse(Workflow jso) {
         Workflow workflow = parse(Workflow.class, jso);
         loadStates(workflow, jso);
-
         return workflow;
     }
 
@@ -67,44 +66,48 @@ public class Parser {
     }
 
     private void loadStates(Workflow workflow, Workflow jso) {
-        State[] states = jso.states;
-        workflow.states = new State[states.length];
+        State[] states = jso.getStates();
+        workflow.setStates(new State[states.length]);
         for (int i = 0; i < states.length; i++) {
             State s = states[i];
             State state = parseState(s);
-            workflow.states[i] = state;
+            workflow.getStates()[i] = state;
         }
     }
 
     private State parseState(State jso) {
         State state = null;
-        if (InjectState.TYPE_INJECT.equals(jso.type)) {
+        if (InjectState.TYPE_INJECT.equals(jso.getType())) {
             state = parse(InjectState.class, jso);
-        } else if (EventState.TYPE_EVENT.equals(jso.type)) {
+        } else if (EventState.TYPE_EVENT.equals(jso.getType())) {
             state = parseEventState(jso);
-        } else if (SwitchState.TYPE_SWITCH.equals(jso.type)) {
+        } else if (SwitchState.TYPE_SWITCH.equals(jso.getType())) {
             state = parseSwitchState(jso);
-        } else if (OperationState.TYPE_OPERATION.equals(jso.type)) {
+        } else if (OperationState.TYPE_OPERATION.equals(jso.getType())) {
             state = parseOperationState(jso);
-        } else if (SleepState.TYPE_SLEEP.equals(jso.type)) {
+        } else if (SleepState.TYPE_SLEEP.equals(jso.getType())) {
             state = parse(SleepState.class, jso);
-        } else if (ParallelState.TYPE_PARALLEL.equals(jso.type)) {
+        } else if (ParallelState.TYPE_PARALLEL.equals(jso.getType())) {
             state = parse(ParallelState.class, jso);
-        } else if (ForEachState.TYPE_FOR_EACH.equals(jso.type)) {
+        } else if (ForEachState.TYPE_FOR_EACH.equals(jso.getType())) {
             state = parseForEachState(jso);
-        } else if (CallbackState.TYPE_CALLBACK.equals(jso.type)) {
+        } else if (CallbackState.TYPE_CALLBACK.equals(jso.getType())) {
             state = parseCallbackState(jso);
         }
 
         if (null != state) {
-            ErrorTransition[] onErrors = jso.onErrors;
+            ErrorTransition[] onErrors = jso.getOnErrors();
             if (null != onErrors) {
-                state.onErrors = new ErrorTransition[onErrors.length];
+                state.setOnErrors(new ErrorTransition[onErrors.length]);
                 for (int i = 0; i < onErrors.length; i++) {
                     ErrorTransition e = onErrors[i];
                     ErrorTransition et = parseErrorTransition(e);
-                    state.onErrors[i] = et;
+                    state.getOnErrors()[i] = et;
                 }
+            }
+            Metadata metadata = jso.getMetadata();
+            if (null != metadata) {
+                state.metadata = metadata;
             }
         }
 
@@ -113,26 +116,26 @@ public class Parser {
 
     private SwitchState parseSwitchState(State jso) {
         SwitchState state = (SwitchState) parse(SwitchState.class, jso);
-        DefaultConditionTransition defaultCondition = Js.uncheckedCast(Js.asPropertyMap(jso).get("defaultCondition"));
+        DefaultConditionTransition defaultCondition = state.getDefaultCondition();
         if (null != defaultCondition) {
-            state.defaultCondition = parse(DefaultConditionTransition.class, defaultCondition);
+            state.setDefaultCondition(parse(DefaultConditionTransition.class, defaultCondition));
         }
-        EventConditionTransition[] eventConditions = Js.uncheckedCast(Js.asPropertyMap(jso).get("eventConditions"));
+        EventConditionTransition[] eventConditions = state.getEventConditions();
         if (null != eventConditions) {
-            state.eventConditions = new EventConditionTransition[eventConditions.length];
+            state.setEventConditions(new EventConditionTransition[eventConditions.length]);
             for (int i = 0; i < eventConditions.length; i++) {
                 EventConditionTransition eventConditionJSO = eventConditions[i];
                 EventConditionTransition eventCondition = parse(EventConditionTransition.class, eventConditionJSO);
-                state.eventConditions[i] = eventCondition;
+                state.getEventConditions()[i] = eventCondition;
             }
         }
-        DataConditionTransition[] dataConditions = Js.uncheckedCast(Js.asPropertyMap(jso).get("dataConditions"));
+        DataConditionTransition[] dataConditions = state.getDataConditions();
         if (null != dataConditions) {
-            state.dataConditions = new DataConditionTransition[dataConditions.length];
+            state.setDataConditions(new DataConditionTransition[dataConditions.length]);
             for (int i = 0; i < dataConditions.length; i++) {
                 DataConditionTransition dataConditionJSO = dataConditions[i];
                 DataConditionTransition dataCondition = parse(DataConditionTransition.class, dataConditionJSO);
-                state.dataConditions[i] = dataCondition;
+                state.getDataConditions()[i] = dataCondition;
             }
         }
         return state;
@@ -140,53 +143,39 @@ public class Parser {
 
     private CallbackState parseCallbackState(State jso) {
         CallbackState state = (CallbackState) parse(CallbackState.class, jso);
-        if (null != state.action) {
-            state.action = parse(ActionNode.class, state.action);
+        if (null != state.getAction()) {
+            state.setAction(parse(ActionNode.class, state.getAction()));
         }
         return state;
     }
 
     private ForEachState parseForEachState(State jso) {
         ForEachState state = (ForEachState) parse(ForEachState.class, jso);
-        ActionNode[] actions = parseActions(jso);
+        ActionNode[] actions = state.getActions();
         if (null != actions) {
-            state.actions = actions;
+            state.setActions(actions);
         }
         return state;
     }
 
     private OperationState parseOperationState(State jso) {
         OperationState state = (OperationState) parse(OperationState.class, jso);
-        ActionNode[] actions = parseActions(jso);
+        ActionNode[] actions = state.getActions();
         if (null != actions) {
-            state.actions = actions;
+            state.setActions(actions);
         }
         return state;
     }
 
-    private ActionNode[] parseActions(State jso) {
-        ActionNode[] actions = Js.uncheckedCast(Js.asPropertyMap(jso).get("actions"));
-        if (null != actions) {
-            ActionNode[] result = new ActionNode[actions.length];
-            for (int i = 0; i < actions.length; i++) {
-                ActionNode a = actions[i];
-                ActionNode action = parseAction(a);
-                result[i] = action;
-            }
-            return result;
-        }
-        return null;
-    }
-
     private EventState parseEventState(State jso) {
         EventState state = (EventState) parse(EventState.class, jso);
-        OnEvent[] onEvents = Js.uncheckedCast(Js.asPropertyMap(jso).get("onEvents"));
+        OnEvent[] onEvents = state.getOnEvents();
         if (null != onEvents) {
-            state.onEvents = new OnEvent[onEvents.length];
+            state.setOnEvents(new OnEvent[onEvents.length]);
             for (int i = 0; i < onEvents.length; i++) {
                 OnEvent e = onEvents[i];
                 OnEvent onEvent = parseOnEvent(e);
-                state.onEvents[i] = onEvent;
+                state.getOnEvents()[i] = onEvent;
             }
         }
         return state;
@@ -194,13 +183,13 @@ public class Parser {
 
     private OnEvent parseOnEvent(OnEvent jso) {
         OnEvent onEvent = parse(OnEvent.class, jso);
-        ActionNode[] actions = Js.uncheckedCast(Js.asPropertyMap(jso).get("actions"));
+        ActionNode[] actions = jso.getActions();
         if (null != actions) {
-            onEvent.actions = new ActionNode[actions.length];
+            onEvent.setActions(new ActionNode[actions.length]);
             for (int i = 0; i < actions.length; i++) {
                 ActionNode a = actions[i];
                 ActionNode action = parseAction(a);
-                onEvent.actions[i] = action;
+                onEvent.getActions()[i] = action;
             }
         }
         return onEvent;
@@ -208,15 +197,15 @@ public class Parser {
 
     private ActionNode parseAction(ActionNode jso) {
         ActionNode action = null;
-        if (null != jso.functionRef) {
+        if (null != jso.getFunctionRef()) {
             action = parse(CallFunctionAction.class, jso);
-            action.setFunctionRef(jso.functionRef);
-        } else if (null != jso.subFlowRef) {
+            action.setFunctionRef(jso.getFunctionRef());
+        } else if (null != jso.getSubFlowRef()) {
             action = parse(CallSubflowAction.class, jso);
-            action.setSubFlowRef(jso.subFlowRef);
-        } else if (null != jso.eventRef) {
+            action.setSubFlowRef(jso.getSubFlowRef());
+        } else if (null != jso.getEventRef()) {
             action = parse(CallEventAction.class, jso);
-            action.setEventRef(jso.eventRef);
+            action.setEventRef(jso.getEventRef());
         }
 
         return action;

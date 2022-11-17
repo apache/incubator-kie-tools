@@ -80,6 +80,7 @@ export class LfsWorkspaceDescriptorService {
       origin: args.origin ?? { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
+      gitAuthSessionId: undefined,
     };
     await this.storageService.createOrOverwriteFile(this.descriptorFs, this.toStorageFile(descriptor));
     return descriptor;

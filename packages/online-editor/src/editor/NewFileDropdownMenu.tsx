@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { FileLabel } from "../filesList/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -41,16 +41,19 @@ import { ImportSingleFileFromUrlForm } from "../importFromUrl/ImportSingleFileFr
 import { ImportableUrl, UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { fetchSingleFileContent } from "../importFromUrl/fetchSingleFileContent";
-import { useSettingsDispatch } from "../settings/SettingsContext";
+import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { useOctokit } from "../github/Hooks";
+import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
   destinationDirPath: string;
-  workspaceId: string;
+  workspaceDescriptor: WorkspaceDescriptor;
   onAddFile: (file?: WorkspaceFile) => Promise<void>;
 }) {
-  const settingsDispatch = useSettingsDispatch();
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
 
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
@@ -82,7 +85,7 @@ export function NewFileDropdownMenu(props: {
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
       const file = await workspaces.addEmptyFile({
-        workspaceId: props.workspaceId,
+        workspaceId: props.workspaceDescriptor.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
         extension,
       });
@@ -136,7 +139,7 @@ export function NewFileDropdownMenu(props: {
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (file) => {
           return workspaces.addFile({
-            workspaceId: props.workspaceId,
+            workspaceId: props.workspaceDescriptor.workspaceId,
             name: basename(file.path, extname(file.path)),
             extension: extname(file.path).replace(".", ""),
             content: file.content,
@@ -154,12 +157,36 @@ export function NewFileDropdownMenu(props: {
   );
 
   const [url, setUrl] = useState("");
+  const [authSessionId, setAuthSessionId] = useState(props.workspaceDescriptor.gitAuthSessionId);
 
-  const importableUrl = useImportableUrl(url, [
-    UrlType.FILE,
-    UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
-    UrlType.GITHUB_DOT_COM_FILE,
-  ]);
+  const importableUrl = useImportableUrl(
+    url,
+    useMemo(() => [UrlType.FILE, UrlType.GIST_DOT_GITHUB_DOT_COM_FILE, UrlType.GITHUB_DOT_COM_FILE], [])
+  );
+
+  const { authSession } = useAuthSession(authSessionId);
+  const octokit = useOctokit(authSession);
+
+  // Select authSession based on the importableUrl domain (begin)
+  const authProviders = useAuthProviders();
+  const { authSessions, authSessionStatus } = useAuthSessions();
+
+  useEffect(() => {
+    if (importableUrl.error) {
+      return;
+    }
+
+    const urlDomain = importableUrl.url?.hostname;
+
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain,
+    });
+    setAuthSessionId(compatible[0]!.id);
+  }, [authProviders, authSessionStatus, authSessions, importableUrl]);
+  // Select authSession based on the importableUrl domain (end)
 
   const importFromUrl = useCallback(
     async (importableUrl: ImportableUrl) => {
@@ -171,7 +198,7 @@ export function NewFileDropdownMenu(props: {
       setImportingError(undefined);
 
       try {
-        const { error, rawUrl, content } = await fetchSingleFileContent(importableUrl, settingsDispatch.github.octokit);
+        const { error, rawUrl, content } = await fetchSingleFileContent(importableUrl, octokit);
         if (error) {
           setImportingError(error);
           return;
@@ -181,7 +208,7 @@ export function NewFileDropdownMenu(props: {
         const name = decodeURIComponent(basename(rawUrl!.pathname, extname(rawUrl!.pathname)));
 
         const file = await workspaces.addFile({
-          workspaceId: props.workspaceId,
+          workspaceId: props.workspaceDescriptor.workspaceId,
           name,
           extension,
           content: content!,
@@ -194,7 +221,7 @@ export function NewFileDropdownMenu(props: {
         setImporting(false);
       }
     },
-    [props, settingsDispatch.github.octokit, workspaces]
+    [props, octokit, workspaces]
   );
 
   const sampleUrl = useCallback(
@@ -317,14 +344,17 @@ export function NewFileDropdownMenu(props: {
                 {/* Allows for arrows to work when editing the text. */}
                 <MenuInput onKeyDown={(e) => e.stopPropagation()}>
                   <ImportSingleFileFromUrlForm
+                    authSessionSelectHelperText={`Changing it here won't change it on '${props.workspaceDescriptor.name}'`}
                     importingError={importingError}
                     importableUrl={importableUrl}
                     urlInputRef={urlInputRef}
                     url={url}
-                    onChange={(url) => {
+                    setUrl={(url) => {
                       setUrl(url);
                       setImportingError(undefined);
                     }}
+                    authSessionId={authSessionId}
+                    setAuthSessionId={setAuthSessionId}
                     onSubmit={() => importFromUrl(importableUrl)}
                   />
                 </MenuInput>

@@ -20,9 +20,8 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AuthSourceKeys, useAuthSources, useSelectedAuthSession } from "../authSources/AuthSourceHooks";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
@@ -40,18 +39,23 @@ import {
 } from "./ImportableUrlHooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
+import { useOctokit } from "../github/Hooks";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
-  const authSources = useAuthSources();
-  const settingsDispatch = useSettingsDispatch();
+  const accountsDispatch = useAccountsDispatch();
 
   const [importingError, setImportingError] = useState("");
 
@@ -59,21 +63,23 @@ export function NewWorkspaceFromUrlPage() {
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
-  const queryParamAuthSource = useQueryParam(QueryParams.AUTH_SOURCE);
+  const queryParamAuthSessionId = useQueryParam(QueryParams.AUTH_SESSION_ID);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
-  const { authInfo, authSource } = useSelectedAuthSession(queryParamAuthSource);
+  const authProviders = useAuthProviders();
+  const { authSessions, authSessionStatus } = useAuthSessions();
+  const { authSession, gitConfig, authInfo } = useAuthSession(queryParamAuthSessionId);
 
   const importableUrl = useImportableUrl(queryParamUrl);
-  const clonableUrlObject = useClonableUrl(queryParamUrl, authSource, queryParamBranch);
+  const clonableUrlObject = useClonableUrl(queryParamUrl, authInfo, queryParamBranch);
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
 
-  const setAuthSource = useCallback(
-    (newAuthSource) => {
-      if (!newAuthSource) {
+  const setAuthSessionId = useCallback(
+    (newAuthSessionId: React.SetStateAction<string | undefined>) => {
+      if (!newAuthSessionId) {
         history.replace({
           pathname: routes.import.path({}),
-          search: queryParams.without(QueryParams.AUTH_SOURCE).toString(),
+          search: queryParams.without(QueryParams.AUTH_SESSION_ID).toString(),
         });
         return;
       }
@@ -81,13 +87,15 @@ export function NewWorkspaceFromUrlPage() {
         pathname: routes.import.path({}),
         search: queryParams
           .with(
-            QueryParams.AUTH_SOURCE,
-            typeof newAuthSource === "function" ? newAuthSource(authSource) : newAuthSource
+            QueryParams.AUTH_SESSION_ID,
+            typeof newAuthSessionId === "function" ? newAuthSessionId(queryParamAuthSessionId) : newAuthSessionId
           )
           .toString(),
       });
+
+      accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
     },
-    [authSource, history, queryParams, routes.import]
+    [accountsDispatch, history, queryParamAuthSessionId, queryParams, routes.import]
   );
 
   const setUrl = useCallback(
@@ -133,17 +141,36 @@ export function NewWorkspaceFromUrlPage() {
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    if (!selectedGitRefName) {
+    if (!selectedGitRefName || !queryParamUrl) {
       return;
     }
+
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain: new URL(queryParamUrl).hostname,
+    });
+
     history.replace({
       pathname: routes.import.path({}),
       search: queryParams
         .with(QueryParams.BRANCH, selectedGitRefName)
-        .with(QueryParams.AUTH_SOURCE, authSource)
+        .with(QueryParams.AUTH_SESSION_ID, authSession?.id ?? compatible[0].id)
         .toString(),
     });
-  }, [authSource, history, queryParams, routes.import, selectedGitRefName, setGitRefName]);
+  }, [
+    authProviders,
+    authSession?.id,
+    authSessionStatus,
+    authSessions,
+    history,
+    queryParamUrl,
+    queryParams,
+    routes.import,
+    selectedGitRefName,
+    setGitRefName,
+  ]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -173,25 +200,32 @@ export function NewWorkspaceFromUrlPage() {
 
   const createWorkspaceForFile = useCallback(
     async (file: LocalFile) => {
-      workspaces.createWorkspaceFromLocal({ localFiles: [file] }).then(({ workspace, suggestedFirstFile }) => {
-        if (!suggestedFirstFile) {
-          return;
-        }
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
-          }),
+      workspaces
+        .createWorkspaceFromLocal({
+          localFiles: [file],
+          gitAuthSessionId: AUTH_SESSION_NONE.id,
+        })
+        .then(({ workspace, suggestedFirstFile }) => {
+          if (!suggestedFirstFile) {
+            return;
+          }
+          history.replace({
+            pathname: routes.workspaceWithFilePath.path({
+              workspaceId: workspace.workspaceId,
+              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+              extension: suggestedFirstFile.extension,
+            }),
+          });
         });
-      });
     },
     [routes, history, workspaces]
   );
 
+  const octokit = useOctokit(authSession);
+
   const doImportAsSingleFile = useCallback(
     async (importableUrl: ImportableUrl) => {
-      const singleFileContent = await fetchSingleFileContent(importableUrl, settingsDispatch.github.octokit);
+      const singleFileContent = await fetchSingleFileContent(importableUrl, octokit);
 
       if (singleFileContent.error) {
         setImportingError(singleFileContent.error);
@@ -203,15 +237,15 @@ export function NewWorkspaceFromUrlPage() {
         fileContents: encoder.encode(singleFileContent.content!),
       });
     },
-    [createWorkspaceForFile, settingsDispatch.github.octokit]
+    [createWorkspaceForFile, octokit]
   );
 
   const doImport = useCallback(async () => {
     const singleFile = isSingleFile(importableUrl.type);
 
     try {
-      if (queryParamAuthSource && !authSources.has(queryParamAuthSource as AuthSourceKeys)) {
-        setImportingError(`Auth source '${queryParamAuthSource}' not found.`);
+      if (queryParamAuthSessionId && !authSession) {
+        setImportingError(`Auth session '${queryParamAuthSessionId}' not found.`);
         return;
       }
 
@@ -229,8 +263,9 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            gitConfig: authInfo,
-            authInfo: authInfo,
+            gitConfig,
+            authInfo,
+            gitAuthSessionId: queryParamAuthSessionId,
           });
         } else {
           await doImportAsSingleFile(importableUrl);
@@ -246,8 +281,9 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            gitConfig: authInfo,
-            authInfo: authInfo,
+            gitAuthSessionId: queryParamAuthSessionId,
+            gitConfig,
+            authInfo,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -266,8 +302,9 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url.toString(),
               branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
-            gitConfig: authInfo,
-            authInfo: authInfo,
+            gitAuthSessionId: queryParamAuthSessionId,
+            gitConfig,
+            authInfo,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -288,17 +325,18 @@ export function NewWorkspaceFromUrlPage() {
     }
   }, [
     importableUrl,
-    queryParamAuthSource,
-    authSources,
+    queryParamAuthSessionId,
+    authSession,
     clonableUrl.type,
     clonableUrl.error,
     gitServerRefsPromise.data?.defaultBranch,
     gitServerRefsPromise.error,
     cloneGitRepository,
     selectedGitRefName,
+    gitConfig,
     authInfo,
-    queryParamBranch,
     doImportAsSingleFile,
+    queryParamBranch,
   ]);
 
   useEffect(() => {
@@ -311,7 +349,7 @@ export function NewWorkspaceFromUrlPage() {
   }, [history, queryParamUrl, queryParams, routes.import]);
 
   useEffect(() => {
-    if ((!queryParamBranch || !queryParamAuthSource) && selectedGitRefName) {
+    if ((!queryParamBranch || !queryParamAuthSessionId) && selectedGitRefName) {
       return;
     }
 
@@ -333,11 +371,11 @@ export function NewWorkspaceFromUrlPage() {
     importableUrl.type,
     queryParamUrl,
     queryParamBranch,
-    queryParamAuthSource,
+    queryParamAuthSessionId,
     selectedGitRefName,
   ]);
 
-  const validation = useImportableUrlValidation(authSource, queryParamUrl, queryParamBranch, clonableUrlObject);
+  const validation = useImportableUrlValidation(authSession, queryParamUrl, queryParamBranch, clonableUrlObject);
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
 
   return (
@@ -376,10 +414,10 @@ export function NewWorkspaceFromUrlPage() {
               }}
               clonableUrl={clonableUrlObject}
               validation={validation}
-              authSource={authSource}
+              authSessionId={queryParamAuthSessionId}
               url={queryParamUrl ?? ""}
               gitRefName={selectedGitRefName ?? ""}
-              setAuthSource={setAuthSource}
+              setAuthSessionId={setAuthSessionId}
               setUrl={setUrl}
               setGitRefName={setGitRefName}
             />

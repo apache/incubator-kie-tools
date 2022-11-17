@@ -18,12 +18,12 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.Optional;
 
-import jsinterop.base.JsPropertyMap;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
 import static org.junit.Assert.assertEquals;
@@ -32,8 +32,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallNode;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StateMarshallingTest extends BaseMarshallingTest {
 
@@ -53,21 +51,21 @@ public class StateMarshallingTest extends BaseMarshallingTest {
 
     @Test
     public void testEndObject() {
-        JsPropertyMap<Object> endObject = mock(JsPropertyMap.class);
-        when(endObject.get("terminate")).thenReturn(true);
-        when(endObject.get("continueAs")).thenReturn("{}");
-        when(endObject.get("compensate")).thenReturn(false);
-        when(endObject.get("produceEvents")).thenReturn("[]");
-        workflow.states[0].setEnd(endObject);
+        StateEnd endObject = new StateEnd();
+        endObject.setTerminate(true);
+        endObject.setContinueAs("{}");
+        endObject.setCompensate(false);
+
+        workflow.getStates()[0].setEnd(endObject);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
-        assertTrue(workflow.states[0].end instanceof JsPropertyMap);
-        final JsPropertyMap end = (JsPropertyMap) workflow.states[0].end;
-        assertTrue((Boolean) end.get("terminate"));
-        assertTrue(end.get("continueAs").equals("{}"));
-        assertTrue(!((Boolean) end.get("compensate")));
-        assertTrue(end.get("produceEvents").equals("[]"));
+        assertTrue(workflow.getStates()[0].getEnd() instanceof StateEnd);
+        final StateEnd end = (StateEnd) workflow.getStates()[0].getEnd();
+        assertTrue(end.getTerminate());
+        assertEquals("{}",end.getContinueAs());
+        assertFalse(end.getCompensate());
+        //assertTrue(end.get("produceEvents").equals("[]"));
     }
 
     @Test
@@ -85,7 +83,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                 });
 
         unmarshallNode(builderContext, workflow);
-        assertEquals(injectState.usedForCompensation, true);
+        assertEquals(injectState.getUsedForCompensation(), true);
         // specific case when usedForCompensation is equals to Js.undefined cannot be tested since value defaults to false
     }
 
@@ -93,7 +91,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
     public void testUnmarshallWorkflow() {
         unmarshallWorkflow();
         assertDefinitionReferencedInNode(workflow, WORKFLOW_ID);
-        assertDefinitionReferencedInNode(workflow.states[0], "State1");
+        assertDefinitionReferencedInNode(workflow.getStates()[0], "State1");
         assertEquals(2, countChildren(WORKFLOW_ID));
         assertParentOf(WORKFLOW_ID, "State1");
         assertTrue(hasIncomingEdges("State1"));
@@ -110,7 +108,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
 
     @Test
     public void testUnmarshallEndState() {
-        workflow.states[0].setEnd(true);
+        workflow.getStates()[0].setEnd(true);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
@@ -120,13 +118,13 @@ public class StateMarshallingTest extends BaseMarshallingTest {
     public void testMarshallGraph() {
         unmarshallWorkflow();
         Workflow workflow = marshallWorkflow();
-        assertEquals(1, workflow.states.length);
-        State state1 = workflow.states[0];
-        assertNull(state1.transition);
-        assertFalse(DefinitionTypeUtils.getEnd(state1.end));
-        assertNull(state1.compensatedBy);
-        assertNull(state1.eventTimeout);
-        assertNull(state1.onErrors);
+        assertEquals(1, workflow.getStates().length);
+        State state1 = workflow.getStates()[0];
+        assertNull(state1.getTransition());
+        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
+        assertNull(state1.getCompensatedBy());
+        assertNull(state1.getEventTimeout());
+        assertNull(state1.getOnErrors());
     }
 
     @Test
@@ -142,15 +140,15 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                                graphHandler.newNode(Marshaller.STATE_END, Optional.of(new End())));
         // Assert the domain object gets properly updated once marshalling.
         Workflow workflow = marshallWorkflow();
-        State state1 = workflow.states[0];
-        assertNull(state1.transition);
-        assertFalse(DefinitionTypeUtils.getEnd(state1.end));
-        assertNull(state1.compensatedBy);
-        assertNull(state1.eventTimeout);
-        assertNotNull(state1.onErrors);
-        assertEquals(1, state1.onErrors.length);
-        ErrorTransition onError = state1.onErrors[0];
-        assertNull(onError.transition);
-        assertTrue(DefinitionTypeUtils.getEnd(onError.end));
+        State state1 = workflow.getStates()[0];
+        assertNull(state1.getTransition());
+        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
+        assertNull(state1.getCompensatedBy());
+        assertNull(state1.getEventTimeout());
+        assertNotNull(state1.getOnErrors());
+        assertEquals(1, state1.getOnErrors().length);
+        ErrorTransition onError = state1.getOnErrors()[0];
+        assertNull(onError.getTransition());
+        assertTrue(DefinitionTypeUtils.getEnd(onError.getEnd()));
     }
 }

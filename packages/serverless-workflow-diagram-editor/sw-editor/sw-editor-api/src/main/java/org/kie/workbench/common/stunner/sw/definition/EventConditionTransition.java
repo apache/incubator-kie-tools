@@ -20,7 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -30,6 +31,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 /**
  * Switch state event conditions specify events, which the switch state must wait for.
@@ -49,39 +54,40 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 @JsType
 public class EventConditionTransition {
 
-    @JsIgnore
     public static final String LABEL_TRANSITION_EVENT_CONDITION = "transition_event_condition";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.TRANSITIONS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(LABEL_TRANSITION_EVENT_CONDITION).collect(Collectors.toSet());
 
     /**
      * Event condition name.
      */
     @Property
-    public String name;
+    private String name;
 
     /**
      * Reference to an unique event name in the defined workflow events.
      */
-    public String eventRef;
+    private String eventRef;
 
     /**
      * Defines what to do if condition is true.
      * Transitions to another state if set.
      */
-    public Object transition;
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
+    private Object transition;
 
     /**
      * Defines what to do if condition is true.
      * End the workflow if set to true.
      */
-    public Object end;
+    @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
+    private Object end;
 
     public EventConditionTransition() {
     }
@@ -110,7 +116,7 @@ public class EventConditionTransition {
         this.transition = transition;
     }
 
-    public Object isEnd() {
+    public Object getEnd() {
         return end;
     }
 

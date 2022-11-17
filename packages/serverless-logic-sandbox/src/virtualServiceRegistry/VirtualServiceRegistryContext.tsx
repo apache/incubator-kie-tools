@@ -22,7 +22,7 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 export interface VirtualServiceRegistryContextType {
   listVsrWorkspaces(): Promise<WorkspaceDescriptor[]>;
 
-  addVsrFileForWorkspaceFile(workspaceFile: WorkspaceFile): Promise<WorkspaceFile>;
+  addVsrFileForWorkspaceFile(workspaceFile: WorkspaceFile): Promise<WorkspaceFile | undefined>;
 
   deleteVsrFile(args: { vsrFile: WorkspaceFile }): Promise<void>;
 

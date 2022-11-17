@@ -24,4 +24,5 @@ export type WorkspaceBroadcastEvents =
   | { type: "WS_MOVE_FILE"; newRelativePath: string; oldRelativePath: string }
   | { type: "WS_RENAME_FILE"; newRelativePath: string; oldRelativePath: string }
   | { type: "WS_UPDATE_FILE"; relativePath: string }
-  | { type: "WS_DELETE_FILE"; relativePath: string };
+  | { type: "WS_DELETE_FILE"; relativePath: string }
+  | { type: "WS_UPDATE_DESCRIPTOR" };

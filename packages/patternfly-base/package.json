@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
+  "types": "index.d.ts",
   "main": "index.js",
   "files": [
     "index.js"
@@ -24,6 +25,7 @@
     "sass": "^1.43.4",
     "sass-loader": "^12.3.0",
     "style-loader": "^2.0.0",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "webpack": "^5.36.2"
   }
 }

@@ -33,7 +33,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Shadow;
-import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
@@ -62,7 +61,6 @@ public class WiresConnectorView<T> extends WiresConnector
         super(line,
               headDecorator,
               tailDecorator);
-        init();
     }
 
     public WiresConnectorView(final WiresMagnet headMagnet,
@@ -75,11 +73,6 @@ public class WiresConnectorView<T> extends WiresConnector
               line,
               headDecorator,
               tailDecorator);
-        init();
-    }
-
-    private void init() {
-        getLine().asShape().setFillColor(ColorName.WHITE).setStrokeWidth(0);
     }
 
     @Override

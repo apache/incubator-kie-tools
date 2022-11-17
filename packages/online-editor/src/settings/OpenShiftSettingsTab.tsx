@@ -24,9 +24,9 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { OpenShiftSettingsTabSimpleConfig } from "./OpenShiftSettingsTabSimpleConfig";
-import { obfuscate } from "./GitHubSettingsTab";
 import { saveConfigCookie } from "../openshift/OpenShiftSettingsConfig";
 import { OpenShiftSettingsTabWizardConfig } from "./OpenShiftSettingsTabWizardConfig";
+import { obfuscate } from "../accounts/ConnectToGitHubSection";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,

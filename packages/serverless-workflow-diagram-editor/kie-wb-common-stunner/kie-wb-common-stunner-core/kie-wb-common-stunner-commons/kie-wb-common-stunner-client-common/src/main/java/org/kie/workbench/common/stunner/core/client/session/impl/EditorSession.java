@@ -25,10 +25,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentA
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -41,8 +39,6 @@ public abstract class EditorSession
         super();
     }
 
-    public abstract CanvasCommandManager<AbstractCanvasHandler> getCommandManager();
-
     public abstract Registry<Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry();
 
     public abstract Registry<Command<AbstractCanvasHandler, CanvasViolation>> getRedoCommandRegistry();
@@ -54,8 +50,6 @@ public abstract class EditorSession
     public abstract KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl();
 
     public abstract ClipboardControl<Element, AbstractCanvas, ClientSession> getClipboardControl();
-
-    public abstract SelectionControl<AbstractCanvasHandler, Element> getSelectionControl();
 
     public abstract ConnectionAcceptorControl<AbstractCanvasHandler> getConnectionAcceptorControl();
 

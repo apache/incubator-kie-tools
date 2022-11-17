@@ -22,6 +22,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       extendedServices: {
         version: require("../package.json").version,
+        dev: {
+          port: 21345,
+        },
       },
     };
   },

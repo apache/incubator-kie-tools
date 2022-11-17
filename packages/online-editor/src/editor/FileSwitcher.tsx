@@ -326,7 +326,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                     </Popover>
                   </FlexItem>
                   <FlexItem>
-                    <CaretDownIcon />
+                    <CaretDownIcon color={"rgb(21, 21, 21)"} />
                   </FlexItem>
                 </Flex>
               </Toggle>

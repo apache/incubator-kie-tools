@@ -15,17 +15,44 @@
  */
 
 import * as jsonc from "jsonc-parser";
+import { getLanguageService } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
+import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import {
-  ShouldCreateCodelensArgs,
   CodeCompletionStrategy,
   ShouldCompleteArgs,
+  ShouldCreateCodelensArgs,
   SwfLsNode,
   TranslateArgs,
 } from "./types";
+
+/**
+ * Check if a node has a comma after the end
+ *
+ * @param content -
+ * @param cursorOffset -
+ * @returns true if found, false otherwise
+ */
+export function hasNodeComma(content: string, cursorOffset: number): boolean {
+  return /^"?[\s\n]*,/.test(content.slice(cursorOffset));
+}
+
+/**
+ * Check if an offset is at the last child.
+ *
+ * @param content -
+ * @param cursorOffset -
+ * @returns true if yes, false otherwise. If the content is empty returns true.
+ */
+export function isOffsetAtLastChild(content: string, cursorOffset: number): boolean {
+  if (!content.trim()) {
+    return true;
+  }
+  return /^"?[\s\n]*[\]}]/.test(content.slice(cursorOffset));
+}
 
 export class SwfJsonLanguageService {
   private readonly ls: SwfLanguageService;
@@ -69,7 +96,31 @@ export class SwfJsonLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
-    return this.ls.getDiagnostics({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getDiagnostics({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      getSchemaDiagnostics: this.getSchemaDiagnostics,
+    });
+  }
+
+  private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
+    const jsonLs = getLanguageService({
+      schemaRequestService: async (uri) => {
+        if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
+          return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
+        } else {
+          throw new Error(`Unable to load schema from '${uri}'`);
+        }
+      },
+    });
+
+    jsonLs.configure({
+      allowComments: false,
+      schemas: [{ fileMatch: fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
+    });
+
+    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
+    return jsonLs.doValidation(textDocument, jsonDocument);
   }
 
   public dispose() {
@@ -79,8 +130,13 @@ export class SwfJsonLanguageService {
 
 export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {
+    const content = args.document.getText();
+    const isContentEmpty = !content.trim();
+    const isLastChild = isOffsetAtLastChild(content, args.cursorOffset);
+    const hasNodeCommaAlready = !isContentEmpty ? hasNodeComma(content, args.cursorOffset) : false;
+
     return (
-      JSON.stringify(args.completion, null, 2) + (args.currentNode && args.currentNode.type === "object" ? "," : "")
+      JSON.stringify(args.completion, null, 2) + (!isContentEmpty && !isLastChild && !hasNodeCommaAlready ? "," : "")
     );
   }
 

@@ -23,6 +23,7 @@
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
   <inherits name="com.google.gwt.resources.Resources" />
+  <inherits name="jakarta.Common" />
 
   <source path="autolayout"/>
   <source path="definition"/>

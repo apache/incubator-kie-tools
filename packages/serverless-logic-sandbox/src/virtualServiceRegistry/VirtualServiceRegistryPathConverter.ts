@@ -30,3 +30,9 @@ export function toVsrFunctionPathFromWorkspaceFilePath(args: { vsrWorkspaceId: s
 function toVsrWorkspacePath(vsrWorkspaceId: string): string {
   return `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${vsrWorkspaceId}`;
 }
+
+export function toWorkspaceIdFromVsrFunctionPath(functionPath: string) {
+  const regex = new RegExp(`${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}(.*)/`, "g");
+  const result = regex.exec(functionPath);
+  return result?.[1];
+}

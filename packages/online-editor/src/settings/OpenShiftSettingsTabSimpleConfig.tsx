@@ -28,12 +28,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { useOnlineI18n } from "../i18n";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
+import { EMPTY_CONFIG, saveConfigCookie } from "../openshift/OpenShiftSettingsConfig";
 import {
-  EMPTY_CONFIG,
-  isConfigValid,
-  OpenShiftSettingsConfig,
-  saveConfigCookie,
-} from "../openshift/OpenShiftSettingsConfig";
+  isOpenShiftConnectionValid,
+  OpenShiftConnection,
+} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
@@ -68,7 +67,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
   }, [kieSandboxExtendedServices.status, settings.openshift.config, settings.openshift.status]);
 
   const resetConfig = useCallback(
-    (config: OpenShiftSettingsConfig) => {
+    (config: OpenShiftConnection) => {
       setConfigValidated(
         settings.openshift.status === OpenShiftInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
           ? FormValiationOptions.CONFIG_EXPIRED
@@ -85,13 +84,13 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
       return;
     }
 
-    if (!isConfigValid(config)) {
+    if (!isOpenShiftConnectionValid(config)) {
       setConfigValidated(FormValiationOptions.INVALID);
       return;
     }
 
     setConnecting(true);
-    const isConfigOk = await settingsDispatch.openshift.service.onCheckConfig(config);
+    const isConfigOk = await settingsDispatch.openshift.service.isConnectionEstablished(config);
 
     if (isConfigOk) {
       saveConfigCookie(config);
@@ -195,6 +194,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
         )}
 
         <Button
+          style={{ paddingLeft: 0 }}
           id="dmn-dev-sandbox-config-use-wizard-button"
           key="use-wizard"
           className="pf-u-p-0"
@@ -204,6 +204,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
           data-testid="use-wizard-button"
         >
           {i18n.dmnDevSandbox.configModal.useWizard}
+          &nbsp;
           <ArrowRightIcon className="pf-u-ml-sm" />
         </Button>
 

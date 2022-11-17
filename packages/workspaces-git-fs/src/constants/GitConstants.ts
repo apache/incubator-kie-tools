@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const GIST_DEFAULT_BRANCH = "main";
 export const GIST_ORIGIN_REMOTE_NAME = "origin";
 export const GIT_ORIGIN_REMOTE_NAME = "origin";
 export const GIT_DEFAULT_BRANCH = "main";
+export const GIST_DEFAULT_BRANCH = "main";

@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
@@ -32,32 +32,32 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 @Bindable
 @Definition
 @Morph(base = State.class)
+@JSONMapper
 @JsType
 public class SwitchState extends State {
 
-    @JsIgnore
     public static final String TYPE_SWITCH = "switch";
 
     /**
      * Default transition of the workflow if there is no matching data conditions or event timeout is reached.
      * Can be a transition or end definition
      */
-    public DefaultConditionTransition defaultCondition;
+    private DefaultConditionTransition defaultCondition;
 
     /**
      * Events, which the switch state must wait for before transitioning to another workflow state.
      */
-    public EventConditionTransition[] eventConditions;
+    private EventConditionTransition[] eventConditions;
 
     /**
      * Data-based condition statement, which causes a transition to another workflow state if evaluated to true.
      */
-    public DataConditionTransition[] dataConditions;
+    private DataConditionTransition[] dataConditions;
 
     /**
      * If true, this state is used to compensate another state. Default is "false".
      */
-    public boolean usedForCompensation;
+    private Boolean usedForCompensation;
 
     public SwitchState() {
         this.type = TYPE_SWITCH;
@@ -87,11 +87,11 @@ public class SwitchState extends State {
         this.dataConditions = dataConditions;
     }
 
-    public boolean isUsedForCompensation() {
+    public Boolean getUsedForCompensation() {
         return usedForCompensation;
     }
 
-    public void setUsedForCompensation(boolean usedForCompensation) {
+    public void setUsedForCompensation(Boolean usedForCompensation) {
         this.usedForCompensation = usedForCompensation;
     }
 }

@@ -117,6 +117,16 @@
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
+      <artifactId>processor</artifactId>
+    </dependency>
+
     <!-- Testing -->
 
     <dependency>

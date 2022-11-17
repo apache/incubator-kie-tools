@@ -14,61 +14,20 @@
  * limitations under the License.
  */
 
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = makeCookieName("openshift", "namespace");
 export const OPENSHIFT_HOST_COOKIE_NAME = makeCookieName("openshift", "host");
 export const OPENSHIFT_TOKEN_COOKIE_NAME = makeCookieName("openshift", "token");
 
-export interface OpenShiftSettingsConfig {
-  namespace: string;
-  host: string;
-  token: string;
-}
-
-export const EMPTY_CONFIG: OpenShiftSettingsConfig = {
+export const EMPTY_CONFIG: OpenShiftConnection = {
   namespace: "",
   host: "",
   token: "",
 };
 
-export function isOpenShiftConfigValid(config: OpenShiftSettingsConfig): boolean {
-  return isNamespaceValid(config.namespace) && isHostValid(config.host) && isTokenValid(config.token);
-}
-
-export function isProxyValid(proxy: string): boolean {
-  if (!proxy || proxy.trim().length === 0) {
-    return false;
-  }
-  try {
-    new URL(proxy);
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
-export function isNamespaceValid(username: string): boolean {
-  return username !== undefined && username.trim().length > 0;
-}
-
-export function isHostValid(host: string): boolean {
-  if (!host || host.trim().length === 0) {
-    return false;
-  }
-  try {
-    new URL(host);
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
-export function isTokenValid(token: string): boolean {
-  return token !== undefined && token.trim().length > 0;
-}
-
-export function readOpenShiftConfigCookie(): OpenShiftSettingsConfig {
+export function readOpenShiftConfigCookie(): OpenShiftConnection {
   return {
     namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "",
     host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
@@ -92,7 +51,7 @@ export function saveTokenCookie(token: string): void {
   setCookie(OPENSHIFT_TOKEN_COOKIE_NAME, token);
 }
 
-export function saveConfigCookie(config: OpenShiftSettingsConfig): void {
+export function saveConfigCookie(config: OpenShiftConnection): void {
   saveNamespaceCookie(config.namespace);
   saveHostCookie(config.host);
   saveTokenCookie(config.token);

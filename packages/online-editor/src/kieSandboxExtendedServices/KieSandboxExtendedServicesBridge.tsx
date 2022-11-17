@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+interface ExtendedServicesPingResponse {
+  App: {
+    Version: string;
+    Started: boolean;
+  };
+}
+
 export class KieSandboxExtendedServicesBridge {
   private readonly KIE_SANDBOX_EXTENDED_SERVICES_PING: string;
 
@@ -26,11 +33,10 @@ export class KieSandboxExtendedServicesBridge {
     return response.status < 300;
   }
 
-  public async version(): Promise<string> {
+  public async version(): Promise<ExtendedServicesPingResponse> {
     const response = await fetch(this.KIE_SANDBOX_EXTENDED_SERVICES_PING, {
       method: "GET",
     });
-    const json = await response.json();
-    return json.App.Version;
+    return await response.json();
   }
 }

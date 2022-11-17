@@ -61,12 +61,27 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     }
   ) {}
 
+  public async kieSandboxWorkspacesGit_changeGitAuthSessionId(args: {
+    workspaceId: string;
+    gitAuthSessionId: string | undefined;
+  }): Promise<void> {
+    return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+      return this.args.services.descriptorService.changeGitAuthSessionId(fs, args.workspaceId, args.gitAuthSessionId);
+    });
+  }
+
   public async kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
     workspaceId: string;
     remoteUrl: string;
+    branch: string;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
-      return this.args.services.descriptorService.turnIntoGist(fs, args.workspaceId, new URL(args.remoteUrl));
+      return this.args.services.descriptorService.turnIntoGist(
+        fs,
+        args.workspaceId,
+        new URL(args.remoteUrl),
+        args.branch
+      );
     });
   }
 
@@ -401,10 +416,12 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     origin: GistOrigin | GitHubOrigin;
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
+    gitAuthSessionId: string | undefined;
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
     return this.createWorkspace({
       preferredName: new URL(args.origin.url).pathname.substring(1), // Remove slash
       origin: args.origin,
+      gitAuthSessionId: args.gitAuthSessionId,
       storeFiles: async (fs, schema, workspace) => {
         await this.args.services.gitService.clone({
           fs,
@@ -509,11 +526,13 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   public async kieSandboxWorkspacesGit_init(args: {
     localFiles: LocalFile[];
     preferredName?: string;
+    gitAuthSessionId: string | undefined;
     gitConfig?: { email: string; name: string };
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
     return this.createWorkspace({
       preferredName: args.preferredName,
       origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
+      gitAuthSessionId: args.gitAuthSessionId,
       storeFiles: async (fs, schema, workspace) => {
         const files = args.localFiles
           .filter((file) => !file.path.startsWith(".git/"))
@@ -684,11 +703,13 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     ) => Promise<WorkspaceWorkerFileDescriptor[]>;
     origin: WorkspaceOrigin;
     preferredName?: string;
+    gitAuthSessionId: string | undefined;
   }) {
     const { workspace, files } = await this.args.services.workspaceService.create({
       storeFiles: args.storeFiles,
       origin: args.origin,
       preferredName: args.preferredName,
+      gitAuthSessionId: args.gitAuthSessionId,
     });
 
     if (files.length <= 0) {

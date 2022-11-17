@@ -210,8 +210,8 @@ public final class Geometry {
     /**
      * @param xval x coordinate values for [0]=segment_start [1]=cp1 [2]=cp2 [3]=segment_end
      * @param yval y coordinate values for [0]=segment_start [1]=cp1 [2]=cp2 [3]=segment_end
-     * @param lx   x coordinate values for [0]=line-start [1]=line_ed
-     * @param ly   y coordinate values for [0]=line-start [1]=line_ed
+     * @param lx x coordinate values for [0]=line-start [1]=line_ed
+     * @param ly y coordinate values for [0]=line-start [1]=line_ed
      * @return The intersection points in the cartesian axis
      */
     public static final Point2DArray intersectLineCurve(final double[] xval, final double[] yval, final double[] lx, final double[] ly) {
@@ -435,7 +435,6 @@ public final class Geometry {
 
     /**
      * sort, but place -1 at the end
-     *
      * @param d
      */
     public static void sortSpecial(final double[] d) {
@@ -473,7 +472,6 @@ public final class Geometry {
 
     /**
      * Converts angle from degrees to radians.
-     *
      * @param angdeg
      * @return Angle converted from degrees to radians.
      */
@@ -483,7 +481,6 @@ public final class Geometry {
 
     /**
      * Converts angle from radians to degrees.
-     *
      * @param angrad
      * @return Angle converted from radians to degrees.
      */
@@ -524,7 +521,6 @@ public final class Geometry {
      * Returns the length that is opposite a0
      * http://www.mathsisfun.com/algebra/trig-solving-asa-triangles.html
      * b/sinB = c/sin C
-     *
      * @param a0
      * @param s0
      * @param a1
@@ -537,7 +533,6 @@ public final class Geometry {
     /**
      * Returns the angle between s0 and s1
      * http://www.mathsisfun.com/algebra/trig-solving-sss-triangles.html
-     *
      * @param s0
      * @param s1
      * @param s2
@@ -557,7 +552,6 @@ public final class Geometry {
     /**
      * Returns the clockwise angle between three points.
      * It starts at p0, that goes clock-wise around c until it reaches p1
-     *
      * @param p0
      * @param c
      * @param p1
@@ -593,7 +587,6 @@ public final class Geometry {
      * p1 and p2 refer to the calculated arc offsets for the new start and end points of the two lines.
      * <p>
      * For maths see Example 1 http://www.rasmus.is/uk/t/F/Su55k02.htm
-     *
      * @param list
      * @param points
      * @param radius
@@ -843,13 +836,12 @@ public final class Geometry {
      * Returns the points the line intersects the arcTo path. Note that as arcTo's points are actually two
      * lines form p1 at a tangent to the arc's circle, it can draw a line from p0 to the start of the arc
      * which forms another potential intersect point.
-     *
      * @param a0 start of the line
      * @param a1 end of the line
      * @param p0 p0 to p1 forms one line on the arc's circle tangent
      * @param p1 p1 to p2 forms one line on the arc's circle tangent
      * @param p2 p1 to p2 forms one line on the arc's circle tangent
-     * @param r  the radius of the arc
+     * @param r the radius of the arc
      * @return
      */
     public static final Point2DArray intersectLineArcTo(final Point2D a0, final Point2D a1, final Point2D p0, final Point2D p1, final Point2D p2, final double r) {
@@ -927,7 +919,7 @@ public final class Geometry {
      * @param a0 start of the line
      * @param a1 end of the line
      * @param pc centore of the circle
-     * @param r  radius of the circle
+     * @param r radius of the circle
      * @return
      */
     public static final Point2DArray intersectLineCircle(final Point2D a0, final Point2D a1, final Point2D pc, final double r) {
@@ -974,7 +966,6 @@ public final class Geometry {
     /**
      * Canvas arcTo's have a variable center, as points a, b and c form two lines from the same point at a tangent to the arc's cirlce.
      * This returns the arcTo arc start, center and end points.
-     *
      * @param p0
      * @param p1
      * @param r
@@ -1035,7 +1026,6 @@ public final class Geometry {
 
     /**
      * Finds the intersection of the connector's end segment on a path.
-     *
      * @param connection
      * @param path
      * @param c
@@ -1307,7 +1297,6 @@ public final class Geometry {
 
     /**
      * Returns cardinal points for a given bounding box
-     *
      * @param box the bounding box
      * @return [C, N, NE, E, SE, S, SW, W, NW]
      */
@@ -1373,7 +1362,6 @@ public final class Geometry {
      * SE x > 0, y >= 0
      * SW x <= 0, y >= 0
      * NW x <= 0, y < 0
-     *
      * @param cx
      * @param cy*
      * @param x0
@@ -1419,7 +1407,6 @@ public final class Geometry {
 
     /**
      * Finds intersecting point from the center of a path
-     *
      * @param x
      * @param y
      * @param path
@@ -1485,9 +1472,8 @@ public final class Geometry {
 
     /**
      * Find the closest point on a given line defined by the points on the {@link Point2DArray},given a reference point x,y.
-     *
-     * @param x          reference point x
-     * @param y          reference point y
+     * @param x reference point x
+     * @param y reference point y
      * @param linePoints points of segments that compose the line
      * @return
      */
@@ -1512,9 +1498,8 @@ public final class Geometry {
 
     /**
      * Find the closest point on a given line defined by two the points, given a reference point (x,y).
-     *
-     * @param x          reference point x
-     * @param y          reference point y
+     * @param x reference point x
+     * @param y reference point y
      * @param linePoint1 points of segments that compose the line
      * @param linePoint2 an offset to disconsider points close to @param linePoints
      * @return

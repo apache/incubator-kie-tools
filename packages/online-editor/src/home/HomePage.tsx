@@ -546,7 +546,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                 >
                   <NewFileDropdownMenu
                     alerts={alerts}
-                    workspaceId={workspace.descriptor.workspaceId}
+                    workspaceDescriptor={workspace.descriptor}
                     destinationDirPath={""}
                     onAddFile={async () => setNewFileDropdownMenuOpen(false)}
                   />

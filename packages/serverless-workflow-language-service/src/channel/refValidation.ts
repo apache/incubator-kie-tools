@@ -16,8 +16,9 @@
 
 import { SwfRef, swfRefValidationMap } from "./swfRefValidationMap";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { Diagnostic, TextDocument } from "vscode-json-languageservice";
 import { SwfLsNode } from "./types";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { Diagnostic } from "vscode-languageserver-types";
 
 export function doRefValidation(args: { textDocument: TextDocument; rootNode: SwfLsNode }): Diagnostic[] {
   return [...swfRefValidationMap.entries()].flatMap(([src, refs]) => {

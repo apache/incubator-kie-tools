@@ -46,20 +46,20 @@ runs:
 
           echo "Merge changes from $user/${{ github.head_ref }}"
           git remote add $user https://github.com/$user/kie-tools.git
-          git fetch $user ${{ github.head_ref }} 
+          git fetch $user ${{ github.head_ref }}
 
           echo "Before merging..."
           git log -n 1
-          echo "::set-output name=base_sha::$(git rev-parse HEAD)"
+          echo "base_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
           git merge --squash $user/${{ github.head_ref }}
           git commit --no-edit
 
           echo "After merging..."
           git log -n 1
-          echo "::set-output name=head_sha::$(git rev-parse HEAD)"
+          echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         else
           echo "Skip merge, not a pull request"
-          echo "::set-output name=base_sha::$(git rev-parse HEAD^1)"
-          echo "::set-output name=head_sha::$(git rev-parse HEAD)"
+          echo "base_sha=$(git rev-parse HEAD^1)" >> $GITHUB_OUTPUT
+          echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         fi

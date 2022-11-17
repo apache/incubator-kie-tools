@@ -27,7 +27,7 @@ public class FilledKeyNullIdWorkflowTest extends BaseMarshallingTest {
         unmarshallWorkflow();
         assertDefinitionReferencedInNode(workflow, "workflow1");
         assertEquals(3, countChildren("workflow1"));
-        OperationState state = (OperationState) workflow.states[0];
+        OperationState state = (OperationState) workflow.getStates()[0];
         assertDefinitionReferencedInNode(state, "State1");
         assertParentOf("workflow1", "State1");
         assertTrue(hasIncomingEdges("State1"));

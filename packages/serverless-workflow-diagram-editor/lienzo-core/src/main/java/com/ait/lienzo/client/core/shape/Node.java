@@ -97,7 +97,6 @@ import jsinterop.base.Js;
 /**
  * Node is the base class for {@link ContainerNode} and {@link Shape}.
  * This class provides a lot of the scaffolding for drawable nodes.
- *
  * @param <T>
  */
 public abstract class Node<T extends Node<T>> implements IDrawable<T> {
@@ -204,13 +203,10 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     @JsIgnore
     protected Node(final NodeType type) {
         m_type = type;
-
-        // m_attr = new Attributes(this);
     }
 
     /**
      * Only sub-classes that wish to extend a Shape should use this.
-     *
      * @param type
      */
     protected void setNodeType(final NodeType type) {
@@ -247,7 +243,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets the X and Y attributes to P.x and P.y
-     *
      * @param p Point2D
      * @return this Shape
      */
@@ -358,7 +353,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Returns the X and Y attributes as a Point2D
-     *
      * @return Point2D
      */
     public Point2D getLocation() {
@@ -367,7 +361,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Returns true if this shape can be dragged; false otherwise.
-     *
      * @return boolean
      */
     public boolean isDraggable() {
@@ -376,7 +369,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets if this shape can be dragged or not.
-     *
      * @return T
      */
     public T setDraggable(final boolean draggable) {
@@ -387,7 +379,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Gets this node's {@link com.ait.lienzo.shared.core.types.DragConstraint}
-     *
      * @return DragConstraint
      */
     public DragConstraint getDragConstraint() {
@@ -396,7 +387,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets this node's drag constraint; e.g., horizontal, vertical or none (default)
-     *
      * @param constraint
      * @return T
      */
@@ -408,7 +398,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Gets the {@link DragBounds} for this node.
-     *
      * @return DragBounds
      */
     public DragBounds getDragBounds() {
@@ -417,7 +406,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets this nodes's drag bounds.
-     *
      * @param bounds
      * @return T
      */
@@ -429,7 +417,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Gets the {@link com.ait.lienzo.shared.core.types.DragMode} for this node.
-     *
      * @return DragMode
      */
     public DragMode getDragMode() {
@@ -438,7 +425,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets this node's drag mode.
-     *
      * @param mode
      * @return T
      */
@@ -521,7 +507,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Returns the Layer that this Node is on.
-     *
      * @return {@link Layer}
      */
     @Override
@@ -536,7 +521,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Returns the Scene that this Node is on.
-     *
      * @return Scene
      */
     @Override
@@ -564,7 +548,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Gets the viewport's Over Layer {@link Layer}
-     *
      * @return Layer
      */
     @Override
@@ -579,7 +562,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Gets the object's {@link ScratchPad}
-     *
      * @return ScratchPad
      */
     @Override
@@ -594,7 +576,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Returns the node's {@link NodeType}.
-     *
      * @return {@link NodeType}
      */
     @Override
@@ -641,7 +622,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
      * Shapes should apply the non-Transform related attributes (such a colors, strokeWidth etc.)
      * and draw the Shape's details (such as the the actual lines and fills)
      * and Groups should draw their children.
-     *
      * @param context
      */
     protected abstract void drawWithoutTransforms(Context2D context, double alpha, BoundingBox bounds);
@@ -677,7 +657,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     /**
      * Returns the absolute transform by concatenating the transforms
      * of all its ancestors from the Viewport down to this node's parent.
-     *
      * @return {@link Transform}
      */
 
@@ -839,7 +818,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets whether the node is visible.
-     *
      * @param visible
      * @return this Node
      */
@@ -871,7 +849,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets whether this node is listening for events.
-     *
      * @param listening
      * @return this Node
      */
@@ -889,7 +866,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Sets the ID of this node.
-     *
      * @param id
      * @return
      */
@@ -902,7 +878,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Returns the ID of this node.
-     *
      * @return String
      */
     @Override
@@ -921,7 +896,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
 
     /**
      * Returns this Node
-     *
      * @return Node
      */
     @Override

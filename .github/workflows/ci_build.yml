@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: "**"
+    branches: ["**"]
     types: [opened, reopened, ready_for_review, synchronize]
 
 concurrency:
@@ -54,16 +54,16 @@ jobs:
 
           if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
             echo 'No source files changed; `CI :: Build` (none) will run.'
-            echo "::set-output name=mode::none"
+            echo "mode=none" >> $GITHUB_OUTPUT
           elif [ ! ${{ github.event.pull_request }} ]; then
             echo 'Push to the `main` branch happened; `CI :: Build` (full) will run.'
-            echo "::set-output name=mode::full"
+            echo "mode=full" >> $GITHUB_OUTPUT
           elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
             echo 'No source files changed in root; `CI :: Build` (partial) will run.'
-            echo "::set-output name=mode::partial"
+            echo "mode=partial" >> $GITHUB_OUTPUT
           else
             echo 'Source files changed in root; `CI :: Build` (full) will run.'
-            echo "::set-output name=mode::full"
+            echo "mode=full" >> $GITHUB_OUTPUT
           fi
 
           echo "Done"
@@ -132,7 +132,7 @@ jobs:
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
-        uses: mikepenz/action-junit-report@1b47bb811362f3d8d753fc148cb7a13ec9e55570
+        uses: mikepenz/action-junit-report@ab07dd7abefd456d92ecbeb22f81392fafe3d528
         with:
           check_name: "-"
           annotate_only: true

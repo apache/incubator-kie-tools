@@ -5,7 +5,7 @@ on:
   schedule:
     - cron: "0 3 * * *" # 3am UTC everyday
   pull_request:
-    branches: "**"
+    branches: ["**"]
     paths:
       - ".github/workflows/staging*"
       - ".github/actions/**"

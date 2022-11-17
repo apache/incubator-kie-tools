@@ -16,11 +16,15 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
+import {
+  InitDeployArgs,
+  WebToolsOpenShiftDeployedModel,
+  InitSwfDeployArgs,
+  CompletedDeployOperation,
+} from "./deploy/types";
 
 export interface OpenShiftContextType {
-  deployments: OpenShiftDeployedModel[];
+  deployments: WebToolsOpenShiftDeployedModel[];
 
   isDeployDropdownOpen: boolean;
   setDeployDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,13 +35,8 @@ export interface OpenShiftContextType {
   isConfirmDeployModalOpen: boolean;
   setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
-  deploy(args: {
-    workspaceFile: WorkspaceFile;
-    shouldAttachKafkaSource: boolean;
-    shouldDeployAsProject: boolean;
-  }): Promise<string | undefined>;
-  uploadArtifactToServiceRegistry(artifactId: string, content: string): Promise<void>;
-  fetchOpenApiFile(resourceName: string): Promise<string | undefined>;
+  deploy(args: InitDeployArgs): Promise<CompletedDeployOperation>;
+  deploySwf(args: InitSwfDeployArgs): Promise<CompletedDeployOperation>;
 }
 
 export const OpenShiftContext = React.createContext<OpenShiftContextType>({} as any);

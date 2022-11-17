@@ -21,7 +21,6 @@ import {
   SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import { TextDocument } from "vscode-json-languageservice";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { getNodePath } from "./SwfLanguageService";
 import { SwfLanguageServiceCommandExecution } from "../api";
@@ -38,6 +37,7 @@ import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
 import { CodeCompletionStrategy, SwfLsNode } from "./types";
+import { TextDocument } from "vscode-languageserver-textdocument";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
@@ -48,6 +48,7 @@ export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
   codeCompletionStrategy: CodeCompletionStrategy;
   currentNode: SwfLsNode;
   currentNodeRange: Range;
+  cursorOffset: number;
   document: TextDocument;
   langServiceConfig: SwfLanguageServiceConfig;
   overwriteRange: Range;
@@ -83,8 +84,9 @@ function toCompletionItemLabelPrefix(
 function createCompletionItem(args: {
   codeCompletionStrategy: CodeCompletionStrategy;
   completion: object | string;
-  currentNode: SwfLsNode;
   currentNodeRange: Range;
+  cursorOffset: number;
+  document: TextDocument;
   detail: string;
   extraOptions?: Partial<CompletionItem>;
   kind: CompletionItemKind;
@@ -99,11 +101,8 @@ function createCompletionItem(args: {
     detail: args.detail,
     textEdit: {
       newText: args.codeCompletionStrategy.translate({
-        completion: args.completion,
+        ...args,
         completionItemKind: args.kind,
-        overwriteRange: args.overwriteRange,
-        currentNodeRange: args.currentNodeRange,
-        currentNode: args.currentNode,
       }),
       range: args.overwriteRange,
     },
@@ -138,6 +137,8 @@ export const SwfLanguageServiceCodeCompletion = {
   getEmptyFileCodeCompletions(args: {
     cursorPosition: Position;
     codeCompletionStrategy: CodeCompletionStrategy;
+    cursorOffset: number;
+    document: TextDocument;
   }): CompletionItem[] {
     const kind = CompletionItemKind.Text;
     const label = "Create your first Serverless Workflow";
@@ -149,7 +150,11 @@ export const SwfLanguageServiceCodeCompletion = {
         detail: "Start with a simple Serverless Workflow",
         sortText: `100_${label}`, //place the completion on top in the menu
         textEdit: {
-          newText: args.codeCompletionStrategy.translate({ completion: workflowCompletion, completionItemKind: kind }),
+          newText: args.codeCompletionStrategy.translate({
+            ...args,
+            completion: workflowCompletion,
+            completionItemKind: kind,
+          }),
           range: Range.create(args.cursorPosition, args.cursorPosition),
         },
         insertTextFormat: InsertTextFormat.Snippet,

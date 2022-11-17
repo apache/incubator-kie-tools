@@ -66,7 +66,7 @@ export function Component() {
         <br />
         <TextContent>
           <Text component={TextVariants.p}>
-            {`If you have work that you'd like to download or push, please use the `}
+            {`If you have work that you'd like to download or Push, please use the `}
             <a href={LATEST_VERSION_COMPATIBLE_WITH_LFS}>latest compatible version</a>
             {`.`}
           </Text>

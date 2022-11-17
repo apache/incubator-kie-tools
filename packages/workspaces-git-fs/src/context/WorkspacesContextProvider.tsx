@@ -170,7 +170,12 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (args: { localFiles: LocalFile[]; preferredName?: string; gitConfig?: { email: string; name: string } }) => {
+    async (args: {
+      localFiles: LocalFile[];
+      preferredName?: string;
+      gitAuthSessionId: string | undefined;
+      gitConfig?: { email: string; name: string };
+    }) => {
       const workspaceInit = await workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args)
       );
@@ -192,6 +197,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: {
       origin: GistOrigin | GitHubOrigin;
       gitConfig?: { email: string; name: string };
+      gitAuthSessionId: string | undefined;
       authInfo?: {
         username: string;
         password: string;
@@ -409,13 +415,26 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const initGistOnWorkspace = useCallback(
-    async (args: { workspaceId: string; remoteUrl: URL }) =>
+    async (args: { workspaceId: string; remoteUrl: URL; branch: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
           workspaceId: args.workspaceId,
           remoteUrl: args.remoteUrl.toString(),
+          branch: args.branch,
         })
       ),
+    [workspacesSharedWorker]
+  );
+
+  const changeGitAuthSessionId = useCallback(
+    async (args: { workspaceId: string; gitAuthSessionId: string | undefined }) => {
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_changeGitAuthSessionId({
+          workspaceId: args.workspaceId,
+          gitAuthSessionId: args.gitAuthSessionId,
+        })
+      );
+    },
     [workspacesSharedWorker]
   );
 
@@ -464,6 +483,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,
       getGitServerRefs,
@@ -502,6 +522,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,
       getGitServerRefs,

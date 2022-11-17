@@ -32,15 +32,15 @@ import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/Kie
 import { useOnlineI18n } from "../i18n";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import {
-  isConfigValid,
+  isOpenShiftConnectionValid,
   isHostValid,
   isNamespaceValid,
   isTokenValid,
-  OpenShiftSettingsConfig,
-  saveConfigCookie,
-} from "../openshift/OpenShiftSettingsConfig";
+  OpenShiftConnection,
+} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { saveConfigCookie } from "../openshift/OpenShiftSettingsConfig";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "../openshift/OpenShiftService";
+import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "@kie-tools-core/openshift/dist/service/OpenShiftConstants";
 import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 
@@ -79,7 +79,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
   }, [config.token]);
 
   useEffect(() => {
-    setConfigValidated(isConfigValid(config));
+    setConfigValidated(isOpenShiftConnectionValid(config));
   }, [config]);
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
     props.setMode(OpenShiftSettingsTabMode.SIMPLE);
   }, []);
 
-  const resetConfig = useCallback((config: OpenShiftSettingsConfig) => {
+  const resetConfig = useCallback((config: OpenShiftConnection) => {
     setConfigValidated(false);
     setSaveLoading(false);
     setConnectLoading(false);
@@ -116,7 +116,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
     async ({ id }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConfigValidated(await settingsDispatch.openshift.service.onCheckConfig(config));
+        setConfigValidated(await settingsDispatch.openshift.service.isConnectionEstablished(config));
         setConnectLoading(false);
       }
     },
@@ -130,7 +130,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
 
     setSaveLoading(true);
 
-    const isConfigOk = await settingsDispatch.openshift.service.onCheckConfig(config);
+    const isConfigOk = await settingsDispatch.openshift.service.isConnectionEstablished(config);
     if (isConfigOk) {
       settingsDispatch.openshift.setConfig(config);
       saveConfigCookie(config);
@@ -161,6 +161,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
                   <Text component={TextVariants.p}>
                     <a href={DEVELOPER_SANDBOX_GET_STARTED_URL} target={"_blank"}>
                       {i18n.dmnDevSandbox.configWizard.steps.first.goToGetStartedPage}
+                      &nbsp;
                       <ExternalLinkAltIcon className="pf-u-mx-sm" />
                     </a>
                   </Text>

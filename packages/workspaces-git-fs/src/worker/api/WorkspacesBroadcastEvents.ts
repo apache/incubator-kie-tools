@@ -21,7 +21,8 @@ export type WorkspacesBroadcastEvents =
   | { type: "WSS_DELETE_ALL" }
   | { type: "WSS_ADD_WORKSPACE"; workspaceId: string }
   | { type: "WSS_RENAME_WORKSPACE"; workspaceId: string }
-  | { type: "WSS_DELETE_WORKSPACE"; workspaceId: string };
+  | { type: "WSS_DELETE_WORKSPACE"; workspaceId: string }
+  | { type: "WSS_UPDATE"; workspaceId: string };
 
 export type WorkspacesFilesBroadcastEvents =
   | { type: "WSSFS_ADD"; workspaceId: string; relativePath: string }

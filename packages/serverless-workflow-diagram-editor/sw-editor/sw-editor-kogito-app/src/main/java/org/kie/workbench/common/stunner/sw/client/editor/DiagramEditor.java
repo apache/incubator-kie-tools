@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.util.WindowJSType;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -209,9 +209,9 @@ public class DiagramEditor {
         });
     }
 
-    public  Promise<Void> selectStateByName(final String name){
+    public Promise<Void> selectStateByName(final String name) {
         String uuid = diagramService.getMarshaller().getContext().getNameToUUIDBindings().get(name);
-        ViewerSession session = (ViewerSession) stunnerEditor.getSession();
+        AbstractSession session = (AbstractSession) stunnerEditor.getSession();
         // highlight the node
         session.getSelectionControl().clearSelection().addSelection(uuid);
 
@@ -239,9 +239,10 @@ public class DiagramEditor {
 
     @SuppressWarnings("all")
     void updateDiagram(Diagram diagram) {
-        ViewerSession session = (ViewerSession) stunnerEditor.getSession();
-        AbstractCanvasHandler canvasHandler = session.getCanvasHandler();
-        Diagram currentDiagram = canvasHandler.getDiagram();
+        AbstractSession session = (AbstractSession) stunnerEditor.getSession();
+
+        AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) stunnerEditor.getCanvasHandler();
+        Diagram currentDiagram = stunnerEditor.getCanvasHandler().getDiagram();
         CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
 
         // Preserve session state.
@@ -289,9 +290,8 @@ public class DiagramEditor {
             RegExpResult execs = jsRegExp.exec(value);
 
             if (execs != null || execs.length > 0) {
-                ViewerSession session = (ViewerSession) stunnerEditor.getSession();
-                AbstractCanvasHandler canvasHandler = session.getCanvasHandler();
-                Diagram oldDiagram = canvasHandler.getDiagram();
+
+                Diagram oldDiagram = stunnerEditor.getCanvasHandler().getDiagram();
 
                 if (execs.getAt(2).equals(oldDiagram.getGraph().getUUID())) {
                     found = true;
@@ -345,7 +345,7 @@ public class DiagramEditor {
 
     @SuppressWarnings("all")
     static void centerFirstSelectedNode(StunnerEditor stunnerEditor, JsCanvas jsCanvas) {
-        ViewerSession session = (ViewerSession) stunnerEditor.getSession();
+        AbstractSession session = (AbstractSession) stunnerEditor.getSession();
         SelectionControl<AbstractCanvasHandler, Element> selectionControl = session.getSelectionControl();
 
         if (!selectionControl.getSelectedItems().isEmpty()) {

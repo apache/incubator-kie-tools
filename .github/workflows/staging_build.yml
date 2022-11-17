@@ -67,10 +67,10 @@ jobs:
       KIE_SANDBOX_EXTENDED_SERVICES__imageName: "kie-sandbox-extended-services-image"
       KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: "${{ inputs.tag }}-prerelease"
 
-      CORS_PROXY__imageRegistry: "quay.io"
-      CORS_PROXY__imageAccount: "kie-tools"
-      CORS_PROXY__imageName: "cors-proxy-image"
-      CORS_PROXY__imageBuildTags: "${{ inputs.tag }}-prerelease"
+      GIT_CORS_PROXY__imageRegistry: "quay.io"
+      GIT_CORS_PROXY__imageAccount: "kie-tools"
+      GIT_CORS_PROXY__imageName: "git-cors-proxy-image"
+      GIT_CORS_PROXY__imageBuildTags: "${{ inputs.tag }}-prerelease"
 
       DEPLOY_TAG: "${{ inputs.tag }}-prerelease"
 
@@ -168,7 +168,7 @@ jobs:
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
           ONLINE_EDITOR__gtmId: ""
-          ONLINE_EDITOR__corsProxyUrl: "https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+          ONLINE_EDITOR__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
           DMN_DEV_SANDBOX__gtmId: ""
           DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           SERVERLESS_LOGIC_SANDBOX__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
@@ -176,7 +176,7 @@ jobs:
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
-          SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: "https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+          SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
         run: |
           pnpm -r build:prod
 
@@ -214,24 +214,24 @@ jobs:
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "golang"
 
-      - name: "STAGING: Push cors-proxy-image to quay.io (Ubuntu only)"
+      - name: "STAGING: Push git-cors-proxy-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.CORS_PROXY__imageName }}"
-          tags: "${{ env.CORS_PROXY__imageBuildTags }}"
-          registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
-          username: "${{ env.CORS_PROXY__imageAccount }}"
+          image: "${{ env.GIT_CORS_PROXY__imageName }}"
+          tags: "${{ env.GIT_CORS_PROXY__imageBuildTags }}"
+          registry: "${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}"
+          username: "${{ env.GIT_CORS_PROXY__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Deploy cors-proxy-image to OpenShift (Ubuntu only)"
-        id: deploy_cors_proxy_image
+      - name: "STAGING: Deploy git-cors-proxy-image to OpenShift (Ubuntu only)"
+        id: deploy_git_cors_proxy_image
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: ./kie-tools/.github/actions/deploy-openshift
         with:
           image_tag: ${{ env.DEPLOY_TAG }}
-          image_url: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}/${{ env.CORS_PROXY__imageName }}:${{ env.DEPLOY_TAG }}"
-          app_name: "staging-cors-proxy"
+          image_url: "${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}/${{ env.GIT_CORS_PROXY__imageName }}:${{ env.DEPLOY_TAG }}"
+          app_name: "staging-git-cors-proxy"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
           openshift_token: ${{ secrets.openshift_token }}
@@ -253,7 +253,7 @@ jobs:
         shell: bash
         run: |
           echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${{ steps.deploy_kie_sandbox_extended_services_image.outputs.route_url }}" >> deployment.env
-          echo "CORS_PROXY_URL=${{ steps.deploy_cors_proxy_image.outputs.route_url }}" >> deployment.env
+          echo "KIE_SANDBOX_GIT_CORS_PROXY_URL=${{ steps.deploy_git_cors_proxy_image.outputs.route_url }}" >> deployment.env
 
       - name: "STAGING: Deploy kie-sandbox-image to OpenShift (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}

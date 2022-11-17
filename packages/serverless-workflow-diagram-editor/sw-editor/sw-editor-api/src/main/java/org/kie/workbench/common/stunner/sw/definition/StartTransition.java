@@ -20,7 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -29,6 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 /**
  * Represents the transition edge from Start node to first state in the workflow.
@@ -44,19 +47,18 @@ public class StartTransition {
     public static final String LABEL_TRANSITION_START = "transition_start";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.TRANSITIONS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(Transition.LABEL_TRANSITION,
                                                         LABEL_TRANSITION_START).collect(Collectors.toSet());
 
     /**
      * References of the target state.
      */
-    @JsIgnore
-    public Object transition;
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
+    private Object transition;
 
     public StartTransition() {
     }

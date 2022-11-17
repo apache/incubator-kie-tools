@@ -134,6 +134,10 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
       });
       const vsrFunctionContent = await vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content));
 
+      if (!vsrFunctionContent) {
+        return;
+      }
+
       const fs = await vsrFsService.getFs(workspaceId);
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         if (

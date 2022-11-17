@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 
+import { Octokit } from "@octokit/rest";
 import { useMemo } from "react";
-import { AuthStatus, useSettings } from "../settings/SettingsContext";
+import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
 
-export function useGitHubAuthInfo() {
-  const settings = useSettings();
+export function useOctokit(authSession: AuthSession | undefined): Octokit {
+  const authProviders = useAuthProviders();
+
   return useMemo(() => {
-    if (settings.github.authStatus !== AuthStatus.SIGNED_IN) {
-      return undefined;
+    if (authSession?.type !== "git") {
+      return new Octokit();
     }
 
-    return {
-      name: settings.github.user!.name,
-      email: settings.github.user!.email,
-      username: settings.github.user!.login,
-      password: settings.github.token!,
-    };
-  }, [settings.github]);
+    const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
+    if (authProvider?.type !== "github") {
+      return new Octokit();
+    }
+
+    return new Octokit({ baseUrl: getGithubInstanceApiUrl(authProvider.domain), auth: authSession.token });
+  }, [authProviders, authSession]);
 }
+
+export const getGithubInstanceApiUrl = (domain: string) => {
+  if (domain === "github.com") {
+    return undefined;
+  }
+  return `https://${domain}/api/v3`;
+};

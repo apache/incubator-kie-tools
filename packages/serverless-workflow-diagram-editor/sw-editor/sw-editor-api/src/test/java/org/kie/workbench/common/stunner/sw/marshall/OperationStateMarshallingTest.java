@@ -54,13 +54,13 @@ public class OperationStateMarshallingTest extends BaseMarshallingTest {
         unmarshallWorkflow();
         assertDefinitionReferencedInNode(workflow, WORKFLOW_ID);
         assertEquals(4, countChildren(WORKFLOW_ID));
-        OperationState state = (OperationState) workflow.states[0];
+        OperationState state = (OperationState) workflow.getStates()[0];
         assertDefinitionReferencedInNode(state, "State1");
         assertParentOf(WORKFLOW_ID, "State1");
         assertTrue(hasIncomingEdges("State1"));
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
         assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
-        assertDefinitionReferencedInNode(state.actions[0], "Call Function 1");
+        assertDefinitionReferencedInNode(state.getActions()[0], "Call Function 1");
     }
 }

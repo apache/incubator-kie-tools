@@ -18,25 +18,15 @@ import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { ModalVariant } from "@patternfly/react-core/dist/esm/components/Modal";
 import * as React from "react";
 import { StartupBlockerTemplate } from "./StartupBlockerTemplate";
-import * as Bowser from "bowser";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { KieIcon } from "./KieIcon";
 import { LATEST_VERSION_COMPATIBLE_WITH_LFS } from "./LatestCompatibleVersion";
 import { APP_NAME } from "../../AppConstants";
-
-const hasNecessaryApis = window["SharedWorker"] && window["BroadcastChannel"];
-const isCompatibleBrowser = Bowser.getParser(window.navigator.userAgent).satisfies({
-  chrome: ">=4",
-  // edge: ">=79", KOGITO-8166: Assess browser compatibility
-  safari: ">=16",
-  firefox: ">=29", // KOGITO-8166: Assess browser compatibility
-  // opera: ">=12", KOGITO-8166: Assess browser compatibility
-});
-const browserInfo = Bowser.parse(window.navigator.userAgent);
+import { BROWSER_DETAILS, SUPPORTED_BROWSERS } from "./SupportedBrowsers";
 
 export async function isTrue() {
-  return !hasNecessaryApis || !isCompatibleBrowser;
+  return !BROWSER_DETAILS.isCompatible;
 }
 
 export function Component() {
@@ -53,9 +43,10 @@ export function Component() {
         <br />
         <TextContent>
           <Text component={TextVariants.h4}>
-            {`${APP_NAME} is not compatible with this browser.`}{" "}
+            {`${APP_NAME} is not compatible with this browser.`}
+            <br />
             <small style={{ display: "inline" }}>
-              ({browserInfo.browser.name} {browserInfo.browser.version})
+              {BROWSER_DETAILS.info.browser.name} {BROWSER_DETAILS.info.os.name} {BROWSER_DETAILS.info.browser.version}
             </small>
           </Text>
         </TextContent>
@@ -63,11 +54,13 @@ export function Component() {
         <hr />
         <br />
         <TextContent>
-          <Text component={TextVariants.p}>Compatible browsers are:</Text>
+          <Text component={TextVariants.p}>Compatible desktop browsers are:</Text>
           <List>
-            <ListItem>Chromium-based</ListItem>
-            <ListItem>Firefox</ListItem>
-            <ListItem>Safari 16 or newer</ListItem>
+            <ListItem>{`Chrome (${SUPPORTED_BROWSERS.chrome}) - recommended`}</ListItem>
+            <ListItem>{`Firefox (${SUPPORTED_BROWSERS.firefox})`}</ListItem>
+            <ListItem>{`Safari (${SUPPORTED_BROWSERS.safari})`}</ListItem>
+            <ListItem>{`Opera (${SUPPORTED_BROWSERS.opera})`}</ListItem>
+            <ListItem>{`Edge (${SUPPORTED_BROWSERS.edge})`}</ListItem>
           </List>
         </TextContent>
         <br />

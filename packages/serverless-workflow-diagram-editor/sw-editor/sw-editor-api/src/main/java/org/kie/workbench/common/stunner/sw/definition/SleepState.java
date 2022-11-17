@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
@@ -33,10 +33,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 @Bindable
 @Definition
 @Morph(base = State.class)
+@JSONMapper
 @JsType
 public class SleepState extends State {
 
-    @JsIgnore
     public static final String TYPE_SLEEP = "sleep";
 
     /**
@@ -44,7 +44,7 @@ public class SleepState extends State {
      *
      * For example: "PT15M" (sleep 15 minutes), or "P2DT3H4M" (sleep 2 days, 3 hours and 4 minutes)
      */
-    public String duration;
+    private String duration;
 
     public SleepState() {
         this.type = TYPE_SLEEP;

@@ -20,7 +20,7 @@ import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
 
-export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
+export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace }) {
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
   });

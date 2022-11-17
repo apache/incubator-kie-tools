@@ -19,11 +19,13 @@ import { v4 as uuid } from "uuid";
 import { StorageFile, StorageService } from "./StorageService";
 import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { WorkspaceKind, WorkspaceOrigin } from "../worker/api/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
+import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { join } from "path";
 import { FsSchema } from "./FsCache";
+import { Broadcaster } from "./FsService";
+import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesBroadcastEvents";
 
 export class WorkspaceDescriptorService {
   constructor(
@@ -53,6 +55,11 @@ export class WorkspaceDescriptorService {
       lastUpdatedDateISO: new Date().toISOString(),
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
+
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
   }
 
   public async get(fs: KieSandboxWorkspacesFs, workspaceId: string): Promise<WorkspaceDescriptor> {
@@ -65,13 +72,19 @@ export class WorkspaceDescriptorService {
     return JSON.parse(decoder.decode(await workspaceDescriptorFile.getFileContents()));
   }
 
-  public async create(args: { fs: KieSandboxWorkspacesFs; origin: WorkspaceOrigin; preferredName?: string }) {
+  public async create(args: {
+    fs: KieSandboxWorkspacesFs;
+    origin: WorkspaceOrigin;
+    preferredName?: string;
+    gitAuthSessionId: string | undefined;
+  }) {
     const workspace: WorkspaceDescriptor = {
       workspaceId: this.newWorkspaceId(),
       name: args.preferredName?.trim() || NEW_WORKSPACE_DEFAULT_NAME,
       origin: args.origin,
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
+      gitAuthSessionId: args.gitAuthSessionId,
     };
     await this.storageService.createOrOverwriteFile(args.fs, this.toStorageFile(workspace));
     return workspace;
@@ -89,16 +102,26 @@ export class WorkspaceDescriptorService {
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
   }
 
-  public async turnIntoGist(fs: KieSandboxWorkspacesFs, workspaceId: string, gistUrl: URL) {
+  public async turnIntoGist(fs: KieSandboxWorkspacesFs, workspaceId: string, gistUrl: URL, branch: string) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       origin: {
         kind: WorkspaceKind.GITHUB_GIST,
         url: gistUrl.toString(),
-        branch: GIST_DEFAULT_BRANCH,
+        branch,
       },
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
+
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
   }
 
   public async turnIntoGit(fs: KieSandboxWorkspacesFs, workspaceId: string, url: URL) {
@@ -111,6 +134,38 @@ export class WorkspaceDescriptorService {
       },
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
+
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
+  }
+
+  public async changeGitAuthSessionId(
+    fs: KieSandboxWorkspacesFs,
+    workspaceId: string,
+    gitAuthSessionId: string | undefined
+  ) {
+    const file = this.toStorageFile({
+      ...(await this.get(fs, workspaceId)),
+      gitAuthSessionId,
+    });
+    await this.storageService.updateFile(fs, file.path, file.getFileContents);
+
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
   }
 
   public async turnIntoLocal(fs: KieSandboxWorkspacesFs, workspaceId: string) {
@@ -122,6 +177,16 @@ export class WorkspaceDescriptorService {
       },
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
+
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
   }
 
   private getAbsolutePath(relativePath: string) {
@@ -131,7 +196,7 @@ export class WorkspaceDescriptorService {
   private toStorageFile(descriptor: WorkspaceDescriptor) {
     return new StorageFile({
       path: this.getAbsolutePath(descriptor.workspaceId),
-      getFileContents: async () => encoder.encode(JSON.stringify(descriptor)),
+      getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(descriptor))),
     });
   }
 

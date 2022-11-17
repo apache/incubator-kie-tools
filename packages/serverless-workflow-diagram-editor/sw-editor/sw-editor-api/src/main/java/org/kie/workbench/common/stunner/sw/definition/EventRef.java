@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -37,11 +36,9 @@ public class EventRef {
     public static final String LABEL_EVENT = "event";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.EVENTS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                         LABEL_EVENT).collect(Collectors.toSet());
 
@@ -51,10 +48,10 @@ public class EventRef {
     // @Id
     // @Title
     // @Description
-    public String eventRef;
+    private String eventRef;
 
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     public EventRef() {
     }
