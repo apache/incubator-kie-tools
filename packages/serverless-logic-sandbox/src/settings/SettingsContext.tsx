@@ -24,7 +24,7 @@ import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
-import { WebToolsOpenShiftService } from "../openshift/WebToolsOpenShiftService";
+import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
 import { useHistory } from "react-router";
 import { QueryParams } from "../navigation/Routes";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
@@ -102,7 +102,7 @@ export interface SettingsDispatchContextType {
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
   openshift: {
-    service: WebToolsOpenShiftService;
+    service: OpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
     setConfig: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
   };
@@ -237,7 +237,7 @@ export function SettingsContextProvider(props: any) {
 
   const openshiftService = useMemo(
     () =>
-      new WebToolsOpenShiftService({
+      new OpenShiftService({
         connection: openshiftConfig,
         proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/devsandbox`,
       }),

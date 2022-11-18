@@ -22,10 +22,10 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
-    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start:git-cors-proxy http-get://0.0.0.0:3000/ping test:it:start:extended-services http-get://0.0.0.0:21345/ping test:it:run\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start:git-cors-proxy http-get://0.0.0.0:$(build-env gitCorsProxy.dev.port)/ping test:it:start:extended-services http-get://0.0.0.0:$(build-env extendedServices.dev.port)/ping test:it:run\"",
     "test:it:run": "start-server-and-test start https-get://0.0.0.0:$(build-env onlineEditor.dev.port) cy:run",
     "test:it:start:extended-services": "npm --prefix ../extended-services run start",
-    "test:it:start:git-cors-proxy": "npm --prefix ../cors-proxy-image run start"
+    "test:it:start:git-cors-proxy": "npm --prefix ../git-cors-proxy-image run start"
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
@@ -77,6 +77,7 @@
     "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/extended-services": "workspace:*",
+    "@kie-tools/git-cors-proxy-image": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
@@ -94,12 +95,12 @@
     "@types/testing-library__jest-dom": "^5.9.1",
     "@types/testing-library__react": "^9.1.2",
     "@types/uuid": "^8.3.0",
-    "copy-webpack-plugin": "^8.1.1",
-    "cypress": "^10.7.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cypress": "^11.0.1",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
-    "cypress-real-events": "^1.7.1",
+    "cypress-real-events": "^1.7.2",
     "html-replace-webpack-plugin": "^2.6.0",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^26.6.3",
@@ -108,10 +109,11 @@
     "rimraf": "^3.0.2",
     "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.5.6",
+    "ts-node": "^10.9.1",
     "typescript": "^4.4.2",
     "webpack": "^5.36.2",
-    "webpack-cli": "^4.7.0",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.7.3"
+    "webpack-merge": "^5.8.0"
   }
 }

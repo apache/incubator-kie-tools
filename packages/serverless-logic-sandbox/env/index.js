@@ -58,7 +58,7 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: {
+      SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: {
         default: "https://cors.isomorphic-git.org",
         description: "",
       },
@@ -92,7 +92,7 @@ module.exports = composeEnv(
               windows: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
             },
           },
-          corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__corsProxyUrl),
+          gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl),
         },
       };
     },

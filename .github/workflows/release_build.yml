@@ -20,7 +20,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false","kn_plugin_workflow":"false"}'
+        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false","kn_plugin_workflow":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -61,7 +61,7 @@ jobs:
       dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}
       kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}
       kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}
-      cors_proxy_image: ${{ steps.set_runners.outputs.cors_proxy_image }}
+      git_cors_proxy_image: ${{ steps.set_runners.outputs.git_cors_proxy_image }}
       online_editor: ${{ steps.set_runners.outputs.online_editor }}
       chrome_extensions: ${{ steps.set_runners.outputs.chrome_extensions }}
       vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}
@@ -85,7 +85,7 @@ jobs:
           echo "dmn_dev_sandbox_image=${{ fromJSON(inputs.runners).dmn_dev_sandbox_image }}" >> $GITHUB_OUTPUT
           echo "kie_sandbox_image=${{ fromJSON(inputs.runners).kie_sandbox_image }}" >> $GITHUB_OUTPUT
           echo "kie_sandbox_extended_services_image=${{ fromJSON(inputs.runners).kie_sandbox_extended_services_image }}" >> $GITHUB_OUTPUT
-          echo "cors_proxy_image=${{ fromJSON(inputs.runners).cors_proxy_image }}" >> $GITHUB_OUTPUT
+          echo "git_cors_proxy_image=${{ fromJSON(inputs.runners).git_cors_proxy_image }}" >> $GITHUB_OUTPUT
           echo "online_editor=${{ fromJSON(inputs.runners).online_editor }}" >> $GITHUB_OUTPUT
           echo "chrome_extensions=${{ fromJSON(inputs.runners).chrome_extensions }}" >> $GITHUB_OUTPUT
           echo "vscode_extensions_dev=${{ fromJSON(inputs.runners).vscode_extensions_dev }}" >> $GITHUB_OUTPUT
@@ -107,7 +107,7 @@ jobs:
           echo "dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}"
           echo "kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}"
           echo "kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}"
-          echo "cors_proxy_image: ${{ steps.set_runners.outputs.cors_proxy_image }}"
+          echo "git_cors_proxy_image: ${{ steps.set_runners.outputs.git_cors_proxy_image }}"
           echo "online_editor: ${{ steps.set_runners.outputs.online_editor }}"
           echo "chrome_extensions: ${{ steps.set_runners.outputs.chrome_extensions }}"
           echo "vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}"
@@ -201,7 +201,7 @@ jobs:
 
     if: ${{ needs.extract_runners.outputs.kie_sandbox_image == 'true' }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, dmn_dev_sandbox_image, kie_sandbox_extended_services_image, cors_proxy_image]
+    needs: [extract_runners, dmn_dev_sandbox_image, kie_sandbox_extended_services_image, git_cors_proxy_image]
     steps:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
@@ -241,7 +241,7 @@ jobs:
         shell: bash
         run: |
           echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${{ needs.kie_sandbox_extended_services_image.outputs.kie_sandbox_extended_services_url }}" >> deployment.env
-          echo "CORS_PROXY_URL=${{ needs.cors_proxy_image.outputs.cors_proxy_url }}" >> deployment.env
+          echo "KIE_SANDBOX_GIT_CORS_PROXY_URL=${{ needs.git_cors_proxy_image.outputs.git_cors_proxy_url }}" >> deployment.env
 
       - name: "Deploy kie-sandbox-image to OpenShift"
         id: deploy_kie_sandbox_image
@@ -320,18 +320,18 @@ jobs:
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "golang"
 
-  cors_proxy_image:
+  git_cors_proxy_image:
     env:
-      OPENSHIFT_APP_NAME: "cors-proxy"
-      CORS_PROXY__imageRegistry: "quay.io"
-      CORS_PROXY__imageAccount: "kie-tools"
-      CORS_PROXY__imageName: "cors-proxy-image"
-      CORS_PROXY__imageBuildTags: "latest ${{ inputs.tag }}"
+      OPENSHIFT_APP_NAME: "git-cors-proxy"
+      GIT_CORS_PROXY__imageRegistry: "quay.io"
+      GIT_CORS_PROXY__imageAccount: "kie-tools"
+      GIT_CORS_PROXY__imageName: "git-cors-proxy-image"
+      GIT_CORS_PROXY__imageBuildTags: "latest ${{ inputs.tag }}"
 
     outputs:
-      cors_proxy_url: ${{ steps.deploy_cors_proxy_image.outputs.route_url }}
+      git_cors_proxy_url: ${{ steps.deploy_git_cors_proxy_image.outputs.route_url }}
 
-    if: ${{ needs.extract_runners.outputs.cors_proxy_image == 'true' }}
+    if: ${{ needs.extract_runners.outputs.git_cors_proxy_image == 'true' }}
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
@@ -351,30 +351,30 @@ jobs:
         id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F @kie-tools/cors-proxy-image...
+          pnpm_filter_string: -F @kie-tools/git-cors-proxy-image...
 
       - name: "Build"
         shell: bash
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
-      - name: "Push cors-proxy-image to quay.io"
+      - name: "Push git-cors-proxy-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.CORS_PROXY__imageName }}"
-          tags: "${{ env.CORS_PROXY__imageBuildTags }}"
-          registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
-          username: "${{ env.CORS_PROXY__imageAccount }}"
+          image: "${{ env.GIT_CORS_PROXY__imageName }}"
+          tags: "${{ env.GIT_CORS_PROXY__imageBuildTags }}"
+          registry: "${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}"
+          username: "${{ env.GIT_CORS_PROXY__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "Deploy cors-proxy-image to OpenShift"
-        id: deploy_cors_proxy_image
+      - name: "Deploy git-cors-proxy-image to OpenShift"
+        id: deploy_git_cors_proxy_image
         if: ${{ !inputs.dry_run }}
         uses: ./.github/actions/deploy-openshift
         with:
           image_tag: ${{ inputs.tag }}
-          image_url: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}/${{ env.CORS_PROXY__imageName }}:${{ inputs.tag }}"
+          image_url: "${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}/${{ env.GIT_CORS_PROXY__imageName }}:${{ inputs.tag }}"
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
@@ -390,7 +390,7 @@ jobs:
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
-      ONLINE_EDITOR__corsProxyUrl: "https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+      ONLINE_EDITOR__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
@@ -1351,7 +1351,7 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}"
-      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: "https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+      SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
     if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_sandbox_base_image.result == 'success' || needs.serverless_logic_sandbox_base_image.result == 'skipped') && (needs.openjdk11_mvn_image.result == 'success' || needs.openjdk11_mvn_image.result == 'skipped') }}
     runs-on: ubuntu-latest

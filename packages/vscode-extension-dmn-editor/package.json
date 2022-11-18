@@ -41,13 +41,13 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.30",
-    "copy-webpack-plugin": "^8.1.1",
+    "copy-webpack-plugin": "^11.0.0",
     "rimraf": "^3.0.2",
     "vsce": "^2.6.5",
     "webpack": "^5.36.2",
-    "webpack-cli": "^4.7.0",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.7.3"
+    "webpack-merge": "^5.8.0"
   },
   "engines": {
     "vscode": "^1.66.0"

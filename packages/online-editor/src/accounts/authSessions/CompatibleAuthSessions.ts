@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AuthProvider } from "../authProviders/AuthProvidersContext";
+import { AuthProvider } from "../authProviders/AuthProvidersApi";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { AuthSessionSelectFilter } from "./AuthSessionSelect";
 

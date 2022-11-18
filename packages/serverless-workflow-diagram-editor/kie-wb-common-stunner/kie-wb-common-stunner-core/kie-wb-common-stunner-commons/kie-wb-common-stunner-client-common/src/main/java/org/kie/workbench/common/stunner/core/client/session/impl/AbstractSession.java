@@ -19,9 +19,12 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractSession<C extends AbstractCanvas, H extends AbstractCanvasHandler>
@@ -35,6 +38,10 @@ public abstract class AbstractSession<C extends AbstractCanvas, H extends Abstra
     public abstract void destroy();
 
     public abstract void close();
+
+    public abstract CanvasCommandManager<AbstractCanvasHandler> getCommandManager();
+
+    public abstract SelectionControl<AbstractCanvasHandler, Element> getSelectionControl();
 
     protected void onControlRegistered(final CanvasControl control) {
         onControlRegistered(control, this);

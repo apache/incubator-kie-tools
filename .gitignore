@@ -43,6 +43,7 @@ package-lock.json
 
 ## online-editor
 **/videos/
+!packages/online-editor/build
 
 ## vscode-*
 **/.vscode-test/

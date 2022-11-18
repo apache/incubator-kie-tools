@@ -50,8 +50,6 @@ public class MarshallerUtils {
 
     public static <T> T parse(FactoryManager factoryManager, Class<? extends T> type, T jso) {
         T instance = factoryManager.newDefinition(type.getName());
-        // TODO: Check stunner vs native approach here...
-        //instance = stunnerMerge(instance, jso);
         instance = nativeMerge(instance, jso);
         return (T) instance;
     }

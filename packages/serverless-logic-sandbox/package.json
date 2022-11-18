@@ -85,12 +85,13 @@
     "@types/history": "^4.7.3",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
+    "@types/minimatch": "^3.0.4",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
-    "copy-webpack-plugin": "^8.1.1",
-    "cypress": "^10.7.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cypress": "^11.0.1",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
     "html-replace-webpack-plugin": "^2.6.0",
@@ -98,14 +99,15 @@
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
+    "minimatch": "^3.0.4",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "rimraf": "^3.0.2",
     "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.5.6",
     "typescript": "^4.4.2",
     "webpack": "^5.36.2",
-    "webpack-cli": "^4.7.0",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.7.3"
+    "webpack-merge": "^5.8.0"
   }
 }

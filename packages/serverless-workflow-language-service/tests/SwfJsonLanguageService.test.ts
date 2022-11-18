@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
+import * as jsonc from "jsonc-parser";
 import {
+  hasNodeComma,
+  isOffsetAtLastChild,
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, Position } from "vscode-languageserver-types";
 import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
-import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, trim } from "./testUtils";
+import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
 const documentUri = "test.sw.json";
 
@@ -167,6 +170,182 @@ describe("JsonCodeCompletionStrategy", () => {
 });
 
 describe("SWF LS JSON", () => {
+  describe("isOffsetAtLastChild", () => {
+    test.each([
+      ["empty content", `🎯`, true],
+      ["empty content with spaces", ` 🎯 `, true],
+      [
+        "no value / with comma",
+        `{
+        "start": 🎯 ,
+        "states" []
+      }`,
+        false,
+      ],
+      [
+        "no value / without comma",
+        `{
+        "start": 🎯 
+        "states" []
+      }`,
+        false,
+      ],
+      [
+        "emtpy quotes / without comma",
+        `{
+        "start": "🎯" 
+        "states" []
+      }`,
+        false,
+      ],
+      [
+        "emtpy quotes",
+        `{
+        "start": "🎯" , 
+        "states" []
+      }`,
+        false,
+      ],
+      [
+        "empty quotes / with newline",
+        `{
+        "start": "🎯"
+        , "states" []
+      }`,
+        false,
+      ],
+      [
+        "at the end of the object",
+        `{
+        "states" [],
+        "start": 🎯
+      }`,
+        true,
+      ],
+      [
+        "at the beginning of the array",
+        `{
+        "states" [🎯 {}]
+      }`,
+        false,
+      ],
+      [
+        "at the beginning of the array / with comma",
+        `{
+        "states" [🎯 , {}]
+      }`,
+        false,
+      ],
+      [
+        "in the middle of the array",
+        `{
+        "states" [{},
+        🎯 
+        {}]
+      }`,
+        false,
+      ],
+      [
+        "at the end of the array",
+        `{
+        "states" [{}, 🎯]
+      }`,
+        true,
+      ],
+    ])("%s", async (_description: string, contentWithCursor: ContentWithCursor, expectedValue: boolean) => {
+      const { cursorOffset, content } = treat(contentWithCursor);
+      expect(isOffsetAtLastChild(content, cursorOffset)).toBe(expectedValue);
+    });
+  });
+
+  describe("hasNodeComma", () => {
+    test.each([
+      ["empty content", `🎯`, false],
+      ["empty content with spaces", ` 🎯 `, false],
+      [
+        "no value / with comma",
+        `{
+        "start": 🎯 ,
+        "states" []
+      }`,
+        true,
+      ],
+      [
+        "no value / without comma",
+        `{
+        "start": 🎯 
+        "states" []
+      }`,
+        false,
+      ],
+      [
+        "emtpy quotes / without comma",
+        `{
+        "start": "🎯" 
+        "states" []
+      }`,
+        false,
+      ],
+      [
+        "emtpy quotes",
+        `{
+        "start": "🎯" , 
+        "states" []
+      }`,
+        true,
+      ],
+      [
+        "empty quotes / with newline",
+        `{
+        "start": "🎯"
+        , "states" []
+      }`,
+        true,
+      ],
+      [
+        "at the end of the object",
+        `{
+        "states" [],
+        "start": 🎯
+      }`,
+        false,
+      ],
+      [
+        "at the beginning of the array",
+        `{
+        "states" [🎯 {}]
+      }`,
+        false,
+      ],
+      [
+        "at the beginning of the array / with comma",
+        `{
+        "states" [🎯 , {}]
+      }`,
+        true,
+      ],
+      [
+        "in the middle of the array",
+        `{
+        "states" [{},
+        🎯 
+        {}]
+      }`,
+        false,
+      ],
+      [
+        "at the end of the array",
+        `{
+        "states" [{}, 🎯]
+      }`,
+        false,
+      ],
+    ])("%s", async (_description: string, contentWithCursor: ContentWithCursor, expectedValue: boolean) => {
+      const { cursorOffset, content } = treat(contentWithCursor);
+      expect(hasNodeComma(content, cursorOffset)).toBe(expectedValue);
+    });
+  });
+
   test("basic", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
@@ -500,9 +679,9 @@ describe("SWF LS JSON", () => {
     describe("operation completion", () => {
       test.each([
         ["not in quotes / without same level content after", ` 🎯`],
-        ["not in quotes / with same level content after", ` 🎯,\n      "type": "rest"`],
-        ["inside double quotes / without same level content after", ` 🎯`],
-        ["inside double quotes / with same level content after", ` 🎯,\n      "type": "rest"`],
+        ["not in quotes / with same level content after", ` 🎯\n      "type": "rest"`],
+        ["inside double quotes / without same level content after", ` "🎯" `],
+        ["inside double quotes / with same level content after", ` "🎯"\n      "type": "rest"`],
       ])("%s", async (_description, nodeValue) => {
         const content = `{
   "functions": [
@@ -522,7 +701,7 @@ describe("SWF LS JSON", () => {
     describe("functionRef completion", () => {
       test.each([
         ["without same level content after", ` 🎯`],
-        ["with same level content after", ` 🎯,\n                    "name": "testStateAction",`],
+        ["with same level content after", ` 🎯\n                    "name": "testStateAction",`],
       ])("%s", async (_description, nodeValue) => {
         const content = `{
   "functions": [
@@ -556,9 +735,9 @@ describe("SWF LS JSON", () => {
     describe("functionRef refName completion", () => {
       test.each([
         ["not in quotes / without same level content after", ` 🎯`],
-        ["not in quotes / with same level content after", ` 🎯,\n            "arguments": {}`],
+        ["not in quotes / with same level content after", ` 🎯\n            "arguments": {}`],
         ["inside double quotes / without same level content after", ` 🎯`],
-        ["inside double quotes / with same level content after", ` 🎯,\n            "arguments": {}`],
+        ["inside double quotes / with same level content after", ` 🎯\n            "arguments": {}`],
       ])("%s", async (_description, nodeValue) => {
         const content = `{
   "functions": [
@@ -594,7 +773,7 @@ describe("SWF LS JSON", () => {
     describe("functionRef arguments completion", () => {
       test.each([
         ["without same level content after", ` 🎯`],
-        ["with same level content after", ` 🎯,\n            "refName":"testRelativeFunction1"`],
+        ["with same level content after", ` 🎯\n            "refName":"testRelativeFunction1"`],
       ])("%s", async (_description, nodeValue) => {
         const content = `{
   "functions": [
@@ -635,7 +814,9 @@ describe("SWF LS JSON", () => {
         ["pointing before the array", `{ "${nodeName}": 🎯 [] }`],
         ["pointing after the array", `{ "${nodeName}": []🎯 }`],
         ["add into empty array", `{ "${nodeName}": [🎯] }`],
-        ["add at the beginning of the array", `{ "${nodeName}": [🎯, {}] }`],
+        ["add at the beginning of the array", `{ "${nodeName}": [🎯 {}] }`],
+        ["add in the middle of the array", `{ "${nodeName}": [{}, 🎯 {} ] }`],
+        ["add in the middle of the array / with comma at the end", `{ "${nodeName}": [{}, 🎯, {} ] }`],
         ["add at the end of the array", `{ "${nodeName}": [{}, 🎯 ] }`],
       ])("%s", async (_description, content: ContentWithCursor) => {
         const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
@@ -652,7 +833,7 @@ describe("SWF LS JSON", () => {
         ["pointing before the array", ` 🎯 []`],
         ["pointing after the array", ` []🎯`],
         ["add into empty array", ` [🎯]`],
-        ["add at the beginning of the array", ` [🎯, ""]`],
+        ["add at the beginning of the array", ` [🎯 ""]`],
         ["add at the end of the array", ` ["", 🎯 ]`],
       ])("%s", async (_description, nodeValue) => {
         const content = `{
@@ -680,9 +861,9 @@ describe("SWF LS JSON", () => {
       describe("state transition completion", () => {
         test.each([
           ["not in quotes / without same level content after", ` 🎯`],
-          ["not in quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+          ["not in quotes / with same level content after", ` 🎯\n        "type": "inject"`],
           ["inside double quotes / without same level content after", ` 🎯`],
-          ["inside double quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+          ["inside double quotes / with same level content after", ` 🎯\n        "type": "inject"`],
         ])("%s", async (_description, nodeValue) => {
           const content = `{
     "states": [ 
@@ -774,12 +955,19 @@ describe("SWF LS JSON", () => {
     describe("start completion", () => {
       test.each([
         ["not in quotes / without same level content after", ` 🎯`],
-        ["not in quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
-        ["inside double quotes / without same level content after", ` 🎯`],
-        ["inside double quotes / with same level content after", ` 🎯,\n        "type": "inject"`],
+        ["not in quotes / with same level content after", ` 🎯\n        "id": "jsongreet"`],
+        ["inside double quotes / without same level content after", ` "🎯"`],
+        ["inside double quotes / with same level content after", ` "🎯"\n        "id": "jsongreet"`],
+        [
+          "inside double quotes / with same level content after / with comma at the end",
+          ` "🎯",\n        "id": "jsongreet"`,
+        ],
+        [
+          "inside double quotes / with same level content after / with spaces and comma at the end",
+          ` "🎯"    ,\n        "id": "jsongreet"`,
+        ],
       ])("%s", async (_description, nodeValue) => {
         const content = `{
-  "start":${nodeValue},
   "states": [
     {
       "name": "GreetInEnglish"
@@ -787,13 +975,118 @@ describe("SWF LS JSON", () => {
     {
       "name": "GreetInSpanish"
     }
-  ]
+  ],
+  "start":${nodeValue}
 }` as ContentWithCursor;
         const { completionItems } = await codeCompletionTester(ls, documentUri, content, false);
 
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
       });
+    });
+  });
+
+  describe("diagnostic", () => {
+    const ls = new SwfJsonLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [] },
+      },
+      config: defaultConfig,
+    });
+
+    test.each([
+      ["empty file", ``],
+      [
+        "valid",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "type": "inject", 
+            "data": {},
+            "end":true
+          }
+        ]
+      }`,
+      ],
+      [
+        "unclosed brackets",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "type": "inject", 
+            "data": {},
+            "end": true
+        ]
+      }`,
+      ],
+      [
+        "missing property value",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "duration": "PT15M",
+            "end": true,
+            "type": 
+          }]
+      }`,
+      ],
+      [
+        "missing state type",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Inject Hello World", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "duration": "PT15M",
+            "end": true
+          }
+        ]
+      }`,
+      ],
+      [
+        "wrong states type",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "states": "Wrong states type"
+      }`,
+      ],
+      [
+        "wrong start state",
+        `{
+        "id": "hello_world", 
+        "specVersion": "0.1",
+        "start": "Wrong state name", 
+        "states": [ 
+          {
+            "name": "Inject Hello World",
+            "type": "inject", 
+            "data": {},
+            "end":true
+          }
+        ]}`,
+      ],
+    ])("%s", async (_description, content) => {
+      const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
+
+      expect(diagnostic.length).toMatchSnapshot();
+      expect(diagnostic).toMatchSnapshot();
     });
   });
 });

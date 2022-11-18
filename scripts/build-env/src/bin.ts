@@ -52,9 +52,13 @@ const logs = {
 };
 
 async function requireEnv(curDir: string): Promise<EnvAndVarsWithName<any> | undefined> {
-  const envPath = path.resolve(curDir, "env", "index.js");
+  const envPathJS = path.resolve(curDir, "env", "index.js");
+  const envPathCJS = path.resolve(curDir, "env", "index.cjs");
+  const envPathJSExist = fs.existsSync(envPathJS);
+  const envPathCJSExist = fs.existsSync(envPathCJS);
+  const envPath = envPathJSExist ? envPathJS : envPathCJS;
 
-  if (!fs.existsSync(envPath)) {
+  if (!envPathJSExist && !envPathCJSExist) {
     // console.debug(logs.envNotFound(envPath));
     return undefined;
   }

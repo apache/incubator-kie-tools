@@ -2787,6 +2787,111 @@ exports[`SWF LS YAML code completion transition completion state transition comp
 
 exports[`SWF LS YAML code completion transition completion state transition completion not in quotes / without space after property name 2`] = `Array []`;
 
+exports[`SWF LS YAML diagnostic empty file 1`] = `0`;
+
+exports[`SWF LS YAML diagnostic empty file 2`] = `Array []`;
+
+exports[`SWF LS YAML diagnostic missing state type 1`] = `1`;
+
+exports[`SWF LS YAML diagnostic missing state type 2`] = `
+Array [
+  Object {
+    "code": 0,
+    "data": Object {
+      "schemaUri": Array [
+        "https://serverlessworkflow.io/schemas/0.8/workflow.json",
+      ],
+    },
+    "message": "Missing property \\"type\\".",
+    "range": Object {
+      "end": Object {
+        "character": 5,
+        "line": 4,
+      },
+      "start": Object {
+        "character": 4,
+        "line": 4,
+      },
+    },
+    "severity": 2,
+    "source": "yaml-schema: Sleep State",
+  },
+]
+`;
+
+exports[`SWF LS YAML diagnostic using JSON format unclosed brackets 1`] = `1`;
+
+exports[`SWF LS YAML diagnostic using JSON format unclosed brackets 2`] = `
+Array [
+  Object {
+    "message": "JS-YAML: missed comma between flow collection entries at line 13, column 1",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 12,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 12,
+      },
+    },
+    "severity": 1,
+  },
+]
+`;
+
+exports[`SWF LS YAML diagnostic valid 1`] = `0`;
+
+exports[`SWF LS YAML diagnostic valid 2`] = `Array []`;
+
+exports[`SWF LS YAML diagnostic wrong start state 1`] = `1`;
+
+exports[`SWF LS YAML diagnostic wrong start state 2`] = `
+Array [
+  Object {
+    "message": "Missing 'Wrong state name' in 'states'",
+    "range": Object {
+      "end": Object {
+        "character": 23,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 7,
+        "line": 2,
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS YAML diagnostic wrong states type 1`] = `1`;
+
+exports[`SWF LS YAML diagnostic wrong states type 2`] = `
+Array [
+  Object {
+    "code": 0,
+    "data": Object {
+      "schemaUri": Array [
+        "https://serverlessworkflow.io/schemas/0.8/workflow.json",
+      ],
+    },
+    "message": "Incorrect type. Expected \\"array\\".",
+    "range": Object {
+      "end": Object {
+        "character": 25,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 8,
+        "line": 2,
+      },
+    },
+    "severity": 2,
+    "source": "yaml-schema: https://serverlessworkflow.io/schemas/0.8/workflow.json",
+  },
+]
+`;
+
 exports[`SWF LS YAML parsing content parsing content with empty function array 1`] = `
 Object {
   "children": Array [

@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -31,10 +31,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 @Bindable
 @Definition
 @Morph(base = State.class)
+@JSONMapper
 @JsType
 public class EventState extends State {
 
-    @JsIgnore
     public static final String TYPE_EVENT = "event";
 
     /**
@@ -42,22 +42,22 @@ public class EventState extends State {
      * the event defined in onEvents array.
      */
     @Property
-    public boolean exclusive;
+    private Boolean exclusive;
 
     /**
      * Define the events to be consumed and optional actions to be performed.
      */
-    public OnEvent[] onEvents;
+    private OnEvent[] onEvents;
 
     public EventState() {
         this.type = TYPE_EVENT;
     }
 
-    public boolean isExclusive() {
+    public Boolean getExclusive() {
         return exclusive;
     }
 
-    public void setExclusive(boolean exclusive) {
+    public void setExclusive(Boolean exclusive) {
         this.exclusive = exclusive;
     }
 

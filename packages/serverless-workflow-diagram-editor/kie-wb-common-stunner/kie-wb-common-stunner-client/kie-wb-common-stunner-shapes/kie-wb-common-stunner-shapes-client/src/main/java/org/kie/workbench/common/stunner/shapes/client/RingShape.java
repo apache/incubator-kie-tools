@@ -21,14 +21,11 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.client.view.RingView;
-import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 
-public class RingShape<W> extends BasicContainerShape<W, RingShapeDef<W, RingView>, RingView> {
+public class RingShape<W> extends BasicContainerShape<W, RingView> {
 
-    public RingShape(final RingShapeDef<W, RingView> shapeDef,
-                     final RingView view) {
-        super(shapeDef,
-              view);
+    public RingShape(final RingView view) {
+        super(view);
     }
 
     @Override
@@ -36,19 +33,6 @@ public class RingShape<W> extends BasicContainerShape<W, RingShapeDef<W, RingVie
                                       final MutationContext mutationContext) {
         super.applyCustomProperties(element,
                                     mutationContext);
-        // Inner Radius.
-        final Double innerRadius = getShapeDefinition().getInnerRadius(getDefinition(element));
-        _applyInnerRadius(element,
-                          innerRadius,
-                          mutationContext);
-    }
-
-    private void _applyInnerRadius(final Node<View<W>, Edge> element,
-                                   final Double radius,
-                                   final MutationContext mutationContext) {
-        if (null != radius) {
-            getShapeView().setInnerRadius(radius);
-        }
     }
 
     @Override

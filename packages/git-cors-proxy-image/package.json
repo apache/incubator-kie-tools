@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@kie-tools/git-cors-proxy-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "echo \"Nothing to do\"",
+    "build:prod": "pnpm cleanup && pnpm copy:git-cors-proxy-package && pnpm copy:assets && run-script-os",
+    "build:prod:linux:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm podman:build\"",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:assets": "run-script-os",
+    "copy:assets:linux:darwin": "cp ./assets/npm-shrinkwrap.json dist-dev/git-cors-proxy",
+    "copy:assets:win32": "echo \"Copy assets not supported on Windows\"",
+    "copy:git-cors-proxy-package": "run-script-os",
+    "copy:git-cors-proxy-package:linux:darwin": "cp -R ./node_modules/@isomorphic-git/cors-proxy/ dist-dev/git-cors-proxy",
+    "copy:git-cors-proxy-package:win32": "echo \"Copy git-cors-proxy package not supported on Windows\"",
+    "postinstall": "patch-package",
+    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env gitCorsProxy.image.buildTags) | xargs printf -- \"-t $(build-env gitCorsProxy.image.registry)/$(build-env gitCorsProxy.image.account)/$(build-env gitCorsProxy.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
+    "start": "cd ./node_modules/@isomorphic-git/cors-proxy && pnpm start"
+  },
+  "devDependencies": {
+    "@isomorphic-git/cors-proxy": "^2.7.1",
+    "@kie-tools/root-env": "workspace:*",
+    "patch-package": "^6.4.7",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  }
+}

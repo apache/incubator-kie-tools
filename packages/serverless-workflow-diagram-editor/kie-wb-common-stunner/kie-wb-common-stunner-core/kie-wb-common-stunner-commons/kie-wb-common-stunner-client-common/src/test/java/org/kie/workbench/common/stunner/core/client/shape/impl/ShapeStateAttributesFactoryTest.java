@@ -28,8 +28,6 @@ import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.HIGH
 import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.INVALID;
 import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.NONE;
 import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.SELECTED;
-import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler.ShapeStateAttribute.FILL_ALPHA;
-import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler.ShapeStateAttribute.FILL_COLOR;
 import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler.ShapeStateAttribute.STROKE_ALPHA;
 import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler.ShapeStateAttribute.STROKE_COLOR;
 import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributesFactory.COLOR_HIGHLIGHT;
@@ -39,8 +37,7 @@ import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeState
 @RunWith(MockitoJUnitRunner.class)
 public class ShapeStateAttributesFactoryTest {
 
-    private Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> fillAttributes = ShapeStateAttributesFactory::buildFillAttributes;
-    private Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> strokeAttributes = ShapeStateAttributesFactory::buildStrokeAttributes;
+    private Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> strokeAttributes = ShapeStateAttributesFactory::buildStateAttributes;
 
     @Test
     public void testBuildStrokeAttributes() {
@@ -57,22 +54,5 @@ public class ShapeStateAttributesFactoryTest {
     private void assertStrokeAttributes(ShapeStateAttributeHandler.ShapeStateAttributes attributes, String color) {
         assertEquals(1d, attributes.getValues().get(STROKE_ALPHA));
         assertEquals(color, attributes.getValues().get(STROKE_COLOR));
-    }
-
-    @Test
-    public void testBuildFillAttributes() {
-        ShapeStateAttributeHandler.ShapeStateAttributes attributes = fillAttributes.apply(NONE);
-        attributes.getValues().values().forEach(
-                state -> assertEquals(null, state)
-        );
-
-        assertFillAttributes(fillAttributes.apply(SELECTED), COLOR_SELECTED);
-        assertFillAttributes(fillAttributes.apply(INVALID), COLOR_INVALID);
-        assertFillAttributes(fillAttributes.apply(HIGHLIGHT), COLOR_HIGHLIGHT);
-    }
-
-    private void assertFillAttributes(ShapeStateAttributeHandler.ShapeStateAttributes attributes, String color) {
-        assertEquals(color, attributes.getValues().get(FILL_COLOR));
-        assertEquals(1d, attributes.getValues().get(FILL_ALPHA));
     }
 }

@@ -82,7 +82,7 @@ public class ShapeViewExtStub
     }
 
     @Override
-    public Object setTextSizeConstraints(final Size sizeConstraints) {
+    public Object setTitleSizeConstraints(final Size sizeConstraints) {
         return this;
     }
 

@@ -22,10 +22,9 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
-import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
-import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { doRefValidation } from "./refValidation";
 import {
@@ -82,12 +81,14 @@ export class SwfLanguageService {
     rootNode: SwfLsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
-    if (!args.rootNode) {
-      return args.content.trim().length ? [] : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions(args);
-    }
-
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
+
+    if (!args.rootNode) {
+      return args.content.trim().length
+        ? []
+        : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions({ ...args, cursorOffset, document: doc });
+    }
 
     const currentNode = findNodeAtOffset(args.rootNode, cursorOffset, true);
     if (!currentNode) {
@@ -124,7 +125,7 @@ export class SwfLanguageService {
         cursorOffset: cursorOffset,
         cursorPosition: args.cursorPosition,
         node: currentNode,
-        path: path,
+        path,
         root: args.rootNode,
       })
     );
@@ -132,15 +133,16 @@ export class SwfLanguageService {
     const result = await Promise.all(
       matchedCompletions.map(([_, completionItemsDelegate]) => {
         return completionItemsDelegate({
-          document: doc,
-          cursorPosition: args.cursorPosition,
+          codeCompletionStrategy: args.codeCompletionStrategy,
           currentNode,
           currentNodeRange,
-          rootNode: args.rootNode!,
-          overwriteRange,
-          swfCompletionItemServiceCatalogServices,
+          cursorOffset,
+          cursorPosition: args.cursorPosition,
+          document: doc,
           langServiceConfig: this.args.config,
-          codeCompletionStrategy: args.codeCompletionStrategy,
+          overwriteRange,
+          rootNode: args.rootNode!,
+          swfCompletionItemServiceCatalogServices,
         });
       })
     );
@@ -148,50 +150,33 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string; rootNode: SwfLsNode | undefined }) {
+  public async getDiagnostics(args: {
+    content: string;
+    uriPath: string;
+    rootNode: SwfLsNode | undefined;
+    getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+  }): Promise<Diagnostic[]> {
     if (!args.rootNode) {
       return [];
     }
 
+    // this ensure the document is validated again
+    const docVersion = Math.floor(Math.random() * 1000);
+
     const textDocument = TextDocument.create(
       args.uriPath,
       `serverless-workflow-${this.args.lang.fileLanguage}`,
-      1,
+      docVersion,
       args.content
     );
 
     const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
 
-    if (this.args.lang.fileLanguage === FileLanguage.YAML) {
-      //TODO: Include JSON Schema validation for YAML as well. Probably use what the YAML extension uses?
-      return refValidationResults;
-    }
-
     const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
-      ? await this.getJsonSchemaDiagnostics(textDocument)
+      ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
 
     return [...schemaValidationResults, ...refValidationResults];
-  }
-
-  private async getJsonSchemaDiagnostics(textDocument: TextDocument) {
-    const jsonLs = getLanguageService({
-      schemaRequestService: async (uri) => {
-        if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
-          return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
-        } else {
-          throw new Error(`Unable to load schema from '${uri}'`);
-        }
-      },
-    });
-
-    jsonLs.configure({
-      allowComments: false,
-      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
-    });
-
-    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
-    return jsonLs.doValidation(textDocument, jsonDocument);
   }
 
   public async getCodeLenses(args: {
@@ -271,15 +256,16 @@ export class SwfLanguageService {
 const completions = new Map<
   SwfJsonPath,
   (args: {
-    swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
-    document: TextDocument;
-    cursorPosition: Position;
-    currentNode: SwfLsNode;
-    overwriteRange: Range;
-    currentNodeRange: Range;
-    rootNode: SwfLsNode;
-    langServiceConfig: SwfLanguageServiceConfig;
     codeCompletionStrategy: CodeCompletionStrategy;
+    currentNode: SwfLsNode;
+    currentNodeRange: Range;
+    cursorOffset: number;
+    cursorPosition: Position;
+    document: TextDocument;
+    langServiceConfig: SwfLanguageServiceConfig;
+    overwriteRange: Range;
+    rootNode: SwfLsNode;
+    swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
   }) => Promise<CompletionItem[]>
 >([
   [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],

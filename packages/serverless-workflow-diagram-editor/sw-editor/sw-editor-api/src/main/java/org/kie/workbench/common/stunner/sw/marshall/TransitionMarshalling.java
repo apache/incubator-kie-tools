@@ -24,17 +24,17 @@ import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeUnmarshaller;
 
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
-import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getObjectProperty;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
-import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.setObjectProperty;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.EDGE_START;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
@@ -63,19 +63,21 @@ public interface TransitionMarshalling {
                         Object targetDef = getElementDefinition(targetNode);
 
                         if (targetDef instanceof End) {
-                            sourceState.transition = null;
-                            if (sourceState.end instanceof Boolean) {
-                                sourceState.end = true;
-                            }
+
+                            sourceState.setTransition(null);
+
+                            if (sourceState.getEnd() instanceof Boolean) {
+                                sourceState.setEnd(true);
+                            } // else is Object
                         } else {
-                            if (sourceState.transition instanceof String) {
-                                sourceState.transition = getStateNodeName(targetNode);
+                            if (sourceState.getTransition() instanceof String) {
+                                sourceState.setTransition(getStateNodeName(targetNode));
                             } else {
-                                setObjectProperty(sourceState.transition, "nextState", getStateNodeName(targetNode));
+                                ((StateTransition) sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
                             }
 
-                            if (sourceState.end instanceof Boolean) {
-                                sourceState.end = false;
+                            if (sourceState.getEnd() instanceof Boolean) {
+                                sourceState.setEnd(false);
                             }
                         }
                     }
@@ -86,7 +88,7 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<CompensationTransition> COMPENSATION_TRANSITION_UNMARSHALLER =
             (context, compensationTransition) -> {
-                String transition = getTransition(compensationTransition.transition);
+                String transition = getTransition(compensationTransition.getTransition());
 
                 Edge edge = null;
                 if (isValidString(transition)) {
@@ -104,10 +106,10 @@ public interface TransitionMarshalling {
                     if (null != targetNode) {
                         State sourceState = getElementDefinition(sourceNode);
 
-                        if (sourceState.transition instanceof String) {
-                            sourceState.transition = getStateNodeName(targetNode);
+                        if (sourceState.getTransition() instanceof String) {
+                            sourceState.setTransition(getStateNodeName(targetNode));
                         } else {
-                            setObjectProperty(sourceState.transition, "nextState", getStateNodeName(targetNode));
+                            ((StateTransition) sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
                         }
                     }
                 }
@@ -117,8 +119,8 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<DataConditionTransition> DATA_CONDITION_TRANSITION_UNMARSHALLER =
             (context, dataConditionTransition) -> {
-                boolean end = getEnd(dataConditionTransition.end);
-                String transition = getTransition(dataConditionTransition.transition);
+                boolean end = getEnd(dataConditionTransition.getEnd());
+                String transition = getTransition(dataConditionTransition.getTransition());
 
                 Edge edge = null;
                 if (end) {
@@ -139,20 +141,20 @@ public interface TransitionMarshalling {
                         Object targetDef = getElementDefinition(targetNode);
 
                         if (targetDef instanceof End) {
-                            dataConditionTransition.transition = null;
+                            dataConditionTransition.setTransition(null);
 
-                            if (dataConditionTransition.end instanceof Boolean) {
-                                dataConditionTransition.end = true;
+                            if (dataConditionTransition.getEnd() instanceof Boolean) {
+                                dataConditionTransition.setEnd(true);
                             }
                         } else {
-                            if (dataConditionTransition.transition instanceof String) {
-                                dataConditionTransition.transition = getStateNodeName(targetNode);
+                            if (dataConditionTransition.getTransition() instanceof String) {
+                                dataConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                setObjectProperty(dataConditionTransition.transition, "nextState", getStateNodeName(targetNode));
+                                ((StateTransition) dataConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
                             }
 
-                            if (dataConditionTransition.end instanceof Boolean) {
-                                dataConditionTransition.end = false;
+                            if (dataConditionTransition.getEnd() instanceof Boolean) {
+                                dataConditionTransition.setEnd(false);
                             }
                         }
                     }
@@ -162,8 +164,8 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<DefaultConditionTransition> DEFAULT_CONDITION_TRANSITION_UNMARSHALLER =
             (context, defaultConditionTransition) -> {
-                boolean end = getEnd(defaultConditionTransition.end);
-                String transition = getTransition(defaultConditionTransition.transition);
+                boolean end = getEnd(defaultConditionTransition.getEnd());
+                String transition = getTransition(defaultConditionTransition.getTransition());
 
                 Edge edge = null;
                 if (end) {
@@ -185,20 +187,20 @@ public interface TransitionMarshalling {
                         Object targetDef = getElementDefinition(targetNode);
 
                         if (targetDef instanceof End) {
-                            defaultConditionTransition.transition = null;
+                            defaultConditionTransition.setTransition(null);
 
-                            if (defaultConditionTransition.end instanceof Boolean) {
-                                defaultConditionTransition.end = true;
+                            if (defaultConditionTransition.getEnd() instanceof Boolean) {
+                                defaultConditionTransition.setEnd(true);
                             }
                         } else {
-                            if (defaultConditionTransition.transition instanceof String) {
-                                defaultConditionTransition.transition = getStateNodeName(targetNode);
+                            if (defaultConditionTransition.getTransition() instanceof String) {
+                                defaultConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                setObjectProperty(defaultConditionTransition.transition, "nextState", getStateNodeName(targetNode));
+                                ((StateTransition) defaultConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
                             }
 
-                            if (defaultConditionTransition.end instanceof Boolean) {
-                                defaultConditionTransition.end = false;
+                            if (defaultConditionTransition.getEnd() instanceof Boolean) {
+                                defaultConditionTransition.setEnd(false);
                             }
                         }
                     }
@@ -208,8 +210,8 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<ErrorTransition> ERROR_TRANSITION_UNMARSHALLER =
             (context, errorTransition) -> {
-                boolean end = getEnd(errorTransition.end);
-                String transition = getTransition(errorTransition.transition);
+                boolean end = getEnd(errorTransition.getEnd());
+                String transition = getTransition(errorTransition.getTransition());
 
                 Edge edge = null;
                 if (end) {
@@ -230,20 +232,21 @@ public interface TransitionMarshalling {
                         Object targetDef = getElementDefinition(targetNode);
 
                         if (targetDef instanceof End) {
-                            errorTransition.transition = null;
+                            errorTransition.setTransition(null);
 
-                            if (errorTransition.end instanceof Boolean) {
-                                errorTransition.end = true;
+                            if (errorTransition.getEnd() instanceof Boolean) {
+                                errorTransition.setEnd(true);
                             }
                         } else {
-                            if (errorTransition.transition instanceof String) {
-                                errorTransition.transition = getStateNodeName(targetNode);
+                            if (errorTransition.getTransition() instanceof String) {
+                                errorTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                setObjectProperty(errorTransition.transition, "nextState", getStateNodeName(targetNode));
+                                ((StateTransition)errorTransition.getTransition())
+                                        .setNextState(getStateNodeName(targetNode));
                             }
 
-                            if (errorTransition.end instanceof Boolean) {
-                                errorTransition.end = false;
+                            if (errorTransition.getEnd() instanceof Boolean) {
+                                errorTransition.setEnd(false);
                             }
                         }
                     }
@@ -253,8 +256,8 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_UNMARSHALLER =
             (context, eventConditionTransition) -> {
-                boolean end = getEnd(eventConditionTransition.end);
-                String transition = getTransition(eventConditionTransition.transition);
+                boolean end = getEnd(eventConditionTransition.getEnd());
+                String transition = getTransition(eventConditionTransition.getTransition());
 
                 Edge edge = null;
                 if (end) {
@@ -277,20 +280,20 @@ public interface TransitionMarshalling {
                         Object targetDef = getElementDefinition(targetNode);
 
                         if (targetDef instanceof End) {
-                            eventConditionTransition.transition = null;
+                            eventConditionTransition.setTransition(null);
 
-                            if (eventConditionTransition.end instanceof Boolean) {
-                                eventConditionTransition.end = true;
+                            if (eventConditionTransition.getEnd() instanceof Boolean) {
+                                eventConditionTransition.setEnd(true);
                             }
                         } else {
-                            if (eventConditionTransition.transition instanceof String) {
-                                eventConditionTransition.transition = getStateNodeName(targetNode);
+                            if (eventConditionTransition.getTransition() instanceof String) {
+                                eventConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                setObjectProperty(eventConditionTransition.transition, "nextState", getStateNodeName(targetNode));
+                                ((StateTransition) eventConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
                             }
 
-                            if (eventConditionTransition.end instanceof Boolean) {
-                                eventConditionTransition.end = false;
+                            if (eventConditionTransition.getEnd() instanceof Boolean) {
+                                eventConditionTransition.setEnd(false);
                             }
                         }
                     }
@@ -303,7 +306,7 @@ public interface TransitionMarshalling {
                 Node sourceNode = context.sourceNode;
                 Edge startEdge = context.addEdge(EDGE_START, startTransition, sourceNode);
 
-                String transition = getTransition(startTransition.transition);
+                String transition = getTransition(startTransition.getTransition());
                 if (isValidString(transition)) {
                     String targetUUID = context.obtainUUID(transition);
                     context.connect(startEdge, sourceNode, targetUUID);
@@ -319,12 +322,12 @@ public interface TransitionMarshalling {
                     Node targetNode = edge.getTargetNode();
                     String stateName = getStateNodeName(targetNode);
 
-                    if (workflow.start instanceof String) {
+                    if (workflow.getStart() instanceof String) {
                         workflow.setStart(stateName);
-                    } else if (workflow.start != null) {
-                        Object startName = getObjectProperty(workflow.start, stateName);
+                    } else if (workflow.getStart() != null) {
+                        Object startName = ((StartDefinition) workflow.getStart()).getStateName();
                         if (startName != null) {
-                            setObjectProperty(workflow.start, "stateName", stateName);
+                            ((StartDefinition) workflow.getStart()).setStateName(stateName);
                         }
                     }
                 } else {

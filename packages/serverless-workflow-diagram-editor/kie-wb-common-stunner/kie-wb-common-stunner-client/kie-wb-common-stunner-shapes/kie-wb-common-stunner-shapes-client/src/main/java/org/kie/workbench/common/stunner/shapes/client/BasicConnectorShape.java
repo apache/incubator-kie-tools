@@ -20,16 +20,13 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefau
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
-public class BasicConnectorShape<W, D extends ShapeViewDef<W, V>, V extends WiresConnectorViewExt>
-        extends ConnectorShape<W, D, V> {
+public class BasicConnectorShape<W, V extends WiresConnectorViewExt>
+        extends ConnectorShape<W, V> {
 
     @SuppressWarnings("unchecked")
-    public BasicConnectorShape(D shapeDef,
-                               V view) {
-        super(shapeDef,
-              view,
+    public BasicConnectorShape(V view) {
+        super(view,
               new ShapeStateDefaultHandler()
                       .setRenderType(ShapeStateDefaultHandler.RenderType.STROKE)
                       .setBorderShape(() -> view)

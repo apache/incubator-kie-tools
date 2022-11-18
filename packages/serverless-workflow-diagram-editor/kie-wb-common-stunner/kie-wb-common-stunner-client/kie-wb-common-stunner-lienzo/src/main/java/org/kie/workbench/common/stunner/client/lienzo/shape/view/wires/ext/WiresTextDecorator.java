@@ -202,6 +202,10 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
         return this;
     }
 
+    public void isListening(boolean isListening) {
+        text.setListening(isListening);
+    }
+
     @Override
     public WiresTextDecorator setMargins(final Map<Enum, Double> margins) {
         this.margins = margins;
@@ -306,7 +310,7 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
         return this;
     }
 
-    public WiresTextDecorator setTextWrapper(final TextWrapperStrategy strategy) {
+    public WiresTextDecorator setTitleWrapper(final TextWrapperStrategy strategy) {
 
         final ITextWrapper wrapper = getTextWrapper(strategy);
         this.textWrapper = wrapper;
@@ -328,7 +332,7 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
     }
 
     @Override
-    public void setTextBoundaries(final double width, final double height) {
+    public void setTitleBoundaries(final double width, final double height) {
         setTextBoundaries(BoundingBox.fromDoubles(0, 0, width, height));
     }
 
@@ -404,7 +408,7 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
     }
 
     @Override
-    public WiresTextDecorator setTextSizeConstraints(final Size sizeConstraints) {
+    public WiresTextDecorator setTitleSizeConstraints(final Size sizeConstraints) {
         this.sizeConstraints = Optional.ofNullable(sizeConstraints);
         return this;
     }

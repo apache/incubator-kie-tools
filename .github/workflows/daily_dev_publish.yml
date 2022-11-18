@@ -22,7 +22,7 @@ jobs:
       DMN_DEV_SANDBOX__baseImageTag: "daily-dev"
       DMN_DEV_SANDBOX__baseImageBuildTags: "daily-dev"
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online/dev"
-      ONLINE_EDITOR__corsProxyUrl: "https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+      ONLINE_EDITOR__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kie-tools"
@@ -34,10 +34,10 @@ jobs:
       KIE_SANDBOX_EXTENDED_SERVICES__imageName: "kie-sandbox-extended-services-image"
       KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: "daily-dev"
 
-      CORS_PROXY__imageRegistry: "quay.io"
-      CORS_PROXY__imageAccount: "kie-tools"
-      CORS_PROXY__imageName: "cors-proxy-image"
-      CORS_PROXY__imageBuildTags: "daily-dev"
+      GIT_CORS_PROXY__imageRegistry: "quay.io"
+      GIT_CORS_PROXY__imageAccount: "kie-tools"
+      GIT_CORS_PROXY__imageName: "git-cors-proxy-image"
+      GIT_CORS_PROXY__imageBuildTags: "daily-dev"
 
       OPENSHIFT_NAMESPACE: "kie-sandbox"
       OPENSHIFT_PART_OF: "daily-dev-kie-sandbox-app"
@@ -54,7 +54,7 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "daily-dev"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "daily-dev"
-      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: "https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+      SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
     steps:
       - name: "Support longpaths (Windows only)"
@@ -135,14 +135,14 @@ jobs:
           username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
-      - name: "Push cors-proxy-image to quay.io (Ubuntu only)"
+      - name: "Push git-cors-proxy-image to quay.io (Ubuntu only)"
         if: runner.os == 'Linux'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.CORS_PROXY__imageName }}"
-          tags: "${{ env.CORS_PROXY__imageBuildTags }}"
-          registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
-          username: "${{ env.CORS_PROXY__imageAccount }}"
+          image: "${{ env.GIT_CORS_PROXY__imageName }}"
+          tags: "${{ env.GIT_CORS_PROXY__imageBuildTags }}"
+          registry: "${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}"
+          username: "${{ env.GIT_CORS_PROXY__imageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Push kie-sandbox-image to quay.io (Ubuntu only)"
@@ -189,14 +189,14 @@ jobs:
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "golang"
 
-      - name: "Deploy cors-proxy-image to OpenShift (Ubuntu only)"
-        id: deploy_cors_proxy_image
+      - name: "Deploy git-cors-proxy-image to OpenShift (Ubuntu only)"
+        id: deploy_git_cors_proxy_image
         if: runner.os == 'Linux'
         uses: ./kie-tools/.github/actions/deploy-openshift
         with:
           image_tag: ${{ env.DEPLOY_TAG }}
-          image_url: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}/${{ env.CORS_PROXY__imageName }}:${{ env.DEPLOY_TAG }}"
-          app_name: "daily-dev-cors-proxy"
+          image_url: "${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}/${{ env.GIT_CORS_PROXY__imageName }}:${{ env.DEPLOY_TAG }}"
+          app_name: "daily-dev-git-cors-proxy"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.OPENSHIFT_SERVER }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
@@ -208,7 +208,7 @@ jobs:
         shell: bash
         run: |
           echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${{ steps.deploy_kie_sandbox_extended_services_image.outputs.route_url }}" >> deployment.env
-          echo "CORS_PROXY_URL=${{ steps.deploy_cors_proxy_image.outputs.route_url }}" >> deployment.env
+          echo "KIE_SANDBOX_GIT_CORS_PROXY_URL=${{ steps.deploy_git_cors_proxy_image.outputs.route_url }}" >> deployment.env
 
       - name: "Deploy kie-sandbox-image to OpenShift (Ubuntu only)"
         if: runner.os == 'Linux'

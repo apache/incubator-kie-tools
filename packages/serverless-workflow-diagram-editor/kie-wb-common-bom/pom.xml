@@ -214,18 +214,6 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>kie-wb-common-stunner-svg-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-widgets</artifactId>
         <version>${project.version}</version>
       </dependency>

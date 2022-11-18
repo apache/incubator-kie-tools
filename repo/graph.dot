@@ -34,7 +34,6 @@ digraph G {
   "@kie-tools/stunner-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "chrome-extension-serverless-workflow-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-combined-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-client" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -71,6 +70,7 @@ digraph G {
   "@kie-tools/form-generation-tool" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-patternfly-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/git-cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -102,6 +102,7 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -151,7 +152,6 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/chrome-extension" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "black" ];
-  "@kie-tools/cors-proxy-image" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/dashbuilder-component-assembler" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-client" -> "@kie-tools/dashbuilder" [ style = "dashed", color = "blue" ];
@@ -227,6 +227,7 @@ digraph G {
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-bootstrap4-codegen" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-patternfly-codegen" [ style = "solid", color = "blue" ];
+  "@kie-tools/git-cors-proxy-image" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/guided-tour" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/guided-tour" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
   "@kie-tools-core/guided-tour" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "purple" ];
@@ -265,6 +266,7 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/dmn-dev-sandbox-deployment-base-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/git-cors-proxy-image" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools/openjdk11-mvn-image" -> "@kie-tools/openjdk11-mvn-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/openjdk11-mvn-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
@@ -309,6 +311,7 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];
@@ -380,6 +383,9 @@ digraph G {
   "@kie-tools-core/workspaces-git-fs" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "purple" ];
   "@kie-tools-core/workspaces-git-fs" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
   "@kie-tools-core/workspaces-git-fs" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "purple" ];
+  "@kie-tools/yaml-language-server" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/yaml-language-server" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/yaml-language-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools-scripts/bootstrap" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];

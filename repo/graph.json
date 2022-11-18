@@ -49,7 +49,6 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-mermaid-viewer" },
       { "id": "@kie-tools/serverless-workflow-text-editor" },
-      { "id": "@kie-tools/cors-proxy-image" },
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
       { "id": "@kie-tools/dashbuilder-component-echarts" },
@@ -81,6 +80,7 @@
       { "id": "@kie-tools/form-generation-tool" },
       { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
+      { "id": "@kie-tools/git-cors-proxy-image" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
@@ -104,6 +104,7 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
+      { "id": "@kie-tools/yaml-language-server" },
       { "id": "vscode-extension-backend" },
       { "id": "vscode-extension-bpmn-editor" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
@@ -319,7 +320,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/serverless-workflow-text-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
-      { "source": "@kie-tools/cors-proxy-image", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/dashbuilder-component-assembler", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       {
@@ -512,6 +512,7 @@
       { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/git-cors-proxy-image", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -546,6 +547,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/extended-services", "weight": 1 },
+      { "source": "@kie-tools/online-editor", "target": "@kie-tools/git-cors-proxy-image", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/stunner-editors", "weight": 1 },
       { "source": "@kie-tools-core/openshift", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/openshift", "target": "@kie-tools/root-env", "weight": 1 },
@@ -628,10 +630,18 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-workflow-language-service",
+        "target": "@kie-tools/yaml-language-server",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-service-catalog",
         "target": "@kie-tools-core/envelope-bus",
         "weight": 1
       },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools/backend-extended-services", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -739,7 +749,6 @@
     ["@kie-tools-core/chrome-extension", "packages/chrome-extension"],
     ["chrome-extension-pack-kogito-kie-editors", "packages/chrome-extension-pack-kogito-kie-editors"],
     ["chrome-extension-serverless-workflow-editor", "packages/chrome-extension-serverless-workflow-editor"],
-    ["@kie-tools/cors-proxy-image", "packages/cors-proxy-image"],
     ["@kie-tools/dashbuilder", "packages/dashbuilder"],
     ["@kie-tools/dashbuilder-client", "packages/dashbuilder-client"],
     ["@kie-tools/dashbuilder-component-api", "packages/dashbuilder-component-api"],
@@ -771,6 +780,7 @@
     ["@kie-tools/form", "packages/form"],
     ["@kie-tools/form-dmn", "packages/form-dmn"],
     ["@kie-tools/form-generation-tool", "packages/form-generation-tool"],
+    ["@kie-tools/git-cors-proxy-image", "packages/git-cors-proxy-image"],
     ["@kie-tools-core/guided-tour", "packages/guided-tour"],
     ["@kie-tools-core/i18n", "packages/i18n"],
     ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],
@@ -839,6 +849,7 @@
     ["@kie-tools-core/webpack-base", "packages/webpack-base"],
     ["@kie-tools-core/workspace", "packages/workspace"],
     ["@kie-tools-core/workspaces-git-fs", "packages/workspaces-git-fs"],
+    ["@kie-tools/yaml-language-server", "packages/yaml-language-server"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
     ["@kie-tools-scripts/bootstrap", "scripts/bootstrap"],
     ["@kie-tools-scripts/build-env", "scripts/build-env"],
