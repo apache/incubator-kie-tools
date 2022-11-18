@@ -29,11 +29,18 @@ export interface DmnDevSandboxContextType {
   isDropdownOpen: boolean;
   isDeploymentsDropdownOpen: boolean;
   isConfirmDeployModalOpen: boolean;
+  isConfirmDeleteModalOpen: boolean;
+  deploymentsToBeDeleted: string[];
   setDeployments: React.Dispatch<React.SetStateAction<KieSandboxOpenShiftDeployedModel[]>>;
   setDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmDeleteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeploymentsToBeDeleted: React.Dispatch<React.SetStateAction<string[]>>;
   deploy: (workspaceFile: WorkspaceFile) => Promise<boolean>;
+  deleteDeployment: (resourceName: string) => Promise<boolean>;
+  deleteDeployments: () => Promise<boolean>;
+  loadDeployments: (errCallback?: () => void) => Promise<void>;
 }
 
 export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType>({

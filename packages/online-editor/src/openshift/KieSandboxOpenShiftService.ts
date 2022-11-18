@@ -16,6 +16,7 @@
 
 import {
   CreateDeployment,
+  DeleteDeployment,
   GetDeployment,
   ListDeployments,
 } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
@@ -199,6 +200,35 @@ export class KieSandboxOpenShiftService {
         }
       }, CHECK_UPLOAD_STATUS_POLLING_TIME);
     });
+  }
+
+  public async deleteDeployment(resourceName: string) {
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteDeployment({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
+
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteService({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
+
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteRoute({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
   }
 
   private extractDeploymentStateWithUploadStatus(
