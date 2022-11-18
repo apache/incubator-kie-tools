@@ -246,27 +246,25 @@ func createJitExecutor(jitexecutor []byte) string {
 	}
 
 	cachePath := filepath.Join(cacheDir, "org.kie.kogito")
-
 	if _, err := os.Stat(cachePath); os.IsNotExist(err) {
-		os.Mkdir(cachePath, os.ModePerm)
+		if err = os.Mkdir(cachePath, os.ModePerm); err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	var jitexecutorPath string
-
+	var jitExecutorPath string
 	if runtime.GOOS == "windows" {
-		jitexecutorPath = filepath.Join(cachePath, "runner.exe")
+		jitExecutorPath = filepath.Join(cachePath, "runner.exe")
 	} else {
-		jitexecutorPath = filepath.Join(cachePath, "runner")
+		jitExecutorPath = filepath.Join(cachePath, "runner")
 	}
 
-	_, err = os.Stat(jitexecutorPath)
+	_, err = os.Stat(jitExecutorPath)
 	if err == nil {
-		os.Remove(jitexecutorPath)
-	} else {
-		log.Fatal(err)
+		os.Remove(jitExecutorPath)
 	}
 
-	f, err := os.Create(jitexecutorPath)
+	f, err := os.Create(jitExecutorPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -278,5 +276,5 @@ func createJitExecutor(jitexecutor []byte) string {
 	}
 
 	f.Close()
-	return jitexecutorPath
+	return jitExecutorPath
 }
