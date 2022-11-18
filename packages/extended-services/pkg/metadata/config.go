@@ -17,29 +17,3 @@
 package metadata
 
 var Version, IP, Port, Modeler string
-
-type Proxy struct {
-	IP                 string `json:"ip"`
-	Port               string `json:"port"`
-	InsecureSkipVerify bool   `json:"insecureSkipVerify"`
-}
-
-type Config struct {
-	Version string `json:"version"`
-	Proxy   Proxy  `json:"proxy"`
-	Modeler string `json:"modeler"`
-	Started bool   `json:"started"`
-}
-
-func GetConfig(insecureSkipVerify bool, started bool) Config {
-	return Config{
-		Version: Version,
-		Proxy: Proxy{
-			IP:                 IP,
-			Port:               Port,
-			InsecureSkipVerify: insecureSkipVerify,
-		},
-		Modeler: Modeler,
-		Started: started,
-	}
-}

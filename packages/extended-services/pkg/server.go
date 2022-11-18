@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package kogito
+package pkg
 
 import (
 	"bufio"
@@ -229,7 +229,7 @@ func (p *Proxy) pingHandler() func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Add("Access-Control-Allow-Origin", "*")
 		rw.Header().Add("Access-Control-Allow-Methods", "GET")
 
-		conf := metadata.GetConfig(p.InsecureSkipVerify, p.Started)
+		conf := GetPingResponse(p.InsecureSkipVerify, p.Started)
 		rw.WriteHeader(http.StatusOK)
 		json, _ := json.Marshal(conf)
 		_, err := rw.Write(json)

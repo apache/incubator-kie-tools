@@ -20,7 +20,7 @@ import (
 	_ "embed"
 	"flag"
 
-	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/kogito"
+	"github.com/kiegroup/kie-tools/packages/extended-services/pkg"
 	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
 )
 
@@ -33,8 +33,8 @@ func main() {
 	port := flag.String("p", metadata.Port, "KIE Sandbox Extended Services Port")
 	flag.Parse()
 
-	server := kogito.NewProxy(*port, jitexecutor)
-	view := &kogito.Systray{}
+	server := pkg.NewProxy(*port, jitexecutor)
+	view := &pkg.Systray{}
 
 	server.View = view
 	view.Server = server

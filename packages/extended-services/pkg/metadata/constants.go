@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package kogito
+package metadata
 
 const NAME = "Kogito"
 const APPNAME = "KIE Sandbox Extended Services"

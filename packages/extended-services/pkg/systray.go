@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package kogito
+package pkg
 
 import (
 	"fmt"
@@ -45,21 +45,21 @@ func (s *Systray) Run() {
 
 func (s *Systray) onReady() {
 	systray.SetTemplateIcon(images.DataStarted, images.DataStarted)
-	systray.SetTooltip(APPNAME)
+	systray.SetTooltip(metadata.APPNAME)
 
 	s.mainSection()
 	systray.AddSeparator()
 	s.operationSection()
 	systray.AddSeparator()
-	quitItem := systray.AddMenuItem(QUIT, "")
+	quitItem := systray.AddMenuItem(metadata.QUIT, "")
 
-	s.StartStopItem.SetTitle(STARTING)
+	s.StartStopItem.SetTitle(metadata.STARTING)
 	go s.Server.Start()
 
 	for {
 		select {
 		case <-s.openModeler.ClickedCh:
-			s.openBrowser(MODELER_LINK)
+			s.openBrowser(metadata.MODELER_LINK)
 		case <-s.StartStopItem.ClickedCh:
 			if s.Server.Started {
 				s.Stop()
@@ -69,10 +69,10 @@ func (s *Systray) onReady() {
 		case <-s.ToggleInsecureSkipVerify.ClickedCh:
 			if s.Server.InsecureSkipVerify {
 				s.Server.InsecureSkipVerify = false
-				s.ToggleInsecureSkipVerify.SetTitle(ALLOW_INSECURE_SKIP_VERIFY)
+				s.ToggleInsecureSkipVerify.SetTitle(metadata.ALLOW_INSECURE_SKIP_VERIFY)
 			} else {
 				s.Server.InsecureSkipVerify = true
-				s.ToggleInsecureSkipVerify.SetTitle(DISALLOW_INSECURE_SKIP_VERIFY)
+				s.ToggleInsecureSkipVerify.SetTitle(metadata.DISALLOW_INSECURE_SKIP_VERIFY)
 			}
 		case <-quitItem.ClickedCh:
 			s.Stop()
@@ -88,35 +88,35 @@ func (s *Systray) onExit() {
 
 func (s *Systray) Start() {
 	fmt.Println("Executing Start command")
-	s.StartStopItem.SetTitle(STARTING)
+	s.StartStopItem.SetTitle(metadata.STARTING)
 	s.Server.Start()
 }
 
 func (s *Systray) Stop() {
 	fmt.Println("Executing Stop command")
-	s.StartStopItem.SetTitle(STOPPING)
+	s.StartStopItem.SetTitle(metadata.STOPPING)
 	s.Server.Stop()
 }
 
 func (s *Systray) mainSection() {
-	s.openModeler = systray.AddMenuItem(BUSINESS_MODELER, "")
+	s.openModeler = systray.AddMenuItem(metadata.BUSINESS_MODELER, "")
 
 	systray.AddSeparator()
 
-	version := systray.AddMenuItem(VERSION+": "+metadata.Version, "")
+	version := systray.AddMenuItem(metadata.VERSION+": "+metadata.Version, "")
 	version.Disable()
 
-	s.runnerPortItem = systray.AddMenuItem(INFORMATION_PORTS+": "+s.Server.Port+" -> "+s.getRunnerPortStatus(), "")
+	s.runnerPortItem = systray.AddMenuItem(metadata.INFORMATION_PORTS+": "+s.Server.Port+" -> "+s.getRunnerPortStatus(), "")
 	s.runnerPortItem.Disable()
 }
 
 func (s *Systray) operationSection() {
 	if s.Server.InsecureSkipVerify {
-		s.ToggleInsecureSkipVerify = systray.AddMenuItem(DISALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of s-signed certificates")
+		s.ToggleInsecureSkipVerify = systray.AddMenuItem(metadata.DISALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of s-signed certificates")
 	} else {
-		s.ToggleInsecureSkipVerify = systray.AddMenuItem(ALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of s-signed certificates")
+		s.ToggleInsecureSkipVerify = systray.AddMenuItem(metadata.ALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of s-signed certificates")
 	}
-	s.StartStopItem = systray.AddMenuItem(START, "")
+	s.StartStopItem = systray.AddMenuItem(metadata.START, "")
 
 }
 
@@ -127,11 +127,11 @@ func (s *Systray) Refresh() {
 }
 
 func (s *Systray) refreshRunnerPort() {
-	s.runnerPortItem.SetTitle(INFORMATION_PORTS + ": " + s.Server.Port + " -> " + s.getRunnerPortStatus())
+	s.runnerPortItem.SetTitle(metadata.INFORMATION_PORTS + ": " + s.Server.Port + " -> " + s.getRunnerPortStatus())
 }
 
 func (s *Systray) getRunnerPortStatus() string {
-	status := NOT_STARTED
+	status := metadata.NOT_STARTED
 	if s.Server.RunnerPort != "0" {
 		status = s.Server.RunnerPort
 	}
@@ -148,9 +148,9 @@ func (s *Systray) SetLoading() {
 
 func (s *Systray) changeStartStop() {
 	if s.Server.Started {
-		s.StartStopItem.SetTitle(STOP)
+		s.StartStopItem.SetTitle(metadata.STOP)
 	} else {
-		s.StartStopItem.SetTitle(START)
+		s.StartStopItem.SetTitle(metadata.START)
 	}
 }
 
