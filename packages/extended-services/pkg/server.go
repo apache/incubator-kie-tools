@@ -87,7 +87,7 @@ func (p *Proxy) Start() {
 	}
 
 	router := mux.NewRouter()
-	router.PathPrefix("/cors-proxy").HandlerFunc(p.devSandboxHandler())
+	router.PathPrefix("/cors-proxy").HandlerFunc(p.corsProxyHandler())
 	router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
 	router.PathPrefix("/").HandlerFunc(p.jitExecutorHandler())
 
@@ -158,7 +158,7 @@ func (p *Proxy) Refresh() {
 	p.View.Refresh()
 }
 
-func (p *Proxy) devSandboxHandler() func(rw http.ResponseWriter, req *http.Request) {
+func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Request) {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		if req.Method == "OPTIONS" {
 			rw.Header().Add("Access-Control-Allow-Origin", "*")
