@@ -1,0 +1,164 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+IMAGES = ['kogito-serverless-operator']
+
+helper = null
+
+pipeline {
+    agent {
+        label 'kogito-operator-node && !built-in'
+    }
+
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
+
+    // parameters {
+    // For parameters, check into ./dsl/jobs.groovy file
+    // }
+
+    environment {
+        // Static env is defined into ./dsl/jobs.groovy file
+
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        GITHUB_REPO = "${REPO_NAME}" // for github-release cli
+    }
+
+    stages {
+        stage('Setup pipeline') {
+            steps {
+                script {
+                    helper = load '.ci/jenkins/scripts/helper.groovy'
+                    helper.initPipeline()
+                }
+            }
+        }
+        stage('Initialize') {
+            steps {
+                script {
+                    helper.updateDisplayName()
+
+                    properties.readFromUrl(helper.getDeployPropertiesFileUrl())
+
+                    if (helper.isRelease()) {
+                        // Verify version is set and if on right release branch
+                        assert helper.getProjectVersion()
+                        assert helper.getBuildBranch() == util.getReleaseBranchFromVersion(helper.getProjectVersion())
+                    }
+                }
+            }
+        }
+        stage('Pull "old" images') {
+            steps {
+                script {
+                    helper.loginRegistry(baseImageParamsPrefix)
+
+                    for (String imageName : IMAGES) {
+                        container.pullImage(helper.getImageFullTag(imageName, baseImageParamsPrefix))
+                    }
+                }
+            }
+        }
+        stage('Tag images') {
+            steps {
+                script {
+                    for (String imageName : IMAGES) {
+                        container.tagImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix))
+                        if (helper.isDeployLatestTag()) {
+                            container.tagImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
+                        }
+                    }
+                }
+            }
+        }
+        stage('Pushing') {
+            steps {
+                script {
+                    helper.loginRegistry(promoteImageParamsPrefix)
+
+                    for (String imageName : IMAGES) {
+                        container.pushImage(helper.getImageFullTag(imageName, promoteImageParamsPrefix))
+                        if (helper.isDeployLatestTag()) {
+                            container.pushImage(helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
+                        }
+
+                        if (helper.getImageRegistry() == 'quay.io') {
+                            helper.makeQuayImagePublic(helper.getFullImageName(imageName))
+                        }
+                    }
+                }
+            }
+        }
+        stage('Merge PR, tag and release CLI') {
+            when {
+                expression { return helper.isRelease() }
+            }
+            steps {
+                script {
+                    dir(helper.getRepoName()) {
+                        helper.checkoutRepo()
+
+                        // Merge PR
+                        String prLink = properties.retrieve("${helper.getRepoName()}.pr.link")
+                        if (prLink) {
+                            githubscm.mergePR(prLink, helper.getGitAuthorCredsID())
+                            githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
+                        }
+
+                        if (helper.getGitTag()) {
+                            helper.createRelease()
+                        }
+                    }
+                }
+            }
+        }
+        stage('Set next snapshot version') {
+            when {
+                expression { return helper.isRelease() }
+            }
+            steps {
+                script {
+                    String nextVersion = helper.getNextVersion()
+                    dir(helper.getRepoName()) {
+                        // Prepare PR
+                        helper.checkoutRepo()
+
+                        // Update version to next snapshot
+                        sh "make bump-version new_version=${nextVersion}"
+
+                        def commitMsg = "[${helper.getBuildBranch()}] Update snapshot version to ${nextVersion}\n\nCommitted by build ${BUILD_TAG}: ${BUILD_URL}"
+                        githubscm.commitChanges(commitMsg, {
+                            sh '''
+                                git add .
+                                git reset -- go.mod
+                                git reset -- go.sum
+                            '''
+                        })
+                        githubscm.pushObject('origin', getBuildBranch(), helper.getGitAuthorCredsID())
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                helper.cleanGoPath()
+                util.cleanNode(containerEngine)
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        mailer.sendMarkdownTestSummaryNotification('Promote', "[${helper.getBuildBranch()}] Kogito Operator", [env.KOGITO_CI_EMAIL_TO])
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
