@@ -19,22 +19,14 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../cookies";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
-import { readConfigCookie } from "../openshift/OpenShiftSettingsConfig";
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
-import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
-import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../navigation/Routes";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
 export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 const GUIDED_TOUR_ENABLED_COOKIE_NAME = "kie-tools-COOKIE__guided-tour--is-enabled";
-export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-namespace";
-export const OPENSHIFT_HOST_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-host";
-export const OPENSHIFT_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-token";
 
 export class ExtendedServicesConfig {
   constructor(public readonly host: string, public readonly port: string) {}
@@ -50,10 +42,6 @@ export class ExtendedServicesConfig {
 export interface SettingsContextType {
   isOpen: boolean;
   activeTab: SettingsTabs;
-  openshift: {
-    status: OpenShiftInstanceStatus;
-    config: OpenShiftConnection;
-  };
   kieSandboxExtendedServices: {
     config: ExtendedServicesConfig;
   };
@@ -67,11 +55,6 @@ export interface SettingsContextType {
 export interface SettingsDispatchContextType {
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
-  openshift: {
-    service: KieSandboxOpenShiftService;
-    setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
-    setConfig: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
-  };
   kieSandboxExtendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
   };
@@ -120,35 +103,14 @@ export function SettingsContextProvider(props: any) {
     setCookie(GUIDED_TOUR_ENABLED_COOKIE_NAME, `${isGuidedTourEnabled}`);
   }, [isGuidedTourEnabled]);
 
-  //openshift
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [openshiftConfig, setOpenShiftConfig] = useState(readConfigCookie());
-  const [openshiftStatus, setOpenshiftStatus] = useState(
-    kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
-      ? OpenShiftInstanceStatus.DISCONNECTED
-      : OpenShiftInstanceStatus.UNAVAILABLE
-  );
-
-  const openshiftService = useMemo(
-    () =>
-      new KieSandboxOpenShiftService({
-        connection: openshiftConfig,
-        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/devsandbox`,
-      }),
-    [openshiftConfig, kieSandboxExtendedServices.config]
-  );
+  const extendedServices = useExtendedServices();
 
   const dispatch = useMemo(() => {
     return {
       open,
       close,
-      openshift: {
-        service: openshiftService,
-        setStatus: setOpenshiftStatus,
-        setConfig: setOpenShiftConfig,
-      },
       kieSandboxExtendedServices: {
-        setConfig: kieSandboxExtendedServices.saveNewConfig,
+        setConfig: extendedServices.saveNewConfig,
       },
       general: {
         guidedTour: {
@@ -156,18 +118,14 @@ export function SettingsContextProvider(props: any) {
         },
       },
     };
-  }, [close, kieSandboxExtendedServices.saveNewConfig, open, openshiftService]);
+  }, [close, extendedServices.saveNewConfig, open]);
 
   const value = useMemo(() => {
     return {
       isOpen,
       activeTab,
-      openshift: {
-        status: openshiftStatus,
-        config: openshiftConfig,
-      },
       kieSandboxExtendedServices: {
-        config: kieSandboxExtendedServices.config,
+        config: extendedServices.config,
       },
       general: {
         guidedTour: {
@@ -175,7 +133,7 @@ export function SettingsContextProvider(props: any) {
         },
       },
     };
-  }, [activeTab, isGuidedTourEnabled, isOpen, kieSandboxExtendedServices.config, openshiftConfig, openshiftStatus]);
+  }, [activeTab, isGuidedTourEnabled, isOpen, extendedServices.config]);
 
   return (
     <SettingsContext.Provider value={value}>

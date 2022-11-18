@@ -30,7 +30,7 @@ import { SettingsContextProvider } from "./settings/SettingsContext";
 import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./importFromUrl/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./importFromUrl/NewWorkspaceFromUrlPage";
-import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
+import { DevDeploymentsContextProvider } from "./devDeployments/DevDeploymentsContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
@@ -53,7 +53,7 @@ export function App() {
         [AccountsContextProvider, {}],
         [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js" }],
         [DmnRunnerInputsDispatchContextProvider, {}],
-        [DmnDevSandboxContextProvider, {}],
+        [DevDeploymentsContextProvider, {}],
         [NavigationContextProvider, {}],
         [PreviewSvgsContextProvider, {}],
         [RoutesSwitch, {}]

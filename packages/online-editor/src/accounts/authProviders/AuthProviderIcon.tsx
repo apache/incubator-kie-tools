@@ -51,7 +51,7 @@ export function AuthProviderIcon(props: {
     return <GitlabIcon size={props.size} />;
   }
 
-  if (props.authProvider.type === "openshift") {
+  if (props.authProvider.type === "kubernetes") {
     return <OpenshiftIcon size={props.size} />;
   }
 

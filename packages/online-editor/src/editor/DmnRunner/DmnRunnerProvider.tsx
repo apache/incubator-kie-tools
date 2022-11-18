@@ -29,7 +29,7 @@ import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
-import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
@@ -46,7 +46,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const queryParams = useQueryParams();
   const history = useHistory();
   const routes = useRoutes();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
   const {
@@ -99,7 +99,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   useEffect(() => {
     if (
       props.workspaceFile.extension !== "dmn" ||
-      kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
+      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     ) {
       setExpanded(false);
       return;
@@ -115,14 +115,14 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         console.error(err);
         setError(true);
       });
-  }, [kieSandboxExtendedServices.status, props.workspaceFile.extension, preparePayload, service]);
+  }, [extendedServices.status, props.workspaceFile.extension, preparePayload, service]);
 
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
       return;
     }
 
-    if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
+    if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
       props.editorPageDock?.setNotifications(i18n.terms.validation, "", []);
       return;
     }
@@ -151,7 +151,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         });
       })
       .catch((err) => console.error(err));
-  }, [props.workspaceFile, props.editorPageDock, kieSandboxExtendedServices.status, service, i18n.terms.validation]);
+  }, [props.workspaceFile, props.editorPageDock, extendedServices.status, service, i18n.terms.validation]);
 
   useEffect(() => {
     if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
@@ -171,7 +171,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile]);
 
-  const prevKieSandboxExtendedServicesStatus = usePrevious(kieSandboxExtendedServices.status);
+  const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
       return;
@@ -181,18 +181,18 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       prevKieSandboxExtendedServicesStatus &&
       prevKieSandboxExtendedServicesStatus !== KieSandboxExtendedServicesStatus.AVAILABLE &&
       prevKieSandboxExtendedServicesStatus !== KieSandboxExtendedServicesStatus.RUNNING &&
-      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
+      extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
     ) {
       setExpanded(true);
     }
 
     if (
-      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
-      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
+      extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
+      extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
     ) {
       setExpanded(false);
     }
-  }, [prevKieSandboxExtendedServicesStatus, kieSandboxExtendedServices.status, props.workspaceFile.extension]);
+  }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
   const dmnRunnerDispatch = useMemo(
     () => ({

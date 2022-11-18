@@ -32,7 +32,7 @@ import {
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 export enum PanelId {
@@ -123,14 +123,14 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, onToggle, setNotifications]
   );
 
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
   const notificationsPanelIsDisabled = useMemo(() => {
     return (
       props.workspaceFile.extension.toLowerCase() === "bpmn" ||
       (props.workspaceFile.extension.toLowerCase() === "dmn" &&
-        kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING)
+        extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING)
     );
-  }, [kieSandboxExtendedServices.status, props.workspaceFile.extension]);
+  }, [extendedServices.status, props.workspaceFile.extension]);
 
   const notificationsPanelDisabledReason = useMemo(() => {
     if (props.workspaceFile.extension.toLowerCase() === "bpmn") {
@@ -138,12 +138,12 @@ export const EditorPageDockDrawer = React.forwardRef<
     }
     if (
       props.workspaceFile.extension.toLowerCase() === "dmn" &&
-      kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
+      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     ) {
       return "In order to have access to Problems tab you need to use the KIE Sandbox Extended Services";
     }
     return "";
-  }, [kieSandboxExtendedServices.status, props.workspaceFile.extension]);
+  }, [extendedServices.status, props.workspaceFile.extension]);
 
   const isDmnTableMode = useMemo(
     () => dmnRunnerState.mode === DmnRunnerMode.TABLE && props.workspaceFile.extension.toLowerCase() === "dmn",

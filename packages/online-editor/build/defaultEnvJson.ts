@@ -33,6 +33,7 @@ export const defaultEnvJson: EnvJson = {
       name: "GitHub",
       enabled: true,
       iconPath: "",
+      group: "git",
     },
     {
       id: "gitlab_dot_com",
@@ -42,6 +43,7 @@ export const defaultEnvJson: EnvJson = {
       name: "GitLab",
       enabled: false,
       iconPath: "",
+      group: "git",
     },
     {
       id: "bitbucket_dot_com",
@@ -51,6 +53,16 @@ export const defaultEnvJson: EnvJson = {
       name: "Bitbucket",
       enabled: false,
       iconPath: "",
+      group: "git",
+    },
+    {
+      enabled: true,
+      id: "kubernetes_and_openshift",
+      type: "kubernetes",
+      name: "Kubernetes / OpenShift",
+      domain: undefined,
+      iconPath: "",
+      group: "cloud",
     },
   ],
 };

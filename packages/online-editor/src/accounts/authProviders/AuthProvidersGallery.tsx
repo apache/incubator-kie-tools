@@ -18,6 +18,7 @@ import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternf
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import * as React from "react";
+import { useMemo } from "react";
 import {
   AccountsDispatchActionKind,
   AccountsSection,
@@ -25,6 +26,7 @@ import {
   useAccountsDispatch,
 } from "../AccountsDispatchContext";
 import { AuthProviderIcon } from "./AuthProviderIcon";
+import { AuthProvider } from "./AuthProvidersApi";
 import { useAuthProviders } from "./AuthProvidersContext";
 
 export function AuthProvidersGallery(props: {
@@ -34,57 +36,88 @@ export function AuthProvidersGallery(props: {
   const accountsDispatch = useAccountsDispatch();
   const accounts = useAccounts();
 
+  const authProvidersByGroup = useMemo(
+    () =>
+      authProviders.reduce(
+        (acc, next) => acc.set(next.group, [...(acc.get(next.group) ?? []), next]),
+        new Map<string, AuthProvider[]>()
+      ),
+    [authProviders]
+  );
+
   return (
     <>
-      <Gallery hasGutter={true} minWidths={{ default: "150px" }}>
-        {authProviders
-          .sort((a, b) => (a.name > b.name ? -1 : 1))
-          .sort((a) => (a.enabled ? -1 : 1))
-          .map((authProvider) => (
-            <Card
-              key={authProvider.id}
-              isSelectable={authProvider.enabled}
-              isRounded={true}
-              style={{
-                opacity: authProvider.enabled ? 1 : 0.5,
-              }}
-              onClick={() => {
-                if (authProvider.enabled && authProvider.type === "github") {
-                  accountsDispatch({
-                    kind: AccountsDispatchActionKind.SETUP_GITHUB_TOKEN,
-                    selectedAuthProvider: authProvider,
-                    backActionKind: props.backActionKind,
-                    onNewAuthSession:
-                      accounts.section === AccountsSection.CONNECT_TO_NEW_ACC ? accounts.onNewAuthSession : undefined,
-                  });
-                }
-              }}
-            >
-              <CardHeader>
-                <CardHeaderMain>
-                  <CardTitle>{authProvider.name}</CardTitle>
-                  <TextContent>
-                    {(!authProvider.enabled && (
-                      <TextContent>
-                        <Text component={TextVariants.small}>
-                          <i>Available soon!</i>
-                        </Text>
-                      </TextContent>
-                    )) || (
-                      <Text component={TextVariants.small}>
-                        <i>{authProvider.domain ?? <>&nbsp;</>}</i>
-                      </Text>
-                    )}
-                  </TextContent>
-                </CardHeaderMain>
-              </CardHeader>
-              <br />
-              <CardBody>
-                <AuthProviderIcon authProvider={authProvider} size={"xl"} />
-              </CardBody>
-            </Card>
-          ))}
-      </Gallery>
+      {[...authProvidersByGroup.entries()].map(([group, authProviders]) => {
+        return (
+          <>
+            <br />
+            {group.charAt(0).toUpperCase() + group.slice(1) /* FIXME: Tiago */}
+            <br />
+            <br />
+            <Gallery hasGutter={true} minWidths={{ default: "150px" }}>
+              {authProviders
+                .sort((a, b) => (a.name > b.name ? -1 : 1))
+                .sort((a) => (a.enabled ? -1 : 1))
+                .map((authProvider) => (
+                  <Card
+                    key={authProvider.id}
+                    isSelectable={authProvider.enabled}
+                    isRounded={true}
+                    style={{
+                      opacity: authProvider.enabled ? 1 : 0.5,
+                    }}
+                    onClick={() => {
+                      if (authProvider.enabled && authProvider.type === "github") {
+                        accountsDispatch({
+                          kind: AccountsDispatchActionKind.SETUP_GITHUB_TOKEN,
+                          selectedAuthProvider: authProvider,
+                          backActionKind: props.backActionKind,
+                          onNewAuthSession:
+                            accounts.section === AccountsSection.CONNECT_TO_NEW_ACC
+                              ? accounts.onNewAuthSession
+                              : undefined,
+                        });
+                      } else if (authProvider.enabled && authProvider.type === "kubernetes") {
+                        accountsDispatch({
+                          kind: AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH,
+                          selectedAuthProvider: authProvider,
+                          backActionKind: props.backActionKind,
+                          onNewAuthSession:
+                            accounts.section === AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE
+                              ? accounts.onNewAuthSession
+                              : undefined,
+                        });
+                      }
+                    }}
+                  >
+                    <CardHeader>
+                      <CardHeaderMain>
+                        <CardTitle>{authProvider.name}</CardTitle>
+                        <TextContent>
+                          {(!authProvider.enabled && (
+                            <TextContent>
+                              <Text component={TextVariants.small}>
+                                <i>Available soon!</i>
+                              </Text>
+                            </TextContent>
+                          )) || (
+                            <Text component={TextVariants.small}>
+                              <i>{authProvider.domain ?? <>&nbsp;</>}</i>
+                            </Text>
+                          )}
+                        </TextContent>
+                      </CardHeaderMain>
+                    </CardHeader>
+                    <br />
+                    <CardBody>
+                      <AuthProviderIcon authProvider={authProvider} size={"xl"} />
+                    </CardBody>
+                  </Card>
+                ))}
+            </Gallery>
+          </>
+        );
+      })}
     </>
   );
 }

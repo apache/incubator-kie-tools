@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useContext, useReducer } from "react";
-import { GitAuthProvider } from "./authProviders/AuthProvidersApi";
+import { GitAuthProvider, KubernetesAuthProvider } from "./authProviders/AuthProvidersApi";
 import { AuthSession } from "./authSessions/AuthSessionApi";
 import { useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 
@@ -27,6 +27,7 @@ export enum AccountsSection {
   HOME = "HOME",
   CONNECT_TO_NEW_ACC = "NEW_ACC",
   CONNECT_TO_NEW_GITHUB_ACC = "NEW_GITHUB_ACC",
+  CONNECT_TO_KUBERNETES_INSTANCE = "SETUP_KUBERNETES_AUTH",
 }
 
 export type AccountsState =
@@ -48,6 +49,12 @@ export type AccountsState =
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
+      section: AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE;
+      selectedAuthProvider: KubernetesAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
     };
 
 // Reducer
@@ -57,6 +64,7 @@ export enum AccountsDispatchActionKind {
   GO_HOME = "GO_HOME",
   SELECT_AUTH_PROVIDER = "SELECT_AUTH_PROVIDER",
   SETUP_GITHUB_TOKEN = "SETUP_GITHUB_TOKEN",
+  SETUP_KUBERNETES_AUTH = "SETUP_KUBERNETES_AUTH",
 }
 
 export type AccountsDispatchAction =
@@ -73,6 +81,12 @@ export type AccountsDispatchAction =
   | {
       kind: AccountsDispatchActionKind.SETUP_GITHUB_TOKEN;
       selectedAuthProvider: GitAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
+      kind: AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH;
+      selectedAuthProvider: KubernetesAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     };
@@ -110,6 +124,13 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
         case AccountsDispatchActionKind.SETUP_GITHUB_TOKEN:
           return {
             section: AccountsSection.CONNECT_TO_NEW_GITHUB_ACC,
+            selectedAuthProvider: action.selectedAuthProvider,
+            onNewAuthSession: action.onNewAuthSession,
+            backActionKind: action.backActionKind,
+          };
+        case AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH:
+          return {
+            section: AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE,
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,

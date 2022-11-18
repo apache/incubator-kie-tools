@@ -59,7 +59,7 @@ export const en: OnlineI18n = {
     share: "Share",
     embed: "Embed",
   },
-  dmnDevSandbox: {
+  devDeployments: {
     common: {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
@@ -69,7 +69,7 @@ export const en: OnlineI18n = {
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
       saving: "Saving ...",
-      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
+      setupFirst: `Set up your ${en_common.names.devDeployments} to be able to deploy your models`,
     },
     dropdown: {
       noDeployments: "Your deployments show up here",
@@ -105,7 +105,7 @@ export const en: OnlineI18n = {
     introduction: {
       explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,
       disclaimer: `${
-        en_common.names.dmnDevSandbox
+        en_common.names.devDeployments
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
       getStarted: "To get started, configure your instance information.",
     },
@@ -414,10 +414,10 @@ export const en: OnlineI18n = {
         title: "All set! 🎉",
         connected: `You're connected to the ${en_common.names.kieSandboxExtendedServices}.`,
         fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
-        deployTheModel: `You can also deploy your model to the ${en_common.names.dmnDevSandbox} when you're done editing.`,
+        deployTheModel: `You can also deploy your model to the ${en_common.names.devDeployments} when you're done editing.`,
         backToEditor: "Back to Editor",
-        setupDmnDevSandbox: `Set up the ${en_common.names.dmnDevSandbox}`,
-        dmnDevSandboxAlreadySetup: `${en_common.names.dmnDevSandbox} already set up`,
+        setupDevDeployments: `Set up the ${en_common.names.devDeployments}`,
+        devDeploymentsAlreadySetup: `${en_common.names.devDeployments} already set up`,
       },
     },
     dropdown: {

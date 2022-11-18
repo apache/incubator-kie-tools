@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-export type OpenShiftAuthProvider = {
+export type KubernetesAuthProvider = {
   id: string;
-  type: "openshift";
+  type: "kubernetes";
   name: string;
   domain: undefined;
   iconPath?: string;
   enabled: true;
+  group: "cloud";
 };
 
 export type GitAuthProvider = {
@@ -31,6 +32,7 @@ export type GitAuthProvider = {
   iconPath?: string;
   enabled: boolean;
   supportedGitRemoteDomains: string[];
+  group: "git";
 };
 
-export type AuthProvider = OpenShiftAuthProvider | GitAuthProvider;
+export type AuthProvider = KubernetesAuthProvider | GitAuthProvider;

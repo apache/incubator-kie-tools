@@ -23,7 +23,7 @@ import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/di
 import { SettingsButton } from "../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
-import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
+import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
 
@@ -60,7 +60,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
             <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
               <FlexItem>
                 <PageHeaderToolsItem>
-                  <OpenshiftDeploymentsDropdown />
+                  <DevDeploymentsDropdown />
                 </PageHeaderToolsItem>
               </FlexItem>
               <FlexItem>

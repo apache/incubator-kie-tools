@@ -141,6 +141,13 @@ export function AccountsIcon() {
                   </Flex>
                 </>
               )}
+              {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE && (
+                <>
+                  <TextContent>
+                    <Text component={TextVariants.h1}>Connect to a Kubernetes or OpenShift instance</Text>
+                  </TextContent>
+                </>
+              )}
               <br />
               <Divider inset={{ default: "insetMd" }} />
             </div>
@@ -180,6 +187,7 @@ export function AccountsIcon() {
                 {accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC && (
                   <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />
                 )}
+                {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE && "Kubernetes"}
               </>
             </PageSection>
           </Page>
