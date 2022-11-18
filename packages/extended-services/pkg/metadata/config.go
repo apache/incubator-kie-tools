@@ -16,4 +16,4 @@
 
 package metadata
 
-var Version, IP, Port, Modeler string
+var Version, Ip, Port, KieSandboxUrl string

@@ -36,7 +36,7 @@ type Systray struct {
 	ToggleInsecureSkipVerify *systray.MenuItem
 
 	runnerPortItem *systray.MenuItem
-	openModeler    *systray.MenuItem
+	openKieSandbox *systray.MenuItem
 }
 
 func (s *Systray) Run() {
@@ -58,8 +58,8 @@ func (s *Systray) onReady() {
 
 	for {
 		select {
-		case <-s.openModeler.ClickedCh:
-			s.openBrowser(metadata.MODELER_LINK)
+		case <-s.openKieSandbox.ClickedCh:
+			s.openBrowser(metadata.KieSandboxUrl)
 		case <-s.StartStopItem.ClickedCh:
 			if s.Server.Started {
 				s.Stop()
@@ -99,7 +99,7 @@ func (s *Systray) Stop() {
 }
 
 func (s *Systray) mainSection() {
-	s.openModeler = systray.AddMenuItem(metadata.BUSINESS_MODELER, "")
+	s.openKieSandbox = systray.AddMenuItem(metadata.OPEN_KIE_SANDBOX, "")
 
 	systray.AddSeparator()
 

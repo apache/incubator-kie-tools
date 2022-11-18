@@ -18,9 +18,9 @@ const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    EXTENDED_SERVICES__modeler: {
-      default: "https://sandbox.kie.org/#/",
-      description: "Modeler",
+    EXTENDED_SERVICES__kieSandboxUrl: {
+      default: "https://localhost:9001",
+      description: "KIE Sandbox URL",
     },
     EXTENDED_SERVICES__version: {
       default: require("../package.json").version,
@@ -39,7 +39,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       extendedServices: {
         version: getOrDefault(this.vars.EXTENDED_SERVICES__version),
-        modeler: getOrDefault(this.vars.EXTENDED_SERVICES__modeler),
+        kieSandboxUrl: getOrDefault(this.vars.EXTENDED_SERVICES__kieSandboxUrl),
         ip: getOrDefault(this.vars.EXTENDED_SERVICES__ip),
         port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
       },

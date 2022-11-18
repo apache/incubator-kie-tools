@@ -91,7 +91,7 @@ func (p *Proxy) Start() {
 	router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
 	router.PathPrefix("/").HandlerFunc(p.jitExecutorHandler())
 
-	addr := metadata.IP + ":" + p.Port
+	addr := metadata.Ip + ":" + p.Port
 
 	p.server = &http.Server{
 		Handler:      router,
@@ -245,7 +245,7 @@ func createJitExecutor(jitexecutor []byte) string {
 		log.Fatal(err)
 	}
 
-	cachePath := filepath.Join(cacheDir, "org.kogito")
+	cachePath := filepath.Join(cacheDir, "org.kie.kogito")
 
 	if _, err := os.Stat(cachePath); os.IsNotExist(err) {
 		os.Mkdir(cachePath, os.ModePerm)
