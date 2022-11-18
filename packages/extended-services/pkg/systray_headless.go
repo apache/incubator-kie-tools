@@ -20,12 +20,12 @@
 package pkg
 
 type Systray struct {
-	server *Proxy
+	Server *Proxy
 }
 
 func (s *Systray) Run() {
 	var exit = make(chan bool)
-	s.server.Start()
+	s.Server.Start()
 	<-exit
 }
 
