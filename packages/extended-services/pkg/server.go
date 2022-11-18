@@ -87,7 +87,7 @@ func (p *Proxy) Start() {
 	}
 
 	router := mux.NewRouter()
-	router.PathPrefix("/devsandbox").HandlerFunc(p.devSandboxHandler())
+	router.PathPrefix("/cors-proxy").HandlerFunc(p.devSandboxHandler())
 	router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
 	router.PathPrefix("/").HandlerFunc(p.jitExecutorHandler())
 
