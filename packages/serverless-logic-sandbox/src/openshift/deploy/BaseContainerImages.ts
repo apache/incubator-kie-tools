@@ -38,3 +38,10 @@ export const BaseJdk11MvnOc = {
   OC_PATH: `${DeployDefaults.SANDBOX_FOLDER}/oc`,
   DEPLOYMENTS_FOLDER: DeployDefaults.DEPLOYMENTS_FOLDER,
 };
+
+// These values come from `dashbuilder-viewer-image`
+export const DashbuilderViewer = {
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_dashbuilderViewerImageFullUrl,
+  HTTPD_OUT: "/var/www/html",
+  APP_DATA_FILE: "data.json",
+};

@@ -43,6 +43,11 @@ jobs:
       OPENSHIFT_PART_OF: "daily-dev-kie-sandbox-app"
       DEPLOY_TAG: "daily-dev"
 
+      DASHBUILDER__viewerImageRegistry: "quay.io"
+      DASHBUILDER__viewerImageAccount: "kie-tools"
+      DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
+      DASHBUILDER__viewerImageBuildTags: "daily-dev"
+      SERVERLESS_LOGIC_SANDBOX__dashbuilderViewerImageTag: "daily-dev"
       SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
       SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
       SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
@@ -173,6 +178,16 @@ jobs:
           tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
           registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
           username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+
+      - name: "Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
+        if: runner.os == 'Linux'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER__viewerImageName }}"
+          tags: "${{ env.DASHBUILDER__viewerImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__viewerImageRegistry }}/${{ env.DASHBUILDER__viewerImageAccount }}"
+          username: "${{ env.DASHBUILDER__viewerImageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Deploy kie-sandbox-extended-services-image to OpenShift (Ubuntu only)"
