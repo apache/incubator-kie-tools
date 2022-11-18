@@ -77,11 +77,9 @@ void createRelease() {
     }
 
     def releaseName = "Kogito Serverless Operator ${getGitTag()}"
-    // TODO to update with https://issues.redhat.com/browse/KOGITO-8177
-    def description = 'Serverless Kogito Operator is a Kubernetes based operator for Kogito Runtimes\' deployment from the source. Additionally, to facilitate interactions with the operator, we also offer a CLI (Command Line Interface) to deploy Kogito applications.'
-    def yamlInstaller = 'kogito-operator.yaml'
+    def description = 'This is an Alpha release !!\n\nServerless Kogito Operator is a Kubernetes based operator for Serverless Workflow\' deployment.'
+    def yamlInstaller = 'operator.yaml'
     withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
-        // TODO to verify with https://issues.redhat.com/browse/KOGITO-8177
         sh """
             gh release create ${getGitTag()} --prerelease --target \"${getBuildBranch()}\" --title \"${releaseName}\" --notes \"${description}\" 
             sleep 10
