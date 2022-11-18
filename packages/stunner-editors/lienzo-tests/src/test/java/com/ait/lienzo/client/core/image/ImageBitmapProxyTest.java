@@ -31,7 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ImageElementProxyTest {
+public class ImageBitmapProxyTest {
 
     @Mock
     private elemental2.dom.Image imageElement;
@@ -42,11 +42,11 @@ public class ImageElementProxyTest {
     @Mock
     private Context2D context;
 
-    private ImageElementProxy tested;
+    private ImageBitmapProxy tested;
 
     @Before
     public void init() {
-        tested = spy(new ImageElementProxy(imageElement));
+        tested = spy(new ImageBitmapProxy(imageElement));
     }
 
     @Test

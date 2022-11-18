@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.OnLayerAfterDraw;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +40,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -79,8 +83,14 @@ public class LienzoLayerTest {
         tested.add(shape);
         verify(layer, times(1)).add(eq(shape));
 
+        doCallRealMethod().when(scene).add(emptyLayer);
+        when(scene.getElement()).thenReturn(mock(HTMLDivElement.class));
+        when(emptyLayer.asNode()).thenReturn(mock(Node.class));
+        when(scene.getStorageEngine()).thenReturn(mock(IStorageEngine.class));
+
         tested.add(emptyLayer);
         verify(scene, times(1)).add(eq(emptyLayer));
+        verify(emptyLayer, never()).batch();
     }
 
 

@@ -10,17 +10,17 @@ public class ImageStrips {
     public static final String URL_PATTERN = "data:text/lienzo-strip,";
     public static final char URL_SEPARATOR = '~';
 
-    private static final ImageStrips INSTANCE = new ImageStrips(() -> new ImageElementProxy());
+    private static final ImageStrips INSTANCE = new ImageStrips(() -> new ImageBitmapProxy());
 
     private final NFastStringMap<ImageStrip> strips;
-    private final NFastStringMap<ImageElementProxy> proxies;
-    private final Supplier<ImageElementProxy> proxySupplier;
+    private final NFastStringMap<ImageBitmapProxy> proxies;
+    private final Supplier<ImageBitmapProxy> proxySupplier;
 
     public static ImageStrips get() {
         return INSTANCE;
     }
 
-    ImageStrips(final Supplier<ImageElementProxy> proxySupplier) {
+    ImageStrips(final Supplier<ImageBitmapProxy> proxySupplier) {
         this.strips = new NFastStringMap<>();
         this.proxies = new NFastStringMap<>();
         this.proxySupplier = proxySupplier;
@@ -51,7 +51,7 @@ public class ImageStrips {
 
     public ImageStrips register(final ImageStrip strip,
                                 final Runnable loadCallback) {
-        final ImageElementProxy handler = proxySupplier.get();
+        final ImageBitmapProxy handler = proxySupplier.get();
         handler.load(strip.getUrl(),
                      () -> {
                          registerStrip(strip, handler);
@@ -61,7 +61,7 @@ public class ImageStrips {
     }
 
     void registerStrip(final ImageStrip strip,
-                       final ImageElementProxy handler) {
+                       final ImageBitmapProxy handler) {
         strips.put(strip.getName(), strip);
         proxies.put(strip.getName(), handler);
     }
@@ -72,7 +72,7 @@ public class ImageStrips {
     }
 
     public void remove(final String name) {
-        final ImageElementProxy proxy = proxies.get(name);
+        final ImageBitmapProxy proxy = proxies.get(name);
         strips.remove(name);
         proxies.remove(name);
         proxy.destroy();
@@ -88,12 +88,12 @@ public class ImageStrips {
                                  Integer.valueOf(strip[1]));
     }
 
-    public ImageElementProxy newProxy(final ImageStrip strip) {
-        final ImageElementProxy proxy = getProxy(strip);
+    public ImageBitmapProxy newProxy(final ImageStrip strip) {
+        final ImageBitmapProxy proxy = getProxy(strip);
         return new ImageElementProxyDelegate(proxy);
     }
 
-    private ImageElementProxy getProxy(final ImageStrip strip) {
+    private ImageBitmapProxy getProxy(final ImageStrip strip) {
         return proxies.get(strip.getName());
     }
 
@@ -137,11 +137,11 @@ public class ImageStrips {
         }
     }
 
-    public static class ImageElementProxyDelegate extends ImageElementProxy {
+    public static class ImageElementProxyDelegate extends ImageBitmapProxy {
 
-        private final ImageElementProxy delegate;
+        private final ImageBitmapProxy delegate;
 
-        public ImageElementProxyDelegate(final ImageElementProxy delegate) {
+        public ImageElementProxyDelegate(final ImageBitmapProxy delegate) {
             this.delegate = delegate;
         }
 
@@ -181,7 +181,7 @@ public class ImageStrips {
             // Do not destroy the proxied instance.
         }
 
-        public ImageElementProxy getDelegate() {
+        public ImageBitmapProxy getDelegate() {
             return delegate;
         }
     }

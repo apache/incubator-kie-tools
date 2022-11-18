@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
 import com.google.gwt.resources.client.ImageResource;
-import elemental2.dom.HTMLImageElement;
 
 public final class ImageCache {
 
@@ -26,9 +25,9 @@ public final class ImageCache {
 
     private final NFastStringMap<String> m_messages = new NFastStringMap<>();
 
-    private final NFastStringMap<HTMLImageElement> m_url_hmap = new NFastStringMap<>();
+    private final NFastStringMap<JsImageBitmap> m_url_hmap = new NFastStringMap<>();
 
-    private final NFastStringMap<HTMLImageElement> m_key_hmap = new NFastStringMap<>();
+    private final NFastStringMap<JsImageBitmap> m_key_hmap = new NFastStringMap<>();
 
     private int m_counting = -1;
 
@@ -51,17 +50,18 @@ public final class ImageCache {
         }
         m_counting++;
 
-        new ImageLoader(url) {
+        JsImageBitmap.loadImageBitmap(url, new JsImageBitmapCallback() {
             @Override
-            public final void onImageElementLoad(final HTMLImageElement elem) {
-                done(key, url, elem, "success");
+            public void onSuccess(JsImageBitmap image) {
+                done(key, url, image, "success");
             }
 
             @Override
-            public final void onImageElementError(final String message) {
-                done(key, url, null, message);
+            public void onError(Object error) {
+                done(key, url, null, error.toString());
             }
-        };
+        });
+
         return this;
     }
 
@@ -71,21 +71,22 @@ public final class ImageCache {
         }
         m_counting++;
 
-        new ImageLoader(resource) {
+        JsImageBitmap.loadImageBitmap(resource.getSafeUri().asString(), new JsImageBitmapCallback() {
             @Override
-            public final void onImageElementLoad(final HTMLImageElement elem) {
-                done(key, resource.getName(), elem, "success");
+            public void onSuccess(JsImageBitmap image) {
+                done(key, resource.getName(), image, "success");
             }
 
             @Override
-            public final void onImageElementError(final String message) {
-                done(key, resource.getName(), null, message);
+            public void onError(Object error) {
+                done(key, resource.getName(), null, error.toString());
             }
-        };
+        });
+
         return this;
     }
 
-    private final void done(String key, String url, HTMLImageElement image, String message) {
+    private final void done(String key, String url, JsImageBitmap image, String message) {
         if (null != image) {
             m_key_hmap.put(key, image);
 
@@ -102,11 +103,11 @@ public final class ImageCache {
         }
     }
 
-    public final HTMLImageElement getImageByKey(String key) {
+    public final JsImageBitmap getImageByKey(String key) {
         return m_key_hmap.get(key);
     }
 
-    public final HTMLImageElement getImageByURL(String url) {
+    public final JsImageBitmap getImageByURL(String url) {
         return m_url_hmap.get(url);
     }
 

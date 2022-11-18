@@ -31,7 +31,7 @@ public class Image
         extends Shape<Image>
         implements IDestroyable {
 
-    ImageElementProxy imageProxy;
+    ImageBitmapProxy imageProxy;
 
     @JsProperty
     private String url;
@@ -283,7 +283,7 @@ public class Image
             configureClipArea(strip,
                               stripRef.getIndex());
         } else {
-            imageProxy = new ImageElementProxy();
+            imageProxy = new ImageBitmapProxy();
             restoreClipArea();
         }
         return this;
