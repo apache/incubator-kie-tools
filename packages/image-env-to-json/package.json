@@ -14,7 +14,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build:dev": "rimraf -rf dist && webpack --env dev && pnpm build:standalone",
+    "build:dev": "rimraf -rf dist && webpack --env dev && pnpm build:standalone:all",
     "build:prod": "pnpm lint && rimraf -rf dist && webpack && pnpm build:standalone:all",
     "build:standalone": "run-script-os",
     "build:standalone:all": "pnpm build:standalone:darwin && pnpm build:standalone:linux && pnpm build:standalone:win32",
