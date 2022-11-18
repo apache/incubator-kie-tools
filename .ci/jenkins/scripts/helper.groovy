@@ -77,7 +77,7 @@ void createRelease() {
     }
 
     def releaseName = "Kogito Serverless Operator ${getGitTag()}"
-    def description = 'Serverless Kogito Operator is a Kubernetes based operator for Serverless Workflow\' deployment.'
+    def description = 'This is an Alpha release !!\n\nServerless Kogito Operator is a Kubernetes based operator for Serverless Workflow\' deployment.'
     def yamlInstaller = 'operator.yaml'
     withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
         sh """

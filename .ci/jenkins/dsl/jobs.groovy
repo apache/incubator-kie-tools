@@ -111,7 +111,7 @@ void setupDeployJob(Folder jobFolder) {
 }
 
 void setupPromoteJob(Folder jobFolder) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-operator-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Cloud Operator Promote')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-serverless-operator-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Serverless Cloud Operator Promote')
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 

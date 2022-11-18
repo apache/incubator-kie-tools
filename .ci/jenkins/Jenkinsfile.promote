@@ -122,9 +122,6 @@ pipeline {
                 script {
                     String nextVersion = helper.getNextVersion()
                     dir(helper.getRepoName()) {
-                        // Prepare PR
-                        helper.checkoutRepo()
-
                         // Update version to next snapshot
                         sh "make bump-version new_version=${nextVersion}"
 
@@ -136,7 +133,7 @@ pipeline {
                                 git reset -- go.sum
                             '''
                         })
-                        githubscm.pushObject('origin', getBuildBranch(), helper.getGitAuthorCredsID())
+                        githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
                     }
                 }
             }
@@ -157,7 +154,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Promote', "[${helper.getBuildBranch()}] Kogito Operator", [env.KOGITO_CI_EMAIL_TO])
+        mailer.sendMarkdownTestSummaryNotification('Promote', "[${helper.getBuildBranch()}] Kogito Serverless Operator", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }
