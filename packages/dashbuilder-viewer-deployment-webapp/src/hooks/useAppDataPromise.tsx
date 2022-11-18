@@ -32,7 +32,7 @@ export function useAppDataPromise() {
             }
 
             if (!appData) {
-              setAppDataPromise({ error: "Cannot fetch data.json file" });
+              setAppDataPromise({ error: "Cannot fetch data file" });
               return;
             }
 

@@ -56,9 +56,8 @@ export function AppContextProvider(props: Props) {
       dashboards,
       appDataPromise,
       current,
-      setCurrent,
     }),
-    [dashboards, current, setCurrent, appDataPromise]
+    [dashboards, current, appDataPromise]
   );
 
   return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;

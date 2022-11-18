@@ -22,7 +22,6 @@ export interface AppContextType {
   appDataPromise: PromiseState<{ appData: AppData }>;
   dashboards: Dashboard[];
   current?: Dashboard;
-  setCurrent: React.Dispatch<React.SetStateAction<Dashboard>>;
 }
 
 export const AppContext = createContext<AppContextType>({} as any);

@@ -102,7 +102,7 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 export const routes = {
   root: new Route<{}>(() => "/"),
   error: new Route<{}>(() => "/error"),
-  dataJson: new Route<{}>(() => "/data.json"),
+  dataJson: new Route<{}>(() => "/dashbuilder-viewer-deployment-webapp-data.json"),
   dashboard: new Route<{
     pathParams: PathParams.FILE_PATH;
   }>(({ filePath }) => `/${filePath}`),

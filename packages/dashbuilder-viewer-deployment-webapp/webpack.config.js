@@ -36,7 +36,10 @@ module.exports = async (env) =>
           { from: "./static/favicon.svg", to: "./favicon.svg" },
           { from: "./static/index.html", to: "./index.html" },
           { from: "./static/dashboard.dash.yaml", to: "./dashboard.dash.yaml" },
-          { from: "./static/data.json", to: "./data.json" },
+          {
+            from: "./static/dashbuilder-viewer-deployment-webapp-data.json",
+            to: "./dashbuilder-viewer-deployment-webapp-data.json",
+          },
           { from: "./static/setup.js", to: "./setup.js" },
           {
             from: "./static/envelope/dashbuilder-viewer-envelope.html",
@@ -57,6 +60,6 @@ module.exports = async (env) =>
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.dashbuilderViewerWebApp.dev.port,
+      port: buildEnv.dashbuilderViewerDeploymentWebApp.dev.port,
     },
   });

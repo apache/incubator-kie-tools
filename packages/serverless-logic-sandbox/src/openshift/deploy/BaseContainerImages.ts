@@ -43,5 +43,5 @@ export const BaseJdk11MvnOc = {
 export const DashbuilderViewer = {
   CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_dashbuilderViewerImageFullUrl,
   HTTPD_OUT: "/var/www/html",
-  APP_DATA_FILE: "data.json",
+  APP_DATA_FILE: "dashbuilder-viewer-deployment-webapp-data.json",
 };
