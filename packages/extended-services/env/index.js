@@ -26,11 +26,11 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: require("../package.json").version,
       description: "Extended Services version",
     },
-    EXTENDED_SERVICES__serverIp: {
+    EXTENDED_SERVICES__ip: {
       default: "0.0.0.0",
       description: "Extended Services IP",
     },
-    EXTENDED_SERVICES__serverPort: {
+    EXTENDED_SERVICES__port: {
       default: "21345",
       description: "Extended Services port",
     },
@@ -40,8 +40,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       extendedServices: {
         version: getOrDefault(this.vars.EXTENDED_SERVICES__version),
         modeler: getOrDefault(this.vars.EXTENDED_SERVICES__modeler),
-        serverIp: getOrDefault(this.vars.EXTENDED_SERVICES__serverIp),
-        serverPort: getOrDefault(this.vars.EXTENDED_SERVICES__serverPort),
+        ip: getOrDefault(this.vars.EXTENDED_SERVICES__ip),
+        port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
       },
     };
   },
