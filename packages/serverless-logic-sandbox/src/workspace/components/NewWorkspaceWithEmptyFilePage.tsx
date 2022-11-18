@@ -52,18 +52,16 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
   }, [routes, history, props.extension, workspaces]);
 
   return (
-    <OnlineEditorPage>
-      <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-        <Bullseye>
-          <TextContent>
-            <Bullseye>
-              <Spinner />
-            </Bullseye>
-            <br />
-            <Text component={TextVariants.p}>{`Loading...`}</Text>
-          </TextContent>
-        </Bullseye>
-      </PageSection>
-    </OnlineEditorPage>
+    <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
+      <Bullseye>
+        <TextContent>
+          <Bullseye>
+            <Spinner />
+          </Bullseye>
+          <br />
+          <Text component={TextVariants.p}>{`Loading...`}</Text>
+        </TextContent>
+      </Bullseye>
+    </PageSection>
   );
 }

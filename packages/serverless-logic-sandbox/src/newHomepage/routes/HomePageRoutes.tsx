@@ -14,16 +14,46 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Switch } from "react-router";
 import { Overview } from "../overView/Overview";
 import { ServerlessModels } from "../serverlessModels/ServerlessModels";
 import { Route } from "react-router-dom";
 import { SampleCatalog } from "../sampleCatalog/SampleCatalog";
+import { useRoutes } from "../../navigation/Hooks";
+import { supportedFileExtensionArray } from "../../extension";
+import { NewWorkspaceWithEmptyFilePage } from "../../workspace/components/NewWorkspaceWithEmptyFilePage";
+import { NewWorkspaceFromUrlPage } from "../../workspace/components/NewWorkspaceFromUrlPage";
+import { EditorPage } from "../../editor/EditorPage";
+import { NoMatchPage } from "../../navigation/NoMatchPage";
 
 export function HomePageRoutes() {
+  const routes = useRoutes();
+  const supportedExtensions = useMemo(() => supportedFileExtensionArray.join("|"), []);
   return (
     <Switch>
+      <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
+        {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
+      </Route>
+      <Route path={routes.importModel.path({})}>
+        <NewWorkspaceFromUrlPage />
+      </Route>
+      <Route
+        path={routes.workspaceWithFilePath.path({
+          workspaceId: ":workspaceId",
+          fileRelativePath: `:fileRelativePath*`,
+          extension: `:extension?`,
+        })}
+      >
+        {({ match }) => (
+          <EditorPage
+            workspaceId={match!.params.workspaceId!}
+            fileRelativePath={`${match!.params.fileRelativePath ?? ""}${
+              match!.params.extension ? `.${match!.params.extension}` : ""
+            }`}
+          />
+        )}
+      </Route>
       <Route path="/" exact>
         <Overview />
       </Route>
@@ -40,6 +70,7 @@ export function HomePageRoutes() {
           return null;
         }}
       />
+      <Route component={NoMatchPage} />
     </Switch>
   );
 }

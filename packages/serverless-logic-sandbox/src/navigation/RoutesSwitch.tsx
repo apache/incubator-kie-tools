@@ -17,46 +17,46 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { Route, Switch } from "react-router-dom";
-import { EditorPage } from "../editor/EditorPage";
-import { supportedFileExtensionArray } from "../extension";
-import { HomePage } from "../newHomepage/HomePage";
-import { NewWorkspaceFromUrlPage } from "../workspace/components/NewWorkspaceFromUrlPage";
-import { NewWorkspaceWithEmptyFilePage } from "../workspace/components/NewWorkspaceWithEmptyFilePage";
 import { useRoutes } from "./Hooks";
-import { NoMatchPage } from "./NoMatchPage";
+import { OnlineEditorPage } from "../newHomepage/pageTemplate/OnlineEditorPage";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { HomePageRoutes } from "../newHomepage/routes/HomePageRoutes";
 
 export function RoutesSwitch() {
   const routes = useRoutes();
-  const supportedExtensions = useMemo(() => supportedFileExtensionArray.join("|"), []);
+  const buildInfo = useMemo(() => {
+    return process.env["WEBPACK_REPLACE__buildInfo"];
+  }, []);
+
+  const renderPage = (routeProps: {
+    location: {
+      pathname:
+        | string
+        | number
+        | boolean
+        | {}
+        | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+        | React.ReactNodeArray
+        | React.ReactPortal
+        | null
+        | undefined;
+    };
+  }) => {
+    return (
+      <OnlineEditorPage>
+        <HomePageRoutes />
+        {buildInfo && (
+          <div className={"kie-tools--build-info"}>
+            <Label>{buildInfo}</Label>
+          </div>
+        )}
+      </OnlineEditorPage>
+    );
+  };
 
   return (
     <Switch>
-      <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
-        {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
-      </Route>
-      <Route path={routes.importModel.path({})}>
-        <NewWorkspaceFromUrlPage />
-      </Route>
-      <Route
-        path={routes.workspaceWithFilePath.path({
-          workspaceId: ":workspaceId",
-          fileRelativePath: `:fileRelativePath*`,
-          extension: `:extension?`,
-        })}
-      >
-        {({ match }) => (
-          <EditorPage
-            workspaceId={match!.params.workspaceId!}
-            fileRelativePath={`${match!.params.fileRelativePath ?? ""}${
-              match!.params.extension ? `.${match!.params.extension}` : ""
-            }`}
-          />
-        )}
-      </Route>
-      <Route path={routes.home.path({})}>
-        <HomePage />
-      </Route>
-      <Route component={NoMatchPage} />
+      <Route path={routes.home.path({})} render={renderPage}></Route>
     </Switch>
   );
 }

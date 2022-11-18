@@ -285,22 +285,20 @@ export function NewWorkspaceFromUrlPage() {
 
   return (
     <>
-      <OnlineEditorPage>
-        {importingError && <EditorPageErrorPage path={importableUrl.url.toString()} errors={[importingError]} />}
-        {!importingError && (
-          <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-            <Bullseye>
-              <TextContent>
-                <Bullseye>
-                  <Spinner />
-                </Bullseye>
-                <br />
-                <Text component={TextVariants.p}>{`Importing from '${queryParamUrl}'`}</Text>
-              </TextContent>
-            </Bullseye>
-          </PageSection>
-        )}
-      </OnlineEditorPage>
+      {importingError && <EditorPageErrorPage path={importableUrl.url.toString()} errors={[importingError]} />}
+      {!importingError && (
+        <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Importing from '${queryParamUrl}'`}</Text>
+            </TextContent>
+          </Bullseye>
+        </PageSection>
+      )}
     </>
   );
 }
