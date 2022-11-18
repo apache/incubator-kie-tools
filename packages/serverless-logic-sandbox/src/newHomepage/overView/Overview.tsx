@@ -21,18 +21,18 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import NewServerlessModelCard from "./NewServerlessModelCard";
-import NewModelCard from "./NewModelCard";
+import { NewServerlessModelCard } from "./NewServerlessModelCard";
 import { Card } from "@patternfly/react-core";
-import { ImportFromUrlCard } from "../../home/ImportFromUrlCard";
+import { ImportFromUrlCard } from "./ImportFromUrlCard";
 import { UploadCard } from "../../home/UploadCard";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
 import { useCallback } from "react";
+import { NewModelCard } from "./NewModelCard";
 
-const Overview: React.FC = () => {
+export function Overview() {
   const routes = useRoutes();
   const history = useHistory();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
@@ -119,6 +119,4 @@ const Overview: React.FC = () => {
       </GridItem>
     </Grid>
   );
-};
-
-export default Overview;
+}

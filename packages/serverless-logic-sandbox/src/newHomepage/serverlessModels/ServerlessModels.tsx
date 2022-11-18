@@ -78,7 +78,7 @@ import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { isEditable } from "../../extension";
 
-export const ServerlessModels: React.FC = () => {
+export function ServerlessModels() {
   const routes = useRoutes();
   const history = useHistory();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
@@ -171,7 +171,7 @@ export const ServerlessModels: React.FC = () => {
       }}
     />
   );
-};
+}
 
 export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
   const routes = useRoutes();

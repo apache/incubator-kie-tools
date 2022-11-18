@@ -16,12 +16,12 @@
 
 import React from "react";
 import { Switch } from "react-router";
-import Overview from "../overView/Overview";
+import { Overview } from "../overView/Overview";
 import { ServerlessModels } from "../serverlessModels/ServerlessModels";
 import { Route } from "react-router-dom";
-import SampleCatalog from "../sampleCatalog/SampleCatalog";
+import { SampleCatalog } from "../sampleCatalog/SampleCatalog";
 
-const HomePageRoutes: React.FC = () => {
+export function HomePageRoutes() {
   return (
     <Switch>
       <Route path="/" exact>
@@ -36,12 +36,10 @@ const HomePageRoutes: React.FC = () => {
       <Route
         path="/Documentation"
         component={() => {
-          window.location.href = "https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html";
+          window.open("https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html");
           return null;
         }}
       />
     </Switch>
   );
-};
-
-export default HomePageRoutes;
+}

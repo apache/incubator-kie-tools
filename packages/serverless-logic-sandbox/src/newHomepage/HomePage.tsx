@@ -17,11 +17,11 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { HashRouter, Route } from "react-router-dom";
-import OnlineEditorPage from "./pageTemplate/OnlineEditorPage";
+import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import HomePageRoutes from "./routes/HomePageRoutes";
+import { HomePageRoutes } from "./routes/HomePageRoutes";
 
-const HomePage: React.FC = () => {
+export function HomePage() {
   const buildInfo = useMemo(() => {
     return process.env["WEBPACK_REPLACE__buildInfo"];
   }, []);
@@ -56,5 +56,4 @@ const HomePage: React.FC = () => {
       <Route path="/" render={renderPage} />
     </HashRouter>
   );
-};
-export default HomePage;
+}

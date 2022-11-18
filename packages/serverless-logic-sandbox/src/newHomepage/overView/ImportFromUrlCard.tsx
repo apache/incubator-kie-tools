@@ -27,12 +27,7 @@ import { ImportFromUrlForm } from "../../workspace/components/ImportFromUrlForm"
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 
-interface IOwnProps {
-  title: string;
-  extension: SupportedFileExtensions;
-  description: string;
-}
-const ImportFromUrlCard: React.FC<IOwnProps> = () => {
+export function ImportFromUrlCard() {
   const routes = useRoutes();
   const history = useHistory();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
@@ -86,6 +81,4 @@ const ImportFromUrlCard: React.FC<IOwnProps> = () => {
       </CardFooter>
     </Card>
   );
-};
-
-export default ImportFromUrlCard;
+}

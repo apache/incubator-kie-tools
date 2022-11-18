@@ -24,7 +24,7 @@ import { ReactComponent as SwfReportSvg } from "../../../static/samples/swf-repo
 import { ReactComponent as KitchensinkSvg } from "../../../static/samples/kitchensink/kitchensink.svg";
 import { ReactComponent as CompensationSvg } from "../../../static/samples/compensation/compensation.svg";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import SampleCard from "./SampleCard";
+import { SampleCard } from "./SampleCard";
 
 const samples: Array<Sample> = [
   {
@@ -73,7 +73,7 @@ const samples: Array<Sample> = [
   },
 ];
 
-const SampleCatalog: React.FC = () => {
+export function SampleCatalog() {
   return (
     <>
       <TextContent>
@@ -97,5 +97,4 @@ const SampleCatalog: React.FC = () => {
       </Gallery>
     </>
   );
-};
-export default SampleCatalog;
+}

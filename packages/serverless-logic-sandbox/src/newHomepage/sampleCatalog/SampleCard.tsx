@@ -26,11 +26,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { FileTypes } from "../../extension";
 import { Sample, tagMap } from "./Types";
 
-interface IOwnProps {
-  sample: Sample;
-}
-
-const SampleCard: React.FC<IOwnProps> = (props) => {
+export function SampleCard(props: { sample: Sample }) {
   const routes = useRoutes();
 
   const tag = useMemo(() => tagMap[props.sample.type], [props.sample.type]);
@@ -80,6 +76,4 @@ const SampleCard: React.FC<IOwnProps> = (props) => {
       </Grid>
     </Card>
   );
-};
-
-export default SampleCard;
+}

@@ -17,10 +17,7 @@
 import * as React from "react";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core";
 
-interface IOwnProps {
-  paths: string[];
-}
-const HomepageBreadcrumb: React.FC<IOwnProps> = (props) => {
+export function HomepageBreadcrumb(props: { paths: string[] }) {
   const getPath = (path: string): string => {
     return "/" + path;
   };
@@ -32,6 +29,6 @@ const HomepageBreadcrumb: React.FC<IOwnProps> = (props) => {
       ;
     </Breadcrumb>
   );
-};
+}
 
 export default HomepageBreadcrumb;

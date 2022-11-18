@@ -24,13 +24,7 @@ import { Grid } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Link } from "react-router-dom";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
-interface IOwnProps {
-  title: string;
-  extension: SupportedFileExtensions;
-  description: string;
-}
-
-const NewModelCard: React.FC<IOwnProps> = (props) => {
+export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
   const routes = useRoutes();
 
   return (
@@ -54,5 +48,4 @@ const NewModelCard: React.FC<IOwnProps> = (props) => {
       </CardFooter>
     </Card>
   );
-};
-export default NewModelCard;
+}

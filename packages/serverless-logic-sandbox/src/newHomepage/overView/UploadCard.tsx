@@ -38,11 +38,7 @@ enum UploadType {
   DND,
 }
 
-interface IOwnProps {
-  expandWorkspace: (workspaceId: string) => void;
-}
-
-const UploadCard: React.FC<IOwnProps> = (props) => {
+export function UploadCard(props: { expandWorkspace: (workspaceId: string) => void }) {
   const routes = useRoutes();
   const history = useHistory();
   const workspaces = useWorkspaces();
@@ -257,4 +253,4 @@ const UploadCard: React.FC<IOwnProps> = (props) => {
       </Card>
     </div>
   );
-};
+}

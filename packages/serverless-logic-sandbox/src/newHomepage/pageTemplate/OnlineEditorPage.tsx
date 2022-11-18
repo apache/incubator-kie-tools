@@ -37,14 +37,11 @@ import { useRoutes } from "../../navigation/Hooks";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { BarsIcon } from "@patternfly/react-icons";
-import HomePageNav from "../uiNav/HomePageNav";
+import { HomePageNav } from "../uiNav/HomePageNav";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 
-interface OnlineEditorPageProps {
-  children?: React.ReactNode;
-}
-const OnlineEditorPage: React.FC<OnlineEditorPageProps> = (props) => {
+export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
   const [isNavOpen, setIsNavOpen] = useState(true);
@@ -117,6 +114,4 @@ const OnlineEditorPage: React.FC<OnlineEditorPageProps> = (props) => {
       {props.children}
     </Page>
   );
-};
-
-export default OnlineEditorPage;
+}
