@@ -33,6 +33,7 @@ import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPon
 import { PingPongMixedViewsPage } from "./Pages/PingPong/Mixed/PingPongMixedViewsPage";
 import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
 import { SwfStandaloneDiagramOnlyEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneDiagramOnlyEditorPage";
+import { SwfStandaloneTextOnlyEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneTextOnlyEditorPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
@@ -47,6 +48,7 @@ enum Location {
   DMN_STANDALONE_EDITOR = "/page/dmn-standalone-editor",
   SWF_STANDALONE_EDITOR = "/page/swf-standalone-editor",
   SWF_STANDALONE_EDITOR_DIAGRAM_ONLY = "/page/swf-standalone-editor-diagram-only",
+  SWF_STANDALONE_EDITOR_TEXT_ONLY = "/page/swf-standalone-editor-text-only",
   HOME = "/",
 }
 
@@ -135,6 +137,12 @@ export function App() {
                   >
                     <Link to={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>SWF Standalone Editor - Diagram only</Link>
                   </NavItem>
+                  <NavItem
+                    itemId={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}
+                    isActive={location === Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}
+                  >
+                    <Link to={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}>SWF Standalone Editor - Text only</Link>
+                  </NavItem>
                 </NavList>
               </Nav>
             }
@@ -180,6 +188,9 @@ export function App() {
           </Route>
           <Route path={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>
             <SwfStandaloneDiagramOnlyEditorPage />
+          </Route>
+          <Route path={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}>
+            <SwfStandaloneTextOnlyEditorPage />
           </Route>
         </Switch>
       </Page>

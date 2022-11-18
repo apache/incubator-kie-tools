@@ -181,7 +181,7 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
   kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions> {
     return (
       this.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
-        defaultValue: { diagramDefaultWidth: "50%" },
+        defaultValue: { defaultWidth: "50%", editorMode: "full" },
       }
     );
   }

@@ -22,7 +22,7 @@ export class SwfPreviewOptionsChannelApiImpl implements SwfPreviewOptionsChannel
 
   public kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions> {
     return {
-      defaultValue: this.swfPreviewOptions ?? { diagramDefaultWidth: "50%" },
+      defaultValue: this.swfPreviewOptions ?? { defaultWidth: "50%", editorMode: "full" },
     };
   }
 }

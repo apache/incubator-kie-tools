@@ -29,7 +29,8 @@ import { ChangeEvent } from "react";
 type ServerlessWorkflowType = "json" | "yaml";
 interface NewProps {
   newContent: (type: ServerlessWorkflowType) => void;
-  isDiagramOnly: boolean;
+  isDiagramOnly?: boolean;
+  isTextOnly?: boolean;
 }
 
 interface UploadProps {
@@ -48,7 +49,7 @@ export const ServerlessWorkflowEmptyState = (props: AllProps) => (
       No serverless workflow document has been selected. Please either upload an existing document or create a new one.
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
-    {!props.isDiagramOnly && (
+    {!props.isDiagramOnly && !props.isTextOnly && (
       <EmptyStateSecondaryActions>
         <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
           New JSON

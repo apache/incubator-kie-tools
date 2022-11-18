@@ -24,7 +24,7 @@ import { extname } from "path";
 
 export type ServerlessWorkflowType = "json" | "yaml";
 
-export const SwfStandaloneDiagramOnlyEditorPage = () => {
+export const SwfStandaloneTextOnlyEditorPage = () => {
   const swfEditorContainer = useRef<HTMLDivElement>(null);
   const unsavedChanges = useRef<HTMLSpanElement>(null);
   const undo = useRef<HTMLButtonElement>(null);
@@ -43,7 +43,7 @@ export const SwfStandaloneDiagramOnlyEditorPage = () => {
       initialContent: Promise.resolve(content),
       readOnly: false,
       languageType: extension as ServerlessWorkflowType,
-      swfPreviewOptions: { editorMode: "diagram", defaultWidth: "100%" },
+      swfPreviewOptions: { editorMode: "text", defaultWidth: "100%" },
     });
     setWorkflowType(extension as ServerlessWorkflowType);
     setEditor(editorApi);
@@ -94,7 +94,7 @@ export const SwfStandaloneDiagramOnlyEditorPage = () => {
     <Page>
       {!editor && (
         <PageSection isFilled={true}>
-          <ServerlessWorkflowEmptyState newContent={onNewContent} setContent={onSetContent} isDiagramOnly={true} />
+          <ServerlessWorkflowEmptyState newContent={onNewContent} setContent={onSetContent} isTextOnly={true} />
         </PageSection>
       )}
       <PageSection padding={{ default: "noPadding" }}>
@@ -102,6 +102,7 @@ export const SwfStandaloneDiagramOnlyEditorPage = () => {
           <div style={{ height: "40px", padding: "5px" }}>
             <button ref={undo}>Undo</button>
             <button ref={redo}>Redo</button>
+            <button ref={download}>Get Content</button>
             <span ref={unsavedChanges} style={{ display: "none" }}>
               File contains unsaved changes.
             </span>

@@ -18140,7 +18140,7 @@ packages:
       "@nodelib/fs.walk": 1.2.4
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.5
+      micromatch: 4.0.4
       picomatch: 2.3.1
     dev: true
 
@@ -18491,13 +18491,6 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.1
-
-  /for-each/0.3.3:
-    resolution:
-      { integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw== }
-    dependencies:
-      is-callable: 1.2.7
-    dev: true
 
   /for-in/1.0.2:
     resolution:
@@ -21330,7 +21323,6 @@ packages:
       { integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg== }
     optionalDependencies:
       graceful-fs: 4.2.10
-    dev: true
 
   /jsonfile/6.1.0:
     resolution:
@@ -22872,15 +22864,15 @@ packages:
       monaco-editor: ">=0.30"
     dependencies:
       "@types/json-schema": 7.0.11
-      jsonc-parser: 3.2.0
+      jsonc-parser: 3.0.0
       monaco-editor: 0.33.0
       monaco-marker-data-provider: 1.1.0_monaco-editor@0.33.0
       monaco-worker-manager: 2.0.1_monaco-editor@0.33.0
       path-browserify: 1.0.1
       prettier: 2.3.0
-      vscode-languageserver-textdocument: 1.0.7
-      vscode-languageserver-types: 3.17.2
-      vscode-uri: 3.0.6
+      vscode-languageserver-textdocument: 1.0.4
+      vscode-languageserver-types: 3.16.0
+      vscode-uri: 3.0.3
       yaml: 2.0.1
 
   /mongo-object/0.1.4:
@@ -25269,17 +25261,6 @@ packages:
       http-errors: 1.8.1
       iconv-lite: 0.4.24
       unpipe: 1.0.0
-    dev: true
-
-  /raw-loader/4.0.2:
-    resolution:
-      { integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
     dev: true
 
   /raw-loader/4.0.2_webpack@5.70.0:
@@ -29202,7 +29183,6 @@ packages:
   /vscode-languageserver-textdocument/1.0.4:
     resolution:
       { integrity: sha512-/xhqXP/2A2RSs+J8JNXpiiNVvvNM0oTosNVmQnunlKvq9o4mupHOBAnnzH0lwIPKazXKvAKsVp1kr+H/K4lgoQ== }
-    dev: false
 
   /vscode-languageserver-textdocument/1.0.7:
     resolution:
@@ -29244,7 +29224,6 @@ packages:
   /vscode-uri/3.0.3:
     resolution:
       { integrity: sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA== }
-    dev: true
 
   /vscode-uri/3.0.6:
     resolution:
@@ -29365,7 +29344,8 @@ packages:
     dev: true
 
   /webidl-conversions/3.0.1:
-    resolution: { integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE= }
+    resolution:
+      { integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ== }
 
   /webidl-conversions/5.0.0:
     resolution:
@@ -29859,7 +29839,8 @@ packages:
     dev: true
 
   /whatwg-url/5.0.0:
-    resolution: { integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0= }
+    resolution:
+      { integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw== }
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1

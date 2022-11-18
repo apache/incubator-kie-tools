@@ -50,7 +50,6 @@ const createEnvelopeServer = (
   origin?: string
 ) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
-
   return new EnvelopeServer<KogitoEditorChannelApi, any>(
     { postMessage: (message) => iframe.contentWindow?.postMessage(message, "*") },
     origin ?? defaultOrigin,
@@ -130,9 +129,7 @@ export const open = (args: {
       { registries: [] }
     ),
     languageServiceChannelApiImpl,
-    new SwfPreviewOptionsChannelApiImpl(
-      args.swfPreviewOptions?.isDiagramOnly ? { diagramDefaultWidth: "100%" } : undefined
-    ),
+    new SwfPreviewOptionsChannelApiImpl(args.swfPreviewOptions ?? undefined),
     new SwfStaticEnvelopeContentProviderChannelApiImpl({
       diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex,
       mermaidEnvelopeContent: swfMermaidViewerEnvelopeIndex,
