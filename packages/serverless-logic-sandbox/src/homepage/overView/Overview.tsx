@@ -24,7 +24,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { NewServerlessModelCard } from "./NewServerlessModelCard";
 import { Card } from "@patternfly/react-core";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
-import { UploadCard } from "../../home/UploadCard";
+import { UploadCard } from "./UploadCard";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";

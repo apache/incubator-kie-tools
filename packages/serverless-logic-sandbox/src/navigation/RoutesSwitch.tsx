@@ -18,9 +18,9 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Route, Switch } from "react-router-dom";
 import { useRoutes } from "./Hooks";
-import { OnlineEditorPage } from "../newHomepage/pageTemplate/OnlineEditorPage";
+import { OnlineEditorPage } from "../homepage/pageTemplate/OnlineEditorPage";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { HomePageRoutes } from "../newHomepage/routes/HomePageRoutes";
+import { HomePageRoutes } from "../homepage/routes/HomePageRoutes";
 
 export function RoutesSwitch() {
   const routes = useRoutes();
