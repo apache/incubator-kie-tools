@@ -54,7 +54,7 @@ export const SwfStandaloneEditorPage = () => {
       initialContent: Promise.resolve(""),
       readOnly: false,
       languageType: serverlessWorkflowType,
-      swfPreviewOptions: { editorMode: "full", defaultWidth: "100%" },
+      swfPreviewOptions: { editorMode: "full", defaultWidth: "50%" },
     });
     setWorkflowType(serverlessWorkflowType as ServerlessWorkflowType);
     setEditor(editorApi);

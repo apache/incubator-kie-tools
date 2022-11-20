@@ -24,7 +24,7 @@ import {
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
-import { ServerlessWorkflowCombinedEditorChannelApi, SwfPreviewOptions } from "../api";
+import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 import { ServerlessWorkflowCombinedEditor } from "./ServerlessWorkflowCombinedEditor";
 
 export class ServerlessWorkflowCombinedEditorView implements Editor {
@@ -35,7 +35,7 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowCombinedEditorChannelApi>,
-    private readonly initArgs: EditorInitArgs & { swfPreviewOptions: SwfPreviewOptions }
+    private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
   }
@@ -65,7 +65,6 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
         channelType={this.initArgs.channel}
         resourcesPathPrefix={this.initArgs.resourcesPathPrefix}
         onNewEdit={this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send}
-        swfPreviewOptions={this.initArgs.swfPreviewOptions}
       />
     );
   }

@@ -67,7 +67,6 @@ interface Props {
   channelType: ChannelType;
   resourcesPathPrefix: string;
   onNewEdit: (edit: WorkspaceEdit) => void;
-  swfPreviewOptions?: SwfPreviewOptions;
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
@@ -122,9 +121,9 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const targetOrigin = useMemo(() => (isVscode ? "vscode" : window.location.origin), [isVscode]);
 
   const isCombinedEditorReady = useMemo(() => {
-    if (props.swfPreviewOptions?.editorMode === "diagram") {
+    if (previewOptions?.editorMode === "diagram") {
       return isDiagramEditorReady;
-    } else if (props.swfPreviewOptions?.editorMode === "text") {
+    } else if (previewOptions?.editorMode === "text") {
       return isTextEditorReady;
     } else {
       return isTextEditorReady && isDiagramEditorReady;
@@ -359,22 +358,9 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } =
     useSwfTextEditorChannelApi(useSwfTextEditorChannelApiArgs);
 
-  return (
-    <div style={{ height: "100%" }}>
-      <LoadingScreen loading={!isCombinedEditorReady} />
-      {embeddedDiagramEditorFile && props.swfPreviewOptions?.editorMode === "diagram" ? (
-        <EmbeddedEditor
-          ref={diagramEditorRef}
-          file={embeddedDiagramEditorFile}
-          channelType={props.channelType}
-          kogitoEditor_ready={onDiagramEditorReady}
-          kogitoEditor_setContentError={onDiagramEditorSetContentError}
-          editorEnvelopeLocator={diagramEditorEnvelopeLocator}
-          locale={props.locale}
-          customChannelApiImpl={diagramEditorChannelApi}
-          stateControl={diagramEditorStateControl}
-        />
-      ) : embeddedTextEditorFile && props.swfPreviewOptions?.editorMode === "text" ? (
+  const renderTextEditor = () => {
+    return (
+      embeddedTextEditorFile && (
         <EmbeddedEditor
           ref={textEditorRef}
           file={embeddedTextEditorFile}
@@ -387,45 +373,45 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           stateControl={textEditorStateControl}
           isReady={isTextEditorReady}
         />
+      )
+    );
+  };
+
+  const renderDiagramEditor = () => {
+    return (
+      embeddedDiagramEditorFile && (
+        <EmbeddedEditor
+          ref={diagramEditorRef}
+          file={embeddedDiagramEditorFile}
+          channelType={props.channelType}
+          kogitoEditor_ready={onDiagramEditorReady}
+          kogitoEditor_setContentError={onDiagramEditorSetContentError}
+          editorEnvelopeLocator={diagramEditorEnvelopeLocator}
+          locale={props.locale}
+          customChannelApiImpl={diagramEditorChannelApi}
+          stateControl={diagramEditorStateControl}
+        />
+      )
+    );
+  };
+
+  return (
+    <div style={{ height: "100%" }}>
+      <LoadingScreen loading={!isCombinedEditorReady} />
+      {previewOptions?.editorMode === "diagram" ? (
+        renderDiagramEditor()
+      ) : previewOptions?.editorMode === "text" ? (
+        renderTextEditor()
       ) : (
         <Drawer isExpanded={true} isInline={true}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={previewOptions?.defaultWidth ?? "50%"}>
-                <DrawerPanelBody style={{ padding: 0 }}>
-                  {embeddedDiagramEditorFile && (
-                    <EmbeddedEditor
-                      ref={diagramEditorRef}
-                      file={embeddedDiagramEditorFile}
-                      channelType={props.channelType}
-                      kogitoEditor_ready={onDiagramEditorReady}
-                      kogitoEditor_setContentError={onDiagramEditorSetContentError}
-                      editorEnvelopeLocator={diagramEditorEnvelopeLocator}
-                      locale={props.locale}
-                      customChannelApiImpl={diagramEditorChannelApi}
-                      stateControl={diagramEditorStateControl}
-                    />
-                  )}
-                </DrawerPanelBody>
+                <DrawerPanelBody style={{ padding: 0 }}>{renderDiagramEditor()}</DrawerPanelBody>
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody>
-              {embeddedTextEditorFile && (
-                <EmbeddedEditor
-                  ref={textEditorRef}
-                  file={embeddedTextEditorFile}
-                  channelType={props.channelType}
-                  kogitoEditor_ready={onTextEditorReady}
-                  kogitoEditor_setContentError={onTextEditorSetContentError}
-                  editorEnvelopeLocator={textEditorEnvelopeLocator}
-                  locale={props.locale}
-                  customChannelApiImpl={textEditorChannelApi}
-                  stateControl={textEditorStateControl}
-                  isReady={isTextEditorReady}
-                />
-              )}
-            </DrawerContentBody>
+            <DrawerContentBody>{renderTextEditor()}</DrawerContentBody>
           </DrawerContent>
         </Drawer>
       )}
