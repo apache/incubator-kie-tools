@@ -20,6 +20,7 @@ import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { KieSandboxExtendedServicesSettingsTab } from "./KieSandboxExtendedServicesSettingsTab";
 
 export enum SettingsTabs {
+  OPENSHIFT = "openshift",
   KIE_SANDBOX_EXTENDED_SERVICES = "kie-sandbox-extended-services",
 }
 

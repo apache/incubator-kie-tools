@@ -40,7 +40,7 @@ import {
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { useOctokit } from "../github/Hooks";
-import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
 import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";

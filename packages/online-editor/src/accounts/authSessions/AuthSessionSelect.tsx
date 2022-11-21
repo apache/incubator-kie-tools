@@ -33,7 +33,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ButtonVariant } from "@patternfly/react-core";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { AccountsDispatchActionKind, useAccountsDispatch } from "../AccountsDispatchContext";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../AccountsContext";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";

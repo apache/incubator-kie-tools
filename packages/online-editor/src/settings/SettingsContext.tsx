@@ -19,14 +19,17 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../cookies";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../navigation/Routes";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 
 export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
 export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 const GUIDED_TOUR_ENABLED_COOKIE_NAME = "kie-tools-COOKIE__guided-tour--is-enabled";
+export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-namespace";
+export const OPENSHIFT_HOST_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-host";
+export const OPENSHIFT_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-token";
 
 export class ExtendedServicesConfig {
   constructor(public readonly host: string, public readonly port: string) {}
@@ -103,14 +106,14 @@ export function SettingsContextProvider(props: any) {
     setCookie(GUIDED_TOUR_ENABLED_COOKIE_NAME, `${isGuidedTourEnabled}`);
   }, [isGuidedTourEnabled]);
 
-  const extendedServices = useExtendedServices();
+  const kieSandboxExtendedServices = useExtendedServices();
 
   const dispatch = useMemo(() => {
     return {
       open,
       close,
       kieSandboxExtendedServices: {
-        setConfig: extendedServices.saveNewConfig,
+        setConfig: kieSandboxExtendedServices.saveNewConfig,
       },
       general: {
         guidedTour: {
@@ -118,14 +121,14 @@ export function SettingsContextProvider(props: any) {
         },
       },
     };
-  }, [close, extendedServices.saveNewConfig, open]);
+  }, [close, kieSandboxExtendedServices.saveNewConfig, open]);
 
   const value = useMemo(() => {
     return {
       isOpen,
       activeTab,
       kieSandboxExtendedServices: {
-        config: extendedServices.config,
+        config: kieSandboxExtendedServices.config,
       },
       general: {
         guidedTour: {
@@ -133,7 +136,7 @@ export function SettingsContextProvider(props: any) {
         },
       },
     };
-  }, [activeTab, isGuidedTourEnabled, isOpen, extendedServices.config]);
+  }, [activeTab, isGuidedTourEnabled, isOpen, kieSandboxExtendedServices.config]);
 
   return (
     <SettingsContext.Provider value={value}>

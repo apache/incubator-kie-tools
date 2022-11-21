@@ -38,7 +38,7 @@ import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
 import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
-import { AccountsContextProvider } from "./accounts/AccountsDispatchContext";
+import { AccountsContextProvider } from "./accounts/AccountsContext";
 
 export function App() {
   return (

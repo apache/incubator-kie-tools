@@ -24,7 +24,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { useCallback } from "react";
-import { ConnectToGitHubSection } from "./ConnectToGitHubSection";
+import { ConnectToGitHubSection } from "./github/ConnectToGitHubSection";
 import { AuthProvidersGallery } from "./authProviders/AuthProvidersGallery";
 import { AuthProviderIcon } from "./authProviders/AuthProviderIcon";
 import { AuthSessionsList } from "./authSessions/AuthSessionsList";
@@ -38,12 +38,9 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
-import {
-  AccountsDispatchActionKind,
-  AccountsSection,
-  useAccounts,
-  useAccountsDispatch,
-} from "./AccountsDispatchContext";
+import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";
+import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export function AccountsIcon() {
   const accounts = useAccounts();
@@ -68,7 +65,7 @@ export function AccountsIcon() {
       {accounts.section !== AccountsSection.CLOSED && (
         <Modal
           aria-label={"Accounts"}
-          variant={ModalVariant.medium}
+          variant={ModalVariant.large}
           isOpen={true}
           onClose={() => accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE })}
           header={
@@ -108,14 +105,14 @@ export function AccountsIcon() {
                   </>
                 </>
               )}
-              {accounts.section === AccountsSection.CONNECT_TO_NEW_ACC && (
+              {accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT && (
                 <>
                   <TextContent>
                     <Text component={TextVariants.h1}>Select a provider</Text>
                   </TextContent>
                 </>
               )}
-              {accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC && (
+              {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
                 <>
                   <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                     <FlexItem>
@@ -141,10 +138,10 @@ export function AccountsIcon() {
                   </Flex>
                 </>
               )}
-              {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE && (
+              {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && (
                 <>
                   <TextContent>
-                    <Text component={TextVariants.h1}>Connect to a Kubernetes or OpenShift instance</Text>
+                    <Text component={TextVariants.h1}>Connect to OpenShift</Text>
                   </TextContent>
                 </>
               )}
@@ -159,20 +156,27 @@ export function AccountsIcon() {
                 {accounts.section === AccountsSection.HOME && (
                   <>
                     {authSessions.size <= 0 && (
-                      <>
-                        <EmptyState variant={EmptyStateVariant.xs}>
+                      <Bullseye>
+                        <EmptyState style={{ maxWidth: "400px" }}>
                           <EmptyStateIcon icon={UsersIcon} />
                           <Title headingLevel="h4" size="md">
                             {`Looks like you don't have any accounts connected yet`}
                           </Title>
-                          <EmptyStateBody>{`Select a provider below to connect to an account.`}</EmptyStateBody>
+                          <br />
+                          <br />
+
+                          <EmptyStateBody>{`Connecting to external accounts enables Git and Cloud integrations.`}</EmptyStateBody>
+                          <EmptyStateBody>
+                            <small>{`The connected accounts credentials are stored locally in this browser and are not shared with anyone.`}</small>
+                          </EmptyStateBody>
+                          <Button
+                            variant="primary"
+                            onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER })}
+                          >
+                            Connect to an account
+                          </Button>
                         </EmptyState>
-                        <br />
-                        <Divider inset={{ default: "inset3xl" }} />
-                        <br />
-                        <br />
-                        <AuthProvidersGallery backActionKind={AccountsDispatchActionKind.GO_HOME} />
-                      </>
+                      </Bullseye>
                     )}
                     {authSessions.size > 0 && (
                       <>
@@ -181,13 +185,13 @@ export function AccountsIcon() {
                     )}
                   </>
                 )}
-                {accounts.section === AccountsSection.CONNECT_TO_NEW_ACC && (
+                {accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT && (
                   <AuthProvidersGallery backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER} />
                 )}
-                {accounts.section === AccountsSection.CONNECT_TO_NEW_GITHUB_ACC && (
+                {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
                   <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />
                 )}
-                {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE && "Kubernetes"}
+                {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
               </>
             </PageSection>
           </Page>

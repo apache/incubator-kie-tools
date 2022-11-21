@@ -19,12 +19,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import * as React from "react";
 import { useMemo } from "react";
-import {
-  AccountsDispatchActionKind,
-  AccountsSection,
-  useAccounts,
-  useAccountsDispatch,
-} from "../AccountsDispatchContext";
+import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { AuthProviderIcon } from "./AuthProviderIcon";
 import { AuthProvider } from "./AuthProvidersApi";
 import { useAuthProviders } from "./AuthProvidersContext";
@@ -49,7 +44,7 @@ export function AuthProvidersGallery(props: {
     <>
       {[...authProvidersByGroup.entries()].map(([group, authProviders]) => {
         return (
-          <>
+          <React.Fragment key={group}>
             <br />
             {group.charAt(0).toUpperCase() + group.slice(1) /* FIXME: Tiago */}
             <br />
@@ -69,21 +64,21 @@ export function AuthProvidersGallery(props: {
                     onClick={() => {
                       if (authProvider.enabled && authProvider.type === "github") {
                         accountsDispatch({
-                          kind: AccountsDispatchActionKind.SETUP_GITHUB_TOKEN,
+                          kind: AccountsDispatchActionKind.SETUP_GITHUB_AUTH,
                           selectedAuthProvider: authProvider,
                           backActionKind: props.backActionKind,
                           onNewAuthSession:
-                            accounts.section === AccountsSection.CONNECT_TO_NEW_ACC
+                            accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT
                               ? accounts.onNewAuthSession
                               : undefined,
                         });
-                      } else if (authProvider.enabled && authProvider.type === "kubernetes") {
+                      } else if (authProvider.enabled && authProvider.type === "openshift") {
                         accountsDispatch({
-                          kind: AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH,
+                          kind: AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH,
                           selectedAuthProvider: authProvider,
                           backActionKind: props.backActionKind,
                           onNewAuthSession:
-                            accounts.section === AccountsSection.CONNECT_TO_KUBERNETES_INSTANCE
+                            accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT
                               ? accounts.onNewAuthSession
                               : undefined,
                         });
@@ -115,7 +110,7 @@ export function AuthProvidersGallery(props: {
                   </Card>
                 ))}
             </Gallery>
-          </>
+          </React.Fragment>
         );
       })}
     </>

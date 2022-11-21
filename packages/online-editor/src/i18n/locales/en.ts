@@ -64,7 +64,7 @@ export const en: OnlineI18n = {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
-        "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+        "When you set up the required information, you are able to create dev deployments on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
@@ -85,12 +85,12 @@ export const en: OnlineI18n = {
     },
     configModal: {
       hostInfo: `The hostname associated with your instance.`,
-      namespaceInfo: `The namespace (project) you want to deploy the Decision Model.`,
+      namespaceInfo: `The Namespace (project) you want your dev deployments to be.`,
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       configExpiredWarning: "Token or account expired. Please update your configuration.",
-      useWizard: "Configure through the guided wizard instead",
+      useWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
     },
     confirmModal: {
       title: "Deploy",
@@ -103,7 +103,7 @@ export const en: OnlineI18n = {
         "Your deployment has been successfully started and will be available shortly. Please do not close your browser tab until this operation is completed.",
     },
     introduction: {
-      explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,
+      explanation: `Create dev deployments in the cloud and share with others.`,
       disclaimer: `${
         en_common.names.devDeployments
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
@@ -119,10 +119,10 @@ export const en: OnlineI18n = {
           introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
           goToGetStartedPage: "Go to the Get Started page",
           followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the Decision Model deployed to.`,
+          informNamespace: `Once your instance is up and running, inform the Namespace (project) where you want your dev deployments created.`,
           inputReason:
-            "This information is necessary for deploying your Decision Model into the right project namespace.",
-          namespacePlaceholder: `The namespace (project) you want to deploy the Decision Model.`,
+            "This information is necessary for creating your dev deployments in the right Namespace (project).",
+          namespacePlaceholder: `The Namespace (project) where you want to create your dev deployments.`,
         },
         second: {
           name: "Set credentials",

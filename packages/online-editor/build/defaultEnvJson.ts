@@ -57,9 +57,9 @@ export const defaultEnvJson: EnvJson = {
     },
     {
       enabled: true,
-      id: "kubernetes_and_openshift",
-      type: "kubernetes",
-      name: "Kubernetes / OpenShift",
+      id: "openshift",
+      type: "openshift",
+      name: "OpenShift",
       domain: undefined,
       iconPath: "",
       group: "cloud",

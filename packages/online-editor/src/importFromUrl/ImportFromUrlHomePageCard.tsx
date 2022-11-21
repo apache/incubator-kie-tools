@@ -27,7 +27,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
 import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
 import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";

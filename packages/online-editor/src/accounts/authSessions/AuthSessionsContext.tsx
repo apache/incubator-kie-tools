@@ -23,7 +23,7 @@ import * as React from "react";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getGithubInstanceApiUrl } from "../../github/Hooks";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { fetchAuthenticatedGitHubUser } from "../ConnectToGitHubSection";
+import { fetchAuthenticatedGitHubUser } from "../github/ConnectToGitHubSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 
 export type AuthSessionsContextType = {

@@ -97,7 +97,7 @@ import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 import { AuthSessionSelect, AuthSessionSelectFilter } from "../accounts/authSessions/AuthSessionSelect";
 import { useAuthProvider } from "../accounts/authProviders/AuthProvidersContext";
 import { useOctokit } from "../github/Hooks";
-import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import {
   authSessionsSelectFilterCompatibleWithGistUrlDomain,

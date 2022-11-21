@@ -29,7 +29,7 @@ import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/
 export function KieSandboxExtendedServicesSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const extendedServices = useExtendedServices();
+  const kieSandboxExtendedServices = useExtendedServices();
   const [host, setHost] = useState(settings.kieSandboxExtendedServices.config.host);
   const [port, setPort] = useState(settings.kieSandboxExtendedServices.config.port);
 
@@ -48,7 +48,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
           <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
             <Form onSubmit={onSubmit}>
               <FormAlert>
-                {extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING && (
+                {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING && (
                   <Alert
                     variant="success"
                     title={"You are connected to KIE Sandbox Extended Services"}
@@ -56,7 +56,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
                     isInline
                   />
                 )}
-                {extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+                {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
                   <Alert
                     variant="danger"
                     title={"You are not connected to KIE Sandbox Extended Services"}
@@ -107,7 +107,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
               </FormGroup>
               <ActionGroup>
                 <Button
-                  id="dmn-dev-deployment-config-save-button"
+                  id="dmn-dev-sandbox-config-save-button"
                   key="save"
                   variant="primary"
                   onClick={onSubmit}
