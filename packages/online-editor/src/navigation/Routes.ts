@@ -153,6 +153,10 @@ export const routes = {
       kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
       dmnRunnerGif: new Route<{}>(() => `images/dmn-runner2.gif`),
       dmnDevDeploymentGif: new Route<{}>(() => `images/dmn-dev-deployment.gif`),
+      kubernetesLogo: new Route<{}>(() => `images/kubernetes-logo.svg`),
+      gitlabLogo: new Route<{}>(() => `images/gitlab-logo.svg`),
+      bitbucketLogo: new Route<{}>(() => `images/bitbucket-logo.svg`),
+      openshiftLogo: new Route<{}>(() => `images/openshift-logo.svg`),
     },
   },
 };

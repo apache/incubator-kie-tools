@@ -19,7 +19,13 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import * as React from "react";
 import { useMemo } from "react";
-import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
+import {
+  AccountsDispatchActionKind,
+  AccountsSection,
+  assertUnreachable,
+  useAccounts,
+  useAccountsDispatch,
+} from "../AccountsContext";
 import { AuthProviderIcon } from "./AuthProviderIcon";
 import { AuthProvider, AuthProviderGroup } from "./AuthProvidersApi";
 import { useAuthProviders } from "./AuthProvidersContext";
@@ -38,7 +44,7 @@ export function AuthProvidersGallery(props: {
         .filter((authProvider) => (props.authProviderGroup ? authProvider.group === props.authProviderGroup : true)) // If no group provided, enable all.
         .reduce(
           (acc, next) => acc.set(next.group, [...(acc.get(next.group) ?? []), next]),
-          new Map<string, AuthProvider[]>()
+          new Map<AuthProviderGroup, AuthProvider[]>()
         ),
     [authProviders, props.authProviderGroup]
   );
@@ -48,14 +54,18 @@ export function AuthProvidersGallery(props: {
       {[...authProvidersByGroup.entries()].map(([group, authProviders]) => {
         return (
           <React.Fragment key={group}>
-            {authProvidersByGroup.size > 1 && (
-              <>
-                <br />
-                {group.charAt(0).toUpperCase() + group.slice(1) /* FIXME: Tiago */}
-                <br />
-                <br />
-              </>
-            )}
+            <>
+              <TextContent>
+                <Text component={TextVariants.h2} style={{ display: "inline-block" }}>
+                  {group.charAt(0).toUpperCase() + group.slice(1) /* FIXME: Tiago */}
+                </Text>
+                &nbsp; &nbsp;
+                <Text component={TextVariants.small} style={{ display: "inline-block", fontStyle: "italic" }}>
+                  <AuthProviderGroupDescription group={group} />
+                </Text>
+              </TextContent>
+              <br />
+            </>
             <Gallery hasGutter={true} minWidths={{ default: "150px" }}>
               {authProviders
                 .sort((a, b) => (a.name > b.name ? -1 : 1))
@@ -117,9 +127,21 @@ export function AuthProvidersGallery(props: {
                   </Card>
                 ))}
             </Gallery>
+            <br />
           </React.Fragment>
         );
       })}
     </>
   );
+}
+function AuthProviderGroupDescription(props: { group: AuthProviderGroup }) {
+  const group = props.group;
+  switch (group) {
+    case AuthProviderGroup.CLOUD:
+      return <>{"Allows dev deployments to be created in your Cloud infrastructure."}</>;
+    case AuthProviderGroup.GIT:
+      return <>{"Allows integration with private repositories and provider-specific features, like GitHub Gists."}</>;
+    default:
+      assertUnreachable(group);
+  }
 }

@@ -25,7 +25,7 @@ export type OpenShiftAuthProvider = {
   name: string;
   domain: undefined;
   iconPath?: string;
-  enabled: true;
+  enabled: boolean;
   group: AuthProviderGroup.CLOUD;
 };
 
