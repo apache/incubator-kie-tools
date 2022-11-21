@@ -105,6 +105,7 @@ import {
 } from "../accounts/authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
+import { AuthProviderGroup } from "../accounts/authProviders/AuthProvidersApi";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -825,6 +826,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       position={SelectPosition.right}
                       isPlain={false}
                       authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
+                      showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
                       setAuthSessionId={(newAuthSessionId) => {
                         changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
                         setTimeout(() => {
@@ -1447,6 +1449,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                           isPlain={true}
                           authSessionId={workspace.descriptor.gitAuthSessionId}
+                          showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
                           setAuthSessionId={(newAuthSessionId) => {
                             changeGitAuthSessionId(newAuthSessionId, workspace.descriptor.gitAuthSessionId);
                             accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
@@ -1800,6 +1803,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={
+                                                  AuthProviderGroup.GIT
+                                                }
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
                                                     newAuthSessionId,
@@ -1828,6 +1834,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={
+                                                  AuthProviderGroup.GIT
+                                                }
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
                                                     newAuthSessionId,
@@ -1905,6 +1914,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={
+                                                  AuthProviderGroup.GIT
+                                                }
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
                                                     newAuthSessionId,
@@ -2043,6 +2055,7 @@ export function PushToGitHubAlertActionLinks(props: {
                 position={SelectPosition.right}
                 isPlain={false}
                 authSessionId={props.workspaceDescriptor?.gitAuthSessionId}
+                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
                 setAuthSessionId={(newAuthSessionId) => {
                   props.changeGitAuthSessionId(newAuthSessionId, props.workspaceDescriptor?.gitAuthSessionId);
                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });

@@ -21,11 +21,12 @@ import * as React from "react";
 import { useMemo } from "react";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { AuthProviderIcon } from "./AuthProviderIcon";
-import { AuthProvider } from "./AuthProvidersApi";
+import { AuthProvider, AuthProviderGroup } from "./AuthProvidersApi";
 import { useAuthProviders } from "./AuthProvidersContext";
 
 export function AuthProvidersGallery(props: {
   backActionKind: AccountsDispatchActionKind.GO_HOME | AccountsDispatchActionKind.SELECT_AUTH_PROVIDER;
+  authProviderGroup: AuthProviderGroup | undefined;
 }) {
   const authProviders = useAuthProviders();
   const accountsDispatch = useAccountsDispatch();
@@ -33,11 +34,13 @@ export function AuthProvidersGallery(props: {
 
   const authProvidersByGroup = useMemo(
     () =>
-      authProviders.reduce(
-        (acc, next) => acc.set(next.group, [...(acc.get(next.group) ?? []), next]),
-        new Map<string, AuthProvider[]>()
-      ),
-    [authProviders]
+      authProviders
+        .filter((authProvider) => (props.authProviderGroup ? authProvider.group === props.authProviderGroup : true)) // If no group provided, enable all.
+        .reduce(
+          (acc, next) => acc.set(next.group, [...(acc.get(next.group) ?? []), next]),
+          new Map<string, AuthProvider[]>()
+        ),
+    [authProviders, props.authProviderGroup]
   );
 
   return (
@@ -45,10 +48,14 @@ export function AuthProvidersGallery(props: {
       {[...authProvidersByGroup.entries()].map(([group, authProviders]) => {
         return (
           <React.Fragment key={group}>
-            <br />
-            {group.charAt(0).toUpperCase() + group.slice(1) /* FIXME: Tiago */}
-            <br />
-            <br />
+            {authProvidersByGroup.size > 1 && (
+              <>
+                <br />
+                {group.charAt(0).toUpperCase() + group.slice(1) /* FIXME: Tiago */}
+                <br />
+                <br />
+              </>
+            )}
             <Gallery hasGutter={true} minWidths={{ default: "150px" }}>
               {authProviders
                 .sort((a, b) => (a.name > b.name ? -1 : 1))

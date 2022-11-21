@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+export enum AuthProviderGroup {
+  CLOUD = "cloud",
+  GIT = "git",
+}
+
 export type OpenShiftAuthProvider = {
   id: string;
   type: "openshift";
@@ -21,7 +26,7 @@ export type OpenShiftAuthProvider = {
   domain: undefined;
   iconPath?: string;
   enabled: true;
-  group: "cloud";
+  group: AuthProviderGroup.CLOUD;
 };
 
 export type GitAuthProvider = {
@@ -32,7 +37,7 @@ export type GitAuthProvider = {
   iconPath?: string;
   enabled: boolean;
   supportedGitRemoteDomains: string[];
-  group: "git";
+  group: AuthProviderGroup.GIT;
 };
 
 export type AuthProvider = OpenShiftAuthProvider | GitAuthProvider;

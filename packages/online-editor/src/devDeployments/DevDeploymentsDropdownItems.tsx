@@ -26,24 +26,28 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../filesList/FileLabel";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
+import { AuthProviderGroup } from "../accounts/authProviders/AuthProvidersApi";
+import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 
 export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | undefined) {
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
+  const accountsDispatch = useAccountsDispatch();
 
-  const isKieSandboxExtendedServicesRunning = useMemo(
+  const isExtendedServicesRunning = useMemo(
     () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
     [extendedServices.status]
   );
 
   const onDeploy = useCallback(() => {
-    if (isKieSandboxExtendedServicesRunning) {
+    if (isExtendedServicesRunning) {
       devDeployments.setConfirmDeployModalOpen(true);
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
     extendedServices.setModalOpen(true);
-  }, [devDeployments, isKieSandboxExtendedServicesRunning, extendedServices]);
+  }, [devDeployments, isExtendedServicesRunning, extendedServices]);
 
   return useMemo(() => {
     return [
@@ -55,9 +59,10 @@ export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | unde
               key={`dropdown-dmn-dev-deployment-deploy`}
               component={"button"}
               onClick={onDeploy}
-              isDisabled={!isKieSandboxExtendedServicesRunning}
+              isDisabled={!isExtendedServicesRunning}
               ouiaId={"deploy-to-dmn-dev-deployment-dropdown-button"}
               description="For development only!"
+              style={{ minWidth: "400px" }}
             >
               {workspace.files.length > 1 && (
                 <Flex flexWrap={{ default: "nowrap" }}>
@@ -81,25 +86,27 @@ export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | unde
             </DropdownItem>
           </FeatureDependentOnKieSandboxExtendedServices>
         )}
-        {isKieSandboxExtendedServicesRunning && (
+        {isExtendedServicesRunning && (
           <>
             <Divider />
             <DropdownItem
               id="dmn-dev-deployment-setup-button"
               key={`dropdown-dmn-dev-deployment-setup`}
               onClick={() => {
-                // FIXME: Tiago
-                return alert("Open accounts modal");
+                accountsDispatch({
+                  kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
+                  authProviderGroup: AuthProviderGroup.CLOUD,
+                });
               }}
               ouiaId={"setup-dmn-dev-deployment-dropdown-button"}
             >
-              <Button isInline={true} variant={ButtonVariant.link}>
-                Setup...
+              <Button isInline={true} variant={ButtonVariant.link} icon={<PlusIcon />}>
+                Connect to a cloud provider...
               </Button>
             </DropdownItem>
           </>
         )}
       </React.Fragment>,
     ];
-  }, [isKieSandboxExtendedServicesRunning, onDeploy, workspace]);
+  }, [accountsDispatch, isExtendedServicesRunning, onDeploy, workspace]);
 }

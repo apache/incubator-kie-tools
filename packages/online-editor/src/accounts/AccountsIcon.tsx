@@ -186,7 +186,10 @@ export function AccountsIcon() {
                   </>
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT && (
-                  <AuthProvidersGallery backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER} />
+                  <AuthProvidersGallery
+                    backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER}
+                    authProviderGroup={accounts.authProviderGroup}
+                  />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
                   <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />

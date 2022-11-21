@@ -16,7 +16,12 @@
 
 import * as React from "react";
 import { useCallback, useContext, useReducer } from "react";
-import { GitAuthProvider, OpenShiftAuthProvider } from "./authProviders/AuthProvidersApi";
+import {
+  AuthProvider,
+  AuthProviderGroup,
+  GitAuthProvider,
+  OpenShiftAuthProvider,
+} from "./authProviders/AuthProvidersApi";
 import { AuthSession } from "./authSessions/AuthSessionApi";
 import { useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
 
@@ -43,6 +48,7 @@ export type AccountsState =
       selectedAuthProvider?: undefined;
       backActionKind: AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      authProviderGroup?: AuthProviderGroup;
     }
   | {
       section: AccountsSection.CONNECT_TO_GITHUB;
@@ -77,6 +83,7 @@ export type AccountsDispatchAction =
   | {
       kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      authProviderGroup?: AuthProviderGroup;
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_GITHUB_AUTH;
@@ -120,6 +127,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             selectedAuthProvider: undefined,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: AccountsDispatchActionKind.GO_HOME,
+            authProviderGroup: action.authProviderGroup,
           };
         case AccountsDispatchActionKind.SETUP_GITHUB_AUTH:
           return {

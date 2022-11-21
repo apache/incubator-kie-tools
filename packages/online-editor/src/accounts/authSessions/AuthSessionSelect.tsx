@@ -26,7 +26,7 @@ import {
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthSession, useAuthSessions } from "./AuthSessionsContext";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
-import { AuthProvider } from "../authProviders/AuthProvidersApi";
+import { AuthProvider, AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useEffect, useMemo, useState } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -72,6 +72,7 @@ export function AuthSessionSelect(props: {
   position?: SelectPosition;
   filter: AuthSessionSelectFilter;
   menuAppendTo?: SelectProps["menuAppendTo"];
+  showOnlyThisAuthProviderGroupWhenConnectingToNewAccount: AuthProviderGroup | undefined;
 }) {
   const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -174,6 +175,7 @@ export function AuthSessionSelect(props: {
             onClick={() =>
               accountsDispatch({
                 kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
+                authProviderGroup: props.showOnlyThisAuthProviderGroupWhenConnectingToNewAccount,
                 onNewAuthSession: (newAuthSession) => props.setAuthSessionId(newAuthSession.id),
               })
             }
