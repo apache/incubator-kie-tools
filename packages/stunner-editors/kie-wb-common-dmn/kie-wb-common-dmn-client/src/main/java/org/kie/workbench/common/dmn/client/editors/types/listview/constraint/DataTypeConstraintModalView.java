@@ -29,6 +29,8 @@ import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLOptionsCollection;
 import elemental2.dom.HTMLSelectElement;
 import elemental2.dom.Node;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -90,16 +92,16 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Inject
     public DataTypeConstraintModalView(final HTMLDivElement header,
-            final HTMLDivElement body,
-            final HTMLDivElement footer,
-            final HTMLDivElement componentContainer,
-            final HTMLButtonElement okButton,
-            final HTMLButtonElement cancelButton,
-            final HTMLAnchorElement clearAllAnchor,
-            final @Named("span") HTMLElement type,
-            final HTMLDivElement selectConstraint,
-            final HTMLDivElement constraintWarningMessage,
-            final HTMLButtonElement closeConstraintWarningMessage) {
+                                       final HTMLDivElement body,
+                                       final HTMLDivElement footer,
+                                       final HTMLDivElement componentContainer,
+                                       final HTMLButtonElement okButton,
+                                       final HTMLButtonElement cancelButton,
+                                       final HTMLAnchorElement clearAllAnchor,
+                                       final @Named("span") HTMLElement type,
+                                       final HTMLDivElement selectConstraint,
+                                       final HTMLDivElement constraintWarningMessage,
+                                       final HTMLButtonElement closeConstraintWarningMessage) {
         this.header = header;
         this.body = body;
         this.footer = footer;
@@ -202,12 +204,13 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     @Override
     public void onShow() {
         final HTMLSelectElement selectElement = (HTMLSelectElement) getSelectPicker();
+        final HTMLOptionsCollection options = getSelectOptionsElement();
         if (Objects.equals("Any", dataType.getType())) {
-            selectElement.options.getAt(1).disabled = true;
-            selectElement.options.getAt(3).disabled = true;
+            disableOptionElement(options.getAt(1));
+            disableOptionElement(options.getAt(3));
         } else {
-            selectElement.options.getAt(1).disabled = false;
-            selectElement.options.getAt(3).disabled = false;
+            enableOptionElement(options.getAt(1));
+            enableOptionElement(options.getAt(3));
         }
 
         triggerPickerAction(selectElement, "refresh");
@@ -268,9 +271,21 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
         return body.querySelector(".selectpicker");
     }
 
+    HTMLOptionsCollection getSelectOptionsElement() {
+        return ((HTMLSelectElement) getSelectPicker()).options;
+    }
+
     void triggerPickerAction(final Element element,
                              final String method) {
         JQuerySelectPicker.$(element).selectpicker(method);
+    }
+
+    void disableOptionElement(final HTMLOptionElement htmlOptionElement) {
+        htmlOptionElement.disabled = true;
+    }
+
+    void enableOptionElement(final HTMLOptionElement htmlOptionElement) {
+        htmlOptionElement.disabled = false;
     }
 
     /**

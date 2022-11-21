@@ -106,7 +106,7 @@ public class DataTypeConstraint {
     }
 
     void openModal() {
-        constraintModal().load(listItem.getDataType(), getListItem().getType(), getValue(), getConstraintType());
+        constraintModal().load(getListItem());
         constraintModal().show(getOnShowConsumer());
     }
 

@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
@@ -145,18 +147,26 @@ public class DataTypeConstraintModalTest {
     public void testLoadWhenConstraintTypeIsNone() {
 
         final String expectedConstraintValueType = "string";
-        final String expectedConstraintValue = "1,2,3";
+        final String expectedConstraintValue = "[1..3]";
         final ConstraintType expectedConstraintType = RANGE;
+
+        final DataType expectedDataType = mock(DataType.class);
+        doReturn(expectedConstraintValue).when(expectedDataType).getConstraint();
+        doReturn(expectedConstraintType).when(expectedDataType).getConstraintType();
+
+        final DataTypeListItem dataTypeListItem = mock(DataTypeListItem.class);
+        doReturn(expectedDataType).when(dataTypeListItem).getDataType();
+        doReturn(expectedConstraintValueType).when(dataTypeListItem).getType();
 
         doReturn(expectedConstraintType).when(modal).inferComponentType(expectedConstraintValue);
 
-//        modal.load(expectedConstraintValueType, expectedConstraintValue, NONE);
+        modal.load(dataTypeListItem);
 
         final String actualConstraintValueType = modal.getConstraintValueType();
         final String actualConstraintValue = modal.getConstraintValue();
         final ConstraintType actualConstraintType = modal.getConstraintType();
 
-//        verify(modal).prepareView();
+        verify(modal).prepareView();
         assertEquals(expectedConstraintValueType, actualConstraintValueType);
         assertEquals(expectedConstraintValue, actualConstraintValue);
         assertEquals(expectedConstraintType, actualConstraintType);
@@ -169,13 +179,21 @@ public class DataTypeConstraintModalTest {
         final String expectedConstraintValue = "1,2,3";
         final ConstraintType expectedConstraintType = ENUMERATION;
 
-//        modal.load(expectedConstraintValueType, expectedConstraintValue, expectedConstraintType);
+        final DataType expectedDataType = mock(DataType.class);
+        doReturn(expectedConstraintValue).when(expectedDataType).getConstraint();
+        doReturn(expectedConstraintType).when(expectedDataType).getConstraintType();
+
+        final DataTypeListItem dataTypeListItem = mock(DataTypeListItem.class);
+        doReturn(expectedDataType).when(dataTypeListItem).getDataType();
+        doReturn(expectedConstraintValueType).when(dataTypeListItem).getType();
+
+        modal.load(dataTypeListItem);
 
         final String actualConstraintValueType = modal.getConstraintValueType();
         final String actualConstraintValue = modal.getConstraintValue();
         final ConstraintType actualConstraintType = modal.getConstraintType();
 
-//        verify(modal).prepareView();
+        verify(modal).prepareView();
         assertEquals(expectedConstraintValueType, actualConstraintValueType);
         assertEquals(expectedConstraintValue, actualConstraintValue);
         assertEquals(expectedConstraintType, actualConstraintType);
@@ -191,7 +209,7 @@ public class DataTypeConstraintModalTest {
         doReturn(ENUMERATION).when(modal).getConstraintType();
         doReturn(constraint).when(modal).getConstraintValue();
 
-//        modal.prepareView();
+        modal.prepareView();
 
         verify(view).setType(type);
         verify(view).loadComponent(ENUMERATION);
@@ -206,7 +224,7 @@ public class DataTypeConstraintModalTest {
         doReturn(type).when(modal).getConstraintValueType();
         doReturn(constraint).when(modal).getConstraintValue();
 
-//        modal.prepareView();
+        modal.prepareView();
 
         verify(view).setType(type);
         verify(view).setupEmptyContainer();
