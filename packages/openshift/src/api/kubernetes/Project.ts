@@ -18,12 +18,12 @@ import { baseEndpoint, KubernetesApiVersions } from "../ApiConstants";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { ResourceFetch } from "../../fetch/ResourceFetch";
 
-export class GetNamespace extends ResourceFetch {
+export class GetProject extends ResourceFetch {
   public method(): HttpMethod {
     return HttpMethod.GET;
   }
 
   public endpoint(): string {
-    return `/${baseEndpoint(KubernetesApiVersions.SERVICE)}/namespaces/${this.args.namespace}`;
+    return `/${baseEndpoint(KubernetesApiVersions.PROJECT)}/projects/${this.args.namespace}`;
   }
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { GetKnativeService } from "../api/knative/KnativeService";
-import { KnativeServiceDescriptor } from "../api/types";
+import { GetKNativeService } from "../api/knative/KNativeService";
+import { KNativeServiceDescriptor } from "../api/types";
 import { ResourceFetcher } from "../fetch/ResourceFetcher";
 
-export class KnativeService {
+export class KNativeService {
   constructor(private readonly args: { fetcher: ResourceFetcher; namespace: string }) {}
 
   public async getDeploymentRoute(resourceName: string): Promise<string | undefined> {
     try {
-      const knService = await this.args.fetcher.execute<KnativeServiceDescriptor>({
-        target: new GetKnativeService({ namespace: this.args.namespace, resourceName }),
+      const knService = await this.args.fetcher.execute<KNativeServiceDescriptor>({
+        target: new GetKNativeService({ namespace: this.args.namespace, resourceName }),
       });
 
       return knService.status?.url;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { GetNamespace } from "../api/kubernetes/Namespace";
+import { GetProject } from "../api/kubernetes/Project";
 import { Resource } from "../api/types";
 import { ResourceFetcher } from "../fetch/ResourceFetcher";
-import { KnativeService as KnativeService } from "./KnativeService";
+import { KNativeService } from "./KNativeService";
 import { KubernetesService } from "./KubernetesService";
 import { isOpenShiftConnectionValid, OpenShiftConnection } from "./OpenShiftConnection";
 
@@ -28,20 +28,20 @@ export interface OpenShiftServiceArgs {
 
 export class OpenShiftService {
   private readonly kubernetesService: KubernetesService;
-  private readonly knativeService: KnativeService;
+  private readonly knativeService: KNativeService;
   private readonly fetcher: ResourceFetcher;
 
   constructor(private readonly args: OpenShiftServiceArgs) {
     this.fetcher = new ResourceFetcher({ proxyUrl: args.proxyUrl, connection: this.args.connection });
     this.kubernetesService = new KubernetesService({ fetcher: this.fetcher, namespace: args.connection.namespace });
-    this.knativeService = new KnativeService({ fetcher: this.fetcher, namespace: args.connection.namespace });
+    this.knativeService = new KNativeService({ fetcher: this.fetcher, namespace: args.connection.namespace });
   }
 
   public get kubernetes(): KubernetesService {
     return this.kubernetesService;
   }
 
-  public get knative(): KnativeService {
+  public get knative(): KNativeService {
     return this.knativeService;
   }
 
@@ -56,7 +56,7 @@ export class OpenShiftService {
   public async isConnectionEstablished(connection: OpenShiftConnection): Promise<boolean> {
     try {
       const testConnectionFetcher = new ResourceFetcher({ connection, proxyUrl: this.args.proxyUrl });
-      await testConnectionFetcher.execute({ target: new GetNamespace({ namespace: connection.namespace }) });
+      await testConnectionFetcher.execute({ target: new GetProject({ namespace: connection.namespace }) });
 
       return true;
     } catch (error) {

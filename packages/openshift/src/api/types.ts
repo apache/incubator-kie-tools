@@ -23,14 +23,14 @@ export type KubernetesKind =
   | "ImageStream"
   | "ImageStreamTag"
   | "Pod"
-  | "Namespace"
+  | "Project"
   | "Secret"
   | "Service"
   | "Route";
 
-export type KnativeKind = "KafkaSource" | "Service";
+export type KNativeKind = "KafkaSource" | "Service";
 
-export type ResourceKind = KubernetesKind | KnativeKind;
+export type ResourceKind = KubernetesKind | KNativeKind;
 
 export type IpProtocol = "TCP" | "UDP" | "SCTP";
 
@@ -186,9 +186,9 @@ export interface ImageStreamDescriptor extends ResourceDescriptor {
   spec: ImageStreamSpec;
 }
 
-// Namespace
+// Project
 
-export interface NamespaceDescriptor extends ResourceDescriptor {
+export interface ProjectDescriptor extends ResourceDescriptor {
   // Empty on purpose
 }
 
@@ -284,17 +284,17 @@ export interface KafkaSourceDescriptor extends ResourceDescriptor {
   spec: KafkaSourceSpec;
 }
 
-// KnativeService
+// KNativeService
 
-export interface KnativeServiceSpec {
+export interface KNativeServiceSpec {
   template: PodTemplate;
 }
 
-export interface KnativeServiceDescriptor extends ResourceDescriptor {
-  spec: KnativeServiceSpec;
+export interface KNativeServiceDescriptor extends ResourceDescriptor {
+  spec: KNativeServiceSpec;
   status?: {
     url: string;
   };
 }
 
-export type KnativeServiceGroupDescriptor = ResourceGroupDescriptor<KnativeServiceDescriptor>;
+export type KNativeServiceGroupDescriptor = ResourceGroupDescriptor<KNativeServiceDescriptor>;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { baseEndpoint, KnativeApiVersions } from "../ApiConstants";
+import { baseEndpoint, KNativeApiVersions } from "../ApiConstants";
 import { KAFKA_SOURCE_TEMPLATE } from "../../template/ResourceTemplates";
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { KafkaSourceDescriptor } from "../types";
@@ -37,7 +37,7 @@ export class CreateKafkaSource extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/${baseEndpoint(KnativeApiVersions.KAFKA_SOURCE)}/namespaces/${this.args.namespace}/kafkasources`;
+    return `/${baseEndpoint(KNativeApiVersions.KAFKA_SOURCE)}/namespaces/${this.args.namespace}/kafkasources`;
   }
 }
 
@@ -51,7 +51,7 @@ export class DeleteKafkaSource extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/${baseEndpoint(KnativeApiVersions.KAFKA_SOURCE)}/namespaces/${this.args.namespace}/kafkasources/${
+    return `/${baseEndpoint(KNativeApiVersions.KAFKA_SOURCE)}/namespaces/${this.args.namespace}/kafkasources/${
       this.args.resourceName
     }`;
   }

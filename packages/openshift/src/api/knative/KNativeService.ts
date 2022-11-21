@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { baseEndpoint, KnativeApiVersions } from "../ApiConstants";
+import { baseEndpoint, KNativeApiVersions } from "../ApiConstants";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import {
   CreateResourceFetchArgs,
@@ -23,12 +23,12 @@ import {
   UniqueResourceFetchArgs,
 } from "../../fetch/ResourceFetch";
 import { KNATIVE_SERVICE_TEMPLATE } from "../../template/ResourceTemplates";
-import { KnativeServiceDescriptor } from "../types";
-import { CreateKnativeServiceArgs } from "../../template/types";
+import { KNativeServiceDescriptor } from "../types";
+import { CreateKNativeServiceArgs } from "../../template/types";
 
-export class CreateKnativeService extends ResourceFetch {
+export class CreateKNativeService extends ResourceFetch {
   constructor(
-    protected args: CreateResourceFetchArgs & CreateKnativeServiceArgs & { descriptor?: KnativeServiceDescriptor }
+    protected args: CreateResourceFetchArgs & CreateKNativeServiceArgs & { descriptor?: KNativeServiceDescriptor }
   ) {
     super(args);
   }
@@ -42,11 +42,11 @@ export class CreateKnativeService extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/${baseEndpoint(KnativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services`;
+    return `/${baseEndpoint(KNativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services`;
   }
 }
 
-export class ListKnativeServices extends ResourceFetch {
+export class ListKNativeServices extends ResourceFetch {
   constructor(protected args: ResourceFetchArgs & { labelSelector?: string }) {
     super(args);
   }
@@ -57,11 +57,11 @@ export class ListKnativeServices extends ResourceFetch {
 
   public endpoint(): string {
     const selector = this.args.labelSelector ? `?labelSelector=${this.args.labelSelector}` : "";
-    return `/${baseEndpoint(KnativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services${selector}`;
+    return `/${baseEndpoint(KNativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services${selector}`;
   }
 }
 
-export class DeleteKnativeService extends ResourceFetch {
+export class DeleteKNativeService extends ResourceFetch {
   constructor(protected args: UniqueResourceFetchArgs) {
     super(args);
   }
@@ -71,13 +71,13 @@ export class DeleteKnativeService extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/${baseEndpoint(KnativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services/${
+    return `/${baseEndpoint(KNativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services/${
       this.args.resourceName
     }`;
   }
 }
 
-export class GetKnativeService extends ResourceFetch {
+export class GetKNativeService extends ResourceFetch {
   constructor(protected args: UniqueResourceFetchArgs) {
     super(args);
   }
@@ -87,7 +87,7 @@ export class GetKnativeService extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/${baseEndpoint(KnativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services/${
+    return `/${baseEndpoint(KNativeApiVersions.SERVICE)}/namespaces/${this.args.namespace}/services/${
       this.args.resourceName
     }`;
   }
