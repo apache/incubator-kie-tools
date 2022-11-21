@@ -76,247 +76,7 @@ export const DASHBOARD_SCHEMA = {
           type: "string",
         },
         settings: {
-          type: "object",
-          properties: {
-            dataSetLookup: {
-              $ref: "#/definitions/DataSetLookup",
-            },
-            filter: {
-              $ref: "#/definitions/SettingsFilter",
-            },
-            refresh: {
-              type: "object",
-              properties: {
-                interval: {
-                  type: "string",
-                },
-              },
-            },
-            selector: {
-              type: "object",
-              properties: {
-                multiple: {
-                  type: "boolean",
-                },
-                inputs_show: {
-                  type: "boolean",
-                },
-              },
-            },
-            echarts: {
-              type: "string",
-            },
-            general: {
-              type: "object",
-              properties: {
-                title: {
-                  type: "string",
-                },
-                visible: {
-                  type: "boolean",
-                },
-              },
-              required: ["title", "visible"],
-            },
-            columns: {
-              type: "array",
-              items: {
-                $ref: "#/definitions/SettingsColumn",
-              },
-            },
-            table: {
-              $ref: "#/definitions/SettingsTable",
-            },
-            html: {
-              type: "string",
-            },
-            javascript: {
-              type: "string",
-            },
-            map: {
-              type: "object",
-              properties: {
-                color_scheme: {
-                  $ref: "#/definitions/MapColorScheme",
-                },
-              },
-            },
-            meter: {
-              $ref: "#/definitions/MeterTypes",
-            },
-            component: {
-              oneOf: [
-                {
-                  type: "string",
-                },
-                {
-                  $ref: "#/definitions/SettingsComponent",
-                },
-              ],
-            },
-            external: {
-              $ref: "#/definitions/SettingsExternal",
-            },
-            axis: {
-              type: "object",
-              properties: {
-                x: {
-                  type: "object",
-                  properties: {
-                    labels_show: {
-                      type: "boolean",
-                    },
-                    title: {
-                      type: "string",
-                    },
-                    labels_angle: {
-                      type: "string",
-                    },
-                  },
-                  required: ["labels_show", "title", "labels_angle"],
-                },
-                y: {
-                  type: "object",
-                  properties: {
-                    labels_show: {
-                      type: "boolean",
-                    },
-                    title: {
-                      type: "string",
-                    },
-                    labels_angle: {
-                      type: "string",
-                    },
-                  },
-                  required: ["labels_show", "title", "labels_angle"],
-                },
-              },
-            },
-            type: {
-              oneOf: [
-                {
-                  $ref: "#/definitions/ChartType",
-                },
-                {
-                  type: "string",
-                  enum: ["SELECTOR"],
-                },
-                {
-                  type: "string",
-                  enum: ["METRIC"],
-                },
-                {
-                  type: "string",
-                  enum: ["METERCHART"],
-                },
-                {
-                  type: "string",
-                  enum: ["MAP"],
-                },
-              ],
-            },
-            chart: {
-              $ref: "#/definitions/ChartProperties",
-            },
-          },
-          allOf: [
-            {
-              if: {
-                properties: {
-                  type: {
-                    const: "BARCHART",
-                  },
-                },
-              },
-              then: {
-                properties: {
-                  subtype: {
-                    $ref: "#/definitions/BarChartTypes",
-                  },
-                },
-              },
-            },
-            {
-              if: {
-                properties: {
-                  type: {
-                    const: "LINECHART",
-                  },
-                },
-              },
-              then: {
-                properties: {
-                  subtype: {
-                    $ref: "#/definitions/LineChartTypes",
-                  },
-                },
-              },
-            },
-            {
-              if: {
-                properties: {
-                  type: {
-                    const: "AREACHART",
-                  },
-                },
-              },
-              then: {
-                properties: {
-                  subtype: {
-                    $ref: "#/definitions/AreaChartTypes",
-                  },
-                },
-              },
-            },
-            {
-              if: {
-                properties: {
-                  type: {
-                    const: "PIECHART",
-                  },
-                },
-              },
-              then: {
-                properties: {
-                  subtype: {
-                    $ref: "#/definitions/PieChartTypes",
-                  },
-                },
-              },
-            },
-            {
-              if: {
-                properties: {
-                  type: {
-                    const: "SELECTOR",
-                  },
-                },
-              },
-              then: {
-                properties: {
-                  subtype: {
-                    $ref: "#/definitions/SelectorTypes",
-                  },
-                },
-              },
-            },
-            {
-              if: {
-                properties: {
-                  type: {
-                    const: "MAP",
-                  },
-                },
-              },
-              then: {
-                properties: {
-                  subtype: {
-                    $ref: "#/definitions/MapTypes",
-                  },
-                },
-              },
-            },
-          ],
+          $ref: "#/definitions/DisplayerSettings",
         },
       },
       title: "PageComponent",
@@ -371,6 +131,9 @@ export const DASHBOARD_SCHEMA = {
         },
         type: {
           $ref: "#/definitions/NavComponentTypes",
+        },
+        settings: {
+          $ref: "#/definitions/DisplayerSettings",
         },
       },
       title: "ColumnComponent",
@@ -813,6 +576,249 @@ export const DASHBOARD_SCHEMA = {
         type: "string",
       },
     },
+    DisplayerSettings: {
+      type: "object",
+      properties: {
+        dataSetLookup: {
+          $ref: "#/definitions/DataSetLookup",
+        },
+        filter: {
+          $ref: "#/definitions/SettingsFilter",
+        },
+        refresh: {
+          type: "object",
+          properties: {
+            interval: {
+              type: "string",
+            },
+          },
+        },
+        selector: {
+          type: "object",
+          properties: {
+            multiple: {
+              type: "boolean",
+            },
+            inputs_show: {
+              type: "boolean",
+            },
+          },
+        },
+        echarts: {
+          type: "string",
+        },
+        general: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+            },
+            visible: {
+              type: "boolean",
+            },
+          },
+          required: ["title", "visible"],
+        },
+        columns: {
+          type: "array",
+          items: {
+            $ref: "#/definitions/SettingsColumn",
+          },
+        },
+        table: {
+          $ref: "#/definitions/SettingsTable",
+        },
+        html: {
+          type: "string",
+        },
+        javascript: {
+          type: "string",
+        },
+        map: {
+          type: "object",
+          properties: {
+            color_scheme: {
+              $ref: "#/definitions/MapColorScheme",
+            },
+          },
+        },
+        meter: {
+          $ref: "#/definitions/MeterTypes",
+        },
+        component: {
+          oneOf: [
+            {
+              type: "string",
+            },
+            {
+              $ref: "#/definitions/SettingsComponent",
+            },
+          ],
+        },
+        external: {
+          $ref: "#/definitions/SettingsExternal",
+        },
+        axis: {
+          type: "object",
+          properties: {
+            x: {
+              type: "object",
+              properties: {
+                labels_show: {
+                  type: "boolean",
+                },
+                title: {
+                  type: "string",
+                },
+                labels_angle: {
+                  type: "string",
+                },
+              },
+              required: ["labels_show", "title", "labels_angle"],
+            },
+            y: {
+              type: "object",
+              properties: {
+                labels_show: {
+                  type: "boolean",
+                },
+                title: {
+                  type: "string",
+                },
+                labels_angle: {
+                  type: "string",
+                },
+              },
+              required: ["labels_show", "title", "labels_angle"],
+            },
+          },
+        },
+        type: {
+          oneOf: [
+            {
+              $ref: "#/definitions/ChartType",
+            },
+            {
+              type: "string",
+              enum: ["SELECTOR"],
+            },
+            {
+              type: "string",
+              enum: ["METRIC"],
+            },
+            {
+              type: "string",
+              enum: ["METERCHART"],
+            },
+            {
+              type: "string",
+              enum: ["MAP"],
+            },
+          ],
+        },
+        chart: {
+          $ref: "#/definitions/ChartProperties",
+        },
+      },
+      allOf: [
+        {
+          if: {
+            properties: {
+              type: {
+                const: "BARCHART",
+              },
+            },
+          },
+          then: {
+            properties: {
+              subtype: {
+                $ref: "#/definitions/BarChartTypes",
+              },
+            },
+          },
+        },
+        {
+          if: {
+            properties: {
+              type: {
+                const: "LINECHART",
+              },
+            },
+          },
+          then: {
+            properties: {
+              subtype: {
+                $ref: "#/definitions/LineChartTypes",
+              },
+            },
+          },
+        },
+        {
+          if: {
+            properties: {
+              type: {
+                const: "AREACHART",
+              },
+            },
+          },
+          then: {
+            properties: {
+              subtype: {
+                $ref: "#/definitions/AreaChartTypes",
+              },
+            },
+          },
+        },
+        {
+          if: {
+            properties: {
+              type: {
+                const: "PIECHART",
+              },
+            },
+          },
+          then: {
+            properties: {
+              subtype: {
+                $ref: "#/definitions/PieChartTypes",
+              },
+            },
+          },
+        },
+        {
+          if: {
+            properties: {
+              type: {
+                const: "SELECTOR",
+              },
+            },
+          },
+          then: {
+            properties: {
+              subtype: {
+                $ref: "#/definitions/SelectorTypes",
+              },
+            },
+          },
+        },
+        {
+          if: {
+            properties: {
+              type: {
+                const: "MAP",
+              },
+            },
+          },
+          then: {
+            properties: {
+              subtype: {
+                $ref: "#/definitions/MapTypes",
+              },
+            },
+          },
+        },
+      ],
+    },
     SettingsExternal: {
       type: "object",
       properties: {
@@ -861,8 +867,21 @@ export const DASHBOARD_SCHEMA = {
       title: "SelectorTypes",
     },
     MeterTypes: {
-      type: "string",
-      enum: ["start", "end", "critical", "warning"],
+      type: "object",
+      properties: {
+        start: {
+          type: "string",
+        },
+        end: {
+          type: "string",
+        },
+        critical: {
+          type: "string",
+        },
+        wawrning: {
+          type: "string",
+        },
+      },
     },
     MapColorScheme: {
       type: "string",
