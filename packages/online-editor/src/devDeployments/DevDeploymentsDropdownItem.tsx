@@ -137,9 +137,9 @@ export function DevDeploymentsDropdownItem(props: Props) {
     <Flex>
       <FlexItem grow={{ default: "grow" }} style={{ margin: "0" }}>
         <DropdownItem
-          id="dmn-dev-sandbox-deployment-item-button"
+          id="dev-deployments-deployment-item-button"
           isDisabled={isDisabled}
-          key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
+          key={`dev-deployments-dropdown-item-${props.id}`}
           onClick={onItemClicked}
           description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
           icon={stateIcon}
@@ -149,7 +149,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
       </FlexItem>
       <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
         <Button
-          className="kogito--editor__dmn-dev-sandbox-dropdown-item-delete"
+          className="kogito--editor__dev-deployments-dropdown-item-delete"
           style={{
             color: isDisabled ? "var(--pf-global--palette--black-300)" : "var(--pf-global--palette--black-500)",
           }}

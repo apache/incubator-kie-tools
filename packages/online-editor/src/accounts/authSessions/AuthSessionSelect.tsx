@@ -241,22 +241,45 @@ export function AuthSessionSelect(props: {
                   ];
                 }
 
-                return [
-                  <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
-                    <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                      <FlexItem>
-                        <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
-                        &nbsp;&nbsp;
-                        {authSession.login}
-                      </FlexItem>
-                      {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID && (
-                        <FlexItem style={{ zIndex: 99999 }}>
-                          <InvalidAuthSessionIcon />
+                if (authSession.type === "git") {
+                  return [
+                    <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
+                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                        <FlexItem>
+                          <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+                          &nbsp;&nbsp;
+                          {authSession.login}
                         </FlexItem>
-                      )}
-                    </Flex>
-                  </SelectOption>,
-                ];
+                        {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID && (
+                          <FlexItem style={{ zIndex: 99999 }}>
+                            <InvalidAuthSessionIcon />
+                          </FlexItem>
+                        )}
+                      </Flex>
+                    </SelectOption>,
+                  ];
+                }
+
+                if (authSession.type === "openshift") {
+                  return [
+                    <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
+                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                        <FlexItem>
+                          <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+                          &nbsp;&nbsp;
+                          {authSession.namespace}
+                        </FlexItem>
+                        {authSessionStatus.get(authSession.id) === AuthSessionStatus.INVALID && (
+                          <FlexItem style={{ zIndex: 99999 }}>
+                            <InvalidAuthSessionIcon />
+                          </FlexItem>
+                        )}
+                      </Flex>
+                    </SelectOption>,
+                  ];
+                }
+
+                return [];
               })
             ),
           ];

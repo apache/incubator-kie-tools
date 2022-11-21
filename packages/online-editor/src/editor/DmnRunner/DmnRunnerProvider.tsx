@@ -69,7 +69,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [isExpanded]);
 
   const service = useMemo(
-    () => new DmnRunnerService(settings.kieSandboxExtendedServices.config.buildUrl()),
+    () => new DmnRunnerService(settings.kieSandboxExtendedServices.config.url.jitExecutor),
     [settings.kieSandboxExtendedServices.config]
   );
 

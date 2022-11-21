@@ -185,7 +185,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
             <br />
             <Form className="pf-u-mt-md" onSubmit={(e) => e.preventDefault()}>
               <FormGroup
-                fieldId={"dmn-dev-sandbox-config-namespace"}
+                fieldId={"dev-deployments-config-namespace"}
                 label={i18n.terms.namespace}
                 validated={isNamespaceValidated ? "success" : "error"}
                 helperTextInvalid={i18n.devDeployments.common.requiredField}
@@ -253,7 +253,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
             <br />
             <Form className="pf-u-mt-md">
               <FormGroup
-                fieldId={"dmn-dev-sandbox-config-host"}
+                fieldId={"dev-deployments-config-host"}
                 label={i18n.terms.host}
                 validated={isHostValidated ? "success" : "error"}
                 helperTextInvalid={i18n.devDeployments.common.requiredField}
@@ -281,7 +281,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                 </InputGroup>
               </FormGroup>
               <FormGroup
-                fieldId={"dmn-dev-sandbox-config-token"}
+                fieldId={"dev-deployments-config-token"}
                 label={i18n.terms.token}
                 validated={isTokenValidated ? "success" : "error"}
                 helperTextInvalid={i18n.devDeployments.common.requiredField}
@@ -322,7 +322,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
         component: (
           <>
             {isConnectLoading && (
-              <div className="kogito--editor__dmn-dev-sandbox-wizard-loading-spinner">
+              <div className="kogito--editor__dev-deployments-wizard-loading-spinner">
                 <Spinner isSVG size="xl" />
               </div>
             )}
@@ -438,7 +438,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
             return (
               <>
                 <Button
-                  id="dmn-dev-sandbox-config-continue-editing-button"
+                  id="dev-deployments-config-continue-editing-button"
                   onClick={() => onFinish()}
                   isDisabled={!isConnectionValidated}
                   variant={ButtonVariant.primary}

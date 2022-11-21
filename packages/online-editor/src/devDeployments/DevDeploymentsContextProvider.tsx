@@ -26,6 +26,7 @@ import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
 
 interface Props {
   children: React.ReactNode;
@@ -197,5 +198,12 @@ export function DevDeploymentsContextProvider(props: Props) {
     ]
   );
 
-  return <DevDeploymentsContext.Provider value={value}>{props.children}</DevDeploymentsContext.Provider>;
+  return (
+    <DevDeploymentsContext.Provider value={value}>
+      <>
+        {props.children}
+        <DevDeploymentsConfirmDeleteModal />
+      </>
+    </DevDeploymentsContext.Provider>
+  );
 }

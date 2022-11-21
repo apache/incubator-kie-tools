@@ -34,9 +34,19 @@ export type GitAuthSession = {
   createdAtDateISO: string;
 };
 
+export type OpenShiftAuthSession = {
+  type: "openshift";
+  id: string;
+  authProviderId: string;
+  createdAtDateISO: string;
+  token: string;
+  namespace: string;
+  host?: string;
+};
+
 export enum AuthSessionStatus {
   VALID,
   INVALID,
 }
 
-export type AuthSession = GitAuthSession | NoneAuthSession;
+export type AuthSession = GitAuthSession | OpenShiftAuthSession | NoneAuthSession;

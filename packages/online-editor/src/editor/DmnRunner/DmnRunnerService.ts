@@ -32,10 +32,10 @@ export class DmnRunnerService {
   private readonly DMN_RUNNER_DMN_RESULT_URL: string;
   private readonly DMN_RUNNER_FORM_SCHEMA_URL: string;
 
-  constructor(private readonly baseUrl: string) {
-    this.DMN_RUNNER_VALIDATE_URL = `${this.baseUrl}/jitdmn/validate`;
-    this.DMN_RUNNER_DMN_RESULT_URL = `${this.baseUrl}/jitdmn/dmnresult`;
-    this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.baseUrl}/jitdmn/schema/form`;
+  constructor(private readonly jitExecutorUrl: string) {
+    this.DMN_RUNNER_VALIDATE_URL = `${this.jitExecutorUrl}/jitdmn/validate`;
+    this.DMN_RUNNER_DMN_RESULT_URL = `${this.jitExecutorUrl}/jitdmn/dmnresult`;
+    this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.jitExecutorUrl}/jitdmn/schema/form`;
   }
 
   public async result(payload: DmnRunnerModelPayload): Promise<DmnResult> {

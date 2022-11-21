@@ -101,7 +101,7 @@ import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select
 import {
   authSessionsSelectFilterCompatibleWithGistUrlDomain,
   authSessionsSelectFilterCompatibleWithGitUrlDomain,
-  noOpAuthSessionSelectFilter,
+  gitAuthSessionSelectFilter,
 } from "../accounts/authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
@@ -179,11 +179,11 @@ export function EditorToolbar(props: Props) {
 
   const authSessionSelectFilter = useMemo(() => {
     if (!workspacePromise.data) {
-      return noOpAuthSessionSelectFilter();
+      return gitAuthSessionSelectFilter();
     }
 
     if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.LOCAL) {
-      return noOpAuthSessionSelectFilter();
+      return gitAuthSessionSelectFilter();
     }
 
     if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.GIT) {
@@ -199,7 +199,7 @@ export function EditorToolbar(props: Props) {
       );
     }
 
-    return noOpAuthSessionSelectFilter();
+    return gitAuthSessionSelectFilter();
   }, [gitHubGist, workspacePromise.data]);
 
   const isSaved = useMemo(() => {

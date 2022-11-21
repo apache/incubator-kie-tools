@@ -48,7 +48,7 @@ export function ConnectToOpenShiftSection() {
     () =>
       new KieSandboxOpenShiftService({
         connection,
-        proxyUrl: `${extendedServices.config.buildUrl()}/devsandbox`,
+        proxyUrl: extendedServices.config.url.corsProxy,
       }),
     [connection, extendedServices.config]
   );
@@ -85,7 +85,7 @@ export function ConnectToOpenShiftSection() {
           </EmptyStateBody>
         </EmptyState>
       )}
-      {(status === OpenShiftInstanceStatus.DISCONNECTED || status === OpenShiftInstanceStatus.EXPIRED) && (
+      {status === OpenShiftInstanceStatus.DISCONNECTED && (
         <>
           {mode === OpenShiftSettingsTabMode.SIMPLE && (
             <ConnecToOpenShiftSimple

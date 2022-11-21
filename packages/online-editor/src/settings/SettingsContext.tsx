@@ -27,18 +27,23 @@ import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExt
 export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
 export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 const GUIDED_TOUR_ENABLED_COOKIE_NAME = "kie-tools-COOKIE__guided-tour--is-enabled";
-export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-namespace";
-export const OPENSHIFT_HOST_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-host";
-export const OPENSHIFT_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-token";
 
 export class ExtendedServicesConfig {
   constructor(public readonly host: string, public readonly port: string) {}
 
-  public buildUrl(): string {
+  private buildUrl(): string {
     if (this.port.trim().length === 0) {
       return this.host;
     }
     return `${this.host}:${this.port}`;
+  }
+
+  public get url() {
+    return {
+      jitExecutor: `${this.buildUrl()}/`,
+      ping: `${this.buildUrl()}/ping`,
+      corsProxy: `${this.buildUrl()}/cors-proxy`,
+    };
   }
 }
 

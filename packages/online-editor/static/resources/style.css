@@ -505,7 +505,7 @@
   align-items: center;
 }
 
-.kogito--editor__dmn-dev-sandbox-dropdown-item-delete:not(disabled):hover {
+.kogito--editor__dev-deployments-dropdown-item-delete:not(disabled):hover {
   color: var(--pf-global--palette--black-800) !important;
 }
 

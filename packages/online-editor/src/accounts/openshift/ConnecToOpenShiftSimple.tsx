@@ -36,12 +36,13 @@ import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
+import { useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
+import { v4 as uuid } from "uuid";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
   INVALID = "INVALID",
   CONNECTION_ERROR = "CONNECTION_ERROR",
-  CONFIG_EXPIRED = "CONFIG_EXPIRED",
 }
 
 export function ConnecToOpenShiftSimple(props: {
@@ -56,28 +57,7 @@ export function ConnecToOpenShiftSimple(props: {
   const extendedServices = useExtendedServices();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
-
-  useEffect(() => {
-    setConnectionValidated(
-      extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING &&
-        props.status === OpenShiftInstanceStatus.EXPIRED
-        ? FormValiationOptions.CONFIG_EXPIRED
-        : FormValiationOptions.INITIAL
-    );
-  }, [extendedServices.status, props.status]);
-
-  const resetConnection = useCallback(
-    (connection: OpenShiftConnection) => {
-      props.setConnection(EMPTY_OPENSHIFT_CONNECTION);
-      setConnectionValidated(
-        props.status === OpenShiftInstanceStatus.EXPIRED
-          ? FormValiationOptions.CONFIG_EXPIRED
-          : FormValiationOptions.INITIAL
-      );
-      setConnecting(false);
-    },
-    [props]
-  );
+  const authSessionsDispatch = useAuthSessionsDispatch();
 
   const onConnect = useCallback(async () => {
     if (isConnecting) {
@@ -91,21 +71,22 @@ export function ConnecToOpenShiftSimple(props: {
 
     setConnecting(true);
     const isConnectionEstablished = await props.openshiftService.isConnectionEstablished(props.connection);
-
-    if (isConnectionEstablished) {
-      props.setConnection(props.connection);
-      props.setStatus(OpenShiftInstanceStatus.CONNECTED);
-    }
-
     setConnecting(false);
 
-    if (!isConnectionEstablished) {
+    if (isConnectionEstablished) {
+      props.setStatus(OpenShiftInstanceStatus.CONNECTED);
+      authSessionsDispatch.add({
+        type: "openshift",
+        id: uuid(),
+        ...props.connection,
+        authProviderId: "openshift",
+        createdAtDateISO: new Date().toISOString(),
+      });
+    } else {
       setConnectionValidated(FormValiationOptions.CONNECTION_ERROR);
       return;
     }
-
-    resetConnection(props.connection);
-  }, [isConnecting, props, resetConnection]);
+  }, [authSessionsDispatch, isConnecting, props]);
 
   const onClearHost = useCallback(() => props.setConnection({ ...props.connection, host: "" }), [props]);
   const onClearNamespace = useCallback(() => props.setConnection({ ...props.connection, namespace: "" }), [props]);
@@ -176,24 +157,10 @@ export function ConnecToOpenShiftSimple(props: {
           <br />
         </>
       )}
-      {isConnectionValidated === FormValiationOptions.CONFIG_EXPIRED && (
-        <>
-          <FormAlert>
-            <Alert
-              variant="warning"
-              title={i18n.devDeployments.configModal.configExpiredWarning}
-              aria-live="polite"
-              isInline
-              data-testid="alert-config-expired-warning"
-            />
-          </FormAlert>
-          <br />
-        </>
-      )}
 
       <Button
         style={{ paddingLeft: 0 }}
-        id="dmn-dev-sandbox-config-use-wizard-button"
+        id="dev-deployments-config-use-wizard-button"
         key="use-wizard"
         className="pf-u-p-0"
         variant="link"
@@ -334,13 +301,13 @@ export function ConnecToOpenShiftSimple(props: {
         </FormGroup>
         <ActionGroup>
           <Button
-            id="dmn-dev-sandbox-config-save-button"
+            id="dev-deployments-config-save-button"
             key="save"
             variant="primary"
             onClick={onConnect}
             data-testid="save-config-button"
             isLoading={isConnecting}
-            isDisabled={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
+            isDisabled={isConnecting}
             spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
             {isConnecting ? "Connecting" : "Connect"}

@@ -30,7 +30,13 @@ export function AuthSessionLabel(props: { authSession: AuthSession }) {
       <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>
         <AuthProviderIcon authProvider={authProvider} size={IconSize.md} />
         <TextContent>
-          <Text component={TextVariants.h3}>{props.authSession.login}</Text>
+          <Text component={TextVariants.h3}>
+            {props.authSession.type === "git"
+              ? props.authSession.login
+              : props.authSession.type === "openshift"
+              ? props.authSession.namespace
+              : props.authSession.login}
+          </Text>
         </TextContent>
         {authProvider && (
           <TextContent>

@@ -83,24 +83,26 @@ export function authSessionsSelectFilterCompatibleWithGitUrlDomain(
   gitUrlDomain: string | undefined
 ): AuthSessionSelectFilter {
   if (!gitUrlDomain) {
-    return noOpAuthSessionSelectFilter();
+    return gitAuthSessionSelectFilter();
   }
 
   return (items) => {
-    const compatibleItemsWithUrl = items.map(({ authSession, authProvider, status }) => {
-      if (
-        isAuthSessionCompatibleWithUrlDomain({
-          authSession,
-          authProvider,
-          status,
-          urlDomain: gitUrlDomain,
-        })
-      ) {
-        return { authSession, authProvider, groupLabel: "Compatible" };
-      } else {
-        return { authSession, authProvider: authProvider!, groupLabel: "Other" };
-      }
-    });
+    const compatibleItemsWithUrl = items
+      .filter(({ authSession }) => authSession.type === "git" || authSession.type === "none")
+      .map(({ authSession, authProvider, status }) => {
+        if (
+          isAuthSessionCompatibleWithUrlDomain({
+            authSession,
+            authProvider,
+            status,
+            urlDomain: gitUrlDomain,
+          })
+        ) {
+          return { authSession, authProvider, groupLabel: "Compatible" };
+        } else {
+          return { authSession, authProvider: authProvider!, groupLabel: "Other" };
+        }
+      });
 
     return {
       items: compatibleItemsWithUrl,
@@ -117,25 +119,28 @@ export function authSessionsSelectFilterCompatibleWithGistUrlDomain(
   gistOwner: string | undefined
 ): AuthSessionSelectFilter {
   if (!gitUrlDomain) {
-    return noOpAuthSessionSelectFilter();
+    return gitAuthSessionSelectFilter();
   }
 
   return (items) => {
-    const compatibleItemsWithUrl = items.map(({ authSession, authProvider, status }) => {
-      if (
-        isAuthSessionCompatibleWithUrlDomain({
-          authSession,
-          authProvider,
-          status,
-          urlDomain: gitUrlDomain,
-        }) &&
-        gistOwner === authSession.login
-      ) {
-        return { authSession, authProvider, groupLabel: "Compatible" };
-      } else {
-        return { authSession, authProvider: authProvider!, groupLabel: "Other" };
-      }
-    });
+    const compatibleItemsWithUrl = items
+      .filter(({ authSession }) => authSession.type === "git" || authSession.type === "none")
+      .map(({ authSession, authProvider, status }) => {
+        if (
+          authSession.type === "git" &&
+          isAuthSessionCompatibleWithUrlDomain({
+            authSession,
+            authProvider,
+            status,
+            urlDomain: gitUrlDomain,
+          }) &&
+          gistOwner === authSession.login
+        ) {
+          return { authSession, authProvider, groupLabel: "Compatible" };
+        } else {
+          return { authSession, authProvider: authProvider!, groupLabel: "Other" };
+        }
+      });
 
     return {
       items: compatibleItemsWithUrl,
@@ -155,5 +160,18 @@ export function noOpAuthSessionSelectFilter(): AuthSessionSelectFilter {
       authProvider,
       groupLabel: "Same",
     })),
+  });
+}
+
+export function gitAuthSessionSelectFilter(): AuthSessionSelectFilter {
+  return (items) => ({
+    groups: [{ label: "Same", hidden: false }],
+    items: items
+      .filter(({ authSession }) => authSession.type === "git" || authSession.type === "none")
+      .map(({ authSession, authProvider }) => ({
+        authSession,
+        authProvider,
+        groupLabel: "Same",
+      })),
   });
 }

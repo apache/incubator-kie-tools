@@ -418,6 +418,13 @@ export function useImportableUrlValidation(
       };
     }
 
+    if (authSession?.type !== "git") {
+      return {
+        option: ValidatedOptions.error,
+        helperTextInvalid: `Incompatible AuthSession type '${authSession?.type}'.`,
+      };
+    }
+
     return {
       option: ValidatedOptions.success,
       helperText: (
@@ -457,7 +464,7 @@ export function useImportableUrlValidation(
     clonableUrl.clonableUrl.error,
     gitRefName,
     authProvider,
-    authSession?.login,
+    authSession,
     advancedImportModalRef,
   ]);
 }

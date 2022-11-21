@@ -40,7 +40,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { AuthSession, AuthSessionStatus } from "./AuthSessionApi";
+import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 
@@ -136,17 +136,41 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
 
 export function AuthSessionDescriptionList(props: { authSession: AuthSession; usages?: WorkspaceDescriptor[] }) {
   return (
-    <DescriptionList isHorizontal={true} isCompact={true} isFluid={true}>
-      <DescriptionListGroup>
-        <DescriptionListTerm>Login</DescriptionListTerm>
-        <DescriptionListDescription>{props.authSession.login}</DescriptionListDescription>
-      </DescriptionListGroup>
-      <DescriptionListGroup>
-        <DescriptionListTerm>Name</DescriptionListTerm>
-        <DescriptionListDescription>{props.authSession.name ?? <Empty />}</DescriptionListDescription>
-      </DescriptionListGroup>
-      {props.authSession.type === "git" && (
+    <>
+      {props.authSession.type === "openshift" && (
         <>
+          <DescriptionList isHorizontal={true} isCompact={true} isFluid={true}>
+            <DescriptionListGroup>
+              <DescriptionListTerm>Namespace</DescriptionListTerm>
+              <DescriptionListDescription>{props.authSession.namespace}</DescriptionListDescription>
+            </DescriptionListGroup>
+            <>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Host</DescriptionListTerm>
+                <DescriptionListDescription>{props.authSession.host ?? <Empty />}</DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Token</DescriptionListTerm>
+                <DescriptionListDescription>{obfuscate(props.authSession.token)}</DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Created at</DescriptionListTerm>
+                <DescriptionListDescription>{props.authSession.createdAtDateISO}</DescriptionListDescription>
+              </DescriptionListGroup>
+            </>
+          </DescriptionList>
+        </>
+      )}
+      {props.authSession.type === "git" && (
+        <DescriptionList isHorizontal={true} isCompact={true} isFluid={true}>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Login</DescriptionListTerm>
+            <DescriptionListDescription>{props.authSession.login}</DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Name</DescriptionListTerm>
+            <DescriptionListDescription>{props.authSession.name ?? <Empty />}</DescriptionListDescription>
+          </DescriptionListGroup>
           <DescriptionListGroup>
             <DescriptionListTerm>Email</DescriptionListTerm>
             <DescriptionListDescription>{props.authSession.email ?? <Empty />}</DescriptionListDescription>
@@ -159,17 +183,17 @@ export function AuthSessionDescriptionList(props: { authSession: AuthSession; us
             <DescriptionListTerm>Created at</DescriptionListTerm>
             <DescriptionListDescription>{props.authSession.createdAtDateISO}</DescriptionListDescription>
           </DescriptionListGroup>
-        </>
+          {props.usages && (
+            <>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Usages</DescriptionListTerm>
+                <DescriptionListDescription>{props.usages.length}</DescriptionListDescription>
+              </DescriptionListGroup>
+            </>
+          )}
+        </DescriptionList>
       )}
-      {props.usages && (
-        <>
-          <DescriptionListGroup>
-            <DescriptionListTerm>Usages</DescriptionListTerm>
-            <DescriptionListDescription>{props.usages.length}</DescriptionListDescription>
-          </DescriptionListGroup>
-        </>
-      )}
-    </DescriptionList>
+    </>
   );
 }
 
