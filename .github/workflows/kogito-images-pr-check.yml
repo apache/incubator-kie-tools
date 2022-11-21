@@ -35,9 +35,12 @@ jobs:
         run: |
           chmod +x openshift-template-validator-linux-amd64
           mv openshift-template-validator-linux-amd64 ${HOME} 	
-      - name: validate imagestream
+      - name: validate kogito imagestream
         run: |
           ${HOME}/openshift-template-validator-linux-amd64 validate -f kogito-imagestream.yaml
+      - name: validate logic imagestream
+        run: |
+          ${HOME}/openshift-template-validator-linux-amd64 validate -f logic-imagestream.yaml
 
   shellcheck:
     name: ShellCheck
