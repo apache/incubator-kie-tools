@@ -26,6 +26,10 @@ import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../i18n";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { useDevDeployments } from "./DevDeploymentsContext";
 
 interface Props {
   id: number;
@@ -34,6 +38,7 @@ interface Props {
 
 export function DevDeploymentsDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
+  const devDeployments = useDevDeployments();
 
   const deploymentName = useMemo(() => {
     const maxSize = 30;
@@ -121,16 +126,40 @@ export function DevDeploymentsDropdownItem(props: Props) {
     window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
   }, [props.deployment.routeUrl, props.deployment.uri]);
 
+  const onDelete = useCallback(() => {
+    devDeployments.setDeploymentsToBeDeleted((prevValue) => [...prevValue, props.deployment.resourceName]);
+    devDeployments.setConfirmDeleteModalOpen(true);
+  }, [devDeployments, props.deployment.resourceName]);
+
+  const isDisabled = useMemo(() => props.deployment.state !== OpenShiftDeploymentState.UP, [props.deployment.state]);
+
   return (
-    <DropdownItem
-      id="dmn-dev-deployment-item-button"
-      isDisabled={props.deployment.state !== OpenShiftDeploymentState.UP}
-      key={`dmn-dev-deployment-dropdown-item-${props.id}`}
-      onClick={onItemClicked}
-      description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
-      icon={stateIcon}
-    >
-      {deploymentName}
-    </DropdownItem>
+    <Flex>
+      <FlexItem grow={{ default: "grow" }} style={{ margin: "0" }}>
+        <DropdownItem
+          id="dmn-dev-sandbox-deployment-item-button"
+          isDisabled={isDisabled}
+          key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
+          onClick={onItemClicked}
+          description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
+          icon={stateIcon}
+        >
+          {deploymentName}
+        </DropdownItem>
+      </FlexItem>
+      <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+        <Button
+          className="kogito--editor__dmn-dev-sandbox-dropdown-item-delete"
+          style={{
+            color: isDisabled ? "var(--pf-global--palette--black-300)" : "var(--pf-global--palette--black-500)",
+          }}
+          variant={ButtonVariant.link}
+          isDanger={true}
+          onClick={onDelete}
+          icon={<TrashIcon />}
+          isDisabled={isDisabled}
+        />
+      </FlexItem>
+    </Flex>
   );
 }

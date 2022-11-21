@@ -3774,6 +3774,7 @@ importers:
       "@types/history": ^4.7.3
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
+      "@types/minimatch": ^3.0.4
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
@@ -3793,6 +3794,7 @@ importers:
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
       jszip: ^3.7.1
+      minimatch: ^3.0.4
       moment: ^2.29.4
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -3872,6 +3874,7 @@ importers:
       "@types/history": 4.7.5
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
+      "@types/minimatch": 3.0.4
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
@@ -3885,6 +3888,7 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
+      minimatch: 3.0.5
       monaco-editor-webpack-plugin: 7.0.1_eodoae2vto4nf5xogfjxixxxnq
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
@@ -14466,7 +14470,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -28858,7 +28862,8 @@ packages:
     dev: true
 
   /webidl-conversions/3.0.1:
-    resolution: { integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE= }
+    resolution:
+      { integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ== }
 
   /webidl-conversions/5.0.0:
     resolution:
@@ -29352,7 +29357,8 @@ packages:
     dev: true
 
   /whatwg-url/5.0.0:
-    resolution: { integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0= }
+    resolution:
+      { integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw== }
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1

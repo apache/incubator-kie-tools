@@ -14,11 +14,5 @@
  * limitations under the License.
  */
 
-package kogito
-
-func Systray(port int, jitexecutor []byte, insecureSkipVerify bool) {
-	proxy := NewProxy(port, jitexecutor, insecureSkipVerify)
-	proxy.view = &KogitoSystray{}
-	proxy.view.controller = proxy
-	proxy.view.Run()
-}
+export * from "./Alerts";
+export * from "./GlobalAlertsContext";

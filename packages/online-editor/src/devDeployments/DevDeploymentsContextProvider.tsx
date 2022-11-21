@@ -44,6 +44,8 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as KieSandboxOpenShiftDeployedModel[]);
+  const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  const [deploymentsToBeDeleted, setDeploymentsToBeDeleted] = useState<string[]>([]);
 
   const onDisconnect = useCallback((closeModals: boolean) => {
     setDropdownOpen(false);
@@ -52,6 +54,35 @@ export function DevDeploymentsContextProvider(props: Props) {
     if (closeModals) {
       setConfirmDeployModalOpen(false);
     }
+  }, []);
+
+  const deleteDeployment = useCallback(async (resourceName: string) => {
+    //   try {
+    //     await settingsDispatch.openshift.service.deleteDeployment(resourceName);
+    //     return true;
+    //   } catch (error) {
+    //     console.error(error);
+    //     return false;
+    //   }
+    return false;
+  }, []);
+
+  const deleteDeployments = useCallback(async () => {
+    // const result = await Promise.all(deploymentsToBeDeleted.map((resourceName) => deleteDeployment(resourceName)));
+    // setDeploymentsToBeDeleted([]);
+    // return result.every(Boolean);
+    return false;
+  }, []);
+
+  const loadDeployments = useCallback(async (errCallback?: () => void) => {
+    // return settingsDispatch.openshift.service
+    //   .loadDeployments()
+    //   .then((deployments) => setDeployments(deployments))
+    //   .catch((error) => {
+    //     setDeployments([]);
+    //     errCallback?.();
+    //     console.error(error);
+    //   });
   }, []);
 
   const deploy = useCallback(async (workspaceFile: WorkspaceFile) => {
@@ -139,13 +170,31 @@ export function DevDeploymentsContextProvider(props: Props) {
       isDropdownOpen,
       isDeploymentsDropdownOpen,
       isConfirmDeployModalOpen,
+      isConfirmDeleteModalOpen,
+      deploymentsToBeDeleted,
       setDeployments,
       setDropdownOpen,
       setConfirmDeployModalOpen,
+      setConfirmDeleteModalOpen,
       setDeploymentsDropdownOpen,
+      setDeploymentsToBeDeleted,
       deploy,
+      deleteDeployment,
+      deleteDeployments,
+      loadDeployments,
     }),
-    [deploy, deployments, isConfirmDeployModalOpen, isDeploymentsDropdownOpen, isDropdownOpen]
+    [
+      deployments,
+      isDropdownOpen,
+      isDeploymentsDropdownOpen,
+      isConfirmDeployModalOpen,
+      isConfirmDeleteModalOpen,
+      deploymentsToBeDeleted,
+      deploy,
+      deleteDeployment,
+      deleteDeployments,
+      loadDeployments,
+    ]
   );
 
   return <DevDeploymentsContext.Provider value={value}>{props.children}</DevDeploymentsContext.Provider>;

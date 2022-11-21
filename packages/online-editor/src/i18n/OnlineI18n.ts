@@ -65,12 +65,16 @@ interface OnlineDictionary extends ReferenceDictionary {
       learnMore: string;
       requiredField: string;
       deploying: string;
+      deleting: string;
       saving: string;
       setupFirst: string;
     };
     dropdown: {
       noDeployments: string;
       connectedTo: (username: string) => string;
+      connectedToAction: string;
+      deleteDeployments: string;
+      deleteDeploymentsDescription: string;
       item: {
         upTooltip: string;
         downTooltip: string;
@@ -93,13 +97,19 @@ interface OnlineDictionary extends ReferenceDictionary {
       configExpiredWarning: string;
       useWizard: string;
     };
-    confirmModal: {
+    deployConfirmModal: {
+      title: string;
+      body: string;
+    };
+    deleteConfirmModal: {
       title: string;
       body: string;
     };
     alerts: {
       deployStartedError: string;
       deployStartedSuccess: string;
+      deleteError: string;
+      deleteSuccess: string;
     };
     configWizard: {
       header: {

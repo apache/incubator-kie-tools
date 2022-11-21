@@ -15,10 +15,14 @@
  */
 
 interface ExtendedServicesPingResponse {
-  App: {
-    Version: string;
-    Started: boolean;
+  version: string;
+  proxyConfig: {
+    ip: string;
+    port: string;
+    insecureSkipVerify: boolean;
   };
+  modeler: string;
+  started: boolean;
 }
 
 export class KieSandboxExtendedServicesBridge {

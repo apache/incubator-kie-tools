@@ -23,8 +23,9 @@ import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import * as React from "react";
 import { useMemo } from "react";
-import { WebToolsOpenShiftDeployedModel } from "./WebToolsOpenShiftService";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
+import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
+import { basename } from "path";
 
 interface Props {
   id: number;
@@ -33,16 +34,17 @@ interface Props {
 
 export function OpenShiftDeploymentDropdownItem(props: Props) {
   const deploymentName = useMemo(() => {
-    const maxSize = 30;
+    const maxSize = 35;
 
-    const name = props.deployment.workspaceName;
-    const extension = extractExtension(name);
-
-    if (name.length < maxSize) {
-      return name;
+    const workspaceName = props.deployment.workspaceName;
+    if (workspaceName.length < maxSize) {
+      return workspaceName;
     }
 
-    return `${name.substring(0, maxSize)}...${extension}`;
+    // `workspaceName` here can also be a filename
+    const extension = extractExtension(workspaceName);
+    const name = extension ? basename(workspaceName, `.${extension}`) : workspaceName;
+    return `${name.substring(0, maxSize - extension.length)}...${extension}`;
   }, [props.deployment.workspaceName]);
 
   const stateIcon = useMemo(() => {

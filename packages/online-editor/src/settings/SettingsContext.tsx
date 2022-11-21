@@ -106,14 +106,14 @@ export function SettingsContextProvider(props: any) {
     setCookie(GUIDED_TOUR_ENABLED_COOKIE_NAME, `${isGuidedTourEnabled}`);
   }, [isGuidedTourEnabled]);
 
-  const kieSandboxExtendedServices = useExtendedServices();
+  const extendedServices = useExtendedServices();
 
   const dispatch = useMemo(() => {
     return {
       open,
       close,
       kieSandboxExtendedServices: {
-        setConfig: kieSandboxExtendedServices.saveNewConfig,
+        setConfig: extendedServices.saveNewConfig,
       },
       general: {
         guidedTour: {
@@ -121,14 +121,14 @@ export function SettingsContextProvider(props: any) {
         },
       },
     };
-  }, [close, kieSandboxExtendedServices.saveNewConfig, open]);
+  }, [close, extendedServices.saveNewConfig, open]);
 
   const value = useMemo(() => {
     return {
       isOpen,
       activeTab,
       kieSandboxExtendedServices: {
-        config: kieSandboxExtendedServices.config,
+        config: extendedServices.config,
       },
       general: {
         guidedTour: {
@@ -136,7 +136,7 @@ export function SettingsContextProvider(props: any) {
         },
       },
     };
-  }, [activeTab, isGuidedTourEnabled, isOpen, kieSandboxExtendedServices.config]);
+  }, [activeTab, isGuidedTourEnabled, isOpen, extendedServices.config]);
 
   return (
     <SettingsContext.Provider value={value}>

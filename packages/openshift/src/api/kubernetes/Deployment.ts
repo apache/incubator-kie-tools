@@ -70,6 +70,12 @@ export class DeleteDeployment extends ResourceFetch {
     return HttpMethod.DELETE;
   }
 
+  public body(): string {
+    return JSON.stringify({
+      propagationPolicy: "Background",
+    });
+  }
+
   public endpoint(): string {
     return `/${baseEndpoint(KubernetesApiVersions.DEPLOYMENT)}/namespaces/${this.args.namespace}/deployments/${
       this.args.resourceName

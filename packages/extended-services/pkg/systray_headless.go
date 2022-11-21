@@ -1,3 +1,4 @@
+//go:build headless
 // +build headless
 
 /*
@@ -16,22 +17,22 @@
  * limitations under the License.
  */
 
-package kogito
+package pkg
 
-type KogitoSystray struct {
-	controller *Proxy
+type Systray struct {
+	Server *Proxy
 }
 
-func (self *KogitoSystray) Run() {
+func (s *Systray) Run() {
 	var exit = make(chan bool)
-	self.controller.Start()
+	s.Server.Start()
 	<-exit
 }
 
-func (self *KogitoSystray) Refresh() {
+func (s *Systray) Refresh() {
 	// nothing to do
 }
 
-func (self *KogitoSystray) SetLoading() {
+func (s *Systray) SetLoading() {
 	// nothing to do
 }

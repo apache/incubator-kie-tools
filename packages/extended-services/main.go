@@ -20,19 +20,24 @@ import (
 	_ "embed"
 	"flag"
 
-	"github.com/kiegroup/kie-tools/extended-services/pkg/config"
-	"github.com/kiegroup/kie-tools/extended-services/pkg/kogito"
+	"github.com/kiegroup/kie-tools/packages/extended-services/pkg"
+	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
 )
 
 // Embed the jitrunner into the runner variable, to produce a self-contained binary.
+//
 //go:embed jitexecutor
 var jitexecutor []byte
 
 func main() {
-	var config config.Config
-	conf := config.GetConfig()
-	port := flag.Int("p", conf.Proxy.Port, "KIE Sandbox Extended Services Port")
-	insecureSkipVerify := conf.Proxy.InsecureSkipVerify
+	port := flag.String("p", metadata.Port, "KIE Sandbox Extended Services Port")
 	flag.Parse()
-	kogito.Systray(*port, jitexecutor, insecureSkipVerify)
+
+	server := pkg.NewProxy(*port, jitexecutor)
+	view := &pkg.Systray{}
+
+	server.View = view
+	view.Server = server
+
+	view.Run()
 }
