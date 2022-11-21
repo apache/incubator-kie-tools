@@ -24,7 +24,6 @@ import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../filesList/FileLabel";
-import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
@@ -52,13 +51,13 @@ export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | unde
         {workspace && (
           <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
             <DropdownItem
-              icon={<OpenshiftIcon />}
               id="dmn-dev-deployment-deploy-your-model-button"
               key={`dropdown-dmn-dev-deployment-deploy`}
               component={"button"}
               onClick={onDeploy}
               isDisabled={!isKieSandboxExtendedServicesRunning}
               ouiaId={"deploy-to-dmn-dev-deployment-dropdown-button"}
+              description="For development only!"
             >
               {workspace.files.length > 1 && (
                 <Flex flexWrap={{ default: "nowrap" }}>

@@ -80,7 +80,7 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
         key={"dmn-dev-deployment-group"}
         label={
           <>
-            {"Try on OpenShift"}
+            {"Deploy"}
             <KieSandboxExtendedServicesIcon />
           </>
         }

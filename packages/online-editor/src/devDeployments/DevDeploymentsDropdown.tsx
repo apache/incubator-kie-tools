@@ -18,17 +18,16 @@ import * as React from "react";
 import { useMemo } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DevDeploymentsDropdownItem } from "./DevDeploymentsDropdownItem";
-import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
+import { PficonSatelliteIcon } from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-icon";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 
 export function DevDeploymentsDropdown() {
   const devDeployments = useDevDeployments();
@@ -40,7 +39,7 @@ export function DevDeploymentsDropdown() {
         <DropdownItem key="disabled link" isDisabled>
           <Bullseye>
             <EmptyState>
-              <EmptyStateIcon icon={TopologyIcon} />
+              <EmptyStateIcon icon={PficonSatelliteIcon} />
               <Title headingLevel="h4" size="md">
                 {`No deployments yet.`}
               </Title>
@@ -63,34 +62,31 @@ export function DevDeploymentsDropdown() {
 
   return (
     <>
-      <Tooltip
-        className="kogito--editor__light-tooltip"
-        content={<div>{`You're not connected to any OpenShift instance.`}</div>}
-        trigger={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING ? "mouseenter" : ""}
-        position="auto"
-      >
-        <ResponsiveDropdown
-          position={"right"}
-          onSelect={() => devDeployments.setDeploymentsDropdownOpen(false)}
-          onClose={() => devDeployments.setDeploymentsDropdownOpen(false)}
-          toggle={
-            <ResponsiveDropdownToggle
-              toggleIndicator={null}
-              onToggle={() => devDeployments.setDeploymentsDropdownOpen((dropdownOpen) => !dropdownOpen)}
-              className={"kie-tools--masthead-hoverable-dark"}
-            >
-              <OpenshiftIcon
-                color={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING ? "gray" : undefined}
-              />
-            </ResponsiveDropdownToggle>
-          }
-          isOpen={devDeployments.isDeploymentsDropdownOpen}
-          isPlain={true}
-          className="kogito--editor__openshift-deployments-dropdown"
-          title="OpenShift deployments"
-          dropdownItems={items}
-        />
-      </Tooltip>
+      <ResponsiveDropdown
+        position={"right"}
+        onSelect={() => devDeployments.setDeploymentsDropdownOpen(false)}
+        onClose={() => devDeployments.setDeploymentsDropdownOpen(false)}
+        toggle={
+          <ResponsiveDropdownToggle
+            toggleIndicator={null}
+            onToggle={() => devDeployments.setDeploymentsDropdownOpen((dropdownOpen) => !dropdownOpen)}
+            className={"kie-tools--masthead-hoverable-dark"}
+          >
+            <PficonSatelliteIcon
+              color={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING ? "gray" : undefined}
+            />
+            &nbsp;&nbsp; Dev deployments &nbsp;&nbsp;
+            <CaretDownIcon
+              color={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING ? "gray" : undefined}
+            />
+          </ResponsiveDropdownToggle>
+        }
+        isOpen={devDeployments.isDeploymentsDropdownOpen}
+        isPlain={true}
+        className="kogito--editor__dev-deployments-dropdown"
+        title="Dev deployments"
+        dropdownItems={items}
+      />
     </>
   );
 }

@@ -128,7 +128,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               onToggle={toggleDevDeploymentsDropdown}
               data-testid="dmn-dev-deployment-button"
             >
-              Try on OpenShift
+              Deploy
             </DropdownToggle>
           }
           isOpen={devDeployments.isDropdownOpen}
