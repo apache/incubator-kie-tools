@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-package kogito
+package metadata
 
-func Systray(port int, jitexecutor []byte, insecureSkipVerify bool) {
-	proxy := NewProxy(port, jitexecutor, insecureSkipVerify)
-	proxy.view = &KogitoSystray{}
-	proxy.view.controller = proxy
-	proxy.view.Run()
-}
+var Version, Ip, Port, KieSandboxUrl string

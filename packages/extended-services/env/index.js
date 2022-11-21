@@ -14,17 +14,34 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    EXTENDED_SERVICES__kieSandboxUrl: {
+      default: "https://localhost:9001",
+      description: "KIE Sandbox URL",
+    },
+    EXTENDED_SERVICES__version: {
+      default: require("../package.json").version,
+      description: "Extended Services version",
+    },
+    EXTENDED_SERVICES__ip: {
+      default: "0.0.0.0",
+      description: "Extended Services IP",
+    },
+    EXTENDED_SERVICES__port: {
+      default: "21345",
+      description: "Extended Services port",
+    },
+  }),
   get env() {
     return {
       extendedServices: {
-        version: require("../package.json").version,
-        dev: {
-          port: 21345,
-        },
+        version: getOrDefault(this.vars.EXTENDED_SERVICES__version),
+        kieSandboxUrl: getOrDefault(this.vars.EXTENDED_SERVICES__kieSandboxUrl),
+        ip: getOrDefault(this.vars.EXTENDED_SERVICES__ip),
+        port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
       },
     };
   },

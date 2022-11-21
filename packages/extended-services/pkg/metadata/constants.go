@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package kogito
+package metadata
 
 const NAME = "Kogito"
 const APPNAME = "KIE Sandbox Extended Services"
@@ -31,6 +31,5 @@ const RESTART = "Restart"
 const QUIT = "Quit"
 const VERSION = "Version"
 const NOT_STARTED = "Not Started"
-const BUSINESS_MODELER = "Open Business Modeler"
-const MODELER_LINK = "https://kiegroup.github.io/kogito-online/#/"
+const OPEN_KIE_SANDBOX = "Open Business KIE Sandbox"
 const INFORMATION_PORTS = "Ports"

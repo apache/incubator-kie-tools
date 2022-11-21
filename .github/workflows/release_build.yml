@@ -1001,6 +1001,9 @@ jobs:
           git push origin gh-pages
 
   extended_services:
+    env:
+      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online"
+
     if: ${{ needs.extract_runners.outputs.extended_services == 'true' }}
     runs-on: ${{ matrix.os }}
     needs: [extract_runners]
