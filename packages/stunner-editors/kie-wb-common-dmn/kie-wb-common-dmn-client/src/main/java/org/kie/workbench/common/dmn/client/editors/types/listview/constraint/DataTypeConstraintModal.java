@@ -111,9 +111,7 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     }
 
     void load(final DataTypeListItem dataTypeListItem) {
-
-        final String constraintValue = dataTypeListItem.getDataType().getConstraint();
-        this.constraintValue = constraintValue;
+        this.constraintValue = dataTypeListItem.getDataType().getConstraint();
         this.constraintValueType = dataTypeListItem.getType();
         this.dataType = dataTypeListItem.getDataType();
 
