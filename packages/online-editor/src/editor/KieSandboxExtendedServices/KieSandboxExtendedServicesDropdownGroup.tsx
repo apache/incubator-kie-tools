@@ -19,7 +19,7 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { useDevDeploymentsDropdownItems } from "../../devDeployments/DevDeploymentsDropdownItems";
+import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
 import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
@@ -35,7 +35,7 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const dmnRunnerState = useDmnRunnerState();
-  const devDeploymentsDropdownItems = useDevDeploymentsDropdownItems(props.workspace);
+  const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
   const dmnRunnerDispatch = useDmnRunnerDispatch();
 
   const isKieSandboxExtendedServicesRunning = useMemo(

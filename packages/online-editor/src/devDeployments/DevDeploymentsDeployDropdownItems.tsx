@@ -32,7 +32,7 @@ import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
 import { openshiftAuthSessionSelectFilter } from "../accounts/authSessions/CompatibleAuthSessions";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
-export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | undefined) {
+export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
   const accountsDispatch = useAccountsDispatch();
@@ -81,7 +81,7 @@ export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | unde
                   setAuthSessionId(newAuthSessionId);
                   setTimeout(() => {
                     accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                    devDeployments.setDropdownOpen(true);
+                    devDeployments.setDeployDropdownOpen(true);
                   }, 0);
                 }}
                 isPlain={false}

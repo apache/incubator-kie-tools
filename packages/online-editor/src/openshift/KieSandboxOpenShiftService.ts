@@ -150,9 +150,9 @@ export class KieSandboxOpenShiftService {
           uri: args.targetFilePath,
           baseUrl: routeUrl,
           workspaceName: args.workspaceName,
-          containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
+          // containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
           // FIXME: Tiago
-          // containerImageUrl: "quay.io/kie-tools/dmn-dev-sandbox-deployment-base-image:latest",
+          containerImageUrl: "quay.io/kie-tools/dmn-dev-sandbox-deployment-base-image:latest",
           envVars: [
             {
               name: "BASE_URL",

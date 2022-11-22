@@ -25,7 +25,7 @@ import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDevDeployments } from "../../devDeployments/DevDeploymentsContext";
-import { useDevDeploymentsDropdownItems } from "../../devDeployments/DevDeploymentsDropdownItems";
+import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
@@ -57,7 +57,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const devDeployments = useDevDeployments();
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
-  const devDeploymentsDropdownItems = useDevDeploymentsDropdownItems(props.workspace);
+  const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
   const dmnRunnerInputsDispatch = useDmnRunnerInputsDispatch();
   const downloadDmnRunnerInputsRef = useRef<HTMLAnchorElement>(null);
   const uploadDmnRunnerInputsRef = useRef<HTMLInputElement>(null);
@@ -78,7 +78,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
       if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-        devDeployments.setDropdownOpen(isOpen);
+        devDeployments.setDeployDropdownOpen(isOpen);
         return;
       }
       extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
@@ -119,7 +119,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
       <FeatureDependentOnKieSandboxExtendedServices isLight={true} position="top">
         <Dropdown
           className={isExtendedServicesRunning ? "pf-m-active" : ""}
-          onSelect={() => devDeployments.setDropdownOpen(false)}
+          onSelect={() => devDeployments.setDeployDropdownOpen(false)}
           toggle={
             <DropdownToggle
               id="dmn-dev-deployment-dropdown-button"
@@ -129,7 +129,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               Deploy
             </DropdownToggle>
           }
-          isOpen={devDeployments.isDropdownOpen}
+          isOpen={devDeployments.isDeployDropdownOpen}
           position={DropdownPosition.right}
           dropdownItems={devDeploymentsDropdownItems}
         />

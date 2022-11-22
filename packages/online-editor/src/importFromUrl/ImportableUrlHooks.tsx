@@ -26,7 +26,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
 import { AuthProviderIcon } from "../accounts/authProviders/AuthProviderIcon";
-import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
+import { useAuthProvider } from "../accounts/authProviders/AuthProvidersContext";
 import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
 import { AuthInfo } from "../accounts/authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";

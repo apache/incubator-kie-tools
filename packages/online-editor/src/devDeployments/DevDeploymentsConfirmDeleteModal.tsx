@@ -22,11 +22,18 @@ import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../i18n";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { useGlobalAlert } from "../alerts";
+import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 
 export function DevDeploymentsConfirmDeleteModal() {
   const devDeployments = useDevDeployments();
   const { i18n } = useOnlineI18n();
-  const [isConfirmLoading, setConfirmLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
+  const { authSession } = useAuthSession(
+    devDeployments.confirmDeleteModalState.isOpen
+      ? devDeployments.confirmDeleteModalState.cloudAuthSessionId
+      : undefined
+  );
 
   const deleteErrorAlert = useGlobalAlert(
     useCallback(
@@ -56,17 +63,19 @@ export function DevDeploymentsConfirmDeleteModal() {
   );
 
   const onConfirm = useCallback(async () => {
-    if (isConfirmLoading) {
+    if (isLoading || authSession?.type !== "openshift" || !devDeployments.confirmDeleteModalState.isOpen) {
       return;
     }
 
-    setConfirmLoading(true);
-    const deleteStarted = await devDeployments.deleteDeployments();
+    setLoading(true);
+    const deleteStarted = await devDeployments.deleteDeployments({
+      connection: authSession,
+      resourceNames: devDeployments.confirmDeleteModalState.resourceNames,
+    });
     await delay(600);
-    devDeployments.loadDeployments();
-    setConfirmLoading(false);
+    setLoading(false);
 
-    devDeployments.setConfirmDeleteModalOpen(false);
+    devDeployments.setConfirmDeleteModalState({ isOpen: false });
     devDeployments.setDeploymentsDropdownOpen(true);
 
     if (deleteStarted) {
@@ -74,12 +83,10 @@ export function DevDeploymentsConfirmDeleteModal() {
     } else {
       deleteErrorAlert.show();
     }
-  }, [isConfirmLoading, devDeployments, deleteSuccessAlert, deleteErrorAlert]);
+  }, [isLoading, authSession, devDeployments, deleteSuccessAlert, deleteErrorAlert]);
 
   const onCancel = useCallback(() => {
-    devDeployments.setConfirmDeleteModalOpen(false);
-    devDeployments.setDeploymentsToBeDeleted([]);
-    setConfirmLoading(false);
+    devDeployments.setConfirmDeleteModalState({ isOpen: false });
   }, [devDeployments]);
 
   return (
@@ -87,7 +94,7 @@ export function DevDeploymentsConfirmDeleteModal() {
       data-testid={"confirm-delete-modal"}
       variant={ModalVariant.small}
       title={i18n.devDeployments.deleteConfirmModal.title}
-      isOpen={devDeployments.isConfirmDeleteModalOpen}
+      isOpen={devDeployments.confirmDeleteModalState.isOpen}
       aria-label={"Confirm delete modal"}
       onClose={onCancel}
       actions={[
@@ -96,10 +103,10 @@ export function DevDeploymentsConfirmDeleteModal() {
           key="confirm"
           variant="primary"
           onClick={onConfirm}
-          isLoading={isConfirmLoading}
-          spinnerAriaValueText={isConfirmLoading ? "Loading" : undefined}
+          isLoading={isLoading}
+          spinnerAriaValueText={isLoading ? "Loading" : undefined}
         >
-          {isConfirmLoading ? i18n.devDeployments.common.deleting : i18n.terms.confirm}
+          {isLoading ? i18n.devDeployments.common.deleting : i18n.terms.confirm}
         </Button>,
         <Button key="cancel" variant="link" onClick={onCancel}>
           {i18n.terms.cancel}

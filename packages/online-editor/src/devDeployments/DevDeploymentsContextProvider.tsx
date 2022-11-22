@@ -15,18 +15,12 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { KieSandboxOpenShiftDeployedModel, KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
-import { ConfirmDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
-import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
-import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import {
-  isOpenShiftConnectionValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
+import { ConfirmDeployModalState, DeleteDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
@@ -35,59 +29,64 @@ interface Props {
   children: React.ReactNode;
 }
 
-const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
-
 export function DevDeploymentsContextProvider(props: Props) {
-  const settings = useSettings();
-  const settingsDispatch = useSettingsDispatch();
   const routes = useRoutes();
   const extendedServices = useExtendedServices();
   const workspaces = useWorkspaces();
 
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  // Dropdowns
+  const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
+
+  // Modals
   const [confirmDeployModalState, setConfirmDeployModalState] = useState<ConfirmDeployModalState>({ isOpen: false });
-  const [deployments, setDeployments] = useState([] as KieSandboxOpenShiftDeployedModel[]);
-  const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
-  const [deploymentsToBeDeleted, setDeploymentsToBeDeleted] = useState<string[]>([]);
+  const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
-  const onDisconnect = useCallback((closeModals: boolean) => {
-    setDropdownOpen(false);
-    setDeployments([]);
+  const deleteDeployment = useCallback(
+    async (args: { connection: OpenShiftConnection; resourceName: string }) => {
+      const service = new KieSandboxOpenShiftService({
+        connection: args.connection,
+        proxyUrl: extendedServices.config.url.corsProxy,
+      });
 
-    if (closeModals) {
-      setConfirmDeployModalState({ isOpen: false });
-    }
-  }, []);
+      try {
+        await service.deleteDeployment(args.resourceName);
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    },
+    [extendedServices.config.url.corsProxy]
+  );
 
-  const deleteDeployment = useCallback(async (resourceName: string) => {
-    //   try {
-    //     await settingsDispatch.openshift.service.deleteDeployment(resourceName);
-    //     return true;
-    //   } catch (error) {
-    //     console.error(error);
-    //     return false;
-    //   }
-    return false;
-  }, []);
+  const deleteDeployments = useCallback(
+    async (args: { connection: OpenShiftConnection; resourceNames: string[] }) => {
+      const result = await Promise.all(
+        args.resourceNames.map((resourceName) => {
+          return deleteDeployment({ connection: args.connection, resourceName });
+        })
+      );
 
-  const deleteDeployments = useCallback(async () => {
-    // const result = await Promise.all(deploymentsToBeDeleted.map((resourceName) => deleteDeployment(resourceName)));
-    // setDeploymentsToBeDeleted([]);
-    // return result.every(Boolean);
-    return false;
-  }, []);
+      return result.every(Boolean);
+    },
+    [deleteDeployment]
+  );
 
-  const loadDeployments = useCallback(async (errCallback?: () => void) => {
-    // return settingsDispatch.openshift.service
-    //   .loadDeployments()
-    //   .then((deployments) => setDeployments(deployments))
-    //   .catch((error) => {
-    //     setDeployments([]);
-    //     errCallback?.();
-    //     console.error(error);
-    //   });
-  }, []);
+  const loadDeployments = useCallback(
+    async (args: { connection: OpenShiftConnection }) => {
+      const service = new KieSandboxOpenShiftService({
+        connection: args.connection,
+        proxyUrl: extendedServices.config.url.corsProxy,
+      });
+
+      return service.loadDeployments().catch((e) => {
+        console.error(e);
+        return [];
+      });
+    },
+    [extendedServices.config.url.corsProxy]
+  );
 
   const deploy = useCallback(
     async (workspaceFile: WorkspaceFile, connection: OpenShiftConnection) => {
@@ -100,15 +99,18 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
 
+      // What if my DMN includes a PMML file? Or a java file?
+      // What it my project already is configured to be run with Quarkus?
+      // - Need to use a different image and deploy the entire Workspace. What command to run then?
+      // - .kie-sandbox folder with this kind of configuration?
+      // - What to do with monorepos?
       const zipBlob = await workspaces.prepareZip({
         workspaceId: workspaceFile.workspaceId,
         onlyExtensions: ["dmn"],
       });
 
-      const descriptorService = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
-
-      const workspaceName =
-        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workspaceFile.name;
+      const workspace = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
+      const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
 
       try {
         await service.deploy({
@@ -131,71 +133,26 @@ export function DevDeploymentsContextProvider(props: Props) {
     [extendedServices.config.url.corsProxy, routes.import, workspaces]
   );
 
-  useEffect(() => {
-    // if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-    //   onDisconnect(true);
-    //   return;
-    // }
-    // if (!isOpenShiftConnectionValid(settings.openshift.config)) {
-    //   if (deployments.length > 0) {
-    //     setDeployments([]);
-    //   }
-    //   return;
-    // }
-    // if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
-    //   settingsDispatch.openshift.service
-    //     .isConnectionEstablished(settings.openshift.config)
-    //     .then((isConfigOk: boolean) => {
-    //       settingsDispatch.openshift.setStatus(
-    //         isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
-    //       );
-    //       return isConfigOk ? settingsDispatch.openshift.service.loadDeployments() : [];
-    //     })
-    //     .then((deployments) => setDeployments(deployments))
-    //     .catch((error) => console.error(error));
-    //   return;
-    // }
-    // if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
-    //   const loadDeploymentsTask = window.setInterval(() => {
-    //     settingsDispatch.openshift.service
-    //       .loadDeployments()
-    //       .then((deployments) => setDeployments(deployments))
-    //       .catch((error) => {
-    //         setDeployments([]);
-    //         window.clearInterval(loadDeploymentsTask);
-    //         console.error(error);
-    //       });
-    //   }, LOAD_DEPLOYMENTS_POLLING_TIME);
-    //   return () => window.clearInterval(loadDeploymentsTask);
-    // }
-  }, []);
-
   const value = useMemo(
     () => ({
-      deployments,
-      isDropdownOpen,
+      isDeployDropdownOpen,
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
-      isConfirmDeleteModalOpen,
-      deploymentsToBeDeleted,
-      setDeployments,
-      setDropdownOpen,
+      confirmDeleteModalState,
+      setDeployDropdownOpen,
       setConfirmDeployModalState,
-      setConfirmDeleteModalOpen,
+      setConfirmDeleteModalState,
       setDeploymentsDropdownOpen,
-      setDeploymentsToBeDeleted,
       deploy,
       deleteDeployment,
       deleteDeployments,
       loadDeployments,
     }),
     [
-      deployments,
-      isDropdownOpen,
+      isDeployDropdownOpen,
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
-      isConfirmDeleteModalOpen,
-      deploymentsToBeDeleted,
+      confirmDeleteModalState,
       deploy,
       deleteDeployment,
       deleteDeployments,

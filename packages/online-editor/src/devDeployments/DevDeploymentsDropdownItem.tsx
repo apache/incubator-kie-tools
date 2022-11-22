@@ -30,10 +30,12 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useDevDeployments } from "./DevDeploymentsContext";
+import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
 
 interface Props {
   id: number;
   deployment: KieSandboxOpenShiftDeployedModel;
+  cloudAuthSession: AuthSession;
 }
 
 export function DevDeploymentsDropdownItem(props: Props) {
@@ -123,13 +125,17 @@ export function DevDeploymentsDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
+    // FIXME: This should not be so loosely referenced.
     window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
   }, [props.deployment.routeUrl, props.deployment.uri]);
 
   const onDelete = useCallback(() => {
-    devDeployments.setDeploymentsToBeDeleted((prevValue) => [...prevValue, props.deployment.resourceName]);
-    devDeployments.setConfirmDeleteModalOpen(true);
-  }, [devDeployments, props.deployment.resourceName]);
+    devDeployments.setConfirmDeleteModalState({
+      isOpen: true,
+      cloudAuthSessionId: props.cloudAuthSession.id,
+      resourceNames: [props.deployment.resourceName],
+    });
+  }, [devDeployments, props.cloudAuthSession.id, props.deployment.resourceName]);
 
   const isDisabled = useMemo(() => props.deployment.state !== OpenShiftDeploymentState.UP, [props.deployment.state]);
 
