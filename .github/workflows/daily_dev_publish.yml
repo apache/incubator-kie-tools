@@ -22,6 +22,7 @@ jobs:
       DMN_DEV_SANDBOX__baseImageTag: "daily-dev"
       DMN_DEV_SANDBOX__baseImageBuildTags: "daily-dev"
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online/dev"
+      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
       KIE_SANDBOX__imageRegistry: "quay.io"

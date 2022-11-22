@@ -31,6 +31,8 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
+import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
@@ -47,6 +49,18 @@ export function OpenshiftDeploymentsDropdown() {
     settingsDispatch.open(SettingsTabs.OPENSHIFT);
   }, [settingsDispatch]);
 
+  const deleteAllDeployments = useCallback(() => {
+    dmnDevSandbox.setDeploymentsToBeDeleted(
+      dmnDevSandbox.deployments
+        .filter(
+          (deployment) =>
+            ![OpenShiftDeploymentState.IN_PROGRESS, OpenShiftDeploymentState.PREPARING].includes(deployment.state)
+        )
+        .map((deployment) => deployment.resourceName)
+    );
+    dmnDevSandbox.setConfirmDeleteModalOpen(true);
+  }, [dmnDevSandbox]);
+
   const items = useMemo(() => {
     const common = isDmnDevSandboxConnected
       ? [
@@ -55,7 +69,7 @@ export function OpenshiftDeploymentsDropdown() {
             component={"button"}
             onClick={openOpenShiftSettings}
             ouiaId={"setup-as-dmn-dev-sandbox-dropdown-button"}
-            description={"Change..."}
+            description={i18n.dmnDevSandbox.dropdown.connectedToAction}
           >
             {i18n.dmnDevSandbox.dropdown.connectedTo(settings.openshift.config.namespace)}
           </DropdownItem>,
@@ -91,11 +105,24 @@ export function OpenshiftDeploymentsDropdown() {
               />
             );
           }),
+        <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments-3"} />,
+        <DropdownItem
+          key={"delete-all-deployments-dropdown-button"}
+          component={"button"}
+          onClick={deleteAllDeployments}
+          ouiaId={"delete-all-deployments-dropdown-button"}
+          style={{ color: "var(--pf-global--danger-color--100)" }}
+          description={i18n.dmnDevSandbox.dropdown.deleteDeploymentsDescription}
+          icon={<TrashIcon />}
+        >
+          {i18n.dmnDevSandbox.dropdown.deleteDeployments}
+        </DropdownItem>,
       ];
     }
   }, [
+    deleteAllDeployments,
     dmnDevSandbox.deployments,
-    i18n,
+    i18n.dmnDevSandbox.dropdown,
     isDmnDevSandboxConnected,
     openOpenShiftSettings,
     settings.openshift.config.namespace,

@@ -239,7 +239,7 @@ export function SettingsContextProvider(props: any) {
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/devsandbox`,
+        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/cors-proxy`,
       }),
     [openshiftConfig, kieSandboxExtendedServices.config]
   );

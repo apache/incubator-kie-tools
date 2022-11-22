@@ -165,7 +165,7 @@ public class DataTypeConstraintTest {
 
         dataTypeConstraint.openModal();
 
-        constraintModal.load(type, constraint, ENUMERATION);
+        constraintModal.load(listItem);
         constraintModal.show(onShowConsumer);
     }
 

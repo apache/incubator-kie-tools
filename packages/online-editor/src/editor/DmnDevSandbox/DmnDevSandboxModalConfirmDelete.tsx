@@ -20,25 +20,20 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 import { useGlobalAlert } from "../../alerts";
 
-interface Props {
-  workspaceFile: WorkspaceFile;
-}
-
-export function DmnDevSandboxModalConfirmDeploy(props: Props) {
+export function DmnDevSandboxModalConfirmDelete() {
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
-  const deployStartedErrorAlert = useGlobalAlert(
+  const deleteErrorAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
           variant="danger"
-          title={i18n.dmnDevSandbox.alerts.deployStartedError}
+          title={i18n.dmnDevSandbox.alerts.deleteError}
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       ),
@@ -46,13 +41,13 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
     )
   );
 
-  const deployStartedSuccessAlert = useGlobalAlert(
+  const deleteSuccessAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
           className={"kogito--alert"}
           variant="info"
-          title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
+          title={i18n.dmnDevSandbox.alerts.deleteSuccess}
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       ),
@@ -66,49 +61,56 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
     }
 
     setConfirmLoading(true);
-    const deployStarted = await dmnDevSandboxContext.deploy(props.workspaceFile);
+    const deleteStarted = await dmnDevSandboxContext.deleteDeployments();
+    await delay(600);
+    dmnDevSandboxContext.loadDeployments();
     setConfirmLoading(false);
 
-    dmnDevSandboxContext.setConfirmDeployModalOpen(false);
+    dmnDevSandboxContext.setConfirmDeleteModalOpen(false);
+    dmnDevSandboxContext.setDeploymentsDropdownOpen(true);
 
-    if (deployStarted) {
-      dmnDevSandboxContext.setDeploymentsDropdownOpen(true);
-      deployStartedSuccessAlert.show();
+    if (deleteStarted) {
+      deleteSuccessAlert.show();
     } else {
-      deployStartedErrorAlert.show();
+      deleteErrorAlert.show();
     }
-  }, [isConfirmLoading, dmnDevSandboxContext, props.workspaceFile, deployStartedSuccessAlert, deployStartedErrorAlert]);
+  }, [isConfirmLoading, dmnDevSandboxContext, deleteSuccessAlert, deleteErrorAlert]);
 
   const onCancel = useCallback(() => {
-    dmnDevSandboxContext.setConfirmDeployModalOpen(false);
+    dmnDevSandboxContext.setConfirmDeleteModalOpen(false);
+    dmnDevSandboxContext.setDeploymentsToBeDeleted([]);
     setConfirmLoading(false);
   }, [dmnDevSandboxContext]);
 
   return (
     <Modal
-      data-testid={"confirm-deploy-modal"}
+      data-testid={"confirm-delete-modal"}
       variant={ModalVariant.small}
-      title={i18n.dmnDevSandbox.deployConfirmModal.title}
-      isOpen={dmnDevSandboxContext.isConfirmDeployModalOpen}
-      aria-label={"Confirm deploy modal"}
+      title={i18n.dmnDevSandbox.deleteConfirmModal.title}
+      isOpen={dmnDevSandboxContext.isConfirmDeleteModalOpen}
+      aria-label={"Confirm delete modal"}
       onClose={onCancel}
       actions={[
         <Button
-          id="dmn-dev-sandbox-confirm-deploy-button"
+          id="dmn-dev-sandbox-confirm-delete-button"
           key="confirm"
           variant="primary"
           onClick={onConfirm}
           isLoading={isConfirmLoading}
           spinnerAriaValueText={isConfirmLoading ? "Loading" : undefined}
         >
-          {isConfirmLoading ? i18n.dmnDevSandbox.common.deploying : i18n.terms.confirm}
+          {isConfirmLoading ? i18n.dmnDevSandbox.common.deleting : i18n.terms.confirm}
         </Button>,
         <Button key="cancel" variant="link" onClick={onCancel}>
           {i18n.terms.cancel}
         </Button>,
       ]}
     >
-      {i18n.dmnDevSandbox.deployConfirmModal.body}
+      {i18n.dmnDevSandbox.deleteConfirmModal.body}
     </Modal>
   );
+}
+
+function delay(ms: number) {
+  return new Promise((res) => setTimeout(res, ms));
 }

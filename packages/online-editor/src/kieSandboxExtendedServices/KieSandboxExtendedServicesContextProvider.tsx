@@ -106,9 +106,9 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       bridge
         .version()
         .then((response) => {
-          if (response.App.Version !== version) {
+          if (response.version !== version) {
             setOutdated(true);
-          } else if (response.App.Started) {
+          } else if (response.started) {
             window.clearInterval(detectKieSandboxExtendedServices);
             setOutdated(false);
             setStatus(KieSandboxExtendedServicesStatus.RUNNING);

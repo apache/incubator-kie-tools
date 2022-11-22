@@ -24,11 +24,15 @@ import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLOptionsCollection;
+import elemental2.dom.HTMLSelectElement;
 import elemental2.dom.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -49,6 +53,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -232,32 +237,90 @@ public class DataTypeConstraintModalViewTest {
     @Test
     public void testOnShowWhenConstraintValueIsBlank() {
 
-        final Element selectPicker = mock(HTMLElement.class);
+        final Element selectPicker = mock(HTMLSelectElement.class);
+
+        final HTMLOptionsCollection options = mock(HTMLOptionsCollection.class);
+        final HTMLOptionElement optionOne = mock(HTMLOptionElement.class);
+        final HTMLOptionElement optionThree = mock(HTMLOptionElement.class);
+        doReturn(optionOne).when(options).getAt(eq(1));
+        doReturn(optionThree).when(options).getAt(eq(3));
+
+        final DataType dataType = mock(DataType.class);
+        when(dataType.getType()).thenReturn("string");
 
         when(presenter.getConstraintValue()).thenReturn(null);
         when(presenter.inferComponentType(any())).thenCallRealMethod();
         doReturn(selectPicker).when(view).getSelectPicker();
+        doReturn(options).when(view).getSelectOptionsElement();
         doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
+        view.setDataType(dataType);
 
         view.onShow();
 
         verify(view).setPickerValue(selectPicker, EXPRESSION.value());
+        verify(view).enableOptionElement(optionOne);
+        verify(view).enableOptionElement(optionThree);
+        verify(view, never()).disableOptionElement(any());
     }
 
     @Test
     public void testOnShowWhenConstraintValueIsNotBlank() {
 
-        final Element selectPicker = mock(HTMLElement.class);
+        final Element selectPicker = mock(HTMLSelectElement.class);
+
+        final HTMLOptionsCollection options = mock(HTMLOptionsCollection.class);
+        final HTMLOptionElement optionOne = mock(HTMLOptionElement.class);
+        final HTMLOptionElement optionThree = mock(HTMLOptionElement.class);
+        doReturn(optionOne).when(options).getAt(eq(1));
+        doReturn(optionThree).when(options).getAt(eq(3));
+
         final String constraint = "1,2,3";
+        final DataType dataType = mock(DataType.class);
+        when(dataType.getType()).thenReturn("string");
 
         when(presenter.getConstraintValue()).thenReturn(constraint);
         when(presenter.inferComponentType(constraint)).thenReturn(ENUMERATION);
         doReturn(selectPicker).when(view).getSelectPicker();
+        doReturn(options).when(view).getSelectOptionsElement();
         doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
+        view.setDataType(dataType);
 
         view.onShow();
 
         verify(view).setPickerValue(selectPicker, ENUMERATION.value());
+        verify(view).enableOptionElement(optionOne);
+        verify(view).enableOptionElement(optionThree);
+        verify(view, never()).disableOptionElement(any());
+    }
+
+    @Test
+    public void testOnShowWhenConstraintDataTypeIsAny() {
+
+        final Element selectPicker = mock(HTMLSelectElement.class);
+
+        final HTMLOptionsCollection options = mock(HTMLOptionsCollection.class);
+        final HTMLOptionElement optionOne = mock(HTMLOptionElement.class);
+        final HTMLOptionElement optionThree = mock(HTMLOptionElement.class);
+        doReturn(optionOne).when(options).getAt(eq(1));
+        doReturn(optionThree).when(options).getAt(eq(3));
+
+        final String constraint = "123";
+        final DataType dataType = mock(DataType.class);
+        when(dataType.getType()).thenReturn("Any");
+
+        when(presenter.getConstraintValue()).thenReturn(constraint);
+        when(presenter.inferComponentType(constraint)).thenReturn(EXPRESSION);
+        doReturn(selectPicker).when(view).getSelectPicker();
+        doReturn(options).when(view).getSelectOptionsElement();
+        doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
+        view.setDataType(dataType);
+
+        view.onShow();
+
+        verify(view).setPickerValue(selectPicker, EXPRESSION.value());
+        verify(view).disableOptionElement(optionOne);
+        verify(view).disableOptionElement(optionThree);
+        verify(view, never()).enableOptionElement(any());
     }
 
     @Test

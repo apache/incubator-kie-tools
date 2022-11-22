@@ -65,7 +65,7 @@ module.exports = composeEnv(
         description: "Git CORS Proxy URL.",
       },
       ONLINE_EDITOR__extendedServicesUrl: {
-        default: `http://localhost:${extendedServicesEnv.env.extendedServices.dev.port}`,
+        default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
         description: "Extended Services URL.",
       },
       DMN_DEV_SANDBOX__baseImageTag: {

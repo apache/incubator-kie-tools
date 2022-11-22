@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-package utils
+package metadata
 
-import (
-	"os"
-	"path/filepath"
-)
-
-func GetBaseDir() string {
-	env := os.Getenv("ENV")
-	if env != "dev" {
-		return filepath.Dir(os.Args[0])
-	} else {
-		return "./"
-	}
-}
+var Version, Ip, Port, KieSandboxUrl string
