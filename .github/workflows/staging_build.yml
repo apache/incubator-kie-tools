@@ -129,7 +129,7 @@ jobs:
       # https://github.com/actions/runner/pull/1844
       - name: "Cache Maven packages (Ubuntu only - see comments in source)"
         if: ${{ runner.os == 'Linux' }}
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
           key: ${{ runner.os }}-staging-m2-${{ hashFiles('**/pom.xml') }}

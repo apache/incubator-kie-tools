@@ -146,7 +146,7 @@ jobs:
           ref: ${{ inputs.base_ref }}
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
           key: ${{ runner.os }}-dmn-dev-sandbox-deployment-base-image-m2-${{ hashFiles('**/pom.xml') }}
@@ -425,7 +425,7 @@ jobs:
           ref: gh-pages
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
           key: ${{ runner.os }}-release-m2-${{ hashFiles('**/pom.xml') }}
@@ -1264,7 +1264,7 @@ jobs:
           ref: ${{ inputs.base_ref }}
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
           key: ${{ runner.os }}-serverless-logic-sandbox-base-image-m2-${{ hashFiles('**/pom.xml') }}
@@ -1382,7 +1382,7 @@ jobs:
           ref: gh-pages
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
           key: ${{ runner.os }}-serverless-logic-sandbox-m2-${{ hashFiles('**/pom.xml') }}
