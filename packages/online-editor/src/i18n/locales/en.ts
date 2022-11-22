@@ -64,7 +64,7 @@ export const en: OnlineI18n = {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
-        "When you set up the required information, you are able to create dev deployments on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+        "When you set up the required information, you are able to create dev deployments on your configured instance. All the information you provide is locally stored in the browser and is never shared with anyone.",
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
@@ -98,7 +98,7 @@ export const en: OnlineI18n = {
     },
     deployConfirmModal: {
       title: "Deploy",
-      body: "Are you sure you want to deploy your model to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+      body: "This action can take a few minutes to be completed and you will need to create a new deployment if you update your model, as dev deployments are immutable.",
     },
     deleteConfirmModal: {
       title: "Delete deployment(s)",
@@ -148,8 +148,8 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to deploy DMN decisions to your OpenShift instance.",
-          configNote: "Your configuration will be stored as browser cookies after the operations above.",
+          introduction: "Now you are able to create dev deployments on this OpenShift instance.",
+          configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
           checkInfo: "Please check the information provided and try again.",
           possibleErrorReasons: {
@@ -193,7 +193,7 @@ export const en: OnlineI18n = {
       placeHolder: "Paste your token here",
     },
     body: {
-      disclaimer: `The token you provide is locally stored as a browser cookie and is never shared with anyone.`,
+      disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
       note: `You should provide a token with the ${"'gist'".bold()} permission.`,
     },

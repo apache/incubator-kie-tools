@@ -333,9 +333,11 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                   isInline={true}
                   title={i18n.devDeployments.configWizard.steps.final.connectionSuccess}
                 />
+                <br />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
                   {i18n.devDeployments.configWizard.steps.final.introduction}
                 </Text>
+                <br />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
                   {i18n.devDeployments.configWizard.steps.final.configNote}
                 </Text>
