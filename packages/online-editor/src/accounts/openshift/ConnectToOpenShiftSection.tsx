@@ -27,6 +27,11 @@ import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";
 import { EMPTY_OPENSHIFT_CONNECTION } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { OpenShiftAuthSession } from "../authSessions/AuthSessionApi";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import { AuthSessionDescriptionList } from "../authSessions/AuthSessionsList";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,
@@ -35,8 +40,11 @@ export enum OpenShiftSettingsTabMode {
 
 export function ConnectToOpenShiftSection() {
   const extendedServices = useExtendedServices();
+  const accounts = useAccounts();
+  const accountsDispatch = useAccountsDispatch();
 
   const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
+  const [newAuthSession, setNewAuthSession] = useState<OpenShiftAuthSession>();
   const [status, setStatus] = useState(
     extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
       ? OpenShiftInstanceStatus.DISCONNECTED
@@ -53,37 +61,43 @@ export function ConnectToOpenShiftSection() {
     [connection, extendedServices.config]
   );
 
+  const successPrimaryAction = useMemo(() => {
+    if (accounts.section !== AccountsSection.CONNECT_TO_OPENSHIFT || !newAuthSession) {
+      return;
+    }
+
+    if (!accounts.onNewAuthSession) {
+      return {
+        action: () => accountsDispatch({ kind: AccountsDispatchActionKind.GO_HOME }),
+        label: "See connected accounts",
+      };
+    }
+
+    return {
+      action: () => accounts.onNewAuthSession?.(newAuthSession),
+      label: "Continue",
+    };
+  }, [accounts, accountsDispatch, newAuthSession]);
+
   return (
     <>
       {status === OpenShiftInstanceStatus.UNAVAILABLE && (
         <>Please connect to Extended Services to be able to connect with OpenShift</>
       )}
 
-      {status === OpenShiftInstanceStatus.CONNECTED && (
-        <EmptyState>
-          <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
-          <TextContent>
-            <Text component={"h2"}>{"You're connected to OpenShift."}</Text>
-          </TextContent>
-          <EmptyStateBody>
-            <TextContent>
-              Dev deployments are <b>enabled</b>.
-            </TextContent>
-            <br />
-            <TextContent>
-              <b>Namespace (project): </b>
-              <i>{connection.namespace}</i>
-            </TextContent>
-            <TextContent>
-              <b>Token: </b>
-              <i>{obfuscate(connection.token)}</i>
-            </TextContent>
-            <TextContent>
-              <b>Host: </b>
-              <i>{connection.host}</i>
-            </TextContent>
-          </EmptyStateBody>
-        </EmptyState>
+      {status === OpenShiftInstanceStatus.CONNECTED && newAuthSession && (
+        <>
+          <Alert isPlain={true} isInline={true} variant={AlertVariant.success} title={`Successfully connected`}></Alert>
+          <br />
+          <br />
+          <AuthSessionDescriptionList authSession={newAuthSession} />
+          <br />
+          <br />
+          <br />
+          <Button variant={ButtonVariant.primary} onClick={successPrimaryAction?.action}>
+            {successPrimaryAction?.label}
+          </Button>
+        </>
       )}
       {status === OpenShiftInstanceStatus.DISCONNECTED && (
         <>
@@ -94,6 +108,7 @@ export function ConnectToOpenShiftSection() {
               setConnection={setConnection}
               status={status}
               setStatus={setStatus}
+              setNewAuthSession={setNewAuthSession}
               openshiftService={openshiftService}
             />
           )}
@@ -104,6 +119,7 @@ export function ConnectToOpenShiftSection() {
               setConnection={setConnection}
               status={status}
               setStatus={setStatus}
+              setNewAuthSession={setNewAuthSession}
               openshiftService={openshiftService}
             />
           )}

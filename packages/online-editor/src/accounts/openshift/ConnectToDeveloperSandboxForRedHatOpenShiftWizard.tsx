@@ -40,6 +40,10 @@ import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "@kie-tools-core/openshift/dis
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
+import { v4 as uuid } from "uuid";
+import { useAccountsDispatch } from "../AccountsContext";
+import { useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
+import { OpenShiftAuthSession } from "../authSessions/AuthSessionApi";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",
@@ -54,11 +58,13 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
+  setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(false);
-  const [isSaveLoading, setSaveLoading] = useState(false);
+  const [isConnecting, setConnecting] = useState(false);
   const [isConnectLoading, setConnectLoading] = useState(false);
+  const authSessionsDispatch = useAuthSessionsDispatch();
 
   const onClearHost = useCallback(() => props.setConnection({ ...props.connection, host: "" }), [props]);
   const onClearNamespace = useCallback(() => props.setConnection({ ...props.connection, namespace: "" }), [props]);
@@ -85,11 +91,11 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   }, [props]);
 
   const resetConnection = useCallback(
-    (config: OpenShiftConnection) => {
+    (connection: OpenShiftConnection) => {
       setConnectionValidated(false);
-      setSaveLoading(false);
+      setConnecting(false);
       setConnectLoading(false);
-      props.setConnection(config);
+      props.setConnection(connection);
     },
     [props]
   );
@@ -126,28 +132,36 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     [props.connection, props.openshiftService]
   );
 
-  const onFinish = useCallback(async () => {
-    if (isSaveLoading) {
+  const onSave = useCallback(async () => {
+    if (isConnecting) {
       return;
     }
 
-    setSaveLoading(true);
+    if (!isOpenShiftConnectionValid(props.connection)) {
+      return;
+    }
 
+    setConnecting(true);
     const isConnectionEstablished = await props.openshiftService.isConnectionEstablished(props.connection);
+    setConnecting(false);
+
     if (isConnectionEstablished) {
-      props.setConnection(props.connection);
+      const newAuthSession: OpenShiftAuthSession = {
+        type: "openshift",
+        id: uuid(),
+        ...props.connection,
+        authProviderId: "openshift",
+        createdAtDateISO: new Date().toISOString(),
+      };
+      setConnectionValidated(true);
       props.setStatus(OpenShiftInstanceStatus.CONNECTED);
-    }
-
-    setConnectionValidated(isConnectionEstablished);
-    setSaveLoading(false);
-
-    if (!isConnectionEstablished) {
+      authSessionsDispatch.add(newAuthSession);
+      props.setNewAuthSession(newAuthSession);
+    } else {
+      setConnectionValidated(false);
       return;
     }
-
-    resetConnection(props.connection);
-  }, [isSaveLoading, props, resetConnection]);
+  }, [authSessionsDispatch, isConnecting, props]);
 
   const wizardSteps = useMemo(
     () => [
@@ -441,13 +455,13 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
               <>
                 <Button
                   id="dev-deployments-config-continue-editing-button"
-                  onClick={() => onFinish()}
+                  onClick={onSave}
                   isDisabled={!isConnectionValidated}
                   variant={ButtonVariant.primary}
-                  isLoading={isSaveLoading}
-                  spinnerAriaValueText={isSaveLoading ? "Loading" : undefined}
+                  isLoading={isConnecting}
+                  spinnerAriaValueText={isConnecting ? "Loading" : undefined}
                 >
-                  {isSaveLoading ? i18n.devDeployments.common.saving : i18n.terms.save}
+                  {isConnecting ? i18n.devDeployments.common.saving : i18n.terms.save}
                 </Button>
                 <Button variant="secondary" onClick={onBack}>
                   {i18n.terms.back}
@@ -461,7 +475,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
         </WizardContextConsumer>
       </WizardFooter>
     ),
-    [i18n, isConnectionValidated, isSaveLoading, onCancel, onFinish]
+    [i18n, isConnectionValidated, isConnecting, onCancel, onSave]
   );
 
   return <Wizard steps={wizardSteps} footer={wizardFooter} onNext={onStepChanged} onGoToStep={onStepChanged} />;

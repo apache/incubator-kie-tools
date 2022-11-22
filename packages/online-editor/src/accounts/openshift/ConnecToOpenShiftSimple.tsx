@@ -38,6 +38,7 @@ import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServic
 import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
+import { OpenShiftAuthSession } from "../authSessions/AuthSessionApi";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -52,6 +53,7 @@ export function ConnecToOpenShiftSimple(props: {
   setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
+  setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
 }) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
@@ -74,14 +76,16 @@ export function ConnecToOpenShiftSimple(props: {
     setConnecting(false);
 
     if (isConnectionEstablished) {
-      props.setStatus(OpenShiftInstanceStatus.CONNECTED);
-      authSessionsDispatch.add({
+      const newAuthSession: OpenShiftAuthSession = {
         type: "openshift",
         id: uuid(),
         ...props.connection,
         authProviderId: "openshift",
         createdAtDateISO: new Date().toISOString(),
-      });
+      };
+      props.setStatus(OpenShiftInstanceStatus.CONNECTED);
+      authSessionsDispatch.add(newAuthSession);
+      props.setNewAuthSession(newAuthSession);
     } else {
       setConnectionValidated(FormValiationOptions.CONNECTION_ERROR);
       return;
