@@ -90,6 +90,7 @@ export function DmnFormToolbar(props: Props) {
       >
         <Text className={"kogito--dmn-form__toolbar-title"}>
           {i18n.formToolbar.disclaimer.title}
+          &nbsp; &nbsp;
           <HelpIcon className="pf-u-ml-sm" />
         </Text>
       </Tooltip>
@@ -152,7 +153,13 @@ export function DmnFormToolbar(props: Props) {
           </FlexItem>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
             <TextContent>
-              <Text component={TextVariants.h3}>Sandbox</Text>
+              <Text component={TextVariants.h3} style={{ display: "inline" }}>
+                Sandbox
+              </Text>
+              &nbsp;&nbsp;
+              <Text component={TextVariants.small} style={{ display: "inline" }}>
+                <i>Dev deployments</i>
+              </Text>
             </TextContent>
           </FlexItem>
         </Flex>

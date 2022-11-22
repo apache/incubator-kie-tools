@@ -23,10 +23,8 @@ export const en: DmnFormI18n = {
   formToolbar: {
     disclaimer: {
       title: "Development only",
-      description: `The ${en_common.names.dmn} ${
-        en_common.names.shortDevSandbox
-      } is intended to be used during ${"development".bold()}, so users should not use the
-        deployed ${en_common.names.dmn} services in production or for any type of business-critical workloads.`,
+      description: `Dev deployments are intended to be used for ${"development".bold()} purposes only, so users should not use the
+        deployed services in production or for any type of business-critical workloads.`,
     },
   },
   page: {

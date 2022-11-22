@@ -120,10 +120,6 @@
   height: 50px;
 }
 
-.kogito--dmn-form__content-header.inputs {
-  margin-bottom: 10px;
-}
-
 .kogito--dmn-form__content-body {
   overflow-y: auto;
   height: 100%;
