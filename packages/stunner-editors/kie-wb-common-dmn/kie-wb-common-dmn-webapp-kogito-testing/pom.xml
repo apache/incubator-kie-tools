@@ -513,7 +513,7 @@
               <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
               <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
               <draftCompile>true</draftCompile>
-              <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+              <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
               <module>org.kie.workbench.common.dmn.showcase.FastCompiledDMNKogitoTestingWebapp</module>
               <logLevel>INFO</logLevel>
               <noServer>false</noServer>
@@ -522,7 +522,6 @@
               <hostedWebapp>src/main/webapp</hostedWebapp>
               <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
               <generateJsInteropExports>true</generateJsInteropExports>
-              <logLevel>INFO</logLevel>
 
               <compileSourcesArtifacts>
                 <!-- UberFire -->
