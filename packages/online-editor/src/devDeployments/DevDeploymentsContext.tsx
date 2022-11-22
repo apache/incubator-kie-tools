@@ -18,29 +18,43 @@ import * as React from "react";
 import { useContext } from "react";
 import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 
 export interface DeploymentFile {
   path: string;
   getFileContents: () => Promise<string>;
 }
 
+export type ConfirmDeployModalState =
+  | {
+      isOpen: true;
+      cloudAuthSessionId: string;
+    }
+  | {
+      isOpen: false;
+    };
+
 export interface DevDeploymentsContextType {
-  deployments: KieSandboxOpenShiftDeployedModel[];
   isDropdownOpen: boolean;
-  isDeploymentsDropdownOpen: boolean;
-  isConfirmDeployModalOpen: boolean;
-  isConfirmDeleteModalOpen: boolean;
-  deploymentsToBeDeleted: string[];
-  setDeployments: React.Dispatch<React.SetStateAction<KieSandboxOpenShiftDeployedModel[]>>;
   setDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  confirmDeployModalState: ConfirmDeployModalState;
+  setConfirmDeployModalState: React.Dispatch<React.SetStateAction<ConfirmDeployModalState>>;
+  isConfirmDeleteModalOpen: boolean;
   setConfirmDeleteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isDeploymentsDropdownOpen: boolean;
+  setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  deployments: KieSandboxOpenShiftDeployedModel[];
+  setDeployments: React.Dispatch<React.SetStateAction<KieSandboxOpenShiftDeployedModel[]>>;
+  deploymentsToBeDeleted: string[];
   setDeploymentsToBeDeleted: React.Dispatch<React.SetStateAction<string[]>>;
-  deploy: (workspaceFile: WorkspaceFile) => Promise<boolean>;
+
   deleteDeployment: (resourceName: string) => Promise<boolean>;
   deleteDeployments: () => Promise<boolean>;
   loadDeployments: (errCallback?: () => void) => Promise<void>;
+
+  deploy: (workspaceFile: WorkspaceFile, connection: OpenShiftConnection) => Promise<boolean>;
 }
 
 export const DevDeploymentsContext = React.createContext<DevDeploymentsContextType>({

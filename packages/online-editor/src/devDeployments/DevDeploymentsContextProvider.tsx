@@ -19,11 +19,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
-import { DevDeploymentsContext } from "./DevDeploymentsContext";
+import { KieSandboxOpenShiftDeployedModel, KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
+import { ConfirmDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import {
+  isOpenShiftConnectionValid,
+  OpenShiftConnection,
+} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
@@ -43,7 +46,7 @@ export function DevDeploymentsContextProvider(props: Props) {
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
-  const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
+  const [confirmDeployModalState, setConfirmDeployModalState] = useState<ConfirmDeployModalState>({ isOpen: false });
   const [deployments, setDeployments] = useState([] as KieSandboxOpenShiftDeployedModel[]);
   const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
   const [deploymentsToBeDeleted, setDeploymentsToBeDeleted] = useState<string[]>([]);
@@ -53,7 +56,7 @@ export function DevDeploymentsContextProvider(props: Props) {
     setDeployments([]);
 
     if (closeModals) {
-      setConfirmDeployModalOpen(false);
+      setConfirmDeployModalState({ isOpen: false });
     }
   }, []);
 
@@ -86,45 +89,47 @@ export function DevDeploymentsContextProvider(props: Props) {
     //   });
   }, []);
 
-  const deploy = useCallback(async (workspaceFile: WorkspaceFile) => {
-    return false;
-    // if (
-    //   !(
-    //     isOpenShiftConnectionValid(settings.openshift.config) &&
-    //     (await settingsDispatch.openshift.service.isConnectionEstablished(settings.openshift.config))
-    //   )
-    // ) {
-    //   return false;
-    // }
+  const deploy = useCallback(
+    async (workspaceFile: WorkspaceFile, connection: OpenShiftConnection) => {
+      const service = new KieSandboxOpenShiftService({
+        connection,
+        proxyUrl: extendedServices.config.url.corsProxy,
+      });
 
-    // const zipBlob = await workspaces.prepareZip({
-    //   workspaceId: workspaceFile.workspaceId,
-    //   onlyExtensions: ["dmn"],
-    // });
+      if (!(await service.isConnectionEstablished(connection))) {
+        return false;
+      }
 
-    // const descriptorService = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
+      const zipBlob = await workspaces.prepareZip({
+        workspaceId: workspaceFile.workspaceId,
+        onlyExtensions: ["dmn"],
+      });
 
-    // const workspaceName =
-    //   descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workspaceFile.name;
+      const descriptorService = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
 
-    // try {
-    //   await settingsDispatch.openshift.service.deploy({
-    //     targetFilePath: workspaceFile.relativePath,
-    //     workspaceName,
-    //     workspaceZipBlob: zipBlob,
-    //     onlineEditorUrl: (baseUrl) =>
-    //       routes.import.url({
-    //         base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
-    //         pathParams: {},
-    //         queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
-    //       }),
-    //   });
-    //   return true;
-    // } catch (error) {
-    //   console.error(error);
-    //   return false;
-    // }
-  }, []);
+      const workspaceName =
+        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workspaceFile.name;
+
+      try {
+        await service.deploy({
+          targetFilePath: workspaceFile.relativePath,
+          workspaceName,
+          workspaceZipBlob: zipBlob,
+          onlineEditorUrl: (baseUrl) =>
+            routes.import.url({
+              base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
+              pathParams: {},
+              queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
+            }),
+        });
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    },
+    [extendedServices.config.url.corsProxy, routes.import, workspaces]
+  );
 
   useEffect(() => {
     // if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
@@ -170,12 +175,12 @@ export function DevDeploymentsContextProvider(props: Props) {
       deployments,
       isDropdownOpen,
       isDeploymentsDropdownOpen,
-      isConfirmDeployModalOpen,
+      confirmDeployModalState,
       isConfirmDeleteModalOpen,
       deploymentsToBeDeleted,
       setDeployments,
       setDropdownOpen,
-      setConfirmDeployModalOpen,
+      setConfirmDeployModalState,
       setConfirmDeleteModalOpen,
       setDeploymentsDropdownOpen,
       setDeploymentsToBeDeleted,
@@ -188,7 +193,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       deployments,
       isDropdownOpen,
       isDeploymentsDropdownOpen,
-      isConfirmDeployModalOpen,
+      confirmDeployModalState,
       isConfirmDeleteModalOpen,
       deploymentsToBeDeleted,
       deploy,

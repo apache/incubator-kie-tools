@@ -16,7 +16,7 @@
 
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import { DependentFeature, useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
@@ -24,16 +24,35 @@ import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../filesList/FileLabel";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { AuthProviderGroup } from "../accounts/authProviders/AuthProvidersApi";
-import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
+import { openshiftAuthSessionSelectFilter } from "../accounts/authSessions/CompatibleAuthSessions";
+import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
 export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | undefined) {
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
   const accountsDispatch = useAccountsDispatch();
+  const { authSessions } = useAuthSessions();
+
+  const suggestedAuthSessionForDeployment = useMemo(() => {
+    return [...authSessions.values()].find((authSession) => authSession.type === "openshift");
+  }, [authSessions]);
+
+  const [authSessionId, setAuthSessionId] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (suggestedAuthSessionForDeployment) {
+      setAuthSessionId(suggestedAuthSessionForDeployment.id);
+    }
+
+    if (authSessionId && !authSessions.has(authSessionId)) {
+      setAuthSessionId(undefined);
+    }
+  }, [authSessionId, authSessions, suggestedAuthSessionForDeployment]);
 
   const isExtendedServicesRunning = useMemo(
     () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
@@ -41,25 +60,43 @@ export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | unde
   );
 
   const onDeploy = useCallback(() => {
-    if (isExtendedServicesRunning) {
-      devDeployments.setConfirmDeployModalOpen(true);
+    if (isExtendedServicesRunning && authSessionId) {
+      devDeployments.setConfirmDeployModalState({ isOpen: true, cloudAuthSessionId: authSessionId });
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
     extendedServices.setModalOpen(true);
-  }, [devDeployments, isExtendedServicesRunning, extendedServices]);
+  }, [isExtendedServicesRunning, authSessionId, extendedServices, devDeployments]);
 
   return useMemo(() => {
     return [
-      <React.Fragment key={"dmndev-sandbox-dropdown-items"}>
+      <React.Fragment key={"dmn-dev-deployment-dropdown-items"}>
         {workspace && (
           <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
+            <div style={{ padding: "8px 16px" }}>
+              <AuthSessionSelect
+                position={SelectPosition.right}
+                authSessionId={authSessionId}
+                setAuthSessionId={(newAuthSessionId) => {
+                  setAuthSessionId(newAuthSessionId);
+                  setTimeout(() => {
+                    accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                    devDeployments.setDropdownOpen(true);
+                  }, 0);
+                }}
+                isPlain={false}
+                title={"Select cloud provider for this dev deployment..."}
+                filter={openshiftAuthSessionSelectFilter()}
+                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
+              />
+            </div>
+            <Divider />
             <DropdownItem
               id="dmn-dev-deployment-deploy-your-model-button"
               key={`dropdown-dmn-dev-deployment-deploy`}
               component={"button"}
               onClick={onDeploy}
-              isDisabled={!isExtendedServicesRunning}
+              isDisabled={!isExtendedServicesRunning || !authSessionId}
               ouiaId={"deploy-to-dmn-dev-deployment-dropdown-button"}
               description="For development only!"
               style={{ minWidth: "400px" }}
@@ -86,27 +123,7 @@ export function useDevDeploymentsDropdownItems(workspace: ActiveWorkspace | unde
             </DropdownItem>
           </FeatureDependentOnKieSandboxExtendedServices>
         )}
-        {isExtendedServicesRunning && (
-          <>
-            <Divider />
-            <DropdownItem
-              id="dmn-dev-deployment-setup-button"
-              key={`dropdown-dmn-dev-deployment-setup`}
-              onClick={() => {
-                accountsDispatch({
-                  kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
-                  authProviderGroup: AuthProviderGroup.CLOUD,
-                });
-              }}
-              ouiaId={"setup-dmn-dev-deployment-dropdown-button"}
-            >
-              <Button isInline={true} variant={ButtonVariant.link} icon={<PlusIcon />}>
-                Connect to a cloud provider...
-              </Button>
-            </DropdownItem>
-          </>
-        )}
       </React.Fragment>,
     ];
-  }, [accountsDispatch, isExtendedServicesRunning, onDeploy, workspace]);
+  }, [accountsDispatch, authSessionId, devDeployments, isExtendedServicesRunning, onDeploy, workspace]);
 }

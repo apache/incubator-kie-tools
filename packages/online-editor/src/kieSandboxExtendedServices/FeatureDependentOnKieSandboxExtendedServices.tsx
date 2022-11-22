@@ -33,6 +33,7 @@ export function FeatureDependentOnKieSandboxExtendedServices(props: Props) {
   if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
     return props.children;
   }
+
   return (
     <Tooltip
       content={i18n.kieSandboxExtendedServices.dropdown.tooltip.install}

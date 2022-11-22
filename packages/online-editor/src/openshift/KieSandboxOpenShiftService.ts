@@ -36,7 +36,7 @@ import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/Temp
 import { getUploadStatus, postUpload, UploadStatus } from "../devDeployments/DmnDevDeploymentQuarkusAppApi";
 
 const RESOURCE_PREFIX = "dmn-dev-deployment";
-const RESOURCE_OWNER = "online-editor";
+const RESOURCE_OWNER = "kie-sandbox";
 const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
 export type KieSandboxOpenShiftDeployedModel = OpenShiftDeployedModel & {
@@ -151,6 +151,8 @@ export class KieSandboxOpenShiftService {
           baseUrl: routeUrl,
           workspaceName: args.workspaceName,
           containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
+          // FIXME: Tiago
+          // containerImageUrl: "quay.io/kie-tools/dmn-dev-sandbox-deployment-base-image:latest",
           envVars: [
             {
               name: "BASE_URL",

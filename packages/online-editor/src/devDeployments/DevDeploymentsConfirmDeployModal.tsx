@@ -23,6 +23,7 @@ import { useOnlineI18n } from "../i18n";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { useGlobalAlert } from "../alerts";
+import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -32,6 +33,11 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
   const devDeployments = useDevDeployments();
   const { i18n } = useOnlineI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
+  const { authSession } = useAuthSession(
+    devDeployments.confirmDeployModalState.isOpen
+      ? devDeployments.confirmDeployModalState.cloudAuthSessionId
+      : undefined
+  );
 
   const deployStartedErrorAlert = useGlobalAlert(
     useCallback(
@@ -61,15 +67,15 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
   );
 
   const onConfirm = useCallback(async () => {
-    if (isConfirmLoading) {
+    if (isConfirmLoading || authSession?.type !== "openshift") {
       return;
     }
 
     setConfirmLoading(true);
-    const deployStarted = await devDeployments.deploy(props.workspaceFile);
+    const deployStarted = await devDeployments.deploy(props.workspaceFile, authSession);
     setConfirmLoading(false);
 
-    devDeployments.setConfirmDeployModalOpen(false);
+    devDeployments.setConfirmDeployModalState({ isOpen: false });
 
     if (deployStarted) {
       devDeployments.setDeploymentsDropdownOpen(true);
@@ -77,10 +83,17 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
     } else {
       deployStartedErrorAlert.show();
     }
-  }, [isConfirmLoading, devDeployments, props.workspaceFile, deployStartedSuccessAlert, deployStartedErrorAlert]);
+  }, [
+    isConfirmLoading,
+    authSession,
+    devDeployments,
+    props.workspaceFile,
+    deployStartedSuccessAlert,
+    deployStartedErrorAlert,
+  ]);
 
   const onCancel = useCallback(() => {
-    devDeployments.setConfirmDeployModalOpen(false);
+    devDeployments.setConfirmDeployModalState({ isOpen: false });
     setConfirmLoading(false);
   }, [devDeployments]);
 
@@ -89,7 +102,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       data-testid={"confirm-deploy-modal"}
       variant={ModalVariant.small}
       title={i18n.devDeployments.deployConfirmModal.title}
-      isOpen={devDeployments.isConfirmDeployModalOpen}
+      isOpen={devDeployments.confirmDeployModalState.isOpen}
       aria-label={"Confirm deploy modal"}
       onClose={onCancel}
       actions={[
@@ -109,6 +122,15 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       ]}
     >
       {i18n.devDeployments.deployConfirmModal.body}
+      <br />
+      <br />
+      {authSession?.type === "openshift" && (
+        <>
+          {`This dev deployment will be created at`}
+          &nbsp;
+          <b>{`'${authSession.namespace}'`}</b>.
+        </>
+      )}
     </Modal>
   );
 }

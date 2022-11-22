@@ -175,3 +175,16 @@ export function gitAuthSessionSelectFilter(): AuthSessionSelectFilter {
       })),
   });
 }
+
+export function openshiftAuthSessionSelectFilter(): AuthSessionSelectFilter {
+  return (items) => ({
+    groups: [{ label: "Same", hidden: false }],
+    items: items
+      .filter(({ authSession }) => authSession.type === "openshift")
+      .map(({ authSession, authProvider }) => ({
+        authSession,
+        authProvider,
+        groupLabel: "Same",
+      })),
+  });
+}

@@ -41,7 +41,7 @@ export type OpenShiftAuthSession = {
   createdAtDateISO: string;
   token: string;
   namespace: string;
-  host?: string;
+  host: string;
 };
 
 export enum AuthSessionStatus {

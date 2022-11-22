@@ -187,13 +187,19 @@ export function AuthSessionSelect(props: {
     >
       {[
         // Title
-        <div key={"title"}>
-          <TextContent style={{ fontStyle: "italic", padding: "8px", opacity: "0.8" }}>
-            <Text component={TextVariants.small}>{props.title}</Text>
-          </TextContent>
-        </div>,
+        ...[
+          ...(filteredItemsByGroup.size > 0
+            ? [
+                <div key={"title"}>
+                  <TextContent style={{ fontStyle: "italic", padding: "8px", opacity: "0.8" }}>
+                    <Text component={TextVariants.small}>{props.title}</Text>
+                  </TextContent>
+                </div>,
+              ]
+            : []),
+        ],
 
-        ...[...filteredItemsByGroup.entries()].flatMap(([groupLabel, items], indexGroups) => {
+        ...[...filteredItemsByGroup.entries()].flatMap(([groupLabel, items]) => {
           // The selected item should always be rendered as an option.
           if (
             !items.find((a) => a.authSession.id === props.authSessionId) &&

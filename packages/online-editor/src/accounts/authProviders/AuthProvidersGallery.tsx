@@ -95,7 +95,7 @@ export function AuthProvidersGallery(props: {
                           selectedAuthProvider: authProvider,
                           backActionKind: props.backActionKind,
                           onNewAuthSession:
-                            accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT
+                            accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT
                               ? accounts.onNewAuthSession
                               : undefined,
                         });
