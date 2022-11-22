@@ -22,7 +22,7 @@ import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../i18n";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { useGlobalAlert } from "../alerts";
-import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthSession } from "../authSessions/AuthSessionsContext";
 
 export function DevDeploymentsConfirmDeleteModal() {
   const devDeployments = useDevDeployments();

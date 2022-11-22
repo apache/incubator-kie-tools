@@ -26,10 +26,10 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../filesList/FileLabel";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
-import { AuthProviderGroup } from "../accounts/authProviders/AuthProvidersApi";
-import { useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
-import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
-import { openshiftAuthSessionSelectFilter } from "../accounts/authSessions/CompatibleAuthSessions";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
+import { useAuthSessions } from "../authSessions/AuthSessionsContext";
+import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
+import { openshiftAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {

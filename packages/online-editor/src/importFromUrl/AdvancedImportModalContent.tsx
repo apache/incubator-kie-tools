@@ -26,9 +26,9 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { ServerRef } from "isomorphic-git";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useState } from "react";
-import { AuthProviderGroup } from "../accounts/authProviders/AuthProvidersApi";
-import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
-import { authSessionsSelectFilterCompatibleWithGitUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
+import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
+import { authSessionsSelectFilterCompatibleWithGitUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
 

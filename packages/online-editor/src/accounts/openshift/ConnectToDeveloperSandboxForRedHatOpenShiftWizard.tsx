@@ -38,12 +38,12 @@ import {
 } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "@kie-tools-core/openshift/dist/service/OpenShiftConstants";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
-import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
 import { v4 as uuid } from "uuid";
 import { useAccountsDispatch } from "../AccountsContext";
-import { useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
-import { OpenShiftAuthSession } from "../authSessions/AuthSessionApi";
+import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
+import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",

@@ -28,14 +28,14 @@ import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdo
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
+import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
 import { useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
-import { openshiftAuthSessionSelectFilter } from "../accounts/authSessions/CompatibleAuthSessions";
-import { AuthProviderGroup } from "../accounts/authProviders/AuthProvidersApi";
+import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
+import { openshiftAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 const DEPLOYMENTS_REFRESH_POLLING_TIME = 2500;
 

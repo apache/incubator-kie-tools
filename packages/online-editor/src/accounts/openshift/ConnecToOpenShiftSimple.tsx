@@ -24,11 +24,10 @@ import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-righ
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import {
-  EMPTY_OPENSHIFT_CONNECTION,
   isOpenShiftConnectionValid,
   OpenShiftConnection,
 } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
@@ -36,9 +35,9 @@ import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
-import { useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
+import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
-import { OpenShiftAuthSession } from "../authSessions/AuthSessionApi";
+import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",

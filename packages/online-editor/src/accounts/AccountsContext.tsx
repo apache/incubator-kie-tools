@@ -21,9 +21,9 @@ import {
   AuthProviderGroup,
   GitAuthProvider,
   OpenShiftAuthProvider,
-} from "./authProviders/AuthProvidersApi";
-import { AuthSession } from "./authSessions/AuthSessionApi";
-import { useAuthSessionsDispatch } from "./authSessions/AuthSessionsContext";
+} from "../authProviders/AuthProvidersApi";
+import { AuthSession } from "../authSessions/AuthSessionApi";
+import { useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
 
 // State
 

@@ -25,10 +25,10 @@ import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { useCallback } from "react";
 import { ConnectToGitHubSection } from "./github/ConnectToGitHubSection";
-import { AuthProvidersGallery } from "./authProviders/AuthProvidersGallery";
-import { AuthProviderIcon } from "./authProviders/AuthProviderIcon";
-import { AuthSessionsList } from "./authSessions/AuthSessionsList";
-import { useAuthSessions } from "./authSessions/AuthSessionsContext";
+import { AuthProvidersGallery } from "../authProviders/AuthProvidersGallery";
+import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
+import { AuthSessionsList } from "../authSessions/AuthSessionsList";
+import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import {
   EmptyState,

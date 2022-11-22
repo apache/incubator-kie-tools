@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { useEnv } from "../../env/hooks/EnvContext";
+import { useEnv } from "../env/hooks/EnvContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { AuthProvider } from "./AuthProvidersApi";
 

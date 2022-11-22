@@ -20,7 +20,7 @@ import { routes } from "../src/navigation/Routes";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../env";
-import { AuthProviderGroup } from "../src/accounts/authProviders/AuthProvidersApi";
+import { AuthProviderGroup } from "../src/authProviders/AuthProvidersApi";
 const buildEnv: any = env; // build-env is not typed
 
 export const defaultEnvJson: EnvJson = {

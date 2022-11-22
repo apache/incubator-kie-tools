@@ -19,7 +19,7 @@ import { useMemo, useState } from "react";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { obfuscate } from "../github/ConnectToGitHubSection";
@@ -29,9 +29,9 @@ import { EMPTY_OPENSHIFT_CONNECTION } from "@kie-tools-core/openshift/dist/servi
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { OpenShiftAuthSession } from "../authSessions/AuthSessionApi";
+import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
-import { AuthSessionDescriptionList } from "../authSessions/AuthSessionsList";
+import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,
@@ -82,6 +82,8 @@ export function ConnectToOpenShiftSection() {
   return (
     <>
       {status === OpenShiftInstanceStatus.UNAVAILABLE && (
+        // FIXME: Tiago
+        // That's just lazy.
         <>Please connect to Extended Services to be able to connect with OpenShift</>
       )}
 

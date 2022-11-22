@@ -40,10 +40,10 @@ import { ImportSingleFileFromUrlForm } from "../importFromUrl/ImportSingleFileFr
 import { ImportableUrl, UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { fetchSingleFileContent } from "../importFromUrl/fetchSingleFileContent";
-import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { useOctokit } from "../github/Hooks";
-import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
+import { useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert } from "../alerts";

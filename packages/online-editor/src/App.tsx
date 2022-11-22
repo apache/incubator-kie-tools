@@ -34,7 +34,7 @@ import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dis
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
 import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
-import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
+import { AuthSessionsContextProvider } from "./authSessions/AuthSessionsContext";
 import { AccountsContextProvider } from "./accounts/AccountsContext";
 import { GlobalAlertsContextProvider } from "./alerts";
 

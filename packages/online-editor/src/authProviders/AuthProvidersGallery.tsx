@@ -25,7 +25,7 @@ import {
   assertUnreachable,
   useAccounts,
   useAccountsDispatch,
-} from "../AccountsContext";
+} from "../accounts/AccountsContext";
 import { AuthProviderIcon } from "./AuthProviderIcon";
 import { AuthProvider, AuthProviderGroup } from "./AuthProvidersApi";
 import { useAuthProviders } from "./AuthProvidersContext";

@@ -30,7 +30,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useDevDeployments } from "./DevDeploymentsContext";
-import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
+import { AuthSession } from "../authSessions/AuthSessionApi";
 
 interface Props {
   id: number;

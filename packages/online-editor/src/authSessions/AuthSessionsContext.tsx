@@ -21,9 +21,9 @@ import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCach
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import * as React from "react";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getGithubInstanceApiUrl } from "../../github/Hooks";
+import { getGithubInstanceApiUrl } from "../github/Hooks";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { fetchAuthenticatedGitHubUser } from "../github/ConnectToGitHubSection";
+import { fetchAuthenticatedGitHubUser } from "../accounts/github/ConnectToGitHubSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 
 export type AuthSessionsContextType = {

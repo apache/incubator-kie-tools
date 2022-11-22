@@ -92,9 +92,9 @@ import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
-import { AuthSessionSelect, AuthSessionSelectFilter } from "../accounts/authSessions/AuthSessionSelect";
-import { useAuthProvider } from "../accounts/authProviders/AuthProvidersContext";
+import { useAuthSession } from "../authSessions/AuthSessionsContext";
+import { AuthSessionSelect, AuthSessionSelectFilter } from "../authSessions/AuthSessionSelect";
+import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { useOctokit } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
@@ -102,10 +102,10 @@ import {
   authSessionsSelectFilterCompatibleWithGistUrlDomain,
   authSessionsSelectFilterCompatibleWithGitUrlDomain,
   gitAuthSessionSelectFilter,
-} from "../accounts/authSessions/CompatibleAuthSessions";
+} from "../authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
-import { AuthProviderGroup } from "../accounts/authProviders/AuthProvidersApi";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
