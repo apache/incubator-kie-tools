@@ -36,8 +36,8 @@ void createSetupBranchJob() {
 
         REPO_NAME: 'kogito-serverless-operator',
         OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
-        CONTAINER_ENGINE: 'podman',
-        CONTAINER_TLS_OPTIONS: '--tls-verify=false',
+        CONTAINER_ENGINE: 'docker',
+        CONTAINER_TLS_OPTIONS: '',
         MAX_REGISTRY_RETRIES: 3,
 
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
@@ -77,8 +77,8 @@ void setupDeployJob(Folder jobFolder) {
         GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
 
         OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
-        CONTAINER_ENGINE: 'podman',
-        CONTAINER_TLS_OPTIONS: '--tls-verify=false',
+        CONTAINER_ENGINE: 'docker',
+        CONTAINER_TLS_OPTIONS: '',
         MAX_REGISTRY_RETRIES: 3,
         OPENSHIFT_API_KEY: 'OPENSHIFT_API',
         OPENSHIFT_CREDS_KEY: 'OPENSHIFT_CREDS',
@@ -115,8 +115,8 @@ void setupPromoteJob(Folder jobFolder) {
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        CONTAINER_ENGINE: 'podman',
-        CONTAINER_TLS_OPTIONS: '--tls-verify=false',
+        CONTAINER_ENGINE: 'docker',
+        CONTAINER_TLS_OPTIONS: '',
         MAX_REGISTRY_RETRIES: 3,
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
