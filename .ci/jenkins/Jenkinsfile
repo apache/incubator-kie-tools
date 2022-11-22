@@ -1,5 +1,7 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+
 changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
 changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
 changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
@@ -7,7 +9,9 @@ changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 BUILD_FAILED_IMAGES = []
 
 pipeline {
-    agent { label 'kogito-image-slave && !built-in' }
+    agent { 
+        label 'kogito-image-slave && !built-in' 
+    }
     tools {
         jdk 'kie-jdk11'
     }
@@ -27,14 +31,9 @@ pipeline {
                     if (env.MAVEN_MIRROR_REPOSITORY != null
                             && env.MAVEN_MIRROR_REPOSITORY != '') {
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
-                            }
+                    }
 
                     githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-
-                    //Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
-                    if (env.MAVEN_MIRROR_URL != '') {
-                        sh 'python3 scripts/update-tests.py --ignore-self-signed-cert'
-                    }
                 }
             }
         }
@@ -52,9 +51,16 @@ pipeline {
                 }
             }
         }
-        stage('Prepare offline kogito-examples') {
+        stage('Prepare for tests') {
             steps {
-                sh 'make clone-repos'
+                script {
+                    //Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
+                    if (env.MAVEN_MIRROR_URL != '') {
+                        sh 'python3 scripts/update-tests.py --ignore-self-signed-cert'
+                    }
+
+                    sh 'make clone-repos'
+                }
             }
         }
         stage('Build & Test Images') {

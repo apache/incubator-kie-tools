@@ -7,19 +7,20 @@ if [ ! -z "${resources_path}" ]; then
   resources_path="$(realpath "${resources_path}")"
 fi
 
-# Call the configure-maven here
-source "${KOGITO_HOME}"/launch/configure-maven.sh
-configure
-
-source "${KOGITO_HOME}"/launch/logging.sh
+source "${script_dir_path}"/logging.sh
 
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
+    export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -X --batch-mode" 
     log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
     printenv
 fi
 
-cd "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
+# Call the configure-maven here
+source "${script_dir_path}"/configure-maven.sh
+configure
+
+cd "${PROJECT_ARTIFACT_ID}"
 
 if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then
   ${script_dir_path}/add-extension.sh "${QUARKUS_EXTENSIONS}"

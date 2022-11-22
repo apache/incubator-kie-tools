@@ -5,7 +5,7 @@ version: "3.8.6"
 envs:
   - name: "MAVEN_VERSION"
     value: "3.8.6"
-  - name: " MAVEN_HOME"
+  - name: "MAVEN_HOME"
     value: "/usr/share/maven"
   - name: "MAVEN_SETTINGS_PATH"
     description: "The location of the settings.xml file"
