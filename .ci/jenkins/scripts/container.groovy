@@ -1,7 +1,7 @@
 containerOpenshift = null
 
-containerEngine = 'podman'
-containerTlsOptions = '--tls-verify=false'
+containerEngine = 'docker'
+containerTlsOptions = ''
 
 void pullImage(String image) {
     retry(env.MAX_REGISTRY_RETRIES ?: 1) {
