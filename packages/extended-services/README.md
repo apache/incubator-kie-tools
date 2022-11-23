@@ -1,6 +1,6 @@
 ## KIE Sandbox Extended Services
 
-Powers the DMN Runner and Dev Deployments features.
+Powers the DMN Runner and Dev deployments features.
 
 ## Parameters
 

@@ -71,11 +71,11 @@ module.exports = composeEnv(
       },
       DMN_DEV_DEPLOYMENT__baseImageTag: {
         default: "latest",
-        description: "Image tag to be used by DMN Dev Deployments when deploying DMN models.",
+        description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
       },
       DMN_DEV_DEPLOYMENT__onlineEditorUrl: {
         default: `https://0.0.0.0:${devPort}`,
-        description: "URL that DMN Dev Deployments will use to open KIE Sandbox.",
+        description: "URL that DMN Dev deployments will use to open KIE Sandbox.",
       },
     }),
     get env() {
