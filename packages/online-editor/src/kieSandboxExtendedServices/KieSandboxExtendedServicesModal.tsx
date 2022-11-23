@@ -699,15 +699,18 @@ export function KieSandboxExtendedServicesModal() {
               <Text component={TextVariants.p}>{i18n.kieSandboxExtendedServices.modal.initial.subHeader}</Text>
             </TextContent>
           </div>
+          <br />
           {extendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER && (
             <div className="pf-u-display-flex pf-u-flex-direction-row">
               <div className="pf-u-w-25 pf-u-ml-sm">
                 <TextContent>
                   <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.runDmnModels}</Text>
                 </TextContent>
+                <br />
                 <TextContent className="pf-u-mt-md">
                   <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.explanation}</Text>
                 </TextContent>
+                <br />
                 <TextContent className="pf-u-mt-md">
                   <Text component={TextVariants.p}>
                     <I18nWrapped components={{ icon: <ExclamationCircleIcon /> }}>
@@ -716,6 +719,7 @@ export function KieSandboxExtendedServicesModal() {
                   </Text>
                 </TextContent>
               </div>
+              <br />
               <div className="pf-u-w-75 pf-u-p-sm">
                 <img
                   className="pf-u-h-100"
@@ -732,25 +736,19 @@ export function KieSandboxExtendedServicesModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>{i18n.devDeployments.introduction.explanation}</Text>
                 </TextContent>
+                <br />
                 <TextContent className="pf-u-mt-md">
                   <Text component={TextVariants.p}>
                     <I18nHtml>{i18n.devDeployments.introduction.disclaimer}</I18nHtml>
                   </Text>
                 </TextContent>
-                <TextContent className="pf-u-mt-md">
-                  <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={DEVELOPER_SANDBOX_URL} target={"_blank"}>
-                      {i18n.devDeployments.common.learnMore}
-                      <ExternalLinkAltIcon className="pf-u-mx-sm" />
-                    </Text>
-                  </Text>
-                </TextContent>
               </div>
+              <br />
               <div className="pf-u-w-75">
                 <img
                   className="pf-u-h-100"
                   src={routes.static.images.dmnDevDeploymentGif.path({})}
-                  alt={"DMN Dev Deployments usage"}
+                  alt={"DMN Dev deployments usage"}
                   width={"100%"}
                 />
               </div>

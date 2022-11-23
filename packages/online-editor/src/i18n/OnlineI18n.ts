@@ -74,7 +74,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       connectedTo: (username: string) => string;
       connectedToAction: string;
       deleteDeployments: string;
-      deleteDeploymentsDescription: string;
       item: {
         upTooltip: string;
         downTooltip: string;

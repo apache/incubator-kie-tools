@@ -222,11 +222,11 @@ function getDevDeploymentsArgs() {
   const baseImageTag = buildEnv.devDeployments.dmn.baseImage.tag;
   const onlineEditorUrl = buildEnv.devDeployments.onlineEditorUrl;
 
-  console.info("DMN Dev Deployment :: Base Image Registry: " + baseImageRegistry);
-  console.info("DMN Dev Deployment :: Base Image Account: " + baseImageAccount);
-  console.info("DMN Dev Deployment :: Base Image Name: " + baseImageName);
-  console.info("DMN Dev Deployment :: Base Image Tag: " + baseImageTag);
-  console.info("Dev Deployments :: Online Editor Url: " + onlineEditorUrl);
+  console.info("DMN Dev deployment :: Base Image Registry: " + baseImageRegistry);
+  console.info("DMN Dev deployment :: Base Image Account: " + baseImageAccount);
+  console.info("DMN Dev deployment :: Base Image Name: " + baseImageName);
+  console.info("DMN Dev deployment :: Base Image Tag: " + baseImageTag);
+  console.info("Dev deployments :: Online Editor Url: " + onlineEditorUrl);
 
   return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
 }

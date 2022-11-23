@@ -64,7 +64,7 @@ export const en: OnlineI18n = {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
-        "When you set up the required information, you are able to create dev deployments on your configured instance. All the information you provide is locally stored in the browser and is never shared with anyone.",
+        "When you set up the required information, you are able to create Dev deployments on your configured instance. All the information you provide is locally stored in the browser and is never shared with anyone.",
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
@@ -76,8 +76,7 @@ export const en: OnlineI18n = {
       noDeployments: "Your deployments show up here",
       connectedTo: (username: string) => `Connected to  '${username}'`,
       connectedToAction: "Change...",
-      deleteDeployments: "Delete deployments",
-      deleteDeploymentsDescription: "All deployments will be deleted",
+      deleteDeployments: "Delete all",
       item: {
         upTooltip: "This deployment is up and running.",
         downTooltip: "This deployment is not running.",
@@ -89,7 +88,7 @@ export const en: OnlineI18n = {
     },
     configModal: {
       hostInfo: `The hostname associated with your instance.`,
-      namespaceInfo: `The Namespace (project) you want your dev deployments to be.`,
+      namespaceInfo: `The Namespace (project) you want your Dev deployments to be.`,
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
@@ -98,22 +97,21 @@ export const en: OnlineI18n = {
     },
     deployConfirmModal: {
       title: "Deploy",
-      body: "This action can take a few minutes to be completed and you will need to create a new deployment if you update your model, as dev deployments are immutable.",
+      body: "This action can take a few minutes to be completed and you will need to create a new deployment if you update your model, as Dev deployments are immutable.",
     },
     deleteConfirmModal: {
-      title: "Delete deployment(s)",
-      body: "Are you sure you want to delete your deployment(s)? This action is not reversible and you will need to create a new deployment if you want to test your model(s) again.",
+      title: "Delete Dev deployment(s)",
+      body: "Are you sure you want to delete your Dev deployment(s)?",
     },
     alerts: {
       deployStartedError:
-        "Something went wrong when creating your deployment. Please check your configuration and try again.",
-      deployStartedSuccess:
-        "Your deployment has been successfully started and will be available shortly. Please do not close your browser tab until this operation is completed.",
-      deleteError: "Failed to delete deployment(s). Please try again via Openshift Console or CLI.",
-      deleteSuccess: "Deployment(s) successfully deleted.",
+        "Something went wrong when creating your Dev deployment. Please check your configuration and try again.",
+      deployStartedSuccess: "Your Dev deployment has been successfully started and will be available shortly.",
+      deleteError: "Failed to delete Dev deployment(s). Please try again via OpenShift Console or CLI.",
+      deleteSuccess: "Dev deployment(s) successfully deleted.",
     },
     introduction: {
-      explanation: `Create dev deployments in the cloud and share with others.`,
+      explanation: `Create Dev deployments in the cloud and share with others.`,
       disclaimer: `${
         en_common.names.devDeployments
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
@@ -129,10 +127,10 @@ export const en: OnlineI18n = {
           introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
           goToGetStartedPage: "Go to the Get Started page",
           followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informNamespace: `Once your instance is up and running, inform the Namespace (project) where you want your dev deployments created.`,
+          informNamespace: `Once your instance is up and running, inform the Namespace (project) where you want your Dev deployments created.`,
           inputReason:
-            "This information is necessary for creating your dev deployments in the right Namespace (project).",
-          namespacePlaceholder: `The Namespace (project) where you want to create your dev deployments.`,
+            "This information is necessary for creating your Dev deployments in the right Namespace (project).",
+          namespacePlaceholder: `The Namespace (project) where you want to create your Dev deployments.`,
         },
         second: {
           name: "Set credentials",
@@ -148,7 +146,7 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to create dev deployments on this OpenShift instance.",
+          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
           configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
           checkInfo: "Please check the information provided and try again.",
@@ -299,7 +297,7 @@ export const en: OnlineI18n = {
         explanation:
           "Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.",
         notificationPanelExplanation: [
-          `The Notifications Panel `,
+          `The Problems panel `,
           wrapped("icon"),
           `, at the bottom-right corner of the Editor, displays live Execution messages to assist modeling your decisions.`,
         ],
@@ -441,7 +439,7 @@ export const en: OnlineI18n = {
     },
   },
   notificationsPanel: {
-    name: "Notifications Panel",
+    name: "Problems panel",
     tooltip: {
       retractAll: "Retract All",
       expandAll: "Expand All",

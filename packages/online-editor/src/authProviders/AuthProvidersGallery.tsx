@@ -57,7 +57,7 @@ export function AuthProvidersGallery(props: {
             <>
               <TextContent>
                 <Text component={TextVariants.h2} style={{ display: "inline-block" }}>
-                  {group.charAt(0).toUpperCase() + group.slice(1) /* FIXME: Tiago */}
+                  {group.charAt(0).toUpperCase() + group.slice(1)}
                 </Text>
                 &nbsp; &nbsp;
                 <Text component={TextVariants.small} style={{ display: "inline-block", fontStyle: "italic" }}>
@@ -138,7 +138,7 @@ function AuthProviderGroupDescription(props: { group: AuthProviderGroup }) {
   const group = props.group;
   switch (group) {
     case AuthProviderGroup.CLOUD:
-      return <>{"Allows dev deployments to be created in your Cloud infrastructure."}</>;
+      return <>{"Allows Dev deployments to be created in your Cloud infrastructure."}</>;
     case AuthProviderGroup.GIT:
       return <>{"Allows integration with private repositories and provider-specific features, like GitHub Gists."}</>;
     default:

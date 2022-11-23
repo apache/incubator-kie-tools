@@ -125,7 +125,6 @@ export function DevDeploymentsDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
-    // FIXME: This should not be so loosely referenced.
     window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
   }, [props.deployment.routeUrl, props.deployment.uri]);
 
@@ -137,14 +136,11 @@ export function DevDeploymentsDropdownItem(props: Props) {
     });
   }, [devDeployments, props.cloudAuthSession.id, props.deployment.resourceName]);
 
-  const isDisabled = useMemo(() => props.deployment.state !== OpenShiftDeploymentState.UP, [props.deployment.state]);
-
   return (
     <Flex>
       <FlexItem grow={{ default: "grow" }} style={{ margin: "0" }}>
         <DropdownItem
           id="dev-deployments-deployment-item-button"
-          isDisabled={isDisabled}
           key={`dev-deployments-dropdown-item-${props.id}`}
           onClick={onItemClicked}
           description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
@@ -156,14 +152,11 @@ export function DevDeploymentsDropdownItem(props: Props) {
       <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
         <Button
           className="kogito--editor__dev-deployments-dropdown-item-delete"
-          style={{
-            color: isDisabled ? "var(--pf-global--palette--black-300)" : "var(--pf-global--palette--black-500)",
-          }}
+          style={{ color: "var(--pf-global--palette--black-500)" }}
           variant={ButtonVariant.link}
           isDanger={true}
           onClick={onDelete}
           icon={<TrashIcon />}
-          isDisabled={isDisabled}
         />
       </FlexItem>
     </Flex>

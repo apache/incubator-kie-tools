@@ -360,7 +360,7 @@ export function useClonableUrl(
 export function useGitServerRefs(url: URL | undefined, authInfo: AuthInfo | undefined) {
   const workspaces = useWorkspaces();
 
-  const gitServerRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
+  const [gitServerRefsPromise] = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
     useMemo(() => {
       if (!url) {
         return { error: "Can't determine Git refs without URL." };

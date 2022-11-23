@@ -21,7 +21,10 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
-import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import {
+  DependentFeature,
+  useExtendedServices,
+} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { obfuscate } from "../github/ConnectToGitHubSection";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";
@@ -32,6 +35,9 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,
@@ -82,9 +88,36 @@ export function ConnectToOpenShiftSection() {
   return (
     <>
       {status === OpenShiftInstanceStatus.UNAVAILABLE && (
-        // FIXME: Tiago
-        // That's just lazy.
-        <>Please connect to Extended Services to be able to connect with OpenShift</>
+        <>
+          <Bullseye>
+            <EmptyState>
+              <EmptyStateIcon icon={PficonSatelliteIcon} />
+              <Title
+                headingLevel="h4"
+                size="md"
+                style={{
+                  width: "300px",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "break-spaces",
+                }}
+              >
+                {`Please setup KIE Sandbox Extended Services to be able to connect to OpenShift.`}
+              </Title>
+              <br />
+              <Button
+                onClick={() => {
+                  setTimeout(() => {
+                    extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
+                    extendedServices.setModalOpen(true);
+                    accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                  });
+                }}
+              >
+                Setup
+              </Button>
+            </EmptyState>
+          </Bullseye>
+        </>
       )}
 
       {status === OpenShiftInstanceStatus.CONNECTED && newAuthSession && (

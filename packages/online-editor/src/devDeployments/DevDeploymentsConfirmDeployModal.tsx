@@ -49,7 +49,8 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
         />
       ),
       [i18n]
-    )
+    ),
+    { durationInSeconds: 5 }
   );
 
   const deployStartedSuccessAlert = useGlobalAlert(
@@ -63,7 +64,8 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
         />
       ),
       [i18n]
-    )
+    ),
+    { durationInSeconds: 5 }
   );
 
   const onConfirm = useCallback(async () => {
@@ -126,7 +128,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       <br />
       {authSession?.type === "openshift" && (
         <>
-          {`This dev deployment will be created at`}
+          {`This Dev deployment will be created at`}
           &nbsp;
           <b>{`'${authSession.namespace}'`}</b>.
         </>

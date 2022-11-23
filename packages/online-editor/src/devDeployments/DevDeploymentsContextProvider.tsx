@@ -99,13 +99,6 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
 
-      // FIXME: Tiago
-      //
-      // What if my DMN includes a PMML file? Or a java file?
-      // What it my project already is configured to be run with Quarkus?
-      // - Need to use a different image and deploy the entire Workspace. What command to run then?
-      // - .kie-sandbox folder with this kind of configuration?
-      // - What to do with monorepos?
       const zipBlob = await workspaces.prepareZip({
         workspaceId: workspaceFile.workspaceId,
         onlyExtensions: ["dmn"],
@@ -113,19 +106,13 @@ export function DevDeploymentsContextProvider(props: Props) {
 
       const workspace = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
 
-      // FIXME: Tiago
-      // Better way is to check if the Workspace has more than one file or not.
       const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
 
       try {
         await service.deploy({
           targetFilePath: workspaceFile.relativePath,
-          // FIXME: Tiago -> Rename. OpenShift shouldn't know about Workspaces.
           workspaceName,
-          // FIXME: Tiago -> Rename. OpenShift shouldn't know about Workspaces.
           workspaceZipBlob: zipBlob,
-          // FIXME: Tiago -> Rename to something else.
-          // Also, is this correct? That wouldn't be "linked" with the deploy in any way.
           onlineEditorUrl: (baseUrl) =>
             routes.import.url({
               base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,

@@ -45,7 +45,8 @@ export function DevDeploymentsConfirmDeleteModal() {
         />
       ),
       [i18n]
-    )
+    ),
+    { durationInSeconds: 5 }
   );
 
   const deleteSuccessAlert = useGlobalAlert(
@@ -59,7 +60,8 @@ export function DevDeploymentsConfirmDeleteModal() {
         />
       ),
       [i18n]
-    )
+    ),
+    { durationInSeconds: 5 }
   );
 
   const onConfirm = useCallback(async () => {
@@ -114,6 +116,27 @@ export function DevDeploymentsConfirmDeleteModal() {
       ]}
     >
       {i18n.devDeployments.deleteConfirmModal.body}
+      <br />
+      <br />
+      {`This action is not reversible and links you shared with other people will not be available anymore.`}
+      <br />
+      <br />
+      {`The following deployments will be deleted:`}
+      <br />
+      <br />
+      {devDeployments.confirmDeleteModalState.isOpen && (
+        <ul>
+          {devDeployments.confirmDeleteModalState.resourceNames.map((resourceName) => {
+            return (
+              <li key={resourceName}>
+                <b>- {resourceName}</b>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <br />
+      <br />
     </Modal>
   );
 }
