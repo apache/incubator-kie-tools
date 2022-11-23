@@ -50,6 +50,7 @@ const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DataType.Undefined;
 
 export const ContextExpression: React.FunctionComponent<ContextProps> = (contextExpression: ContextProps) => {
+  const existingEntryInfos: EntryInfo[] = [];
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setSupervisorHash, boxedExpressionEditorGWTService, decisionNodeId } = useBoxedExpression();
 
@@ -179,13 +180,12 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
   );
 
   const onRowAdding = useCallback(
-    (existingRowsCount: number) => {
-      const generatedName = generateNextAvailableEntryName(
-        _.map(rows, (row: ContextEntryRecord) => row.entryInfo) as EntryInfo[],
-        "ContextEntry",
-        existingRowsCount + 1
-      );
-      return {
+    (allRows: DataRecord[]) => {
+      if (!existingEntryInfos.length) {
+        existingEntryInfos.push(...(_.map(allRows, (row: ContextEntryRecord) => row.entryInfo) as EntryInfo[]));
+      }
+      const generatedName = generateNextAvailableEntryName(existingEntryInfos, "ContextEntry");
+      const row = {
         entryInfo: {
           id: generateUuid(),
           name: generatedName,
@@ -198,8 +198,12 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
         editInfoPopoverLabel: i18n.editContextEntry,
         nameAndDataTypeSynchronized: true,
       };
+
+      existingEntryInfos.push(row.entryInfo);
+
+      return row;
     },
-    [i18n.editContextEntry, rows]
+    [i18n.editContextEntry]
   );
 
   const onRowsUpdate = useCallback(
