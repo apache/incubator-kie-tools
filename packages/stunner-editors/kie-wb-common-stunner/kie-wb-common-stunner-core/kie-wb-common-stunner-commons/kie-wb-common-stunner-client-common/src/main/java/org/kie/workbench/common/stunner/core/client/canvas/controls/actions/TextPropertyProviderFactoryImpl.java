@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -39,17 +40,15 @@ public class TextPropertyProviderFactoryImpl implements TextPropertyProviderFact
         for (TextPropertyProvider provider : providers) {
             this.providers.add(provider);
         }
-        this.providers.sort((p1,
-                             p2) -> p1.getPriority() - p2.getPriority());
+        this.providers.sort(Comparator.comparingInt(TextPropertyProvider::getPriority));
     }
 
     @Override
     public TextPropertyProvider getProvider(final Element<? extends Definition> element) {
-        final TextPropertyProvider provider = providers
+        return providers
                 .stream()
-                .filter((p) -> p.supports(element))
+                .filter(p -> p.supports(element))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No TextPropertyProvider found for '" + element.getClass().getName() + "'."));
-        return provider;
     }
 }

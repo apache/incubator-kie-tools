@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.actions;
 
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -70,12 +72,14 @@ public class DRGElementTextPropertyProviderImpl implements TextPropertyProvider 
                         final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                         final Element<? extends Definition> element,
                         final String text) {
-        final Object definition = DefinitionUtils.getElementDefinition(element);
-        final CanvasCommand<AbstractCanvasHandler> command =
-                canvasCommandFactory.updatePropertyValue(element,
-                                                         definitionUtils.getNameIdentifier(definition),
-                                                         new Name(NameUtils.normaliseName(text)));
-        commandManager.execute(canvasHandler,
-                               command);
+        if (!Objects.equals(text, getText(element))) {
+            final Object definition = DefinitionUtils.getElementDefinition(element);
+            final CanvasCommand<AbstractCanvasHandler> command = canvasCommandFactory.updatePropertyValue(
+                    element,
+                    definitionUtils.getNameIdentifier(definition),
+                    new Name(NameUtils.normaliseName(text)));
+
+            commandManager.execute(canvasHandler, command);
+        }
     }
 }
