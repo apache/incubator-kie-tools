@@ -75,6 +75,7 @@
     "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dashbuilder-client": "workspace:*",
+    "@kie-tools/dashbuilder-viewer-image-env": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/openjdk11-mvn-image-env": "workspace:*",
     "@kie-tools/root-env": "workspace:*",

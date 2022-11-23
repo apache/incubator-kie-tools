@@ -68,6 +68,12 @@
       { "id": "@kie-tools/dashbuilder-images" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
       { "id": "@kie-tools/dashbuilder-viewer" },
+      { "id": "@kie-tools/dashbuilder-viewer-deployment-webapp" },
+      { "id": "@kie-tools-core/workspaces-git-fs" },
+      { "id": "@kie-tools-core/react-hooks" },
+      { "id": "@kie-tools/kie-sandbox-fs" },
+      { "id": "@kie-tools/dashbuilder-viewer-image" },
+      { "id": "@kie-tools/dashbuilder-viewer-image-env" },
       { "id": "@kie-tools/desktop" },
       { "id": "@kie-tools/dmn-dev-deployment-base-image" },
       { "id": "@kie-tools/dmn-dev-deployment-form-webapp" },
@@ -84,15 +90,12 @@
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
-      { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools/kie-sandbox-image" },
       { "id": "@kie-tools/online-editor" },
       { "id": "@kie-tools-core/openshift" },
-      { "id": "@kie-tools-core/workspaces-git-fs" },
       { "id": "@kie-tools/pmml-editor" },
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
-      { "id": "@kie-tools-core/react-hooks" },
       { "id": "@kie-tools/unitables" },
       { "id": "@kie-tools/openjdk11-mvn-image" },
       { "id": "@kie-tools/openjdk11-mvn-image-env" },
@@ -470,6 +473,41 @@
       },
       { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
+      {
+        "source": "@kie-tools/dashbuilder-viewer-deployment-webapp",
+        "target": "@kie-tools-core/workspaces-git-fs",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-viewer-deployment-webapp",
+        "target": "@kie-tools/dashbuilder-viewer",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-viewer-deployment-webapp",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/envelope-bus", "weight": 1 },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/react-hooks", "weight": 1 },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/workspace", "weight": 1 },
+      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools/kie-sandbox-fs", "weight": 1 },
+      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/kie-sandbox-fs", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/kie-sandbox-fs", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools/dashbuilder-viewer-image",
+        "target": "@kie-tools/dashbuilder-viewer-deployment-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-viewer-image",
+        "target": "@kie-tools/dashbuilder-viewer-image-env",
+        "weight": 1
+      },
+      { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/desktop", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/desktop", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
@@ -536,8 +574,6 @@
         "target": "@kie-tools/extended-services",
         "weight": 1
       },
-      { "source": "@kie-tools/kie-sandbox-fs", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/kie-sandbox-fs", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/online-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/openshift", "weight": 1 },
@@ -552,10 +588,6 @@
       { "source": "@kie-tools-core/openshift", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/openshift", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/openshift", "target": "@kie-tools/tsconfig", "weight": 1 },
-      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/envelope-bus", "weight": 1 },
-      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/react-hooks", "weight": 1 },
-      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools-core/workspace", "weight": 1 },
-      { "source": "@kie-tools-core/workspaces-git-fs", "target": "@kie-tools/kie-sandbox-fs", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
@@ -563,9 +595,6 @@
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools-core/react-hooks", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
       { "source": "@kie-tools/openjdk11-mvn-image", "target": "@kie-tools/openjdk11-mvn-image-env", "weight": 1 },
@@ -580,6 +609,11 @@
         "weight": 1
       },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/text-editor", "weight": 1 },
+      {
+        "source": "@kie-tools/serverless-logic-sandbox",
+        "target": "@kie-tools/dashbuilder-viewer-image-env",
+        "weight": 1
+      },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/openjdk11-mvn-image-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-sandbox",
@@ -766,6 +800,9 @@
     ["@kie-tools/dashbuilder-images", "packages/dashbuilder-images"],
     ["@kie-tools/dashbuilder-swf-monitoring-dashboard", "packages/dashbuilder-swf-monitoring-dashboard"],
     ["@kie-tools/dashbuilder-viewer", "packages/dashbuilder-viewer"],
+    ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
+    ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
+    ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
     ["@kie-tools/desktop", "packages/desktop"],
     ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
     ["@kie-tools/dmn-dev-deployment-base-image-env", "packages/dmn-dev-deployment-base-image-env"],

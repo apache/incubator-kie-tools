@@ -48,6 +48,8 @@ export type CompletedDeployOperation = string | undefined;
 export enum DeploymentStrategyKind {
   KOGITO_SWF_MODEL,
   KOGITO_PROJECT,
+  DASHBOARD_SINGLE_MODEL,
+  DASHBOARD_WORKSPACE,
 }
 
 export type DeploymentStrategyFactoryArgs =
@@ -58,7 +60,9 @@ export type DeploymentStrategyFactoryArgs =
   | {
       kind: DeploymentStrategyKind.KOGITO_PROJECT;
       shouldAttachKafkaSource: boolean;
-    };
+    }
+  | { kind: DeploymentStrategyKind.DASHBOARD_SINGLE_MODEL }
+  | { kind: DeploymentStrategyKind.DASHBOARD_WORKSPACE };
 
 export interface InitDeployArgs {
   factoryArgs: DeploymentStrategyFactoryArgs;

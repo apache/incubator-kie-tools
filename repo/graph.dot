@@ -54,6 +54,11 @@ digraph G {
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dashbuilder-viewer-deployment-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-core/workspaces-git-fs" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dashbuilder-viewer-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dashbuilder-viewer-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-deployment-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -65,7 +70,6 @@ digraph G {
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-generation-tool" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -84,7 +88,6 @@ digraph G {
   "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/openshift" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools-core/workspaces-git-fs" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/openjdk11-mvn-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -198,6 +201,12 @@ digraph G {
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dashbuilder-viewer-deployment-webapp" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-viewer-deployment-webapp" -> "@kie-tools/dashbuilder-viewer" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-viewer-deployment-webapp" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-deployment-webapp" [ style = "dashed", color = "black" ];
+  "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/dashbuilder-viewer-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-form-webapp" [ style = "solid", color = "black" ];
@@ -293,6 +302,7 @@ digraph G {
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/openjdk11-mvn-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/serverless-logic-sandbox-base-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-base-image" -> "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ style = "dashed", color = "black" ];
