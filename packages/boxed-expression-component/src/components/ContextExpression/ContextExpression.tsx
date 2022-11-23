@@ -178,25 +178,29 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
     [contextExpression, spreadContextExpressionDefinition]
   );
 
-  const onRowAdding = useCallback(() => {
-    const generatedName = generateNextAvailableEntryName(
-      _.map(rows, (row: ContextEntryRecord) => row.entryInfo) as EntryInfo[],
-      "ContextEntry"
-    );
-    return {
-      entryInfo: {
-        id: generateUuid(),
-        name: generatedName,
-        dataType: DataType.Undefined,
-      },
-      entryExpression: {
-        name: generatedName,
-        dataType: DataType.Undefined,
-      },
-      editInfoPopoverLabel: i18n.editContextEntry,
-      nameAndDataTypeSynchronized: true,
-    };
-  }, [i18n.editContextEntry, rows]);
+  const onRowAdding = useCallback(
+    (existingRowsCount: number) => {
+      const generatedName = generateNextAvailableEntryName(
+        _.map(rows, (row: ContextEntryRecord) => row.entryInfo) as EntryInfo[],
+        "ContextEntry",
+        existingRowsCount + 1
+      );
+      return {
+        entryInfo: {
+          id: generateUuid(),
+          name: generatedName,
+          dataType: DataType.Undefined,
+        },
+        entryExpression: {
+          name: generatedName,
+          dataType: DataType.Undefined,
+        },
+        editInfoPopoverLabel: i18n.editContextEntry,
+        nameAndDataTypeSynchronized: true,
+      };
+    },
+    [i18n.editContextEntry, rows]
+  );
 
   const onRowsUpdate = useCallback(
     ({ rows }: RowsUpdateArgs<ContextEntryRecord>) => {

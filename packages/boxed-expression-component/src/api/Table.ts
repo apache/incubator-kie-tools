@@ -57,7 +57,7 @@ export interface TableProps {
   /** Function to be executed when one or more rows are modified */
   onRowsUpdate?: (args: RowsUpdateArgs) => void;
   /** Function to be executed when adding a new row to the table */
-  onRowAdding?: () => DataRecord;
+  onRowAdding?: (existingRowsCount: number) => DataRecord;
   /** Custom configuration for the table handler */
   handlerConfiguration?: TableHandlerConfiguration;
   /** The way in which the header will be rendered */
