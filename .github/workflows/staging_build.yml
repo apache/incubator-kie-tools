@@ -74,6 +74,11 @@ jobs:
 
       DEPLOY_TAG: "${{ inputs.tag }}-prerelease"
 
+      DASHBUILDER__viewerImageRegistry: "quay.io"
+      DASHBUILDER__viewerImageAccount: "kie-tools"
+      DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
+      DASHBUILDER__viewerImageBuildTags: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_SANDBOX__dashbuilderViewerImageTag: "${{ inputs.tag }}-prerelease"
       SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
       SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
       SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
@@ -288,6 +293,16 @@ jobs:
           tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
           registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
           username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER__viewerImageName }}"
+          tags: "${{ env.DASHBUILDER__viewerImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__viewerImageRegistry }}/${{ env.DASHBUILDER__viewerImageAccount }}"
+          username: "${{ env.DASHBUILDER__viewerImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"
