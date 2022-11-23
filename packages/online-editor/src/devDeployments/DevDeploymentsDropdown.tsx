@@ -17,10 +17,10 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
-import { DropdownItem, DropdownSeparator } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { DevDeploymentsDropdownItem } from "./DevDeploymentsDropdownItem";
 import { PficonSatelliteIcon } from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
-import { EmptyState, EmptyStateIcon, EmptyStatePrimary } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
@@ -255,28 +255,41 @@ export function DevDeploymentsDropdown() {
                       }, 0);
                     }}
                     isPlain={false}
-                    title={"Select cloud provider..."}
+                    title={"Select Cloud provider..."}
                     filter={openshiftAuthSessionSelectFilter()}
                     showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
                   />
-                  <br />
-                  <br />
-                  <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                    <small style={{ color: "darkgray" }}>
-                      {deployments.status !== PromiseStateStatus.PENDING && (
-                        <i>{`Refreshing in ${refreshCountdownInSeconds} seconds...`}</i>
-                      )}
-                    </small>
-                    <Button
-                      variant={ButtonVariant.link}
-                      onClick={() => refresh(new Holder(false))}
-                      style={{ padding: 0 }}
-                      isDisabled={deployments.status === PromiseStateStatus.PENDING}
-                    >
-                      <small>{deployments.status === PromiseStateStatus.PENDING ? "Refreshing..." : "Refresh"}</small>
-                    </Button>
-                  </Flex>
-                  <Divider />
+                  {(authSessionId && (
+                    <>
+                      <br />
+                      <br />
+                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                        <small style={{ color: "darkgray" }}>
+                          {deployments.status !== PromiseStateStatus.PENDING && (
+                            <i>{`Refreshing in ${refreshCountdownInSeconds} seconds...`}</i>
+                          )}
+                        </small>
+                        <Button
+                          variant={ButtonVariant.link}
+                          onClick={() => refresh(new Holder(false))}
+                          style={{ padding: 0 }}
+                          isDisabled={deployments.status === PromiseStateStatus.PENDING}
+                        >
+                          <small>
+                            {deployments.status === PromiseStateStatus.PENDING ? "Refreshing..." : "Refresh"}
+                          </small>
+                        </Button>
+                      </Flex>
+                      <Divider />
+                    </>
+                  )) || (
+                    <EmptyState>
+                      <EmptyStateIcon icon={PficonSatelliteIcon} />
+                      <Title headingLevel="h4" size="md" style={{ color: "darkgray" }}>
+                        {`Connect to a Cloud provider to start`}
+                      </Title>
+                    </EmptyState>
+                  )}
                 </div>,
                 ...(items ?? []),
               ]

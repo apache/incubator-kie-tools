@@ -85,7 +85,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                   }, 0);
                 }}
                 isPlain={false}
-                title={"Select cloud provider for this Dev deployment..."}
+                title={"Select Cloud provider for this Dev deployment..."}
                 filter={openshiftAuthSessionSelectFilter()}
                 showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
               />
