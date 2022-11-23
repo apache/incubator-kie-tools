@@ -240,10 +240,7 @@ export function DevDeploymentsDropdown() {
                 </DropdownItem>,
               ]
             : [
-                <div
-                  style={{ padding: "8px 16px", minWidth: "400px", maxWidth: "400px" }}
-                  key={"cloud-auth-session-select"}
-                >
+                <div style={{ padding: "8px 16px", minWidth: "400px" }} key={"cloud-auth-session-select"}>
                   <AuthSessionSelect
                     position={SelectPosition.right}
                     authSessionId={authSessionId}
