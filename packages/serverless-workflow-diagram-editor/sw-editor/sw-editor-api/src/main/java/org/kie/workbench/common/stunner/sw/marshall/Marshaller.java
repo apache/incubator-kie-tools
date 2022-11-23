@@ -133,6 +133,7 @@ public class Marshaller {
     public Promise<ParseResult> unmarshallGraph(String raw) {
         try {
             workflow = parser.parse(mapper.fromJSON(raw));
+            MarshallerUtils.onPostDeserialize(raw, workflow);
         } catch (Exception e) {
             return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
@@ -410,7 +411,8 @@ public class Marshaller {
     public Promise<String> marshallNode(Node node) {
         Workflow bean = marshallNode(context, node);
         String raw = mapper.toJSON(bean);
-        return promises.resolve(raw);
+        String result = MarshallerUtils.onPostSerialize(raw, bean);
+        return promises.resolve(result);
     }
 
     @FunctionalInterface
