@@ -27,7 +27,7 @@ import {
   NoOpSwfStaticEnvelopeContentProviderChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
   SwfPreviewOptionsChannelApiImpl,
-  SwfServiceCatalogChannelApiImpl,
+  NoOpSwfServiceCatalogChannelApiImpl,
   SwfStaticEnvelopeContentProviderChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
@@ -123,11 +123,7 @@ export const open = (args: {
       }
     ),
     new SwfFeatureToggleChannelApiImpl({ stunnerEnabled: true }),
-    new SwfServiceCatalogChannelApiImpl(
-      envelopeServer.envelopeApi as unknown as MessageBusClientApi<SwfServiceCatalogChannelApi>,
-      [],
-      { registries: [] }
-    ),
+    new NoOpSwfServiceCatalogChannelApiImpl(),
     languageServiceChannelApiImpl,
     new SwfPreviewOptionsChannelApiImpl(args.swfPreviewOptions ?? undefined),
     new SwfStaticEnvelopeContentProviderChannelApiImpl({
