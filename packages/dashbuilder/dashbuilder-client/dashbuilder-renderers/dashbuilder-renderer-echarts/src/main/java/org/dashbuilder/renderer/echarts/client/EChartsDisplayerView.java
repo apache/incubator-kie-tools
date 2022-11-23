@@ -25,7 +25,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import jsinterop.base.Js;
-import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Chart;
@@ -43,10 +42,7 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
 
     private Chart chart;
 
-    int width;
-    int height;
-    boolean resizable;
-    Mode mode;
+    ChartBootstrapParams bootstrapParams;
 
     @Inject
     EChartsTypeFactory echartsFactory;
@@ -55,7 +51,6 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
     public void init(P presenter) {
         super.setPresenter(presenter);
         super.setVisualization(displayerPanel);
-        mode = Mode.LIGHT;
     }
 
     @Override
@@ -86,15 +81,9 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
     }
 
     @Override
-    public void configureChart(int width, int height, boolean resizable, Mode mode) {
-        if (this.width != width ||
-            this.height != height ||
-            this.resizable != resizable ||
-            this.mode != mode) {
-            this.width = width;
-            this.height = height;
-            this.resizable = resizable;
-            this.mode = mode;
+    public void configureChart(ChartBootstrapParams params) {
+        if (this.bootstrapParams == null || !this.bootstrapParams.equals(params)) {
+            this.bootstrapParams = params;
             initChart();
         }
     }
@@ -102,13 +91,15 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
     private void initChart() {
         var initParams = echartsFactory.newChartInitParams();
 
-        if (!resizable) {
-            initParams.setWidth(width);
-            initParams.setHeight(height);
+        if (!bootstrapParams.isResizable()) {
+            initParams.setWidth(bootstrapParams.getWidth());
+            initParams.setHeight(bootstrapParams.getHeight());
         } else {
             displayerPanel.getElement().getStyle().setWidth(100, Unit.PCT);
-            displayerPanel.getElement().getStyle().setHeight(height, Unit.PX);
+            displayerPanel.getElement().getStyle().setHeight(bootstrapParams.getHeight(), Unit.PX);
         }
+
+        initParams.setRenderer(bootstrapParams.getRenderer().name());
 
         if (chart != null) {
             chart.dispose();
@@ -117,9 +108,9 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
         chart = ECharts.Builder
                 .get()
                 .init(Js.cast(displayerPanel.getElement()),
-                        mode.name().toLowerCase(),
+                        bootstrapParams.getMode().name().toLowerCase(),
                         initParams);
-        if (resizable) {
+        if (bootstrapParams.isResizable()) {
             Window.addResizeHandler(v -> chart.resize());
         }
 

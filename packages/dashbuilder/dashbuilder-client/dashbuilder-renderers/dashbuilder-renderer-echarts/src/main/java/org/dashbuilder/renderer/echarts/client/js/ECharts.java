@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.renderer.echarts.client.js;
 
+import java.util.Arrays;
+
 import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
@@ -49,6 +51,9 @@ public interface ECharts {
 
         @JsProperty
         public native void setHeight(int height);
+
+        @JsProperty
+        public native void setRenderer(String renderer);
 
     }
 
@@ -585,6 +590,24 @@ public interface ECharts {
     public enum XAxisType {
         category,
         value;
+    }
+
+    public enum Renderer {
+
+        svg,
+        canvas;
+
+        public static Renderer DEFAULT_RENDERER = canvas;
+
+        public static Renderer byName(String echartsRenderer) {
+            if (echartsRenderer == null) {
+                return DEFAULT_RENDERER;
+            }
+            return Arrays.stream(Renderer.values())
+                    .filter(r -> r.name().toLowerCase().equals(echartsRenderer
+                            .toLowerCase()))
+                    .findAny().orElse(DEFAULT_RENDERER);
+        }
     }
 
     public class Builder {

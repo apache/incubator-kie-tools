@@ -32,11 +32,17 @@ import org.dashbuilder.displayer.Position;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Option;
+import org.dashbuilder.renderer.echarts.client.js.ECharts.Renderer;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.ValueFormatterCallback;
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 
 public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplayer.View> extends
                                               AbstractGwtDisplayer<V> {
+
+    /**
+     * Internal property to define the echarts renderer
+     */
+    private static final String ECHARTS_RENDERER = "_echarts_renderer";
 
     V view;
 
@@ -52,7 +58,7 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
 
         void applyOption(Option option);
 
-        void configureChart(int width, int height, boolean resizable, Mode mode);
+        void configureChart(ChartBootstrapParams bootstrapParams);
 
     }
 
@@ -160,9 +166,10 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         var legendPosition = displayerSettings.getChartLegendPosition();
         var mode = displayerSettings.getMode() == null ? Mode.LIGHT : displayerSettings.getMode();
         var extraConfiguration = displayerSettings.getExtraConfiguration();
+        var echartsRenderer = displayerSettings.getSettingsFlatMap().get(ECHARTS_RENDERER);
 
         var echartsDataSet = buildDataSet();
-        
+
         this.echartsType = echartsFactory.convertDisplayerType(displayerSettings.getType()).name();
 
         this.option = echartsFactory.newOption();
@@ -222,10 +229,12 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         option.setLegend(legend);
         option.setToolbox(toolbox);
 
-        view.configureChart(width,
-                height,
-                displayerSettings.isResizable(),
-                mode);
+        view.configureChart(
+                ChartBootstrapParams.of(width,
+                        height,
+                        displayerSettings.isResizable(),
+                        mode,
+                        Renderer.byName(echartsRenderer)));
 
         chartSetup();
 
