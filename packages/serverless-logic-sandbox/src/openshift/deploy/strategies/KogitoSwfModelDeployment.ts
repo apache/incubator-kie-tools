@@ -15,7 +15,7 @@
  */
 
 import { buildProjectPaths } from "../../../project";
-import { BaseSwfTemplateProject } from "../BaseContainerImages";
+import { SwfBuilder } from "../BaseContainerImages";
 import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { KNativeBuilderPipeline } from "../../pipelines/KNativeBuilderPipeline";
@@ -47,18 +47,15 @@ export class KogitoSwfModelDeployment extends DeploymentStrategy {
   }
 
   protected prepareDockerfileContent(): string {
-    const projectPaths = buildProjectPaths(BaseSwfTemplateProject.PROJECT_FOLDER);
+    const projectPaths = buildProjectPaths(SwfBuilder.PROJECT_FOLDER);
 
     const steps = {
-      importBaseImage: `FROM ${BaseSwfTemplateProject.CONTAINER_IMAGE}`,
-      setupEnvVars: `ENV ${BaseSwfTemplateProject.ENV}`,
+      importBaseImage: `FROM ${SwfBuilder.CONTAINER_IMAGE}`,
+      setupEnvVars: `ENV ${SwfBuilder.ENV}`,
       copyFilesIntoContainer: `COPY . ${projectPaths.folders.metaInfResources}/`,
-      buildProject: `${BaseSwfTemplateProject.MVNW_PATH} clean package -B -ntp -f ${projectPaths.files.pomXml}`,
-      copyTargetJarsToDeployments: `cp ${projectPaths.folders.quarkusApp}/*.jar ${BaseSwfTemplateProject.DEPLOYMENTS_FOLDER}`,
-      copyTargetLibToDeployments: `cp -R ${projectPaths.folders.quarkusApp}/lib/ ${BaseSwfTemplateProject.DEPLOYMENTS_FOLDER}`,
-      copyTargetAppToDeployments: `cp -R ${projectPaths.folders.quarkusApp}/app/ ${BaseSwfTemplateProject.DEPLOYMENTS_FOLDER}`,
-      copyTargetQuarkusToDeployments: `cp -R ${projectPaths.folders.quarkusApp}/quarkus/ ${BaseSwfTemplateProject.DEPLOYMENTS_FOLDER}`,
+      buildProject: `mvn clean package -B -ntp -f ${projectPaths.files.pomXml}`,
       cleanUpM2Folder: `rm -fr ~/.m2`,
+      entrypoint: `ENTRYPOINT ["java", "-jar", "${projectPaths.files.quarkusRunJar}"]`,
     };
 
     return `
@@ -66,11 +63,8 @@ export class KogitoSwfModelDeployment extends DeploymentStrategy {
     ${steps.setupEnvVars}
     ${steps.copyFilesIntoContainer}
     RUN ${steps.buildProject} \
-      && ${steps.copyTargetJarsToDeployments} \
-      && ${steps.copyTargetLibToDeployments} \
-      && ${steps.copyTargetAppToDeployments} \
-      && ${steps.copyTargetQuarkusToDeployments} \
       && ${steps.cleanUpM2Folder}
+    ${steps.entrypoint}
     `;
   }
 }

@@ -16,7 +16,7 @@
 
 import { GLOB_PATTERN } from "../../../extension";
 import { buildProjectPaths } from "../../../project";
-import { BaseJdk11MvnOc } from "../BaseContainerImages";
+import { BaseBuilder } from "../BaseContainerImages";
 import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { DeploymentStrategyArgs } from "../types";
@@ -57,21 +57,26 @@ export class KogitoProjectDeployment extends DeploymentStrategy {
   }
 
   protected prepareDockerfileContent(): string {
-    const projectPaths = buildProjectPaths(BaseJdk11MvnOc.PROJECT_FOLDER);
+    const projectPaths = buildProjectPaths(BaseBuilder.PROJECT_FOLDER);
+    const clusterName = "user-cluster";
+    const clusterCredentialsName = `${clusterName}-credentials`;
+    const clusterContextName = `${clusterName}-context`;
 
     const steps = {
-      importBaseImage: `FROM ${BaseJdk11MvnOc.CONTAINER_IMAGE}`,
-      setupEnvVars: `ENV ${BaseJdk11MvnOc.ENV}`,
+      importBaseImage: `FROM ${BaseBuilder.CONTAINER_IMAGE}`,
+      setupEnvVars: `ENV ${BaseBuilder.ENV}`,
       createProjectFolder: `RUN mkdir ${projectPaths.folders.root}/`,
-      copyFilesIntoContainer: `COPY --chown=185:root . ${projectPaths.folders.root}/`,
-      doOcLogin: `${BaseJdk11MvnOc.OC_PATH} login --token=${this.args.openShiftConnection.token} --server=${this.args.openShiftConnection.host} --insecure-skip-tls-verify`,
-      buildProject: `${BaseJdk11MvnOc.MVNW_PATH} clean package -B -ntp -f ${projectPaths.files.pomXml} -Dquarkus.knative.name=${this.args.resourceName}`,
-      applyKogitoYaml: `if [ -f ${projectPaths.files.kogitoYaml} ]; then ${BaseJdk11MvnOc.OC_PATH} apply -n ${this.args.openShiftConnection.namespace} -f ${projectPaths.files.kogitoYaml}; fi`,
-      copyTargetJarsToDeployments: `cp ${projectPaths.folders.quarkusApp}/*.jar ${BaseJdk11MvnOc.DEPLOYMENTS_FOLDER}`,
-      copyTargetLibToDeployments: `cp -R ${projectPaths.folders.quarkusApp}/lib/ ${BaseJdk11MvnOc.DEPLOYMENTS_FOLDER}`,
-      copyTargetAppToDeployments: `cp -R ${projectPaths.folders.quarkusApp}/app/ ${BaseJdk11MvnOc.DEPLOYMENTS_FOLDER}`,
-      copyTargetQuarkusToDeployments: `cp -R ${projectPaths.folders.quarkusApp}/quarkus/ ${BaseJdk11MvnOc.DEPLOYMENTS_FOLDER}`,
-      cleanUpM2Folder: `rm -fr ~/.m2`,
+      copyFilesIntoContainer: `COPY . ${projectPaths.folders.root}/`,
+      configCluster: {
+        setServer: `${BaseBuilder.KUBECTL_PATH} config set-cluster ${clusterName} --server=${this.args.openShiftConnection.host}`,
+        setCredentials: `${BaseBuilder.KUBECTL_PATH} config set-credentials ${clusterCredentialsName} --token=${this.args.openShiftConnection.token}`,
+        setContext: `${BaseBuilder.KUBECTL_PATH} config set-context ${clusterContextName} --cluster=${clusterName} --user=${clusterCredentialsName} --namespace=${this.args.openShiftConnection.namespace}`,
+        useContext: `${BaseBuilder.KUBECTL_PATH} config use ${clusterContextName}`,
+      },
+      buildProject: `mvn clean package -B -ntp -f ${projectPaths.files.pomXml} -Dquarkus.knative.name=${this.args.resourceName}`,
+      applyKogitoYaml: `if [ -f ${projectPaths.files.kogitoYaml} ]; then ${BaseBuilder.KUBECTL_PATH} apply -n ${this.args.openShiftConnection.namespace} -f ${projectPaths.files.kogitoYaml} --insecure-skip-tls-verify=true; fi`,
+      cleanUpM2Folder: "rm -fr ~/.m2",
+      entrypoint: `ENTRYPOINT ["java", "-jar", "${projectPaths.files.quarkusRunJar}"]`,
     };
 
     return `
@@ -79,14 +84,14 @@ export class KogitoProjectDeployment extends DeploymentStrategy {
     ${steps.setupEnvVars}
     ${steps.createProjectFolder}
     ${steps.copyFilesIntoContainer}
-    RUN ${steps.doOcLogin} \
+    RUN ${steps.configCluster.setServer} \
+      && ${steps.configCluster.setCredentials} \
+      && ${steps.configCluster.setContext} \
+      && ${steps.configCluster.useContext} \
       && ${steps.buildProject} \
       && ${steps.applyKogitoYaml} \
-      && ${steps.copyTargetJarsToDeployments} \
-      && ${steps.copyTargetLibToDeployments} \
-      && ${steps.copyTargetAppToDeployments} \
-      && ${steps.copyTargetQuarkusToDeployments} \
       && ${steps.cleanUpM2Folder}
+    ${steps.entrypoint}
     `;
   }
 }

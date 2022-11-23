@@ -97,13 +97,13 @@
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/unitables" },
-      { "id": "@kie-tools/openjdk11-mvn-image" },
-      { "id": "@kie-tools/openjdk11-mvn-image-env" },
       { "id": "@kie-tools/serverless-logic-sandbox" },
       { "id": "@kie-tools/text-editor" },
-      { "id": "@kie-tools/serverless-logic-sandbox-base-image-env" },
-      { "id": "@kie-tools/serverless-logic-sandbox-base-image" },
-      { "id": "@kie-tools/serverless-logic-sandbox-deployment-webapp" },
+      { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image-env" },
+      { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
+      { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
+      { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
+      { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
@@ -597,8 +597,6 @@
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
-      { "source": "@kie-tools/openjdk11-mvn-image", "target": "@kie-tools/openjdk11-mvn-image-env", "weight": 1 },
-      { "source": "@kie-tools/openjdk11-mvn-image-env", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/openshift", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
@@ -614,41 +612,59 @@
         "target": "@kie-tools/dashbuilder-viewer-image-env",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/openjdk11-mvn-image-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-sandbox",
-        "target": "@kie-tools/serverless-logic-sandbox-base-image-env",
+        "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-sandbox",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/editor", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox-base-image-env", "target": "@kie-tools/root-env", "weight": 1 },
       {
-        "source": "@kie-tools/serverless-logic-sandbox-base-image",
+        "source": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-base-builder-image",
+        "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
         "target": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox-base-image",
-        "target": "@kie-tools/serverless-logic-sandbox-base-image-env",
+        "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox-base-image",
-        "target": "@kie-tools/serverless-logic-sandbox-deployment-webapp",
+        "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox-deployment-webapp",
+        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
         "target": "@kie-tools-core/patternfly-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox-deployment-webapp",
+        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
         "target": "@kie-tools/i18n-common-dictionary",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox-deployment-webapp",
+        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -834,8 +850,6 @@
     ["@kie-tools-core/monaco-editor", "packages/monaco-editor"],
     ["@kie-tools-core/notifications", "packages/notifications"],
     ["@kie-tools/online-editor", "packages/online-editor"],
-    ["@kie-tools/openjdk11-mvn-image", "packages/openjdk11-mvn-image"],
-    ["@kie-tools/openjdk11-mvn-image-env", "packages/openjdk11-mvn-image-env"],
     ["@kie-tools-core/openshift", "packages/openshift"],
     ["@kie-tools-core/operating-system", "packages/operating-system"],
     ["@kie-tools-core/patternfly-base", "packages/patternfly-base"],
@@ -844,9 +858,26 @@
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/serverless-logic-sandbox", "packages/serverless-logic-sandbox"],
-    ["@kie-tools/serverless-logic-sandbox-base-image", "packages/serverless-logic-sandbox-base-image"],
-    ["@kie-tools/serverless-logic-sandbox-base-image-env", "packages/serverless-logic-sandbox-base-image-env"],
-    ["@kie-tools/serverless-logic-sandbox-deployment-webapp", "packages/serverless-logic-sandbox-deployment-webapp"],
+    [
+      "@kie-tools/serverless-logic-web-tools-base-builder-image",
+      "packages/serverless-logic-web-tools-base-builder-image"
+    ],
+    [
+      "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
+      "packages/serverless-logic-web-tools-base-builder-image-env"
+    ],
+    [
+      "@kie-tools/serverless-logic-web-tools-swf-builder-image",
+      "packages/serverless-logic-web-tools-swf-builder-image"
+    ],
+    [
+      "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
+      "packages/serverless-logic-web-tools-swf-builder-image-env"
+    ],
+    [
+      "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
+      "packages/serverless-logic-web-tools-swf-deployment-webapp"
+    ],
     ["@kie-tools/serverless-workflow-combined-editor", "packages/serverless-workflow-combined-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],

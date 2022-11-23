@@ -18,25 +18,25 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: {
+    SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry: {
       default: "quay.io",
       description: "",
     },
-    SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: {
+    SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount: {
       default: "kie-tools",
       description: "",
     },
-    SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: {
-      default: "openjdk11-mvn-image",
+    SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName: {
+      default: "serverless-logic-web-tools-base-builder-image",
       description: "",
     },
   }),
   get env() {
     return {
-      openJdk11MvnImageEnv: {
-        registry: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry),
-        account: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount),
-        name: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName),
+      baseBuilderImageEnv: {
+        registry: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry),
+        account: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount),
+        name: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName),
       },
     };
   },

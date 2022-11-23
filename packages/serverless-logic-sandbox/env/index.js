@@ -21,8 +21,8 @@ const { version } = require("@kie-tools-scripts/build-env/package.json");
 module.exports = composeEnv(
   [
     require("@kie-tools/root-env/env"),
-    require("@kie-tools/serverless-logic-sandbox-base-image-env/env"),
-    require("@kie-tools/openjdk11-mvn-image-env/env"),
+    require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env"),
+    require("@kie-tools/serverless-logic-web-tools-base-builder-image-env/env"),
     require("@kie-tools/dashbuilder-viewer-image-env/env"),
   ],
   {
@@ -51,15 +51,15 @@ module.exports = composeEnv(
         default: version,
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__baseImageTag: {
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: {
         default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: {
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: {
         default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__dashbuilderViewerImageTag: {
+      SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: {
         default: "latest",
         description: "",
       },
@@ -81,14 +81,14 @@ module.exports = composeEnv(
             cypressUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__cypressUrl),
             port: 9020,
           },
-          baseImage: {
-            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageTag),
+          swfBuilderImage: {
+            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag),
           },
-          openJdk11MvnImage: {
-            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag),
+          baseBuilderImage: {
+            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag),
           },
           dashbuilderViewerImage: {
-            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__dashbuilderViewerImageTag),
+            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag),
           },
           kieSandboxExtendedServices: {
             compatibleVersion: getOrDefault(

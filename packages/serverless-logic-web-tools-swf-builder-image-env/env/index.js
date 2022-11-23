@@ -18,25 +18,25 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: {
+    SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: {
       default: "quay.io",
       description: "",
     },
-    SERVERLESS_LOGIC_SANDBOX__baseImageAccount: {
+    SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: {
       default: "kie-tools",
       description: "",
     },
-    SERVERLESS_LOGIC_SANDBOX__baseImageName: {
-      default: "serverless-logic-sandbox-base-image",
+    SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: {
+      default: "serverless-logic-web-tools-swf-builder-image",
       description: "",
     },
   }),
   get env() {
     return {
-      serverlessLogicSandboxBaseImageEnv: {
-        registry: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry),
-        account: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageAccount),
-        name: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageName),
+      swfBuilderImageEnv: {
+        registry: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry),
+        account: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount),
+        name: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName),
       },
     };
   },

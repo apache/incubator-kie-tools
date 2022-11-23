@@ -14,34 +14,28 @@
  * limitations under the License.
  */
 
-// These values come from `serverless-logic-sandbox-base-image` and `openjdk11-mvn-image`
 const DeployDefaults = {
-  PROJECT_NAME: "serverless-logic-sandbox",
-  SANDBOX_FOLDER: "/tmp/sandbox",
-  DEPLOYMENTS_FOLDER: "/deployments",
   ENV: 'MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"',
 };
 
-export const BaseSwfTemplateProject = {
-  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl,
+// Refers to `serverless-logic-web-tools-swf-builder-image`
+export const SwfBuilder = {
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__swfBuilderImageFullUrl,
   ENV: DeployDefaults.ENV,
-  PROJECT_FOLDER: `${DeployDefaults.SANDBOX_FOLDER}/${DeployDefaults.PROJECT_NAME}`,
-  MVNW_PATH: `${DeployDefaults.SANDBOX_FOLDER}/mvnw`,
-  DEPLOYMENTS_FOLDER: DeployDefaults.DEPLOYMENTS_FOLDER,
+  PROJECT_FOLDER: `/home/kogito/serverless-workflow-project`,
 };
 
-export const BaseJdk11MvnOc = {
-  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_openJdk11MvnImageFullUrl,
+// Refers to `serverless-logic-web-tools-base-builder-image`
+export const BaseBuilder = {
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__baseBuilderImageFullUrl,
   ENV: DeployDefaults.ENV,
-  PROJECT_FOLDER: `${DeployDefaults.SANDBOX_FOLDER}/${DeployDefaults.PROJECT_NAME}`,
-  MVNW_PATH: `${DeployDefaults.SANDBOX_FOLDER}/mvnw`,
-  OC_PATH: `${DeployDefaults.SANDBOX_FOLDER}/oc`,
-  DEPLOYMENTS_FOLDER: DeployDefaults.DEPLOYMENTS_FOLDER,
+  PROJECT_FOLDER: `/home/kogito/serverless-workflow-project`,
+  KUBECTL_PATH: "/home/kogito/kubectl",
 };
 
-// These values come from `dashbuilder-viewer-image`
+// Refers to `dashbuilder-viewer-image`
 export const DashbuilderViewer = {
-  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_dashbuilderViewerImageFullUrl,
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__dashbuilderViewerImageFullUrl,
   HTTPD_OUT: "/var/www/html",
   APP_DATA_FILE: "dashbuilder-viewer-deployment-webapp-data.json",
 };
