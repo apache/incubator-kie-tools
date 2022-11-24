@@ -61,15 +61,18 @@ Follow these steps to create a container that you can than deploy as a Service o
 ```sh 
 minikube start --cpus 4 --memory 4096 --addons registry --insecure-registry "10.0.0.0/24"
 ```
-2. Create a namespace for the building phase
+2. Create a namespace for your workflows
 
 ```sh
-kubectl create namespace kogito-builder
+kubectl create namespace kogito-workflows
 ```
 
 3. Create a secret
+
+This secret will be used by the Operator to push the images built to the desired docker registry.
+
 ```sh
-kubectl create secret docker-registry regcred --docker-server=<registry_url> --docker-username=<registry_username> --docker-password=<registry_password> --docker-email=<registry_email> -n kogito-builder
+kubectl create secret docker-registry regcred --docker-server=<registry_url> --docker-username=<registry_username> --docker-password=<registry_password> --docker-email=<registry_email> -n kogito-workflows
 ```
 
 4. Build and push your image to the location specified by `IMG`:
@@ -84,29 +87,20 @@ make container-build container-push IMG=<some-registry>/kogito-serverless-operat
 make deploy IMG=<some-registry>/kogito-serverless-operator:tag
 ```
 
-6. Create a dedicated Namespace for the test:
+6. Create a Platform containing the configuration (i.e. registry address, secret) for building your workflows:
+
+You can find a basic Platform CR example in the [config](config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform.yaml) folder. 
 
 ```sh
-kubectl create namespace greeting-workflow
+kubectl apply -f config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform.yaml -n kogito-workflows
 ```
 
-7. Install Instances of Custom Resources:
+7. Build and deploy the Greeting workflow with the Operator
 
+You can find a basic Workflow CR example in the [config](config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml) folder.
 ```sh
-kubectl apply -f config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml -n greeting-workflow
+kubectl apply -f config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml -n kogito-workflows
 ```
-
-8. Default configuration
-
-A configmap called kogito-serverless-operator-builder-config will be created under the kogito-serverless-operator-system namespace when the Operator will be installed, and it contains:
-  
-- DEFAULT_BUILDER_RESOURCE = kogito_builder_dockerfile.yaml
-- DEFAULT_WORKFLOW_DEXTENSION = .sw.json
-- DEFAULT_KANIKO_SECRET_DEFAULT = regcred
-- DEFAULT_REGISTRY_REPO = quay.io/kiegroup
-- kogito_builder_dockerfile.yaml = dockerfile content
-
-For the local development the DEFAULT_REGISTRY_REPO must be changed
 
 ### Test It Out
 1. Install the CRDs into the cluster:

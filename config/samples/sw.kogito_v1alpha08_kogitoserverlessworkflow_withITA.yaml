@@ -3,7 +3,8 @@ kind: KogitoServerlessWorkflow
 metadata:
   name: greeting
   annotations:
-    sw.kogito.kie.org/description: Greeting example on k8s!
+    sw.kogito.kie.org/description: Greeting example on k8s with Italian!
+    sw.kogito.kie.org/version: 0.0.2
 spec:
   start: ChooseOnLanguage
   functions:

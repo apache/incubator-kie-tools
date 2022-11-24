@@ -16,22 +16,18 @@
 package utils
 
 import (
+	"bytes"
 	"context"
+	"encoding/gob"
 	"encoding/json"
 	"errors"
-	"os"
-
-	"github.com/kiegroup/container-builder/util/log"
 	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/kiegroup/kogito-serverless-operator/converters"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
+// GetWorkflowFromCR return a Kogito compliant workflow as bytearray give a specific workflow CR
 func GetWorkflowFromCR(workflowCR *apiv08.KogitoServerlessWorkflow, ctx context.Context) ([]byte, error) {
 	log := ctrllog.FromContext(ctx)
 	converter := converters.NewKogitoServerlessWorkflowConverter(ctx)
@@ -48,31 +44,29 @@ func GetWorkflowFromCR(workflowCR *apiv08.KogitoServerlessWorkflow, ctx context.
 	return jsonWorkflow, nil
 }
 
-func GetConfigMap(client client.Client) (corev1.ConfigMap, error) {
-
-	namespace, found := os.LookupEnv("POD_NAMESPACE")
-
-	if !found {
-		return corev1.ConfigMap{}, errors.New("ConfigMap not found")
+// SameOrMatch return true if the build it is related to the workflow, false otherwise
+func SameOrMatch(build *apiv08.KogitoServerlessBuild, workflow *apiv08.KogitoServerlessWorkflow) (bool, error) {
+	if build.Name == workflow.Name {
+		if build.Namespace == workflow.Namespace {
+			return true, nil
+		}
+		return false, errors.New("Build & Workflow namespaces are not matching")
 	}
+	return false, errors.New("Build & Workflow names are not matching")
+}
 
-	existingConfigMap := corev1.ConfigMap{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "ConfigMap",
-			APIVersion: "v1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      constants.BUILDER_CM_NAME,
-			Namespace: namespace,
-		},
-		Data: map[string]string{},
-	}
+// GetWorkflowSpecHash comute a hash of the workflow definition (hash), useful to compare 2 different definitions
+func GetWorkflowSpecHash(s apiv08.KogitoServerlessWorkflowSpec) []byte {
+	var b bytes.Buffer
+	gob.NewEncoder(&b).Encode(s)
+	return b.Bytes()
+}
 
-	err := client.Get(context.TODO(), types.NamespacedName{Name: constants.BUILDER_CM_NAME, Namespace: namespace}, &existingConfigMap)
-	if err != nil {
-		log.Error(err, "reading configmap")
-		return corev1.ConfigMap{}, err
-	} else {
-		return existingConfigMap, nil
+// GetWorkflowImageTag retrieve the tag for the image based on the Workflow based annotation, :latest otherwise
+func GetWorkflowImageTag(v *apiv08.KogitoServerlessWorkflow) string {
+	tag := v.Annotations[constants.WorkflowMetadataKeys()("version")]
+	if tag != "" {
+		return ":" + tag
 	}
+	return constants.DEFAULT_IMAGES_TAG
 }

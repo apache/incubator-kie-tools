@@ -161,7 +161,7 @@ podman-push: ## Push container image with the manager.
 	podman push ${IMG}
 
 .PHONY: container-build
-container-build: ## Build the container image
+container-build: test ## Build the container image
 	$(BUILDER) build -t ${IMG} .
 
 .PHONY: container-push
@@ -209,14 +209,14 @@ CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 
 ## Tool Versions
-KUSTOMIZE_VERSION ?= v3.8.7
+KUSTOMIZE_VERSION ?= v4.5.2
 CONTROLLER_TOOLS_VERSION ?= v0.9.2
 
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
 $(KUSTOMIZE): $(LOCALBIN)
-	test -s $(LOCALBIN)/kustomize || { curl -s $(KUSTOMIZE_INSTALL_SCRIPT) | bash -s -- $(subst v,,$(KUSTOMIZE_VERSION)) $(LOCALBIN); }
+	test -s $(LOCALBIN)/kustomize || GO111MODULE=on GOBIN=$(LOCALBIN) go install sigs.k8s.io/kustomize/kustomize/v4@$(KUSTOMIZE_VERSION)
 
 .PHONY: controller-gen
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
@@ -295,3 +295,7 @@ bump-version:
 
 install-operator-sdk:
 	./hack/ci/install-operator-sdk.sh
+
+.PHONY: addheaders
+addheaders:
+	./hack/addheaders.sh

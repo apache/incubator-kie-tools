@@ -16,6 +16,12 @@ spec:
       kind: KogitoServerlessBuild
       name: kogitoserverlessbuilds.sw.kogito.kie.org
       version: v1alpha08
+    - description: KogitoServerlessPlatform is the Schema for the kogitoserverlessplatforms
+        API
+      displayName: Kogito Serverless Platform
+      kind: KogitoServerlessPlatform
+      name: kogitoserverlessplatforms.sw.kogito.kie.org
+      version: v1alpha08
     - description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows
         API
       displayName: Kogito Serverless Workflow

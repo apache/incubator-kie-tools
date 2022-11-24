@@ -1,9 +1,7 @@
 apiVersion: v1
 data:
   DEFAULT_BUILDER_RESOURCE_NAME: Dockerfile
-  DEFAULT_KANIKO_SECRET_DEFAULT: regcred
-  DEFAULT_REGISTRY_REPO: quay.io/kiegroup
-  DEFAULT_WORKFLOW_EXTENSION_KEY: .sw.json
+  DEFAULT_WORKFLOW_EXTENSION: .sw.json
   Dockerfile: "FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder\n
     \ \n  # Copy from build context to skeleton resources project\nCOPY * ./resources/\n\nRUN
     /home/kogito/launch/build-app.sh ./resources\n  \n  #=============================\n

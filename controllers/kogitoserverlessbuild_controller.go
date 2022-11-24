@@ -16,6 +16,8 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/kiegroup/kogito-serverless-operator/platform"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -23,7 +25,6 @@ import (
 	clientr "github.com/kiegroup/container-builder/client"
 	api08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/builder"
-	"github.com/kiegroup/kogito-serverless-operator/constants"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -39,9 +40,9 @@ import (
 // KogitoServerlessBuildReconciler reconciles a KogitoServerlessBuild object
 type KogitoServerlessBuildReconciler struct {
 	client.Client
-	Scheme           *runtime.Scheme
-	Recorder         record.EventRecorder
-	defaultBuildConf corev1.ConfigMap
+	Scheme          *runtime.Scheme
+	Recorder        record.EventRecorder
+	commonBuildConf corev1.ConfigMap
 }
 
 // +kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds,verbs=get;list;watch;create;update;patch;delete
@@ -57,48 +58,76 @@ type KogitoServerlessBuildReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := ctrllog.FromContext(ctx)
-	instance := &api08.KogitoServerlessBuild{}
-	err := r.Client.Get(ctx, req.NamespacedName, instance)
-	if err == nil {
-		phase := instance.Status.BuildPhase
-		if r.defaultBuildConf.Data == nil {
-			r.defaultBuildConf, err = utils.GetConfigMap(r.Client)
+	build := &api08.KogitoServerlessBuild{}
+	err := r.Client.Get(ctx, req.NamespacedName, build)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return ctrl.Result{}, nil
 		}
+		log.Error(err, "Failed to get KogitoServerlessWorkflow")
+		return ctrl.Result{}, err
+	}
 
-		if err != nil || len(r.defaultBuildConf.Data[r.defaultBuildConf.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]) == 0 {
-			return ctrl.Result{}, errors.NewNotFound(schema.GroupResource{
-				Resource: "ConfigMap",
-			}, "builder-config")
+	phase := build.Status.BuildPhase
+	if r.commonBuildConf.Data == nil {
+		r.commonBuildConf, err = utils.GetBuilderCommonConfigMap(r.Client)
+	}
+
+	if err != nil {
+		return ctrl.Result{}, errors.NewNotFound(schema.GroupResource{
+			Resource: "ConfigMap",
+		}, "builder-config")
+	}
+	// Fetch the Platform build with the information we need for the build
+	pl, err := platform.GetActivePlatform(ctx, r.Client, req.Namespace)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			// Request object not found, could have been deleted after reconcile request.
+			// Owned objects are automatically garbage collected. For additional cleanup
+			// logic use finalizers.
+			// Return and don't requeue
+			return reconcile.Result{}, nil
 		}
+		// Error reading the object - requeue the request.
+		log.Error(err, fmt.Sprintf("Error retrieving the active platfor. Workflow %s build cannot be performed!", build.Spec.WorkflowId))
+		return reconcile.Result{RequeueAfter: 60 * time.Second}, err
+	}
 
-		builder := builder.NewBuilder(ctx, r.defaultBuildConf)
+	customConfig, err := utils.GetCustomConfig(*pl)
+	if err != nil {
+		log.Error(err, fmt.Sprintf("Error retrieving the custom configuration from the platform %s in namespace %s. Workflow %s build cannot be performed", pl.Name, pl.Namespace, build.Spec.WorkflowId))
+		return reconcile.Result{RequeueAfter: 60 * time.Second}, err
+	}
 
-		if phase == api.BuildPhaseNone {
-			workflow, err := r.retrieveWorkflowFromCR(instance.Spec.WorkflowId, ctx, req)
+	builder := builder.NewBuilderWithConfig(ctx, r.commonBuildConf, customConfig)
+
+	if phase == api.BuildPhaseNone {
+		workflow, imageTag, err := r.retrieveWorkflowFromCR(build.Spec.WorkflowId, ctx, req)
+		if err == nil {
+			buildStatus, err := builder.ScheduleNewBuildWithContainerFile(build.Spec.WorkflowId, imageTag, workflow)
 			if err == nil {
-				build, err := builder.ScheduleNewBuildWithContainerFile(instance.Spec.WorkflowId, workflow)
-				if err == nil {
-					manageStatusUpdate(ctx, build, instance, r, log)
-					return ctrl.Result{RequeueAfter: 1 * time.Second}, nil
-				}
-			}
-		} else if phase != api.BuildPhaseSucceeded && phase != api.BuildPhaseError && phase != api.BuildPhaseFailed {
-			cli, _ := clientr.NewClient(true)
-			build, err := builder.ReconcileBuild(&instance.Status.Builder, cli)
-			if err == nil {
-				manageStatusUpdate(ctx, build, instance, r, log)
+				manageStatusUpdate(ctx, buildStatus, build, r, log)
 				return ctrl.Result{RequeueAfter: 5 * time.Second}, nil
 			}
 		}
+	} else if phase != api.BuildPhaseSucceeded && phase != api.BuildPhaseError && phase != api.BuildPhaseFailed {
+		cli, _ := clientr.NewClient(true)
+		buildStatus, err := builder.ReconcileBuild(&build.Status.Builder, cli)
+		if err == nil {
+			manageStatusUpdate(ctx, buildStatus, build, r, log)
+			return ctrl.Result{RequeueAfter: 5 * time.Second}, nil
+		}
 	}
-	return ctrl.Result{}, err
+
+	return ctrl.Result{}, nil
 }
 
-func (r *KogitoServerlessBuildReconciler) retrieveWorkflowFromCR(workflowId string, ctx context.Context, req ctrl.Request) ([]byte, error) {
+func (r *KogitoServerlessBuildReconciler) retrieveWorkflowFromCR(workflowId string, ctx context.Context, req ctrl.Request) ([]byte, string, error) {
 	instance := &api08.KogitoServerlessWorkflow{}
 	error := r.Client.Get(ctx, types.NamespacedName{Name: workflowId, Namespace: req.Namespace}, instance)
 	workflowBytes, error := utils.GetWorkflowFromCR(instance, ctx)
-	return workflowBytes, error
+	imageTag := utils.GetWorkflowImageTag(instance)
+	return workflowBytes, imageTag, error
 }
 
 func manageStatusUpdate(ctx context.Context, build *api.Build, instance *api08.KogitoServerlessBuild, r *KogitoServerlessBuildReconciler, log logr.Logger) {

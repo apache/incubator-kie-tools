@@ -39,13 +39,16 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 		if errYaml != nil {
 			t.Fatalf("Error reading YAML file #%v ", errYaml)
 		}
-		// Objects to track in the fake client.
-		objs := []runtime.Object{ksw}
+		// The Workflow controller needs at least to perform a call for Platforms so we need to add this kind to the known
+		// ones by the fake client
+		kspl := &v1alpha08.KogitoServerlessPlatformList{}
+		// Objects to track in the fake Client.
+		objs := []runtime.Object{ksw, kspl}
 
 		// Register operator types with the runtime scheme.
 		s := scheme.Scheme
 		s.AddKnownTypes(v1alpha08.GroupVersion, ksw)
-
+		s.AddKnownTypes(v1alpha08.GroupVersion, kspl)
 		// Create a fake client to mock API calls.
 		cl := fake.NewFakeClient(objs...)
 

@@ -6,18 +6,27 @@ metadata:
       [
         {
           "apiVersion": "sw.kogito.kie.org/v1alpha08",
-          "kind": "KogitoServerlessBuild",
+          "kind": "KogitoServerlessPlatform",
           "metadata": {
-            "name": "kogitoserverlessbuild-sample"
+            "name": "kogito-workflow-platform"
           },
-          "spec": null
+          "spec": {
+            "cluster": "kubernetes",
+            "platform": {
+              "registry": {
+                "address": "quay.io/kiegroup",
+                "secret": "regcred"
+              }
+            }
+          }
         },
         {
           "apiVersion": "sw.kogito.kie.org/v1alpha08",
           "kind": "KogitoServerlessWorkflow",
           "metadata": {
             "annotations": {
-              "sw.kogito.kie.org/description": "Greeting example on k8s!"
+              "sw.kogito.kie.org/description": "Greeting example on k8s!",
+              "sw.kogito.kie.org/version": "0.0.1"
             },
             "name": "greeting"
           },
@@ -97,6 +106,12 @@ spec:
       kind: KogitoServerlessBuild
       name: kogitoserverlessbuilds.sw.kogito.kie.org
       version: v1alpha08
+    - description: KogitoServerlessPlatform is the Schema for the kogitoserverlessplatforms
+        API
+      displayName: Kogito Serverless Platform
+      kind: KogitoServerlessPlatform
+      name: kogitoserverlessplatforms.sw.kogito.kie.org
+      version: v1alpha08
     - description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows
         API
       displayName: Kogito Serverless Workflow
@@ -161,6 +176,33 @@ spec:
           - update
           - watch
         - apiGroups:
+          - rbac.authorization.k8s.io
+          resources:
+          - roles
+          - rolebindings
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - coordination.k8s.io
+          resources:
+          - leases
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
           - sw.kogito.kie.org
           resources:
           - kogitoserverlessbuilds
@@ -176,6 +218,32 @@ spec:
           - sw.kogito.kie.org
           resources:
           - kogitoserverlessbuilds/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - sw.kogito.kie.org
+          resources:
+          - kogitoserverlessplatforms
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - sw.kogito.kie.org
+          resources:
+          - kogitoserverlessplatforms/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - sw.kogito.kie.org
+          resources:
+          - kogitoserverlessplatforms/status
           verbs:
           - get
           - patch

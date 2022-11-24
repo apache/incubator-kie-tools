@@ -29,40 +29,45 @@ import (
 )
 
 type Builder struct {
-	ctx context.Context
-	cm  corev1.ConfigMap
+	ctx          context.Context
+	commonConfig corev1.ConfigMap
+	customConfig map[string]string
 }
 
 func NewBuilder(contex context.Context, cm corev1.ConfigMap) Builder {
-	return Builder{ctx: contex, cm: cm}
+	return Builder{ctx: contex, commonConfig: cm}
 }
 
-func (b *Builder) getImageBuilder(workflowID string, workflowDefinition []byte) ImageBuilder {
-	containerFile := b.cm.Data[b.cm.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]
+func NewBuilderWithConfig(contex context.Context, common corev1.ConfigMap, custom map[string]string) Builder {
+	return Builder{ctx: contex, commonConfig: common, customConfig: custom}
+}
+
+func (b *Builder) getImageBuilder(workflowID string, imageTag string, workflowDefinition []byte) ImageBuilder {
+	containerFile := b.commonConfig.Data[b.commonConfig.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]
 	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
-	ib.OnNamespace(constants.BUILDER_NAMESPACE_DEFAULT)
-	ib.WithPodMiddleName(constants.BUILDER_IMG_NAME_DEFAULT)
+	ib.OnNamespace(b.customConfig[constants.CUSTOM_NS_KEY])
+	ib.WithPodMiddleName(workflowID)
 	ib.WithInsecureRegistry(false)
-	ib.WithImageName(workflowID + constants.DEFAULT_IMAGES_TAG)
-	ib.WithSecret(b.cm.Data[constants.DEFAULT_KANIKO_SECRET_KEY])
-	ib.WithRegistryAddress(b.cm.Data[constants.DEFAULT_REGISTRY_REPO_KEY])
+	ib.WithImageName(workflowID + imageTag)
+	ib.WithSecret(b.customConfig[constants.CUSTOM_REG_CRED_KEY])
+	ib.WithRegistryAddress(b.customConfig[constants.CUSTOM_REG_ADDRESS_KEY])
 	return ib
 }
 
-func (b *Builder) ScheduleNewBuildWithTimeout(workflowName string, workflowDefinition []byte, timeout time.Duration) (*api.Build, error) {
-	ib := b.getImageBuilder(workflowName, workflowDefinition)
+func (b *Builder) ScheduleNewBuildWithTimeout(workflowName string, imageTag string, workflowDefinition []byte, timeout time.Duration) (*api.Build, error) {
+	ib := b.getImageBuilder(workflowName, imageTag, workflowDefinition)
 	ib.WithTimeout(timeout)
 	return b.BuildImage(ib.Build())
 }
 
-func (b *Builder) ScheduleNewBuild(workflowName string, workflowDefinition []byte) (*api.Build, error) {
-	ib := b.getImageBuilder(workflowName, workflowDefinition)
+func (b *Builder) ScheduleNewBuild(workflowName string, imageTag string, workflowDefinition []byte) (*api.Build, error) {
+	ib := b.getImageBuilder(workflowName, imageTag, workflowDefinition)
 	ib.WithTimeout(5 * time.Minute)
 	return b.BuildImage(ib.Build())
 }
 
-func (b *Builder) ScheduleNewBuildWithContainerFile(workflowName string, workflowDefinition []byte) (*api.Build, error) {
-	ib := b.getImageBuilder(workflowName, workflowDefinition)
+func (b *Builder) ScheduleNewBuildWithContainerFile(workflowName string, imageTag string, workflowDefinition []byte) (*api.Build, error) {
+	ib := b.getImageBuilder(workflowName, imageTag, workflowDefinition)
 	ib.WithTimeout(5 * time.Minute)
 	return b.BuildImage(ib.Build())
 }
@@ -96,7 +101,7 @@ func (b *Builder) BuildImage(kb KogitoBuilder) (*api.Build, error) {
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
 		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
-		WithResource(kb.WorkflowID+b.cm.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
+		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
 	if err != nil {
@@ -130,7 +135,7 @@ func (b *Builder) ScheduleBuild(kb KogitoBuilder) (*api.Build, error) {
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
 		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
-		WithResource(kb.WorkflowID+b.cm.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
+		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
 	if err != nil {

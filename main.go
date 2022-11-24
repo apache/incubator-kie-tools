@@ -42,7 +42,6 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-
 	utilruntime.Must(apiv08.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
@@ -80,7 +79,7 @@ func main() {
 	if err = (&controllers.KogitoServerlessWorkflowReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
-		Recorder: mgr.GetEventRecorderFor("kogitoswf-controller"),
+		Recorder: mgr.GetEventRecorderFor("workflow-controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessWorkflow")
 		os.Exit(1)
@@ -88,9 +87,20 @@ func main() {
 	if err = (&controllers.KogitoServerlessBuildReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
-		Recorder: mgr.GetEventRecorderFor("kogitoswfbuild-controller"),
+		Recorder: mgr.GetEventRecorderFor("build-controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessBuild")
+		os.Exit(1)
+	}
+
+	if err = (&controllers.KogitoServerlessPlatformReconciler{
+		Client:   mgr.GetClient(),
+		Scheme:   mgr.GetScheme(),
+		Reader:   mgr.GetAPIReader(),
+		Config:   mgr.GetConfig(),
+		Recorder: mgr.GetEventRecorderFor("platform-controller"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessPlatform")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

@@ -28,6 +28,32 @@ rules:
 - apiGroups:
   - sw.kogito.kie.org
   resources:
+  - kogitoserverlessplatforms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - kogitoserverlessplatforms/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
+  - kogitoserverlessplatforms/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
   - kogitoserverlessworkflows
   verbs:
   - create

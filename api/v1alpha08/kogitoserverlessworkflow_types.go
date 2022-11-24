@@ -17,7 +17,6 @@ limitations under the License.
 package v1alpha08
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/olm"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -391,37 +390,42 @@ type Endpoint struct {
 
 // KogitoServerlessWorkflowStatus defines the observed state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowStatus struct {
-	Conditions  BuildStatusCondition         `json:"conditions,omitempty"`
-	Endpoints   []Endpoint                   `json:"endpoints"`
-	Address     duckv1.Addressable           `json:"address,omitempty"`
-	Deployments olm.DeploymentStatus         `json:"deployments"`
-	Phase       ConditionType                `json:"phase,omitempty"`
-	Applied     KogitoServerlessWorkflowSpec `json:"applied,omitempty"`
-	Version     string                       `json:"version,omitempty"`
+	Endpoints []Endpoint                   `json:"endpoints,omitempty"`
+	Address   duckv1.Addressable           `json:"address,omitempty"`
+	Condition ConditionType                `json:"condition,omitempty"`
+	Applied   KogitoServerlessWorkflowSpec `json:"applied,omitempty"`
 }
 
-// ConditionType - type of condition
+// ConditionType type of condition
 type ConditionType string
 
 const (
-	// DeployedConditionType - the kieapp is deployed
+	// NoneConditionType --
+	NoneConditionType ConditionType = ""
+	// DeployedConditionType the workflow is deployed
 	DeployedConditionType ConditionType = "Deployed"
-	// ProvisioningConditionType - the kieapp is being provisioned
+	// ProvisioningConditionType the workflow is being provisioned
 	ProvisioningConditionType ConditionType = "Provisioning"
-	// FailedConditionType - the kieapp is in a failed state
+	// FailedConditionType the workflow is in a failed state
 	FailedConditionType ConditionType = "Failed"
-)
-
-type BuildStatusCondition string
-
-const (
-	BuildingStatusCondition BuildStatusCondition = "Building"
-	ReadyStatusCondition    BuildStatusCondition = "Ready"
+	// WaitingForPlatformConditionType workflow created but we are waiting a platform to deploy it
+	WaitingForPlatformConditionType ConditionType = "Waiting For Platform"
+	// InitializationConditionType --
+	InitializationConditionType ConditionType = "Initialization"
+	// BuildingConditionType --
+	BuildingConditionType ConditionType = "Building Workflow"
+	// DeployingConditionType --
+	DeployingConditionType ConditionType = "Deploying"
+	// RunningConditionType --
+	RunningConditionType ConditionType = "Running"
+	// ErrorConditionType --
+	ErrorConditionType ConditionType = "Error"
 )
 
 // KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
 // +kubebuilder:object:root=true
-// +kubebuilder:subresource:items
+// +kubebuilder:object:generate=true
+// +kubebuilder:subresource:status
 // +k8s:openapi-gen=true
 type KogitoServerlessWorkflow struct {
 	metav1.TypeMeta   `json:",inline"`

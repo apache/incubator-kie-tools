@@ -15,7 +15,7 @@ limitations under the License.
 */
 package constants
 
-func MetadataKeys() func(string) string {
+func WorkflowMetadataKeys() func(string) string {
 	// innerMap is captured in the closure returned below
 	innerMap := map[string]string{
 		"key":             "sw.kogito.kie.org/key",
@@ -26,6 +26,36 @@ func MetadataKeys() func(string) string {
 		"expressionLang":  "sw.kogito.kie.org/expressionLang",
 		"metadata":        "sw.kogito.kie.org/metadata",
 		"version":         "sw.kogito.kie.org/version",
+	}
+
+	return func(key string) string {
+		return innerMap[key]
+	}
+}
+
+func DeploymentMetadataKeys() func(string) string {
+	// innerMap is captured in the closure returned below
+	innerMap := map[string]string{
+		"label":           "sw.kogito.kie.org/label",
+		"serviceType":     "sw.kogito.kie.org/name",
+		"description":     "sw.kogito.kie.org/description",
+		"annotations":     "sw.kogito.kie.org/annotations",
+		"dataInputSchema": "sw.kogito.kie.org/dataInputSchema",
+		"expressionLang":  "sw.kogito.kie.org/expressionLang",
+		"metadata":        "sw.kogito.kie.org/metadata",
+		"version":         "sw.kogito.kie.org/version",
+	}
+
+	return func(key string) string {
+		return innerMap[key]
+	}
+}
+
+func PlatformAnnotation() func(string) string {
+	// innerMap is captured in the closure returned below
+	innerMap := map[string]string{
+		"SecondaryPlatformAnnotation": "sw.kogito.kie.org/secondary.platform",
+		"OperatorIDAnnotation":        "sw.kogito.kie.org/operator.id",
 	}
 
 	return func(key string) string {

@@ -1,3 +1,17 @@
+// Copyright 2022 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package converters
 
 import (
@@ -28,12 +42,12 @@ func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *a
 	if serverlessWorkflow != nil {
 		log = ctrllog.FromContext(k.ctx)
 		newBaseWorkflow := &model.BaseWorkflow{ID: serverlessWorkflow.ObjectMeta.Name,
-			Key:            serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("key")],
+			Key:            serverlessWorkflow.ObjectMeta.Annotations[constants.WorkflowMetadataKeys()("key")],
 			Name:           serverlessWorkflow.ObjectMeta.Name,
-			Description:    serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("description")],
-			Version:        serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("version")],
+			Description:    serverlessWorkflow.ObjectMeta.Annotations[constants.WorkflowMetadataKeys()("description")],
+			Version:        serverlessWorkflow.ObjectMeta.Annotations[constants.WorkflowMetadataKeys()("version")],
 			SpecVersion:    extractSchemaVersion(serverlessWorkflow.APIVersion),
-			ExpressionLang: serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("expressionLang")],
+			ExpressionLang: extractExpressionLang(serverlessWorkflow.ObjectMeta.Annotations),
 			KeepActive:     serverlessWorkflow.Spec.KeepActive,
 			AutoRetries:    serverlessWorkflow.Spec.AutoRetries,
 			Start:          retrieveStartState(serverlessWorkflow.Spec.Start)}
@@ -42,6 +56,14 @@ func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *a
 		return newWorkflow, nil
 	}
 	return nil, errors.New(("KogitoServerlessWorkflow is nil"))
+}
+
+func extractExpressionLang(annotations map[string]string) string {
+	expressionLang := annotations[constants.WorkflowMetadataKeys()("expressionLang")]
+	if expressionLang != "" {
+		return expressionLang
+	}
+	return constants.DEFAULT_KOGITO_EXPLANG
 }
 
 // Function to extract from the apiVersion the ServerlessWorkflow schema version

@@ -82,15 +82,9 @@ About mandatory namespaces and secret
 
 A configmap called kogito-serverless-operator-builder-config will be created under the kogito-builder namespace when the Operator will be installed, and it contains:
 
-- DEFAULT_BUILDER_RESOURCE = kogito_builder_dockerfile.yaml
+- DEFAULT_BUILDER_RESOURCE = Dockerfile
 - DEFAULT_WORKFLOW_DEXTENSION = .sw.json
-- DEFAULT_KANIKO_SECRET_DEFAULT = regcred
-- DEFAULT_REGISTRY_REPO = quay.io/kiegroup
-- kogito_builder_dockerfile.yaml = <dockerfile content>
-
-For the local development the DEFAULT_REGISTRY_REPO must be changed, this operation needs to be performed immediately 
-after the operator deploy (before the first reconcile of the Workflow CR), otherwise to take effects a restart of the 
-operator needs to be performed to have this change applied.
+- Dockerfile = <dockerfile content>
 
 # Customize Builder Image
 At the startup a [Dockerfile](./config/manager/kogito_builder_dockerfile.yaml) is placed in a configmap, this Dockerfile use a base image called [swfbuilder](https://github.com/kiegroup/kogito-images/tree/master/modules/kogito-swf-builder) with:
@@ -109,4 +103,32 @@ All the dependencies of quarkus and the extensions are store in the `/home/kogit
 - build the project after adding other files/java classes
 - create a new project
 
-You can customize your final Image changing the Dockerfile in the configmap
+You can customize your final Image changing the Dockerfile in the configmap kogito-serverless-operator-builder-config accordingly to your specific needs.
+
+# Development status
+## General notes
+### Workflow CR
+- The converter from a KogitoServerlessWorkflow CR to a Kogito compliant JSON ready for the build is supporting only the features that are in the Greeting workflow
+- At the moment we are supporting only deployment of services on Kubernetes
+### Platform CR
+- The only tested features are the ones related to the docker Registry customization and so:
+```
+       apiVersion: sw.kogito.kie.org/v1alpha08
+        kind: KogitoServerlessPlatform
+        metadata:
+            name: greeting-workflow-platform
+        spec:
+            cluster: kubernetes
+            platform:
+                registry:
+                    address: <docker registry repository> // the URI to access
+                    secret: <name of the secret> // the secret where credentials are stored
+                    insecure: true // if the container registry is insecure (ie, http only)
+                    ca: <name of the config map> // the configmap which stores the Certificate Authority
+                    organization: <name of the org> // the registry organization
+```
+## Improvements
+- Introduce actions into Workflow and Build controller to improve code clarity
+- Add Trait to the Platform CR in order to be able to deploy on different context (i.e. KNative)
+- Test the Kaniko cache feature
+- Improve the workflow converters in order to support all the Kogito Serverless Workflow features

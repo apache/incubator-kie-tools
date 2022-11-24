@@ -16,18 +16,22 @@ COPY controllers/ controllers/
 COPY converters/ converters/
 COPY constants/ constants/
 COPY builder/ builder/
+COPY platform/ platform/
 COPY utils/ utils/
+COPY install/ install/
+COPY resources/ resources/
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-#FROM gcr.io/distroless/static:nonroot
-FROM registry.access.redhat.com/ubi8/ubi-micro:latest
+FROM gcr.io/distroless/static:nonroot
+#FROM registry.access.redhat.com/ubi8/ubi-micro:latest
 WORKDIR /
 COPY --from=builder /workspace/manager .
-COPY --from=builder /workspace/builder/Dockerfile ./builder/
+COPY --from=builder /workspace/resources/ ./resources/
+
 USER 65532:65532
 
 ENTRYPOINT ["/manager"]
