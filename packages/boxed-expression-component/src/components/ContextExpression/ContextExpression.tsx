@@ -209,7 +209,6 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
   const onRowsUpdate = useCallback(
     ({ rows }: RowsUpdateArgs<ContextEntryRecord>) => {
       spreadContextExpressionDefinition({ contextEntries: [...rows] });
-      existingEntryInfos.splice(0);
     },
     [spreadContextExpressionDefinition, existingEntryInfos]
   );
