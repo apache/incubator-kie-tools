@@ -46,9 +46,11 @@ type AlertControl = {
   staticArgs: unknown;
 };
 
-type Props = { width: string };
+type AlertsProps = {
+  className?: string;
+};
 
-export const Alerts = React.forwardRef<AlertsController, Props>((props, forwardedRef) => {
+export const Alerts = React.forwardRef<AlertsController, AlertsProps>((props, forwardedRef) => {
   const [alerts, setAlerts] = useState(new Map<string, AlertControl>());
   const [autoCloseAlertsControl, setAutoCloseAlertsControl] = useState(
     new Map<string, { secondsLeft: number; interval: ReturnType<typeof setInterval> }>()
@@ -144,8 +146,8 @@ export const Alerts = React.forwardRef<AlertsController, Props>((props, forwarde
   }, [alerts, startRefreshingAlertWithKey]);
 
   return (
-    <AlertGroup className={"kogito--alert-container"}>
-      <div style={{ width: props.width }}>
+    <AlertGroup className={`kogito--alert-container ${props.className ?? ""}`}>
+      <div className={"kogito--alert-list"}>
         {[...alerts.entries()]
           .filter(([_, { isShowing }]) => isShowing)
           .sort(([_, a], [__, b]) => a.lastShowedAt!.getTime() - b.lastShowedAt!.getTime()) // show newest at the bottom

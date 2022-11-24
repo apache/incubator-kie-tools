@@ -23,6 +23,7 @@ module.exports = composeEnv(
     require("@kie-tools/root-env/env"),
     require("@kie-tools/serverless-logic-sandbox-base-image-env/env"),
     require("@kie-tools/openjdk11-mvn-image-env/env"),
+    require("@kie-tools/dashbuilder-viewer-image-env/env"),
   ],
   {
     vars: varsWithName({
@@ -58,7 +59,11 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: {
+      SERVERLESS_LOGIC_SANDBOX__dashbuilderViewerImageTag: {
+        default: "latest",
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: {
         default: "https://cors.isomorphic-git.org",
         description: "",
       },
@@ -82,6 +87,9 @@ module.exports = composeEnv(
           openJdk11MvnImage: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag),
           },
+          dashbuilderViewerImage: {
+            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__dashbuilderViewerImageTag),
+          },
           kieSandboxExtendedServices: {
             compatibleVersion: getOrDefault(
               this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion
@@ -92,7 +100,7 @@ module.exports = composeEnv(
               windows: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
             },
           },
-          corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__corsProxyUrl),
+          gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl),
         },
       };
     },

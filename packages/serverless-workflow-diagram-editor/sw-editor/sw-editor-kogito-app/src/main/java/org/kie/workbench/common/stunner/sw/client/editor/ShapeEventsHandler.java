@@ -53,7 +53,7 @@ public class ShapeEventsHandler {
         if (content instanceof View) {
             Object bean = ((View) content).getDefinition();
             if (bean instanceof State) {
-                return ((State) bean).name;
+                return ((State) bean).getName();
             }
         }
         return null;

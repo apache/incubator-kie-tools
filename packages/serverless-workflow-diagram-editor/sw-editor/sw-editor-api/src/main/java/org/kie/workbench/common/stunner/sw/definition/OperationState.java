@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
@@ -31,28 +31,28 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 @Bindable
 @Definition
 @Morph(base = State.class)
+@JSONMapper
 @JsType
 public class OperationState extends State {
 
-    @JsIgnore
     public static final String TYPE_OPERATION = "operation";
 
     /**
      * Defines if the actions are to be performed sequentially or in parallel.
      * recognized values are `sequential` and `parallel`.
      */
-    public String actionMode;
+    private String actionMode;
 
     /**
      * Actions to be performed.
      */
-    public ActionNode[] actions;
+    private ActionNode[] actions;
 
     /**
      * Whether the state is used to compensate for another state.
      * Defaults to false.
      */
-    public boolean usedForCompensation;
+    private Boolean usedForCompensation;
 
     public OperationState() {
         this.type = TYPE_OPERATION;
@@ -76,11 +76,11 @@ public class OperationState extends State {
         return this;
     }
 
-    public boolean isUsedForCompensation() {
+    public Boolean isUsedForCompensation() {
         return usedForCompensation;
     }
 
-    public OperationState setUsedForCompensation(boolean usedForCompensation) {
+    public OperationState setUsedForCompensation(Boolean usedForCompensation) {
         this.usedForCompensation = usedForCompensation;
         return this;
     }

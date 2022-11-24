@@ -81,13 +81,13 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@types/chrome": ^0.0.193
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       rimraf: ^3.0.2
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       zip-webpack-plugin: ^4.0.1
     dependencies:
       "@kie-tools-core/chrome-extension": link:../../packages/chrome-extension
@@ -100,12 +100,12 @@ importers:
       "@kie-tools/root-env": link:../../packages/root-env
       "@kie-tools/tsconfig": link:../../packages/tsconfig
       "@types/chrome": 0.0.193
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       rimraf: 3.0.2
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       zip-webpack-plugin: 4.0.1_webpack@5.70.0
 
@@ -125,9 +125,9 @@ importers:
       typescript: ^4.4.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/backend": link:../../packages/backend
       "@kie-tools-core/editor": link:../../packages/editor
@@ -143,9 +143,9 @@ importers:
       rimraf: 3.0.2
       typescript: 4.5.4
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   examples/ping-pong-view:
@@ -292,9 +292,9 @@ importers:
       typescript: ^4.4.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
       "@kie-tools-core/vscode-extension": link:../../packages/vscode-extension
@@ -308,9 +308,9 @@ importers:
       rimraf: 3.0.2
       typescript: 4.5.4
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   examples/webapp:
@@ -335,7 +335,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       monaco-editor: ^0.33.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -343,9 +343,9 @@ importers:
       rimraf: ^3.0.2
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../../packages/editor
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
@@ -371,13 +371,13 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       react-router-dom: 5.3.0_react@17.0.2
       rimraf: 3.0.2
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/backend:
@@ -479,7 +479,7 @@ importers:
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
       "@types/uuid": ^8.3.0
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       cypress: ^11.0.1
       cypress-file-upload: ^5.0.8
@@ -506,9 +506,9 @@ importers:
       typescript: ^4.4.2
       uuid: ^8.3.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/monaco-editor": link:../monaco-editor
@@ -549,7 +549,7 @@ importers:
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
       "@types/uuid": 8.3.0
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
@@ -567,9 +567,9 @@ importers:
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/build-env:
@@ -659,7 +659,7 @@ importers:
       "@types/jest-when": ^2.7.4
       "@types/selenium-webdriver": ^4.1.7
       chai: ^4.3.4
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
@@ -669,9 +669,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       zip-webpack-plugin: ^4.0.1
     dependencies:
       "@kie-tools-core/chrome-extension": link:../chrome-extension
@@ -694,7 +694,7 @@ importers:
       "@types/jest-when": 2.7.4
       "@types/selenium-webdriver": 4.1.7
       chai: 4.3.4
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
@@ -703,9 +703,9 @@ importers:
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       zip-webpack-plugin: 4.0.1_webpack@5.70.0
 
@@ -730,7 +730,7 @@ importers:
       "@types/chrome": ^0.0.193
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       jest: ^26.6.3
       jest-when: ^3.5.0
       monaco-editor: ^0.33.0
@@ -741,9 +741,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       zip-webpack-plugin: ^4.0.1
     devDependencies:
       "@babel/core": 7.16.12
@@ -765,7 +765,7 @@ importers:
       "@types/chrome": 0.0.193
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       jest: 26.6.3
       jest-when: 3.5.0_jest@26.6.3
       monaco-editor: 0.33.0
@@ -775,9 +775,9 @@ importers:
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       zip-webpack-plugin: 4.0.1_webpack@5.70.0
 
@@ -883,12 +883,12 @@ importers:
       "@kie-tools/dashbuilder-component-victory-charts": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       rimraf: ^3.0.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -903,11 +903,11 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/tsconfig": link:../tsconfig
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       rimraf: 3.0.2
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-component-dev:
@@ -978,7 +978,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
       jest-junit: ^14.0.0
@@ -989,9 +989,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
       "@kie-tools/dashbuilder-component-echarts-base": link:../dashbuilder-component-echarts-base
@@ -1013,7 +1013,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
@@ -1021,9 +1021,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-component-echarts-base:
@@ -1096,7 +1096,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/react-simple-maps": ^1.0.8
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       d3-scale: ^4.0.2
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
@@ -1109,9 +1109,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -1137,7 +1137,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/react-simple-maps": 1.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
@@ -1145,9 +1145,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-component-svg-heatmap:
@@ -1169,7 +1169,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       heatmap.js: ^2.0.5
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
@@ -1181,9 +1181,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -1206,7 +1206,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
@@ -1214,9 +1214,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-component-table:
@@ -1239,7 +1239,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
@@ -1251,9 +1251,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -1276,7 +1276,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
@@ -1285,9 +1285,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-component-timeseries:
@@ -1309,7 +1309,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
       jest-junit: ^14.0.0
@@ -1320,9 +1320,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
       "@kie-tools/dashbuilder-component-echarts-base": link:../dashbuilder-component-echarts-base
@@ -1344,7 +1344,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
@@ -1352,9 +1352,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-component-uniforms:
@@ -1378,7 +1378,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
       ajv: ^6.12.6
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
       jest-junit: ^14.0.0
@@ -1393,9 +1393,9 @@ importers:
       uniforms-bridge-json-schema: ^3.5.5
       uniforms-patternfly: ^4.7.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -1423,7 +1423,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
@@ -1431,9 +1431,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-component-victory-charts:
@@ -1458,7 +1458,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
@@ -1472,9 +1472,9 @@ importers:
       typescript: ^4.4.2
       victory-zoom-container: ^35.11.4
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -1501,7 +1501,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
@@ -1510,9 +1510,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-editor:
@@ -1538,7 +1538,7 @@ importers:
       "@types/jest-when": ^2.7.4
       "@types/react": ^17.0.6
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       cpr: ^3.0.1
       cypress: ^11.0.1
@@ -1559,9 +1559,9 @@ importers:
       typescript: ^4.4.2
       vscode-json-languageservice: ^4.2.1
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/guided-tour": link:../guided-tour
@@ -1589,7 +1589,7 @@ importers:
       "@types/jest-when": 2.7.4
       "@types/react": 17.0.21
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       cpr: 3.0.1
       cypress: 11.0.1
@@ -1605,9 +1605,9 @@ importers:
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       vscode-json-languageservice: 4.2.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dashbuilder-editor-viewer:
@@ -1754,7 +1754,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       cpr: ^3.0.1
       cypress: ^11.0.1
@@ -1772,9 +1772,9 @@ importers:
       typescript: ^4.4.2
       vscode-json-languageservice: ^4.2.1
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/guided-tour": link:../guided-tour
@@ -1801,7 +1801,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       cpr: 3.0.1
       cypress: 11.0.1
@@ -1816,9 +1816,280 @@ importers:
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       vscode-json-languageservice: 4.2.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
+      webpack-merge: 5.8.0
+
+  packages/dashbuilder-viewer-app:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/dashbuilder-viewer": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/react": ^17.0.6
+      "@types/react-dom": ^17.0.5
+      "@types/react-router": ^5.1.14
+      "@types/react-router-dom": ^5.1.7
+      copy-webpack-plugin: ^11.0.0
+      html-replace-webpack-plugin: ^2.6.0
+      html-webpack-plugin: ^5.3.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-router: ^5.2.1
+      react-router-dom: ^5.2.1
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      webpack: ^5.36.2
+      webpack-cli: ^4.10.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.8.0
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/react": 17.0.21
+      "@types/react-dom": 17.0.8
+      "@types/react-router": 5.1.14
+      "@types/react-router-dom": 5.1.7
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
+      html-replace-webpack-plugin: 2.6.0
+      html-webpack-plugin: 5.3.2_webpack@5.70.0
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
+      typescript: 4.8.4
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
+      webpack-merge: 5.8.0
+
+  packages/dashbuilder-viewer-deployment-webapp:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/react-hooks": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspaces-git-fs": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/dashbuilder-viewer": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/react": ^17.0.6
+      "@types/react-dom": ^17.0.5
+      "@types/react-router": ^5.1.14
+      "@types/react-router-dom": ^5.1.7
+      copy-webpack-plugin: ^11.0.0
+      html-replace-webpack-plugin: ^2.6.0
+      html-webpack-plugin: ^5.3.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-router: ^5.2.1
+      react-router-dom: ^5.2.1
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      webpack: ^5.36.2
+      webpack-cli: ^4.10.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.8.0
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/react-hooks": link:../react-hooks
+      "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
+      "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
+      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/react": 17.0.21
+      "@types/react-dom": 17.0.8
+      "@types/react-router": 5.1.14
+      "@types/react-router-dom": 5.1.7
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
+      html-replace-webpack-plugin: 2.6.0
+      html-webpack-plugin: 5.3.2_webpack@5.70.0
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
+      typescript: 4.8.4
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
+      webpack-merge: 5.8.0
+
+  packages/dashbuilder-viewer-image:
+    specifiers:
+      "@kie-tools/dashbuilder-viewer-deployment-webapp": workspace:*
+      "@kie-tools/dashbuilder-viewer-image-env": workspace:*
+      "@kie-tools/root-env": workspace:*
+      rimraf: ^3.0.2
+      run-script-os: ^1.1.6
+    devDependencies:
+      "@kie-tools/dashbuilder-viewer-deployment-webapp": link:../dashbuilder-viewer-deployment-webapp
+      "@kie-tools/dashbuilder-viewer-image-env": link:../dashbuilder-viewer-image-env
+      "@kie-tools/root-env": link:../root-env
+      rimraf: 3.0.2
+      run-script-os: 1.1.6
+
+  packages/dashbuilder-viewer-image-env:
+    specifiers:
+      "@kie-tools/root-env": workspace:*
+    devDependencies:
+      "@kie-tools/root-env": link:../root-env
+
+  packages/dashbuilder-viewer-webapp:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/react-hooks": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspaces-git-fs": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/dashbuilder-viewer": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/react": ^17.0.6
+      "@types/react-dom": ^17.0.5
+      "@types/react-router": ^5.1.14
+      "@types/react-router-dom": ^5.1.7
+      copy-webpack-plugin: ^11.0.0
+      html-replace-webpack-plugin: ^2.6.0
+      html-webpack-plugin: ^5.3.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-router: ^5.2.1
+      react-router-dom: ^5.2.1
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      webpack: ^5.36.2
+      webpack-cli: ^4.10.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.8.0
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/react-hooks": link:../react-hooks
+      "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
+      "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
+      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/react": 17.0.21
+      "@types/react-dom": 17.0.8
+      "@types/react-router": 5.1.14
+      "@types/react-router-dom": 5.1.7
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
+      html-replace-webpack-plugin: 2.6.0
+      html-webpack-plugin: 5.3.2_webpack@5.70.0
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
+      typescript: 4.8.4
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/desktop:
@@ -1848,7 +2119,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cross-var: ^1.1.0
       electron: ^15.5.7
       electron-packager: ^15.2.0
@@ -1866,9 +2137,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@electron/remote": 2.0.8_electron@15.5.7
       "@kie-tools-core/editor": link:../editor
@@ -1901,7 +2172,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cross-var: 1.1.0
       electron-packager: 15.2.0
       electron-rebuild: 2.3.5
@@ -1913,9 +2184,9 @@ importers:
       spectron: 17.0.0_electron@15.5.7
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dmn-dev-sandbox-deployment-base-image:
@@ -1966,7 +2237,7 @@ importers:
       "@types/react-router-dom": ^5.1.7
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
@@ -1980,9 +2251,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/patternfly-base": link:../patternfly-base
@@ -2012,7 +2283,7 @@ importers:
       "@types/react-router-dom": 5.1.7
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       html-replace-webpack-plugin: 2.6.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
@@ -2021,9 +2292,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/dmn-dev-sandbox-quarkus:
@@ -2259,7 +2530,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       file-loader: ^6.2.0
       jest: ^26.6.3
@@ -2272,9 +2543,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/monaco-editor": link:../monaco-editor
@@ -2299,7 +2570,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       file-loader: 6.2.0_webpack@5.70.0
       jest: 26.6.3
@@ -2308,9 +2579,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/form:
@@ -2495,9 +2766,9 @@ importers:
       uniforms: ^3.5.5
       uniforms-bridge-json-schema: ^3.5.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       webpack-node-externals: ^3.0.0
     dependencies:
       "@kie-tools/uniforms-bootstrap4-codegen": link:../uniforms-bootstrap4-codegen
@@ -2526,11 +2797,25 @@ importers:
       run-script-os: 1.1.6
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       webpack-node-externals: 3.0.0
+
+  packages/git-cors-proxy-image:
+    specifiers:
+      "@isomorphic-git/cors-proxy": ^2.7.1
+      "@kie-tools/root-env": workspace:*
+      patch-package: ^6.4.7
+      rimraf: ^3.0.2
+      run-script-os: ^1.1.6
+    devDependencies:
+      "@isomorphic-git/cors-proxy": 2.7.1
+      "@kie-tools/root-env": link:../root-env
+      patch-package: 6.4.7
+      rimraf: 3.0.2
+      run-script-os: 1.1.6
 
   packages/guided-tour:
     specifiers:
@@ -2678,14 +2963,15 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
       commander: ^8.3.0
+      jsonschema: ^1.4.1
       pkg: ^5.5.2
       rimraf: ^3.0.2
       run-script-os: ^1.1.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       webpack-node-externals: ^3.0.0
     dependencies:
       commander: 8.3.0
@@ -2694,13 +2980,14 @@ importers:
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/tsconfig": link:../tsconfig
+      jsonschema: 1.4.1
       pkg: 5.5.2
       rimraf: 3.0.2
       run-script-os: 1.1.6
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       webpack-node-externals: 3.0.0
 
@@ -2726,7 +3013,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       cypress: ^11.0.1
       cypress-file-upload: ^5.0.8
@@ -2744,9 +3031,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
@@ -2771,7 +3058,7 @@ importers:
       "@types/react": 17.0.21
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
@@ -2786,9 +3073,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/keyboard-shortcuts:
@@ -2937,7 +3224,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/react-router-dom": ^5.1.7
       "@types/underscore": ^1.11.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cypress: ^11.0.1
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
@@ -2959,9 +3246,9 @@ importers:
       typescript: ^4.4.2
       underscore: ^1.13.1
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     devDependencies:
       "@babel/core": 7.16.12
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
@@ -2987,7 +3274,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/react-router-dom": 5.1.7
       "@types/underscore": 1.11.2
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
       cypress-iframe: 1.0.1
@@ -3008,9 +3295,9 @@ importers:
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       underscore: 1.13.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/kie-sandbox-extended-services-image:
@@ -3084,12 +3371,14 @@ importers:
       "@kie-tools/root-env": workspace:*
       rimraf: ^3.0.2
       run-script-os: ^1.1.6
+      ts-json-schema-generator: ^1.1.2
     devDependencies:
       "@kie-tools/image-env-to-json": link:../image-env-to-json
       "@kie-tools/online-editor": link:../online-editor
       "@kie-tools/root-env": link:../root-env
       rimraf: 3.0.2
       run-script-os: 1.1.6
+      ts-json-schema-generator: 1.1.2
 
   packages/kn-plugin-workflow:
     specifiers:
@@ -3127,9 +3416,9 @@ importers:
       typescript: ^4.4.2
       url-loader: ^4.1.1
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       monaco-editor: 0.33.0
     devDependencies:
@@ -3150,9 +3439,9 @@ importers:
       ts-loader: 9.2.1_mvz5zs7ucxpvtjm4l3lstilztu
       typescript: 4.5.4
       url-loader: 4.1.1_webpack@5.70.0
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/notifications:
@@ -3214,13 +3503,13 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/cors-proxy-image": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/extended-services": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/form-dmn": workspace:*
+      "@kie-tools/git-cors-proxy-image": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/pmml-editor": workspace:*
@@ -3250,7 +3539,7 @@ importers:
       "@types/uuid": ^8.3.0
       bowser: ^2.10.0
       buffer: ^6.0.3
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cypress: ^11.0.1
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
@@ -3274,12 +3563,13 @@ importers:
       rimraf: ^3.0.2
       start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
+      ts-node: ^10.9.1
       typescript: ^4.4.2
       uuid: ^8.3.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope-bus": link:../envelope-bus
@@ -3326,10 +3616,10 @@ importers:
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/cors-proxy-image": link:../cors-proxy-image
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/extended-services": link:../extended-services
+      "@kie-tools/git-cors-proxy-image": link:../git-cors-proxy-image
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig
@@ -3347,7 +3637,7 @@ importers:
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
       "@types/uuid": 8.3.0
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
       cypress-iframe: 1.0.1
@@ -3355,16 +3645,17 @@ importers:
       cypress-real-events: 1.7.2_cypress@11.0.1
       html-replace-webpack-plugin: 2.6.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
-      jest: 26.6.3
+      jest: 26.6.3_ts-node@10.9.1
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      ts-node: 10.9.1_typescript@4.5.4
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/openjdk11-mvn-image:
@@ -3457,15 +3748,17 @@ importers:
       sass-loader: ^12.3.0
       style-loader: ^2.0.0
       url-loader: ^4.1.1
+      webpack: ^5.36.2
     devDependencies:
       "@kie-tools/root-env": link:../root-env
-      css-loader: 5.2.7
-      file-loader: 6.2.0
-      raw-loader: 4.0.2
+      css-loader: 5.2.7_webpack@5.70.0
+      file-loader: 6.2.0_webpack@5.70.0
+      raw-loader: 4.0.2_webpack@5.70.0
       sass: 1.49.9
-      sass-loader: 12.4.0_sass@1.49.9
-      style-loader: 2.0.0
-      url-loader: 4.1.1_file-loader@6.2.0
+      sass-loader: 12.4.0_sass@1.49.9+webpack@5.70.0
+      style-loader: 2.0.0_webpack@5.70.0
+      url-loader: 4.1.1_plzek67nbn24rjxjp577ruq77e
+      webpack: 5.70.0
 
   packages/pmml-editor:
     specifiers:
@@ -3505,7 +3798,7 @@ importers:
       "@types/testing-library__react": ^9.1.2
       "@types/uuid": ^8.3.0
       combine-reducer: ^1.0.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       cpr: ^3.0.1
       csstype: ^3.0.11
@@ -3537,9 +3830,9 @@ importers:
       typescript: ^4.4.2
       uuid: ^8.3.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/guided-tour": link:../guided-tour
@@ -3593,7 +3886,7 @@ importers:
       "@types/react-router-dom": 5.1.7
       "@types/testing-library__jest-dom": 5.9.5
       "@types/testing-library__react": 9.1.3
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       cpr: 3.0.1
       cypress: 11.0.1
@@ -3609,9 +3902,9 @@ importers:
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/pmml-editor-marshaller:
@@ -3726,6 +4019,7 @@ importers:
       "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
       "@kie-tools/dashbuilder-editor": workspace:*
+      "@kie-tools/dashbuilder-viewer-image-env": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
@@ -3752,6 +4046,7 @@ importers:
       "@types/history": ^4.7.3
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
+      "@types/minimatch": ^3.0.4
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
@@ -3759,7 +4054,7 @@ importers:
       axios: ^0.27.2
       bowser: ^2.10.0
       buffer: ^6.0.3
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cypress: ^11.0.1
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
@@ -3771,6 +4066,7 @@ importers:
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
       jszip: ^3.7.1
+      minimatch: ^3.0.4
       moment: ^2.29.4
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -3786,9 +4082,9 @@ importers:
       typescript: ^4.4.2
       vscode-languageserver-types: ^3.16.0
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       yaml: ^2.0.1
     dependencies:
       "@kie-tools-core/editor": link:../editor
@@ -3840,6 +4136,7 @@ importers:
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/dashbuilder-viewer-image-env": link:../dashbuilder-viewer-image-env
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
       "@kie-tools/root-env": link:../root-env
@@ -3850,11 +4147,12 @@ importers:
       "@types/history": 4.7.5
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
+      "@types/minimatch": 3.0.4
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cypress: 11.0.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
@@ -3863,14 +4161,15 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
+      minimatch: 3.0.5
       monaco-editor-webpack-plugin: 7.0.1_eodoae2vto4nf5xogfjxixxxnq
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/serverless-logic-sandbox-base-image:
@@ -3915,7 +4214,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
       jest: ^26.6.3
@@ -3929,9 +4228,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/patternfly-base": link:../patternfly-base
@@ -3956,7 +4255,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       html-replace-webpack-plugin: 2.6.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
@@ -3965,9 +4264,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/serverless-workflow-combined-editor:
@@ -4002,7 +4301,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cypress: ^11.0.1
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
@@ -4023,9 +4322,9 @@ importers:
       vscode-json-languageservice: ^4.2.1
       vscode-languageserver-types: ^3.16.0
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope-bus": link:../envelope-bus
@@ -4064,7 +4363,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
       cypress-iframe: 1.0.1
@@ -4078,9 +4377,9 @@ importers:
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       vscode-json-languageservice: 4.2.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/serverless-workflow-diagram-editor:
@@ -4250,7 +4549,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/svg-pan-zoom": ^3.4.0
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       cypress: ^11.0.1
       cypress-file-upload: ^5.0.8
@@ -4268,9 +4567,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope-bus": link:../envelope-bus
@@ -4302,7 +4601,7 @@ importers:
       "@types/react": 17.0.21
       "@types/svg-pan-zoom": 3.4.0
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
@@ -4315,9 +4614,9 @@ importers:
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/serverless-workflow-service-catalog:
@@ -4392,7 +4691,7 @@ importers:
       "@types/json-schema": ^7.0.11
       "@types/react": ^17.0.6
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cypress: ^11.0.1
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
@@ -4413,9 +4712,9 @@ importers:
       vscode-json-languageservice: ^4.2.1
       vscode-languageserver-types: ^3.16.0
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope": link:../envelope
@@ -4449,7 +4748,7 @@ importers:
       "@types/json-schema": 7.0.11
       "@types/react": 17.0.21
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
       cypress-iframe: 1.0.1
@@ -4463,9 +4762,9 @@ importers:
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       vscode-json-languageservice: 4.2.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/stunner-editors:
@@ -4514,9 +4813,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/monaco-editor": link:../monaco-editor
@@ -4545,9 +4844,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/text-editor:
@@ -4645,7 +4944,7 @@ importers:
       "@types/simpl-schema": ^1.12.0
       "@types/testing-library__react": ^9.1.2
       "@types/underscore": ^1.11.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-raw-loader: ^1.0.1
@@ -4663,7 +4962,7 @@ importers:
       uniforms-bridge-simple-schema-2: ^3.5.5
       webpack: ^5.36.2
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       webpack-node-externals: ^3.0.0
     dependencies:
       lodash: 4.17.21
@@ -4691,7 +4990,7 @@ importers:
       "@types/simpl-schema": 1.12.0
       "@types/testing-library__react": 9.1.3
       "@types/underscore": 1.11.2
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-raw-loader: 1.0.1
@@ -4723,7 +5022,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/simpl-schema": ^1.12.0
       "@types/testing-library__react": ^9.1.2
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-raw-loader: ^1.0.1
@@ -4739,9 +5038,9 @@ importers:
       uniforms: ^3.5.5
       uniforms-bridge-simple-schema-2: ^3.5.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       webpack-node-externals: ^3.0.0
     dependencies:
       lodash: 4.17.21
@@ -4767,7 +5066,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/simpl-schema": 1.12.0
       "@types/testing-library__react": 9.1.3
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-raw-loader: 1.0.1
@@ -4776,9 +5075,9 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       webpack-node-externals: 3.0.0
 
@@ -5020,7 +5319,7 @@ importers:
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
       "@types/vscode": ^1.66.0
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
@@ -5029,9 +5328,9 @@ importers:
       ts-jest: ^26.5.6
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/vscode-extension": link:../vscode-extension
@@ -5047,7 +5346,7 @@ importers:
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
       "@types/vscode": 1.66.0
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
@@ -5055,9 +5354,9 @@ importers:
       run-script-os: 1.1.6
       ts-jest: 26.5.6_jest@26.6.3
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-bpmn-editor:
@@ -5076,13 +5375,13 @@ importers:
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.30
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -5099,12 +5398,12 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-dashbuilder-editor:
@@ -5128,14 +5427,14 @@ importers:
       "@types/react": ^17.0.6
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.30
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       portfinder: ^1.0.32
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -5158,12 +5457,12 @@ importers:
       "@types/react": 17.0.21
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-dmn-editor:
@@ -5182,13 +5481,13 @@ importers:
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.30
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -5205,12 +5504,12 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-kie-ba-bundle:
@@ -5223,9 +5522,9 @@ importers:
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/eslint": link:../eslint
@@ -5234,9 +5533,9 @@ importers:
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-kogito-bundle:
@@ -5249,9 +5548,9 @@ importers:
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/eslint": link:../eslint
@@ -5260,9 +5559,9 @@ importers:
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-pack-kogito-kie-editors:
@@ -5295,7 +5594,7 @@ importers:
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.30
       chai: ^4.3.4
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cpr: ^3.0.1
       file-loader: ^6.2.0
       jest: ^26.6.3
@@ -5314,9 +5613,9 @@ importers:
       vscode-extension-tester: ^4.4.0
       vscode-test: ^1.6.1
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -5349,7 +5648,7 @@ importers:
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
       chai: 4.3.4
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cpr: 3.0.1
       file-loader: 6.2.0_webpack@5.70.0
       jest: 26.6.3
@@ -5365,9 +5664,9 @@ importers:
       vsce: 2.6.5
       vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-pmml-editor:
@@ -5390,9 +5689,9 @@ importers:
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -5412,9 +5711,9 @@ importers:
       file-loader: 6.2.0_webpack@5.70.0
       rimraf: 3.0.2
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-red-hat-business-automation-bundle:
@@ -5427,9 +5726,9 @@ importers:
       rimraf: ^3.0.2
       vsce: ^2.6.5
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/eslint": link:../eslint
@@ -5438,9 +5737,9 @@ importers:
       "@types/vscode": 1.66.0
       rimraf: 3.0.2
       vsce: 2.6.5
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-serverless-workflow-editor:
@@ -5472,7 +5771,7 @@ importers:
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.30
       chai: ^4.3.4
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       cpr: ^3.0.1
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
@@ -5491,9 +5790,9 @@ importers:
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       yaml: ^2.0.1
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -5530,7 +5829,7 @@ importers:
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
       chai: 4.3.4
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cpr: 3.0.1
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
@@ -5543,9 +5842,9 @@ importers:
       vsce: 2.6.5
       vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-extension-yard-editor:
@@ -5589,9 +5888,9 @@ importers:
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
       yaml: ^2.0.1
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -5634,9 +5933,9 @@ importers:
       vsce: 2.6.5
       vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   packages/vscode-java-code-completion:
@@ -5691,13 +5990,15 @@ importers:
       path-browserify: ^1.0.1
       source-map-loader: ^2.0.2
       ts-loader: ^9.1.2
+      webpack: ^5.36.2
     devDependencies:
       "@babel/traverse": 7.17.9
       "@kie-tools/root-env": link:../root-env
       os-browserify: 0.3.0
       path-browserify: 1.0.1
-      source-map-loader: 2.0.2
-      ts-loader: 9.2.1
+      source-map-loader: 2.0.2_webpack@5.70.0
+      ts-loader: 9.2.1_webpack@5.70.0
+      webpack: 5.70.0
 
   packages/workspace:
     specifiers:
@@ -5881,7 +6182,7 @@ importers:
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
+      copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
       csstype: ^3.0.11
       cypress: ^11.0.1
@@ -5902,9 +6203,9 @@ importers:
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
-      webpack-cli: ^4.7.0
+      webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
+      webpack-merge: ^5.8.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope-bus": link:../envelope-bus
@@ -5941,7 +6242,7 @@ importers:
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
       cypress: 11.0.1
       cypress-file-upload: 5.0.8_cypress@11.0.1
@@ -5954,9 +6255,9 @@ importers:
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
   scripts/bootstrap:
@@ -7884,6 +8185,14 @@ packages:
       minimist: 1.2.6
     dev: true
 
+  /@cspotcode/source-map-support/0.8.1:
+    resolution:
+      { integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw== }
+    engines: { node: ">=12" }
+    dependencies:
+      "@jridgewell/trace-mapping": 0.3.9
+    dev: true
+
   /@csstools/postcss-progressive-custom-properties/1.3.0_postcss@8.4.5:
     resolution:
       { integrity: sha512-ASA9W1aIy5ygskZYuWams4BzafD12ULvSypmaLJT2jvQ8G0M3I8PRQhC0h7mG0Z3LI05+agZjqSR9+K9yaQQjA== }
@@ -8136,6 +8445,47 @@ packages:
       - utf-8-validate
     dev: true
 
+  /@jest/core/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-xvV1kKbhfUqFVuZ8Cyo+JPpipAHHAV3kcDBftiduK8EICXmTFddryy3P7NfZt8Pv37rA9nEJBKCCkglCPt/Xjw== }
+    engines: { node: ">= 10.14.2" }
+    dependencies:
+      "@jest/console": 26.6.2
+      "@jest/reporters": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/transform": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/node": 17.0.12
+      ansi-escapes: 4.3.2
+      chalk: 4.1.2
+      exit: 0.1.2
+      graceful-fs: 4.2.10
+      jest-changed-files: 26.6.2
+      jest-config: 26.6.3_ts-node@10.9.1
+      jest-haste-map: 26.6.2
+      jest-message-util: 26.6.2
+      jest-regex-util: 26.0.0
+      jest-resolve: 26.6.2
+      jest-resolve-dependencies: 26.6.3
+      jest-runner: 26.6.3_ts-node@10.9.1
+      jest-runtime: 26.6.3_ts-node@10.9.1
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      jest-validate: 26.6.2
+      jest-watcher: 26.6.2
+      micromatch: 4.0.5
+      p-each-series: 2.1.0
+      rimraf: 3.0.2
+      slash: 3.0.0
+      strip-ansi: 6.0.1
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: true
+
   /@jest/environment/26.6.2:
     resolution:
       { integrity: sha512-nFy+fHl28zUrRsCeMB61VDThV1pVTtlEokBRgqPrcT1JNq4yRNIyTHfyht6PqtUvY9IsuLGTrbG8kPXjSZIZwA== }
@@ -8244,6 +8594,24 @@ packages:
       - utf-8-validate
     dev: true
 
+  /@jest/test-sequencer/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-YHlVIjP5nfEyjlrSr8t/YdNfU/1XEt7c5b4OxcXCjyRhjzLYu/rO69/WHPuYcbCWkz8kAeZVZp2N2+IOLLEPGw== }
+    engines: { node: ">= 10.14.2" }
+    dependencies:
+      "@jest/test-result": 26.6.2
+      graceful-fs: 4.2.10
+      jest-haste-map: 26.6.2
+      jest-runner: 26.6.3_ts-node@10.9.1
+      jest-runtime: 26.6.3_ts-node@10.9.1
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: true
+
   /@jest/transform/26.6.2:
     resolution:
       { integrity: sha512-E9JjhUgNzvuQ+vVAL21vlyfy12gP0GhazGgJC4h6qUt1jSdUXGWJ1wfu/X7Sd8etSgxV4ovT1pb9v5D6QW4XgA== }
@@ -8295,6 +8663,19 @@ packages:
     resolution:
       { integrity: sha512-VPeQ7+wH0itvQxnG+lIzWgkysKIr3L9sslimFW55rHMdGu/qCQ5z5h9zq4gI8uBtqkpHhsF4Z/OwExufUCThew== }
     engines: { node: ">=6.0.0" }
+    dev: true
+
+  /@jridgewell/sourcemap-codec/1.4.14:
+    resolution:
+      { integrity: sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw== }
+    dev: true
+
+  /@jridgewell/trace-mapping/0.3.9:
+    resolution:
+      { integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ== }
+    dependencies:
+      "@jridgewell/resolve-uri": 3.0.5
+      "@jridgewell/sourcemap-codec": 1.4.14
     dev: true
 
   /@kie-tools/emscripten-fs/0.0.2:
@@ -10146,6 +10527,26 @@ packages:
     engines: { node: ">=10.13.0" }
     dev: true
 
+  /@tsconfig/node10/1.0.9:
+    resolution:
+      { integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA== }
+    dev: true
+
+  /@tsconfig/node12/1.0.11:
+    resolution:
+      { integrity: sha512-cqefuRsh12pWyGsIoBKJA9luFu3mRxCA+ORZvA4ktLSzIuCUtWVxGIuXigEwO5/ywWFMZ2QEGKWvkZG1zDMTag== }
+    dev: true
+
+  /@tsconfig/node14/1.0.3:
+    resolution:
+      { integrity: sha512-ysT8mhdixWK6Hw3i1V2AeRqZ5WfXg1G43mqoYlM2nc6388Fq5jcXyr5mRsqViLx/GJYdoL0bfXD8nmF+Zn/Iow== }
+    dev: true
+
+  /@tsconfig/node16/1.0.3:
+    resolution:
+      { integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ== }
+    dev: true
+
   /@types/aria-query/4.2.1:
     resolution:
       { integrity: sha512-S6oPal772qJZHoRZLFc/XoZW2gFvwXusYUmXPXkgxJLuEk2vOt7jc4Yo6z/vtI0EBkbPBVrJJ0B+prLIKiWqHg== }
@@ -11242,6 +11643,17 @@ packages:
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
     dev: true
 
+  /@webpack-cli/configtest/1.2.0_arvjobxnuton62rnb6f22zdmlm:
+    resolution:
+      { integrity: sha512-4FB8Tj6xyVkyqjj1OaTqCjXYULB9FMkqQ8yGrZjRDrYh0nOE+7Lhs45WioWQQMV+ceFlE368Ukhe6xdvJM9Egg== }
+    peerDependencies:
+      webpack: 4.x.x || 5.x.x
+      webpack-cli: 4.x.x
+    dependencies:
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+    dev: true
+
   /@webpack-cli/info/1.2.4_webpack-cli@4.7.0:
     resolution:
       { integrity: sha512-ogE2T4+pLhTTPS/8MM3IjHn0IYplKM4HbVNMCWA9N4NrdPzunwenpCsqKEXyejMfRu6K8mhauIPYf8ZxWG5O6g== }
@@ -11250,6 +11662,16 @@ packages:
     dependencies:
       envinfo: 7.8.1
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+    dev: true
+
+  /@webpack-cli/info/1.5.0_webpack-cli@4.10.0:
+    resolution:
+      { integrity: sha512-e8tSXZpw2hPl2uMJY6fsMswaok5FdlGNRTktvFk2sD8RjH0hE2+XistawJx1vmKteh4NmGmNUrp+Tb2w+udPcQ== }
+    peerDependencies:
+      webpack-cli: 4.x.x
+    dependencies:
+      envinfo: 7.8.1
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
     dev: true
 
   /@webpack-cli/serve/1.4.0_2vnqxgbce4ohauwx54aplu43om:
@@ -11264,6 +11686,20 @@ packages:
     dependencies:
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+    dev: true
+
+  /@webpack-cli/serve/1.7.0_2pilh4owx6vit44ad4uthlnj3q:
+    resolution:
+      { integrity: sha512-oxnCNGj88fL+xzV+dacXs44HcDwf1ovs3AuEzvP7mqXw7fQntqIhQ1BRmynh4qEKQSSSRSWVyXRjmTbZIX9V2Q== }
+    peerDependencies:
+      webpack-cli: 4.x.x
+      webpack-dev-server: "*"
+    peerDependenciesMeta:
+      webpack-dev-server:
+        optional: true
+    dependencies:
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
     dev: true
 
   /@xtuc/ieee754/1.2.0:
@@ -11562,6 +11998,12 @@ packages:
     engines: { node: ">=0.4.0" }
     dev: true
 
+  /acorn-walk/8.2.0:
+    resolution:
+      { integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA== }
+    engines: { node: ">=0.4.0" }
+    dev: true
+
   /acorn/7.4.1:
     resolution:
       { integrity: sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A== }
@@ -11646,7 +12088,7 @@ packages:
       ajv:
         optional: true
     dependencies:
-      ajv: 8.9.0
+      ajv: 8.11.0
     dev: true
 
   /ajv-keywords/3.5.2_ajv@6.12.6:
@@ -11658,13 +12100,13 @@ packages:
       ajv: 6.12.6
     dev: true
 
-  /ajv-keywords/5.1.0_ajv@8.9.0:
+  /ajv-keywords/5.1.0_ajv@8.11.0:
     resolution:
       { integrity: sha512-YCS/JNFAUyr5vAuhk1DWm1CBxRHW9LbJ2ozWeemrIqpbsqKjHVxYPyi5GC0rjZIT5JxJ3virVTS8wk4i/Z+krw== }
     peerDependencies:
       ajv: ^8.8.2
     dependencies:
-      ajv: 8.9.0
+      ajv: 8.11.0
       fast-deep-equal: 3.1.3
     dev: true
 
@@ -13217,6 +13659,13 @@ packages:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
+  /brace-expansion/2.0.1:
+    resolution:
+      { integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA== }
+    dependencies:
+      balanced-match: 1.0.2
+    dev: true
+
   /braces/2.3.2:
     resolution:
       { integrity: sha512-aNdbnj9P8PjdXU4ybaWLK2IF3jc/EoDYbC7AazW6to3TRsfXxscC9UXOB5iDiEQrkyIbWp2SLQda4+QAa7nc3w== }
@@ -14062,6 +14511,12 @@ packages:
       { integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww== }
     engines: { node: ">= 12" }
 
+  /commander/9.4.1:
+    resolution:
+      { integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw== }
+    engines: { node: ^12.20.0 || >=14 }
+    dev: true
+
   /common-tags/1.8.0:
     resolution:
       { integrity: sha512-6P6g0uetGpW/sdyUy/iQQCbFF0kWVMSIVSyYz7Zgjcgh8mgw8PQzDNZeyZ5DQ2gM7LBoZPHmnjz8rUthkBG5tw== }
@@ -14258,6 +14713,22 @@ packages:
       webpack: 5.70.0_esbuild@0.14.22
     dev: true
 
+  /copy-webpack-plugin/11.0.0_webpack@5.70.0:
+    resolution:
+      { integrity: sha512-fX2MWpamkW0hZxMEg0+mYnA40LTosOSa5TqZ9GYIBzyJa9C3QUaMPSE2xAi/buNr8u89SfD9wHSQVBzrRa/SOQ== }
+    engines: { node: ">= 14.15.0" }
+    peerDependencies:
+      webpack: ^5.1.0
+    dependencies:
+      fast-glob: 3.2.11
+      glob-parent: 6.0.2
+      globby: 13.1.2
+      normalize-path: 3.0.0
+      schema-utils: 4.0.0
+      serialize-javascript: 6.0.0
+      webpack: 5.70.0
+    dev: true
+
   /copy-webpack-plugin/8.1.1_webpack@5.70.0:
     resolution:
       { integrity: sha512-rYM2uzRxrLRpcyPqGceRBDpxxUV8vcDqIKxAUKfcnFpcrPxT5+XvhTxv7XLjo5AvEJFPdAE3zCogG2JVahqgSQ== }
@@ -14272,7 +14743,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -14381,6 +14852,11 @@ packages:
     dependencies:
       crc-32: 1.2.0
       readable-stream: 3.6.0
+    dev: true
+
+  /create-require/1.1.1:
+    resolution:
+      { integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ== }
     dev: true
 
   /critters/0.0.16:
@@ -14500,25 +14976,6 @@ packages:
       postcss-selector-parser: 6.0.10
     dev: true
 
-  /css-loader/5.2.7:
-    resolution:
-      { integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.27.0 || ^5.0.0
-    dependencies:
-      icss-utils: 5.1.0_postcss@8.4.12
-      loader-utils: 2.0.2
-      postcss: 8.4.12
-      postcss-modules-extract-imports: 3.0.0_postcss@8.4.12
-      postcss-modules-local-by-default: 4.0.0_postcss@8.4.12
-      postcss-modules-scope: 3.0.0_postcss@8.4.12
-      postcss-modules-values: 4.0.0_postcss@8.4.12
-      postcss-value-parser: 4.2.0
-      schema-utils: 3.1.1
-      semver: 7.3.7
-    dev: true
-
   /css-loader/5.2.7_webpack@5.70.0:
     resolution:
       { integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg== }
@@ -14536,7 +14993,7 @@ packages:
       postcss-value-parser: 4.2.0
       schema-utils: 3.1.1
       semver: 7.3.7
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /css-loader/6.5.1_webpack@5.70.0:
@@ -15847,7 +16304,8 @@ packages:
     dev: true
 
   /depd/1.1.1:
-    resolution: { integrity: sha1-V4O04cRZ8G+lyif5kfPQbnoxA1k= }
+    resolution:
+      { integrity: sha512-Jlk9xvkTDGXwZiIDyoM7+3AsuvJVoyOpRupvEVy9nX3YO3/ieZxhlgh8GpLNZ8AY7HjO6y2YwpMSh1ejhu3uIw== }
     engines: { node: ">= 0.6" }
     dev: true
 
@@ -17642,17 +18100,6 @@ packages:
       flat-cache: 3.0.4
     dev: true
 
-  /file-loader/6.2.0:
-    resolution:
-      { integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
-    dev: true
-
   /file-loader/6.2.0_webpack@5.70.0:
     resolution:
       { integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw== }
@@ -17662,7 +18109,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0
     dev: true
 
   /file-selector/0.2.4:
@@ -18261,6 +18708,18 @@ packages:
       path-is-absolute: 1.0.1
     dev: true
 
+  /glob/8.0.3:
+    resolution:
+      { integrity: sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ== }
+    engines: { node: ">=12" }
+    dependencies:
+      fs.realpath: 1.0.0
+      inflight: 1.0.6
+      inherits: 2.0.4
+      minimatch: 5.1.0
+      once: 1.4.0
+    dev: true
+
   /global-agent/2.2.0:
     resolution:
       { integrity: sha512-+20KpaW6DDLqhG7JDiJpD1JvNvb8ts+TNl7BPOYcURqCrXqnN1Vf+XVOrkKJAFPqfX+oEhsdzOj1hLWkBTdNJg== }
@@ -18368,6 +18827,18 @@ packages:
       array-union: 3.0.1
       dir-glob: 3.0.1
       fast-glob: 3.2.10
+      ignore: 5.2.0
+      merge2: 1.4.1
+      slash: 4.0.0
+    dev: true
+
+  /globby/13.1.2:
+    resolution:
+      { integrity: sha512-LKSDZXToac40u8Q1PQtZihbNdTYSNMuWe+K5l+oa6KgDzSvVrHXlJy40hUP522RjAIoNLJYBJi7ow+rbFpIhHQ== }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      dir-glob: 3.0.1
+      fast-glob: 3.2.11
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 4.0.0
@@ -18723,7 +19194,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 3.0.4
       tapable: 2.2.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /htmlparser2/6.1.0:
@@ -18755,7 +19226,8 @@ packages:
     dev: true
 
   /http-errors/1.6.2:
-    resolution: { integrity: sha1-CgAsyFcHGSp+eUbO7cERVfYOxzY= }
+    resolution:
+      { integrity: sha512-STnYGcKMXL9CGdtpeTFnLmgMSHTTNQJSHxiC4DETHKf934Q160Ht5pljrNeH24S0O9xUN+9vsDJZdZtk5js6Ww== }
     engines: { node: ">= 0.6" }
     dependencies:
       depd: 1.1.1
@@ -19793,6 +20265,33 @@ packages:
       - utf-8-validate
     dev: true
 
+  /jest-cli/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-GF9noBSa9t08pSyl3CY4frMrqp+aQXFGFkf5hEPbh/pIUFYWMK6ZLTfbmadxJVcJrdRoChlWQsA2VkJcDFK8hg== }
+    engines: { node: ">= 10.14.2" }
+    hasBin: true
+    dependencies:
+      "@jest/core": 26.6.3_ts-node@10.9.1
+      "@jest/test-result": 26.6.2
+      "@jest/types": 26.6.2
+      chalk: 4.1.2
+      exit: 0.1.2
+      graceful-fs: 4.2.10
+      import-local: 3.0.2
+      is-ci: 2.0.0
+      jest-config: 26.6.3_ts-node@10.9.1
+      jest-util: 26.6.2
+      jest-validate: 26.6.2
+      prompts: 2.3.2
+      yargs: 15.4.1
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: true
+
   /jest-config/26.6.3:
     resolution:
       { integrity: sha512-t5qdIj/bCj2j7NFVHb2nFB4aUdfucDn3JRKgrZnplb8nieAirAzRSHP8uDEd+qV6ygzg9Pz4YG7UTJf94LPSyg== }
@@ -19821,6 +20320,42 @@ packages:
       jest-validate: 26.6.2
       micromatch: 4.0.5
       pretty-format: 26.6.2
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /jest-config/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-t5qdIj/bCj2j7NFVHb2nFB4aUdfucDn3JRKgrZnplb8nieAirAzRSHP8uDEd+qV6ygzg9Pz4YG7UTJf94LPSyg== }
+    engines: { node: ">= 10.14.2" }
+    peerDependencies:
+      ts-node: ">=9.0.0"
+    peerDependenciesMeta:
+      ts-node:
+        optional: true
+    dependencies:
+      "@babel/core": 7.16.12
+      "@jest/test-sequencer": 26.6.3_ts-node@10.9.1
+      "@jest/types": 26.6.2
+      babel-jest: 26.6.3_@babel+core@7.16.12
+      chalk: 4.1.2
+      deepmerge: 4.2.2
+      glob: 7.2.0
+      graceful-fs: 4.2.10
+      jest-environment-jsdom: 26.6.2
+      jest-environment-node: 26.6.2
+      jest-get-type: 26.3.0
+      jest-jasmine2: 26.6.3_ts-node@10.9.1
+      jest-regex-util: 26.0.0
+      jest-resolve: 26.6.2
+      jest-util: 26.6.2
+      jest-validate: 26.6.2
+      micromatch: 4.0.5
+      pretty-format: 26.6.2
+      ts-node: 10.9.1_typescript@4.5.4
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -19956,6 +20491,37 @@ packages:
       jest-matcher-utils: 26.6.2
       jest-message-util: 26.6.2
       jest-runtime: 26.6.3
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      pretty-format: 26.6.2
+      throat: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: true
+
+  /jest-jasmine2/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-kPKUrQtc8aYwBV7CqBg5pu+tmYXlvFlSFYn18ev4gPFtrRzB15N2gW/Roew3187q2w2eHuu0MU9TJz6w0/nPEg== }
+    engines: { node: ">= 10.14.2" }
+    dependencies:
+      "@babel/traverse": 7.17.9
+      "@jest/environment": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/node": 17.0.12
+      chalk: 4.1.2
+      co: 4.6.0
+      expect: 26.6.2
+      is-generator-fn: 2.1.0
+      jest-each: 26.6.2
+      jest-matcher-utils: 26.6.2
+      jest-message-util: 26.6.2
+      jest-runtime: 26.6.3_ts-node@10.9.1
       jest-snapshot: 26.6.2
       jest-util: 26.6.2
       pretty-format: 26.6.2
@@ -20106,6 +20672,39 @@ packages:
       - utf-8-validate
     dev: true
 
+  /jest-runner/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-atgKpRHnaA2OvByG/HpGA4g6CSPS/1LK0jK3gATJAoptC1ojltpmVlYC3TYgdmGp+GLuhzpH30Gvs36szSL2JQ== }
+    engines: { node: ">= 10.14.2" }
+    dependencies:
+      "@jest/console": 26.6.2
+      "@jest/environment": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/node": 17.0.12
+      chalk: 4.1.2
+      emittery: 0.7.2
+      exit: 0.1.2
+      graceful-fs: 4.2.10
+      jest-config: 26.6.3_ts-node@10.9.1
+      jest-docblock: 26.0.0
+      jest-haste-map: 26.6.2
+      jest-leak-detector: 26.6.2
+      jest-message-util: 26.6.2
+      jest-resolve: 26.6.2
+      jest-runtime: 26.6.3_ts-node@10.9.1
+      jest-util: 26.6.2
+      jest-worker: 26.6.2
+      source-map-support: 0.5.21
+      throat: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: true
+
   /jest-runtime/26.6.3:
     resolution:
       { integrity: sha512-lrzyR3N8sacTAMeonbqpnSka1dHNux2uk0qqDXVkMv2c/A3wYnvQ4EXuI013Y6+gSKSCxdaczvf4HF0mVXHRdw== }
@@ -20128,6 +20727,47 @@ packages:
       glob: 7.2.0
       graceful-fs: 4.2.10
       jest-config: 26.6.3
+      jest-haste-map: 26.6.2
+      jest-message-util: 26.6.2
+      jest-mock: 26.6.2
+      jest-regex-util: 26.0.0
+      jest-resolve: 26.6.2
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      jest-validate: 26.6.2
+      slash: 3.0.0
+      strip-bom: 4.0.0
+      yargs: 15.4.1
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: true
+
+  /jest-runtime/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-lrzyR3N8sacTAMeonbqpnSka1dHNux2uk0qqDXVkMv2c/A3wYnvQ4EXuI013Y6+gSKSCxdaczvf4HF0mVXHRdw== }
+    engines: { node: ">= 10.14.2" }
+    hasBin: true
+    dependencies:
+      "@jest/console": 26.6.2
+      "@jest/environment": 26.6.2
+      "@jest/fake-timers": 26.6.2
+      "@jest/globals": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/transform": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/yargs": 15.0.4
+      chalk: 4.1.2
+      cjs-module-lexer: 0.6.0
+      collect-v8-coverage: 1.0.1
+      exit: 0.1.2
+      glob: 7.2.0
+      graceful-fs: 4.2.10
+      jest-config: 26.6.3_ts-node@10.9.1
       jest-haste-map: 26.6.2
       jest-message-util: 26.6.2
       jest-mock: 26.6.2
@@ -20262,6 +20902,23 @@ packages:
       "@jest/core": 26.6.3
       import-local: 3.0.2
       jest-cli: 26.6.3
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: true
+
+  /jest/26.6.3_ts-node@10.9.1:
+    resolution:
+      { integrity: sha512-lGS5PXGAzR4RF7V5+XObhqz2KZIDUA1yD0DG6pBVmy10eh0ZIXQImRuzocsI/N2XZ1GrLFwTS27In2i2jlpq1Q== }
+    engines: { node: ">= 10.14.2" }
+    hasBin: true
+    dependencies:
+      "@jest/core": 26.6.3_ts-node@10.9.1
+      import-local: 3.0.2
+      jest-cli: 26.6.3_ts-node@10.9.1
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -20494,6 +21151,11 @@ packages:
   /jsonparse/1.3.1:
     resolution: { integrity: sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA= }
     engines: { "0": node >= 0.2.0 }
+    dev: true
+
+  /jsonschema/1.4.1:
+    resolution:
+      { integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ== }
     dev: true
 
   /jsprim/1.4.2:
@@ -21718,6 +22380,14 @@ packages:
     dependencies:
       brace-expansion: 1.1.11
 
+  /minimatch/5.1.0:
+    resolution:
+      { integrity: sha512-9TPBGGak4nHfGZsPBohm9AWg6NoT7QTCehS3BIJABslyZbzxfV78QM2Y6+i741OPZIafFAaiiEMh5OyIrJPgtg== }
+    engines: { node: ">=10" }
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
   /minimist/1.2.6:
     resolution:
       { integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q== }
@@ -21950,7 +22620,7 @@ packages:
       loader-utils: 2.0.2
       monaco-editor: 0.33.0
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /monaco-editor-webpack-plugin/7.0.1_eodoae2vto4nf5xogfjxixxxnq:
@@ -21963,7 +22633,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       monaco-editor: 0.33.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /monaco-editor/0.33.0:
@@ -24375,7 +25045,8 @@ packages:
     dev: true
 
   /raw-body/2.3.2:
-    resolution: { integrity: sha1-vNYMd9Prk83gBQKVw/N5OJvIj4k= }
+    resolution:
+      { integrity: sha512-Ss0DsBxqLxCmQkfG5yazYhtbVVTJqS9jTsZG2lhrNwqzOk2SUC7O/NB/M//CkEBqsrtmlNgJCPccJGuYSFr6Vg== }
     engines: { node: ">= 0.8" }
     dependencies:
       bytes: 3.0.0
@@ -24404,17 +25075,6 @@ packages:
       http-errors: 1.8.1
       iconv-lite: 0.4.24
       unpipe: 1.0.0
-    dev: true
-
-  /raw-loader/4.0.2:
-    resolution:
-      { integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
     dev: true
 
   /raw-loader/4.0.2_webpack@5.70.0:
@@ -25463,6 +26123,12 @@ packages:
       ret: 0.1.15
     dev: true
 
+  /safe-stable-stringify/2.4.1:
+    resolution:
+      { integrity: sha512-dVHE6bMtS/bnL2mwualjc6IxEv1F+OCUpA46pKUj6F8uDbUM0jCCulPqRNPSnWwGNKx5etqMjZYdXtrm5KJZGA== }
+    engines: { node: ">=10" }
+    dev: true
+
   /safer-buffer/2.1.2:
     resolution:
       { integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg== }
@@ -25492,28 +26158,6 @@ packages:
       truncate-utf8-bytes: 1.0.2
     dev: true
 
-  /sass-loader/12.4.0_sass@1.49.9:
-    resolution:
-      { integrity: sha512-7xN+8khDIzym1oL9XyS6zP6Ges+Bo2B2xbPrjdMHEYyV3AQYhd/wXeru++3ODHF0zMjYmVadblSKrPrjEkL8mg== }
-    engines: { node: ">= 12.13.0" }
-    peerDependencies:
-      fibers: ">= 3.1.0"
-      node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
-      sass: ^1.3.0
-      webpack: ^5.0.0
-    peerDependenciesMeta:
-      fibers:
-        optional: true
-      node-sass:
-        optional: true
-      sass:
-        optional: true
-    dependencies:
-      klona: 2.0.5
-      neo-async: 2.6.2
-      sass: 1.49.9
-    dev: true
-
   /sass-loader/12.4.0_sass@1.49.9+webpack@5.70.0:
     resolution:
       { integrity: sha512-7xN+8khDIzym1oL9XyS6zP6Ges+Bo2B2xbPrjdMHEYyV3AQYhd/wXeru++3ODHF0zMjYmVadblSKrPrjEkL8mg== }
@@ -25534,7 +26178,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.70.0_esbuild@0.14.22
+      webpack: 5.70.0
     dev: true
 
   /sass/1.49.9:
@@ -25592,9 +26236,9 @@ packages:
     engines: { node: ">= 12.13.0" }
     dependencies:
       "@types/json-schema": 7.0.11
-      ajv: 8.9.0
+      ajv: 8.11.0
       ajv-formats: 2.1.1
-      ajv-keywords: 5.1.0_ajv@8.9.0
+      ajv-keywords: 5.1.0_ajv@8.11.0
     dev: true
 
   /seek-bzip/1.0.6:
@@ -25798,7 +26442,8 @@ packages:
     dev: true
 
   /setprototypeof/1.0.3:
-    resolution: { integrity: sha1-ZlZ+NwQ+608E2RvWWMDL77VbjgQ= }
+    resolution:
+      { integrity: sha512-9jphSf3UbIgpOX/RKvX02iw/rN2TKdusnsPpGfO/rkcsrd+IRqgHZb4VGnmL0Cynps8Nj2hN45wsi30BzrHDIw== }
     dev: true
 
   /setprototypeof/1.1.0:
@@ -26100,7 +26745,7 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /source-map-loader/2.0.2:
+  /source-map-loader/2.0.2_webpack@5.70.0:
     resolution:
       { integrity: sha512-yIYkFOsKn+OdOirRJUPQpnZiMkF74raDVQjj5ni3SzbOiA57SabeX80R5zyMQAKpvKySA3Z4a85vFX3bvpC6KQ== }
     engines: { node: ">= 10.13.0" }
@@ -26110,6 +26755,7 @@ packages:
       abab: 2.0.5
       iconv-lite: 0.6.3
       source-map-js: 0.6.2
+      webpack: 5.70.0
     dev: true
 
   /source-map-loader/3.0.1_webpack@5.70.0:
@@ -26610,17 +27256,6 @@ packages:
       escape-string-regexp: 1.0.5
     dev: true
 
-  /style-loader/2.0.0:
-    resolution:
-      { integrity: sha512-Z0gYUJmzZ6ZdRUqpg1r8GsaFKypE+3xAzuFeMuoHgjc9KZv3wMyCRjQIWEbhoFSq7+7yoHXySDJyyWQaPajeiQ== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
-    dev: true
-
   /style-loader/2.0.0_webpack@5.70.0:
     resolution:
       { integrity: sha512-Z0gYUJmzZ6ZdRUqpg1r8GsaFKypE+3xAzuFeMuoHgjc9KZv3wMyCRjQIWEbhoFSq7+7yoHXySDJyyWQaPajeiQ== }
@@ -26630,7 +27265,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /stylis/4.0.13:
@@ -26947,7 +27582,7 @@ packages:
       serialize-javascript: 6.0.0
       source-map: 0.6.1
       terser: 5.11.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /terser/4.8.0:
@@ -27265,18 +27900,42 @@ packages:
       yargs-parser: 20.2.7
     dev: true
 
-  /ts-loader/9.2.1:
+  /ts-jest/26.5.6_we2p4sglclq5bmc4orivof3sv4:
     resolution:
-      { integrity: sha512-BLfLa4paMQyf819haKxxbZqA1aLDqsk8XEZLmd7E1eBa0NsEHYFcTWlUlPmYMGhvD/IMi0NcIW3A/G7vzr3oiA== }
-    engines: { node: ">=12.0.0" }
+      { integrity: sha512-rua+rCP8DxpA8b4DQD/6X2HQS8Zy/xzViVYfEs2OQu68tkCuKLV0Md8pmX55+W24uRIyAsf/BajRfxOs+R2MKA== }
+    engines: { node: ">= 10" }
+    hasBin: true
     peerDependencies:
-      typescript: "*"
-      webpack: "*"
+      jest: ">=26 <27"
+      typescript: ">=3.8 <5.0"
     dependencies:
-      chalk: 4.1.2
-      enhanced-resolve: 5.9.3
-      micromatch: 4.0.5
+      bs-logger: 0.2.6
+      buffer-from: 1.1.1
+      fast-json-stable-stringify: 2.1.0
+      jest: 26.6.3
+      jest-util: 26.6.2
+      json5: 2.2.1
+      lodash: 4.17.21
+      make-error: 1.3.6
+      mkdirp: 1.0.4
       semver: 7.3.7
+      typescript: 4.8.4
+      yargs-parser: 20.2.7
+    dev: true
+
+  /ts-json-schema-generator/1.1.2:
+    resolution:
+      { integrity: sha512-XMnxvndJFJEYv3NBmW7Po5bGajKdK2qH8Q078eDy60srK9+nEvbT9nLCRKd2IV/RQ7a+oc5FNylvZWveqh7jeQ== }
+    engines: { node: ">=10.0.0" }
+    hasBin: true
+    dependencies:
+      "@types/json-schema": 7.0.11
+      commander: 9.4.1
+      glob: 8.0.3
+      json5: 2.2.1
+      normalize-path: 3.0.0
+      safe-stable-stringify: 2.4.1
+      typescript: 4.8.4
     dev: true
 
   /ts-loader/9.2.1_mvz5zs7ucxpvtjm4l3lstilztu:
@@ -27292,7 +27951,53 @@ packages:
       micromatch: 4.0.5
       semver: 7.3.7
       typescript: 4.5.4
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
+    dev: true
+
+  /ts-loader/9.2.1_webpack@5.70.0:
+    resolution:
+      { integrity: sha512-BLfLa4paMQyf819haKxxbZqA1aLDqsk8XEZLmd7E1eBa0NsEHYFcTWlUlPmYMGhvD/IMi0NcIW3A/G7vzr3oiA== }
+    engines: { node: ">=12.0.0" }
+    peerDependencies:
+      typescript: "*"
+      webpack: "*"
+    dependencies:
+      chalk: 4.1.2
+      enhanced-resolve: 5.9.3
+      micromatch: 4.0.5
+      semver: 7.3.7
+      webpack: 5.70.0
+    dev: true
+
+  /ts-node/10.9.1_typescript@4.5.4:
+    resolution:
+      { integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw== }
+    hasBin: true
+    peerDependencies:
+      "@swc/core": ">=1.2.50"
+      "@swc/wasm": ">=1.2.50"
+      "@types/node": "*"
+      typescript: ">=2.7"
+    peerDependenciesMeta:
+      "@swc/core":
+        optional: true
+      "@swc/wasm":
+        optional: true
+    dependencies:
+      "@cspotcode/source-map-support": 0.8.1
+      "@tsconfig/node10": 1.0.9
+      "@tsconfig/node12": 1.0.11
+      "@tsconfig/node14": 1.0.3
+      "@tsconfig/node16": 1.0.3
+      acorn: 8.7.0
+      acorn-walk: 8.2.0
+      arg: 4.1.0
+      create-require: 1.1.1
+      diff: 4.0.1
+      make-error: 1.3.6
+      typescript: 4.5.4
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
     dev: true
 
   /tslib/1.14.1:
@@ -27434,6 +28139,13 @@ packages:
   /typescript/4.5.4:
     resolution:
       { integrity: sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg== }
+    engines: { node: ">=4.2.0" }
+    hasBin: true
+    dev: true
+
+  /typescript/4.8.4:
+    resolution:
+      { integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ== }
     engines: { node: ">=4.2.0" }
     hasBin: true
     dev: true
@@ -27720,7 +28432,7 @@ packages:
       { integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA== }
     dev: true
 
-  /url-loader/4.1.1_file-loader@6.2.0:
+  /url-loader/4.1.1_plzek67nbn24rjxjp577ruq77e:
     resolution:
       { integrity: sha512-3BTV812+AVHHOJQO8O5MkWgZ5aosP7GnROJwvzLS9hWDj00lZ6Z0wNak423Lp9PBZN05N+Jk/N5Si8jRAlGyWA== }
     engines: { node: ">= 10.13.0" }
@@ -27731,10 +28443,11 @@ packages:
       file-loader:
         optional: true
     dependencies:
-      file-loader: 6.2.0
+      file-loader: 6.2.0_webpack@5.70.0
       loader-utils: 2.0.2
       mime-types: 2.1.34
       schema-utils: 3.1.1
+      webpack: 5.70.0
     dev: true
 
   /url-loader/4.1.1_webpack@5.70.0:
@@ -27751,7 +28464,7 @@ packages:
       loader-utils: 2.0.2
       mime-types: 2.1.34
       schema-utils: 3.1.1
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /url-parse-lax/3.0.0:
@@ -27836,6 +28549,11 @@ packages:
     resolution:
       { integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg== }
     hasBin: true
+
+  /v8-compile-cache-lib/3.0.1:
+    resolution:
+      { integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg== }
+    dev: true
 
   /v8-compile-cache/2.3.0:
     resolution:
@@ -28440,7 +29158,8 @@ packages:
     dev: true
 
   /webidl-conversions/3.0.1:
-    resolution: { integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE= }
+    resolution:
+      { integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ== }
 
   /webidl-conversions/5.0.0:
     resolution:
@@ -28452,6 +29171,43 @@ packages:
     resolution:
       { integrity: sha512-qBIvFLGiBpLjfwmYAaHPXsn+ho5xZnGvyGvsarywGNc8VyQJUMHJ8OBKGGrPER0okBeMDaan4mNBlgBROxuI8w== }
     engines: { node: ">=10.4" }
+    dev: true
+
+  /webpack-cli/4.10.0_yqwwn4zy7x4owjsib6p4jmcbki:
+    resolution:
+      { integrity: sha512-NLhDfH/h4O6UOy+0LSso42xvYypClINuMNBVVzX4vX98TmTaTUxwRbXdhucbFMd2qLaCTcLq/PdYrvi8onw90w== }
+    engines: { node: ">=10.13.0" }
+    hasBin: true
+    peerDependencies:
+      "@webpack-cli/generators": "*"
+      "@webpack-cli/migrate": "*"
+      webpack: 4.x.x || 5.x.x
+      webpack-bundle-analyzer: "*"
+      webpack-dev-server: "*"
+    peerDependenciesMeta:
+      "@webpack-cli/generators":
+        optional: true
+      "@webpack-cli/migrate":
+        optional: true
+      webpack-bundle-analyzer:
+        optional: true
+      webpack-dev-server:
+        optional: true
+    dependencies:
+      "@discoveryjs/json-ext": 0.5.6
+      "@webpack-cli/configtest": 1.2.0_arvjobxnuton62rnb6f22zdmlm
+      "@webpack-cli/info": 1.5.0_webpack-cli@4.10.0
+      "@webpack-cli/serve": 1.7.0_2pilh4owx6vit44ad4uthlnj3q
+      colorette: 2.0.16
+      commander: 7.2.0
+      cross-spawn: 7.0.3
+      fastest-levenshtein: 1.0.12
+      import-local: 3.0.2
+      interpret: 2.2.0
+      rechoir: 0.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
+      webpack-merge: 5.8.0
     dev: true
 
   /webpack-cli/4.7.0_yqwwn4zy7x4owjsib6p4jmcbki:
@@ -28504,7 +29260,58 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
+    dev: true
+
+  /webpack-dev-server/4.7.3_arvjobxnuton62rnb6f22zdmlm:
+    resolution:
+      { integrity: sha512-mlxq2AsIw2ag016nixkzUkdyOE8ST2GTy34uKSABp1c4nhjZvH90D5ZRR+UOLSsG4Z3TFahAi72a3ymRtfRm+Q== }
+    engines: { node: ">= 12.13.0" }
+    hasBin: true
+    peerDependencies:
+      webpack: ^4.37.0 || ^5.0.0
+      webpack-cli: "*"
+    peerDependenciesMeta:
+      webpack-cli:
+        optional: true
+    dependencies:
+      "@types/bonjour": 3.5.10
+      "@types/connect-history-api-fallback": 1.3.5
+      "@types/serve-index": 1.9.1
+      "@types/sockjs": 0.3.33
+      "@types/ws": 8.2.2
+      ansi-html-community: 0.0.8
+      bonjour: 3.5.0
+      chokidar: 3.5.3
+      colorette: 2.0.16
+      compression: 1.7.4
+      connect-history-api-fallback: 1.6.0
+      default-gateway: 6.0.3
+      del: 6.0.0
+      express: 4.17.1
+      graceful-fs: 4.2.10
+      html-entities: 2.3.2
+      http-proxy-middleware: 2.0.2
+      ipaddr.js: 2.0.1
+      open: 8.4.0
+      p-retry: 4.6.1
+      portfinder: 1.0.32
+      schema-utils: 4.0.0
+      selfsigned: 2.0.0
+      serve-index: 1.9.1
+      sockjs: 0.3.21
+      spdy: 4.0.2
+      strip-ansi: 7.0.1
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-middleware: 5.3.0_webpack@5.70.0
+      ws: 8.4.2
+    transitivePeerDependencies:
+      - "@types/express"
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
     dev: true
 
   /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:
@@ -28733,6 +29540,48 @@ packages:
       - uglify-js
     dev: true
 
+  /webpack/5.70.0_webpack-cli@4.10.0:
+    resolution:
+      { integrity: sha512-ZMWWy8CeuTTjCxbeaQI21xSswseF2oNOwc70QSKNePvmxE7XW36i7vpBMYZFAUHPwQiEbNGCEYIOOlyRbdGmxw== }
+    engines: { node: ">=10.13.0" }
+    hasBin: true
+    peerDependencies:
+      webpack-cli: "*"
+    peerDependenciesMeta:
+      webpack-cli:
+        optional: true
+    dependencies:
+      "@types/eslint-scope": 3.7.3
+      "@types/estree": 0.0.51
+      "@webassemblyjs/ast": 1.11.1
+      "@webassemblyjs/wasm-edit": 1.11.1
+      "@webassemblyjs/wasm-parser": 1.11.1
+      acorn: 8.7.0
+      acorn-import-assertions: 1.8.0_acorn@8.7.0
+      browserslist: 4.20.2
+      chrome-trace-event: 1.0.2
+      enhanced-resolve: 5.9.3
+      es-module-lexer: 0.9.3
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.10
+      json-parse-better-errors: 1.0.2
+      loader-runner: 4.2.0
+      mime-types: 2.1.34
+      neo-async: 2.6.2
+      schema-utils: 3.1.1
+      tapable: 2.2.0
+      terser-webpack-plugin: 5.3.0_webpack@5.70.0
+      watchpack: 2.3.1
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - "@swc/core"
+      - esbuild
+      - uglify-js
+    dev: true
+
   /webpack/5.70.0_webpack-cli@4.7.0:
     resolution:
       { integrity: sha512-ZMWWy8CeuTTjCxbeaQI21xSswseF2oNOwc70QSKNePvmxE7XW36i7vpBMYZFAUHPwQiEbNGCEYIOOlyRbdGmxw== }
@@ -28804,7 +29653,8 @@ packages:
     dev: true
 
   /whatwg-url/5.0.0:
-    resolution: { integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0= }
+    resolution:
+      { integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw== }
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
@@ -29235,6 +30085,12 @@ packages:
     engines: { node: ">= 4.0.0" }
     dev: true
 
+  /yn/3.1.1:
+    resolution:
+      { integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q== }
+    engines: { node: ">=6" }
+    dev: true
+
   /yocto-queue/0.1.0:
     resolution:
       { integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q== }
@@ -29258,7 +30114,7 @@ packages:
       webpack: ^4.0.0 || ^5.0.0
       webpack-sources: "*"
     dependencies:
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_webpack-cli@4.10.0
       yazl: 2.5.1
     dev: true
 

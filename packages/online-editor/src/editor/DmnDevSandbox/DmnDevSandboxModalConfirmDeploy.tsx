@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
+import { useGlobalAlert } from "../../alerts";
 
 interface Props {
   workspaceFile: WorkspaceFile;
-  alerts: AlertsController | undefined;
 }
 
 export function DmnDevSandboxModalConfirmDeploy(props: Props) {
@@ -34,8 +33,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
   const { i18n } = useOnlineI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
-  const deployStartedErrorAlert = useAlert(
-    props.alerts,
+  const deployStartedErrorAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
@@ -48,8 +46,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
     )
   );
 
-  const deployStartedSuccessAlert = useAlert(
-    props.alerts,
+  const deployStartedSuccessAlert = useGlobalAlert(
     useCallback(
       ({ close }) => (
         <Alert
@@ -91,7 +88,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
     <Modal
       data-testid={"confirm-deploy-modal"}
       variant={ModalVariant.small}
-      title={i18n.dmnDevSandbox.confirmModal.title}
+      title={i18n.dmnDevSandbox.deployConfirmModal.title}
       isOpen={dmnDevSandboxContext.isConfirmDeployModalOpen}
       aria-label={"Confirm deploy modal"}
       onClose={onCancel}
@@ -111,7 +108,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
         </Button>,
       ]}
     >
-      {i18n.dmnDevSandbox.confirmModal.body}
+      {i18n.dmnDevSandbox.deployConfirmModal.body}
     </Modal>
   );
 }

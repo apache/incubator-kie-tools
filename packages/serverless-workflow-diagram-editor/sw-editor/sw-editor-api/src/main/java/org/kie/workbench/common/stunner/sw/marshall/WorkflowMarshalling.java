@@ -86,10 +86,10 @@ public interface WorkflowMarshalling {
 
     NodeUnmarshaller<Workflow> WORKFLOW_UNMARSHALLER =
             (context, workflow) -> {
-                String workflowId = workflow.id != null ? workflow.id : workflow.key;
+                String workflowId = workflow.getId() != null ? workflow.getId() : workflow.getKey();
                 if (StringUtils.isEmpty(workflowId)) {
                     workflowId = UUID.uuid();
-                    workflow.id = workflowId;
+                    workflow.setId(workflowId);
                 }
                 Node<View<Workflow>, Edge> workflowNode = context.addNodeByUUID(workflowId, workflow);
                 workflowNode.getContent().setBounds(Bounds.create(0, 0, 950, 950));
@@ -104,7 +104,7 @@ public interface WorkflowMarshalling {
                 END_NODE_UNMARSHALLER.unmarshall(context, workflow);
 
                 // States.
-                final State[] states = workflow.states;
+                final State[] states = workflow.getStates();
                 for (int i = 0; i < states.length; i++) {
                     State state = states[i];
                     Node stateNode = unmarshallNode(context, state);
@@ -132,7 +132,7 @@ public interface WorkflowMarshalling {
                         }
                     }
                 });
-                workflow.states = beans.isEmpty() ? null : beans.toArray(new State[beans.size()]);
+                workflow.setStates(beans.isEmpty() ? null : beans.toArray(new State[beans.size()]));
 
                 return workflow;
             };

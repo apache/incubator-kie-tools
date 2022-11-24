@@ -1,0 +1,26 @@
+{
+  "id": "start1Test",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "Start 1 Test Workflow",
+  "description": "Start 1 Test Workflow - String Type - First State as Start",
+  "start": "First State",
+  "states": [
+    {
+      "name": "First State",
+      "type": "inject",
+      "data": {
+        "result": "First State!"
+      },
+      "end": true
+    },
+    {
+      "name": "Second State",
+      "type": "inject",
+      "data": {
+        "result": "Second State!"
+      },
+      "end": true
+    }
+  ]
+}

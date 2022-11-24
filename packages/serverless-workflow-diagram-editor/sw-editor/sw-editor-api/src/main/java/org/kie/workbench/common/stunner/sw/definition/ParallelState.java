@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
@@ -33,13 +33,33 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 @Bindable
 @Definition
 @Morph(base = State.class)
+@JSONMapper
 @JsType
 public class ParallelState extends State {
 
-    @JsIgnore
     public static final String TYPE_PARALLEL = "parallel";
 
     public ParallelState() {
         this.type = TYPE_PARALLEL;
+    }
+
+    private String completionType;
+
+    private ParallelStateBranch[] branches;
+
+    public String getCompletionType() {
+        return completionType;
+    }
+
+    public void setCompletionType(String completionType) {
+        this.completionType = completionType;
+    }
+
+    public ParallelStateBranch[] getBranches() {
+        return branches;
+    }
+
+    public void setBranches(ParallelStateBranch[] branches) {
+        this.branches = branches;
     }
 }

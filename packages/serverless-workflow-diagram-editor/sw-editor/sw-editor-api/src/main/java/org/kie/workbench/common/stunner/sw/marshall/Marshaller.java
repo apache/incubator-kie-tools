@@ -29,7 +29,6 @@ import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.IThenable;
 import elemental2.promise.Promise;
-import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -65,6 +64,7 @@ import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.definition.Workflow_JsonMapperImpl;
 import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
 import org.uberfire.client.promise.Promises;
 
@@ -114,6 +114,9 @@ public class Marshaller {
     private Context context;
     private Workflow workflow;
 
+    private final Workflow_JsonMapperImpl mapper = Workflow_JsonMapperImpl.INSTANCE;
+
+
     @Inject
     public Marshaller(DefinitionManager definitionManager,
                       FactoryManager factoryManager,
@@ -129,12 +132,7 @@ public class Marshaller {
     @SuppressWarnings("all")
     public Promise<ParseResult> unmarshallGraph(String raw) {
         try {
-            final Object root = parse(raw);
-            if (null == workflow) {
-                workflow = parser.parse(Js.uncheckedCast(root));
-            } else {
-                parser.reParse(workflow, Js.uncheckedCast(root));
-            }
+            workflow = parser.parse(mapper.fromJSON(raw));
         } catch (Exception e) {
             return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
@@ -149,7 +147,7 @@ public class Marshaller {
         HashMap<String, String> previousNameToUUIDBindings = null;
         try {
             // TODO: Use dedicated factory instead.
-            String workflowId = workflow.id != null ? workflow.id : workflow.key;
+            String workflowId = workflow.getId() != null ? workflow.getId() : workflow.getKey();
             graph = GraphImpl.build(workflowId);
             final Index index = new MapIndexBuilder().build(graph);
 
@@ -278,7 +276,7 @@ public class Marshaller {
                 for (Edge e : invalidEdges) {
                     if (((View) e.getSourceNode().getContent()).getDefinition() instanceof State) {
                         getContext().addMessage(new Message(MessageCode.INVALID_TARGET_NAME,
-                                                            ((State) ((View) e.getSourceNode().getContent()).getDefinition()).name));
+                                                            ((State) ((View) e.getSourceNode().getContent()).getDefinition()).getName()));
                     }
                 }
                 node.getOutEdges().clear();
@@ -410,8 +408,8 @@ public class Marshaller {
 
     @SuppressWarnings("all")
     public Promise<String> marshallNode(Node node) {
-        Object bean = marshallNode(context, node);
-        String raw = stringify(bean);
+        Workflow bean = marshallNode(context, node);
+        String raw = mapper.toJSON(bean);
         return promises.resolve(raw);
     }
 

@@ -14,211 +14,108 @@
  * limitations under the License.
  */
 
-import JSZip from "jszip";
 import * as React from "react";
+import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { GLOB_PATTERN } from "../extension";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { PROJECT_FILES } from "../project";
-import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
-import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import {
-  createDockerfileContentForBaseJdk11MvnImage,
-  createDockerfileContentForBaseQuarkusProjectImage,
-  createDockerIgnoreContent,
-} from "./FileTemplate";
+import { InitDeployArgs, InitSwfDeployArgs, WebToolsOpenShiftDeployedModel } from "./deploy/types";
+import { useDeploymentStrategy } from "./hooks/useDeploymentStrategy";
+import { useOpenApi } from "./hooks/useOpenApi";
+import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
-import { WebToolsOpenShiftDeployedModel } from "./WebToolsOpenShiftService";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { KNativeDeploymentLoaderPipeline } from "./pipelines/KNativeDeploymentLoaderPipeline";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const DEFAULT_GROUP_ID = "org.kie";
 const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
+const FETCH_OPEN_API_POLLING_TIME = 5000;
 
 export function OpenShiftContextProvider(props: Props) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const workspaces = useWorkspaces();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const { createDeploymentStrategy } = useDeploymentStrategy();
+  const { fetchOpenApiContent } = useOpenApi();
+  const { uploadArtifact } = useRemoteServiceRegistry();
+
   const [deployments, setDeployments] = useState([] as WebToolsOpenShiftDeployedModel[]);
   const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
 
-  const onDisconnect = useCallback(
-    (close: boolean) => {
-      settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
-      setDeployments([]);
-
-      if (close) {
-        setDeployDropdownOpen(false);
-        setDeploymentsDropdownOpen(false);
-        setConfirmDeployModalOpen(false);
-      }
-    },
-    [settingsDispatch.openshift]
+  const deploymentLoaderPipeline = useMemo(
+    () =>
+      new KNativeDeploymentLoaderPipeline({
+        namespace: settings.openshift.config.namespace,
+        openShiftService: settingsDispatch.openshift.service,
+      }),
+    [settings.openshift.config.namespace, settingsDispatch.openshift.service]
   );
 
+  const onDisconnect = useCallback(() => {
+    settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
+    setDeployments([]);
+
+    setDeployDropdownOpen(false);
+    setDeploymentsDropdownOpen(false);
+    setConfirmDeployModalOpen(false);
+  }, [settingsDispatch.openshift]);
+
   const deploy = useCallback(
-    async (args: {
-      workspaceFile: WorkspaceFile;
-      shouldAttachKafkaSource: boolean;
-      shouldDeployAsProject: boolean;
-    }) => {
-      if (!isOpenShiftConnectionValid(settings.openshift.config)) {
-        throw new Error("Invalid OpenShift config");
-      }
-
+    async (args: InitDeployArgs) => {
       try {
-        const descriptor = await workspaces.getWorkspace({ workspaceId: args.workspaceFile.workspaceId });
-        const filesToBeDeployed = (
-          await workspaces.getFiles({
-            workspaceId: args.workspaceFile.workspaceId,
-            globPattern: !args.shouldDeployAsProject ? GLOB_PATTERN.sw : undefined,
-          })
-        ).filter((f) => f.name !== PROJECT_FILES.dockerIgnore);
-
-        const workspaceName =
-          filesToBeDeployed.length > 1 && descriptor.name !== NEW_WORKSPACE_DEFAULT_NAME
-            ? descriptor.name
-            : args.workspaceFile.name;
-
-        const deploymentResourceName = settingsDispatch.openshift.service.newResourceName();
-
-        const dockerfileFile = new WorkspaceFile({
-          workspaceId: args.workspaceFile.workspaceId,
-          relativePath: PROJECT_FILES.dockerFile,
-          getFileContents: async () => {
-            const dockerfileContent = args.shouldDeployAsProject
-              ? createDockerfileContentForBaseJdk11MvnImage({
-                  deploymentResourceName,
-                  projectName: workspaceName,
-                  openShiftConnection: settings.openshift.config,
-                })
-              : createDockerfileContentForBaseQuarkusProjectImage();
-            return encoder.encode(dockerfileContent);
-          },
-        });
-
-        const dockerIgnoreFile = new WorkspaceFile({
-          workspaceId: args.workspaceFile.workspaceId,
-          relativePath: PROJECT_FILES.dockerIgnore,
-          getFileContents: async () => encoder.encode(createDockerIgnoreContent()),
-        });
-
-        filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile);
-
-        const filesToZip = await Promise.all(
-          filesToBeDeployed.map(async (file) => ({
-            relativePath: file.relativePath,
-            content: await file.getFileContentsAsString(),
-          }))
-        );
-
-        const zip = new JSZip();
-        for (const file of filesToZip) {
-          zip.file(file.relativePath, file.content);
-        }
-
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-
-        const kafkaSourceArgs = args.shouldAttachKafkaSource
-          ? {
-              bootstrapServers: [settings.apacheKafka.config.bootstrapServer],
-              serviceAccount: {
-                clientId: settings.serviceAccount.config.clientId,
-                clientSecret: settings.serviceAccount.config.clientSecret,
-              },
-              topics: [settings.apacheKafka.config.topic],
-            }
-          : undefined;
-
-        await settingsDispatch.openshift.service.deployBuilderWithBinary({
-          resourceName: deploymentResourceName,
-          workspaceName: workspaceName,
-          targetUri: args.workspaceFile.relativePath,
-          workspaceZipBlob: zipBlob,
-          kafkaSourceArgs,
-        });
-
-        return deploymentResourceName;
+        const strategy = await createDeploymentStrategy({ ...args });
+        const pipeline = await strategy.buildPipeline();
+        await pipeline.execute();
+        return strategy.resourceName;
       } catch (e) {
         console.error(e);
       }
     },
-    [
-      settings.apacheKafka.config,
-      settings.openshift.config,
-      settings.serviceAccount.config,
-      settingsDispatch.openshift.service,
-      workspaces,
-    ]
+    [createDeploymentStrategy]
   );
 
-  const fetchOpenApiFile = useCallback(
-    async (resourceName: string) => {
-      if (!isOpenShiftConnectionValid(settings.openshift.config)) {
-        throw new Error("Invalid OpenShift config");
+  const deploySwf = useCallback(
+    async (args: InitSwfDeployArgs) => {
+      const resourceName = await deploy({ ...args });
+
+      if (resourceName && args.shouldUploadOpenApi) {
+        const fetchOpenApiTask = window.setInterval(async () => {
+          try {
+            const openApiContent = await fetchOpenApiContent(resourceName);
+            if (!openApiContent) {
+              return;
+            }
+
+            await uploadArtifact({
+              artifactId: `${args.targetFile.nameWithoutExtension} ${resourceName}`,
+              content: openApiContent,
+            });
+          } catch (e) {
+            console.error(e);
+          }
+          window.clearInterval(fetchOpenApiTask);
+        }, FETCH_OPEN_API_POLLING_TIME);
       }
 
-      const routeUrl = await settingsDispatch.openshift.service.getKNativeDeploymentRoute(resourceName);
-      if (!routeUrl) {
-        throw new Error(`No route found for ${resourceName}`);
-      }
-
-      try {
-        const response = await fetch(`${routeUrl}/q/openapi?format=json`);
-        if (!response.ok) {
-          return;
-        }
-
-        return await response.text();
-      } catch (error) {
-        console.debug(error);
-        return;
-      }
+      return resourceName;
     },
-    [settings.openshift.config, settingsDispatch.openshift.service]
-  );
-
-  const uploadArtifactToServiceRegistry = useCallback(
-    async (artifactId: string, content: string) => {
-      if (!isServiceAccountConfigValid(settings.serviceAccount.config)) {
-        throw new Error("Invalid service account config");
-      }
-
-      if (!isServiceRegistryConfigValid(settings.serviceRegistry.config)) {
-        throw new Error("Invalid service registry config");
-      }
-
-      await settingsDispatch.serviceRegistry.catalogStore.uploadArtifact({
-        artifactId: artifactId,
-        groupId: DEFAULT_GROUP_ID,
-        content: content,
-      });
-    },
-    [settings.serviceAccount.config, settings.serviceRegistry.config, settingsDispatch.serviceRegistry.catalogStore]
+    [deploy, fetchOpenApiContent, uploadArtifact]
   );
 
   useEffect(() => {
     if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-      onDisconnect(true);
+      onDisconnect();
       return;
     }
 
     if (!isOpenShiftConnectionValid(settings.openshift.config)) {
-      if (deployments.length > 0) {
-        setDeployments([]);
-      }
+      setDeployments([]);
       return;
     }
 
@@ -229,7 +126,7 @@ export function OpenShiftContextProvider(props: Props) {
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-          return isConfigOk ? settingsDispatch.openshift.service.loadKNativeDeployments() : [];
+          return isConfigOk ? deploymentLoaderPipeline.execute() : [];
         })
         .then((ds) => setDeployments(ds))
         .catch((error) => console.error(error));
@@ -238,11 +135,11 @@ export function OpenShiftContextProvider(props: Props) {
 
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
-        settingsDispatch.openshift.service
-          .loadKNativeDeployments()
+        deploymentLoaderPipeline
+          .execute()
           .then((ds) => setDeployments(ds))
           .catch((error) => {
-            onDisconnect(true);
+            onDisconnect();
             window.clearInterval(loadDeploymentsTask);
             console.error(error);
           });
@@ -257,6 +154,7 @@ export function OpenShiftContextProvider(props: Props) {
     isDeploymentsDropdownOpen,
     kieSandboxExtendedServices.status,
     onDisconnect,
+    deploymentLoaderPipeline,
   ]);
 
   const value = useMemo(
@@ -269,18 +167,9 @@ export function OpenShiftContextProvider(props: Props) {
       isConfirmDeployModalOpen,
       setConfirmDeployModalOpen,
       deploy,
-      uploadArtifactToServiceRegistry,
-      fetchOpenApiFile,
+      deploySwf,
     }),
-    [
-      deployments,
-      isDeployDropdownOpen,
-      isDeploymentsDropdownOpen,
-      isConfirmDeployModalOpen,
-      deploy,
-      uploadArtifactToServiceRegistry,
-      fetchOpenApiFile,
-    ]
+    [deployments, isDeployDropdownOpen, isDeploymentsDropdownOpen, isConfirmDeployModalOpen, deploy, deploySwf]
   );
 
   return <OpenShiftContext.Provider value={value}>{props.children}</OpenShiftContext.Provider>;

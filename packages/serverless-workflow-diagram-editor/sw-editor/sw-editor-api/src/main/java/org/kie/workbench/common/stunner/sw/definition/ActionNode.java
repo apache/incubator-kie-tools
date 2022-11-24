@@ -20,7 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -29,6 +30,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonSerializer;
 
 /**
  * Actions specify invocations of services or other workflows during workflow execution.
@@ -46,37 +51,52 @@ public class ActionNode {
     public static final String LABEL_ACTION = "action";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.ACTIONS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                         LABEL_ACTION).collect(Collectors.toSet());
 
     @Property
-    public String id;
+    private String id;
 
     /**
      * Unique action name.
      */
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     /**
      * References to a reusable function definition.
      */
-    public String functionRef;
+
+    @JsonbTypeSerializer(FunctionRefJsonSerializer.class)
+    @JsonbTypeDeserializer(FunctionRefJsonDeserializer.class)
+    private Object functionRef;
 
     /**
      * Reference to a trigger and result reusable event definition.
      */
-    public String eventRef;
+    private ActionEventRef eventRef;
 
     /**
      * Reference to a workflow to be invoked.
      */
-    public String subFlowRef;
+    @JsonbTypeSerializer(SubFlowRefJsonSerializer.class)
+    @JsonbTypeDeserializer(SubFlowRefJsonDeserializer.class)
+    private Object subFlowRef;
+
+    private String retryRef;
+
+    private Sleep sleep;
+
+    private String[] retryableErrors;
+
+    private String[] nonRetryableErrors;
+
+    private ActionDataFilters actionDataFilter;
+
+    private String condition;
 
     public ActionNode() {
     }
@@ -99,29 +119,29 @@ public class ActionNode {
         return this;
     }
 
-    public String getFunctionRef() {
+    public Object getFunctionRef() {
         return functionRef;
     }
 
-    public ActionNode setFunctionRef(String functionRef) {
+    public ActionNode setFunctionRef(Object functionRef) {
         this.functionRef = functionRef;
         return this;
     }
 
-    public String getEventRef() {
+    public ActionEventRef getEventRef() {
         return eventRef;
     }
 
-    public ActionNode setEventRef(String eventRef) {
+    public ActionNode setEventRef(ActionEventRef eventRef) {
         this.eventRef = eventRef;
         return this;
     }
 
-    public String getSubFlowRef() {
+    public Object getSubFlowRef() {
         return subFlowRef;
     }
 
-    public ActionNode setSubFlowRef(String subFlowRef) {
+    public ActionNode setSubFlowRef(Object subFlowRef) {
         this.subFlowRef = subFlowRef;
         return this;
     }
@@ -132,5 +152,53 @@ public class ActionNode {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getRetryRef() {
+        return retryRef;
+    }
+
+    public void setRetryRef(String retryRef) {
+        this.retryRef = retryRef;
+    }
+
+    public Sleep getSleep() {
+        return sleep;
+    }
+
+    public void setSleep(Sleep sleep) {
+        this.sleep = sleep;
+    }
+
+    public String[] getRetryableErrors() {
+        return retryableErrors;
+    }
+
+    public void setRetryableErrors(String[] retryableErrors) {
+        this.retryableErrors = retryableErrors;
+    }
+
+    public String[] getNonRetryableErrors() {
+        return nonRetryableErrors;
+    }
+
+    public void setNonRetryableErrors(String[] nonRetryableErrors) {
+        this.nonRetryableErrors = nonRetryableErrors;
+    }
+
+    public ActionDataFilters getActionDataFilter() {
+        return actionDataFilter;
+    }
+
+    public void setActionDataFilter(ActionDataFilters actionDataFilter) {
+        this.actionDataFilter = actionDataFilter;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 }

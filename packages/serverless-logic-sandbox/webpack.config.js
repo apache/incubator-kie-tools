@@ -44,6 +44,12 @@ module.exports = async (env) => {
     serverlessLogicSandbox_openJdk11MvnImageTag,
   ] = getServerlessLogicSandboxOpenJdk11MvnImageArgs();
   const [
+    serverlessLogicSandbox_dashbuilderViewerImageRegistry,
+    serverlessLogicSandbox_dashbuilderViewerImageAccount,
+    serverlessLogicSandbox_dashbuilderViewerImageName,
+    serverlessLogicSandbox_dashbuilderViewerImageTag,
+  ] = getServerlessLogicSandboxDashbuilderViewerImageArgs();
+  const [
     kieSandboxExtendedServices_linuxDownloadUrl,
     kieSandboxExtendedServices_macOsDownloadUrl,
     kieSandboxExtendedServices_windowsDownloadUrl,
@@ -61,7 +67,7 @@ module.exports = async (env) => {
           Buffer: ["buffer", "Buffer"],
         }),
         new EnvironmentPlugin({
-          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicSandbox.corsProxyUrl,
+          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicSandbox.gitCorsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -104,11 +110,12 @@ module.exports = async (env) => {
           WEBPACK_REPLACE__buildInfo: buildInfo,
           WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl: `${serverlessLogicSandbox_baseImageRegistry}/${serverlessLogicSandbox_baseImageAccount}/${serverlessLogicSandbox_baseImageName}:${serverlessLogicSandbox_baseImageTag}`,
           WEBPACK_REPLACE__serverlessLogicSandbox_openJdk11MvnImageFullUrl: `${serverlessLogicSandbox_openJdk11MvnImageRegistry}/${serverlessLogicSandbox_openJdk11MvnImageAccount}/${serverlessLogicSandbox_openJdk11MvnImageName}:${serverlessLogicSandbox_openJdk11MvnImageTag}`,
+          WEBPACK_REPLACE__serverlessLogicSandbox_dashbuilderViewerImageFullUrl: `${serverlessLogicSandbox_dashbuilderViewerImageRegistry}/${serverlessLogicSandbox_dashbuilderViewerImageAccount}/${serverlessLogicSandbox_dashbuilderViewerImageName}:${serverlessLogicSandbox_dashbuilderViewerImageTag}`,
           WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicSandbox.corsProxyUrl,
+          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicSandbox.gitCorsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -227,6 +234,25 @@ function getServerlessLogicSandboxOpenJdk11MvnImageArgs() {
   console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Tag: " + openJdk11MvnImageTag);
 
   return [openJdk11MvnImageRegistry, openJdk11MvnImageAccount, openJdk11MvnImageName, openJdk11MvnImageTag];
+}
+
+function getServerlessLogicSandboxDashbuilderViewerImageArgs() {
+  const dashbuilderViewerImageRegistry = buildEnv.dashbuilderViewerImageEnv.registry;
+  const dashbuilderViewerImageAccount = buildEnv.dashbuilderViewerImageEnv.account;
+  const dashbuilderViewerImageName = buildEnv.dashbuilderViewerImageEnv.name;
+  const dashbuilderViewerImageTag = buildEnv.serverlessLogicSandbox.dashbuilderViewerImage.tag;
+
+  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Registry: " + dashbuilderViewerImageRegistry);
+  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Account: " + dashbuilderViewerImageAccount);
+  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Name: " + dashbuilderViewerImageName);
+  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Tag: " + dashbuilderViewerImageTag);
+
+  return [
+    dashbuilderViewerImageRegistry,
+    dashbuilderViewerImageAccount,
+    dashbuilderViewerImageName,
+    dashbuilderViewerImageTag,
+  ];
 }
 
 function getGtmResource() {

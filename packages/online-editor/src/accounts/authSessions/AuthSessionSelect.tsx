@@ -26,7 +26,7 @@ import {
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthSession, useAuthSessions } from "./AuthSessionsContext";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
-import { AuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { AuthProvider } from "../authProviders/AuthProvidersApi";
 import { useEffect, useMemo, useState } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -40,6 +40,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { v4 as uuid } from "uuid";
+import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 
 export type AuthSessionSelectItem = {
   groupLabel: string;

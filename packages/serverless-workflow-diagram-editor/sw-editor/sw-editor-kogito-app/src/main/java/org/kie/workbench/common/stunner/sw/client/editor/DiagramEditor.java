@@ -130,6 +130,10 @@ public class DiagramEditor {
         return updateContent(path, value);
     }
 
+    public Promise<Boolean> hasErrors() {
+        return promises.resolve(stunnerEditor.hasErrors());
+    }
+
     public Promise<Void> setNewContent(final String path, final String value) {
         return promises.create((success, failure) -> {
             stunnerEditor.clearAlerts();

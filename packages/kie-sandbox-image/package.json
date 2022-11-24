@@ -13,21 +13,25 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "echo \"Nothing to do\"",
-    "build:prod": "pnpm cleanup && run-script-os",
-    "build:prod:darwin:win32": "echo \"Build not supported\"",
-    "build:prod:linux": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm podman:build\"",
+    "build:dev": "pnpm env-json:schema:generate",
+    "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && run-script-os",
+    "build:prod:darwin": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:prod:linux": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:podman:build\"",
+    "build:prod:win32": "echo 'Skipping image build on Windows'",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:online-editor && pnpm copy:image-env-to-json",
     "copy:image-env-to-json": "cp ../image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/",
     "copy:online-editor": "cp -R ../online-editor/dist ./dist-dev/online-editor",
-    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "env-json:schema:generate": "ts-json-schema-generator --path ./node_modules/@kie-tools/online-editor/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
+    "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) .\" --else \"echo Docker not found, skipping image build.\"",
+    "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "devDependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",
     "@kie-tools/online-editor": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6"
+    "run-script-os": "^1.1.6",
+    "ts-json-schema-generator": "^1.1.2"
   }
 }

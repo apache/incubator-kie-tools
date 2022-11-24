@@ -70,7 +70,7 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                boolean end = getEnd(state.end);
+                boolean end = getEnd(state.getEnd());
                 if (end) {
                     final Transition tend = new Transition();
                     tend.setTo(STATE_END);
@@ -78,7 +78,7 @@ public interface StateMarshalling {
                 }
 
                 // Parse transition.
-                String transition = getTransition(state.transition);
+                String transition = getTransition(state.getTransition());
                 if (isValidString(transition)) {
                     final Transition t = new Transition();
                     t.setTo(transition);
@@ -86,9 +86,9 @@ public interface StateMarshalling {
                 }
 
                 // Parse compensation transition.
-                if (isValidString(state.compensatedBy)) {
+                if (isValidString(state.getCompensatedBy())) {
                     CompensationTransition compensationTransition = new CompensationTransition();
-                    compensationTransition.setTransition(state.compensatedBy);
+                    compensationTransition.setTransition(state.getCompensatedBy());
                     Edge<ViewConnector<Object>, Node> compensationEdge = unmarshallEdge(context, compensationTransition);
                 }
 
@@ -129,7 +129,7 @@ public interface StateMarshalling {
                         if (null != timeoutNode) {
                             Object def = getElementDefinition(timeoutNode);
                             if (def instanceof EventTimeout) {
-                                state.eventTimeout = ((EventTimeout) def).getEventTimeout();
+                                state.setEventTimeout(((EventTimeout) def).getEventTimeout());
                             }
                         }
                     } else {
@@ -140,7 +140,7 @@ public interface StateMarshalling {
                         marshallEdge(context, edge);
                     }
                 }
-                state.onErrors = errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]);
+                state.setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
                 return state;
             };
 
@@ -192,7 +192,7 @@ public interface StateMarshalling {
 
                 for (int i = 0; i < actions.length; i++) {
                     ActionNode action = actions[i];
-                    final Node actionNode = context.addNode(action.name, action);
+                    final Node actionNode = context.addNode(action.getName(), action);
                 }
 
                 // Set the original parent.
@@ -205,7 +205,7 @@ public interface StateMarshalling {
             (context, state) -> {
                 Node stateNode = STATE_UNMARSHALLER.unmarshall(context, state);
                 if (Marshaller.LOAD_DETAILS) {
-                    ActionNode[] actions = state.actions;
+                    ActionNode[] actions = state.getActions();
                     if (null != actions && actions.length > 0) {
                         Node actionsNode = ACTIONS_UNMARSHALLER.unmarshall(context, actions);
                     }
@@ -254,7 +254,7 @@ public interface StateMarshalling {
             (context, state) -> {
                 Node stateNode = STATE_UNMARSHALLER.unmarshall(context, state);
                 if (Marshaller.LOAD_DETAILS) {
-                    ActionNode[] actions = state.actions;
+                    ActionNode[] actions = state.getActions();
                     if (null != actions && actions.length > 0) {
                         Node actionsNode = ACTIONS_UNMARSHALLER.unmarshall(context, actions);
                         /*

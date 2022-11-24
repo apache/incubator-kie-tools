@@ -18,10 +18,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import {
-  EditorEnvelopeLocatorContextProvider,
-  useEditorEnvelopeLocator,
-} from "./envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
@@ -39,6 +36,7 @@ import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRun
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
 import { AccountsContextProvider } from "./accounts/AccountsDispatchContext";
+import { GlobalAlertsContextProvider } from "./alerts";
 
 export function App() {
   return (
@@ -47,6 +45,7 @@ export function App() {
         [OnlineI18nContextProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
         [EnvContextProvider, {}],
+        [GlobalAlertsContextProvider, []],
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [AuthSessionsContextProvider, {}],
