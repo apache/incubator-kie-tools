@@ -20,10 +20,6 @@ import java.util.Objects;
 import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Renderer;
 
-/**
- * @author wsiqueir
- *
- */
 public class ChartBootstrapParams {
 
     int width;
