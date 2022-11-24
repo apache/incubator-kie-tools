@@ -10,7 +10,7 @@ fi
 img=${registry}/kogito-serverless-operator:local-test
 
 echo "Using registry '${registry}'"
-
+echo "Using image '${img}'"
 
 kubectl create namespace kogito-workflows
 kubectl create secret generic regcred --from-file=.dockerconfigjson=${HOME}/.docker/config.json --type=kubernetes.io/dockerconfigjson -n kogito-workflows

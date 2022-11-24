@@ -1,6 +1,27 @@
 # We love contributions!
 
-How can I contribute?
+- [We love contributions!](#we-love-contributions)
+  - [How can I contribute?](#how-can-i-contribute)
+  - [Contributing to the Kogito Serverless Operator codebase](#contributing-to-the-kogito-serverless-operator-codebase)
+  - [Contributing to the Kogito Serverless Operator](#contributing-to-the-kogito-serverless-operator)
+    - [Prerequisites](#prerequisites)
+    - [Getting Started](#getting-started)
+    - [Test It Out locally](#test-it-out-locally)
+    - [How-tos](#how-tos)
+      - [Modifying the API definitions](#modifying-the-api-definitions)
+      - [Building](#building)
+      - [Deploy](#deploy)
+      - [Undeploy](#undeploy)
+    - [Running the operator on the cluster](#running-the-operator-on-the-cluster)
+    - [Configuration](#configuration)
+  - [Customize Builder Image](#customize-builder-image)
+- [Development status](#development-status)
+  - [General notes](#general-notes)
+    - [Workflow CR](#workflow-cr)
+    - [Platform CR](#platform-cr)
+  - [Improvements](#improvements)
+
+## How can I contribute?
 
 There are many ways you can contribute to Kogito Serverless Workflow Operator, not only software development, as well as with the rest of Kogito community:
 
@@ -10,7 +31,7 @@ There are many ways you can contribute to Kogito Serverless Workflow Operator, n
 - Tweet, like and socialize Kogito in your preferred social network
 - Enjoy the talks that the contributors submit in various conferences around the world
 
-# Contributing to the Kogito Serverless Operator codebase
+## Contributing to the Kogito Serverless Operator codebase
 
 The main project is written in go. 
 Kogito Serverless Workflow Operator is built on top of Kubernetes through Custom Resource Definitions.
@@ -25,9 +46,10 @@ It uses [Controllers](https://kubernetes.io/docs/concepts/architecture/controlle
 which provides a reconcile function responsible for synchronizing resources untile the desired state is reached on the cluster
 
 
-# Contributing to the Kogito Serverless Operator
+## Contributing to the Kogito Serverless Operator
 
-# PreRequisites
+### Prerequisites
+
 The Operator's controllers and the configurations are generated using the Operator sdk, the tasks are executed using a Makefile
 More information about annotations can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
 
@@ -43,8 +65,10 @@ used to define composite build actions. This should be already installed or avai
 
 **NOTE:** Run `make help` for more information on all potential `make` targets
 
-## Getting Started
-You’ll need a Kubernetes cluster to run against. You can use 
+### Getting Started
+
+You’ll need a Kubernetes cluster to run against. You can use:
+
 - [KIND](https://sigs.k8s.io/kind) 
 - [MINIKUBE](https://minikube.sigs.k8s.io)  
 - [Openshift Local](https://console.redhat.com/openshift/create/local) 
@@ -52,56 +76,85 @@ You’ll need a Kubernetes cluster to run against. You can use
 
 **Note:** Your controller will automatically use the current context in your kubeconfig file (i.e. whatever cluster `kubectl cluster-info` shows).
 
-### Modifying the API definitions
+### Test It Out locally
+
+You can launch the operator locally and bind to your cluster.
+
+1. Install the CRDs into the cluster:
+
+```sh
+make install
+```
+
+2. Run your controller (this will run in the foreground, so switch to a new terminal if you want to leave it running):
+
+```sh Kubernetes cluster to run against. You can use:
+make run
+```
+
+**NOTE:** You can also run this in one step by running: `make install run`
+
+**NOTE:** Run `make help` for more information on all potential `make` targets
+
+More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
+
+### How-tos
+
+#### Modifying the API definitions
+
 If you are editing the API definitions, generate the manifests such as CRs or CRDs using:
 ```sh
 make manifests
 ```
 
-### Building
+#### Building
+
 ```sh
 make container-build
 ```
 
-### Deploy
+#### Deploy
+
 ```sh
 make deploy
 ```
 
-### Undeploy
+#### Undeploy
+
 ```sh
-make deploy
+make undeploy
 ```
 
-### Running on the cluster
-See the section on [README](./README.md)
-About mandatory namespaces and secret
+### Running the operator on the cluster
 
+See the section on [README](./README.md#getting-started)
 
 ### Configuration
 
-A configmap called kogito-serverless-operator-builder-config will be created under the kogito-builder namespace when the Operator will be installed, and it contains:
+A configmap called `kogito-serverless-operator-builder-config` will be created under the `kogito-workflows` namespace when the Operator will be installed, and it contains:
 
 - DEFAULT_BUILDER_RESOURCE = Dockerfile
-- DEFAULT_WORKFLOW_DEXTENSION = .sw.json
-- Dockerfile = <dockerfile content>
+- DEFAULT_WORKFLOW_EXTENSION = .sw.json
+- Dockerfile = `<dockerfile content>`
 
-# Customize Builder Image
-At the startup a [Dockerfile](./config/manager/kogito_builder_dockerfile.yaml) is placed in a configmap, this Dockerfile use a base image called [swfbuilder](https://github.com/kiegroup/kogito-images/tree/master/modules/kogito-swf-builder) with:
+## Customize Builder Image
 
-- openjdk 11
-- maven 3.8.6
+At the startup a [Dockerfile](./config/manager/kogito_builder_dockerfile.yaml) is placed in a configmap. This Dockerfile uses a base image called [kogito-swf-builder](https://github.com/kiegroup/kogito-images/tree/master/modules/kogito-swf-builder) with:
 
-A Quarkus project  `/home/kogito/serverless-workflow-project` with the extensions
-- quarkus-kubernetes 
-- kogito-quarkus-serverless-workflow 
-- kogito-addons-quarkus-knative-eventing
+- openjdk 11+
+- maven 3.8.6+
+- a Quarkus project  `/home/kogito/serverless-workflow-project` with those extensions:
+  - quarkus-kubernetes 
+  - kogito-quarkus-serverless-workflow 
+  - kogito-addons-quarkus-knative-eventing
+- all the dependencies of Quarkus and the extensions stored in the `/home/kogito/.m2` directory in the image. 
 
-All the dependencies of quarkus and the extensions are store in the `/home/kogito/.m2` directory. additional scripts in case of need to apply changes like this: 
 
-- add other quarkus extensions,
-- build the project after adding other files/java classes
-- create a new project
+There are, in the base image, some additional scripts in case of need to apply changes like this: 
+
+- add other quarkus extensions in `/home/kogito/launch/add-extension.sh`
+- build the project after adding other files/java classes  in `/home/kogito/launch/build-app.sh`
+- create a new project in `/home/kogito/launch/create-app.sh`
 
 You can customize your final Image changing the Dockerfile in the configmap kogito-serverless-operator-builder-config accordingly to your specific needs.
 
