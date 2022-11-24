@@ -1,0 +1,96 @@
+name: PR checks
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - "LICENSE"
+      - "**/.gitignore"
+      - "**.md"
+      - "**.adoc"
+      - "*.txt"
+      - "docsimg/**"
+      - ".ci/jenkins/**"
+
+env:
+  GO_VERSION: 1.19
+
+jobs:
+  unit-tests:
+    concurrency:
+      group: kogito-serverless-operator-unit-tests-${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 60
+    name: Unit tests And Coverage
+    runs-on: ubuntu-latest
+    steps:
+      # Packages for testing with Podman
+      - name: Install package
+        run: |
+          sudo apt-get -y install \
+          btrfs-progs \
+          libgpgme-dev
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Go
+        id: go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Run tests
+        run: make test
+
+      - uses: shogo82148/actions-goveralls@v1
+        with:
+          path-to-profile: cover.out
+
+  check-headers:
+    concurrency:
+      group: kogito-serverless-operator-check-headers-${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 60
+    name: Check headers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Go
+        id: go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Check headers
+        run: |
+          make addheaders
+          changed_files=$(git status -s)
+          [[ -z "$changed_files" ]] ||  (printf "Some files are missing the headers: \n$changed_files\n Did you run 'make addheaders' before sending the PR" && exit 1)
+
+  check-generation:
+    concurrency:
+      group: kogito-serverless-operator-check-generation-${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 60
+    name: Check files generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Go
+        id: go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Check generations
+        run: |
+          make generate-all
+          changed_files=$(git status -s)
+          [[ -z "$changed_files" ]] ||  (printf "Generation has not been done on this PR. See modified files: \n$changed_files\n Did you run 'make generate-all' before sending the PR" && exit 1)

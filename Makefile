@@ -299,3 +299,6 @@ install-operator-sdk:
 .PHONY: addheaders
 addheaders:
 	./hack/addheaders.sh
+
+.PHONY: generate-all
+generate-all: generate generate-deploy bundle
