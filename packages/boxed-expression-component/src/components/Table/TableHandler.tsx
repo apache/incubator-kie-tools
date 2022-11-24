@@ -39,7 +39,7 @@ export interface TableHandlerProps {
   /** Function to be executed when one or more rows are modified */
   onRowsUpdate: (rows: DataRecord[], operation?: TableOperation, rowIndex?: number) => void;
   /** Function to be executed when adding a new row to the table */
-  onRowAdding: (existingRowsCount: number) => DataRecord;
+  onRowAdding: () => DataRecord;
   /** Show/hide table handler */
   showTableHandler: boolean;
   /** Function to programmatically show/hide table handler */
@@ -216,16 +216,13 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
     [appendOnColumnChildren, generateNextAvailableColumn, selectedColumn, tableColumns, updateColumnsThenRows]
   );
 
-  const generateRow = useCallback(
-    (existingRowsCount: number) => {
-      const row = onRowAdding(existingRowsCount);
-      if (_.isEmpty(row.id)) {
-        row.id = generateUuid();
-      }
-      return row;
-    },
-    [onRowAdding]
-  );
+  const generateRow = useCallback(() => {
+    const row = onRowAdding();
+    if (_.isEmpty(row.id)) {
+      row.id = generateUuid();
+    }
+    return row;
+  }, [onRowAdding]);
 
   const handlingOperation = useCallback(
     (tableOperation: TableOperation) => {
@@ -242,14 +239,14 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
           break;
         case TableOperation.RowInsertAbove:
           onRowsUpdate(
-            insertBefore(tableRows.current, selectedRowIndex, generateRow(tableRows.current.length)),
+            insertBefore(tableRows.current, selectedRowIndex, generateRow()),
             TableOperation.RowInsertAbove,
             selectedRowIndex
           );
           break;
         case TableOperation.RowInsertBelow:
           onRowsUpdate(
-            insertAfter(tableRows.current, selectedRowIndex, generateRow(tableRows.current.length)),
+            insertAfter(tableRows.current, selectedRowIndex, generateRow()),
             TableOperation.RowInsertBelow,
             selectedRowIndex
           );
