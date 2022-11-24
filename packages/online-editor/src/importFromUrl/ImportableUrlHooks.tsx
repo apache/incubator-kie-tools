@@ -27,7 +27,7 @@ import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
-import { AuthSession } from "../authSessions/AuthSessionApi";
+import { AuthSession, AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { AuthInfo } from "../authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
@@ -418,7 +418,7 @@ export function useImportableUrlValidation(
       };
     }
 
-    if (authSession?.type !== "git") {
+    if (!(authSession?.type === "git" || authSession?.type === AUTH_SESSION_NONE.type)) {
       return {
         option: ValidatedOptions.error,
         helperTextInvalid: `Incompatible AuthSession type '${authSession?.type}'.`,
