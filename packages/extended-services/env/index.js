@@ -14,14 +14,27 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    EXTENDED_SERVICES__nativeBuildPath_macOS: {
+      default: "./node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor",
+      description: "",
+    },
+  }),
   get env() {
     return {
       extendedServices: {
         version: require("../package.json").version,
+        jitexecutor: {
+          nativeBuildPath: {
+            macOS: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBuildPath_macOS),
+          },
+        },
+        dev: {
+          port: 21345,
+        },
       },
     };
   },
