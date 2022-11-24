@@ -14,7 +14,7 @@
 # limitations under the License.
 
 if ! hash addlicense 2>/dev/null; then
-  go get -u github.com/google/addlicense
+  go install github.com/google/addlicense@latest
 fi
 
 addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache -ignore **/Dockerfile hack api builder constants controllers converters install platform resources utils test
