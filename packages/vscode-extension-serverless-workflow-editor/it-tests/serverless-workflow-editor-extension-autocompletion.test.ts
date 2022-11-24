@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+require("./serverless-workflow-editor-extension-smoke.test");
+
 import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
