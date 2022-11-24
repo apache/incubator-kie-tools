@@ -71,7 +71,7 @@ export const paste = (pasteValue: string, reference: Element, editorElement: HTM
 export const pasteOnTable = (
   pasteValue: string,
   rows: DataRecord[],
-  rowFactory: (existingRowsCount: number) => DataRecord,
+  rowFactory: () => DataRecord,
   x: number = 0,
   y: number = 0
 ): DataRecord[] => {
@@ -106,7 +106,7 @@ export const pasteOnTable = (
     const row = paste[i];
 
     if (i + y >= newRows.length) {
-      newRows.push(rowFactory(newRows.length));
+      newRows.push(rowFactory());
     }
 
     for (let j = 0; j < row.length; j++) {
