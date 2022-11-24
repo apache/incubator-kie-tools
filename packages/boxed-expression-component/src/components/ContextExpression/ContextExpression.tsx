@@ -203,14 +203,14 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
 
       return row;
     },
-    [i18n.editContextEntry]
+    [i18n.editContextEntry, existingEntryInfos]
   );
 
   const onRowsUpdate = useCallback(
     ({ rows }: RowsUpdateArgs<ContextEntryRecord>) => {
       spreadContextExpressionDefinition({ contextEntries: [...rows] });
     },
-    [spreadContextExpressionDefinition]
+    [spreadContextExpressionDefinition, existingEntryInfos]
   );
 
   const onUpdatingRecursiveExpression = useCallback(
