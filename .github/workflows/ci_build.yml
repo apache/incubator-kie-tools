@@ -2,7 +2,7 @@ name: "CI :: Build"
 
 on:
   push:
-    branches: ["**"]
+    branches: [main]
   pull_request:
     branches: ["**"]
     types: [opened, reopened, ready_for_review, synchronize]
@@ -14,10 +14,11 @@ concurrency:
 jobs:
   run:
     environment: ci
+    if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
