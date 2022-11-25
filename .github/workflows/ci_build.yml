@@ -14,11 +14,10 @@ concurrency:
 jobs:
   run:
     environment: ci
-    if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
