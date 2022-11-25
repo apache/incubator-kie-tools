@@ -17,23 +17,23 @@
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv(
-  [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-sandbox-base-image-env/env")],
+  [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env")],
   {
     vars: varsWithName({
-      SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
-        default: "2.11.1.Final",
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: {
+        default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: {
-        default: "latest",
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoVersion: {
+        default: "1.30.0",
         description: "",
       },
     }),
     get env() {
       return {
-        serverlessLogicSandboxBaseImage: {
-          quarkusVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion),
-          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags),
+        swfBuilderImage: {
+          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags),
+          kogitoVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoVersion),
         },
       };
     },

@@ -31,24 +31,16 @@ const buildEnv = env;
 module.exports = async (env) => {
   const buildInfo = getBuildInfo();
   const gtmResource = getGtmResource();
+  const [swfBuilderImageRegistry, swfBuilderImageAccount, swfBuilderImageName, swfBuilderImageTag] =
+    getSwfBuilderImageArgs();
+  const [baseBuilderImageRegistry, baseBuilderImageAccount, baseBuilderImageName, baseBuilderImageTag] =
+    getBaseBuilderImageArgs();
   const [
-    serverlessLogicSandbox_baseImageRegistry,
-    serverlessLogicSandbox_baseImageAccount,
-    serverlessLogicSandbox_baseImageName,
-    serverlessLogicSandbox_baseImageTag,
-  ] = getServerlessLogicSandboxBaseImageArgs();
-  const [
-    serverlessLogicSandbox_openJdk11MvnImageRegistry,
-    serverlessLogicSandbox_openJdk11MvnImageAccount,
-    serverlessLogicSandbox_openJdk11MvnImageName,
-    serverlessLogicSandbox_openJdk11MvnImageTag,
-  ] = getServerlessLogicSandboxOpenJdk11MvnImageArgs();
-  const [
-    serverlessLogicSandbox_dashbuilderViewerImageRegistry,
-    serverlessLogicSandbox_dashbuilderViewerImageAccount,
-    serverlessLogicSandbox_dashbuilderViewerImageName,
-    serverlessLogicSandbox_dashbuilderViewerImageTag,
-  ] = getServerlessLogicSandboxDashbuilderViewerImageArgs();
+    dashbuilderViewerImageRegistry,
+    dashbuilderViewerImageAccount,
+    dashbuilderViewerImageName,
+    dashbuilderViewerImageTag,
+  ] = getDashbuilderViewerImageArgs();
   const [
     kieSandboxExtendedServices_linuxDownloadUrl,
     kieSandboxExtendedServices_macOsDownloadUrl,
@@ -108,9 +100,9 @@ module.exports = async (env) => {
         ]),
         new EnvironmentPlugin({
           WEBPACK_REPLACE__buildInfo: buildInfo,
-          WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl: `${serverlessLogicSandbox_baseImageRegistry}/${serverlessLogicSandbox_baseImageAccount}/${serverlessLogicSandbox_baseImageName}:${serverlessLogicSandbox_baseImageTag}`,
-          WEBPACK_REPLACE__serverlessLogicSandbox_openJdk11MvnImageFullUrl: `${serverlessLogicSandbox_openJdk11MvnImageRegistry}/${serverlessLogicSandbox_openJdk11MvnImageAccount}/${serverlessLogicSandbox_openJdk11MvnImageName}:${serverlessLogicSandbox_openJdk11MvnImageTag}`,
-          WEBPACK_REPLACE__serverlessLogicSandbox_dashbuilderViewerImageFullUrl: `${serverlessLogicSandbox_dashbuilderViewerImageRegistry}/${serverlessLogicSandbox_dashbuilderViewerImageAccount}/${serverlessLogicSandbox_dashbuilderViewerImageName}:${serverlessLogicSandbox_dashbuilderViewerImageTag}`,
+          WEBPACK_REPLACE__swfBuilderImageFullUrl: `${swfBuilderImageRegistry}/${swfBuilderImageAccount}/${swfBuilderImageName}:${swfBuilderImageTag}`,
+          WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
+          WEBPACK_REPLACE__dashbuilderViewerImageFullUrl: `${dashbuilderViewerImageRegistry}/${dashbuilderViewerImageAccount}/${dashbuilderViewerImageName}:${dashbuilderViewerImageTag}`,
           WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
@@ -208,35 +200,35 @@ module.exports = async (env) => {
   ];
 };
 
-function getServerlessLogicSandboxBaseImageArgs() {
-  const baseImageRegistry = buildEnv.serverlessLogicSandboxBaseImageEnv.registry;
-  const baseImageAccount = buildEnv.serverlessLogicSandboxBaseImageEnv.account;
-  const baseImageName = buildEnv.serverlessLogicSandboxBaseImageEnv.name;
-  const baseImageTag = buildEnv.serverlessLogicSandbox.baseImage.tag;
+function getSwfBuilderImageArgs() {
+  const swfBuilderImageRegistry = buildEnv.swfBuilderImageEnv.registry;
+  const swfBuilderImageAccount = buildEnv.swfBuilderImageEnv.account;
+  const swfBuilderImageName = buildEnv.swfBuilderImageEnv.name;
+  const swfBuilderImageTag = buildEnv.serverlessLogicSandbox.swfBuilderImage.tag;
 
-  console.info("Serverless Logic Web Tools :: Base Image Registry: " + baseImageRegistry);
-  console.info("Serverless Logic Web Tools :: Base Image Account: " + baseImageAccount);
-  console.info("Serverless Logic Web Tools :: Base Image Name: " + baseImageName);
-  console.info("Serverless Logic Web Tools :: Base Image Tag: " + baseImageTag);
+  console.info("Serverless Logic Web Tools :: SWF Builder Image Registry: " + swfBuilderImageRegistry);
+  console.info("Serverless Logic Web Tools :: SWF Builder Image Account: " + swfBuilderImageAccount);
+  console.info("Serverless Logic Web Tools :: SWF Builder Image Name: " + swfBuilderImageName);
+  console.info("Serverless Logic Web Tools :: SWF Builder Image Tag: " + swfBuilderImageTag);
 
-  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag];
+  return [swfBuilderImageRegistry, swfBuilderImageAccount, swfBuilderImageName, swfBuilderImageTag];
 }
 
-function getServerlessLogicSandboxOpenJdk11MvnImageArgs() {
-  const openJdk11MvnImageRegistry = buildEnv.openJdk11MvnImageEnv.registry;
-  const openJdk11MvnImageAccount = buildEnv.openJdk11MvnImageEnv.account;
-  const openJdk11MvnImageName = buildEnv.openJdk11MvnImageEnv.name;
-  const openJdk11MvnImageTag = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.tag;
+function getBaseBuilderImageArgs() {
+  const baseBuilderImageRegistry = buildEnv.baseBuilderImageEnv.registry;
+  const baseBuilderImageAccount = buildEnv.baseBuilderImageEnv.account;
+  const baseBuilderImageName = buildEnv.baseBuilderImageEnv.name;
+  const baseBuilderImageTag = buildEnv.serverlessLogicSandbox.baseBuilderImage.tag;
 
-  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Registry: " + openJdk11MvnImageRegistry);
-  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Account: " + openJdk11MvnImageAccount);
-  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Name: " + openJdk11MvnImageName);
-  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Tag: " + openJdk11MvnImageTag);
+  console.info("Serverless Logic Web Tools :: Base Builder Image Registry: " + baseBuilderImageRegistry);
+  console.info("Serverless Logic Web Tools :: Base Builder Image Account: " + baseBuilderImageAccount);
+  console.info("Serverless Logic Web Tools :: Base Builder Image Name: " + baseBuilderImageName);
+  console.info("Serverless Logic Web Tools :: Base Builder Image Tag: " + baseBuilderImageTag);
 
-  return [openJdk11MvnImageRegistry, openJdk11MvnImageAccount, openJdk11MvnImageName, openJdk11MvnImageTag];
+  return [baseBuilderImageRegistry, baseBuilderImageAccount, baseBuilderImageName, baseBuilderImageTag];
 }
 
-function getServerlessLogicSandboxDashbuilderViewerImageArgs() {
+function getDashbuilderViewerImageArgs() {
   const dashbuilderViewerImageRegistry = buildEnv.dashbuilderViewerImageEnv.registry;
   const dashbuilderViewerImageAccount = buildEnv.dashbuilderViewerImageEnv.account;
   const dashbuilderViewerImageName = buildEnv.dashbuilderViewerImageEnv.name;

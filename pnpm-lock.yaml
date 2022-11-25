@@ -3658,24 +3658,6 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  packages/openjdk11-mvn-image:
-    specifiers:
-      "@kie-tools/openjdk11-mvn-image-env": workspace:*
-      "@kie-tools/root-env": workspace:*
-      rimraf: ^3.0.2
-      run-script-os: ^1.1.6
-    devDependencies:
-      "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
-      "@kie-tools/root-env": link:../root-env
-      rimraf: 3.0.2
-      run-script-os: 1.1.6
-
-  packages/openjdk11-mvn-image-env:
-    specifiers:
-      "@kie-tools/root-env": workspace:*
-    devDependencies:
-      "@kie-tools/root-env": link:../root-env
-
   packages/openshift:
     specifiers:
       "@babel/core": ^7.16.0
@@ -4023,9 +4005,9 @@ importers:
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
-      "@kie-tools/openjdk11-mvn-image-env": workspace:*
       "@kie-tools/root-env": workspace:*
-      "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
+      "@kie-tools/serverless-logic-web-tools-base-builder-image-env": workspace:*
+      "@kie-tools/serverless-logic-web-tools-swf-builder-image-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
@@ -4138,9 +4120,9 @@ importers:
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@kie-tools/dashbuilder-viewer-image-env": link:../dashbuilder-viewer-image-env
       "@kie-tools/eslint": link:../eslint
-      "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
       "@kie-tools/root-env": link:../root-env
-      "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
+      "@kie-tools/serverless-logic-web-tools-base-builder-image-env": link:../serverless-logic-web-tools-base-builder-image-env
+      "@kie-tools/serverless-logic-web-tools-swf-builder-image-env": link:../serverless-logic-web-tools-swf-builder-image-env
       "@kie-tools/tsconfig": link:../tsconfig
       "@svgr/webpack": 6.2.1
       "@testing-library/jest-dom": 5.16.1
@@ -4172,29 +4154,47 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  packages/serverless-logic-sandbox-base-image:
+  packages/serverless-logic-web-tools-base-builder-image:
+    specifiers:
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/serverless-logic-web-tools-base-builder-image-env": workspace:*
+      rimraf: ^3.0.2
+      run-script-os: ^1.1.6
+    devDependencies:
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/serverless-logic-web-tools-base-builder-image-env": link:../serverless-logic-web-tools-base-builder-image-env
+      rimraf: 3.0.2
+      run-script-os: 1.1.6
+
+  packages/serverless-logic-web-tools-base-builder-image-env:
+    specifiers:
+      "@kie-tools/root-env": workspace:*
+    devDependencies:
+      "@kie-tools/root-env": link:../root-env
+
+  packages/serverless-logic-web-tools-swf-builder-image:
     specifiers:
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": workspace:*
       "@kie-tools/root-env": workspace:*
-      "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
-      "@kie-tools/serverless-logic-sandbox-deployment-webapp": workspace:*
+      "@kie-tools/serverless-logic-web-tools-swf-builder-image-env": workspace:*
+      "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp": workspace:*
       rimraf: ^3.0.2
       run-script-os: ^1.1.6
     devDependencies:
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": link:../dashbuilder-swf-monitoring-dashboard
       "@kie-tools/root-env": link:../root-env
-      "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
-      "@kie-tools/serverless-logic-sandbox-deployment-webapp": link:../serverless-logic-sandbox-deployment-webapp
+      "@kie-tools/serverless-logic-web-tools-swf-builder-image-env": link:../serverless-logic-web-tools-swf-builder-image-env
+      "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp": link:../serverless-logic-web-tools-swf-deployment-webapp
       rimraf: 3.0.2
       run-script-os: 1.1.6
 
-  packages/serverless-logic-sandbox-base-image-env:
+  packages/serverless-logic-web-tools-swf-builder-image-env:
     specifiers:
       "@kie-tools/root-env": workspace:*
     devDependencies:
       "@kie-tools/root-env": link:../root-env
 
-  packages/serverless-logic-sandbox-deployment-webapp:
+  packages/serverless-logic-web-tools-swf-deployment-webapp:
     specifiers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
@@ -4262,8 +4262,8 @@ importers:
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
       rimraf: 3.0.2
-      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
-      typescript: 4.5.4
+      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
+      typescript: 4.8.4
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm

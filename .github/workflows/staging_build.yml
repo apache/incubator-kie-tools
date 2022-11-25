@@ -78,17 +78,17 @@ jobs:
       DASHBUILDER__viewerImageAccount: "kie-tools"
       DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
       DASHBUILDER__viewerImageBuildTags: "${{ inputs.tag }}-prerelease"
-      SERVERLESS_LOGIC_SANDBOX__dashbuilderViewerImageTag: "${{ inputs.tag }}-prerelease"
-      SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
-      SERVERLESS_LOGIC_SANDBOX__baseImageTag: "${{ inputs.tag }}-prerelease"
-      SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}-prerelease"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName: "serverless-logic-web-tools-base-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: "${{ inputs.tag }}-prerelease"
 
     strategy:
       matrix:
@@ -275,24 +275,24 @@ jobs:
           deployment_envvars_file_path: ./deployment.env
           deployment_icon: "js"
 
-      - name: "STAGING: Push serverless-logic-sandbox-base-image to quay.io (Ubuntu only)"
+      - name: "STAGING: Push serverless-logic-web-tools-swf-builder-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Push openjdk11-mvn-image to quay.io (Ubuntu only)"
+      - name: "STAGING: Push serverless-logic-web-tools-base-builder-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
