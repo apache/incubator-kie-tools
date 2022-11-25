@@ -119,12 +119,12 @@ export default async (env: any, argv: any) => {
               {
                 from: stunnerEditors.dmnEditorPath(),
                 to: "./gwt-editors/dmn",
-                globOptions: { ignore: ["WEB-INF/**/*"] },
+                globOptions: { ignore: ["**/WEB-INF/**/*"] },
               },
               {
                 from: stunnerEditors.bpmnEditorPath(),
                 to: "./gwt-editors/bpmn",
-                globOptions: { ignore: ["WEB-INF/**/*"] },
+                globOptions: { ignore: ["**/WEB-INF/**/*"] },
               },
               { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
               { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },

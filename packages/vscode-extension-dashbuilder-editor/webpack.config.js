@@ -62,12 +62,12 @@ module.exports = async (env) => [
           {
             from: "./src/setup.js",
             to: "webview/",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
           {
             from: dashbuilderClient.dashbuilderPath(),
             to: "webview/",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
         ],
       }),

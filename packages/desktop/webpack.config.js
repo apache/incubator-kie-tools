@@ -48,12 +48,12 @@ module.exports = async (env) => [
           {
             from: stunnerEditors.dmnEditorPath(),
             to: "./gwt-editors/dmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
           {
             from: stunnerEditors.bpmnEditorPath(),
             to: "./gwt-editors/bpmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
         ],
       }),
