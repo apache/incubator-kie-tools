@@ -48,7 +48,7 @@ module.exports = async (env) =>
           {
             from: dashbuilderClient.dashbuilderPath(),
             to: "./",
-            globOptions: { ignore: ["**/WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
         ],
       }),
