@@ -12,18 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.12
+ARG KOGITO_VERSION
 
-ARG OKD_VERSION
+FROM --platform=linux/amd64 quay.io/kiegroup/kogito-base-builder:$KOGITO_VERSION
 
-RUN mkdir /tmp/sandbox/
+ARG KUBECTL_VERSION
 
-WORKDIR /tmp/sandbox/
+ENV PATH="${PATH}:/usr/share/maven/bin"
 
-COPY --chown=185:root dist-dev/mvnw mvnw
-COPY --chown=185:root dist-dev/.mvn/ .mvn/
+USER root
+RUN chown kogito /home/kogito/.m2
+USER kogito
 
-RUN curl --output okd.tar.gz -LO https://github.com/openshift/okd/releases/download/${OKD_VERSION}/openshift-client-linux-${OKD_VERSION}.tar.gz \
-  && tar -zxvf okd.tar.gz oc \
-  && rm okd.tar.gz \
-  && ./oc version
+RUN curl --output kubectl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+  && chmod +x kubectl \
+  && ./kubectl version --client
