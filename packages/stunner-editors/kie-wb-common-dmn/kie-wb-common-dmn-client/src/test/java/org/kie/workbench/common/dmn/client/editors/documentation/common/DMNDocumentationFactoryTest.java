@@ -36,9 +36,7 @@ import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.views.pfly.widgets.Moment;
 
 import static java.util.Arrays.asList;
@@ -76,13 +74,7 @@ public class DMNDocumentationFactoryTest {
     private Diagram diagram;
 
     @Mock
-    private Metadata metadata;
-
-    @Mock
     private Definitions definitions;
-
-    @Mock
-    private Path path;
 
     @Mock
     private Moment moment;
@@ -107,8 +99,8 @@ public class DMNDocumentationFactoryTest {
         final String diagramName = "Diagram name";
         final String diagramDescription = "Diagram description";
         final String image = "<image>";
-        final String admin = "admin";
         final String currentDate = "2 January 1992";
+        final String currentYear = "1992";
         final String namespace = "://namespace";
         final String expectedDroolsLogo = "droolsLogo";
         final String expectedSupportedByRedHatLogo = "supportedByRedHatLogo";
@@ -135,6 +127,7 @@ public class DMNDocumentationFactoryTest {
         when(graphUtils.getDRGElements(diagram)).thenReturn(drgElements);
         when(definitions.getItemDefinition()).thenReturn(itemDefinitions);
         when(moment.format("D MMMM YYYY")).thenReturn(currentDate);
+        when(moment.format("YYYY")).thenReturn(currentYear);
 
         final DMNDocumentation documentation = documentationFactory.create(diagram);
 
@@ -143,6 +136,7 @@ public class DMNDocumentationFactoryTest {
         assertEquals(diagramDescription, documentation.getDiagramDescription());
         assertEquals(image, documentation.getDiagramImage());
         assertEquals(currentDate, documentation.getCurrentDate());
+        assertEquals(currentYear, documentation.getCurrentYear());
         assertEquals(expectedDroolsLogo, documentation.getDroolsLogoURI());
         assertEquals(expectedSupportedByRedHatLogo, documentation.getSupportedByRedHatLogoURI());
         assertEquals(i18n, documentation.getI18n());

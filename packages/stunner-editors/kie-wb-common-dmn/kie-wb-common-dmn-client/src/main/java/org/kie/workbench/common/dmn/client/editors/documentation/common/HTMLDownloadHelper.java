@@ -17,27 +17,25 @@
 package org.kie.workbench.common.dmn.client.editors.documentation.common;
 
 import elemental2.core.Global;
-import elemental2.dom.HTMLAnchorElement;
-
-import static elemental2.dom.DomGlobal.document;
 
 public class HTMLDownloadHelper {
 
-    private final static String HEADER = "<html><body>";
-    private final static String FOOTER = "</body></html>";
-    private final static String FILE_EXTENSION = ".HTML";
-    private final static String ENCODING = "data:text/html;charset=utf-8,";
+    private static final String HEADER = "<html><body>";
+    private static final String FOOTER = "</body></html>";
+    private static final String FILE_EXTENSION = ".html";
+    private static final String ENCODING = "data:text/html;charset=utf-8,";
 
-    public void download(final String filename, final String html) {
-
+    public static void downloadHTMLFile(final String filename, final String html) {
         final String sourceHTML = HEADER + html + FOOTER;
         final String source = Global.encodeURIComponent(sourceHTML);
-
-        final HTMLAnchorElement fileDownload = (HTMLAnchorElement) document.createElement("a");
-        document.body.appendChild(fileDownload);
-        fileDownload.href = ENCODING + source;
-        fileDownload.download = filename + FILE_EXTENSION;
-        fileDownload.onclick = (e) -> null;
-        document.body.removeChild(fileDownload);
+        downloadFile(filename + FILE_EXTENSION, ENCODING + source);
     }
+    public static native void downloadFile(final String fullFileName, final String encodedData) /*-{
+        var aLink = document.createElement('a');
+        aLink.download = fullFileName;
+        aLink.href = encodedData;
+        var event = new MouseEvent('click');
+        aLink.dispatchEvent(event);
+    }-*/;
+
 }
