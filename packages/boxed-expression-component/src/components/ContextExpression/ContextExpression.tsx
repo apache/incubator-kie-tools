@@ -50,7 +50,6 @@ const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DataType.Undefined;
 
 export const ContextExpression: React.FunctionComponent<ContextProps> = (contextExpression: ContextProps) => {
-  const existingEntryInfos: EntryInfo[] = [];
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setSupervisorHash, boxedExpressionEditorGWTService, decisionNodeId } = useBoxedExpression();
 
@@ -72,6 +71,8 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
       ],
     [contextExpression.contextEntries]
   );
+
+  const existingEntryInfos = useMemo<EntryInfo[]>(() => [], [rows]);
 
   const spreadContextExpressionDefinition = useCallback(
     (contextExpressionUpdated: Partial<ContextProps>) => {
@@ -210,7 +211,7 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
     ({ rows }: RowsUpdateArgs<ContextEntryRecord>) => {
       spreadContextExpressionDefinition({ contextEntries: [...rows] });
     },
-    [spreadContextExpressionDefinition, existingEntryInfos]
+    [spreadContextExpressionDefinition]
   );
 
   const onUpdatingRecursiveExpression = useCallback(
