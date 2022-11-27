@@ -19,10 +19,11 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import * as SwfEditor from "@kie-tools/serverless-workflow-standalone-editor/dist/swf";
 import { ServerlessWorkflowEmptyState } from "./SwfEditorEmptyState";
-import { StandaloneEditorApi } from "@kie-tools/serverless-workflow-standalone-editor/dist/common/Editor";
+import {
+  StandaloneEditorApi,
+  ServerlessWorkflowType,
+} from "@kie-tools/serverless-workflow-standalone-editor/dist/common/Editor";
 import { extname } from "path";
-
-export type ServerlessWorkflowType = "json" | "yaml";
 
 export const SwfStandaloneTextOnlyEditorPage = () => {
   const swfEditorContainer = useRef<HTMLDivElement>(null);
@@ -34,9 +35,8 @@ export const SwfStandaloneTextOnlyEditorPage = () => {
   const [editor, setEditor] = useState<StandaloneEditorApi>();
 
   const onSetContent = useCallback((path: string, content: string) => {
-    const match = /\.sw\.(json|yaml)$/.exec(path.toLowerCase());
-    const dotExtension = match ? match[0] : extname(path);
-    const extension = dotExtension.slice(1);
+    const match = /\.sw\.(json|yaml|yml)$/.exec(path.toLowerCase());
+    const extension = match ? match[1] : extname(path);
 
     const editorApi = SwfEditor.open({
       container: swfEditorContainer.current!,

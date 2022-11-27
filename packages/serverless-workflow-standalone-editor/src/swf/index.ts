@@ -24,14 +24,11 @@ import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import {
-  NoOpSwfStaticEnvelopeContentProviderChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
   SwfPreviewOptionsChannelApiImpl,
   NoOpSwfServiceCatalogChannelApiImpl,
   SwfStaticEnvelopeContentProviderChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
-import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { StandaloneServerlessWorkflowCombinedEditorChannelApi } from "./channel";
 import { getLanguageServiceChannelApi } from "./languageService";
 import { SwfPreviewOptions } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
@@ -81,6 +78,10 @@ export const open = (args: {
   onError?: () => any;
   swfPreviewOptions?: SwfPreviewOptions;
 }): StandaloneEditorApi => {
+  if (!args.languageType.match(/^(json|yaml|yml)$/)) {
+    throw new Error('Specified language type is not correct. It must be one among these "json" | "yaml" | "yml" ');
+  }
+
   const iframe = document.createElement("iframe");
   iframe.srcdoc = swfCombinedEditorEnvelopeIndex;
   iframe.style.width = "100%";
@@ -130,8 +131,7 @@ export const open = (args: {
       diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex,
       mermaidEnvelopeContent: swfMermaidViewerEnvelopeIndex,
       textEditorEnvelopeContent: swfTextEditorEnvelopeIndex,
-    }),
-    new NoOpSwfStaticEnvelopeContentProviderChannelApiImpl()
+    })
   );
 
   const listener = (message: MessageEvent) => {

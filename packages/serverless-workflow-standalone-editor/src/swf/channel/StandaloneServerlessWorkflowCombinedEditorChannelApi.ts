@@ -55,8 +55,7 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
     private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi,
-    private readonly swfStaticEnvelopeContentProviderChannelApi?: SwfStaticEnvelopeContentProviderChannelApi,
-    private readonly NoOpSwfStaticEnvelopeContentProviderChannelApiImpl?: SwfStaticEnvelopeContentProviderChannelApi
+    private readonly swfStaticEnvelopeContentProviderChannelApi?: SwfStaticEnvelopeContentProviderChannelApi
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {

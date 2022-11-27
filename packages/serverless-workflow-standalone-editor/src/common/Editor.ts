@@ -27,7 +27,7 @@ export interface StandaloneEditorApi extends EditorApi {
   close: () => void;
 }
 
-export type ServerlessWorkflowType = "json" | "yaml";
+export type ServerlessWorkflowType = "json" | "yaml" | "yml";
 export interface Editor {
   open: (args: {
     container: Element;
