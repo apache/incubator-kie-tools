@@ -72,7 +72,10 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
     [contextExpression.contextEntries]
   );
 
-  const existingEntryInfos = useMemo<EntryInfo[]>(() => [], [rows]);
+  const existingEntryInfos = useMemo<EntryInfo[]>(
+    () => _.map(rows, (row: ContextEntryRecord) => row.entryInfo) as EntryInfo[],
+    [rows]
+  );
 
   const spreadContextExpressionDefinition = useCallback(
     (contextExpressionUpdated: Partial<ContextProps>) => {
@@ -180,32 +183,26 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
     [contextExpression, spreadContextExpressionDefinition]
   );
 
-  const onRowAdding = useCallback(
-    (allRows: DataRecord[]) => {
-      if (!existingEntryInfos.length) {
-        existingEntryInfos.push(...(_.map(allRows, (row: ContextEntryRecord) => row.entryInfo) as EntryInfo[]));
-      }
-      const generatedName = generateNextAvailableEntryName(existingEntryInfos, "ContextEntry");
-      const row = {
-        entryInfo: {
-          id: generateUuid(),
-          name: generatedName,
-          dataType: DataType.Undefined,
-        },
-        entryExpression: {
-          name: generatedName,
-          dataType: DataType.Undefined,
-        },
-        editInfoPopoverLabel: i18n.editContextEntry,
-        nameAndDataTypeSynchronized: true,
-      };
+  const onRowAdding = useCallback(() => {
+    const generatedName = generateNextAvailableEntryName(existingEntryInfos, "ContextEntry");
+    const row = {
+      entryInfo: {
+        id: generateUuid(),
+        name: generatedName,
+        dataType: DataType.Undefined,
+      },
+      entryExpression: {
+        name: generatedName,
+        dataType: DataType.Undefined,
+      },
+      editInfoPopoverLabel: i18n.editContextEntry,
+      nameAndDataTypeSynchronized: true,
+    };
 
-      existingEntryInfos.push(row.entryInfo);
+    existingEntryInfos.push(row.entryInfo);
 
-      return row;
-    },
-    [i18n.editContextEntry, existingEntryInfos]
-  );
+    return row;
+  }, [i18n.editContextEntry, existingEntryInfos]);
 
   const onRowsUpdate = useCallback(
     ({ rows }: RowsUpdateArgs<ContextEntryRecord>) => {

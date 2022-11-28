@@ -148,7 +148,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
   const boxedExpression = useBoxedExpression();
 
   const onRowAddingCallback = useCallback(() => {
-    return onRowAdding ? onRowAdding(tableRows.current) : {};
+    return onRowAdding ? onRowAdding() : {};
   }, [onRowAdding]);
   const onGetColumnPrefix = useCallback(
     (groupType?: string) => (getColumnPrefix ? getColumnPrefix(groupType) : "column-"),
