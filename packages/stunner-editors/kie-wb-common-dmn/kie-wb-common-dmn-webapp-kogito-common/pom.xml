@@ -30,7 +30,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.wildfly}</errai.jboss.home>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
   </properties>
 
@@ -165,7 +164,7 @@
 
     <!-- GWT and extensions -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>

@@ -45,7 +45,7 @@
 
     <!-- NOTE: THIS IS IMPORTED JUST TO ALIGN VERSIONS WITH JDT -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-dev</artifactId>
       <!-- We need a compile scope for making the shade work (see below), but we don't want to inherit the
       transitive dependencies of the gwt-dev.jar, so for safety we exclude them manually -->
@@ -134,12 +134,12 @@
               <artifactSet>
                 <includes>
                   <include>org.eclipse.jdt:ecj</include>
-                  <include>com.google.gwt:gwt-dev</include>
+                  <include>org.gwtproject:gwt-dev</include>
                 </includes>
               </artifactSet>
               <filters>
                 <filter>
-                  <artifact>com.google.gwt:gwt-dev</artifact>
+                  <artifact>org.gwtproject:gwt-dev</artifact>
                   <excludes>
                       <exclude>com/google/gwt/**</exclude>
                       <exclude>org/eclipse/jdt/**</exclude>
