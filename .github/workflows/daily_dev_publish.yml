@@ -282,27 +282,6 @@ jobs:
           name: swf-chrome-extension
           path: kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ steps.version.outputs.version }}.zip
 
-      - name: "Upload Desktop App - Ubuntu (Ubuntu only)"
-        if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v1
-        with:
-          name: desktop-app-linux
-          path: kie-tools/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
-
-      - name: "Upload Desktop App - macOS (macOS only)"
-        if: runner.os == 'macOS'
-        uses: actions/upload-artifact@v1
-        with:
-          name: desktop-app-macos
-          path: kie-tools/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
-
-      - name: "Upload Desktop App - Windows (Windows only)"
-        if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v1
-        with:
-          name: desktop-app-windows
-          path: kie-tools/packages/desktop/out/Business Modeler Preview-win32-x64
-
       - name: "Checkout kogito-online (Ubuntu only)"
         if: runner.os == 'Linux'
         uses: actions/checkout@v3

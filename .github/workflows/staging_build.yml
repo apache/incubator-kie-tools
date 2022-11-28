@@ -523,43 +523,6 @@ jobs:
           asset_name: STAGING__chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload Desktop App for Linux (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
-          asset_name: STAGING__business_modeler_preview_linux_${{ inputs.tag }}.tar.gz
-          asset_content_type: application/tar+gzip
-
-      - name: "STAGING: Upload Desktop App for macOS (macOS only)"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
-          asset_name: STAGING__business_modeler_preview_macos_${{ inputs.tag }}.zip
-          asset_content_type: application/zip
-
-      - name: "STAGING: Compress Desktop App (Windows only)"
-        if: runner.os == 'Windows'
-        run: "Compress-Archive -Path \"kie-tools\\packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"kie-tools\\packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
-
-      - name: "STAGING: Upload Desktop App for Windows (Windows only)"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: "${{ github.workspace }}/kie-tools/packages/desktop/out/Business Modeler Preview-win32-x64.zip"
-          asset_name: "STAGING__business_modeler_preview_windows_${{ inputs.tag }}.zip"
-          asset_content_type: application/zip
-
       - name: "STAGING: Upload Extended Services for Linux (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
