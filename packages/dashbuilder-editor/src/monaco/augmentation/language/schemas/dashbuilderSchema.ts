@@ -42,9 +42,25 @@ export const DASHBOARD_SCHEMA = {
       description: "Allows customization in certain parts of the document.",
       $ref: "#/definitions/CustomProperties",
     },
+    global: {
+      description: "Allows customization in global level.",
+      $ref: "#/definitions/GlobalProperties",
+    },
   },
   required: ["pages"],
   definitions: {
+    GlobalProperties: {
+      type: "object",
+      properties: {
+        mode: {
+          $ref: "#/definitions/ColourModes",
+        },
+        settings: {
+          $ref: "#/definitions/CustomProperties",
+        },
+      },
+      title: "Global Properties",
+    },
     Page: {
       type: "object",
       properties: {
@@ -101,8 +117,7 @@ export const DASHBOARD_SCHEMA = {
       type: "object",
       properties: {
         span: {
-          type: "string",
-          format: "integer",
+          type: "integer",
         },
         components: {
           type: "array",
@@ -168,7 +183,39 @@ export const DASHBOARD_SCHEMA = {
           type: "string",
         },
       },
-      required: ["uuid", "url"],
+      oneOf: [
+        {
+          properties: {
+            content: {
+              type: "string",
+            },
+            url: {
+              type: "string",
+              format: "uri",
+            },
+          },
+          required: ["content"],
+          not: {
+            required: ["url"],
+          },
+        },
+        {
+          properties: {
+            content: {
+              type: "string",
+            },
+            url: {
+              type: "string",
+              format: "uri",
+            },
+          },
+          required: ["url"],
+          not: {
+            required: ["content"],
+          },
+        },
+      ],
+      required: ["uuid"],
       title: "Dataset",
     },
     DatasetColumn: {
@@ -191,12 +238,10 @@ export const DASHBOARD_SCHEMA = {
           type: "string",
         },
         rowCount: {
-          type: "string",
-          format: "integer",
+          type: "integer",
         },
         rowOffset: {
-          type: "string",
-          format: "integer",
+          type: "integer",
         },
         sort: {
           type: "array",
@@ -236,6 +281,7 @@ export const DASHBOARD_SCHEMA = {
           type: "boolean",
         },
       },
+      required: ["enabled", "listening", "notification", "selfapply"],
       title: "SettingsFilter",
     },
     SettingsColumn: {
@@ -253,7 +299,7 @@ export const DASHBOARD_SCHEMA = {
         pattern: {
           type: "string",
         },
-        required: ["id", "name"],
+        required: ["id", "name", "expression", "pattern"],
       },
       title: "SettingsColumn",
     },
@@ -261,7 +307,7 @@ export const DASHBOARD_SCHEMA = {
       type: "object",
       properties: {
         pageSize: {
-          type: "string",
+          type: "integer",
         },
         show_column_picker: {
           type: "string",
@@ -270,6 +316,7 @@ export const DASHBOARD_SCHEMA = {
           $ref: "#/definitions/TableSort",
         },
       },
+      required: ["pageSize", "show_column_picker", "sort"],
       title: "SettingsTable",
     },
     TableSort: {
@@ -466,7 +513,7 @@ export const DASHBOARD_SCHEMA = {
     },
     DataSetType: {
       type: "string",
-      enum: ["LABEL", "NUMBER"],
+      enum: ["LABEL", "NUMBER", "TEXT", "DATE"],
       title: "Type",
     },
     FunctionList: {
@@ -498,12 +545,10 @@ export const DASHBOARD_SCHEMA = {
           type: "string",
         },
         width: {
-          type: "string",
-          format: "number",
+          type: "number",
         },
         height: {
-          type: "string",
-          format: "number",
+          type: "number",
         },
         zoom: {
           type: "boolean",
@@ -511,22 +556,17 @@ export const DASHBOARD_SCHEMA = {
         margin: {
           type: "object",
           properties: {
-            type: "string",
             right: {
-              type: "string",
-              format: "number",
+              type: "number",
             },
             top: {
-              type: "string",
-              format: "number",
+              type: "number",
             },
             bottom: {
-              type: "string",
-              format: "number",
+              type: "number",
             },
             left: {
-              type: "string",
-              format: "number",
+              type: "number",
             },
           },
         },
@@ -579,7 +619,7 @@ export const DASHBOARD_SCHEMA = {
     DisplayerSettings: {
       type: "object",
       properties: {
-        dataSetLookup: {
+        lookup: {
           $ref: "#/definitions/DataSetLookup",
         },
         filter: {
@@ -592,6 +632,13 @@ export const DASHBOARD_SCHEMA = {
               type: "string",
             },
           },
+          required: ["interval"],
+          title: "refresh",
+        },
+        renderer: {
+          type: "string",
+          enum: ["c3"],
+          title: "renderer",
         },
         selector: {
           type: "object",
@@ -603,9 +650,12 @@ export const DASHBOARD_SCHEMA = {
               type: "boolean",
             },
           },
+          required: ["multiple", "inputs_show"],
+          title: "selector",
         },
         echarts: {
           type: "string",
+          title: "echarts",
         },
         general: {
           type: "object",
@@ -616,8 +666,26 @@ export const DASHBOARD_SCHEMA = {
             visible: {
               type: "boolean",
             },
+            mode: {
+              $ref: "#/definitions/ColourModes",
+            },
+            allowEdit: {
+              type: "boolean",
+              title: "allowEdit",
+            },
           },
-          required: ["title", "visible"],
+          required: ["title", "visible", "mode", "allowEdit"],
+          title: "general",
+        },
+        export: {
+          type: "object",
+          properties: {
+            png: {
+              type: "boolean",
+            },
+          },
+          required: ["png"],
+          title: "export",
         },
         columns: {
           type: "array",
@@ -641,6 +709,8 @@ export const DASHBOARD_SCHEMA = {
               $ref: "#/definitions/MapColorScheme",
             },
           },
+          required: ["color_scheme"],
+          title: "map",
         },
         meter: {
           $ref: "#/definitions/MeterTypes",
@@ -658,6 +728,22 @@ export const DASHBOARD_SCHEMA = {
         external: {
           $ref: "#/definitions/SettingsExternal",
         },
+        bubble: {
+          type: "object",
+          properties: {
+            minSize: {
+              type: "number",
+            },
+            maxSize: {
+              type: "number",
+            },
+            color: {
+              type: "string",
+            },
+          },
+          required: ["minSize", "maxSize", "color"],
+          title: "bubble",
+        },
         axis: {
           type: "object",
           properties: {
@@ -671,10 +757,11 @@ export const DASHBOARD_SCHEMA = {
                   type: "string",
                 },
                 labels_angle: {
-                  type: "string",
+                  type: "number",
                 },
               },
               required: ["labels_show", "title", "labels_angle"],
+              title: "x",
             },
             y: {
               type: "object",
@@ -690,6 +777,7 @@ export const DASHBOARD_SCHEMA = {
                 },
               },
               required: ["labels_show", "title", "labels_angle"],
+              title: "y",
             },
           },
         },
@@ -818,6 +906,8 @@ export const DASHBOARD_SCHEMA = {
           },
         },
       ],
+      required: ["lookup"],
+      title: "DisplayerSettings",
     },
     SettingsExternal: {
       type: "object",
@@ -826,16 +916,19 @@ export const DASHBOARD_SCHEMA = {
           type: "string",
         },
         width: {
-          type: "string",
+          type: "number",
         },
         height: {
-          type: "string",
+          type: "number",
         },
       },
+      required: ["baseUrl", "width", "height"],
+      title: "SettingsExternal",
     },
     ChartType: {
       type: "string",
-      enum: ["BARCHART", "LINECHART", "AREACHART", "PIECHART"],
+      enum: ["BARCHART", "LINECHART", "AREACHART", "PIECHART", "BUBBLECHART", "SCATTERCHART"],
+      title: "ChartType",
     },
     BarChartTypes: {
       type: "string",
@@ -878,7 +971,7 @@ export const DASHBOARD_SCHEMA = {
         critical: {
           type: "string",
         },
-        wawrning: {
+        warning: {
           type: "string",
         },
       },
@@ -898,6 +991,11 @@ export const DASHBOARD_SCHEMA = {
     SettingsComponent: {
       type: "string",
       enum: ["table", "echarts", "svg-heatmap", "timeseries", "uniforms"],
+    },
+    ColourModes: {
+      type: "string",
+      enum: ["dark", "light"],
+      title: "ColourModes",
     },
   },
 };
