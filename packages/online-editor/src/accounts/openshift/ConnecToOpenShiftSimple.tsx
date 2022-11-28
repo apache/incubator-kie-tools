@@ -71,7 +71,7 @@ export function ConnecToOpenShiftSimple(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.openshiftService.isConnectionEstablished(props.connection);
+    const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
     setConnecting(false);
 
     if (isConnectionEstablished) {

@@ -125,11 +125,11 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     async ({ id }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConnectionValidated(await props.openshiftService.isConnectionEstablished(props.connection));
+        setConnectionValidated(await props.openshiftService.isConnectionEstablished());
         setConnectLoading(false);
       }
     },
-    [props.connection, props.openshiftService]
+    [props.openshiftService]
   );
 
   const onSave = useCallback(async () => {
@@ -142,7 +142,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.openshiftService.isConnectionEstablished(props.connection);
+    const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
     setConnecting(false);
 
     if (isConnectionEstablished) {

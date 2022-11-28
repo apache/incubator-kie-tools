@@ -118,38 +118,51 @@ export function DevDeploymentsDropdown() {
   }, [refresh, refreshCountdownInSeconds]);
 
   const items = useMemo(() => {
-    if (deployments.status === PromiseStateStatus.PENDING) {
-      return [
-        <DropdownItem key={"sk1"} onClick={(e) => e.stopPropagation()}>
-          <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
-          <Skeleton width={"50%"} />
-        </DropdownItem>,
-        <DropdownItem key={"sk2"} onClick={(e) => e.stopPropagation()}>
-          <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
-          <Skeleton width={"50%"} />
-        </DropdownItem>,
-        <DropdownItem key={"sk3"} onClick={(e) => e.stopPropagation()}>
-          <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
-          <Skeleton width={"50%"} />
-        </DropdownItem>,
-      ];
-    } else if (deployments.status === PromiseStateStatus.RESOLVED && deployments.data.length === 0) {
-      return [
-        <DropdownItem key="disabled link" isDisabled>
-          <Bullseye>
-            <EmptyState>
-              <EmptyStateIcon icon={PficonSatelliteIcon} />
-              <Title headingLevel="h4" size="md">
-                {`No Dev deployments found`}
-              </Title>
-            </EmptyState>
-          </Bullseye>
-        </DropdownItem>,
-      ];
-    } else if (authSession) {
-      return [
-        [
-          ...(deployments.data ?? [])
+    if (authSession) {
+      if (deployments.status === PromiseStateStatus.PENDING) {
+        return [
+          <DropdownItem key={"sk1"} onClick={(e) => e.stopPropagation()}>
+            <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
+            <Skeleton width={"50%"} />
+          </DropdownItem>,
+          <DropdownItem key={"sk2"} onClick={(e) => e.stopPropagation()}>
+            <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
+            <Skeleton width={"50%"} />
+          </DropdownItem>,
+          <DropdownItem key={"sk3"} onClick={(e) => e.stopPropagation()}>
+            <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
+            <Skeleton width={"50%"} />
+          </DropdownItem>,
+        ];
+      } else if (deployments.status === PromiseStateStatus.REJECTED) {
+        return [
+          <DropdownItem key="disabled link" isDisabled>
+            <Bullseye>
+              <EmptyState>
+                <EmptyStateIcon icon={PficonSatelliteIcon} />
+                <Title headingLevel="h4" size="md">
+                  {`Error fetching Dev deployments.`}
+                </Title>
+              </EmptyState>
+            </Bullseye>
+          </DropdownItem>,
+        ];
+      } else if (deployments.status === PromiseStateStatus.RESOLVED && deployments.data.length === 0) {
+        return [
+          <DropdownItem key="disabled link" isDisabled>
+            <Bullseye>
+              <EmptyState>
+                <EmptyStateIcon icon={PficonSatelliteIcon} />
+                <Title headingLevel="h4" size="md">
+                  {`No Dev deployments found`}
+                </Title>
+              </EmptyState>
+            </Bullseye>
+          </DropdownItem>,
+        ];
+      } else {
+        return [
+          deployments.data
             .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
             .map((deployment, i) => {
               return (
@@ -176,7 +189,18 @@ export function DevDeploymentsDropdown() {
           >
             <small>{i18n.devDeployments.dropdown.deleteDeployments}</small>
           </DropdownItem>,
-        ],
+        ];
+      }
+    } else {
+      return [
+        <>
+          <EmptyState>
+            <EmptyStateIcon icon={PficonSatelliteIcon} />
+            <Title headingLevel="h4" size="md" style={{ color: "darkgray" }}>
+              {`Choose a Cloud provider to see your Dev deployments.`}
+            </Title>
+          </EmptyState>
+        </>,
       ];
     }
   }, [authSession, deleteAllDeployments, deployments.data, deployments.status, i18n]);
@@ -256,7 +280,7 @@ export function DevDeploymentsDropdown() {
                     filter={openshiftAuthSessionSelectFilter()}
                     showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
                   />
-                  {(authSessionId && (
+                  {authSessionId && (
                     <>
                       <br />
                       <br />
@@ -279,13 +303,6 @@ export function DevDeploymentsDropdown() {
                       </Flex>
                       <Divider />
                     </>
-                  )) || (
-                    <EmptyState>
-                      <EmptyStateIcon icon={PficonSatelliteIcon} />
-                      <Title headingLevel="h4" size="md" style={{ color: "darkgray" }}>
-                        {`Connect to a Cloud provider to start`}
-                      </Title>
-                    </EmptyState>
                   )}
                 </div>,
                 ...(items ?? []),

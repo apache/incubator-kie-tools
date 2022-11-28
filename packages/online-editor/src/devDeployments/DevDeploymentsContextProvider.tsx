@@ -95,7 +95,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         proxyUrl: extendedServices.config.url.corsProxy,
       });
 
-      if (!(await service.isConnectionEstablished(connection))) {
+      if (!(await service.isConnectionEstablished())) {
         return false;
       }
 

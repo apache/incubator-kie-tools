@@ -25,6 +25,9 @@ import { getGithubInstanceApiUrl } from "../github/Hooks";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { fetchAuthenticatedGitHubUser } from "../accounts/github/ConnectToGitHubSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
+import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -57,6 +60,7 @@ const AUTH_SESSIONS_FS_NAME = "auth_sessions";
 
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const authProviders = useAuthProviders();
+  const extendedServices = useExtendedServices();
   const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
   const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
@@ -139,6 +143,21 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                 }
               } else {
                 return [authSession.id, AuthSessionStatus.VALID];
+              }
+            } else if (authSession.type === "openshift") {
+              try {
+                if (
+                  await new KieSandboxOpenShiftService({
+                    connection: authSession,
+                    proxyUrl: extendedServices.config.url.corsProxy,
+                  }).isConnectionEstablished()
+                ) {
+                  return [authSession.id, AuthSessionStatus.VALID];
+                } else {
+                  return [authSession.id, AuthSessionStatus.INVALID];
+                }
+              } catch (e) {
+                return [authSession.id, AuthSessionStatus.INVALID];
               }
             } else {
               return [authSession.id, AuthSessionStatus.VALID];

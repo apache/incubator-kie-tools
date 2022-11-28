@@ -57,8 +57,8 @@ export class KieSandboxOpenShiftService {
     this.openShiftService = new OpenShiftService(args);
   }
 
-  public async isConnectionEstablished(connection: OpenShiftConnection): Promise<boolean> {
-    return this.openShiftService.isConnectionEstablished(connection);
+  public async isConnectionEstablished(): Promise<boolean> {
+    return this.openShiftService.isConnectionEstablished(this.args.connection);
   }
 
   public newResourceName(): string {
