@@ -11,11 +11,11 @@ MODULE_FILENAME = "module.yaml"
 MODULES_DIR = "modules"
 
 COMMUNITY_PREFIX = 'kogito-'
-PRODUCT_PREFIX = 'rhpam-'
+PRODUCT_PREFIX = 'logic-'
 
 # imagestream file that contains all images, this file aldo needs to be updated.
 IMAGE_STREAM_FILENAME = "kogito-imagestream.yaml"
-PROD_IMAGE_STREAM_FILENAME = "rhpam-kogito-imagestream.yaml"
+PROD_IMAGE_STREAM_FILENAME = "logic-imagestream.yaml"
 # image.yaml file definition that needs to be updated
 IMAGE_FILENAME = "image.yaml"
 ARTIFACTS_VERSION_ENV_KEY = "KOGITO_VERSION"
@@ -64,7 +64,7 @@ def update_community_image_version(target_version):
 
 def update_prod_image_version(target_version):
     """
-    Update rhpam-*-overrides.yaml files version tag.
+    Update logic-*-overrides.yaml files version tag.
     :param target_version: version used to update the files
     """
     for img in sorted(get_prod_images()):
@@ -150,7 +150,7 @@ def get_community_module_dirs():
 
 def get_prod_module_dirs():
     """
-    Retrieve the RHPAM module directories
+    Retrieve the Logic module directories
     """
     return get_all_module_dirs(PRODUCT_PREFIX)
 

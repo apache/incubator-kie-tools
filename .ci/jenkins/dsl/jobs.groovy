@@ -30,6 +30,7 @@ setupDeployJob(Folder.RELEASE)
 setupPromoteJob(Folder.RELEASE)
 
 if (Utils.isProductizedBranch(this)) {
+    setupPrJob(true) // Prod CI job
     setupProdUpdateVersionJob()
 }
 
@@ -37,18 +38,24 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], 
     'python3 scripts/update-quarkus-version.py --bump-to %new_version%'
 ])
 
-
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupPrJob() {
+void setupPrJob(boolean isProdCI = false) {
     def jobParams = KogitoJobUtils.getDefaultJobParams(this)
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
         disable_status_message_failure: true,
     ])
+    if (isProdCI) {
+        jobParams.job.name += '.prod'
+        jobParams.pr.trigger_phrase = '.*[j|J]enkins,?.*(re)run [prod|Prod|PROD].*'
+        jobParams.pr.trigger_phrase_only = true
+        jobParams.pr.commitContext = 'Prod'
+        jobParams.env.put('PROD_CI', true)
+    }
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 

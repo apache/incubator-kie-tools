@@ -9,8 +9,8 @@ changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 BUILD_FAILED_IMAGES = []
 
 pipeline {
-    agent { 
-        label 'kogito-image-slave && !built-in' 
+    agent {
+        label 'kogito-image-slave && !built-in'
     }
     tools {
         jdk 'kie-jdk11'
@@ -34,6 +34,11 @@ pipeline {
                     }
 
                     githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+
+                    if (isProdCI()) {
+                        // Prod fix to be able to build the image as a community one
+                        sh "echo '' > content_sets.yaml"
+                    }
                 }
             }
         }
@@ -113,7 +118,7 @@ pipeline {
         unsuccessful {
             script {
                 def additionalInfo = ''
-                if (getBuildFailedImages()){
+                if (getBuildFailedImages()) {
                     additionalInfo += 'Build failures on those images:\n'
                     getBuildFailedImages().each {
                         additionalInfo += "- ${it}\n"
@@ -151,11 +156,11 @@ void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
 }
 
 void buildImage(String imageName) {
-    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true"
+    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true ignore_tag=${isProdCI()}"
 }
 
 void testImage(String imageName) {
-    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true"
+    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true ignore_tag=${isProdCI()}"
 }
 
 String getMakeBuildImageArgs() {
@@ -192,5 +197,13 @@ String getWorkspacePath(String image) {
 }
 
 String[] getImages() {
-    return sh(script: "make list | tr '\\n' ','", returnStdout: true).trim().split(',')
+    String listCmd = 'make list'
+    if (isProdCI()) {
+        listCmd += ' arg=--prod'
+    }
+    return sh(script: "${listCmd} | tr '\\n' ','", returnStdout: true).trim().split(',')
+}
+
+boolean isProdCI() {
+    return env.PROD_CI ? env.PROD_CI.toBoolean() : false
 }
