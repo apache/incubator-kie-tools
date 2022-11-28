@@ -42,6 +42,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -91,16 +94,16 @@ public class DRGElementTextPropertyProviderImplTest {
 
     @Before
     public void setup() {
-        this.provider = new DRGElementTextPropertyProviderImpl(canvasCommandFactory, definitionUtils);
+        this.provider = spy(new DRGElementTextPropertyProviderImpl(canvasCommandFactory, definitionUtils));
         when(element.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
         when(definition.getName()).thenReturn(name);
         when(definition.getNameHolder()).thenReturn(nameHolder);
         when(nameHolder.getValue()).thenReturn(name);
-        when(definitionUtils.getNameIdentifier(eq(definition))).thenReturn(NAME_FIELD);
+        when(definitionUtils.getNameIdentifier(definition)).thenReturn(NAME_FIELD);
         when(canvasCommandFactory.updatePropertyValue(eq(element),
-                                                      Mockito.<String>any(),
-                                                      Mockito.<String>any())).thenReturn(command);
+                                                      Mockito.any(),
+                                                      Mockito.any())).thenReturn(command);
     }
 
     @Test
@@ -109,7 +112,6 @@ public class DRGElementTextPropertyProviderImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void checkSupportsDRGElement() {
         assertTrue(provider.supports(element));
 
@@ -134,17 +136,38 @@ public class DRGElementTextPropertyProviderImplTest {
     public void checkWriteUsesCommandToUpdateTextProperty() {
         provider.setText(canvasHandler, commandManager, element, NAME_VALUE);
 
-        verify(canvasCommandFactory).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
+        verify(canvasCommandFactory, times(1)).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
         assertEquals(NAME_VALUE, nameArgumentCaptor.getValue().getValue());
-        verify(commandManager).execute(eq(canvasHandler), eq(command));
+        verify(commandManager, times(1)).execute(canvasHandler, command);
     }
 
     @Test
     public void checkWriteUsesCommandToUpdateTextPropertyWithWhitespace() {
         provider.setText(canvasHandler, commandManager, element, NAME_VALUE_WITH_WHITESPACE);
 
-        verify(canvasCommandFactory).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
+        verify(canvasCommandFactory, times(1)).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
         assertEquals(NAME_VALUE, nameArgumentCaptor.getValue().getValue());
-        verify(commandManager).execute(eq(canvasHandler), eq(command));
+        verify(commandManager, times(1)).execute(canvasHandler, command);
+    }
+
+    @Test
+    public void checkNodeUpdateWithSameAssignedName() {
+        when(provider.getText(element)).thenReturn(NAME_VALUE);
+
+        provider.setText(canvasHandler, commandManager, element, NAME_VALUE);
+
+        verify(canvasCommandFactory, never()).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
+        verify(commandManager, never()).execute(canvasHandler, command);
+    }
+
+    @Test
+    public void checkNodeUpdateWithDifferentAssignedName() {
+        when(provider.getText(element)).thenReturn(NAME_VALUE_WITH_WHITESPACE);
+
+        provider.setText(canvasHandler, commandManager, element, NAME_VALUE);
+
+        verify(canvasCommandFactory, times(1)).updatePropertyValue(eq(element), eq(NAME_FIELD), nameArgumentCaptor.capture());
+        assertEquals(NAME_VALUE, nameArgumentCaptor.getValue().getValue());
+        verify(commandManager, times(1)).execute(canvasHandler, command);
     }
 }
