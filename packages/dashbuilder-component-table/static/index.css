@@ -57,3 +57,7 @@
   --pf-global--Color--100: #eef1fa !important;
   --pf-global--BackgroundColor--100: #100c2a !important;
 }
+
+[mode="dark"] .pf-c-form-control:disabled {
+  --pf-c-form-control--BackgroundColor: #464545;
+}
