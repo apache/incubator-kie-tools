@@ -33,7 +33,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
+import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { useOctokit } from "../github/Hooks";
 
 const getSuggestedRepositoryName = (name: string) =>

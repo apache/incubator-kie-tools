@@ -57,7 +57,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     share: string;
     embed: string;
   };
-  dmnDevSandbox: {
+  devDeployments: {
     common: {
       deployYourModel: string;
       deployInstanceInfo: string;
@@ -74,7 +74,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       connectedTo: (username: string) => string;
       connectedToAction: string;
       deleteDeployments: string;
-      deleteDeploymentsDescription: string;
       item: {
         upTooltip: string;
         downTooltip: string;
@@ -374,8 +373,8 @@ interface OnlineDictionary extends ReferenceDictionary {
         fillTheForm: string;
         deployTheModel: string;
         backToEditor: string;
-        setupDmnDevSandbox: string;
-        dmnDevSandboxAlreadySetup: string;
+        setupDevDeployments: string;
+        devDeploymentsAlreadySetup: string;
       };
     };
     dropdown: {

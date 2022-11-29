@@ -13,7 +13,7 @@ else
 endif
 
 darwin:
-	GOOS=darwin GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o dist/darwin/kie_sandbox_extended_services main.go
+	GOOS=darwin GOARCH=$(GOARCH) CGO_ENABLED=1 go build -ldflags $(LDFLAGS) -o dist/darwin/kie_sandbox_extended_services main.go
 
 darwin-amd64:
 	GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o dist/darwin/kie_sandbox_extended_services main.go
