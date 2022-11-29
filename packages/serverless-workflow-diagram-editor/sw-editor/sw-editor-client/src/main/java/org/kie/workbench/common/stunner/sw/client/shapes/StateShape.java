@@ -18,8 +18,11 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.types.Transform;
+import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
+import org.kie.workbench.common.stunner.sw.definition.State;
 
 public class StateShape extends NodeShapeImpl implements HasShapeState {
 
@@ -36,10 +39,60 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
 
     private final StateShapeView shapeView;
 
+    public StateShape(State state, ResourceContentService resourceContentService) {
+        this(state.getName());
+
+        if (state.metadata == null) {
+            setType(state.getType());
+            return;
+        }
+
+        if (state.metadata.type != null) {
+            setType(state.metadata.type);
+        }
+
+        if (!isIconEmpty()) {
+            return;
+        }
+
+        if (state.metadata.icon == null) {
+            setType(state.getType());
+            return;
+        }
+
+        if (state.metadata.icon.startsWith("data:")) {
+            Picture picture = new Picture(state.metadata.icon);
+            setIconPicture(picture);
+        } else {
+            resourceContentService
+                    .get(state.metadata.icon, ResourceContentOptions.binary())
+                    .then(image -> {
+                        if (image != null) {
+                            String base64image = iconDataUri(state.metadata.icon, image);
+                            Picture picture = new Picture(base64image);
+                            setIconPicture(picture);
+                        } else {
+                            setType(state.getType());
+                        }
+                        return null;
+                    });
+        }
+    }
+
     public StateShape(String name) {
         super(new StateShapeView(name).asAbstractShape());
 
         shapeView = (StateShapeView) getShape().getShapeView();
+    }
+
+    protected static String iconDataUri(String iconUri, String iconData) {
+        String[] iconUriParts = iconUri.split("\\.");
+        if (iconUriParts.length > 1) {
+            int fileTypeIndex = iconUriParts.length - 1;
+            String fileType = iconUriParts[fileTypeIndex];
+            return "data:image/" + fileType + ";base64, " + iconData;
+        }
+        return iconData;
     }
 
     public StateShape setType(String type) {
@@ -91,7 +144,7 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
                     size / min
                     : 1 / (min / size);
             p.setTransform(new Transform().scale(scale));
-            p.getLayer().draw();
+            p.getLayer().batch();
         });
         shapeView.setIconPicture(picture);
 
