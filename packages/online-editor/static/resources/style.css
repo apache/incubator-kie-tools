@@ -499,21 +499,21 @@
   --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
 }
 
-.kogito--editor__dmn-dev-sandbox-wizard-loading-spinner {
+.kogito--editor__dmn-dev-deployment-wizard-loading-spinner {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.kogito--editor__dmn-dev-sandbox-dropdown-item-delete:not(disabled):hover {
+.kogito--editor__dev-deployments-dropdown-item-delete:not(disabled):hover {
   color: var(--pf-global--palette--black-800) !important;
 }
 
-.kogito--editor__dmn-dev-sandbox-dropdown-item-status {
+.kogito--editor__dmn-dev-deployment-dropdown-item-status {
   pointer-events: auto;
 }
 
-.kogito--editor__dmn-dev-sandbox-dropdown-item-status:focus {
+.kogito--editor__dmn-dev-deployment-dropdown-item-status:focus {
   outline: none;
 }
 

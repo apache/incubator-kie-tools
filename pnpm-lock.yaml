@@ -2189,30 +2189,30 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  packages/dmn-dev-sandbox-deployment-base-image:
+  packages/dmn-dev-deployment-base-image:
     specifiers:
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
-      "@kie-tools/dmn-dev-sandbox-form-webapp": workspace:*
-      "@kie-tools/dmn-dev-sandbox-quarkus": workspace:*
+      "@kie-tools/dmn-dev-deployment-base-image-env": workspace:*
+      "@kie-tools/dmn-dev-deployment-form-webapp": workspace:*
+      "@kie-tools/dmn-dev-deployment-quarkus-app": workspace:*
       "@kie-tools/root-env": workspace:*
       rimraf: ^3.0.2
       run-script-os: ^1.1.6
     dependencies:
-      "@kie-tools/dmn-dev-sandbox-form-webapp": link:../dmn-dev-sandbox-form-webapp
-      "@kie-tools/dmn-dev-sandbox-quarkus": link:../dmn-dev-sandbox-quarkus
+      "@kie-tools/dmn-dev-deployment-form-webapp": link:../dmn-dev-deployment-form-webapp
+      "@kie-tools/dmn-dev-deployment-quarkus-app": link:../dmn-dev-deployment-quarkus-app
     devDependencies:
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
+      "@kie-tools/dmn-dev-deployment-base-image-env": link:../dmn-dev-deployment-base-image-env
       "@kie-tools/root-env": link:../root-env
       rimraf: 3.0.2
       run-script-os: 1.1.6
 
-  packages/dmn-dev-sandbox-deployment-base-image-env:
+  packages/dmn-dev-deployment-base-image-env:
     specifiers:
       "@kie-tools/root-env": workspace:*
     devDependencies:
       "@kie-tools/root-env": link:../root-env
 
-  packages/dmn-dev-sandbox-form-webapp:
+  packages/dmn-dev-deployment-form-webapp:
     specifiers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
@@ -2297,7 +2297,7 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  packages/dmn-dev-sandbox-quarkus:
+  packages/dmn-dev-deployment-quarkus-app:
     specifiers:
       "@kie-tools/maven-config-setup-helper": workspace:*
       "@kie-tools/root-env": workspace:*
@@ -3503,7 +3503,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
+      "@kie-tools/dmn-dev-deployment-base-image-env": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/extended-services": workspace:*
@@ -3616,7 +3616,7 @@ importers:
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
+      "@kie-tools/dmn-dev-deployment-base-image-env": link:../dmn-dev-deployment-base-image-env
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/extended-services": link:../extended-services
       "@kie-tools/git-cors-proxy-image": link:../git-cors-proxy-image

@@ -24,7 +24,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
+import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 
 export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
   const workspaces = useWorkspaces();
