@@ -18,31 +18,31 @@ import "./LiteralExpression.css";
 import * as React from "react";
 import { useCallback, useEffect } from "react";
 import {
-  DataType,
+  DmnBuiltInDataType,
   executeIfExpressionDefinitionChanged,
-  ExpressionProps,
-  LiteralExpressionProps,
-  LogicType,
+  ExpressionDefinition,
+  LiteralExpressionDefinition,
+  ExpressionDefinitionLogicType,
 } from "../../api";
-import { EditExpressionMenu, EXPRESSION_NAME } from "../EditExpressionMenu";
+import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../Resizer";
-import { EditableCell } from "../Table";
-import { useBoxedExpression } from "../../context";
+import { BeeEditableCell } from "../BeeTable";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 const HEADER_WIDTH = 250;
 
-export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> = (
-  literalExpression: LiteralExpressionProps
+export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinition> = (
+  literalExpression: LiteralExpressionDefinition
 ) => {
-  const { boxedExpressionEditorGWTService, decisionNodeId } = useBoxedExpression();
+  const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
 
   const spreadLiteralExpressionDefinition = useCallback(
-    (literalExpressionUpdate?: Partial<LiteralExpressionProps>) => {
-      const expressionDefinition: LiteralExpressionProps = {
+    (literalExpressionUpdate?: Partial<LiteralExpressionDefinition>) => {
+      const expressionDefinition: LiteralExpressionDefinition = {
         id: literalExpression.id,
         name: literalExpression.name ?? EXPRESSION_NAME,
-        dataType: literalExpression.dataType ?? DataType.Undefined,
-        logicType: LogicType.LiteralExpression,
+        dataType: literalExpression.dataType ?? DmnBuiltInDataType.Undefined,
+        logicType: ExpressionDefinitionLogicType.LiteralExpression,
         content: literalExpression.content ?? "",
         ...(!literalExpression.isHeadless && literalExpression.width !== HEADER_WIDTH
           ? { width: literalExpression.width }
@@ -57,17 +57,17 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
           if (literalExpression.isHeadless) {
             literalExpression.onUpdatingRecursiveExpression?.(expressionDefinition);
           } else {
-            boxedExpressionEditorGWTService?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
+            beeGwtService?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
           }
         },
         ["name", "dataType", "content", "width"]
       );
     },
-    [boxedExpressionEditorGWTService, literalExpression]
+    [beeGwtService, literalExpression]
   );
 
   const onExpressionUpdate = useCallback(
-    ({ dataType = DataType.Undefined, name = EXPRESSION_NAME }: ExpressionProps) => {
+    ({ dataType = DmnBuiltInDataType.Undefined, name = EXPRESSION_NAME }: ExpressionDefinition) => {
       literalExpression.onUpdatingNameAndDataType?.(name, dataType);
       spreadLiteralExpressionDefinition({
         name,
@@ -98,21 +98,21 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
   // TODO: https://issues.redhat.com/browse/KOGITO-6341
   useEffect(() => {
     if (!literalExpression.isHeadless) {
-      boxedExpressionEditorGWTService?.broadcastLiteralExpressionDefinition?.({
+      beeGwtService?.broadcastLiteralExpressionDefinition?.({
         ...literalExpression,
-        logicType: LogicType.LiteralExpression,
+        logicType: ExpressionDefinitionLogicType.LiteralExpression,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onHeaderClick = useCallback(() => {
-    boxedExpressionEditorGWTService?.selectObject(decisionNodeId);
-  }, [boxedExpressionEditorGWTService, decisionNodeId]);
+    beeGwtService?.selectObject(decisionNodeId);
+  }, [beeGwtService, decisionNodeId]);
 
   const onBodyClick = useCallback(() => {
-    boxedExpressionEditorGWTService?.selectObject(literalExpression.id);
-  }, [boxedExpressionEditorGWTService, literalExpression.id]);
+    beeGwtService?.selectObject(literalExpression.id);
+  }, [beeGwtService, literalExpression.id]);
 
   return (
     <div className="literal-expression">
@@ -123,23 +123,23 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
             minWidth={HEADER_WIDTH}
             onHorizontalResizeStop={onHorizontalResizeStop}
           >
-            <EditExpressionMenu
+            <ExpressionDefinitionHeaderMenu
               selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
-              selectedDataType={literalExpression.dataType ?? DataType.Undefined}
+              selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
               onExpressionUpdate={onExpressionUpdate}
             >
               <div className="expression-info">
                 <p className="expression-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>
                 <p className="expression-data-type pf-u-text-truncate">
-                  ({literalExpression.dataType ?? DataType.Undefined})
+                  ({literalExpression.dataType ?? DmnBuiltInDataType.Undefined})
                 </p>
               </div>
-            </EditExpressionMenu>
+            </ExpressionDefinitionHeaderMenu>
           </Resizer>
         </div>
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={onBodyClick}>
-        <EditableCell
+        <BeeEditableCell
           value={literalExpression.content ?? ""}
           rowIndex={0}
           columnId={literalExpression.id ?? "-"}

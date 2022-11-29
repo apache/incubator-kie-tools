@@ -19,18 +19,7 @@ import { useCallback, useState } from "react";
 import * as ReactDOM from "react-dom";
 import "./index.css";
 // noinspection ES6PreferShortImport
-import {
-  ContextProps,
-  DataType,
-  DecisionTableProps,
-  ExpressionProps,
-  FunctionProps,
-  InvocationProps,
-  ListProps,
-  LiteralExpressionProps,
-  LogicType,
-  RelationProps,
-} from "../src/api";
+import { BeeGwtService, DmnBuiltInDataType, ExpressionDefinition, ExpressionDefinitionLogicType } from "../src/api";
 import { BoxedExpressionEditor } from "../src/components";
 import { Button, Modal } from "@patternfly/react-core";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
@@ -59,7 +48,7 @@ export const pmmlParams = [
   {
     document: "document",
     modelsFromDocument: [
-      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DmnBuiltInDataType.Number }] },
     ],
   },
   {
@@ -68,9 +57,9 @@ export const pmmlParams = [
       {
         model: "MiningModelSum",
         parametersFromModel: [
-          { id: "i1", name: "input1", dataType: DataType.Any },
-          { id: "i2", name: "input2", dataType: DataType.Any },
-          { id: "i3", name: "input3", dataType: DataType.Any },
+          { id: "i1", name: "input1", dataType: DmnBuiltInDataType.Any },
+          { id: "i2", name: "input2", dataType: DmnBuiltInDataType.Any },
+          { id: "i3", name: "input3", dataType: DmnBuiltInDataType.Any },
         ],
       },
     ],
@@ -81,8 +70,8 @@ export const pmmlParams = [
       {
         model: "RegressionLinear",
         parametersFromModel: [
-          { id: "i1", name: "i1", dataType: DataType.Number },
-          { id: "i2", name: "i2", dataType: DataType.Number },
+          { id: "i1", name: "i1", dataType: DmnBuiltInDataType.Number },
+          { id: "i2", name: "i2", dataType: DmnBuiltInDataType.Number },
         ],
       },
     ],
@@ -91,9 +80,9 @@ export const pmmlParams = [
 
 export const App: React.FunctionComponent = () => {
   //This definition comes directly from the decision node
-  const selectedExpression: ExpressionProps = {
+  const selectedExpression: ExpressionDefinition = {
     name: "Expression Name",
-    dataType: DataType.Undefined,
+    dataType: DmnBuiltInDataType.Undefined,
   };
 
   const [expressionDefinition, setExpressionDefinition] = useState(selectedExpression);
@@ -103,15 +92,15 @@ export const App: React.FunctionComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
-  const boxedExpressionEditorGWTService = {
-    resetExpressionDefinition: (definition: ExpressionProps) => setExpressionDefinition(definition),
-    broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => setExpressionDefinition(definition),
-    broadcastRelationExpressionDefinition: (definition: RelationProps) => setExpressionDefinition(definition),
-    broadcastContextExpressionDefinition: (definition: ContextProps) => setExpressionDefinition(definition),
-    broadcastListExpressionDefinition: (definition: ListProps) => setExpressionDefinition(definition),
-    broadcastInvocationExpressionDefinition: (definition: InvocationProps) => setExpressionDefinition(definition),
-    broadcastFunctionExpressionDefinition: (definition: FunctionProps) => setExpressionDefinition(definition),
-    broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => setExpressionDefinition(definition),
+  const beeGwtService: BeeGwtService = {
+    resetExpressionDefinition: (definition) => setExpressionDefinition(definition),
+    broadcastLiteralExpressionDefinition: (definition) => setExpressionDefinition(definition),
+    broadcastRelationExpressionDefinition: (definition) => setExpressionDefinition(definition),
+    broadcastContextExpressionDefinition: (definition) => setExpressionDefinition(definition),
+    broadcastListExpressionDefinition: (definition) => setExpressionDefinition(definition),
+    broadcastInvocationExpressionDefinition: (definition) => setExpressionDefinition(definition),
+    broadcastFunctionExpressionDefinition: (definition) => setExpressionDefinition(definition),
+    broadcastDecisionTableExpressionDefinition: (definition) => setExpressionDefinition(definition),
     notifyUserAction(): void {},
     openManageDataType(): void {},
     onLogicTypeSelect(): void {},
@@ -135,7 +124,7 @@ export const App: React.FunctionComponent = () => {
   const updateExpressionDefinition = useCallback(() => {
     try {
       const parsedTypedExpression = JSON.parse(typedExpressionDefinition);
-      setExpressionDefinition({ logicType: LogicType.Undefined });
+      setExpressionDefinition({ logicType: ExpressionDefinitionLogicType.Undefined });
       setTimeout(() => {
         setExpressionDefinition(parsedTypedExpression);
       }, 0);
@@ -149,7 +138,7 @@ export const App: React.FunctionComponent = () => {
     <div className="showcase">
       <div className="boxed-expression">
         <BoxedExpressionEditor
-          boxedExpressionEditorGWTService={boxedExpressionEditorGWTService}
+          beeGwtService={beeGwtService}
           decisionNodeId="_00000000-0000-0000-0000-000000000000"
           expressionDefinition={expressionDefinition}
           dataTypes={dataTypes}

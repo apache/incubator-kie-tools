@@ -17,26 +17,24 @@
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { BoxedExpressionEditorGWTService, DataTypeProps, ExpressionProps, PMMLParams } from "../../api";
+import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
 } from "../../i18n";
-import { BoxedExpressionProvider } from "./BoxedExpressionProvider";
-import { ExpressionContainer } from "../ExpressionContainer";
+import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
+import { ExpressionDefinitionContainer } from "../ExpressionDefinitionContainer";
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import "./base-no-reset-wrapped.css";
 
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT Layer */
-  boxedExpressionEditorGWTService?: BoxedExpressionEditorGWTService;
+  beeGwtService?: BeeGwtService;
   /** Identifier of the decision node, where the expression will be hold */
   decisionNodeId: string;
   /** All expression properties used to define it */
-  expressionDefinition: ExpressionProps;
-  /** The data type elements that can be used in the editor */
-  dataTypes: DataTypeProps[];
+  expressionDefinition: ExpressionDefinition;
   /**
    * A boolean used for making (or not) the clear button available on the root expression
    * Note that this parameter will be used only for the root expression.
@@ -44,19 +42,22 @@ export interface BoxedExpressionEditorProps {
    * Each expression (internally) has a `noClearAction` property (ExpressionProps interface).
    * You can set directly it for enabling or not the clear button for such expression.
    * */
-  clearSupportedOnRootExpression?: boolean;
+  isClearSupportedOnRootExpression?: boolean;
+  /** The data type elements that can be used in the editor */
+  dataTypes: DmnDataType[];
   /** PMML parameters */
-  pmmlParams?: PMMLParams;
+  pmmlParams?: PmmlParam[];
 }
 
 export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
   const noClearAction = useMemo(
-    () => props.clearSupportedOnRootExpression === false,
-    [props.clearSupportedOnRootExpression]
+    () => props.isClearSupportedOnRootExpression === false,
+    [props.isClearSupportedOnRootExpression]
   );
-  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionProps>({
+
+  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>({
     ...props.expressionDefinition,
-    noClearAction: props.clearSupportedOnRootExpression === false,
+    noClearAction: props.isClearSupportedOnRootExpression === false,
   });
 
   useEffect(() => {
@@ -67,7 +68,7 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.expressionDefinition]);
 
-  const onExpressionChange = useCallback((updatedExpression: ExpressionProps) => {
+  const onExpressionChange = useCallback((updatedExpression: ExpressionDefinition) => {
     setExpressionDefinition(updatedExpression);
   }, []);
 
@@ -78,16 +79,19 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
       initialLocale={navigator.language}
       ctx={BoxedExpressionEditorI18nContext}
     >
-      <BoxedExpressionProvider
-        boxedExpressionEditorGWTService={props.boxedExpressionEditorGWTService}
+      <BoxedExpressionEditorContextProvider
+        beeGwtService={props.beeGwtService}
         decisionNodeId={props.decisionNodeId}
         expressionDefinition={expressionDefinition}
         dataTypes={props.dataTypes}
         pmmlParams={props.pmmlParams}
         isRunnerTable={false}
       >
-        <ExpressionContainer selectedExpression={expressionDefinition} onExpressionChange={onExpressionChange} />
-      </BoxedExpressionProvider>
+        <ExpressionDefinitionContainer
+          selectedExpression={expressionDefinition}
+          onExpressionChange={onExpressionChange}
+        />
+      </BoxedExpressionEditorContextProvider>
     </I18nDictionariesProvider>
   );
 }

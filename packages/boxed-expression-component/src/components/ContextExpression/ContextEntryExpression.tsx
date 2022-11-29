@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { ExpressionProps, LogicType } from "../../api";
+import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
 import * as React from "react";
 import { useCallback, useRef } from "react";
-import { LogicTypeSelector } from "../LogicTypeSelector";
+import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import * as _ from "lodash";
 
 export interface ContextEntryExpressionProps {
   /** The expression wrapped by the entry */
-  expression: ExpressionProps;
+  expression: ExpressionDefinition;
   /** Function invoked when updating expression */
-  onUpdatingRecursiveExpression: (expression: ExpressionProps) => void;
+  onUpdatingRecursiveExpression: (expression: ExpressionDefinition) => void;
   /** Function invoked when resetting expression */
   onExpressionResetting?: () => void;
 }
@@ -49,12 +49,14 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
 
   const onLogicTypeResetting = useCallback(() => {
     onExpressionResetting?.();
-    onUpdatingRecursiveExpression(_.omit({ ...expression, logicType: LogicType.Undefined }, "isHeadless"));
+    onUpdatingRecursiveExpression(
+      _.omit({ ...expression, logicType: ExpressionDefinitionLogicType.Undefined }, "isHeadless")
+    );
   }, [onExpressionResetting, onUpdatingRecursiveExpression, expression]);
 
   return (
     <div className="entry-expression" ref={expressionContainerRef}>
-      <LogicTypeSelector
+      <ExpressionDefinitionLogicTypeSelector
         isHeadless={true}
         onUpdatingRecursiveExpression={onUpdatingRecursiveExpression}
         selectedExpression={expression}

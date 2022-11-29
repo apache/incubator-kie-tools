@@ -22,7 +22,7 @@ import {
   usingTestingBoxedExpressionI18nContext,
   usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import { InvocationExpression } from "@kie-tools/boxed-expression-component/dist/components/InvocationExpression";
 
@@ -30,7 +30,9 @@ describe("InvocationExpression tests", () => {
   test("should show a table with two levels visible header, with one row and two columns", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        usingTestingBoxedExpressionProviderContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+        usingTestingBoxedExpressionProviderContext(
+          <InvocationExpression logicType={ExpressionDefinitionLogicType.Invocation} />
+        ).wrapper
       ).wrapper
     );
 
@@ -45,7 +47,9 @@ describe("InvocationExpression tests", () => {
   test("should show a table with an input in the header, representing the invoked function", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        usingTestingBoxedExpressionProviderContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+        usingTestingBoxedExpressionProviderContext(
+          <InvocationExpression logicType={ExpressionDefinitionLogicType.Invocation} />
+        ).wrapper
       ).wrapper
     );
 
@@ -65,7 +69,10 @@ describe("InvocationExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <InvocationExpression logicType={LogicType.Invocation} invokedFunction={invokedFunction} />
+          <InvocationExpression
+            logicType={ExpressionDefinitionLogicType.Invocation}
+            invokedFunction={invokedFunction}
+          />
         ).wrapper
       ).wrapper
     );
@@ -78,7 +85,7 @@ describe("InvocationExpression tests", () => {
   test("should display a row in the table body, for each given binding entries", () => {
     const firstEntryId = "p1";
     const firstEntryName = "param1";
-    const firstEntryDataType = DataType.Boolean;
+    const firstEntryDataType = DmnBuiltInDataType.Boolean;
     const firstEntry = {
       entryInfo: { id: firstEntryId, name: firstEntryName, dataType: firstEntryDataType },
       entryExpression: {},
@@ -86,7 +93,7 @@ describe("InvocationExpression tests", () => {
     };
     const secondEntryId = "p2";
     const secondEntryName = "param2";
-    const secondEntryDataType = DataType.Any;
+    const secondEntryDataType = DmnBuiltInDataType.Any;
     const secondEntry = {
       entryInfo: { id: secondEntryId, name: secondEntryName, dataType: secondEntryDataType },
       entryExpression: {},
@@ -97,7 +104,7 @@ describe("InvocationExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <InvocationExpression logicType={LogicType.Invocation} bindingEntries={bindingEntries} />
+          <InvocationExpression logicType={ExpressionDefinitionLogicType.Invocation} bindingEntries={bindingEntries} />
         ).wrapper
       ).wrapper
     );

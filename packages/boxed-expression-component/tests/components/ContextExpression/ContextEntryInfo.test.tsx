@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { EDIT_EXPRESSION_NAME, updateElementViaPopover, usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { render } from "@testing-library/react";
 import { ContextEntryInfo } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
@@ -27,7 +27,7 @@ describe("ContextEntryInfo tests", () => {
   const id = "id1";
   const name = "Expression Name";
   const newValue = "New Value";
-  const dataType = DataType.Boolean;
+  const dataType = DmnBuiltInDataType.Boolean;
 
   test("should show a context entry info element with passed name and dataType, when rendering it", () => {
     const { container } = render(
@@ -50,7 +50,7 @@ describe("ContextEntryInfo tests", () => {
   });
 
   test("should call the onContextEntryUpdate callback when one of its prop changes", async () => {
-    const onContextEntryUpdate: (name: string, dataType: DataType) => void = (name, dataType) =>
+    const onContextEntryUpdate: (name: string, dataType: DmnBuiltInDataType) => void = (name, dataType) =>
       _.identity({ name, dataType });
     const mockedOnContextEntryUpdate = jest.fn(onContextEntryUpdate);
 

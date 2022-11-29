@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { applyDOMSupervisor } from "./dom";
-import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
 import "./ResizerSupervisor.css";
 
 export interface ResizerSupervisorProps {
@@ -26,17 +26,16 @@ export interface ResizerSupervisorProps {
 }
 
 export const ResizerSupervisor: React.FunctionComponent<ResizerSupervisorProps> = ({ children, isRunnerTable }) => {
-  const { supervisorHash } = useContext(BoxedExpressionGlobalContext);
-  const boxedExpression = useBoxedExpression();
+  const boxedExpressionEditor = useBoxedExpressionEditor();
 
   useEffect(() => {
     const id = setTimeout(() => {
-      if (boxedExpression.editorRef.current !== null) {
-        applyDOMSupervisor(isRunnerTable, boxedExpression.editorRef.current);
+      if (boxedExpressionEditor.editorRef.current !== null) {
+        applyDOMSupervisor(isRunnerTable, boxedExpressionEditor.editorRef.current);
       }
     }, 0);
     return () => clearTimeout(id);
-  }, [isRunnerTable, supervisorHash, boxedExpression.editorRef]);
+  }, [isRunnerTable, boxedExpressionEditor.supervisorHash, boxedExpressionEditor.editorRef]);
 
   return <div className={"react-resizable-supervisor"}>{children}</div>;
 };

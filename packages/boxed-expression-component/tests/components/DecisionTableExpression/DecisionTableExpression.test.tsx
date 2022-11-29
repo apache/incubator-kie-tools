@@ -15,11 +15,11 @@
  */
 
 import {
-  BoxedExpressionEditorGWTService,
-  DataType,
-  DecisionTableProps,
-  HitPolicy,
-  LogicType,
+  BeeGwtService,
+  DmnBuiltInDataType,
+  DecisionTableExpressionDefinition,
+  DecisionTableExpressionDefinitionHitPolicy,
+  ExpressionDefinitionLogicType,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { fireEvent, render } from "@testing-library/react";
 import {
@@ -30,7 +30,7 @@ import {
 } from "../test-utils";
 import * as React from "react";
 import { DecisionTableExpression } from "@kie-tools/boxed-expression-component/dist/components/DecisionTableExpression";
-import { openContextMenu } from "../Table/Table.test";
+import { openContextMenu } from "../BeeTable/BeeTable.test";
 import * as _ from "lodash";
 import { act } from "react-dom/test-utils";
 
@@ -39,7 +39,7 @@ describe("DecisionTableExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+          <DecisionTableExpression id="decision-node-id" logicType={ExpressionDefinitionLogicType.DecisionTable} />
         ).wrapper
       ).wrapper
     );
@@ -65,7 +65,7 @@ describe("DecisionTableExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+          <DecisionTableExpression id="decision-node-id" logicType={ExpressionDefinitionLogicType.DecisionTable} />
         ).wrapper
       ).wrapper
     );
@@ -79,8 +79,8 @@ describe("DecisionTableExpression tests", () => {
         usingTestingBoxedExpressionProviderContext(
           <DecisionTableExpression
             id="decision-node-id"
-            logicType={LogicType.DecisionTable}
-            hitPolicy={HitPolicy.First}
+            logicType={ExpressionDefinitionLogicType.DecisionTable}
+            hitPolicy={DecisionTableExpressionDefinitionHitPolicy.First}
           />
         ).wrapper
       ).wrapper
@@ -93,7 +93,7 @@ describe("DecisionTableExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+          <DecisionTableExpression id="decision-node-id" logicType={ExpressionDefinitionLogicType.DecisionTable} />
         ).wrapper
       ).wrapper
     );
@@ -114,8 +114,8 @@ describe("DecisionTableExpression tests", () => {
     const inputName = "input name";
     const outputName = "output name";
     const annotationName = "annotation name";
-    const input = [{ id: "input", name: inputName, dataType: DataType.Undefined }];
-    const output = [{ id: "output", name: outputName, dataType: DataType.Undefined }];
+    const input = [{ id: "input", name: inputName, dataType: DmnBuiltInDataType.Undefined }];
+    const output = [{ id: "output", name: outputName, dataType: DmnBuiltInDataType.Undefined }];
     const annotations = [{ id: "annotation", name: annotationName }];
     const inputEntry = "input entry";
     const outputEntry = "output entry";
@@ -129,7 +129,7 @@ describe("DecisionTableExpression tests", () => {
         usingTestingBoxedExpressionProviderContext(
           <DecisionTableExpression
             id="decision-node-id"
-            logicType={LogicType.DecisionTable}
+            logicType={ExpressionDefinitionLogicType.DecisionTable}
             input={input}
             output={output}
             annotations={annotations}
@@ -162,18 +162,18 @@ describe("DecisionTableExpression tests", () => {
 
   test("should append a row, with empty values, except for input column, whose value is dash symbol, when user inserts a row below", async () => {
     const mockedBroadcastDefinition = jest.fn();
-    const boxedExpressionEditorGWTService = {
-      broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) =>
+    const beeGwtService = {
+      broadcastDecisionTableExpressionDefinition: (definition: DecisionTableExpressionDefinition) =>
         mockedBroadcastDefinition(definition),
       notifyUserAction: () => {},
       selectObject(): void {},
-    } as BoxedExpressionEditorGWTService;
+    } as BeeGwtService;
 
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         wrapComponentInContext(
-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />,
-          boxedExpressionEditorGWTService
+          <DecisionTableExpression id="decision-node-id" logicType={ExpressionDefinitionLogicType.DecisionTable} />,
+          beeGwtService
         )
       ).wrapper
     );

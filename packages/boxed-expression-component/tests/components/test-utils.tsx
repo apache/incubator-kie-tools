@@ -24,12 +24,12 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/i18n";
 import { act } from "react-dom/test-utils";
 import { fireEvent } from "@testing-library/react";
-import { BoxedExpressionGlobalContext } from "@kie-tools/boxed-expression-component/dist/context";
 import {
-  BoxedExpressionProvider,
-  BoxedExpressionProviderProps,
-} from "@kie-tools/boxed-expression-component/dist/components";
-import { BoxedExpressionEditorGWTService, DataType } from "@kie-tools/boxed-expression-component/dist/api";
+  BoxedExpressionEditorContext,
+  BoxedExpressionEditorContextProvider,
+  BoxedExpressionEditorContextProviderProps,
+} from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { BeeGwtService, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 global.console = { ...global.console, warn: () => ({}) };
 
@@ -65,7 +65,7 @@ export const pmmlParams = [
   {
     document: "document",
     modelsFromDocument: [
-      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DmnBuiltInDataType.Number }] },
     ],
   },
   {
@@ -74,9 +74,9 @@ export const pmmlParams = [
       {
         model: "MiningModelSum",
         parametersFromModel: [
-          { id: "i1", name: "input1", dataType: DataType.Any },
-          { id: "i2", name: "input2", dataType: DataType.Any },
-          { id: "i3", name: "input3", dataType: DataType.Any },
+          { id: "i1", name: "input1", dataType: DmnBuiltInDataType.Any },
+          { id: "i2", name: "input2", dataType: DmnBuiltInDataType.Any },
+          { id: "i3", name: "input3", dataType: DmnBuiltInDataType.Any },
         ],
       },
     ],
@@ -87,8 +87,8 @@ export const pmmlParams = [
       {
         model: "RegressionLinear",
         parametersFromModel: [
-          { id: "i1", name: "i1", dataType: DataType.Number },
-          { id: "i2", name: "i2", dataType: DataType.Number },
+          { id: "i1", name: "i1", dataType: DmnBuiltInDataType.Number },
+          { id: "i2", name: "i2", dataType: DmnBuiltInDataType.Number },
         ],
       },
     ],
@@ -119,9 +119,9 @@ export function usingTestingBoxedExpressionI18nContext(
 
 export function usingTestingBoxedExpressionProviderContext(
   children: React.ReactElement,
-  ctx?: Partial<BoxedExpressionProviderProps>
+  ctx?: Partial<BoxedExpressionEditorContextProviderProps>
 ) {
-  const usedCtx: BoxedExpressionProviderProps = {
+  const usedCtx: BoxedExpressionEditorContextProviderProps = {
     decisionNodeId: "_00000000-0000-0000-0000-000000000000",
     expressionDefinition: {},
     dataTypes,
@@ -133,8 +133,8 @@ export function usingTestingBoxedExpressionProviderContext(
   return {
     ctx: usedCtx,
     wrapper: (
-      <BoxedExpressionProvider
-        boxedExpressionEditorGWTService={usedCtx.boxedExpressionEditorGWTService}
+      <BoxedExpressionEditorContextProvider
+        beeGwtService={usedCtx.beeGwtService}
         decisionNodeId={usedCtx.decisionNodeId}
         expressionDefinition={usedCtx.expressionDefinition}
         dataTypes={usedCtx.dataTypes}
@@ -142,33 +142,30 @@ export function usingTestingBoxedExpressionProviderContext(
         isRunnerTable={false}
       >
         {usedCtx.children}
-      </BoxedExpressionProvider>
+      </BoxedExpressionEditorContextProvider>
     ),
   };
 }
 
-export function wrapComponentInContext(
-  component: JSX.Element,
-  boxedExpressionEditorGWTService?: BoxedExpressionEditorGWTService
-): JSX.Element {
+export function wrapComponentInContext(component: JSX.Element, beeGwtService?: BeeGwtService): JSX.Element {
   return (
-    <BoxedExpressionGlobalContext.Provider
+    <BoxedExpressionEditorContext.Provider
       value={{
-        boxedExpressionEditorGWTService,
+        beeGwtService,
         decisionNodeId: "_00000000-0000-0000-0000-000000000000",
         dataTypes,
         pmmlParams,
         supervisorHash: "",
         setSupervisorHash: jest.fn,
         isContextMenuOpen: false,
-        setIsContextMenuOpen: jest.fn,
+        setContextMenuOpen: jest.fn,
         editorRef: { current: document.body as HTMLDivElement },
         currentlyOpenedHandlerCallback: jest.fn,
         setCurrentlyOpenedHandlerCallback: jest.fn,
       }}
     >
       {component}
-    </BoxedExpressionGlobalContext.Provider>
+    </BoxedExpressionEditorContext.Provider>
   );
 }
 

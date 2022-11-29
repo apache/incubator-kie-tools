@@ -18,7 +18,7 @@ import { render } from "@testing-library/react";
 import { activateSelector, usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import * as React from "react";
 import { FunctionKindSelector } from "@kie-tools/boxed-expression-component/dist/components/FunctionExpression";
-import { FunctionKind } from "@kie-tools/boxed-expression-component/dist/api";
+import { FunctionExpressionDefinitionKind } from "@kie-tools/boxed-expression-component/dist/api";
 import * as _ from "lodash";
 
 jest.useFakeTimers();
@@ -27,7 +27,10 @@ describe("FunctionKindSelector tests", () => {
   test("should render passed Function Kind property", async () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <FunctionKindSelector selectedFunctionKind={FunctionKind.Feel} onFunctionKindSelect={_.identity} />
+        <FunctionKindSelector
+          selectedFunctionKind={FunctionExpressionDefinitionKind.Feel}
+          onFunctionKindSelect={_.identity}
+        />
       ).wrapper
     );
 
@@ -38,13 +41,13 @@ describe("FunctionKindSelector tests", () => {
   });
 
   test("should trigger the Function Kind which the user has selected", async () => {
-    const onFunctionKindSelect = (functionKind: FunctionKind) => _.identity(functionKind);
+    const onFunctionKindSelect = (functionKind: FunctionExpressionDefinitionKind) => _.identity(functionKind);
     const mockedFunctionKindSelect = jest.fn(onFunctionKindSelect);
 
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         <FunctionKindSelector
-          selectedFunctionKind={FunctionKind.Feel}
+          selectedFunctionKind={FunctionExpressionDefinitionKind.Feel}
           onFunctionKindSelect={mockedFunctionKindSelect}
         />
       ).wrapper
@@ -54,6 +57,6 @@ describe("FunctionKindSelector tests", () => {
     await activateSelector(baseElement as HTMLElement, "[data-ouia-component-id='Java'] > button");
 
     expect(mockedFunctionKindSelect).toHaveBeenCalled();
-    expect(mockedFunctionKindSelect).toHaveBeenCalledWith(FunctionKind.Java);
+    expect(mockedFunctionKindSelect).toHaveBeenCalledWith(FunctionExpressionDefinitionKind.Java);
   });
 });

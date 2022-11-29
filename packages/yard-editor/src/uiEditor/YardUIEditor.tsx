@@ -153,7 +153,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
                       decisionNodeId="_00000000-0000-0000-0000-000000000000"
                       expressionDefinition={generateDecisionExpressionDefinition(element)}
                       dataTypes={types}
-                      clearSupportedOnRootExpression={false}
+                      isClearSupportedOnRootExpression={false}
                     />
                     <Divider />
                   </div>

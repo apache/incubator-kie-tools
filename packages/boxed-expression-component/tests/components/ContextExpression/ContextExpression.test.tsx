@@ -26,16 +26,16 @@ import {
 } from "../test-utils";
 import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as React from "react";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("ContextExpression tests", () => {
   const name = "contextName";
-  const dataType = DataType.Boolean;
+  const dataType = DmnBuiltInDataType.Boolean;
   test("should show a table with two rows: two context entries, where last is representing the result", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <ContextExpression logicType={LogicType.Context} name={name} dataType={dataType} />
+          <ContextExpression logicType={ExpressionDefinitionLogicType.Context} name={name} dataType={dataType} />
         ).wrapper
       ).wrapper
     );
@@ -50,14 +50,18 @@ describe("ContextExpression tests", () => {
   test("should show a table with one row for each passed entry, plus the passed entry result", () => {
     const firstEntryId = "id1";
     const firstEntry = "first entry";
-    const firstDataType = DataType.Boolean;
-    const firstExpression = { name: "expressionName", dataType: DataType.Any, logicType: LogicType.LiteralExpression };
+    const firstDataType = DmnBuiltInDataType.Boolean;
+    const firstExpression = {
+      name: "expressionName",
+      dataType: DmnBuiltInDataType.Any,
+      logicType: ExpressionDefinitionLogicType.LiteralExpression,
+    };
     const secondEntryId = "id2";
     const secondEntry = "second entry";
-    const secondDataType = DataType.Date;
-    const secondExpression = { name: "anotherName", dataType: DataType.Undefined };
+    const secondDataType = DmnBuiltInDataType.Date;
+    const secondExpression = { name: "anotherName", dataType: DmnBuiltInDataType.Undefined };
     const resultEntry = "result entry";
-    const resultDataType = DataType.Undefined;
+    const resultDataType = DmnBuiltInDataType.Undefined;
 
     const contextEntries = [
       {
@@ -90,7 +94,7 @@ describe("ContextExpression tests", () => {
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
           <ContextExpression
-            logicType={LogicType.Context}
+            logicType={ExpressionDefinitionLogicType.Context}
             name={name}
             dataType={dataType}
             contextEntries={contextEntries}

@@ -20,14 +20,14 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useBoxedExpression } from "../../context";
-import { FunctionKind } from "../../api";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { FunctionExpressionDefinitionKind } from "../../api";
 
 export interface FunctionKindSelectorProps {
   /** Pre-selected function kind */
-  selectedFunctionKind: FunctionKind;
+  selectedFunctionKind: FunctionExpressionDefinitionKind;
   /** Callback invoked when function kind selection changes */
-  onFunctionKindSelect: (functionKind: FunctionKind) => void;
+  onFunctionKindSelect: (functionKind: FunctionExpressionDefinitionKind) => void;
 }
 
 export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorProps> = ({
@@ -35,20 +35,20 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
   onFunctionKindSelect,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const boxedExpression = useBoxedExpression();
+  const boxedExpressionEditor = useBoxedExpressionEditor();
 
   const functionKindSelectionCallback = useCallback(
     (hide: () => void) => (event?: React.MouseEvent, itemId?: string | number) => {
-      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-      onFunctionKindSelect(itemId as FunctionKind);
+      boxedExpressionEditor.beeGwtService?.notifyUserAction();
+      onFunctionKindSelect(itemId as FunctionExpressionDefinitionKind);
       hide();
     },
-    [boxedExpression.boxedExpressionEditorGWTService, onFunctionKindSelect]
+    [boxedExpressionEditor.beeGwtService, onFunctionKindSelect]
   );
 
   const renderFunctionKindItems = useCallback(
     () =>
-      _.map(Object.values(FunctionKind), (key) => (
+      _.map(Object.values(FunctionExpressionDefinitionKind), (key) => (
         <MenuItem key={key} itemId={key} data-ouia-component-id={key}>
           {key}
         </MenuItem>
@@ -59,7 +59,7 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
   return (
     <PopoverMenu
       title={i18n.selectFunctionKind}
-      appendTo={boxedExpression.editorRef?.current ?? undefined}
+      appendTo={boxedExpressionEditor.editorRef?.current ?? undefined}
       className="function-kind-popover"
       hasAutoWidth
       body={(hide: () => void) => (

@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { Column, DataType, generateUuid, LogicType, Row } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BeeTableColumn,
+  DmnBuiltInDataType,
+  generateUuid,
+  ExpressionDefinitionLogicType,
+  BeeTableRow,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
@@ -25,7 +31,11 @@ describe("RelationExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <RelationExpression logicType={LogicType.Relation} name="Relation" dataType={DataType.Undefined} />
+          <RelationExpression
+            logicType={ExpressionDefinitionLogicType.Relation}
+            name="Relation"
+            dataType={DmnBuiltInDataType.Undefined}
+          />
         ).wrapper
       ).wrapper
     );
@@ -38,16 +48,16 @@ describe("RelationExpression tests", () => {
 
   test("should render a table element, with one column, corresponding to passed prop", () => {
     const columnName = "a column";
-    const columnDataType = DataType.Date;
+    const columnDataType = DmnBuiltInDataType.Date;
     const column = { id: generateUuid(), name: columnName, dataType: columnDataType };
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
           <RelationExpression
-            logicType={LogicType.Relation}
+            logicType={ExpressionDefinitionLogicType.Relation}
             name="Relation"
-            dataType={DataType.Undefined}
+            dataType={DmnBuiltInDataType.Undefined}
             columns={[column]}
           />
         ).wrapper
@@ -62,9 +72,9 @@ describe("RelationExpression tests", () => {
 
   test("should render a table element, with one row, corresponding to passed prop", () => {
     const columnName = "a column";
-    const column = { id: generateUuid(), name: columnName, dataType: DataType.Date };
+    const column = { id: generateUuid(), name: columnName, dataType: DmnBuiltInDataType.Date };
     const rowValue = "value";
-    const row: Row = { id: "row-id", cells: [rowValue] };
+    const row: BeeTableRow = { id: "row-id", cells: [rowValue] };
 
     const container = buildRelationComponent(column, row);
 
@@ -76,9 +86,9 @@ describe("RelationExpression tests", () => {
 
   test("should render a table element, where there is just one cell for each column", () => {
     const columnName = "a column";
-    const column = { id: generateUuid(), name: columnName, dataType: DataType.Date };
+    const column = { id: generateUuid(), name: columnName, dataType: DmnBuiltInDataType.Date };
     const rowValue = "value";
-    const row: Row = { id: "row-id", cells: [rowValue, "another value", "and another one"] };
+    const row: BeeTableRow = { id: "row-id", cells: [rowValue, "another value", "and another one"] };
 
     const container = buildRelationComponent(column, row);
 
@@ -88,14 +98,14 @@ describe("RelationExpression tests", () => {
   });
 });
 
-function buildRelationComponent(column: Column, row: Row) {
+function buildRelationComponent(column: BeeTableColumn, row: BeeTableRow) {
   const { container } = render(
     usingTestingBoxedExpressionI18nContext(
       usingTestingBoxedExpressionProviderContext(
         <RelationExpression
-          logicType={LogicType.Relation}
+          logicType={ExpressionDefinitionLogicType.Relation}
           name="Relation"
-          dataType={DataType.Undefined}
+          dataType={DmnBuiltInDataType.Undefined}
           columns={[column]}
           rows={[row]}
         />

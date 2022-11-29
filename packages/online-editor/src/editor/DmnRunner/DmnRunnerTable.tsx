@@ -26,7 +26,7 @@ import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -75,7 +75,7 @@ export function DmnRunnerTable(props: Props) {
     forceDrawerPanelRefresh();
   }, [forceDrawerPanelRefresh, dmnRunnerState.inputRows, props.dmnRunnerResults]);
 
-  const onRowNumberUpdate = useCallback((rowQtt: number, operation?: TableOperation, rowIndex?: number) => {
+  const onRowNumberUpdate = useCallback((rowQtt: number, operation?: BeeTableOperation, rowIndex?: number) => {
     setRowCount(rowQtt);
     if (unitablesRef.current && operation !== undefined && rowIndex !== undefined) {
       unitablesRef.current.operationHandler(operation, rowIndex);

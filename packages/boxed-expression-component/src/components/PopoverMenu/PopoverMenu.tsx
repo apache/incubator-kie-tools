@@ -18,8 +18,8 @@ import * as React from "react";
 import { useCallback, useState, useImperativeHandle } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
-import { useBoxedExpression } from "../../context";
-import { NavigationKeysUtils } from "../common";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { NavigationKeysUtils } from "../../keysUtils";
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
@@ -82,18 +82,18 @@ export const PopoverMenu = React.forwardRef(
     ref
   ) => {
     const triggerManually = isVisible !== null;
-    const { setIsContextMenuOpen } = useBoxedExpression();
+    const { setContextMenuOpen } = useBoxedExpressionEditor();
     const [isPopoverVisible, setIsPopoverVisible] = useState(false);
 
     const onHidden = useCallback(() => {
-      setIsContextMenuOpen(false);
-    }, [setIsContextMenuOpen]);
+      setContextMenuOpen(false);
+    }, [setContextMenuOpen]);
 
     const onPopoverShown = useCallback(() => {
-      setIsContextMenuOpen(true);
+      setContextMenuOpen(true);
       onShown();
       setIsPopoverVisible(true);
-    }, [setIsContextMenuOpen, onShown]);
+    }, [setContextMenuOpen, onShown]);
 
     const shouldOpen = useCallback((showFunction?: () => void) => {
       showFunction?.();

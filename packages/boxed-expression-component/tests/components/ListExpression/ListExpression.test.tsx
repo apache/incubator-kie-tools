@@ -17,7 +17,7 @@
 import "../../__mocks__/ReactWithSupervisor";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
-import { LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import { ListExpression } from "@kie-tools/boxed-expression-component/dist/components/ListExpression";
 
@@ -25,7 +25,8 @@ describe("ListExpression tests", () => {
   test("should show a table without header, with one row and one column", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={LogicType.List} />).wrapper
+        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={ExpressionDefinitionLogicType.List} />)
+          .wrapper
       ).wrapper
     );
 
@@ -39,7 +40,8 @@ describe("ListExpression tests", () => {
   test("should have, for its default cell, as default logic type, a literal expression with empty content", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={LogicType.List} />).wrapper
+        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={ExpressionDefinitionLogicType.List} />)
+          .wrapper
       ).wrapper
     );
 
@@ -55,7 +57,11 @@ describe("ListExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <ListExpression id="id1" logicType={LogicType.List} items={[{ logicType: LogicType.List, id: "id2" }]} />
+          <ListExpression
+            id="id1"
+            logicType={ExpressionDefinitionLogicType.List}
+            items={[{ logicType: ExpressionDefinitionLogicType.List, id: "id2" }]}
+          />
         ).wrapper
       ).wrapper
     );

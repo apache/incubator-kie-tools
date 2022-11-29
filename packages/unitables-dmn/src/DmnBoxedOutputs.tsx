@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { ColumnInstance } from "react-table";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { BoxedExpressionOutputRule } from "@kie-tools/unitables/dist/UnitablesBoxedTypes";
@@ -24,7 +24,7 @@ import { DecisionResult, DmnSchemaProperties, Result } from "./DmnTypes";
 import { CELL_MINIMUM_WIDTH } from "@kie-tools/unitables/dist/boxed";
 
 interface OutputField {
-  dataType: DataType;
+  dataType: DmnBuiltInDataType;
   width?: number;
   name: string;
 }
@@ -166,7 +166,7 @@ export function useDmnBoxedOutputs(
         if (decisionResult) {
           decisionResult.forEach(({ decisionName }) => {
             const data = outputTypeMap.get(decisionName);
-            const dataType = data?.dataType ?? DataType.Undefined;
+            const dataType = data?.dataType ?? DmnBuiltInDataType.Undefined;
             if (data && isOutputWithInsideProperties(data)) {
               acc.set(decisionName, {
                 name: decisionName,

@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export interface UnitablesClause {
   /** Clause name */
   name: string;
   /** Clause data type */
-  dataType: DataType;
+  dataType: DmnBuiltInDataType;
   /** Clause width */
   width?: number | string;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getEnumKeyByEnumValue } from "@kie-tools/boxed-expression-component/dist/api";
+import { getEnumKeyByEnumValue } from "@kie-tools/boxed-expression-component/dist/components/DecisionTableExpression/HitPolicySelector";
 
 describe("EnumUtils tests", () => {
   test("given an enum value, it should return its key", () => {

@@ -17,40 +17,46 @@
 import "./ContextEntryExpressionCell.css";
 import * as React from "react";
 import { useCallback } from "react";
-import { CellProps, ContextEntries, DataType, ExpressionProps } from "../../api";
-import { DataRecord } from "react-table";
+import { BeeTableCell, DmnBuiltInDataType, ExpressionDefinition, ContextExpressionDefinitionEntry } from "../../api";
+import * as ReactTable from "react-table";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import * as _ from "lodash";
 
-export interface ContextEntryExpressionCellProps extends CellProps {
-  data: ContextEntries;
-  onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void;
+export interface ContextEntryExpressionCellProps extends BeeTableCell {
+  // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
+  data: ContextExpressionDefinitionEntry[];
+  onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
-  data,
+  data: contextEntries,
   rowIndex,
   onRowUpdate,
 }) => {
+  // FIXME: Tiago
   const onUpdatingRecursiveExpression = useCallback(
-    (expression: ExpressionProps) => {
-      const updatedEntryInfo = { ...data[rowIndex].entryInfo };
-      if (data[rowIndex].nameAndDataTypeSynchronized && _.size(expression.name) && _.size(expression.dataType)) {
+    (expression: ExpressionDefinition) => {
+      const updatedEntryInfo = { ...contextEntries[rowIndex].entryInfo };
+      if (
+        contextEntries[rowIndex].nameAndDataTypeSynchronized &&
+        _.size(expression.name) &&
+        _.size(expression.dataType)
+      ) {
         updatedEntryInfo.name = expression.name as string;
-        updatedEntryInfo.dataType = expression.dataType as DataType;
+        updatedEntryInfo.dataType = expression.dataType as DmnBuiltInDataType;
       }
 
-      onRowUpdate(rowIndex, { ...data[rowIndex], entryInfo: updatedEntryInfo, entryExpression: expression });
+      onRowUpdate(rowIndex, { ...contextEntries[rowIndex], entryInfo: updatedEntryInfo, entryExpression: expression });
     },
-    [onRowUpdate, data, rowIndex]
+    [onRowUpdate, contextEntries, rowIndex]
   );
 
   return (
     <div className="context-entry-expression-cell">
       <ContextEntryExpression
-        expression={data[rowIndex].entryExpression}
+        expression={contextEntries[rowIndex].entryExpression}
         onUpdatingRecursiveExpression={onUpdatingRecursiveExpression}
-        onExpressionResetting={data[rowIndex].onExpressionResetting}
+        onExpressionResetting={contextEntries[rowIndex].onExpressionResetting}
       />
     </div>
   );

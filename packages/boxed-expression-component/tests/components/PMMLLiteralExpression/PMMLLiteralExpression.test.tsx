@@ -16,18 +16,18 @@
 
 import { render } from "@testing-library/react";
 import { activateSelector, usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
-import { PMMLLiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
+import { PmmlLiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
 
-describe("PMMLLiteralExpression tests", () => {
+describe("PmmlLiteralExpression tests", () => {
   test("should show noOptionsLabel when no options are available", async () => {
     const noOptionsLabel = "no options label";
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <PMMLLiteralExpression
-          logicType={LogicType.PMMLLiteralExpression}
+        <PmmlLiteralExpression
+          logicType={ExpressionDefinitionLogicType.PmmlLiteralExpression}
           getOptions={() => []}
           noOptionsLabel={noOptionsLabel}
         />
@@ -43,8 +43,8 @@ describe("PMMLLiteralExpression tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <PMMLLiteralExpression
-          logicType={LogicType.PMMLLiteralExpression}
+        <PmmlLiteralExpression
+          logicType={ExpressionDefinitionLogicType.PmmlLiteralExpression}
           getOptions={() => ["a", "b", "c"]}
           selected="selected"
           noOptionsLabel={noOptionsLabel}
@@ -61,8 +61,8 @@ describe("PMMLLiteralExpression tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <PMMLLiteralExpression
-          logicType={LogicType.PMMLLiteralExpression}
+        <PmmlLiteralExpression
+          logicType={ExpressionDefinitionLogicType.PmmlLiteralExpression}
           getOptions={() => ["a", "b", "c", selectedOption]}
           selected={selectedOption}
           noOptionsLabel={"no options"}
@@ -80,8 +80,8 @@ describe("PMMLLiteralExpression tests", () => {
 
     const { baseElement, container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <PMMLLiteralExpression
-          logicType={LogicType.PMMLLiteralExpression}
+        <PmmlLiteralExpression
+          logicType={ExpressionDefinitionLogicType.PmmlLiteralExpression}
           getOptions={() => [changedOption, "a", "b", "c", selectedOption]}
           selected={selectedOption}
           noOptionsLabel={"no options"}

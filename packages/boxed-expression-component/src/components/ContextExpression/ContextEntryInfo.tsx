@@ -17,8 +17,8 @@
 import "./ContextEntryInfo.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { EditExpressionMenu } from "../EditExpressionMenu";
-import { DataType } from "../../api";
+import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
+import { DmnBuiltInDataType } from "../../api";
 
 export interface ContextEntryInfoProps {
   /** Context entry info id */
@@ -26,9 +26,9 @@ export interface ContextEntryInfoProps {
   /** Context Entry info name */
   name: string;
   /** Context Entry info dataType */
-  dataType: DataType;
+  dataType: DmnBuiltInDataType;
   /** Callback to be executed when name or dataType get updated */
-  onContextEntryUpdate: (name: string, dataType: DataType) => void;
+  onContextEntryUpdate: (name: string, dataType: DmnBuiltInDataType) => void;
   /** Label used for the popover triggered when editing info section */
   editInfoPopoverLabel?: string;
 }
@@ -48,8 +48,8 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   );
 
   const renderEntryDefinition = useCallback(
-    (additionalCssClass?: string) => (
-      <div className={`entry-definition ${additionalCssClass}`}>
+    (args: { additionalCssClass?: string }) => (
+      <div className={`entry-definition ${args.additionalCssClass}`}>
         <p className="entry-name pf-u-text-truncate" title={name}>
           {name}
         </p>
@@ -63,21 +63,21 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
 
   const renderEntryDefinitionWithPopoverMenu = useMemo(
     () => (
-      <EditExpressionMenu
+      <ExpressionDefinitionHeaderMenu
         title={editInfoPopoverLabel}
         selectedExpressionName={name}
         selectedDataType={dataType}
         onExpressionUpdate={onEntryNameOrDataTypeUpdate}
       >
-        {renderEntryDefinition("with-popover-menu")}
-      </EditExpressionMenu>
+        {renderEntryDefinition({ additionalCssClass: "with-popover-menu" })}
+      </ExpressionDefinitionHeaderMenu>
     ),
     [editInfoPopoverLabel, dataType, name, onEntryNameOrDataTypeUpdate, renderEntryDefinition]
   );
 
   return (
     <div className={`${id} entry-info`}>
-      {editInfoPopoverLabel ? renderEntryDefinitionWithPopoverMenu : renderEntryDefinition()}
+      {editInfoPopoverLabel ? renderEntryDefinitionWithPopoverMenu : renderEntryDefinition({})}
     </div>
   );
 };

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-export * from "./BoxedExpressionEditor";
-export * from "./BoxedExpressionEditorGWTService";
-export * from "./BuiltinAggregation";
-export * from "./ContextEntry";
-export * from "./DataType";
-export * from "./DataTypeProps";
-export * from "./DecisionTableRule";
-export * from "./EnumUtils";
-export * from "./ExpressionProps";
-export * from "./FunctionKind";
-export * from "./HitPolicy";
-export * from "./LogicType";
-export * from "./Table";
+export * from "./Bee";
+export * from "./BeeGwtService";
+export * from "./DecisionTableExpressionDefinitionBuiltInAggregation";
+export * from "./ContextExpressionDefinitionEntry";
+export * from "./DmnBuiltInDataType";
+export * from "./DmnDataType";
+export * from "./DecisionTableExpressionDefinitionRule";
+export * from "./ExpressionDefinition";
+export * from "./FunctionExpressionDefinitionKind";
+export * from "./DecisionTableExpressionDefinitionHitPolicy";
+export * from "./ExpressionDefinitionLogicType";
+export * from "./BeeTable";

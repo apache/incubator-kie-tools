@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
-import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { UnitablesRowApi } from "../UnitablesRow";
 
 export function useTableOperationHandler(
@@ -31,9 +31,9 @@ export function useTableOperationHandler(
   }, [inputRowsCache, inputRows, defaultInputValues]);
 
   const operationHandler = useCallback(
-    (tableOperation: TableOperation, rowIndex: number) => {
+    (tableOperation: BeeTableOperation, rowIndex: number) => {
       switch (tableOperation) {
-        case TableOperation.RowInsertAbove:
+        case BeeTableOperation.RowInsertAbove:
           setInputRows?.((previousInputs: Array<object>) => {
             const updatedInputs = [
               ...previousInputs.slice(0, rowIndex),
@@ -44,7 +44,7 @@ export function useTableOperationHandler(
             return updatedInputs;
           });
           break;
-        case TableOperation.RowInsertBelow:
+        case BeeTableOperation.RowInsertBelow:
           setInputRows?.((previousInputs: Array<object>) => {
             const updatedInputs = [
               ...previousInputs.slice(0, rowIndex + 1),
@@ -55,14 +55,14 @@ export function useTableOperationHandler(
             return updatedInputs;
           });
           break;
-        case TableOperation.RowDelete:
+        case BeeTableOperation.RowDelete:
           setInputRows?.((previousInputs: Array<object>) => {
             const updatedInputs = [...previousInputs.slice(0, rowIndex), ...previousInputs.slice(rowIndex + 1)];
             inputRowsCache.current = updatedInputs;
             return updatedInputs;
           });
           break;
-        case TableOperation.RowClear:
+        case BeeTableOperation.RowClear:
           setInputRows?.((previousInputs: Array<object>) => {
             const updatedInputs = [...previousInputs];
             updatedInputs[rowIndex] = { ...defaultInputValues };
@@ -71,7 +71,7 @@ export function useTableOperationHandler(
           });
           rowsRef.get(rowIndex)?.current?.reset(defaultInputValues);
           break;
-        case TableOperation.RowDuplicate:
+        case BeeTableOperation.RowDuplicate:
           setInputRows?.((previousInputs: Array<object>) => {
             const updatedInputs = [
               ...previousInputs.slice(0, rowIndex + 1),

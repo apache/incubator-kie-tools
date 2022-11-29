@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import "./PMMLLiteralExpression.css";
+import "./PmmlLiteralExpression.css";
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
-import { PMMLLiteralExpressionProps } from "../../api";
+import { PmmlLiteralExpressionDefinition } from "../../api";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as _ from "lodash";
-import { useBoxedExpression } from "../../context";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
-export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressionProps> = (
-  props: PMMLLiteralExpressionProps
+export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressionDefinition> = (
+  props: PmmlLiteralExpressionDefinition
 ) => {
-  const boxedExpression = useBoxedExpression();
+  const boxedExpressionEditor = useBoxedExpressionEditor();
 
   const selection = useRef(props.selected);
 
@@ -37,9 +37,9 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
         return;
       }
       setSelectOpen(isOpen);
-      boxedExpression.setIsContextMenuOpen(isOpen);
+      boxedExpressionEditor.setContextMenuOpen(isOpen);
     },
-    [boxedExpression]
+    [boxedExpressionEditor]
   );
 
   const onSelect = useCallback(
@@ -49,7 +49,7 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
       props.onUpdatingRecursiveExpression?.({
         ...props,
         selected: updatedSelection,
-      } as PMMLLiteralExpressionProps);
+      } as PmmlLiteralExpressionDefinition);
     },
     [props]
   );
@@ -69,14 +69,14 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
   const showingPlaceholder = useCallback(() => _.isEmpty(getSelection()), [getSelection]);
 
   const onSelectorClick = useCallback(() => {
-    boxedExpression.boxedExpressionEditorGWTService?.selectObject(props.id);
-  }, [boxedExpression.boxedExpressionEditorGWTService, props.id]);
+    boxedExpressionEditor.beeGwtService?.selectObject(props.id);
+  }, [boxedExpressionEditor.beeGwtService, props.id]);
 
   return (
     <div onClick={onSelectorClick} className={`${props.id} pmml-literal-expression`}>
       <Select
         className={`pmml-selector ${showingPlaceholder() ? "showing-placeholder" : ""}`}
-        menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
+        menuAppendTo={boxedExpressionEditor.editorRef?.current ?? "inline"}
         ouiaId="pmml-literal-expression-selector"
         placeholderText={props.noOptionsLabel}
         aria-placeholder={props.noOptionsLabel}

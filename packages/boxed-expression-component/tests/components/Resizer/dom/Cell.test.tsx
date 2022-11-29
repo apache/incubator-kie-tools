@@ -21,7 +21,7 @@ import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../../test-utils";
 import * as React from "react";
 import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
-import { ContextProps } from "@kie-tools/boxed-expression-component/dist/api";
+import { ContextExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
 import { act } from "react-dom/test-utils";
 
 let cell: Cell;
@@ -237,7 +237,7 @@ function createContext() {
             },
             entryInfoWidth: 150,
             entryExpressionWidth: 1468,
-          } as unknown as ContextProps)}
+          } as unknown as ContextExpressionDefinition)}
         />
       )
     ).wrapper

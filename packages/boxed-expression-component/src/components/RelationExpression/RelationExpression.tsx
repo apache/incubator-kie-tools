@@ -20,41 +20,43 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import "@patternfly/react-styles/css/utilities/Text/text.css";
 import {
-  Column as RelationColumn,
-  DataType,
+  BeeTableColumn as RelationColumn,
+  DmnBuiltInDataType,
   executeIfExpressionDefinitionChanged,
   generateUuid,
-  RelationProps,
-  Row,
-  RowsUpdateArgs,
-  TableOperation,
+  RelationExpressionDefinition,
+  BeeTableRow,
+  BeeTableRowsUpdateArgs,
+  BeeTableOperation,
 } from "../../api";
-import { Table } from "../Table";
+import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { Column, ColumnInstance, DataRecord } from "react-table";
+import * as ReactTable from "react-table";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
-import { useBoxedExpression } from "../../context";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
-export const RelationExpression: React.FunctionComponent<RelationProps> = (relationProps: RelationProps) => {
+export const RelationExpression: React.FunctionComponent<RelationExpressionDefinition> = (
+  relationProps: RelationExpressionDefinition
+) => {
   const FIRST_COLUMN_NAME = "column-1";
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+  const { beeGwtService } = useBoxedExpressionEditor();
 
   const handlerConfiguration = [
     {
       group: i18n.columns,
       items: [
-        { name: i18n.columnOperations.insertLeft, type: TableOperation.ColumnInsertLeft },
-        { name: i18n.columnOperations.insertRight, type: TableOperation.ColumnInsertRight },
-        { name: i18n.columnOperations.delete, type: TableOperation.ColumnDelete },
+        { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
+        { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
+        { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
       ],
     },
     {
       group: i18n.rows,
       items: [
-        { name: i18n.rowOperations.insertAbove, type: TableOperation.RowInsertAbove },
-        { name: i18n.rowOperations.insertBelow, type: TableOperation.RowInsertBelow },
-        { name: i18n.rowOperations.delete, type: TableOperation.RowDelete },
+        { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
+        { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+        { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
       ],
     },
   ];
@@ -62,17 +64,24 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
   const columns: RelationColumn[] = useMemo(
     () =>
       relationProps.columns === undefined
-        ? [{ id: generateUuid(), name: FIRST_COLUMN_NAME, dataType: DataType.Undefined, width: DEFAULT_MIN_WIDTH }]
+        ? [
+            {
+              id: generateUuid(),
+              name: FIRST_COLUMN_NAME,
+              dataType: DmnBuiltInDataType.Undefined,
+              width: DEFAULT_MIN_WIDTH,
+            },
+          ]
         : relationProps.columns,
     [relationProps]
   );
 
-  const rows: Row[] = useMemo(() => {
+  const rows: BeeTableRow[] = useMemo(() => {
     return relationProps.rows === undefined ? [{ id: generateUuid(), cells: [""] }] : relationProps.rows;
   }, [relationProps]);
 
   const spreadRelationExpressionDefinition = useCallback(
-    (newColumns?: RelationColumn[], newRows?: Row[]) => {
+    (newColumns?: RelationColumn[], newRows?: BeeTableRow[]) => {
       const expressionDefinition = {
         ...relationProps,
         columns: newColumns ?? columns,
@@ -86,13 +95,13 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
           if (relationProps.isHeadless) {
             relationProps.onUpdatingRecursiveExpression?.(expressionDefinition);
           } else {
-            boxedExpressionEditorGWTService?.broadcastRelationExpressionDefinition?.(expressionDefinition);
+            beeGwtService?.broadcastRelationExpressionDefinition?.(expressionDefinition);
           }
         },
         ["columns", "rows"]
       );
     },
-    [boxedExpressionEditorGWTService, relationProps, columns, rows]
+    [beeGwtService, relationProps, columns, rows]
   );
 
   const convertColumnsForTheTable = useMemo(
@@ -104,7 +113,7 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
             label: column.name,
             dataType: column.dataType,
             ...(column.width ? { width: column.width } : {}),
-          } as Column)
+          } as ReactTable.Column)
       ),
     [columns]
   );
@@ -114,7 +123,7 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
       _.chain(rows)
         .map((row) => {
           const updatedRow = _.chain(columns)
-            .reduce((tableRow: DataRecord, column, columnIndex) => {
+            .reduce((tableRow: ReactTable.DataRecord, column, columnIndex) => {
               tableRow[column.id] = row.cells[columnIndex] || "";
               return tableRow;
             }, {})
@@ -127,11 +136,11 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
   );
 
   const onRowsUpdate = useCallback(
-    ({ rows, columns }: RowsUpdateArgs) => {
+    ({ rows, columns }: BeeTableRowsUpdateArgs) => {
       const newRows = _.chain(rows)
-        .map((tableRow: DataRecord) => {
+        .map((tableRow: ReactTable.DataRecord) => {
           const cells = _.chain(columns)
-            .reduce((row: string[], column: ColumnInstance) => {
+            .reduce((row: string[], column: ReactTable.ColumnInstance) => {
               row.push((tableRow[column.accessor] as string) ?? "");
               return row;
             }, [])
@@ -146,25 +155,25 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
 
   const onColumnsUpdate = useCallback(
     ({ columns, operation, columnIndex }) => {
-      const newColumns = columns.map((columnInstance: ColumnInstance) => ({
+      const newColumns = columns.map((columnInstance: ReactTable.ColumnInstance) => ({
         id: columnInstance.accessor,
         name: columnInstance.label as string,
         dataType: columnInstance.dataType,
         width: columnInstance.width,
       }));
-      const newRows = rows.map((tableRow: Row) => {
+      const newRows = rows.map((tableRow: BeeTableRow) => {
         switch (operation) {
-          case TableOperation.ColumnInsertLeft:
+          case BeeTableOperation.ColumnInsertLeft:
             return {
               ...tableRow,
               cells: [...tableRow.cells.slice(0, columnIndex), "", ...tableRow.cells.slice(columnIndex)],
             };
-          case TableOperation.ColumnInsertRight:
+          case BeeTableOperation.ColumnInsertRight:
             return {
               ...tableRow,
               cells: [...tableRow.cells.slice(0, columnIndex + 1), "", ...tableRow.cells.slice(columnIndex + 1)],
             };
-          case TableOperation.ColumnDelete:
+          case BeeTableOperation.ColumnDelete:
             return {
               ...tableRow,
               cells: [...tableRow.cells.slice(0, columnIndex), ...tableRow.cells.slice(columnIndex + 1)],
@@ -179,7 +188,7 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
 
   return (
     <div className="relation-expression">
-      <Table
+      <BeeTable
         editColumnLabel={i18n.editRelation}
         columns={convertColumnsForTheTable}
         rows={convertRowsForTheTable}

@@ -19,8 +19,8 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import { UnitablesI18n } from "./i18n";
 import { ColumnInstance } from "react-table";
 import { useUnitablesInputs } from "./UnitablesInputs";
-import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
-import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/dist/components";
+import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import nextId from "react-id-generator";
 import { CustomTable } from "./boxed";
 import { UnitablesInputRule } from "./UnitablesBoxedTypes";
@@ -35,7 +35,7 @@ import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamati
 import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
 
 export interface UnitablesApi {
-  operationHandler: (tableOperation: TableOperation, rowIndex: number) => void;
+  operationHandler: (tableOperation: BeeTableOperation, rowIndex: number) => void;
 }
 
 interface Props {
@@ -50,7 +50,7 @@ interface Props {
   rowCount: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   propertiesEntryPath: string;
-  onRowNumberUpdate: (rowQtt: number, operation?: TableOperation, rowIndex?: number) => void;
+  onRowNumberUpdate: (rowQtt: number, operation?: BeeTableOperation, rowIndex?: number) => void;
   inputsContainerRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -92,7 +92,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
     <>
       {inputs && shouldRender && inputRules && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
-          <BoxedExpressionProvider
+          <BoxedExpressionEditorContextProvider
             expressionDefinition={{}}
             isRunnerTable={true}
             decisionNodeId={inputUid}
@@ -134,7 +134,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
                 id={inputUid}
               />
             </div>
-          </BoxedExpressionProvider>
+          </BoxedExpressionEditorContextProvider>
         </ErrorBoundary>
       )}
 

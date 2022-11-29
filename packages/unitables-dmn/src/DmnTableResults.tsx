@@ -20,11 +20,11 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import nextId from "react-id-generator";
-import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/dist/components";
+import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ColumnInstance } from "react-table";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
-import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { DecisionResult } from "./DmnTypes";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { ErrorBoundary } from "@kie-tools/form";
@@ -37,7 +37,7 @@ interface Props {
   results?: Array<DecisionResult[] | undefined>;
   rowCount: number;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
-  onRowNumberUpdate: (rowQtt: number, tableOperation: TableOperation, rowIndex: number) => void;
+  onRowNumberUpdate: (rowQtt: number, tableOperation: BeeTableOperation, rowIndex: number) => void;
 }
 
 export function DmnTableResults(props: Props) {
@@ -77,7 +77,7 @@ export function DmnTableResults(props: Props) {
         outputError
       ) : outputEntriesLength > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
-          <BoxedExpressionProvider
+          <BoxedExpressionEditorContextProvider
             expressionDefinition={{}}
             isRunnerTable={true}
             decisionNodeId={outputUid}
@@ -92,7 +92,7 @@ export function DmnTableResults(props: Props) {
               id={outputUid}
               onRowNumberUpdate={props.onRowNumberUpdate}
             />
-          </BoxedExpressionProvider>
+          </BoxedExpressionEditorContextProvider>
         </ErrorBoundary>
       ) : (
         <EmptyState>

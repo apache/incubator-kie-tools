@@ -33,7 +33,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   contextEntry: string;
   dataType: string;
   dataTypeDropDown: {
-    default: string;
+    builtIn: string;
     custom: string;
   };
   decisionRule: string;

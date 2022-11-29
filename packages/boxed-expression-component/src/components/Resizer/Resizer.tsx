@@ -19,7 +19,7 @@ import * as React from "react";
 import { useCallback, useContext, useLayoutEffect, useMemo, useState } from "react";
 import { ResizableBox } from "react-resizable";
 import { v4 as uuid } from "uuid";
-import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { widthValue as commonWidthValue } from "./common";
 import { Cell, DEFAULT_MIN_WIDTH, DOMSession } from "./dom";
 import "./Resizer.css";
@@ -46,8 +46,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const [resizerWidth, setResizerWidth] = useState(width);
   const [initialResizerWidth, setInitialResizerWidth] = useState(0);
   const [cells, setCells] = useState<Cell[]>([]);
-  const { setSupervisorHash } = useContext(BoxedExpressionGlobalContext);
-  const boxedExpression = useBoxedExpression();
+  const { editorRef, setSupervisorHash, beeGwtService } = useBoxedExpressionEditor();
 
   /*
    * Memos
@@ -77,11 +76,11 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       onHorizontalResizeStop?.(width);
     }
 
-    boxedExpression.editorRef.current?.addEventListener(id, listener);
+    editorRef.current?.addEventListener(id, listener);
     return () => {
-      boxedExpression.editorRef.current?.removeEventListener(id, listener);
+      editorRef.current?.removeEventListener(id, listener);
     };
-  }, [id, onHorizontalResizeStop, resizerWidth, boxedExpression.editorRef]);
+  }, [id, onHorizontalResizeStop, resizerWidth, editorRef]);
 
   /*
    * Callbacks
@@ -150,14 +149,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   }, []);
 
   const onResizeStart = useCallback(() => {
-    const allCells = new DOMSession(boxedExpression.editorRef.current!).getCells();
+    const allCells = new DOMSession(editorRef.current!).getCells();
     const currentCell = allCells.find((c) => c.getId() === id)!;
     const applicableCells = getApplicableCells(allCells, currentCell);
     const initialWidth = widthValue(currentCell.getRect().width);
 
     setCells(applicableCells);
     setInitialResizerWidth(initialWidth);
-  }, [getApplicableCells, id, widthValue, boxedExpression.editorRef]);
+  }, [getApplicableCells, id, widthValue, editorRef]);
 
   const onResize = useCallback(
     (_, data) => {
@@ -179,7 +178,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onResizeStop = useCallback(
     (_, data) => {
       const newResizerWidth = widthValue(data.size.width);
-      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
+      beeGwtService?.notifyUserAction();
       cells.forEach((cell) => {
         const delta = newResizerWidth - initialResizerWidth;
         const cellInitialWidth = widthValue(cell.element.dataset.initialWidth);
@@ -188,7 +187,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       setSupervisorHash("-");
     },
-    [boxedExpression.boxedExpressionEditorGWTService, cells, initialResizerWidth, setSupervisorHash, widthValue]
+    [beeGwtService, cells, initialResizerWidth, setSupervisorHash, widthValue]
   );
 
   return (

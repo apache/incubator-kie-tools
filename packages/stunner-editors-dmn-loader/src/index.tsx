@@ -15,20 +15,6 @@
  */
 
 import {
-  BoxedExpressionEditorGWTService,
-  ContextProps,
-  DataTypeProps,
-  DecisionTableProps,
-  ExpressionProps,
-  FunctionProps,
-  InvocationProps,
-  ListProps,
-  LiteralExpressionProps,
-  LogicType,
-  PMMLParams,
-  RelationProps,
-} from "@kie-tools/boxed-expression-component/dist/api";
-import {
   BoxedExpressionEditor,
   BoxedExpressionEditorProps,
 } from "@kie-tools/boxed-expression-component/dist/components";
@@ -42,45 +28,51 @@ import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
+import {
+  BeeGwtService,
+  DmnDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  PmmlParam,
+} from "@kie-tools/boxed-expression-component/dist/api";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
   decisionNodeId: string;
   /** All expression properties used to define it */
-  expressionDefinition: ExpressionProps;
+  expressionDefinition: ExpressionDefinition;
   /** The data type elements that can be used in the editor */
-  dataTypes: DataTypeProps[];
+  dataTypes: DmnDataType[];
   /**
    * A boolean used for making (or not) the clear button available on the root expression
    * Note that this parameter will be used only for the root expression.
    *
-   * Each expression (internally) has a `noClearAction` property (ExpressionProps interface).
+   * Each expression (internally) has a `noClearAction` property (ExpressionDefinition interface).
    * You can set directly it for enabling or not the clear button for such expression.
    * */
-  clearSupportedOnRootExpression?: boolean;
+  isClearSupportedOnRootExpression?: boolean;
   /** PMML parameters */
-  pmmlParams?: PMMLParams;
+  pmmlParams?: PmmlParam[];
 }
 
-const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
+const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
   decisionNodeId,
   expressionDefinition,
   dataTypes,
-  clearSupportedOnRootExpression,
+  isClearSupportedOnRootExpression,
   pmmlParams,
 }: BoxedExpressionEditorProps) => {
-  const [updatedDefinition, setExpressionDefinition] = useState<ExpressionProps>(expressionDefinition);
+  const [updatedExpressionDefinition, setUpdatedExpressionDefinition] =
+    useState<ExpressionDefinition>(expressionDefinition);
 
   useEffect(() => {
-    setExpressionDefinition({ logicType: LogicType.Undefined });
-    setTimeout(() => {
-      setExpressionDefinition(expressionDefinition);
-    }, 0);
+    setUpdatedExpressionDefinition({ logicType: ExpressionDefinitionLogicType.Undefined });
+    setTimeout(() => setUpdatedExpressionDefinition(expressionDefinition), 0);
   }, [expressionDefinition]);
 
-  //The wrapper defines these function in order to keep expression definition state updated,
-  //And to propagate such definition to DMN Editor (GWT world), by calling beeApiWrapper APIs
-  const boxedExpressionEditorGWTService: BoxedExpressionEditorGWTService = {
+  // The wrapper defines these function in order to keep expression definition state updated,
+  // And to propagate such definition to DMN Editor (GWT world), by calling beeApiWrapper APIs
+  const beeGwtService: BeeGwtService = {
     notifyUserAction(): void {
       window.beeApiWrapper?.notifyUserAction();
     },
@@ -93,36 +85,36 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorWrapp
     selectObject(uuid: string): void {
       window.beeApiWrapper?.selectObject(uuid);
     },
-    resetExpressionDefinition: (definition: ExpressionProps) => {
-      setExpressionDefinition(definition);
+    resetExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.resetExpressionDefinition?.(definition);
     },
-    broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => {
-      setExpressionDefinition(definition);
+    broadcastLiteralExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.broadcastLiteralExpressionDefinition?.(definition);
     },
-    broadcastRelationExpressionDefinition: (definition: RelationProps) => {
-      setExpressionDefinition(definition);
+    broadcastRelationExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.broadcastRelationExpressionDefinition?.(definition);
     },
-    broadcastContextExpressionDefinition: (definition: ContextProps) => {
-      setExpressionDefinition(definition);
+    broadcastContextExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.broadcastContextExpressionDefinition?.(definition);
     },
-    broadcastListExpressionDefinition: (definition: ListProps) => {
-      setExpressionDefinition(definition);
+    broadcastListExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.broadcastListExpressionDefinition?.(definition);
     },
-    broadcastInvocationExpressionDefinition: (definition: InvocationProps) => {
-      setExpressionDefinition(definition);
+    broadcastInvocationExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.broadcastInvocationExpressionDefinition?.(definition);
     },
-    broadcastFunctionExpressionDefinition: (definition: FunctionProps) => {
-      setExpressionDefinition(definition);
+    broadcastFunctionExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.broadcastFunctionExpressionDefinition?.(definition);
     },
-    broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => {
-      setExpressionDefinition(definition);
+    broadcastDecisionTableExpressionDefinition: (definition) => {
+      setUpdatedExpressionDefinition(definition);
       window.beeApiWrapper?.broadcastDecisionTableExpressionDefinition?.(definition);
     },
   };
@@ -134,11 +126,11 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorWrapp
 
   return (
     <BoxedExpressionEditor
-      boxedExpressionEditorGWTService={boxedExpressionEditorGWTService}
+      beeGwtService={beeGwtService}
       decisionNodeId={decisionNodeId}
-      expressionDefinition={updatedDefinition}
+      expressionDefinition={updatedExpressionDefinition}
       dataTypes={dataTypes}
-      clearSupportedOnRootExpression={clearSupportedOnRootExpression}
+      isClearSupportedOnRootExpression={isClearSupportedOnRootExpression}
       pmmlParams={pmmlParams}
     />
   );
@@ -147,17 +139,17 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorWrapp
 const renderBoxedExpressionEditor = (
   selector: string,
   decisionNodeId: string,
-  expressionDefinition: ExpressionProps,
-  dataTypes: DataTypeProps[],
-  clearSupportedOnRootExpression: boolean,
-  pmmlParams: PMMLParams
+  expressionDefinition: ExpressionDefinition,
+  dataTypes: DmnDataType[],
+  isClearSupportedOnRootExpression: boolean,
+  pmmlParams: PmmlParam[]
 ) => {
   ReactDOM.render(
-    <BoxedExpressionWrapper
+    <BoxedExpressionEditorWrapper
       decisionNodeId={decisionNodeId}
       expressionDefinition={expressionDefinition}
       dataTypes={dataTypes}
-      clearSupportedOnRootExpression={clearSupportedOnRootExpression}
+      isClearSupportedOnRootExpression={isClearSupportedOnRootExpression}
       pmmlParams={pmmlParams}
     />,
     document.querySelector(selector)

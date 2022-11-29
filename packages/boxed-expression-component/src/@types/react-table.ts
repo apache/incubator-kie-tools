@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { DataType } from "../api";
+import { DmnBuiltInDataType } from "../api";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -58,7 +58,7 @@ declare module "react-table" {
     /** It makes this column header inline editable (with double-click) */
     inlineEditable?: boolean;
     /** Column data type */
-    dataType: DataType;
+    dataType: DmnBuiltInDataType;
     /** When resizable, this function returns the resizer props  */
     getResizerProps: (props?: Partial<TableResizerProps>) => TableResizerProps;
     /** It tells whether column is of type counter or not */

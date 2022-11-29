@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { executeIfExpressionDefinitionChanged, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  executeIfExpressionDefinitionChanged,
+  ExpressionDefinitionLogicType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("BoxedExpressionEditor tests", () => {
   describe("executeIfExpressionDefinitionChanged function", () => {
@@ -38,8 +41,8 @@ describe("BoxedExpressionEditor tests", () => {
       const mockedFunctionToExecute = jest.fn();
 
       executeIfExpressionDefinitionChanged(
-        { name: "1", logicType: LogicType.Undefined },
-        { name: "1", logicType: LogicType.LiteralExpression },
+        { name: "1", logicType: ExpressionDefinitionLogicType.Undefined },
+        { name: "1", logicType: ExpressionDefinitionLogicType.LiteralExpression },
         mockedFunctionToExecute,
         ["name"]
       );

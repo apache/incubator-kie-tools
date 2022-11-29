@@ -29,12 +29,12 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/components/FunctionExpression";
 import * as React from "react";
 import {
-  BoxedExpressionEditorGWTService,
-  DataType,
-  EntryInfo,
-  FunctionKind,
-  FunctionProps,
-  LogicType,
+  BeeGwtService,
+  DmnBuiltInDataType,
+  ContextExpressionDefinitionEntryInfo,
+  FunctionExpressionDefinitionKind,
+  FunctionExpressionDefinition,
+  ExpressionDefinitionLogicType,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { act } from "react-dom/test-utils";
 
@@ -45,7 +45,11 @@ describe("FunctionExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+          <FunctionExpression
+            logicType={ExpressionDefinitionLogicType.Function}
+            functionKind={FunctionExpressionDefinitionKind.Feel}
+            formalParameters={[]}
+          />
         ).wrapper
       ).wrapper
     );
@@ -63,9 +67,9 @@ describe("FunctionExpression tests", () => {
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
           <FunctionExpression
-            logicType={LogicType.Function}
-            functionKind={FunctionKind.Feel}
-            formalParameters={[{ id: "p1", name: DEFAULT_FIRST_PARAM_NAME, dataType: DataType.Undefined }]}
+            logicType={ExpressionDefinitionLogicType.Function}
+            functionKind={FunctionExpressionDefinitionKind.Feel}
+            formalParameters={[{ id: "p1", name: DEFAULT_FIRST_PARAM_NAME, dataType: DmnBuiltInDataType.Undefined }]}
           />
         ).wrapper
       ).wrapper
@@ -78,13 +82,17 @@ describe("FunctionExpression tests", () => {
   });
 
   test("should reset function kind to FEEL, when resetting table row", async () => {
-    const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
+    const { mockedBroadcastDefinition, beeGwtService } = mockbeeGwtService();
 
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />,
-          { boxedExpressionEditorGWTService }
+          <FunctionExpression
+            logicType={ExpressionDefinitionLogicType.Function}
+            functionKind={FunctionExpressionDefinitionKind.Java}
+            formalParameters={[]}
+          />,
+          { beeGwtService }
         ).wrapper
       ).wrapper
     );
@@ -92,9 +100,9 @@ describe("FunctionExpression tests", () => {
     await clearTableRow(container, baseElement);
 
     expect(mockedBroadcastDefinition).toHaveBeenLastCalledWith({
-      dataType: DataType.Undefined,
+      dataType: DmnBuiltInDataType.Undefined,
       expression: {
-        logicType: LogicType.LiteralExpression,
+        logicType: ExpressionDefinitionLogicType.LiteralExpression,
       },
       formalParameters: [],
       functionKind: "FEEL",
@@ -114,7 +122,11 @@ describe("FunctionExpression tests", () => {
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+            <FunctionExpression
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
+              formalParameters={[]}
+            />
           ).wrapper
         ).wrapper
       );
@@ -127,14 +139,14 @@ describe("FunctionExpression tests", () => {
 
     test("should render all parameters, belonging to the passed property", async () => {
       const paramName = "param";
-      const paramDataType = DataType.Any;
+      const paramDataType = DmnBuiltInDataType.Any;
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Feel}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
               formalParameters={[{ id: parameterId, name: paramName, dataType: paramDataType }]}
             />
           ).wrapper
@@ -151,17 +163,17 @@ describe("FunctionExpression tests", () => {
 
     test("should update the parameter name, when it gets changed by the user", async () => {
       const newParamName = "new param";
-      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
+      const { mockedBroadcastDefinition, beeGwtService } = mockbeeGwtService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Feel}
-              formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Any }]}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
+              formalParameters={[{ id: parameterId, name: "param", dataType: DmnBuiltInDataType.Any }]}
             />,
-            { boxedExpressionEditorGWTService }
+            { beeGwtService }
           ).wrapper
         ).wrapper
       );
@@ -174,24 +186,24 @@ describe("FunctionExpression tests", () => {
       checkFormalParameters(mockedBroadcastDefinition, [
         {
           id: parameterId,
-          dataType: DataType.Any,
+          dataType: DmnBuiltInDataType.Any,
           name: `${newParamName}`,
         },
       ]);
     });
 
     test("should update the parameter data type, when it gets changed by the user", async () => {
-      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
+      const { mockedBroadcastDefinition, beeGwtService } = mockbeeGwtService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Feel}
-              formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Undefined }]}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
+              formalParameters={[{ id: parameterId, name: "param", dataType: DmnBuiltInDataType.Undefined }]}
             />,
-            { boxedExpressionEditorGWTService }
+            { beeGwtService }
           ).wrapper
         ).wrapper
       );
@@ -202,30 +214,32 @@ describe("FunctionExpression tests", () => {
         ).click();
         await flushPromises();
         jest.runAllTimers();
-        (baseElement.querySelector(`[data-ouia-component-id='${DataType.Boolean}']`) as HTMLButtonElement).click();
+        (
+          baseElement.querySelector(`[data-ouia-component-id='${DmnBuiltInDataType.Boolean}']`) as HTMLButtonElement
+        ).click();
       });
 
       checkFormalParameters(mockedBroadcastDefinition, [
         {
           id: parameterId,
-          dataType: DataType.Boolean,
+          dataType: DmnBuiltInDataType.Boolean,
           name: "param",
         },
       ]);
     });
 
     test("should add a new parameter, when the user adds it", async () => {
-      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
+      const { mockedBroadcastDefinition, beeGwtService } = mockbeeGwtService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Feel}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
               formalParameters={[]}
             />,
-            { boxedExpressionEditorGWTService }
+            { beeGwtService }
           ).wrapper
         ).wrapper
       );
@@ -236,30 +250,30 @@ describe("FunctionExpression tests", () => {
 
       checkFormalParameters(mockedBroadcastDefinition, [
         expect.objectContaining({
-          dataType: DataType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
           name: DEFAULT_FIRST_PARAM_NAME,
         }),
       ]);
     });
 
     test("should have no parameter, when the user delete the only existing one", async () => {
-      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
+      const { mockedBroadcastDefinition, beeGwtService } = mockbeeGwtService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Feel}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
               formalParameters={[
                 {
                   id: parameterId,
-                  dataType: DataType.Undefined,
+                  dataType: DmnBuiltInDataType.Undefined,
                   name: DEFAULT_FIRST_PARAM_NAME,
                 },
               ]}
             />,
-            { boxedExpressionEditorGWTService }
+            { beeGwtService }
           ).wrapper
         ).wrapper
       );
@@ -272,11 +286,11 @@ describe("FunctionExpression tests", () => {
     });
 
     function checkFormalParameters(
-      mockedBroadcastDefinition: jest.Mock | ((definition: FunctionProps) => void),
-      formalParameters: EntryInfo[]
+      mockedBroadcastDefinition: jest.Mock | ((definition: FunctionExpressionDefinition) => void),
+      formalParameters: ContextExpressionDefinitionEntryInfo[]
     ) {
       expect(mockedBroadcastDefinition).toHaveBeenCalledWith({
-        dataType: DataType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
         expression: {
           logicType: "Literal expression",
         },
@@ -295,7 +309,11 @@ describe("FunctionExpression tests", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+            <FunctionExpression
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
+              formalParameters={[]}
+            />
           ).wrapper
         ).wrapper
       );
@@ -316,12 +334,12 @@ describe("FunctionExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Feel}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Feel}
               formalParameters={[]}
               expression={{
                 id: "id2",
-                logicType: LogicType.Relation,
+                logicType: ExpressionDefinitionLogicType.Relation,
               }}
             />
           ).wrapper
@@ -343,7 +361,11 @@ describe("FunctionExpression tests", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+            <FunctionExpression
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Java}
+              formalParameters={[]}
+            />
           ).wrapper
         ).wrapper
       );
@@ -359,8 +381,8 @@ describe("FunctionExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Java}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Java}
               formalParameters={[]}
               className={classValue}
               methodName={methodValue}
@@ -378,7 +400,11 @@ describe("FunctionExpression tests", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Pmml} formalParameters={[]} />
+            <FunctionExpression
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Pmml}
+              formalParameters={[]}
+            />
           ).wrapper
         ).wrapper
       );
@@ -394,8 +420,8 @@ describe("FunctionExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
-              logicType={LogicType.Function}
-              functionKind={FunctionKind.Pmml}
+              logicType={ExpressionDefinitionLogicType.Function}
+              functionKind={FunctionExpressionDefinitionKind.Pmml}
               formalParameters={[]}
               document={document}
               model={model}
@@ -408,14 +434,14 @@ describe("FunctionExpression tests", () => {
     });
   });
 
-  function mockBoxedExpressionEditorGWTService() {
-    const mockedBroadcastDefinition: (definition: FunctionProps) => void = jest.fn();
-    const boxedExpressionEditorGWTService = {
+  function mockbeeGwtService() {
+    const mockedBroadcastDefinition: (definition: FunctionExpressionDefinition) => void = jest.fn();
+    const beeGwtService = {
       broadcastFunctionExpressionDefinition: mockedBroadcastDefinition,
       notifyUserAction: () => {},
       selectObject: () => {},
-    } as BoxedExpressionEditorGWTService;
-    return { mockedBroadcastDefinition, boxedExpressionEditorGWTService };
+    } as BeeGwtService;
+    return { mockedBroadcastDefinition, beeGwtService };
   }
 
   async function clearTableRow(container: Element, baseElement: Element) {

@@ -19,14 +19,15 @@ import { useCallback, useLayoutEffect, useMemo } from "react";
 import { Column, ColumnInstance } from "react-table";
 
 import {
-  ColumnsUpdateArgs,
-  ExpressionProps,
-  GroupOperations,
-  RowsUpdateArgs,
-  TableHeaderVisibility,
-  TableOperation,
+  BeeTableColumnsUpdateArgs,
+  ExpressionDefinition,
+  BeeTableHandlerConfiguration,
+  BeeTableRowsUpdateArgs,
+  BeeTableOperation,
+  BeeTableHeaderVisibility,
+  BeeTableOperationGroup,
 } from "@kie-tools/boxed-expression-component/dist/api";
-import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-component/dist/components";
+import { getColumnsAtLastLevel, BeeTable } from "@kie-tools/boxed-expression-component/dist/components";
 import "./CustomTable.css";
 import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../UnitablesBoxedTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
@@ -46,7 +47,7 @@ const EMPTY_SYMBOL = "";
 
 type DataRecord = Record<string, unknown>;
 
-export interface CustomTableProps extends ExpressionProps {
+export interface CustomTableProps extends ExpressionDefinition {
   i18n: BoxedExpressionEditorI18n;
   /** Input columns definition */
   input?: UnitablesClause[];
@@ -57,7 +58,7 @@ export interface CustomTableProps extends ExpressionProps {
   /** Callback to be called when columns is updated */
   onColumnsUpdate: (columns: Column[]) => void;
   /** Callback to be called when row number is updated */
-  onRowNumberUpdate?: (rowQtt: number, operation?: TableOperation, updatedRowIndex?: number) => void;
+  onRowNumberUpdate?: (rowQtt: number, operation?: BeeTableOperation, updatedRowIndex?: number) => void;
 }
 
 export function CustomTable(props: CustomTableProps) {
@@ -77,11 +78,11 @@ export function CustomTable(props: CustomTableProps) {
       {
         group: props.i18n.decisionRule,
         items: [
-          { name: props.i18n.rowOperations.insertAbove, type: TableOperation.RowInsertAbove },
-          { name: props.i18n.rowOperations.insertBelow, type: TableOperation.RowInsertBelow },
-          { name: props.i18n.rowOperations.duplicate, type: TableOperation.RowDuplicate },
-          { name: props.i18n.rowOperations.clear, type: TableOperation.RowClear },
-          { name: props.i18n.rowOperations.delete, type: TableOperation.RowDelete },
+          { name: props.i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
+          { name: props.i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: props.i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
+          { name: props.i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+          { name: props.i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
         ],
       },
     ],
@@ -89,7 +90,7 @@ export function CustomTable(props: CustomTableProps) {
   );
 
   const getHandlerConfiguration = useMemo(() => {
-    const configuration: { [columnGroupType: string]: GroupOperations[] } = {};
+    const configuration: { [columnGroupType: string]: BeeTableOperationGroup[] } = {};
     configuration[EMPTY_SYMBOL] = generateHandlerConfigurationByColumn;
     configuration[DecisionTableColumnType.InputClause] = generateHandlerConfigurationByColumn;
     configuration[DecisionTableColumnType.OutputClause] = generateHandlerConfigurationByColumn;
@@ -248,7 +249,7 @@ export function CustomTable(props: CustomTableProps) {
   }, [props.rules, columns]);
 
   const onRowsUpdate = useCallback(
-    ({ rows, operation, rowIndex }: RowsUpdateArgs) => {
+    ({ rows, operation, rowIndex }: BeeTableRowsUpdateArgs) => {
       const newRows = rows.map((row: any) =>
         getColumnsAtLastLevel(columns).reduce((filledRow: DataRecord, column) => {
           if (row.rowDelegate) {
@@ -302,7 +303,7 @@ export function CustomTable(props: CustomTableProps) {
   }, [columns, searchRecursively]);
 
   const onColumnsUpdate = useCallback(
-    ({ columns }: ColumnsUpdateArgs) => {
+    ({ columns }: BeeTableColumnsUpdateArgs) => {
       props.onColumnsUpdate(columns);
     },
     [props.onColumnsUpdate]
@@ -314,10 +315,10 @@ export function CustomTable(props: CustomTableProps) {
       <div className="expression-container-box" data-ouia-component-id="expression-container">
         <div className={`custom-table ${props.id}`}>
           <div className={`logic-type-selector logic-type-selected`}>
-            <Table
+            <BeeTable
               editableHeader={false}
               headerLevels={1}
-              headerVisibility={TableHeaderVisibility.Full}
+              headerVisibility={BeeTableHeaderVisibility.Full}
               getColumnPrefix={getColumnPrefix}
               editColumnLabel={getEditColumnLabel}
               handlerConfiguration={getHandlerConfiguration}
@@ -327,7 +328,7 @@ export function CustomTable(props: CustomTableProps) {
               onRowsUpdate={onRowsUpdate}
               onRowAdding={onRowAdding}
               readOnlyCells={true}
-              enableKeyboarNavigation={false}
+              enableKeyboardNavigation={false}
             />
           </div>
         </div>

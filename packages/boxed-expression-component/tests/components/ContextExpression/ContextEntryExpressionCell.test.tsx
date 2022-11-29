@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { ContextEntryExpressionCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
-import { DataRecord } from "react-table";
+import * as ReactTable from "react-table";
 import { act } from "react-dom/test-utils";
 
 jest.useFakeTimers();
 
 describe("ContextEntryExpressionCell tests", () => {
   const name = "Expression Name";
-  const dataType = DataType.Boolean;
+  const dataType = DmnBuiltInDataType.Boolean;
   const emptyExpression = { name, dataType };
   const entryId = "entry-id1";
   const entryName = "entry name";
-  const entryDataType = DataType.Date;
+  const entryDataType = DmnBuiltInDataType.Date;
 
   const value = "value";
   const rowIndex = 0;
-  const onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void = (rowIndex, updatedRow) =>
+  const onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void = (rowIndex, updatedRow) =>
     _.identity({ rowIndex, updatedRow });
 
   test("should show a context entry expression cell with logic type not selected", () => {
@@ -83,7 +83,7 @@ describe("ContextEntryExpressionCell tests", () => {
       await flushPromises();
       jest.runAllTimers();
       Array.from(baseElement.querySelectorAll("button"))
-        .find((el) => el.textContent === LogicType.LiteralExpression)!
+        .find((el) => el.textContent === ExpressionDefinitionLogicType.LiteralExpression)!
         .click();
     });
 
@@ -95,7 +95,7 @@ describe("ContextEntryExpressionCell tests", () => {
         dataType,
       },
       entryExpression: {
-        logicType: LogicType.LiteralExpression,
+        logicType: ExpressionDefinitionLogicType.LiteralExpression,
         name,
         dataType,
       },

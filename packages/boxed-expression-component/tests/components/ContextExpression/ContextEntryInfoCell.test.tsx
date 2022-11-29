@@ -19,8 +19,8 @@ import { EDIT_EXPRESSION_NAME, updateElementViaPopover, usingTestingBoxedExpress
 import { ContextEntryInfoCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
-import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { DataRecord } from "react-table";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import * as ReactTable from "react-table";
 
 jest.useFakeTimers();
 
@@ -28,9 +28,9 @@ describe("ContextEntryInfoCell tests", () => {
   const id = "id1";
   const name = "Expression Name";
   const newValue = "New Value";
-  const dataType = DataType.Boolean;
+  const dataType = DmnBuiltInDataType.Boolean;
   const emptyExpression = { name, dataType };
-  const onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void = (rowIndex, updatedRow) =>
+  const onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void = (rowIndex, updatedRow) =>
     _.identity({ rowIndex, updatedRow });
 
   test("should show a context entry info cell element with passed name and dataType, when rendering it", () => {

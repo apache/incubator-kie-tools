@@ -18,7 +18,7 @@ import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
 import { LiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { act } from "react-dom/test-utils";
 
 jest.useFakeTimers();
@@ -32,9 +32,9 @@ describe("LiteralExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <LiteralExpression
-              logicType={LogicType.LiteralExpression}
+              logicType={ExpressionDefinitionLogicType.LiteralExpression}
               name={expressionName}
-              dataType={DataType.Undefined}
+              dataType={DmnBuiltInDataType.Undefined}
             />
           ).wrapper
         ).wrapper
@@ -44,11 +44,15 @@ describe("LiteralExpression tests", () => {
     });
 
     test("should render expression's data type, when dataType property is passed", () => {
-      const dataType = DataType.Boolean;
+      const dataType = DmnBuiltInDataType.Boolean;
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
-            <LiteralExpression logicType={LogicType.LiteralExpression} name={"expressionName"} dataType={dataType} />
+            <LiteralExpression
+              logicType={ExpressionDefinitionLogicType.LiteralExpression}
+              name={"expressionName"}
+              dataType={dataType}
+            />
           ).wrapper
         ).wrapper
       );
@@ -62,9 +66,9 @@ describe("LiteralExpression tests", () => {
           usingTestingBoxedExpressionProviderContext(
             <LiteralExpression
               isHeadless={true}
-              logicType={LogicType.LiteralExpression}
+              logicType={ExpressionDefinitionLogicType.LiteralExpression}
               name={"expressionName"}
-              dataType={DataType.Undefined}
+              dataType={DmnBuiltInDataType.Undefined}
             />
           ).wrapper
         ).wrapper
@@ -77,9 +81,9 @@ describe("LiteralExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <LiteralExpression
-              logicType={LogicType.LiteralExpression}
+              logicType={ExpressionDefinitionLogicType.LiteralExpression}
               name={"expressionName"}
-              dataType={DataType.Undefined}
+              dataType={DmnBuiltInDataType.Undefined}
             />
           ).wrapper
         ).wrapper
@@ -92,9 +96,9 @@ describe("LiteralExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <LiteralExpression
-              logicType={LogicType.LiteralExpression}
+              logicType={ExpressionDefinitionLogicType.LiteralExpression}
               name={"expressionName"}
-              dataType={DataType.Boolean}
+              dataType={DmnBuiltInDataType.Boolean}
             />
           ).wrapper
         ).wrapper
@@ -120,9 +124,9 @@ describe("LiteralExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <LiteralExpression
-              logicType={LogicType.LiteralExpression}
+              logicType={ExpressionDefinitionLogicType.LiteralExpression}
               name={"expressionName"}
-              dataType={DataType.Boolean}
+              dataType={DmnBuiltInDataType.Boolean}
               content={content}
             />
           ).wrapper
@@ -138,9 +142,9 @@ describe("LiteralExpression tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <LiteralExpression
-              logicType={LogicType.LiteralExpression}
+              logicType={ExpressionDefinitionLogicType.LiteralExpression}
               name={"expressionName"}
-              dataType={DataType.Boolean}
+              dataType={DmnBuiltInDataType.Boolean}
             />
           ).wrapper
         ).wrapper

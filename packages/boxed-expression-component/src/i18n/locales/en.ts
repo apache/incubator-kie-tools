@@ -34,7 +34,7 @@ export const en: BoxedExpressionEditorI18n = {
   contextEntry: "CONTEXT ENTRY",
   dataType: "Data Type",
   dataTypeDropDown: {
-    default: "DEFAULT",
+    builtIn: "BUILT-IN",
     custom: "CUSTOM",
   },
   decisionRule: "DECISION RULE",

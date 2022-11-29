@@ -17,11 +17,14 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/components";
-import { DataType, ExpressionProps } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("BoxedExpressionEditor tests", () => {
   test("should render BoxedExpressionEditor component", () => {
-    const selectedExpression: ExpressionProps = { name: "Expression Name", dataType: DataType.Undefined };
+    const selectedExpression: ExpressionDefinition = {
+      name: "Expression Name",
+      dataType: DmnBuiltInDataType.Undefined,
+    };
 
     const { container } = render(
       <BoxedExpressionEditor

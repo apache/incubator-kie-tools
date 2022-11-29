@@ -16,5 +16,5 @@
 
 import "./index.css";
 export * from "./BoxedExpressionEditor";
-export * from "./ExpressionContainer";
-export * from "./Table";
+export * from "./ExpressionDefinitionContainer";
+export * from "./BeeTable";

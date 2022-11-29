@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-import { CellProps, ContextEntries, ContextEntryRecord, EntryInfo, ExpressionProps } from "../../api";
+import { BeeTableCell, ContextExpressionDefinitionEntry } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DataRecord } from "react-table";
+import * as ReactTable from "react-table";
 import { ContextEntryInfo } from "./ContextEntryInfo";
 import * as _ from "lodash";
 
-export interface ContextEntryInfoCellProps extends CellProps {
-  data: ContextEntries;
-  onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void;
+export interface ContextEntryInfoCellProps extends BeeTableCell {
+  // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
+  data: ContextExpressionDefinitionEntry[];
+  onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void;
   editInfoPopoverLabel?: string;
 }
 
 export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellProps> = ({
-  data,
+  data: contextEntries,
   rowIndex,
   onRowUpdate,
   editInfoPopoverLabel,
 }) => {
-  const contextEntry: ContextEntryRecord = useMemo(() => data[rowIndex], [data, rowIndex]);
-  const entryInfo: EntryInfo = useMemo(() => contextEntry.entryInfo, [contextEntry.entryInfo]);
-  const entryExpression: ExpressionProps = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
+  const contextEntry = useMemo(() => contextEntries[rowIndex], [contextEntries, rowIndex]);
+  const entryInfo = useMemo(() => contextEntry.entryInfo, [contextEntry.entryInfo]);
+  const entryExpression = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
 
   const onContextEntryUpdate = useCallback(
     (name, dataType) => {

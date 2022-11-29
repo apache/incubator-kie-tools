@@ -15,27 +15,30 @@
  */
 
 import "./HitPolicySelector.css";
-import { BuiltinAggregation, getEnumKeyByEnumValue, HitPolicy } from "../../api";
+import {
+  DecisionTableExpressionDefinitionBuiltInAggregation,
+  DecisionTableExpressionDefinitionHitPolicy,
+} from "../../api";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { PopoverMenu } from "../PopoverMenu";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useBoxedExpression } from "../../context";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */
-  selectedHitPolicy: HitPolicy;
+  selectedHitPolicy: DecisionTableExpressionDefinitionHitPolicy;
   /** Pre-selected built-in aggregator */
-  selectedBuiltInAggregator: BuiltinAggregation;
+  selectedBuiltInAggregator: DecisionTableExpressionDefinitionBuiltInAggregation;
   /** Callback invoked when hit policy selection changes */
-  onHitPolicySelect: (hitPolicy: HitPolicy) => void;
+  onHitPolicySelect: (hitPolicy: DecisionTableExpressionDefinitionHitPolicy) => void;
   /** Callback invoked when built-in aggregator selection changes */
-  onBuiltInAggregatorSelect: (builtInAggregator: BuiltinAggregation) => void;
+  onBuiltInAggregatorSelect: (builtInAggregator: DecisionTableExpressionDefinitionBuiltInAggregation) => void;
 }
 
-const BUILT_IN_AGGREGATION_AVAILABILITY = [HitPolicy.Collect];
+const BUILT_IN_AGGREGATION_AVAILABILITY = [DecisionTableExpressionDefinitionHitPolicy.Collect];
 export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> = ({
   onBuiltInAggregatorSelect,
   onHitPolicySelect,
@@ -43,7 +46,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
   selectedHitPolicy,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const boxedExpression = useBoxedExpression();
+  const boxedExpressionEditor = useBoxedExpressionEditor();
 
   const [hitPolicySelectOpen, setHitPolicySelectOpen] = useState(false);
   const [builtInAggregatorSelectOpen, setBuiltInAggregatorSelectOpen] = useState(false);
@@ -56,24 +59,24 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
 
   const hitPolicySelectionCallback = useCallback(
     (event: React.MouseEvent<Element, MouseEvent>, itemId: string) => {
-      const updatedHitPolicy = itemId as HitPolicy;
+      const updatedHitPolicy = itemId as DecisionTableExpressionDefinitionHitPolicy;
       const hitPolicySupportsAggregation = _.includes(BUILT_IN_AGGREGATION_AVAILABILITY, updatedHitPolicy);
-      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
+      boxedExpressionEditor.beeGwtService?.notifyUserAction();
       onHitPolicySelect(updatedHitPolicy);
       if (hitPolicySupportsAggregation) {
         setBuiltInAggregatorSelectDisabled(false);
       } else {
         setBuiltInAggregatorSelectDisabled(true);
-        onBuiltInAggregatorSelect("<None>" as BuiltinAggregation);
+        onBuiltInAggregatorSelect("<None>" as DecisionTableExpressionDefinitionBuiltInAggregation);
       }
       setHitPolicySelectOpen(false);
     },
-    [boxedExpression.boxedExpressionEditorGWTService, onBuiltInAggregatorSelect, onHitPolicySelect]
+    [boxedExpressionEditor.beeGwtService, onBuiltInAggregatorSelect, onHitPolicySelect]
   );
 
   const renderHitPolicyItems = useCallback(
     () =>
-      _.map(Object.values(HitPolicy), (key) => (
+      _.map(Object.values(DecisionTableExpressionDefinitionHitPolicy), (key) => (
         <SelectOption key={key} value={key} data-ouia-component-id={key}>
           {key}
         </SelectOption>
@@ -83,16 +86,16 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
 
   const builtInAggregatorSelectionCallback = useCallback(
     (event: React.MouseEvent<Element, MouseEvent>, itemId: string) => {
-      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-      onBuiltInAggregatorSelect(itemId as BuiltinAggregation);
+      boxedExpressionEditor.beeGwtService?.notifyUserAction();
+      onBuiltInAggregatorSelect(itemId as DecisionTableExpressionDefinitionBuiltInAggregation);
       setBuiltInAggregatorSelectOpen(false);
     },
-    [boxedExpression.boxedExpressionEditorGWTService, onBuiltInAggregatorSelect]
+    [boxedExpressionEditor.beeGwtService, onBuiltInAggregatorSelect]
   );
 
   const renderBuiltInAggregationItems = useCallback(
     () =>
-      _.map(Object.keys(BuiltinAggregation), (key) => (
+      _.map(Object.keys(DecisionTableExpressionDefinitionBuiltInAggregation), (key) => (
         <SelectOption key={key} value={key} data-ouia-component-id={key}>
           {key}
         </SelectOption>
@@ -100,17 +103,23 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
     []
   );
 
-  const renderAggregator = useCallback((builtInAggregator: BuiltinAggregation, hitPolicy: HitPolicy) => {
-    if (_.includes(BUILT_IN_AGGREGATION_AVAILABILITY, hitPolicy)) {
-      return builtInAggregator;
-    }
-    return "";
-  }, []);
+  const renderAggregator = useCallback(
+    (
+      builtInAggregator: DecisionTableExpressionDefinitionBuiltInAggregation,
+      hitPolicy: DecisionTableExpressionDefinitionHitPolicy
+    ) => {
+      if (_.includes(BUILT_IN_AGGREGATION_AVAILABILITY, hitPolicy)) {
+        return builtInAggregator;
+      }
+      return "";
+    },
+    []
+  );
 
   return (
     <PopoverMenu
       title={i18n.editHitPolicy}
-      appendTo={boxedExpression.editorRef?.current ?? undefined}
+      appendTo={boxedExpressionEditor.editorRef?.current ?? undefined}
       className="hit-policy-popover"
       hasAutoWidth
       body={
@@ -119,7 +128,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
             <label>{i18n.hitPolicy}</label>
             <Select
               className="hit-policy-selector"
-              menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
+              menuAppendTo={boxedExpressionEditor.editorRef?.current ?? "inline"}
               ouiaId="hit-policy-selector"
               variant={SelectVariant.single}
               onToggle={onHitPolicySelectToggle}
@@ -134,14 +143,16 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
             <label>{i18n.builtInAggregator}</label>
             <Select
               className="builtin-aggregator-selector"
-              menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
+              menuAppendTo={boxedExpressionEditor.editorRef?.current ?? "inline"}
               ouiaId="builtin-aggregator-selector"
               isDisabled={builtInAggregatorSelectDisabled}
               variant={SelectVariant.single}
               onToggle={onBuiltInAggregatorSelectToggle}
               onSelect={builtInAggregatorSelectionCallback}
               isOpen={builtInAggregatorSelectOpen}
-              selections={getEnumKeyByEnumValue(BuiltinAggregation, selectedBuiltInAggregator)!}
+              selections={
+                getEnumKeyByEnumValue(DecisionTableExpressionDefinitionBuiltInAggregation, selectedBuiltInAggregator)!
+              }
             >
               {renderBuiltInAggregationItems()}
             </Select>
@@ -156,3 +167,11 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
     </PopoverMenu>
   );
 };
+
+export function getEnumKeyByEnumValue<T extends { [index: string]: string }>(
+  myEnum: T,
+  enumValue: string
+): keyof T | null {
+  const keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
+  return keys.length > 0 ? keys[0] : null;
+}

@@ -17,7 +17,10 @@
 import { render } from "@testing-library/react";
 import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { HitPolicySelector } from "@kie-tools/boxed-expression-component/dist/components/DecisionTableExpression";
-import { BuiltinAggregation, HitPolicy } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DecisionTableExpressionDefinitionBuiltInAggregation,
+  DecisionTableExpressionDefinitionHitPolicy,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import * as _ from "lodash";
 import { act } from "react-dom/test-utils";
@@ -29,8 +32,8 @@ describe("HitPolicySelector tests", () => {
     const { baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         <HitPolicySelector
-          selectedHitPolicy={HitPolicy.Collect}
-          selectedBuiltInAggregator={BuiltinAggregation["<None>"]}
+          selectedHitPolicy={DecisionTableExpressionDefinitionHitPolicy.Collect}
+          selectedBuiltInAggregator={DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]}
           onHitPolicySelect={_.identity}
           onBuiltInAggregatorSelect={_.identity}
         />
@@ -44,8 +47,8 @@ describe("HitPolicySelector tests", () => {
     const { baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         <HitPolicySelector
-          selectedHitPolicy={HitPolicy.Collect}
-          selectedBuiltInAggregator={BuiltinAggregation.COUNT}
+          selectedHitPolicy={DecisionTableExpressionDefinitionHitPolicy.Collect}
+          selectedBuiltInAggregator={DecisionTableExpressionDefinitionBuiltInAggregation.COUNT}
           onHitPolicySelect={_.identity}
           onBuiltInAggregatorSelect={_.identity}
         />
@@ -59,8 +62,8 @@ describe("HitPolicySelector tests", () => {
     const { baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         <HitPolicySelector
-          selectedHitPolicy={HitPolicy.Any}
-          selectedBuiltInAggregator={BuiltinAggregation.COUNT}
+          selectedHitPolicy={DecisionTableExpressionDefinitionHitPolicy.Any}
+          selectedBuiltInAggregator={DecisionTableExpressionDefinitionBuiltInAggregation.COUNT}
           onHitPolicySelect={_.identity}
           onBuiltInAggregatorSelect={_.identity}
         />
@@ -74,8 +77,8 @@ describe("HitPolicySelector tests", () => {
     const { baseElement, container } = render(
       usingTestingBoxedExpressionI18nContext(
         <HitPolicySelector
-          selectedHitPolicy={HitPolicy.Collect}
-          selectedBuiltInAggregator={BuiltinAggregation.COUNT}
+          selectedHitPolicy={DecisionTableExpressionDefinitionHitPolicy.Collect}
+          selectedBuiltInAggregator={DecisionTableExpressionDefinitionBuiltInAggregation.COUNT}
           onHitPolicySelect={_.identity}
           onBuiltInAggregatorSelect={_.identity}
         />
@@ -91,8 +94,8 @@ describe("HitPolicySelector tests", () => {
     const { baseElement, container } = render(
       usingTestingBoxedExpressionI18nContext(
         <HitPolicySelector
-          selectedHitPolicy={HitPolicy.First}
-          selectedBuiltInAggregator={BuiltinAggregation["<None>"]}
+          selectedHitPolicy={DecisionTableExpressionDefinitionHitPolicy.First}
+          selectedBuiltInAggregator={DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]}
           onHitPolicySelect={_.identity}
           onBuiltInAggregatorSelect={_.identity}
         />
@@ -106,13 +109,13 @@ describe("HitPolicySelector tests", () => {
 
   test("should trigger a callback, when hit policy is selected", async () => {
     const mockedHitPolicySelect = jest.fn();
-    const changedHitPolicy = HitPolicy.Any;
+    const changedHitPolicy = DecisionTableExpressionDefinitionHitPolicy.Any;
 
     const { baseElement, container } = render(
       usingTestingBoxedExpressionI18nContext(
         <HitPolicySelector
-          selectedHitPolicy={HitPolicy.First}
-          selectedBuiltInAggregator={BuiltinAggregation["<None>"]}
+          selectedHitPolicy={DecisionTableExpressionDefinitionHitPolicy.First}
+          selectedBuiltInAggregator={DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]}
           onHitPolicySelect={mockedHitPolicySelect}
           onBuiltInAggregatorSelect={_.identity}
         />
@@ -128,13 +131,13 @@ describe("HitPolicySelector tests", () => {
 
   test("should trigger a callback, when aggregation is selected", async () => {
     const mockedAggregationSelect = jest.fn();
-    const changedAggregation = "MAX" as BuiltinAggregation;
+    const changedAggregation = "MAX" as DecisionTableExpressionDefinitionBuiltInAggregation;
 
     const { baseElement, container } = render(
       usingTestingBoxedExpressionI18nContext(
         <HitPolicySelector
-          selectedHitPolicy={HitPolicy.Collect}
-          selectedBuiltInAggregator={BuiltinAggregation["<None>"]}
+          selectedHitPolicy={DecisionTableExpressionDefinitionHitPolicy.Collect}
+          selectedBuiltInAggregator={DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]}
           onHitPolicySelect={_.identity}
           onBuiltInAggregatorSelect={mockedAggregationSelect}
         />
@@ -164,7 +167,10 @@ describe("HitPolicySelector tests", () => {
     });
   }
 
-  async function changeDropdownSelection(baseElement: Element, selection: HitPolicy | BuiltinAggregation) {
+  async function changeDropdownSelection(
+    baseElement: Element,
+    selection: DecisionTableExpressionDefinitionHitPolicy | DecisionTableExpressionDefinitionBuiltInAggregation
+  ) {
     await act(async () => {
       (baseElement.querySelector(`[data-ouia-component-id='${selection}']`) as HTMLButtonElement).click();
       await flushPromises();

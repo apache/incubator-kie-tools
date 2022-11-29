@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { ContextEntryExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
@@ -23,7 +23,7 @@ import * as React from "react";
 
 describe("ContextEntryExpression tests", () => {
   const name = "Expression Name";
-  const dataType = DataType.Boolean;
+  const dataType = DmnBuiltInDataType.Boolean;
   const emptyExpression = { name, dataType };
 
   test("should show a context entry element with logic type not selected, when rendering it with an empty expression", () => {
@@ -41,7 +41,7 @@ describe("ContextEntryExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         <ContextEntryExpression
-          expression={{ ...emptyExpression, logicType: LogicType.LiteralExpression }}
+          expression={{ ...emptyExpression, logicType: ExpressionDefinitionLogicType.LiteralExpression }}
           onUpdatingRecursiveExpression={_.identity}
         />
       ).wrapper
