@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.displayer;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public interface GlobalDisplayerSettings {
@@ -27,11 +28,40 @@ public interface GlobalDisplayerSettings {
 
     default void apply(DisplayerSettings settings) {
         getSettings().ifPresent(globalSettings -> {
+            var globalLookup = globalSettings.getDataSetLookup();
+            var lookup = settings.getDataSetLookup();
+            var globalColumnsSettings = globalSettings.getColumnSettingsList();
+            // Copy Settings
             globalSettings.getSettingsFlatMap().forEach((k, v) -> {
-                if(!settings.getSettingsFlatMap().containsKey(k)) {
+                if (!settings.getSettingsFlatMap().containsKey(k)) {
                     settings.setDisplayerSetting(k, v);
                 }
             });
+
+            // Copy Lookup
+            if (globalLookup != null) {
+                if (lookup == null) {
+                    settings.setDataSetLookup(globalLookup.cloneInstance());
+                } else {
+                    if (lookup.getDataSetUUID() == null) {
+                        lookup.setDataSetUUID(globalLookup.getDataSetUUID());
+                    }
+                    if (lookup.getRowOffset() == 0) {
+                        lookup.setRowOffset(globalLookup.getRowOffset());
+                    }
+                    if (lookup.getNumberOfRows() == -1) {
+                        lookup.setNumberOfRows(globalLookup.getNumberOfRows());
+                    }
+                    // Operations can't be overriden
+                    globalLookup.getOperationList().forEach(lookup::addOperation);
+                }
+            }
+
+            // Copy column Settings, but user settings are added last so they should override global settings
+            var newSettings = new ArrayList<ColumnSettings>();
+            newSettings.addAll(globalSettings.getColumnSettingsList());
+            settings.getColumnSettingsList().forEach(newSettings::add);
+            settings.setColumnSettingsList(newSettings);
         });
     }
 }

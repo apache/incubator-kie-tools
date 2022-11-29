@@ -551,9 +551,6 @@ public class DataSetLookupJSONMarshaller {
                     " is invalid. The following values are supported for \"function\": \n" + enumToString(
                             AggregateFunctionType.values()));
         }
-        if (columnId == null && functionType != null) {
-            columnId = sourceId + " " + functionType.name();
-        }
         groupFunction.setSourceId(sourceId);
         groupFunction.setColumnId(columnId);
         groupFunction.setFunction(functionType);

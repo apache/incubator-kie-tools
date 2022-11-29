@@ -16,6 +16,8 @@
 
 package org.dashbuilder.renderer.echarts.client;
 
+import java.util.ArrayList;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -124,10 +126,7 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
 
     public ECharts.Dataset buildDataSet() {
         var echartsDataSet = echartsFactory.newDataset();
-
-        var dimensions = dataSet.getColumns()
-                .stream().map(c -> displayerSettings.getColumnSettings(c).getColumnName())
-                .toArray(String[]::new);
+        var dimensions = retrieveDataSetDimensions();
 
         var source = new Object[dataSet.getRowCount()][dataSet.getColumns().size()];
         var columns = dataSet.getColumns();
@@ -286,6 +285,24 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
             }
             return value;
         };
+    }
+
+    String[] retrieveDataSetDimensions() {
+        var singleColumnsNames = new ArrayList<String>();
+        var columnsNames = dataSet.getColumns()
+                .stream().map(c -> displayerSettings.getColumnSettings(c).getColumnName())
+                .toArray(String[]::new);
+        for (int i = 0; i < columnsNames.length; i++) {
+            var columnName = columnsNames[i];
+            var groupFunction = dataSet.getColumnByIndex(i).getGroupFunction();
+            if (singleColumnsNames.contains(columnName) &&
+                groupFunction != null &&
+                groupFunction.getFunction() != null) {
+                columnName = columnName + " " + groupFunction.getFunction().name();
+            }
+            singleColumnsNames.add(columnName);
+        }
+        return singleColumnsNames.stream().toArray(String[]::new);
     }
 
     abstract DataSetLookupConstraints getDataSetLookupConstraints();
