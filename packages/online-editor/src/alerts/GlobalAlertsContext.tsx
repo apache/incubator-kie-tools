@@ -72,7 +72,10 @@ export function GlobalAlertsContextProvider(props: PropsWithChildren<{}>) {
 
   const set = useCallback(
     (key: string, alertDelegate: AlertDelegate<unknown>, autoCloseArgs?: AlertAutoCloseArgs) => {
-      alerts?.set(key, alertDelegate, autoCloseArgs);
+      // This setTimeout is a hack to block a setState from hapenning while Alerts is still rendering
+      setTimeout(() => {
+        return alerts?.set(key, alertDelegate, autoCloseArgs);
+      });
 
       return {
         close: () => alerts?.close(key),

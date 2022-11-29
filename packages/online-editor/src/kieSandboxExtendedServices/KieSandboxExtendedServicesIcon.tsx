@@ -22,31 +22,31 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-icon";
 import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
-import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { useOnlineI18n } from "../i18n";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 
 export function KieSandboxExtendedServicesIcon() {
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
   const { i18n } = useOnlineI18n();
   const settingsDispatch = useSettingsDispatch();
 
   const toggleKieSandboxExtendedServices = useCallback(() => {
-    if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+    if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
     }
 
-    if (!kieSandboxExtendedServices.outdated) {
+    if (!extendedServices.outdated) {
       return;
     }
-    kieSandboxExtendedServices.setModalOpen(true);
-  }, [settingsDispatch, kieSandboxExtendedServices]);
+    extendedServices.setModalOpen(true);
+  }, [settingsDispatch, extendedServices]);
 
   const dropdownToggleIcon = useMemo(
     () => (
       <>
-        {kieSandboxExtendedServices.outdated && (
+        {extendedServices.outdated && (
           <Tooltip
             className="kogito--editor__light-tooltip"
             key={"outdated"}
@@ -61,9 +61,9 @@ export function KieSandboxExtendedServicesIcon() {
             />
           </Tooltip>
         )}
-        {!kieSandboxExtendedServices.outdated && (
+        {!extendedServices.outdated && (
           <>
-            {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
+            {extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
               <Tooltip
                 className="kogito--editor__light-tooltip"
                 key={"connected"}
@@ -96,7 +96,7 @@ export function KieSandboxExtendedServicesIcon() {
         )}
       </>
     ),
-    [i18n, kieSandboxExtendedServices.outdated, kieSandboxExtendedServices.status]
+    [i18n, extendedServices.outdated, extendedServices.status]
   );
 
   return (

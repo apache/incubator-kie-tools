@@ -19,12 +19,12 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
+import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
 import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
-  useKieSandboxExtendedServices,
+  useExtendedServices,
 } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
@@ -33,14 +33,14 @@ import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/Ac
 
 export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
   const dmnRunnerState = useDmnRunnerState();
-  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
+  const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
   const dmnRunnerDispatch = useDmnRunnerDispatch();
 
   const isKieSandboxExtendedServicesRunning = useMemo(
-    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
-    [kieSandboxExtendedServices.status]
+    () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    [extendedServices.status]
   );
 
   const onToggleDmnRunner = useCallback(() => {
@@ -48,9 +48,9 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
       dmnRunnerDispatch.setExpanded((prev) => !prev);
       return;
     }
-    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
-    kieSandboxExtendedServices.setModalOpen(true);
-  }, [dmnRunnerDispatch, isKieSandboxExtendedServicesRunning, kieSandboxExtendedServices]);
+    extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
+    extendedServices.setModalOpen(true);
+  }, [dmnRunnerDispatch, isKieSandboxExtendedServicesRunning, extendedServices]);
 
   return (
     <>
@@ -77,15 +77,15 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
       </DropdownGroup>
       <Divider key={"divider-kie-extended-service-dropdown-items"} />
       <DropdownGroup
-        key={"dmn-dev-sandbox-group"}
+        key={"dmn-dev-deployment-group"}
         label={
           <>
-            {"Try on OpenShift"}
+            {"Deploy"}
             <KieSandboxExtendedServicesIcon />
           </>
         }
       >
-        {dmnDevSandboxDropdownItems}
+        {devDeploymentsDropdownItems}
       </DropdownGroup>
     </>
   );

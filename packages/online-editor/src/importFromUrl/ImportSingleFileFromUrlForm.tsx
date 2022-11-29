@@ -21,8 +21,9 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
-import { AuthSessionSelect } from "../accounts/authSessions/AuthSessionSelect";
-import { noOpAuthSessionSelectFilter } from "../accounts/authSessions/CompatibleAuthSessions";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
+import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
+import { gitAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { ImportableUrl } from "./ImportableUrlHooks";
 
 export function ImportSingleFileFromUrlForm(props: {
@@ -88,7 +89,8 @@ export function ImportSingleFileFromUrlForm(props: {
           authSessionId={props.authSessionId}
           setAuthSessionId={props.setAuthSessionId}
           isPlain={false}
-          filter={noOpAuthSessionSelectFilter()}
+          filter={gitAuthSessionSelectFilter()}
+          showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
         />
       </FormGroup>
       <FormGroup

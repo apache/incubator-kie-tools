@@ -161,9 +161,9 @@ func (p *Proxy) Refresh() {
 func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Request) {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		if req.Method == "OPTIONS" {
-			rw.Header().Add("Access-Control-Allow-Origin", "*")
-			rw.Header().Add("Access-Control-Allow-Methods", "*")
-			rw.Header().Add("Access-Control-Allow-Headers", "*")
+			rw.Header().Set("Access-Control-Allow-Origin", "*")
+			rw.Header().Set("Access-Control-Allow-Methods", "*")
+			rw.Header().Set("Access-Control-Allow-Headers", "*")
 			return
 		}
 
@@ -195,9 +195,9 @@ func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Reques
 		}
 
 		proxy.ModifyResponse = func(resp *http.Response) error {
-			resp.Header.Add("Access-Control-Allow-Origin", "*")
-			resp.Header.Add("Access-Control-Allow-Methods", "*")
-			resp.Header.Add("Access-Control-Allow-Headers", "*")
+			resp.Header.Set("Access-Control-Allow-Origin", "*")
+			resp.Header.Set("Access-Control-Allow-Methods", "*")
+			resp.Header.Set("Access-Control-Allow-Headers", "*")
 			return nil
 		}
 		proxy.ServeHTTP(rw, req)
@@ -207,9 +207,9 @@ func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Reques
 func (p *Proxy) jitExecutorHandler() func(rw http.ResponseWriter, req *http.Request) {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		if req.Method == "OPTIONS" {
-			rw.Header().Add("Access-Control-Allow-Origin", "*")
-			rw.Header().Add("Access-Control-Allow-Methods", "*")
-			rw.Header().Add("Access-Control-Allow-Headers", "*")
+			rw.Header().Set("Access-Control-Allow-Origin", "*")
+			rw.Header().Set("Access-Control-Allow-Methods", "*")
+			rw.Header().Set("Access-Control-Allow-Headers", "*")
 			return
 		}
 
@@ -226,8 +226,8 @@ func (p *Proxy) jitExecutorHandler() func(rw http.ResponseWriter, req *http.Requ
 
 func (p *Proxy) pingHandler() func(rw http.ResponseWriter, req *http.Request) {
 	return func(rw http.ResponseWriter, req *http.Request) {
-		rw.Header().Add("Access-Control-Allow-Origin", "*")
-		rw.Header().Add("Access-Control-Allow-Methods", "GET")
+		rw.Header().Set("Access-Control-Allow-Origin", "*")
+		rw.Header().Set("Access-Control-Allow-Methods", "GET")
 
 		conf := GetPingResponse(p.InsecureSkipVerify, p.Started)
 		rw.WriteHeader(http.StatusOK)

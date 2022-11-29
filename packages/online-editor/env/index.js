@@ -19,13 +19,14 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
 const gitCorsProxyImageEnv = require("@kie-tools/git-cors-proxy-image/env");
-
+const dmnDevDeploymentBaseImageEnv = require("@kie-tools/dmn-dev-deployment-base-image-env/env");
 const devPort = 9001;
 
 module.exports = composeEnv(
   [
+    // dependencies
     buildEnv,
-    require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env"),
+    dmnDevDeploymentBaseImageEnv,
     extendedServicesEnv,
     gitCorsProxyImageEnv,
   ],
@@ -68,13 +69,13 @@ module.exports = composeEnv(
         default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
         description: "Extended Services URL.",
       },
-      DMN_DEV_SANDBOX__baseImageTag: {
+      DMN_DEV_DEPLOYMENT__baseImageTag: {
         default: "latest",
-        description: "Image tag to be used by DMN Dev Sandbox when deploying DMN models to OpenShift.",
+        description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
       },
-      DMN_DEV_SANDBOX__onlineEditorUrl: {
+      DMN_DEV_DEPLOYMENT__onlineEditorUrl: {
         default: `https://0.0.0.0:${devPort}`,
-        description: "URL that DMN Dev Sandbox deployments will use to open KIE Sandbox from its deployments.",
+        description: "URL that DMN Dev deployments will use to open KIE Sandbox.",
       },
     }),
     get env() {
@@ -97,10 +98,12 @@ module.exports = composeEnv(
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
         },
-        dmnDevSandbox: {
-          onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_SANDBOX__onlineEditorUrl),
-          baseImage: {
-            tag: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageTag),
+        devDeployments: {
+          onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__onlineEditorUrl),
+          dmn: {
+            baseImage: {
+              tag: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageTag),
+            },
           },
         },
       };

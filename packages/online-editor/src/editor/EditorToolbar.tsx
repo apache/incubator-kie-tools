@@ -92,19 +92,20 @@ import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { useAuthSession } from "../accounts/authSessions/AuthSessionsContext";
-import { AuthSessionSelect, AuthSessionSelectFilter } from "../accounts/authSessions/AuthSessionSelect";
-import { useAuthProvider } from "../accounts/authProviders/AuthProvidersContext";
+import { useAuthSession } from "../authSessions/AuthSessionsContext";
+import { AuthSessionSelect, AuthSessionSelectFilter } from "../authSessions/AuthSessionSelect";
+import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { useOctokit } from "../github/Hooks";
-import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import {
   authSessionsSelectFilterCompatibleWithGistUrlDomain,
   authSessionsSelectFilterCompatibleWithGitUrlDomain,
-  noOpAuthSessionSelectFilter,
-} from "../accounts/authSessions/CompatibleAuthSessions";
+  gitAuthSessionSelectFilter,
+} from "../authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -179,11 +180,11 @@ export function EditorToolbar(props: Props) {
 
   const authSessionSelectFilter = useMemo(() => {
     if (!workspacePromise.data) {
-      return noOpAuthSessionSelectFilter();
+      return gitAuthSessionSelectFilter();
     }
 
     if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.LOCAL) {
-      return noOpAuthSessionSelectFilter();
+      return gitAuthSessionSelectFilter();
     }
 
     if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.GIT) {
@@ -199,7 +200,7 @@ export function EditorToolbar(props: Props) {
       );
     }
 
-    return noOpAuthSessionSelectFilter();
+    return gitAuthSessionSelectFilter();
   }, [gitHubGist, workspacePromise.data]);
 
   const isSaved = useMemo(() => {
@@ -825,6 +826,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       position={SelectPosition.right}
                       isPlain={false}
                       authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
+                      showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
                       setAuthSessionId={(newAuthSessionId) => {
                         changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
                         setTimeout(() => {
@@ -1447,6 +1449,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                           isPlain={true}
                           authSessionId={workspace.descriptor.gitAuthSessionId}
+                          showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
                           setAuthSessionId={(newAuthSessionId) => {
                             changeGitAuthSessionId(newAuthSessionId, workspace.descriptor.gitAuthSessionId);
                             accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
@@ -1800,6 +1803,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={
+                                                  AuthProviderGroup.GIT
+                                                }
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
                                                     newAuthSessionId,
@@ -1828,6 +1834,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={
+                                                  AuthProviderGroup.GIT
+                                                }
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
                                                     newAuthSessionId,
@@ -1905,6 +1914,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                 title={`Select Git authentication for '${workspace.descriptor.name}'...`}
                                                 isPlain={false}
                                                 authSessionId={workspace.descriptor.gitAuthSessionId}
+                                                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={
+                                                  AuthProviderGroup.GIT
+                                                }
                                                 setAuthSessionId={(newAuthSessionId) => {
                                                   changeGitAuthSessionId(
                                                     newAuthSessionId,
@@ -2043,6 +2055,7 @@ export function PushToGitHubAlertActionLinks(props: {
                 position={SelectPosition.right}
                 isPlain={false}
                 authSessionId={props.workspaceDescriptor?.gitAuthSessionId}
+                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
                 setAuthSessionId={(newAuthSessionId) => {
                   props.changeGitAuthSessionId(newAuthSessionId, props.workspaceDescriptor?.gitAuthSessionId);
                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });

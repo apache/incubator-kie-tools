@@ -23,9 +23,10 @@ import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/di
 import { SettingsButton } from "../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
-import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
+import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
@@ -57,20 +58,21 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 </Flex>
               </MastheadBrand>
             </PageHeaderToolsItem>
-            <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
+            <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
               <FlexItem>
                 <PageHeaderToolsItem>
-                  <OpenshiftDeploymentsDropdown />
+                  <DevDeploymentsDropdown />
+                </PageHeaderToolsItem>
+              </FlexItem>
+              <Divider isVertical={true} inset={{ default: "insetMd" }} />
+              <FlexItem>
+                <PageHeaderToolsItem>
+                  <KieSandboxExtendedServicesIcon />
                 </PageHeaderToolsItem>
               </FlexItem>
               <FlexItem>
                 <PageHeaderToolsItem>
                   <SettingsButton />
-                </PageHeaderToolsItem>
-              </FlexItem>
-              <FlexItem>
-                <PageHeaderToolsItem>
-                  <KieSandboxExtendedServicesIcon />
                 </PageHeaderToolsItem>
               </FlexItem>
               <FlexItem>

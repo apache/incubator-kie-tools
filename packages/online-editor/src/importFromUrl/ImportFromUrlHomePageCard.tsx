@@ -27,11 +27,11 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
-import { useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
-import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
-import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
+import { useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
+import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
