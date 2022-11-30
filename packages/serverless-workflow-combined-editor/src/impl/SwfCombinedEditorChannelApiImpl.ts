@@ -36,6 +36,7 @@ import {
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { Position as MonacoPosition } from "monaco-editor";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import {
   ServerlessWorkflowCombinedEditorChannelApi,
@@ -172,5 +173,9 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
         defaultValue: { diagramDefaultWidth: "50%" },
       }
     );
+  }
+
+  public kogitoSwfCombinedEditor_moveCursorToPosition(_position: MonacoPosition): void {
+    // no-op
   }
 }

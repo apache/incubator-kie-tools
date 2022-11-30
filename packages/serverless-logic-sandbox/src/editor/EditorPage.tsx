@@ -62,6 +62,9 @@ import {
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
 import { WebToolsSwfLanguageService } from "./api/WebToolsSwfLanguageService";
 import { APP_NAME } from "../AppConstants";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
+import { Position } from "monaco-editor";
 
 export interface Props {
   workspaceId: string;
@@ -344,6 +347,12 @@ export function EditorPage(props: Props) {
               severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
               message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
               type: "PROBLEM",
+              position: {
+                startLineNumber: lsDiagnostic.range.start.line + 1,
+                startColumn: lsDiagnostic.range.start.character + 1,
+                endLineNumber: lsDiagnostic.range.end.line + 1,
+                endColumn: lsDiagnostic.range.end.character + 1,
+              },
             } as Notification)
         );
 
@@ -351,6 +360,26 @@ export function EditorPage(props: Props) {
       })
       .catch((e) => console.error(e));
   }, [workspaceFilePromise.data, editor, swfLanguageService, editorPageDock, i18n.terms.validation]);
+
+  const editorChannelApi = useMemo(
+    () =>
+      editor?.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>,
+    [editor]
+  );
+
+  const onNotificationClick = useCallback(
+    (notification: Notification) => {
+      if (!notification.position) {
+        return;
+      }
+
+      editorChannelApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition.send(
+        new Position(notification.position.startLineNumber, notification.position.startColumn)
+      );
+    },
+    [editorChannelApi]
+  );
 
   return (
     <OnlineEditorPage>
@@ -373,6 +402,7 @@ export function EditorPage(props: Props) {
                 ref={editorPageDockRef}
                 isEditorReady={editor?.isReady}
                 workspaceFile={file.workspaceFile}
+                onNotificationClick={onNotificationClick}
               >
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
                   <div style={{ height: "100%" }}>

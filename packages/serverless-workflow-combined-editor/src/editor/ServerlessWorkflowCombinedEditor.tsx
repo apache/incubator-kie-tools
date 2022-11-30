@@ -25,7 +25,7 @@ import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { useSharedValue, useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import {
@@ -55,6 +55,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { Position } from "monaco-editor";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
@@ -308,6 +309,19 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
 
   const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } =
     useSwfTextEditorChannelApi(useSwfTextEditorChannelApiArgs);
+
+  useSubscription(
+    editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition,
+    useCallback(
+      (position: Position) => {
+        const swfTextEditorEnvelopeApi = textEditor?.getEnvelopeServer()
+          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>;
+
+        swfTextEditorEnvelopeApi.notifications.kogitoSwfTextEditor__moveCursorToPosition.send(position);
+      },
+      [textEditor]
+    )
+  );
 
   return (
     <div style={{ height: "100%" }}>

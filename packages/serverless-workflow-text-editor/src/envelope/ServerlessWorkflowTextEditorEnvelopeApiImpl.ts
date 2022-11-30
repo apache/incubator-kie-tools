@@ -17,6 +17,7 @@
 import { EditorFactory, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-core/editor/dist/envelope";
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
+import { Position } from "monaco-editor";
 import { ServerlessWorkflowTextEditorChannelApi, ServerlessWorkflowTextEditorEnvelopeApi } from "../api";
 import { ServerlessWorkflowTextEditorApi } from "../editor";
 
@@ -42,11 +43,19 @@ export class ServerlessWorkflowTextEditorEnvelopeApiImpl
     super(serverlessWorkflowArgs, editorFactory);
   }
 
-  public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
+  private getEditorOrThrowError() {
     const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
-    editor.moveCursorToNode(args.nodeName);
+    return editor;
+  }
+
+  public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
+    this.getEditorOrThrowError().moveCursorToNode(args.nodeName);
+  }
+
+  public kogitoSwfTextEditor__moveCursorToPosition(position: Position): void {
+    this.getEditorOrThrowError().moveCursorToPosition(position);
   }
 }
