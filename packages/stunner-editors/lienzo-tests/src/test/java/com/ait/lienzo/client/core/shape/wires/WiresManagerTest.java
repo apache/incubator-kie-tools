@@ -228,7 +228,6 @@ public class WiresManagerTest {
         assertFalse(spied.getConnectorList().isEmpty());
         verify(connector, times(1)).setControl(any(WiresConnectorControl.class));
         verify(connector, times(1)).addToLayer(eq(layer));
-        verify(wiresHandlerFactory, times(1)).newConnectorHandler(connector, spied);
     }
 
     @Test
@@ -259,6 +258,7 @@ public class WiresManagerTest {
         assertEquals(spied.getWiresHandlerFactory(), wiresHandlerFactory);
         spied.addHandlers(connector);
         assertTrue(spied.getConnectorList().isEmpty());
+        verify(wiresHandlerFactory, times(1)).newConnectorHandler(connector, spied);
     }
 
     @Test
@@ -280,6 +280,7 @@ public class WiresManagerTest {
         spied.enableSelectionManager();
         spied.getSelectionManager().getSelectedItems().add(connector);
         spied.register(connector);
+        spied.addHandlers(connector);
         spied.deregister(connector);
         assertTrue(spied.getConnectorList().isEmpty());
         assertTrue(spied.getSelectionManager().getSelectedItems().isEmpty());
