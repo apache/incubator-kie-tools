@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AuthProvider } from "../accounts/authProviders/AuthProvidersApi";
+import { AuthProvider } from "../authProviders/AuthProvidersApi";
 
 export interface EnvJson {
   KIE_SANDBOX_EXTENDED_SERVICES_URL: string;

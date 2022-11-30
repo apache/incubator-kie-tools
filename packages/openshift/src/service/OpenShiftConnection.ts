@@ -20,6 +20,12 @@ export interface OpenShiftConnection {
   token: string;
 }
 
+export const EMPTY_OPENSHIFT_CONNECTION = {
+  namespace: "",
+  host: "",
+  token: "",
+};
+
 export const isOpenShiftConnectionValid = (connection: OpenShiftConnection) =>
   isNamespaceValid(connection.namespace) && isHostValid(connection.host) && isTokenValid(connection.token);
 

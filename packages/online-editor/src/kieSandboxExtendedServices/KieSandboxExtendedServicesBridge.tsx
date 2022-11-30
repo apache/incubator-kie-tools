@@ -15,26 +15,26 @@
  */
 
 interface ExtendedServicesPingResponse {
-  App: {
-    Version: string;
-    Started: boolean;
+  version: string;
+  proxyConfig: {
+    ip: string;
+    port: string;
+    insecureSkipVerify: boolean;
   };
+  modeler: string;
+  started: boolean;
 }
 
 export class KieSandboxExtendedServicesBridge {
-  private readonly KIE_SANDBOX_EXTENDED_SERVICES_PING: string;
-
-  public constructor(private readonly baseUrl: string) {
-    this.KIE_SANDBOX_EXTENDED_SERVICES_PING = `${this.baseUrl}/ping`;
-  }
+  public constructor(private readonly extendedServicesPingUrl: string) {}
 
   public async check(): Promise<boolean> {
-    const response = await fetch(this.baseUrl, { method: "OPTIONS" });
+    const response = await fetch(this.extendedServicesPingUrl);
     return response.status < 300;
   }
 
-  public async version(): Promise<ExtendedServicesPingResponse> {
-    const response = await fetch(this.KIE_SANDBOX_EXTENDED_SERVICES_PING, {
+  public async ping(): Promise<ExtendedServicesPingResponse> {
+    const response = await fetch(this.extendedServicesPingUrl, {
       method: "GET",
     });
     return await response.json();

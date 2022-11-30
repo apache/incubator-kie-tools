@@ -53,7 +53,7 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
   }, [env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL]);
 
   const [config, setConfig] = useState(new ExtendedServicesConfig(host, port));
-  const bridge = useMemo(() => new KieSandboxExtendedServicesBridge(config.buildUrl()), [config]);
+  const bridge = useMemo(() => new KieSandboxExtendedServicesBridge(config.url.ping), [config]);
   const version = useMemo(
     () => process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion ?? "0.0.0",
     []
@@ -77,7 +77,7 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       const newConfig = new ExtendedServicesConfig(host, port);
       setConfig(newConfig);
 
-      new KieSandboxExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
+      new KieSandboxExtendedServicesBridge(newConfig.url.ping).check().then((checked) => {
         if (checked) {
           saveNewConfig(newConfig);
         }
@@ -104,11 +104,11 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
     const detectKieSandboxExtendedServices: number | undefined = window.setInterval(() => {
       // Check the running version of the KieSandboxExtendedServices, cancel polling if up-to-date.
       bridge
-        .version()
+        .ping()
         .then((response) => {
-          if (response.App.Version !== version) {
+          if (response.version !== version) {
             setOutdated(true);
-          } else if (response.App.Started) {
+          } else if (response.started) {
             window.clearInterval(detectKieSandboxExtendedServices);
             setOutdated(false);
             setStatus(KieSandboxExtendedServicesStatus.RUNNING);

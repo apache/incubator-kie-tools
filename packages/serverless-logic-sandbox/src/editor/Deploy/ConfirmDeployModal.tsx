@@ -23,11 +23,12 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useCallback, useMemo, useState } from "react";
 import { AlertsController, useAlert } from "../../alerts/Alerts";
-import { isServerlessWorkflow } from "../../extension";
+import { isDashbuilder, isServerlessWorkflow } from "../../extension";
 import { useAppI18n } from "../../i18n";
 import { CompletedDeployOperation } from "../../openshift/deploy/types";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { SwfDeployOptions } from "./ConfirmOptions/SwfDeployOptions";
+import { DashDeployOptions } from "./ConfirmOptions/DashDeployOptions";
 
 interface ConfirmDeployModalProps {
   workspace: ActiveWorkspace;
@@ -52,6 +53,8 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
 
     if (isServerlessWorkflow(props.workspaceFile.name)) {
       DeployOptionsComponent = SwfDeployOptions;
+    } else if (isDashbuilder(props.workspaceFile.name)) {
+      DeployOptionsComponent = DashDeployOptions;
     }
 
     return (

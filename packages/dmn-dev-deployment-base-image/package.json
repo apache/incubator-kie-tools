@@ -1,0 +1,36 @@
+{
+  "private": true,
+  "name": "@kie-tools/dmn-dev-deployment-base-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "pnpm cleanup",
+    "build:prod": "pnpm cleanup && run-script-os",
+    "build:prod:darwin:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm podman:build\"",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:assets": "pnpm copy:dmn-dev-deployment-form-webapp && pnpm copy:dmn-dev-deployment-quarkus-app",
+    "copy:dmn-dev-deployment-form-webapp": "cp -R ../dmn-dev-deployment-form-webapp/dist ./dist-dev/dmn-dev-deployment-form-webapp",
+    "copy:dmn-dev-deployment-quarkus-app": "cp -R ../dmn-dev-deployment-quarkus-app ./dist-dev/dmn-dev-deployment-quarkus-app",
+    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dmnDevDeploymentBaseImage.buildTags) | xargs printf -- \"-t $(build-env dmnDevDeploymentBaseImageEnv.registry)/$(build-env dmnDevDeploymentBaseImageEnv.account)/$(build-env dmnDevDeploymentBaseImageEnv.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+  },
+  "dependencies": {
+    "@kie-tools/dmn-dev-deployment-form-webapp": "workspace:*",
+    "@kie-tools/dmn-dev-deployment-quarkus-app": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/dmn-dev-deployment-base-image-env": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  }
+}
