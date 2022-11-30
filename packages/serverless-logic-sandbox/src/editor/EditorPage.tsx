@@ -363,14 +363,21 @@ export function EditorPage(props: Props) {
 
   const editorChannelApi = useMemo(
     () =>
-      editor?.getEnvelopeServer()
-        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>,
+      embeddedEditorFile && isServerlessWorkflow(embeddedEditorFile?.fileName)
+        ? (editor?.getEnvelopeServer()
+            .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>)
+        : undefined,
     [editor]
   );
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {
-      if (!notification.position) {
+      if (
+        !notification.position ||
+        !editorChannelApi ||
+        !embeddedEditorFile ||
+        !isServerlessWorkflow(embeddedEditorFile?.fileName)
+      ) {
         return;
       }
 
