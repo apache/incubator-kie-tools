@@ -60,7 +60,7 @@ runs:
         echo "STEP: Start Xvfb (Ubuntu only)"
         cd ${{ inputs.working_dir }}
         if [ "${{ runner.os }}" == "Linux" ]; then
-            /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+            /usr/bin/Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
         fi
 
     - name: "Configure Pagefile (Windows only)"
