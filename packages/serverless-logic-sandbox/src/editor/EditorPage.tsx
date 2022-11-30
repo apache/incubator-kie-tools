@@ -361,7 +361,7 @@ export function EditorPage(props: Props) {
       .catch((e) => console.error(e));
   }, [workspaceFilePromise.data, editor, swfLanguageService, editorPageDock, i18n.terms.validation]);
 
-  const editorChannelApi = useMemo(
+  const swfEditorChannelApi = useMemo(
     () =>
       embeddedEditorFile && isServerlessWorkflow(embeddedEditorFile?.fileName)
         ? (editor?.getEnvelopeServer()
@@ -374,18 +374,18 @@ export function EditorPage(props: Props) {
     (notification: Notification) => {
       if (
         !notification.position ||
-        !editorChannelApi ||
+        !swfEditorChannelApi ||
         !embeddedEditorFile ||
         !isServerlessWorkflow(embeddedEditorFile?.fileName)
       ) {
         return;
       }
 
-      editorChannelApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition.send(
+      swfEditorChannelApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition.send(
         new Position(notification.position.startLineNumber, notification.position.startColumn)
       );
     },
-    [editorChannelApi]
+    [swfEditorChannelApi]
   );
 
   return (
