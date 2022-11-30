@@ -232,6 +232,36 @@ public class WiresManagerTest {
     }
 
     @Test
+    public void testRegisterAddHandler() {
+        final IConnectionAcceptor connectionAcceptor = mock(IConnectionAcceptor.class);
+        tested.setConnectionAcceptor(connectionAcceptor);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
+        final Group group = new Group();
+        final Group shapeGroup = spy(group);
+        final AbstractDirectionalMultiPointShape<?> line = mock(AbstractDirectionalMultiPointShape.class);
+        final MultiPath head = mock(MultiPath.class);
+        final MultiPath tail = mock(MultiPath.class);
+        final WiresConnector connector = mock(WiresConnector.class);
+        final WiresHandlerFactory wiresHandlerFactory = mock(WiresHandlerFactory.class);
+        final WiresConnectorHandler wiresConnectorHandler = mock(WiresConnectorHandler.class);
+        final WiresConnectorControl wiresConnectorControl = mock(WiresConnectorControl.class);
+        doReturn(shapeGroup).when(connector).getGroup();
+        doReturn(line).when(connector).getLine();
+        doReturn(head).when(connector).getHead();
+        doReturn(tail).when(connector).getTail();
+        doReturn(group.uuid()).when(connector).uuid();
+        doReturn(wiresConnectorHandler).when(wiresHandlerFactory).newConnectorHandler(connector, spied);
+        doReturn(wiresConnectorControl).when(wiresConnectorHandler).getControl();
+
+        spied.setWiresHandlerFactory(wiresHandlerFactory);
+        assertEquals(spied.getWiresHandlerFactory(), wiresHandlerFactory);
+        spied.addHandlers(connector);
+        assertTrue(spied.getConnectorList().isEmpty());
+    }
+
+    @Test
     public void testDeregisterConnector() {
         final WiresManager spied = spy(tested);
         final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
