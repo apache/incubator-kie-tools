@@ -17,12 +17,12 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { UnitablesI18n } from "./i18n";
-import { ColumnInstance } from "react-table";
+import * as ReactTable from "react-table";
 import { useUnitablesInputs } from "./UnitablesInputs";
 import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import nextId from "react-id-generator";
-import { CustomTable } from "./boxed";
+import { BeeTableWrapper } from "./bee";
 import { UnitablesInputRule } from "./UnitablesBoxedTypes";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -57,7 +57,7 @@ interface Props {
 export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRef) => {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-  const inputColumnsCache = useRef<ColumnInstance[]>([]);
+  const inputColumnsCache = useRef<ReactTable.ColumnInstance[]>([]);
 
   const { inputs, inputRules, updateInputCellsWidth, operationHandler } = useUnitablesInputs(
     props.jsonSchemaBridge,
@@ -74,7 +74,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
 
   // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
   const onInputColumnsUpdate = useCallback(
-    (columns: ColumnInstance[]) => {
+    (columns: ReactTable.ColumnInstance[]) => {
       inputColumnsCache.current = columns;
       updateInputCellsWidth(inputs);
     },
@@ -124,7 +124,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
                   </Tooltip>
                 ))}
               </div>
-              <CustomTable
+              <BeeTableWrapper
                 name={props?.name ?? ""}
                 i18n={props.i18n}
                 onRowNumberUpdate={props.onRowNumberUpdate}

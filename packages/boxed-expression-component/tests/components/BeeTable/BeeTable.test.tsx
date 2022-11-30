@@ -25,7 +25,7 @@ import {
   BeeTableColumnsUpdateArgs,
   DmnBuiltInDataType,
   BeeTableRowsUpdateArgs,
-  BeeTableHandlerConfiguration,
+  BeeTableOperationHandlerConfig,
   BeeTableOperation,
 } from "@kie-tools/boxed-expression-component/dist/api";
 
@@ -63,7 +63,7 @@ const expressionCell = (rowIndex: number, columnIndex: number) => {
   );
 };
 
-const expressionTableHandlerMenuEntry = (menuEntry: string) => {
+const operationHandlerMenuEntry = (menuEntry: string) => {
   return "[data-ouia-component-id='expression-table-handler-menu-" + menuEntry + "']";
 };
 
@@ -76,7 +76,7 @@ const assertHeaderCell = (container: Element, expectedCells: number, content: st
 
 describe("Table tests", () => {
   const columnName = "column-1";
-  const handlerConfiguration: BeeTableHandlerConfiguration = [];
+  const operationHandlerConfig: BeeTableOperationHandlerConfig = [];
 
   describe("when rendering it", () => {
     test("should show a table element", () => {
@@ -88,7 +88,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -106,7 +106,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -130,7 +130,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -157,7 +157,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -175,7 +175,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -199,7 +199,7 @@ describe("Table tests", () => {
               rows={rows}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -231,7 +231,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -271,7 +271,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={mockedOnColumnUpdate}
               onRowsUpdate={_.identity}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -349,7 +349,7 @@ describe("Table tests", () => {
               rows={[row]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={mockedOnRowsUpdate}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -426,7 +426,7 @@ describe("Table tests", () => {
               onColumnsUpdate={_.identity}
               onRowAdding={() => ({})}
               onRowsUpdate={mockedOnRowsUpdate}
-              handlerConfiguration={handlerConfiguration}
+              operationHandlerConfig={operationHandlerConfig}
             />
           ).wrapper
         ).wrapper
@@ -463,7 +463,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={mockedOnColumnUpdate}
               onRowsUpdate={_.identity}
-              handlerConfiguration={[
+              operationHandlerConfig={[
                 {
                   group: "COLUMNS",
                   items: [{ name: "Insert Column Left", type: BeeTableOperation.ColumnInsertLeft }],
@@ -508,7 +508,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={mockedOnColumnUpdate}
               onRowsUpdate={_.identity}
-              handlerConfiguration={[
+              operationHandlerConfig={[
                 {
                   group: "COLUMNS",
                   items: [{ name: "Insert Column right", type: BeeTableOperation.ColumnInsertRight }],
@@ -552,7 +552,7 @@ describe("Table tests", () => {
               rows={[]}
               onColumnsUpdate={mockedOnColumnUpdate}
               onRowsUpdate={_.identity}
-              handlerConfiguration={[
+              operationHandlerConfig={[
                 {
                   group: "COLUMNS",
                   items: [{ name: "Delete", type: BeeTableOperation.ColumnDelete }],
@@ -600,7 +600,7 @@ describe("Table tests", () => {
               rows={[row]}
               onColumnsUpdate={mockedOnColumnUpdate}
               onRowsUpdate={_.identity}
-              handlerConfiguration={[
+              operationHandlerConfig={[
                 {
                   group: "COLUMNS",
                   items: [{ name: "Delete", type: BeeTableOperation.ColumnDelete }],
@@ -639,7 +639,7 @@ describe("Table tests", () => {
               rows={[row]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={mockedOnRowsUpdate}
-              handlerConfiguration={[
+              operationHandlerConfig={[
                 {
                   group: "ROWS",
                   items: [{ name: "Insert row above", type: BeeTableOperation.RowInsertAbove }],
@@ -684,7 +684,7 @@ describe("Table tests", () => {
               rows={[row]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={mockedOnRowsUpdate}
-              handlerConfiguration={[
+              operationHandlerConfig={[
                 {
                   group: "ROWS",
                   items: [{ name: "Insert row below", type: BeeTableOperation.RowInsertBelow }],
@@ -730,7 +730,7 @@ describe("Table tests", () => {
               rows={[firstRow, secondRow]}
               onColumnsUpdate={_.identity}
               onRowsUpdate={mockedOnRowsUpdate}
-              handlerConfiguration={[
+              operationHandlerConfig={[
                 {
                   group: "ROWS",
                   items: [{ name: "Delete", type: BeeTableOperation.RowDelete }],
@@ -815,7 +815,7 @@ async function selectMenuEntryIfNotDisabled(baseElement: Element, menuEntry: str
   await act(async () => {
     expect(baseElement.querySelector(EXPRESSION_TABLE_HANDLER_MENU)).toBeTruthy();
     const button: HTMLButtonElement = baseElement.querySelector(
-      expressionTableHandlerMenuEntry(menuEntry) + " button:not([disabled])"
+      operationHandlerMenuEntry(menuEntry) + " button:not([disabled])"
     ) as HTMLButtonElement;
     if (button != null) {
       button.click();

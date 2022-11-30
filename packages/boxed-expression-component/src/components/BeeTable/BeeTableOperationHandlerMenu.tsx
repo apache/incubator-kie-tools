@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import "./BeeTableHandlerMenu.css";
+import "./BeeTableOperationHandlerMenu.css";
 import * as React from "react";
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
-import { BeeTableOperationGroup, BeeTableOperation } from "../../api";
+import { BeeTableOperationHandlerGroup, BeeTableOperation } from "../../api";
 import * as _ from "lodash";
 
-export interface BeeTableHandlerMenuProps {
+export interface BeeTableOperationHandlerMenuProps {
   /** Handler menu groups and items */
-  handlerConfiguration: BeeTableOperationGroup[];
+  operationHandlerConfig: BeeTableOperationHandlerGroup[];
   /** Dynamic Allowed operations */
   allowedOperations: BeeTableOperation[];
   /** Function to be executed when an operation gets selected */
   onOperation: (operation: BeeTableOperation) => void;
 }
 
-export const BeeTableHandlerMenu: React.FunctionComponent<BeeTableHandlerMenuProps> = ({
-  handlerConfiguration,
+export const BeeTableOperationHandlerMenu: React.FunctionComponent<BeeTableOperationHandlerMenuProps> = ({
+  operationHandlerConfig,
   allowedOperations,
   onOperation,
 }) => {
@@ -40,7 +40,7 @@ export const BeeTableHandlerMenu: React.FunctionComponent<BeeTableHandlerMenuPro
       className="table-handler-menu"
       onSelect={(event, itemId) => onOperation(itemId as BeeTableOperation)}
     >
-      {handlerConfiguration.map((groupOperation) => (
+      {operationHandlerConfig.map((groupOperation) => (
         <MenuGroup
           key={groupOperation.group}
           label={groupOperation.group}

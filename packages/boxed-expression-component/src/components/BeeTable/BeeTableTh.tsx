@@ -16,56 +16,55 @@
 
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Td } from "@patternfly/react-table";
+import { Th } from "@patternfly/react-table";
 import { BeeTableCellComponent } from "../../api";
 
-export interface BeeTdAdditiveCellProps extends BeeTableCellComponent {
+export interface BeeTableThProps extends BeeTableCellComponent {
   children?: React.ReactElement;
-  isEmptyCell?: boolean;
+  className: string;
+  headerProps: any;
+  isFocusable: boolean;
+  onClick?: () => void;
+  rowSpan: number;
+  thProps?: any;
 }
 
-export function BeeTdAdditiveCell({
+export function BeeTableTh({
   children,
-  cellIndex,
-  isEmptyCell = false,
+  className,
+  headerProps,
+  isFocusable = true,
   onKeyDown,
+  onClick,
   rowIndex,
+  thProps,
+  rowSpan = 1,
   xPosition,
   yPosition,
-}: BeeTdAdditiveCellProps) {
-  const tdRef = useRef<HTMLTableCellElement>(null);
+}: BeeTableThProps) {
+  const thRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const onKeyDownForIndex = onKeyDown();
-    const cell = tdRef.current;
+    const onKeyDownForIndex = onKeyDown(rowSpan);
+    const cell = thRef.current;
     cell?.addEventListener("keydown", onKeyDownForIndex);
     return () => {
       cell?.removeEventListener("keydown", onKeyDownForIndex);
     };
-  }, [onKeyDown, rowIndex]);
+  }, [onKeyDown, rowIndex, rowSpan]);
 
-  return isEmptyCell ? (
-    <Td
-      ref={tdRef}
-      role="cell"
-      className="empty-cell"
-      tabIndex={-1}
-      data-xposition={xPosition}
-      data-yposition={yPosition}
-    >
-      <br />
-    </Td>
-  ) : (
-    <Td
-      ref={tdRef}
-      role="cell"
-      key={cellIndex}
-      className="row-remainder-content"
-      tabIndex={-1}
+  return (
+    <Th
+      {...headerProps}
+      {...thProps}
+      ref={thRef}
+      onClick={onClick}
+      className={className}
+      tabIndex={isFocusable ? "-1" : undefined}
       data-xposition={xPosition}
       data-yposition={yPosition}
     >
       {children}
-    </Td>
+    </Th>
   );
 }

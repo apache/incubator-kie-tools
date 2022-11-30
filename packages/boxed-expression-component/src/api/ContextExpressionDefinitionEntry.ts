@@ -18,7 +18,7 @@ import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import { ExpressionDefinition } from "./ExpressionDefinition";
 import * as _ from "lodash";
 import * as ReactTable from "react-table";
-import { BeeTableHandlerConfiguration, BeeTableOperation } from "./BeeTable";
+import { BeeTableOperationHandlerConfig, BeeTableOperation } from "./BeeTable";
 import { BoxedExpressionEditorI18n } from "../i18n";
 
 export interface ContextExpressionDefinitionEntryInfo {
@@ -43,10 +43,10 @@ export interface ContextExpressionDefinitionEntry<T = ExpressionDefinition> exte
 export const DEFAULT_ENTRY_INFO_MIN_WIDTH = 150;
 export const DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
 
-export const getHandlerConfiguration = (
+export const operationHandlerConfig = (
   i18n: BoxedExpressionEditorI18n,
   groupName: string
-): BeeTableHandlerConfiguration => [
+): BeeTableOperationHandlerConfig => [
   {
     group: groupName,
     items: [

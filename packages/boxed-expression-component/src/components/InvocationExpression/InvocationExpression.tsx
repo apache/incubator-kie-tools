@@ -27,7 +27,7 @@ import {
   generateNextAvailableEntryName,
   generateUuid,
   getEntryKey,
-  getHandlerConfiguration,
+  operationHandlerConfig as getOperationHandlerConfig,
   InvocationExpressionDefinition,
   ExpressionDefinitionLogicType,
   resetEntry,
@@ -247,8 +247,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [i18n.editParameter]
   );
 
-  const handlerConfiguration = useMemo(() => {
-    return getHandlerConfiguration(i18n, i18n.parameters);
+  const operationHandlerConfig = useMemo(() => {
+    return getOperationHandlerConfig(i18n, i18n.parameters);
   }, [i18n]);
 
   return (
@@ -264,7 +264,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         onColumnsUpdate={onColumnsUpdate}
         onRowAdding={onRowAdding}
         onRowsUpdate={onRowsUpdate}
-        handlerConfiguration={handlerConfiguration}
+        operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKeyCallback}
         resetRowCustomFunction={resetEntryCallback}
       />

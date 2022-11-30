@@ -26,7 +26,7 @@ import {
 } from "../../api";
 import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../Resizer";
-import { BeeEditableCell } from "../BeeTable";
+import { BeeTableEditableCellContent } from "../BeeTable";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 const HEADER_WIDTH = 250;
@@ -139,7 +139,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
         </div>
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={onBodyClick}>
-        <BeeEditableCell
+        <BeeTableEditableCellContent
           value={literalExpression.content ?? ""}
           rowIndex={0}
           columnId={literalExpression.id ?? "-"}

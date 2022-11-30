@@ -29,7 +29,7 @@ import {
   generateNextAvailableEntryName,
   generateUuid,
   getEntryKey,
-  getHandlerConfiguration,
+  operationHandlerConfig as getOperationHandlerConfig,
   ExpressionDefinitionLogicType,
   resetEntry,
   BeeTableRowsUpdateArgs,
@@ -231,8 +231,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [i18n.editContextEntry]
   );
 
-  const handlerConfiguration = useMemo(
-    () => (contextExpression.noHandlerMenu ? undefined : getHandlerConfiguration(i18n, i18n.contextEntry)),
+  const operationHandlerConfig = useMemo(
+    () => (contextExpression.noHandlerMenu ? undefined : getOperationHandlerConfig(i18n, i18n.contextEntry)),
     [i18n, contextExpression.noHandlerMenu]
   );
 
@@ -266,7 +266,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         onColumnsUpdate={onColumnsUpdate}
         onRowAdding={onRowAdding}
         onRowsUpdate={onRowsUpdate}
-        handlerConfiguration={handlerConfiguration}
+        operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}
         resetRowCustomFunction={resetRowCustomFunction}
       >

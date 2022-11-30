@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./BeeEditableCell";
+export * from "./BeeTableEditableCellContent";
 export * from "./BeeTable";
 export * from "./BeeTableBody";
-export * from "./BeeTableHandler";
-export * from "./BeeTableHandlerMenu";
-export * from "./BEeTableHeader";
+export * from "./BeeTableOperationHandler";
+export * from "./BeeTableOperationHandlerMenu";
+export * from "./BeeTableHeader";

@@ -451,7 +451,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [spreadFunctionExpressionDefinition]
   );
 
-  const handlerConfiguration = useMemo(() => {
+  const operationHandlerConfig = useMemo(() => {
     return [
       {
         group: _.upperCase(i18n.function),
@@ -515,7 +515,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   return (
     <div className={`function-expression ${functionExpression.id}`}>
       <BeeTable
-        handlerConfiguration={handlerConfiguration}
+        operationHandlerConfig={operationHandlerConfig}
         columns={columns}
         onColumnsUpdate={onColumnsUpdate}
         rows={tableRows}

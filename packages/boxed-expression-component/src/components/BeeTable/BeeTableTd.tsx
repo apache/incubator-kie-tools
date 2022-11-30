@@ -19,31 +19,31 @@ import { useEffect, useRef } from "react";
 import { Td } from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import * as ReactTable from "react-table";
-import { BeeTableColumn as IColumn, BeeTableCellComponent } from "../../api";
+import { BeeTableColumn, BeeTableCellComponent } from "../../api";
 
-export interface BeeTableTdCellProps extends BeeTableCellComponent {
+export interface BeeTableTdProps extends BeeTableCellComponent {
   cell: ReactTable.Cell;
   getColumnKey: (column: ReactTable.Column) => string;
-  inAForm: boolean;
+  isInForm: boolean;
   onColumnsUpdate: (columns: ReactTable.Column[]) => void;
   reactTableInstance: ReactTable.TableInstance;
   tdProps: (cellIndex: number, rowIndex: number) => any;
 }
 
-export function BeeTableTdCell({
+export function BeeTableTd({
   cellIndex,
   cell,
   rowIndex,
-  inAForm,
+  isInForm,
   onKeyDown,
-  reactTableInstance: tableInstance,
+  reactTableInstance,
   getColumnKey,
   onColumnsUpdate,
   tdProps,
   yPosition,
-}: BeeTableTdCellProps) {
+}: BeeTableTdProps) {
   let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
-  const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
+  const column = reactTableInstance.allColumns[cellIndex] as unknown as BeeTableColumn;
   const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
   const tdRef = useRef<HTMLElement>(null);
 
@@ -59,17 +59,17 @@ export function BeeTableTdCell({
   const onResize = (width: number) => {
     if (column.setWidth) {
       column.setWidth(width);
-      tableInstance.allColumns[cellIndex].width = width;
-      onColumnsUpdate?.(tableInstance.columns);
+      reactTableInstance.allColumns[cellIndex].width = width;
+      onColumnsUpdate?.(reactTableInstance.columns);
     }
   };
-  const cellTemplate =
+  const cellContent =
     cellIndex === 0 ? (
       <>{rowIndex + 1}</>
     ) : (
       <Resizer width={width} onHorizontalResizeStop={onResize}>
         <>
-          {inAForm && typeof (cell.column as any)?.cellDelegate === "function"
+          {isInForm && typeof (cell.column as any)?.cellDelegate === "function"
             ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
             : cell.render("Cell")}
         </>
@@ -91,7 +91,7 @@ export function BeeTableTdCell({
       data-xposition={cellIndex}
       data-yposition={yPosition ?? rowIndex}
     >
-      {cellTemplate}
+      {cellContent}
     </Td>
   );
 }

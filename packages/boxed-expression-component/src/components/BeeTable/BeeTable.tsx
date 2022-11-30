@@ -37,11 +37,11 @@ import {
   PASTE_OPERATION,
 } from "./common";
 import { NavigationKeysUtils } from "../../keysUtils";
-import { BeeEditableCell } from "./BeeEditableCell";
+import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
-import { BeeTableHandler } from "./BeeTableHandler";
-import { BeeTableHeader } from "./BEeTableHeader";
+import { BeeTableOperationHandler } from "./BeeTableOperationHandler";
+import { BeeTableHeader } from "./BeeTableHeader";
 
 export const NO_TABLE_CONTEXT_MENU_CLASS = "no-table-context-menu";
 
@@ -125,7 +125,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
   defaultCellByColumnId,
   rows,
   columns,
-  handlerConfiguration,
+  operationHandlerConfig,
   headerVisibility,
   headerLevels = 0,
   skipLastHeaderGroup = false,
@@ -199,9 +199,11 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
   }, []);
 
   const tableRows = useRef<ReactTable.DataRecord[]>(evaluateRows(rows));
-  const [showTableHandler, setShowTableHandler] = useState(false);
-  const [tableHandlerTarget, setTableHandlerTarget] = useState<HTMLElement>(boxedExpressionEditor.editorRef.current!);
-  const [tableHandlerAllowedOperations, setTableHandlerAllowedOperations] = useState(
+  const [showTableOperationHandler, setShowTableOperationHandler] = useState(false);
+  const [operationHandlerTarget, setOperationHandlerTarget] = useState<HTMLElement>(
+    boxedExpressionEditor.editorRef.current!
+  );
+  const [allowedOperations, setAllowedOperations] = useState(
     _.values(BeeTableOperation).map((operation) => parseInt(operation.toString()))
   );
   const [lastSelectedColumn, setLastSelectedColumn] = useState({} as ReactTable.ColumnInstance);
@@ -291,13 +293,13 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
     return targetIsContainedInCurrentTable && contextMenuAvailableForTarget;
   }, []);
 
-  const tableHandlerStateUpdate = useCallback(
+  const operationHandlerStateUpdate = useCallback(
     (target: HTMLElement, column: ReactTable.ColumnInstance) => {
-      setTableHandlerTarget(target);
+      setOperationHandlerTarget(target);
       boxedExpressionEditor.currentlyOpenedHandlerCallback?.(false);
-      setShowTableHandler(true);
+      setShowTableOperationHandler(true);
       boxedExpressionEditor.setContextMenuOpen(true);
-      boxedExpressionEditor.setCurrentlyOpenedHandlerCallback?.(() => setShowTableHandler);
+      boxedExpressionEditor.setCurrentlyOpenedHandlerCallback?.(() => setShowTableOperationHandler);
       setLastSelectedColumn(column);
     },
     [boxedExpressionEditor]
@@ -336,12 +338,12 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
         const handlerOnHeaderIsAvailable = !column.disableHandlerOnHeader;
         if (contextMenuIsAvailable(target) && handlerOnHeaderIsAvailable) {
           e.preventDefault();
-          setTableHandlerAllowedOperations(getColumnOperations(columnIndex));
-          tableHandlerStateUpdate(target, column);
+          setAllowedOperations(getColumnOperations(columnIndex));
+          operationHandlerStateUpdate(target, column);
         }
       },
     }),
-    [getColumnOperations, tableHandlerStateUpdate, contextMenuIsAvailable, reactTableColumns]
+    [getColumnOperations, operationHandlerStateUpdate, contextMenuIsAvailable, reactTableColumns]
   );
 
   const defaultColumn: Partial<ReactTable.Column> = useMemo(
@@ -359,7 +361,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
             });
           }
           return (
-            <BeeEditableCell
+            <BeeTableEditableCellContent
               {...cellProps}
               rowIndex={cellProps.row.index}
               columnId={cellProps.column.id}
@@ -378,7 +380,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
         const target = e.target as HTMLElement;
         if (contextMenuIsAvailable(target)) {
           e.preventDefault();
-          setTableHandlerAllowedOperations([
+          setAllowedOperations([
             ...getColumnOperations(columnIndex),
             BeeTableOperation.RowInsertAbove,
             BeeTableOperation.RowInsertBelow,
@@ -386,14 +388,14 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
             BeeTableOperation.RowClear,
             BeeTableOperation.RowDuplicate,
           ]);
-          tableHandlerStateUpdate(target, getColumnsAtLastLevel(reactTableColumns, headerLevels)[columnIndex]);
+          operationHandlerStateUpdate(target, getColumnsAtLastLevel(reactTableColumns, headerLevels)[columnIndex]);
           setLastSelectedRowIndex(rowIndex);
 
           focusCurrentCell(target);
         }
       },
     }),
-    [getColumnOperations, tableHandlerStateUpdate, contextMenuIsAvailable, reactTableColumns, rows, headerLevels]
+    [getColumnOperations, operationHandlerStateUpdate, contextMenuIsAvailable, reactTableColumns, rows, headerLevels]
   );
 
   const reactTableInstance = ReactTable.useTable(
@@ -511,26 +513,26 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
           onCellKeyDown={onCellKeyDown}
           onColumnsUpdate={onColumnsUpdateCallback}
           skipLastHeaderGroup={skipLastHeaderGroup}
-          tableInstance={reactTableInstance}
+          reactTableInstance={reactTableInstance}
           tdProps={tdProps}
         >
           {children}
         </BeeTableBody>
       </TableComposable>
-      {showTableHandler && handlerConfiguration && (
-        <BeeTableHandler
+      {showTableOperationHandler && operationHandlerConfig && (
+        <BeeTableOperationHandler
           tableColumns={reactTableColumns}
           getColumnPrefix={onGetColumnPrefix}
-          handlerConfiguration={handlerConfiguration}
+          operationHandlerConfig={operationHandlerConfig}
           lastSelectedColumn={lastSelectedColumn}
           lastSelectedRowIndex={lastSelectedRowIndex}
           tableRows={tableRows}
           onRowsUpdate={onRowsUpdateCallback}
           onRowAdding={onRowAddingCallback}
-          showTableHandler={showTableHandler}
-          setShowTableHandler={setShowTableHandler}
-          tableHandlerAllowedOperations={tableHandlerAllowedOperations}
-          tableHandlerTarget={tableHandlerTarget}
+          showTableOperationHandler={showTableOperationHandler}
+          setShowTableOperationHandler={setShowTableOperationHandler}
+          allowedOperations={allowedOperations}
+          operationHandlerTarget={operationHandlerTarget}
           resetRowCustomFunction={resetRowCustomFunction}
           onColumnsUpdate={onColumnsUpdateCallback}
         />

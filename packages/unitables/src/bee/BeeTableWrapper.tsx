@@ -16,19 +16,17 @@
 
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { Column, ColumnInstance } from "react-table";
-
+import * as ReactTable from "react-table";
 import {
   BeeTableColumnsUpdateArgs,
   ExpressionDefinition,
-  BeeTableHandlerConfiguration,
   BeeTableRowsUpdateArgs,
   BeeTableOperation,
   BeeTableHeaderVisibility,
-  BeeTableOperationGroup,
+  BeeTableOperationHandlerGroup,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel, BeeTable } from "@kie-tools/boxed-expression-component/dist/components";
-import "./CustomTable.css";
+import "./BeeTableWrapper.css";
 import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../UnitablesBoxedTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 
@@ -47,7 +45,7 @@ const EMPTY_SYMBOL = "";
 
 type DataRecord = Record<string, unknown>;
 
-export interface CustomTableProps extends ExpressionDefinition {
+export interface BeeTableWrapperProps extends ExpressionDefinition {
   i18n: BoxedExpressionEditorI18n;
   /** Input columns definition */
   input?: UnitablesClause[];
@@ -56,12 +54,12 @@ export interface CustomTableProps extends ExpressionDefinition {
   /** Rules represent rows values */
   rules?: UnitablesInputRule[] | BoxedExpressionOutputRule[];
   /** Callback to be called when columns is updated */
-  onColumnsUpdate: (columns: Column[]) => void;
+  onColumnsUpdate: (columns: ReactTable.Column[]) => void;
   /** Callback to be called when row number is updated */
   onRowNumberUpdate?: (rowQtt: number, operation?: BeeTableOperation, updatedRowIndex?: number) => void;
 }
 
-export function CustomTable(props: CustomTableProps) {
+export function BeeTableWrapper(props: BeeTableWrapperProps) {
   const getColumnPrefix = useCallback((groupType?: string) => {
     switch (groupType) {
       case DecisionTableColumnType.InputClause:
@@ -73,7 +71,7 @@ export function CustomTable(props: CustomTableProps) {
     }
   }, []);
 
-  const generateHandlerConfigurationByColumn = useMemo(
+  const beeTableOperationGroup = useMemo(
     () => [
       {
         group: props.i18n.decisionRule,
@@ -89,20 +87,20 @@ export function CustomTable(props: CustomTableProps) {
     [props.i18n]
   );
 
-  const getHandlerConfiguration = useMemo(() => {
-    const configuration: { [columnGroupType: string]: BeeTableOperationGroup[] } = {};
-    configuration[EMPTY_SYMBOL] = generateHandlerConfigurationByColumn;
-    configuration[DecisionTableColumnType.InputClause] = generateHandlerConfigurationByColumn;
-    configuration[DecisionTableColumnType.OutputClause] = generateHandlerConfigurationByColumn;
+  const beeTableOperationConfig = useMemo(() => {
+    const configuration: { [columnGroupType: string]: BeeTableOperationHandlerGroup[] } = {};
+    configuration[EMPTY_SYMBOL] = beeTableOperationGroup;
+    configuration[DecisionTableColumnType.InputClause] = beeTableOperationGroup;
+    configuration[DecisionTableColumnType.OutputClause] = beeTableOperationGroup;
     return configuration;
-  }, [generateHandlerConfigurationByColumn]);
+  }, [beeTableOperationGroup]);
 
-  const getEditColumnLabel = useMemo(() => {
+  const editColumnLabel = useMemo(() => {
     const editColumnLabel: { [columnGroupType: string]: string } = {};
     editColumnLabel[DecisionTableColumnType.InputClause] = props.i18n.editClause.input;
     editColumnLabel[DecisionTableColumnType.OutputClause] = props.i18n.editClause.output;
     return editColumnLabel;
-  }, [props.i18n.editClause.input, props.i18n.editClause.output]);
+  }, [props.i18n]);
 
   const columns = useMemo(() => {
     const inputSection = (props.input ?? []).map((inputClause, inputClauseIndex) => {
@@ -152,7 +150,7 @@ export function CustomTable(props: CustomTableProps) {
                   label: `${keys}`,
                   accessor: `output-${keys}-${entryIndex}`,
                   cssClasses: "decision-table--output",
-                } as ColumnInstance;
+                } as ReactTable.ColumnInstance;
               });
               return {
                 groupType: DecisionTableColumnType.OutputClause,
@@ -162,7 +160,7 @@ export function CustomTable(props: CustomTableProps) {
                 columns: columns,
                 appendColumnsOnChildren: true,
                 dataType: props.output?.[outputIndex]?.dataType,
-              } as ColumnInstance;
+              } as ReactTable.ColumnInstance;
             });
           }
           if (outputEntry !== null && typeof outputEntry === "object") {
@@ -178,7 +176,7 @@ export function CustomTable(props: CustomTableProps) {
                 width: output?.width ?? CELL_MINIMUM_WIDTH,
                 accessor: `output-${entryKey}`,
                 cssClasses: "decision-table--output",
-              } as ColumnInstance;
+              } as ReactTable.ColumnInstance;
             });
             const width =
               columns.reduce((acc, column) => acc + (column.width as number), 0) + 2.22 * (columns.length - 1);
@@ -192,7 +190,7 @@ export function CustomTable(props: CustomTableProps) {
                 width,
                 appendColumnsOnChildren: true,
                 dataType: props.output?.[outputIndex]?.dataType,
-              } as ColumnInstance,
+              } as ReactTable.ColumnInstance,
             ];
           }
           return [
@@ -210,7 +208,7 @@ export function CustomTable(props: CustomTableProps) {
       );
     }
 
-    const updatedColumns: ColumnInstance[] = [];
+    const updatedColumns: ReactTable.ColumnInstance[] = [];
     if (inputSection) {
       updatedColumns.push(...(inputSection as any));
     }
@@ -320,8 +318,8 @@ export function CustomTable(props: CustomTableProps) {
               headerLevels={1}
               headerVisibility={BeeTableHeaderVisibility.Full}
               getColumnPrefix={getColumnPrefix}
-              editColumnLabel={getEditColumnLabel}
-              handlerConfiguration={getHandlerConfiguration}
+              editColumnLabel={editColumnLabel}
+              operationHandlerConfig={beeTableOperationConfig}
               columns={columns}
               rows={rows}
               onColumnsUpdate={onColumnsUpdate}

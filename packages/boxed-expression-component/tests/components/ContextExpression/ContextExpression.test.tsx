@@ -121,5 +121,5 @@ describe("ContextExpression tests", () => {
 
 jest.mock("@kie-tools/boxed-expression-component/dist/api", () => ({
   ...(jest.requireActual("@kie-tools/boxed-expression-component/dist/api") as Record<string, unknown>),
-  getHandlerConfiguration: jest.fn(),
+  getOperationHandlerConfig: jest.fn(),
 }));

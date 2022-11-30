@@ -17,7 +17,11 @@
 import { act, fireEvent, render } from "@testing-library/react";
 import * as _ from "lodash";
 import * as React from "react";
-import { BeeEditableCell, EDIT_MODE, READ_MODE } from "@kie-tools/boxed-expression-component/dist/components/BeeTable";
+import {
+  BeeTableEditableCellContent,
+  EDIT_MODE,
+  READ_MODE,
+} from "@kie-tools/boxed-expression-component/dist/components/BeeTable";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
 
 describe("EditableCell", () => {
@@ -31,7 +35,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <BeeEditableCell value={initialValue} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
+          <BeeTableEditableCellContent value={initialValue} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
     });
@@ -50,7 +54,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <BeeEditableCell value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
+          <BeeTableEditableCellContent value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
 
@@ -66,7 +70,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <BeeEditableCell value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
+          <BeeTableEditableCellContent value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
     });
@@ -82,7 +86,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <BeeEditableCell value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
+          <BeeTableEditableCellContent value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
 
@@ -111,7 +115,7 @@ describe("EditableCell", () => {
     test("triggers the onCellUpdate function", () => {
       const { getByTestId } = render(
         usingTestingBoxedExpressionI18nContext(
-          <BeeEditableCell
+          <BeeTableEditableCellContent
             value={value}
             rowIndex={rowIndex}
             columnId={columnId}

@@ -16,7 +16,7 @@
 
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { BeeTableHandlerMenu } from "@kie-tools/boxed-expression-component/dist/components";
+import { BeeTableOperationHandlerMenu } from "@kie-tools/boxed-expression-component/dist/components";
 import * as React from "react";
 import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import * as _ from "lodash";
@@ -25,16 +25,16 @@ const menuItem = (item: string) => {
   return "[data-ouia-component-id='expression-table-handler-menu-" + item + "'] span";
 };
 
-describe("TableHandlerMenu tests", () => {
+describe("BeeTableOperationHandlerMenu tests", () => {
   test("should render the passed operations", () => {
     const groupName = "a group";
     const operationName = "insert left";
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <BeeTableHandlerMenu
+        <BeeTableOperationHandlerMenu
           allowedOperations={[BeeTableOperation.ColumnInsertLeft]}
-          handlerConfiguration={[
+          operationHandlerConfig={[
             {
               group: groupName,
               items: [{ name: operationName, type: BeeTableOperation.ColumnInsertLeft }],
@@ -58,9 +58,9 @@ describe("TableHandlerMenu tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <BeeTableHandlerMenu
+        <BeeTableOperationHandlerMenu
           allowedOperations={[BeeTableOperation.ColumnInsertLeft]}
-          handlerConfiguration={[
+          operationHandlerConfig={[
             {
               group: "a group",
               items: [{ name: "insert left", type: BeeTableOperation.ColumnInsertLeft }],

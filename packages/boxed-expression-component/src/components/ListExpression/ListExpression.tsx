@@ -27,7 +27,7 @@ import {
   LiteralExpressionDefinition,
   ExpressionDefinitionLogicType,
   BeeTableRowsUpdateArgs,
-  BeeTableHandlerConfiguration,
+  BeeTableOperationHandlerConfig,
   BeeTableHeaderVisibility,
   BeeTableOperation,
 } from "../../api";
@@ -57,7 +57,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     []
   );
 
-  const handlerConfiguration: BeeTableHandlerConfiguration = useMemo(
+  const operationHandlerConfig: BeeTableOperationHandlerConfig = useMemo(
     () => [
       {
         group: i18n.rows,
@@ -174,7 +174,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         rows={items as ReactTable.DataRecord[]}
         onRowsUpdate={onRowsUpdate}
         onRowAdding={onRowAdding}
-        handlerConfiguration={handlerConfiguration}
+        operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}
         resetRowCustomFunction={resetRowCustomFunction}
       />

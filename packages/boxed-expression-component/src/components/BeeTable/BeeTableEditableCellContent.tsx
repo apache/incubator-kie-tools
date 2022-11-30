@@ -28,7 +28,7 @@ import {
   focusTextInput,
   paste,
 } from "./common";
-import "./BeeEditableCell.css";
+import "./BeeTableEditableCellContent.css";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
 
@@ -45,7 +45,7 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
 export const READ_MODE = "editable-cell--read-mode";
 export const EDIT_MODE = "editable-cell--edit-mode";
 
-export interface BeeEditableCellProps extends BeeTableCell {
+export interface BeeTableEditableCellContentProps extends BeeTableCell {
   /** Cell's value */
   value: string;
   /** Function executed each time a cell gets updated */
@@ -54,8 +54,14 @@ export interface BeeEditableCellProps extends BeeTableCell {
   readOnly?: boolean;
 }
 
-export function BeeEditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly }: BeeEditableCellProps) {
-  const [isSelected, setIsSelected] = useState(false);
+export function BeeTableEditableCellContent({
+  value,
+  rowIndex,
+  columnId,
+  onCellUpdate,
+  readOnly,
+}: BeeTableEditableCellContentProps) {
+  const [isSelected, setSelected] = useState(false);
   const [mode, setMode] = useState(READ_MODE);
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
   const [preview, setPreview] = useState<string>("");
@@ -104,7 +110,7 @@ export function BeeEditableCell({ value, rowIndex, columnId, onCellUpdate, readO
     if (mode === EDIT_MODE) {
       return;
     }
-    setIsSelected(true);
+    setSelected(true);
     focusTextInput(textarea.current);
   }, [mode]);
 
@@ -116,7 +122,7 @@ export function BeeEditableCell({ value, rowIndex, columnId, onCellUpdate, readO
 
   // TextArea Handlers =======================================================
 
-  const onTextAreaBlur = useCallback(() => setIsSelected(false), []);
+  const onTextAreaBlur = useCallback(() => setSelected(false), []);
 
   const onTextAreaChange = useCallback(
     (event) => {

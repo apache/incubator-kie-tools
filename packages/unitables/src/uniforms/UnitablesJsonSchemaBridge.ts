@@ -21,7 +21,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import * as React from "react";
 import { joinName } from "uniforms";
 import { AutoField } from "./AutoField";
-import { CELL_MINIMUM_WIDTH } from "../boxed";
+import { CELL_MINIMUM_WIDTH } from "../bee";
 
 export const FORMS_ID = "unitables-forms";
 

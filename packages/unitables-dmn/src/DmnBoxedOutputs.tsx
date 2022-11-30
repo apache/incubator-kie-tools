@@ -17,11 +17,11 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { ColumnInstance } from "react-table";
+import * as ReactTable from "react-table";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { BoxedExpressionOutputRule } from "@kie-tools/unitables/dist/UnitablesBoxedTypes";
 import { DecisionResult, DmnSchemaProperties, Result } from "./DmnTypes";
-import { CELL_MINIMUM_WIDTH } from "@kie-tools/unitables/dist/boxed";
+import { CELL_MINIMUM_WIDTH } from "@kie-tools/unitables/dist/bee";
 
 interface OutputField {
   dataType: DmnBuiltInDataType;
@@ -51,7 +51,7 @@ export function useDmnBoxedOutputs(
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined,
   rowCount: number,
-  outputColumnsCache: React.MutableRefObject<ColumnInstance[]>
+  outputColumnsCache: React.MutableRefObject<ReactTable.ColumnInstance[]>
 ) {
   const updateOutputCellsWidth = useCallback(
     (outputs: OutputFields[]) => {

@@ -16,13 +16,13 @@
 
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
-import { ColumnInstance } from "react-table";
+import * as ReactTable from "react-table";
 import { diff } from "deep-object-diff";
 import { FORMS_ID, InputFields, isInputWithInsideProperties, UnitablesJsonSchemaBridge } from "./uniforms";
 import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
 import { UnitablesInputRule } from "./UnitablesBoxedTypes";
-import { useTableOperationHandler } from "./boxed/TableOperationHandler";
-import { CELL_MINIMUM_WIDTH } from "./boxed";
+import { useTableOperationHandler } from "./bee/BeeTableOperationHandler";
+import { CELL_MINIMUM_WIDTH } from "./bee";
 
 export function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -43,7 +43,7 @@ export function useUnitablesInputs(
   setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>,
   rowCount: number,
   formsDivRendered: boolean,
-  inputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
+  inputColumnsCache: React.MutableRefObject<ReactTable.ColumnInstance[]>,
   propertiesEntryPath = "definitions"
 ) {
   const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);

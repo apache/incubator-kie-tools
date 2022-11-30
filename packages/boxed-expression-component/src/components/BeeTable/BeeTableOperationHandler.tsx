@@ -16,16 +16,16 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { DmnBuiltInDataType, generateUuid, BeeTableHandlerConfiguration, BeeTableOperation } from "../../api";
+import { DmnBuiltInDataType, generateUuid, BeeTableOperationHandlerConfig, BeeTableOperation } from "../../api";
 import * as _ from "lodash";
 import * as ReactTable from "react-table";
 import { Popover } from "@patternfly/react-core";
-import { BeeTableHandlerMenu } from "./BeeTableHandlerMenu";
+import { BeeTableOperationHandlerMenu } from "./BeeTableOperationHandlerMenu";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./BeeTable";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
-export interface BeeTableHandlerProps {
+export interface BeeTableOperationHandlerProps {
   /** Gets the prefix to be used for the next column name */
   getColumnPrefix: (groupType?: string) => string;
   /** Columns instance */
@@ -41,22 +41,22 @@ export interface BeeTableHandlerProps {
   /** Function to be executed when adding a new row to the table */
   onRowAdding: () => ReactTable.DataRecord;
   /** Show/hide table handler */
-  showTableHandler: boolean;
+  showTableOperationHandler: boolean;
   /** Function to programmatically show/hide table handler */
-  setShowTableHandler: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowTableOperationHandler: React.Dispatch<React.SetStateAction<boolean>>;
   /** Target for showing the table handler  */
-  tableHandlerTarget: HTMLElement;
+  operationHandlerTarget: HTMLElement;
   /** Custom configuration for the table handler */
-  handlerConfiguration: BeeTableHandlerConfiguration;
+  operationHandlerConfig: BeeTableOperationHandlerConfig;
   /** Table handler allowed operations */
-  tableHandlerAllowedOperations: BeeTableOperation[];
+  allowedOperations: BeeTableOperation[];
   /** Custom function called for manually resetting a row */
   resetRowCustomFunction?: (row: ReactTable.DataRecord) => ReactTable.DataRecord;
   /** Function to be executed when columns are modified */
   onColumnsUpdate: (columns: ReactTable.Column[], operation?: BeeTableOperation, columnIndex?: number) => void;
 }
 
-export const BeeTableHandler: React.FunctionComponent<BeeTableHandlerProps> = ({
+export const BeeTableOperationHandler: React.FunctionComponent<BeeTableOperationHandlerProps> = ({
   getColumnPrefix,
   tableColumns,
   lastSelectedColumn,
@@ -64,11 +64,11 @@ export const BeeTableHandler: React.FunctionComponent<BeeTableHandlerProps> = ({
   tableRows,
   onRowsUpdate,
   onRowAdding,
-  showTableHandler,
-  setShowTableHandler,
-  tableHandlerTarget,
-  handlerConfiguration,
-  tableHandlerAllowedOperations,
+  showTableOperationHandler,
+  setShowTableOperationHandler,
+  operationHandlerTarget,
+  operationHandlerConfig,
+  allowedOperations,
   resetRowCustomFunction = () => ({}),
   onColumnsUpdate,
 }) => {
@@ -228,10 +228,10 @@ export const BeeTableHandler: React.FunctionComponent<BeeTableHandlerProps> = ({
     return row;
   }, [onRowAdding]);
 
-  const handlingOperation = useCallback(
-    (tableOperation: BeeTableOperation) => {
+  const handleOperation = useCallback(
+    (operation: BeeTableOperation) => {
       boxedExpressionEditor.beeGwtService?.notifyUserAction();
-      switch (tableOperation) {
+      switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
           updateTargetColumns(insertBefore, BeeTableOperation.ColumnInsertLeft);
           break;
@@ -268,19 +268,19 @@ export const BeeTableHandler: React.FunctionComponent<BeeTableHandlerProps> = ({
             selectedRowIndex
           );
       }
-      setShowTableHandler(false);
+      setShowTableOperationHandler(false);
       boxedExpressionEditor.setContextMenuOpen(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableHandler, tableRows]
+    [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableOperationHandler, tableRows]
   );
 
-  const getHandlerConfiguration = useMemo(() => {
-    if (_.isArray(handlerConfiguration)) {
-      return handlerConfiguration;
+  const filteredOperationHandlerConfig = useMemo(() => {
+    if (_.isArray(operationHandlerConfig)) {
+      return operationHandlerConfig;
     }
-    return handlerConfiguration[selectedColumn?.groupType || ""];
-  }, [handlerConfiguration, selectedColumn?.groupType]);
+    return operationHandlerConfig[selectedColumn?.groupType || ""];
+  }, [operationHandlerConfig, selectedColumn?.groupType]);
 
   return (
     <Popover
@@ -289,19 +289,19 @@ export const BeeTableHandler: React.FunctionComponent<BeeTableHandlerProps> = ({
       showClose={false}
       distance={5}
       position={"right"}
-      isVisible={showTableHandler}
+      isVisible={showTableOperationHandler}
       shouldClose={() => {
-        setShowTableHandler(false);
+        setShowTableOperationHandler(false);
         boxedExpressionEditor.setContextMenuOpen(false);
       }}
       shouldOpen={(showFunction) => showFunction?.()}
-      reference={() => tableHandlerTarget}
+      reference={() => operationHandlerTarget}
       appendTo={boxedExpressionEditor.editorRef?.current ?? undefined}
       bodyContent={
-        <BeeTableHandlerMenu
-          handlerConfiguration={getHandlerConfiguration}
-          allowedOperations={tableHandlerAllowedOperations}
-          onOperation={handlingOperation}
+        <BeeTableOperationHandlerMenu
+          operationHandlerConfig={filteredOperationHandlerConfig}
+          allowedOperations={allowedOperations}
+          onOperation={handleOperation}
         />
       }
     />

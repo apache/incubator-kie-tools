@@ -42,7 +42,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   const { i18n } = useBoxedExpressionEditorI18n();
   const { beeGwtService } = useBoxedExpressionEditor();
 
-  const handlerConfiguration = [
+  const operationHandlerConfig = [
     {
       group: i18n.columns,
       items: [
@@ -194,7 +194,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         rows={convertRowsForTheTable}
         onColumnsUpdate={onColumnsUpdate}
         onRowsUpdate={onRowsUpdate}
-        handlerConfiguration={handlerConfiguration}
+        operationHandlerConfig={operationHandlerConfig}
       />
     </div>
   );

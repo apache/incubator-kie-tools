@@ -23,8 +23,8 @@ import { DmnBuiltInDataType, BeeTableHeaderVisibility } from "../../api";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./BeeTable";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { focusCurrentCell, getParentCell } from "./common";
-import { BeeThCell } from "./BeeThCell";
-import { BeeResizableHeaderCell } from "./BeeResizableHeaderCell";
+import { BeeTableTh } from "./BeeTableTh";
+import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../ExpressionDefinitionHeaderMenu";
 
 export interface BeeTableHeaderProps {
@@ -51,7 +51,7 @@ export interface BeeTableHeaderProps {
 }
 
 export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
-  reactTableInstance: tableInstance,
+  reactTableInstance,
   editColumnLabel,
   headerVisibility = BeeTableHeaderVisibility.Full,
   skipLastHeaderGroup,
@@ -106,7 +106,7 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
       const classNames = `${columnKey} fixed-column no-clickable-cell counter-header-cell`;
 
       return (
-        <BeeThCell
+        <BeeTableTh
           rowIndex={rowIndex}
           cellIndex={0}
           rowSpan={1}
@@ -121,7 +121,7 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
           </div>
-        </BeeThCell>
+        </BeeTableTh>
       );
     },
     [getColumnKey, onCellKeyDown]
@@ -215,7 +215,7 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
       column.isCountColumn ? (
         renderCountColumn(column, rowIndex)
       ) : (
-        <BeeResizableHeaderCell
+        <BeeTableThResizable
           key={`${rowIndex}_${columnIndex}`}
           editableHeader={editableHeader}
           getColumnKey={getColumnKey}
@@ -226,7 +226,7 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
           onHorizontalResizeStop={onHorizontalResizeStop}
           renderHeaderCellInfo={renderHeaderCellInfo}
           thProps={thProps}
-          tableInstance={tableInstance}
+          reactTableInstance={reactTableInstance}
           column={column}
           rowIndex={rowIndex}
           columnIndex={columnIndex}
@@ -244,21 +244,21 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
       onHeaderClick,
       onHorizontalResizeStop,
       renderHeaderCellInfo,
-      tableInstance,
+      reactTableInstance,
       thProps,
     ]
   );
 
   const getHeaderGroups = useCallback(
-    (tableInstance) => {
-      return skipLastHeaderGroup ? _.dropRight(tableInstance.headerGroups) : tableInstance.headerGroups;
+    (reactTableInstance) => {
+      return skipLastHeaderGroup ? _.dropRight(reactTableInstance.headerGroups) : reactTableInstance.headerGroups;
     },
     [skipLastHeaderGroup]
   );
 
   const renderHeaderGroups = useMemo(
     () =>
-      getHeaderGroups(tableInstance).map((headerGroup: ReactTable.HeaderGroup, rowIndex: number) => {
+      getHeaderGroups(reactTableInstance).map((headerGroup: ReactTable.HeaderGroup, rowIndex: number) => {
         const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
         let xPosition = 0;
         return (
@@ -271,18 +271,18 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
           </Tr>
         );
       }),
-    [getHeaderGroups, renderColumn, tableInstance]
+    [getHeaderGroups, renderColumn, reactTableInstance]
   );
 
   const renderAtLevelInHeaderGroups = useCallback(
     (level: number) => (
       <Tr>
-        {_.nth(tableInstance.headerGroups as ReactTable.HeaderGroup[], level)!.headers.map(
+        {_.nth(reactTableInstance.headerGroups as ReactTable.HeaderGroup[], level)!.headers.map(
           (column: ReactTable.ColumnInstance, columnIndex: number) => renderColumn(column, 0, columnIndex)
         )}
       </Tr>
     ),
-    [renderColumn, tableInstance.headerGroups]
+    [renderColumn, reactTableInstance.headerGroups]
   );
 
   const header = useMemo(() => {

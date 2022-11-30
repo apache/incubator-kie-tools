@@ -21,14 +21,14 @@ import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamati
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import nextId from "react-id-generator";
 import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ColumnInstance } from "react-table";
+import * as ReactTable from "react-table";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
 import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { DecisionResult } from "./DmnTypes";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { ErrorBoundary } from "@kie-tools/form";
-import { CustomTable } from "@kie-tools/unitables/dist/boxed";
+import { BeeTableWrapper } from "@kie-tools/unitables/dist/bee";
 import { BoxedExpressionOutputRule, UnitablesClause } from "@kie-tools/unitables";
 import { DmnUnitablesI18n } from "./i18n";
 
@@ -43,7 +43,7 @@ interface Props {
 export function DmnTableResults(props: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const outputColumnsCache = useRef<ColumnInstance[]>([]);
+  const outputColumnsCache = useRef<ReactTable.ColumnInstance[]>([]);
 
   const [outputError, setOutputError] = useState<boolean>(false);
 
@@ -55,7 +55,7 @@ export function DmnTableResults(props: Props) {
   );
 
   const onOutputColumnsUpdate = useCallback(
-    (columns: ColumnInstance[]) => {
+    (columns: ReactTable.ColumnInstance[]) => {
       outputColumnsCache.current = columns;
       updateOutputCellsWidth(outputs);
     },
@@ -83,7 +83,7 @@ export function DmnTableResults(props: Props) {
             decisionNodeId={outputUid}
             dataTypes={[]}
           >
-            <CustomTable
+            <BeeTableWrapper
               name={"DMN Runner Output"}
               i18n={props.i18n}
               onColumnsUpdate={onOutputColumnsUpdate}

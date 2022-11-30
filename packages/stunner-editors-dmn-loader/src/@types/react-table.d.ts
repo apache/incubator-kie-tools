@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { DataType } from "./api";
-import { TableResizerProps } from "react-table";
+import * as ReactTable from "react-table";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -61,7 +61,7 @@ declare module "react-table" {
     /** Column data type */
     dataType: DataType;
     /** When resizable, this function returns the resizer props  */
-    getResizerProps: (props?: Partial<TableResizerProps>) => TableResizerProps;
+    getResizerProps: (props?: Partial<ReactTable.TableResizerProps>) => ReactTable.TableResizerProps;
     /** It tells whether column is of type counter or not */
     isCountColumn: boolean;
     /** Disabling table handler on the header of this column */

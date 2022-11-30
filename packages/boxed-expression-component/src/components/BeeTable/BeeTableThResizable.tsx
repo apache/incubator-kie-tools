@@ -18,10 +18,10 @@ import * as React from "react";
 import { useState, useCallback } from "react";
 import * as ReactTable from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
-import { BeeThCell } from "./BeeThCell";
+import { BeeTableTh } from "./BeeTableTh";
 import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
 
-export interface BeeResizableHeaderCellProps {
+export interface BeeTableThResizableProps {
   column: any;
   columnIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
@@ -33,7 +33,7 @@ export interface BeeResizableHeaderCellProps {
   onHeaderClick: (columnKey: string) => () => void;
   onHorizontalResizeStop: (column: ReactTable.Column, columnWidth: number) => void;
   rowIndex: number;
-  tableInstance: ReactTable.TableInstance;
+  reactTableInstance: ReactTable.TableInstance;
   thProps: (column: ReactTable.ColumnInstance) => any;
   xPosition: number;
   yPosition: number;
@@ -44,7 +44,7 @@ export interface BeeResizableHeaderCellProps {
   ) => React.ReactElement;
 }
 
-export const BeeResizableHeaderCell = ({
+export const BeeTableThResizable = ({
   column,
   columnIndex,
   editableHeader,
@@ -56,11 +56,11 @@ export const BeeResizableHeaderCell = ({
   onHorizontalResizeStop,
   renderHeaderCellInfo,
   rowIndex,
-  tableInstance,
+  reactTableInstance,
   thProps,
   xPosition,
   yPosition,
-}: BeeResizableHeaderCellProps) => {
+}: BeeTableThResizableProps) => {
   const headerProps = {
     ...column.getHeaderProps(),
     style: {},
@@ -99,7 +99,7 @@ export const BeeResizableHeaderCell = ({
   const getRowSpan = useCallback(
     (cssClasses: string): number => {
       if (
-        rowIndex === tableInstance.headerGroups.length - 1 &&
+        rowIndex === reactTableInstance.headerGroups.length - 1 &&
         (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
       ) {
         return 2;
@@ -107,7 +107,7 @@ export const BeeResizableHeaderCell = ({
 
       return 1;
     },
-    [tableInstance, rowIndex]
+    [reactTableInstance, rowIndex]
   );
 
   /**
@@ -122,7 +122,7 @@ export const BeeResizableHeaderCell = ({
   const cssClasses = getCssClass();
 
   return (
-    <BeeThCell
+    <BeeTableTh
       className={cssClasses}
       headerProps={headerProps}
       isFocusable={isFocusable}
@@ -153,6 +153,6 @@ export const BeeResizableHeaderCell = ({
           )}
         </div>
       </Resizer>
-    </BeeThCell>
+    </BeeTableTh>
   );
 };

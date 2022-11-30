@@ -59,7 +59,7 @@ export interface BeeTableProps {
   /** Function to be executed when adding a new row to the table */
   onRowAdding?: () => ReactTable.DataRecord;
   /** Custom configuration for the table handler */
-  handlerConfiguration?: BeeTableHandlerConfiguration;
+  operationHandlerConfig?: BeeTableOperationHandlerConfig;
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** Number of levels in the header, 0-based */
@@ -98,7 +98,7 @@ export enum BeeTableOperation {
   RowDuplicate,
 }
 
-export interface BeeTableOperationGroup {
+export interface BeeTableOperationHandlerGroup {
   /** Name of the group (localized) */
   group: string;
   /** Collection of operations belonging to this group */
@@ -110,9 +110,9 @@ export interface BeeTableOperationGroup {
   }[];
 }
 
-export type BeeTableHandlerConfiguration =
-  | BeeTableOperationGroup[]
-  | { [columnGroupType: string]: BeeTableOperationGroup[] };
+export type BeeTableOperationHandlerConfig =
+  | BeeTableOperationHandlerGroup[]
+  | { [columnGroupType: string]: BeeTableOperationHandlerGroup[] };
 
 export type BeeTableRow = {
   /** Row identifier */
