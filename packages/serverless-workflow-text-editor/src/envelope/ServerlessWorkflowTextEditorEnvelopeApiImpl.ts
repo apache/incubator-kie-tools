@@ -43,14 +43,6 @@ export class ServerlessWorkflowTextEditorEnvelopeApiImpl
     super(serverlessWorkflowArgs, editorFactory);
   }
 
-  private getEditorOrThrowError() {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor;
-  }
-
   public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
     this.getEditorOrThrowError().moveCursorToNode(args.nodeName);
   }

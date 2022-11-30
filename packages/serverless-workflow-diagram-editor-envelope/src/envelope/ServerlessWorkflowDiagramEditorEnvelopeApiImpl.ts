@@ -42,14 +42,6 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     super(serverlessWorkflowArgs, editorFactory);
   }
 
-  private getEditorOrThrowError() {
-    const editor = this.view().getEditor();
-    if (!editor) {
-      throw new Error("Editor not found.");
-    }
-    return editor;
-  }
-
   public async canvas_getNodeIds() {
     return this.getEditorOrThrowError().getNodeIds();
   }
