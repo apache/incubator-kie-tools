@@ -15,12 +15,14 @@
  */
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { SwfLanguageServiceChannelApi } from "../../../serverless-workflow-language-service/dist/api/SwfLanguageServiceChannelApi";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api/SwfLanguageServiceChannelApi";
 import { SwfFeatureToggleChannelApi } from "./SwfFeatureToggleChannelApi";
 import { SwfPreviewOptionsChannelApi } from "./SwfPreviewOptionsChannelApi";
+import { SwfStaticEnvelopeContentProviderChannelApi } from "./SwfStaticEnvelopeContentProviderChannelApi";
 
 export interface ServerlessWorkflowCombinedEditorChannelApi
   extends KogitoEditorChannelApi,
     SwfFeatureToggleChannelApi,
     SwfLanguageServiceChannelApi,
-    SwfPreviewOptionsChannelApi {}
+    SwfPreviewOptionsChannelApi,
+    SwfStaticEnvelopeContentProviderChannelApi {}

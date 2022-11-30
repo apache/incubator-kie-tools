@@ -20,6 +20,7 @@
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
     "@types/node": "^15.0.2",
+    "filemanager-webpack-plugin": "^7.0.0",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.2.1",

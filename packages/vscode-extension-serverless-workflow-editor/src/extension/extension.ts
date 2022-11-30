@@ -16,7 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode/VsCodeBackendProxy";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
@@ -97,13 +97,16 @@ export async function activate(context: vscode.ExtensionContext) {
         type: swEnvelopeType,
         filePathGlob: "**/*.sw.json",
         resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
-        envelopePath: diagramEnvelopeMappingConfig.envelopePath,
+        envelopeContent: { type: EnvelopeContentType.PATH, path: diagramEnvelopeMappingConfig.envelopePath },
       }),
       new EnvelopeMapping({
         type: swEnvelopeType,
         filePathGlob: "**/*.sw.+(yml|yaml)",
         resourcesPathPrefix: baseEnvelopePath,
-        envelopePath: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
+        envelopeContent: {
+          type: EnvelopeContentType.PATH,
+          path: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
+        },
       }),
     ]),
     channelApiProducer: new ServerlessWorkflowDiagramEditorChannelApiProducer({

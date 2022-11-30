@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorEnvelopeLocator,
+  EnvelopeContentType,
+  EnvelopeMapping,
+} from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -38,7 +43,7 @@ export const App = () => {
           type: "yard",
           filePathGlob: "**/*.yard.+(yml|yaml|json)",
           resourcesPathPrefix: "",
-          envelopePath: "yard-editor-envelope.html",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "yard-editor-envelope.html" },
         }),
       ]),
     []
