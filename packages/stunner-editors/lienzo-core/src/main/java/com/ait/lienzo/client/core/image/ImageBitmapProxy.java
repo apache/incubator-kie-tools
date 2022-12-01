@@ -75,10 +75,12 @@ public class ImageBitmapProxy {
     }
 
     public int getWidth() {
-        return isLoaded() ? image.getWidth() : 0;    }
+        return isLoaded() ? image.getWidth() : 0;
+    }
 
     public int getHeight() {
-        return isLoaded() ? image.getHeight() : 0;    }
+        return isLoaded() ? image.getHeight() : 0;
+    }
 
     public void destroy() {
         image.close();
