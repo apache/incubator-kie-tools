@@ -39,6 +39,7 @@ import org.dashbuilder.client.screens.RouterScreen;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.client.setup.RuntimeClientSetup;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
+import org.dashbuilder.shared.event.UpdatedGlobalSettingsEvent;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
@@ -74,6 +75,8 @@ public class RuntimeClientLoader {
 
     Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent;
 
+    Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent;
+
     RouterScreen router;
 
     RuntimeClientMode mode;
@@ -103,6 +106,7 @@ public class RuntimeClientLoader {
                                RuntimeModelContentListener contentListener,
                                Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent,
                                Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent,
+                               Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent,
                                RouterScreen router) {
         this.runtimeModelResourceClient = runtimeModelResourceClient;
         this.perspectiveEditorGenerator = perspectiveEditorGenerator;
@@ -114,6 +118,7 @@ public class RuntimeClientLoader {
         this.loading = loading;
         this.updatedRuntimeModelEvent = updatedRuntimeModelEvent;
         this.dataSetDefRemovedEvent = dataSetDefRemovedEvent;
+        this.updatedGlobalSettingsEvent = updatedGlobalSettingsEvent;
         this.router = router;
     }
 
@@ -257,6 +262,7 @@ public class RuntimeClientLoader {
                 var runtimeModel = parser.parse(content);
                 registerModel(runtimeModel);
                 this.clientModel = runtimeModel;
+                updatedGlobalSettingsEvent.fire(new UpdatedGlobalSettingsEvent(runtimeModel.getGlobalSettings()));
                 updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
             }
         } catch (Exception e) {

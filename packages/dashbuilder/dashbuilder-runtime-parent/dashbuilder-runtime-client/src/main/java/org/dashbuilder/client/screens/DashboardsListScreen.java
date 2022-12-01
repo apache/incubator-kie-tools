@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.widgets.DashboardCard;
@@ -59,7 +60,7 @@ public class DashboardsListScreen {
         void addCard(DashboardCard card);
 
         void clear();
-        
+
         void disableUpload();
     }
 
@@ -69,6 +70,9 @@ public class DashboardsListScreen {
     @Inject
     ManagedInstance<DashboardCard> dashboardCardInstance;
 
+    @Inject
+    RuntimeClientLoader clientLoader;
+
     @PostConstruct
     public void init() {
         view.init(this);
@@ -77,8 +81,8 @@ public class DashboardsListScreen {
     public void loadList(List<String> dashboardsNames) {
         clear();
         dashboardsNames.stream()
-                       .map(this::createDashboardCard)
-                       .forEach(view::addCard);
+                .map(this::createDashboardCard)
+                .forEach(view::addCard);
     }
 
     private DashboardCard createDashboardCard(String id) {
@@ -112,8 +116,8 @@ public class DashboardsListScreen {
     }
 
     private void reload() {
-        String currentPlace = perspectiveManager.getCurrentPerspective().getIdentifier();
-        if (DashboardsListPerspective.ID.equals(currentPlace)) {
+        var currentPlace = perspectiveManager.getCurrentPerspective().getIdentifier();
+        if (DashboardsListPerspective.ID.equals(currentPlace) && !clientLoader.isClient()) {
             router.listDashboards();
         }
     }

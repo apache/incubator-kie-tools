@@ -44,6 +44,8 @@ interface Props {
   columns: string[];
   rows: any[][];
   onRowSelected?: (i: number) => void;
+  hideHeader: boolean;
+  linkTargetSelf: boolean;
   selectable?: boolean;
   alerts?: Map<number, Alert>;
   linkColumn?: LinkColumn;
@@ -151,27 +153,29 @@ export const FilteredTable = (props: Props) => {
 
   return (
     <>
-      <Flex>
-        <FlexItem>
-          {" "}
-          <SearchInput
-            placeholder="Filter"
-            value={search}
-            onChange={(v: any) => onSearch(v as string)}
-            onClear={() => onSearch("")}
-          />
-        </FlexItem>
-        <FlexItem align={{ default: "alignRight" }}>
-          <Pagination
-            itemCount={rows.length}
-            perPage={perPage}
-            page={page}
-            onSetPage={(evt: any, _page: any) => setPage(_page)}
-            onPerPageSelect={(evt: any, _perPage: any) => setPerPage(_perPage)}
-            widgetId="pagination-options-menu-top"
-          />
-        </FlexItem>
-      </Flex>
+      {!props.hideHeader && (
+        <Flex>
+          <FlexItem>
+            {" "}
+            <SearchInput
+              placeholder="Filter"
+              value={search}
+              onChange={(v: any) => onSearch(v as string)}
+              onClear={() => onSearch("")}
+            />
+          </FlexItem>
+          <FlexItem align={{ default: "alignRight" }}>
+            <Pagination
+              itemCount={rows.length}
+              perPage={perPage}
+              page={page}
+              onSetPage={(evt: any, _page: any) => setPage(_page)}
+              onPerPageSelect={(evt: any, _perPage: any) => setPerPage(_perPage)}
+              widgetId="pagination-options-menu-top"
+            />
+          </FlexItem>
+        </Flex>
+      )}
       <TableComposable aria-label="Filtered Table" variant="compact">
         <Thead>
           <Tr>
@@ -199,6 +203,7 @@ export const FilteredTable = (props: Props) => {
             <Tr
               key={rowIndex}
               isHoverable={props.selectable}
+              className={isSelectedRow(row) && props.selectable ? "selected-row" : ""}
               onClick={() => {
                 if (props.selectable) {
                   if (isSelectedRow(row)) {
@@ -206,18 +211,13 @@ export const FilteredTable = (props: Props) => {
                     props.onRowSelected!(-1);
                   } else {
                     setSelectedRow(row);
-                    props.onRowSelected!(rowIndex);
+                    const selectedValue = row.join();
+                    const i = props.rows.map((r) => r.join()).findIndex((r) => r === selectedValue);
+                    props.onRowSelected!(i);
                   }
                 }
               }}
               selected={isSelectedRow(row)}
-              style={
-                isSelectedRow(row) && props.selectable
-                  ? {
-                      backgroundColor: "#DFDFDF",
-                    }
-                  : {}
-              }
             >
               {row.map((cell, cellIndex) => (
                 <Td
@@ -228,7 +228,7 @@ export const FilteredTable = (props: Props) => {
                   {props.linkColumn && props.columns[cellIndex] == props.linkColumn.column ? (
                     <a
                       href={props.linkColumn.linkTemplate.replace(LINK_TEMPLATE_VALUE_KEY, cell)}
-                      target="_blank"
+                      target={props.linkTargetSelf ? "_parent" : "_blank"}
                       rel={"noopener noreferrer"}
                     >
                       {" "}

@@ -18,6 +18,7 @@ package org.dashbuilder.client.parser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.shared.marshalling.RuntimeModelJSONMarshaller;
 import org.dashbuilder.shared.model.RuntimeModel;
 
@@ -26,12 +27,16 @@ public class JSONRuntimeModelClientParser implements RuntimeModelClientParser {
 
     @Inject
     PropertyReplacementService replaceService;
+    
+    @Inject
+    GlobalDisplayerSettings globalDisplayerSettings;
 
     @Override
     public RuntimeModel parse(String jsonContent) {
-        var properties = RuntimeModelJSONMarshaller.get().retrieveProperties(jsonContent);
-        var newContent = replaceService.replace(jsonContent, properties);
-        return RuntimeModelJSONMarshaller.get().fromJson(newContent);
+        var runtimeModelJsonMarshaller = RuntimeModelJSONMarshaller.get();
+        var properties = runtimeModelJsonMarshaller.retrieveProperties(jsonContent);
+        var newContent = replaceService.replace(jsonContent, properties);        
+        return runtimeModelJsonMarshaller.fromJson(newContent);
     }
 
     @Override

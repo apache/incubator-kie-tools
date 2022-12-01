@@ -24,4 +24,5 @@ export enum MessageProperty {
   FILTER = "filter",
   FUNCTION_CALL = "functionCallRequest",
   FUNCTION_RESPONSE = "functionResponse",
+  MODE = "mode",
 }

@@ -61,7 +61,7 @@ public class LayoutTemplateJSONMarshaller {
     private static final String NAME = "name";
     private static final String STYLE = "style";
     private static final String HEIGHT = "height";
-    private static final String SETTINGS = "settings";
+    public static final String SETTINGS = "settings";
 
     // default values
     static final String DEFAULT_HEIGHT = "1";
