@@ -54,5 +54,6 @@ module.exports = (env) => [
       compress: true,
       port: buildEnv.exampleWebapp.port,
     },
+    ignoreWarnings: [/Failed to parse source map/],
   }),
 ];

@@ -39,8 +39,8 @@ import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutio
  * For scenarios with other editor consider adding it to a specific
  * file for the integration e.g. "extensions-editors-bpmn-dmn.test.ts"
  */
-// KOGITO-8072 - Flaky test - extension-editors-bpmn.test.ts
-describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
+
+describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
   const USER_TASK_BPMN: string = "UserTask.bpmn";
@@ -57,19 +57,20 @@ describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
   });
 
   beforeEach(async function () {
+    this.timeout(15000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(30000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();
   });
 
   it("Opens process with work item definition properly", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
     webview = await testHelper.openFileFromSidebar(WID_BPMN, "src/main/java/org/kie/businessapp");
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -243,7 +244,7 @@ describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
   });
 
   it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
-    this.timeout(20000);
+    this.timeout(40000);
     webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -273,6 +274,8 @@ describe.skip("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
 
     // Asserts
+    onExitActionSection = await propertiesPanel.getProperty("On Exit Action", "div");
+    await bpmnEditorTester.scrollElementIntoView(onExitActionSection);
     await propertiesPanel.assertWidgetedPropertyValue("On Entry Action", newOnEntryAction, "textarea");
     await propertiesPanel.assertWidgetedPropertyValue("On Entry Action", newOnEntryLanguage, "select");
     await propertiesPanel.assertWidgetedPropertyValue("On Exit Action", newOnExitAction, "textarea");

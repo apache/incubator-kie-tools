@@ -23,7 +23,7 @@ import { ElectronFile, UNSAVED_FILE_NAME } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
@@ -71,13 +71,13 @@ export function App() {
           type: "bpmn",
           filePathGlob: "**/*.bpmn?(2)",
           resourcesPathPrefix: "../gwt-editors/bpmn",
-          envelopePath: "envelope/bpmn-envelope.html",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/bpmn-envelope.html" },
         }),
         new EnvelopeMapping({
           type: "dmn",
           filePathGlob: "**/*.dmn",
           resourcesPathPrefix: "../gwt-editors/dmn",
-          envelopePath: "envelope/dmn-envelope.html",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/dmn-envelope.html" },
         }),
       ]),
     []

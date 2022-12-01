@@ -45,12 +45,12 @@ export default async (env: any, argv: any) => {
     kieSandboxExtendedServices_compatibleVersion,
   ] = getKieSandboxExtendedServicesArgs();
   const [
-    dmnDevSandbox_baseImageRegistry,
-    dmnDevSandbox_baseImageAccount,
-    dmnDevSandbox_baseImageName,
-    dmnDevSandbox_baseImageTag,
-    dmnDevSandbox_onlineEditorUrl,
-  ] = getDmnDevSandboxArgs();
+    dmnDevDeployment_baseImageRegistry,
+    dmnDevDeployment_baseImageAccount,
+    dmnDevDeployment_baseImageName,
+    dmnDevDeployment_baseImageTag,
+    devDeployments_onlineEditorUrl,
+  ] = getDevDeploymentsArgs();
   const gtmResource = getGtmResource();
 
   return [
@@ -100,8 +100,8 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl:
               kieSandboxExtendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-            WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
-            WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
+            WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl: `${dmnDevDeployment_baseImageRegistry}/${dmnDevDeployment_baseImageAccount}/${dmnDevDeployment_baseImageName}:${dmnDevDeployment_baseImageTag}`,
+            WEBPACK_REPLACE__devDeployments_onlineEditorUrl: devDeployments_onlineEditorUrl,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
           }),
@@ -215,18 +215,18 @@ function getKieSandboxExtendedServicesArgs() {
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }
 
-function getDmnDevSandboxArgs() {
-  const baseImageRegistry = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.registry;
-  const baseImageAccount = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.account;
-  const baseImageName = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.name;
-  const baseImageTag = buildEnv.dmnDevSandbox.baseImage.tag;
-  const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
+function getDevDeploymentsArgs() {
+  const baseImageRegistry = buildEnv.dmnDevDeploymentBaseImageEnv.registry;
+  const baseImageAccount = buildEnv.dmnDevDeploymentBaseImageEnv.account;
+  const baseImageName = buildEnv.dmnDevDeploymentBaseImageEnv.name;
+  const baseImageTag = buildEnv.devDeployments.dmn.baseImage.tag;
+  const onlineEditorUrl = buildEnv.devDeployments.onlineEditorUrl;
 
-  console.info("DMN Dev Sandbox :: Base Image Registry: " + baseImageRegistry);
-  console.info("DMN Dev Sandbox :: Base Image Account: " + baseImageAccount);
-  console.info("DMN Dev Sandbox :: Base Image Name: " + baseImageName);
-  console.info("DMN Dev Sandbox :: Base Image Tag: " + baseImageTag);
-  console.info("DMN Dev Sandbox :: Online Editor Url: " + onlineEditorUrl);
+  console.info("DMN Dev deployment :: Base Image Registry: " + baseImageRegistry);
+  console.info("DMN Dev deployment :: Base Image Account: " + baseImageAccount);
+  console.info("DMN Dev deployment :: Base Image Name: " + baseImageName);
+  console.info("DMN Dev deployment :: Base Image Tag: " + baseImageTag);
+  console.info("Dev deployments :: Online Editor Url: " + onlineEditorUrl);
 
   return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
 }

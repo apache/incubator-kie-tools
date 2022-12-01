@@ -20,7 +20,7 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { SwfTextEditorApi, SwfTextEditorOperation } from "./textEditor/SwfTextEditorController";
 import { SwfTextEditor } from "./textEditor/SwfTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import { editor } from "monaco-editor";
+import { editor, Position } from "monaco-editor";
 
 interface Props {
   /**
@@ -105,8 +105,11 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
         setTheme: (theme: EditorTheme): Promise<void> => {
           return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
-        moveCursorToNode: (nodeName: string) => {
+        moveCursorToNode: (nodeName: string): void => {
           swfTextEditorRef.current?.moveCursorToNode(nodeName);
+        },
+        moveCursorToPosition: (position: Position): void => {
+          swfTextEditorRef.current?.moveCursorToPosition(position);
         },
       };
     },

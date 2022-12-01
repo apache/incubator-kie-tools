@@ -22,11 +22,12 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { AngleUpIcon } from "@patternfly/react-icons/dist/js/icons/angle-up-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
-import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { useAppI18n } from "../../i18n";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 interface Props {
+  onNotificationClick?: (notification: Notification) => void;
   tabNames: string[];
 }
 
@@ -160,6 +161,7 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
                 onNotificationsLengthChange={onNotificationsLengthChange}
                 expandAll={expandAll}
                 setExpandAll={setExpandAll}
+                onNotificationClick={props.onNotificationClick}
               />
             </div>
           </Tab>

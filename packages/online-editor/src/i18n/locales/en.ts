@@ -59,21 +59,24 @@ export const en: OnlineI18n = {
     share: "Share",
     embed: "Embed",
   },
-  dmnDevSandbox: {
+  devDeployments: {
     common: {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
-        "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+        "When you set up the required information, you are able to create Dev deployments on your configured instance. All the information you provide is locally stored in the browser and is never shared with anyone.",
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
+      deleting: "Deleting ...",
       saving: "Saving ...",
-      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
+      setupFirst: `Set up your ${en_common.names.devDeployments} to be able to deploy your models`,
     },
     dropdown: {
       noDeployments: "Your deployments show up here",
       connectedTo: (username: string) => `Connected to  '${username}'`,
+      connectedToAction: "Change...",
+      deleteDeployments: "Delete all",
       item: {
         upTooltip: "This deployment is up and running.",
         downTooltip: "This deployment is not running.",
@@ -85,27 +88,32 @@ export const en: OnlineI18n = {
     },
     configModal: {
       hostInfo: `The hostname associated with your instance.`,
-      namespaceInfo: `The namespace (project) you want to deploy the Decision Model.`,
+      namespaceInfo: `The Namespace (project) you want your Dev deployments to be.`,
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       configExpiredWarning: "Token or account expired. Please update your configuration.",
-      useWizard: "Configure through the guided wizard instead",
+      useWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
     },
-    confirmModal: {
+    deployConfirmModal: {
       title: "Deploy",
-      body: "Are you sure you want to deploy your model to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+      body: "This action can take a few minutes to be completed and you will need to create a new deployment if you update your model, as Dev deployments are immutable.",
+    },
+    deleteConfirmModal: {
+      title: "Delete Dev deployment(s)",
+      body: "Are you sure you want to delete your Dev deployment(s)?",
     },
     alerts: {
       deployStartedError:
-        "Something went wrong when creating your deployment. Please check your configuration and try again.",
-      deployStartedSuccess:
-        "Your deployment has been successfully started and will be available shortly. Please do not close your browser tab until this operation is completed.",
+        "Something went wrong when creating your Dev deployment. Please check your configuration and try again.",
+      deployStartedSuccess: "Your Dev deployment has been successfully started and will be available shortly.",
+      deleteError: "Failed to delete Dev deployment(s). Please try again via OpenShift Console or CLI.",
+      deleteSuccess: "Dev deployment(s) successfully deleted.",
     },
     introduction: {
-      explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,
+      explanation: `Create Dev deployments in the cloud and share with others.`,
       disclaimer: `${
-        en_common.names.dmnDevSandbox
+        en_common.names.devDeployments
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
       getStarted: "To get started, configure your instance information.",
     },
@@ -119,10 +127,10 @@ export const en: OnlineI18n = {
           introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
           goToGetStartedPage: "Go to the Get Started page",
           followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the Decision Model deployed to.`,
+          informNamespace: `Once your instance is up and running, inform the Namespace (project) where you want your Dev deployments created.`,
           inputReason:
-            "This information is necessary for deploying your Decision Model into the right project namespace.",
-          namespacePlaceholder: `The namespace (project) you want to deploy the Decision Model.`,
+            "This information is necessary for creating your Dev deployments in the right Namespace (project).",
+          namespacePlaceholder: `The Namespace (project) where you want to create your Dev deployments.`,
         },
         second: {
           name: "Set credentials",
@@ -138,8 +146,8 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to deploy DMN decisions to your OpenShift instance.",
-          configNote: "Your configuration will be stored as browser cookies after the operations above.",
+          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
+          configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
           checkInfo: "Please check the information provided and try again.",
           possibleErrorReasons: {
@@ -183,7 +191,7 @@ export const en: OnlineI18n = {
       placeHolder: "Paste your token here",
     },
     body: {
-      disclaimer: `The token you provide is locally stored as a browser cookie and is never shared with anyone.`,
+      disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
       note: `You should provide a token with the ${"'gist'".bold()} permission.`,
     },
@@ -289,7 +297,7 @@ export const en: OnlineI18n = {
         explanation:
           "Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.",
         notificationPanelExplanation: [
-          `The Notifications Panel `,
+          `The Problems panel `,
           wrapped("icon"),
           `, at the bottom-right corner of the Editor, displays live Execution messages to assist modeling your decisions.`,
         ],
@@ -414,10 +422,10 @@ export const en: OnlineI18n = {
         title: "All set! 🎉",
         connected: `You're connected to the ${en_common.names.kieSandboxExtendedServices}.`,
         fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
-        deployTheModel: `You can also deploy your model to the ${en_common.names.dmnDevSandbox} when you're done editing.`,
+        deployTheModel: `You can also deploy your model to the ${en_common.names.devDeployments} when you're done editing.`,
         backToEditor: "Back to Editor",
-        setupDmnDevSandbox: `Set up the ${en_common.names.dmnDevSandbox}`,
-        dmnDevSandboxAlreadySetup: `${en_common.names.dmnDevSandbox} already set up`,
+        setupDevDeployments: `Set up the ${en_common.names.devDeployments}`,
+        devDeploymentsAlreadySetup: `${en_common.names.devDeployments} already set up`,
       },
     },
     dropdown: {
@@ -431,7 +439,7 @@ export const en: OnlineI18n = {
     },
   },
   notificationsPanel: {
-    name: "Notifications Panel",
+    name: "Problems panel",
     tooltip: {
       retractAll: "Retract All",
       expandAll: "Expand All",

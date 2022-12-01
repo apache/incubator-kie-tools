@@ -24,17 +24,15 @@ import {
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
-import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
-import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { useDevDeployments } from "../../devDeployments/DevDeploymentsContext";
+import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
-  useKieSandboxExtendedServices,
+  useExtendedServices,
 } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { useSettings } from "../../settings/SettingsContext";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -55,18 +53,17 @@ interface Props {
 
 export function KieSandboxExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const dmnDevSandbox = useDmnDevSandbox();
+  const extendedServices = useExtendedServices();
+  const devDeployments = useDevDeployments();
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
-  const settings = useSettings();
-  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
-  const workspacesDmnRunner = useDmnRunnerInputsDispatch();
+  const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
+  const dmnRunnerInputsDispatch = useDmnRunnerInputsDispatch();
   const downloadDmnRunnerInputsRef = useRef<HTMLAnchorElement>(null);
   const uploadDmnRunnerInputsRef = useRef<HTMLInputElement>(null);
 
   const toggleDmnRunnerDrawer = useCallback(() => {
-    if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+    if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
         props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
       } else {
@@ -74,70 +71,67 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
       }
       return;
     }
-    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
-    kieSandboxExtendedServices.setModalOpen(true);
-  }, [dmnRunnerState.mode, dmnRunnerDispatch, kieSandboxExtendedServices, props.editorPageDock]);
+    extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
+    extendedServices.setModalOpen(true);
+  }, [dmnRunnerState.mode, dmnRunnerDispatch, extendedServices, props.editorPageDock]);
 
-  const toggleDmnDevSandboxDropdown = useCallback(
+  const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
-      if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-        dmnDevSandbox.setDropdownOpen(isOpen);
+      if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+        devDeployments.setDeployDropdownOpen(isOpen);
         return;
       }
-      kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
-      kieSandboxExtendedServices.setModalOpen(true);
+      extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
+      extendedServices.setModalOpen(true);
     },
-    [dmnDevSandbox, kieSandboxExtendedServices]
+    [devDeployments, extendedServices]
   );
 
-  const isDevSandboxEnabled = useMemo(() => {
-    return (
-      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING &&
-      settings.openshift.status === OpenShiftInstanceStatus.CONNECTED
-    );
-  }, [kieSandboxExtendedServices.status, settings.openshift.status]);
+  const isExtendedServicesRunning = useMemo(() => {
+    return extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING;
+  }, [extendedServices.status]);
 
   const [runModeOpen, setRunModeOpen] = useState<boolean>(false);
 
   const handleDmnRunnerInputsDownload = useCallback(async () => {
     if (downloadDmnRunnerInputsRef.current) {
-      const fileBlob = await workspacesDmnRunner.getInputRowsForDownload(props.workspaceFile);
+      const fileBlob = await dmnRunnerInputsDispatch.getInputRowsForDownload(props.workspaceFile);
       if (fileBlob) {
         downloadDmnRunnerInputsRef.current.download = props.workspaceFile.name.split(".")[0] + ".json";
         downloadDmnRunnerInputsRef.current.href = URL.createObjectURL(fileBlob);
         downloadDmnRunnerInputsRef.current?.click();
       }
     }
-  }, [props.workspaceFile, workspacesDmnRunner]);
+  }, [props.workspaceFile, dmnRunnerInputsDispatch]);
 
   const handleDmnRunnerInputsUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
-        workspacesDmnRunner.uploadInputRows(props.workspaceFile, file);
+        dmnRunnerInputsDispatch.uploadInputRows(props.workspaceFile, file);
       }
     },
-    [workspacesDmnRunner, props.workspaceFile]
+    [dmnRunnerInputsDispatch, props.workspaceFile]
   );
 
   return (
     <>
       <FeatureDependentOnKieSandboxExtendedServices isLight={true} position="top">
         <Dropdown
-          className={isDevSandboxEnabled ? "pf-m-active" : ""}
-          onSelect={() => dmnDevSandbox.setDropdownOpen(false)}
+          className={isExtendedServicesRunning ? "pf-m-active" : ""}
+          onSelect={() => devDeployments.setDeployDropdownOpen(false)}
           toggle={
             <DropdownToggle
-              id="dmn-dev-sandbox-dropdown-button"
-              onToggle={toggleDmnDevSandboxDropdown}
-              data-testid="dmn-dev-sandbox-button"
+              id="dmn-dev-deployment-dropdown-button"
+              onToggle={toggleDevDeploymentsDropdown}
+              data-testid="dmn-dev-deployment-button"
             >
-              Try on OpenShift
+              Deploy
             </DropdownToggle>
           }
-          isOpen={dmnDevSandbox.isDropdownOpen}
+          isOpen={devDeployments.isDeployDropdownOpen}
           position={DropdownPosition.right}
-          dropdownItems={dmnDevSandboxDropdownItems}
+          dropdownItems={devDeploymentsDropdownItems}
         />
       </FeatureDependentOnKieSandboxExtendedServices>
       {"  "}
@@ -168,7 +162,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               component={"button"}
               icon={<ListIcon />}
               onClick={() => {
-                if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+                if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   dmnRunnerDispatch.setMode(DmnRunnerMode.FORM);
                   props.editorPageDock?.close();
                   dmnRunnerDispatch.setExpanded(true);
@@ -182,7 +176,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               component={"button"}
               icon={<TableIcon />}
               onClick={() => {
-                if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+                if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
                   props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
                   dmnRunnerDispatch.setExpanded(true);
@@ -213,7 +207,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               <Divider />
               <DropdownItem component={"button"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
-                  onDelete={() => workspacesDmnRunner.deletePersistedInputRows(props.workspaceFile)}
+                  onDelete={() => dmnRunnerInputsDispatch.deletePersistedInputRows(props.workspaceFile)}
                   item={`Delete DMN Runner inputs`}
                   label={" Delete inputs"}
                   isHoverable={false}

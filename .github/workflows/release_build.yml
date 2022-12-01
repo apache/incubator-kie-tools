@@ -20,7 +20,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false","kn_plugin_workflow":"false"}'
+        default: '{"dmn_dev_deployment_base_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}
+      dmn_dev_deployment_base_image: ${{ steps.set_runners.outputs.dmn_dev_deployment_base_image }}
       kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}
       kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}
       git_cors_proxy_image: ${{ steps.set_runners.outputs.git_cors_proxy_image }}
@@ -73,8 +73,9 @@ jobs:
       dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}
       dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}
       serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}
-      serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}
-      openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}
+      serverless_logic_web_tools_swf_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_swf_builder_image }}
+      serverless_logic_web_tools_base_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_base_builder_image }}
+      dashbuilder_viewer_image: ${{ steps.set_runners.outputs.dashbuilder_viewer_image }}
       kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}
 
     steps:
@@ -82,7 +83,7 @@ jobs:
         id: set_runners
         shell: bash
         run: |
-          echo "dmn_dev_sandbox_image=${{ fromJSON(inputs.runners).dmn_dev_sandbox_image }}" >> $GITHUB_OUTPUT
+          echo "dmn_dev_deployment_base_image=${{ fromJSON(inputs.runners).dmn_dev_deployment_base_image }}" >> $GITHUB_OUTPUT
           echo "kie_sandbox_image=${{ fromJSON(inputs.runners).kie_sandbox_image }}" >> $GITHUB_OUTPUT
           echo "kie_sandbox_extended_services_image=${{ fromJSON(inputs.runners).kie_sandbox_extended_services_image }}" >> $GITHUB_OUTPUT
           echo "git_cors_proxy_image=${{ fromJSON(inputs.runners).git_cors_proxy_image }}" >> $GITHUB_OUTPUT
@@ -97,14 +98,15 @@ jobs:
           echo "dashbuilder=${{ fromJSON(inputs.runners).dashbuilder }}" >> $GITHUB_OUTPUT
           echo "dashbuilder_images=${{ fromJSON(inputs.runners).dashbuilder_images }}" >> $GITHUB_OUTPUT
           echo "serverless_logic_sandbox=${{ fromJSON(inputs.runners).serverless_logic_sandbox }}" >> $GITHUB_OUTPUT
-          echo "serverless_logic_sandbox_base_image=${{ fromJSON(inputs.runners).serverless_logic_sandbox_base_image }}" >> $GITHUB_OUTPUT
-          echo "openjdk11_mvn_image=${{ fromJSON(inputs.runners).openjdk11_mvn_image }}" >> $GITHUB_OUTPUT
+          echo "serverless_logic_web_tools_swf_builder_image=${{ fromJSON(inputs.runners).serverless_logic_web_tools_swf_builder_image }}" >> $GITHUB_OUTPUT
+          echo "serverless_logic_web_tools_base_builder_image=${{ fromJSON(inputs.runners).serverless_logic_web_tools_base_builder_image }}" >> $GITHUB_OUTPUT
+          echo "dashbuilder_viewer_image=${{ fromJSON(inputs.runners).dashbuilder_viewer_image }}" >> $GITHUB_OUTPUT
           echo "kn_plugin_workflow=${{ fromJSON(inputs.runners).kn_plugin_workflow }}" >> $GITHUB_OUTPUT
 
       - name: "Print Runners"
         shell: bash
         run: |
-          echo "dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}"
+          echo "dmn_dev_deployment_base_image: ${{ steps.set_runners.outputs.dmn_dev_deployment_base_image }}"
           echo "kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}"
           echo "kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}"
           echo "git_cors_proxy_image: ${{ steps.set_runners.outputs.git_cors_proxy_image }}"
@@ -119,21 +121,22 @@ jobs:
           echo "dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}"
           echo "dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}"
           echo "serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}"
-          echo "serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}"
-          echo "openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}"
+          echo "serverless_logic_web_tools_swf_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_swf_builder_image }}"
+          echo "serverless_logic_web_tools_base_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_base_builder_image }}"
+          echo "dashbuilder_viewer_image: ${{ steps.set_runners.outputs.dashbuilder_viewer_image }}"
           echo "kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}"
 
-  dmn_dev_sandbox_image:
+  dmn_dev_deployment_base_image:
     env:
-      DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
-      DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
-      DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
-      DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
-      DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
-      DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
-      DMN_DEV_SANDBOX__gtmId: "GTM-PMJ42HB"
+      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
+      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
+      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}"
+      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "latest ${{ inputs.tag }}"
+      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
+      DMN_DEV_DEPLOYMENT__gtmId: "GTM-PMJ42HB"
 
-    if: ${{ needs.extract_runners.outputs.dmn_dev_sandbox_image == 'true' }}
+    if: ${{ needs.extract_runners.outputs.dmn_dev_deployment_base_image == 'true' }}
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
@@ -146,11 +149,11 @@ jobs:
           ref: ${{ inputs.base_ref }}
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-dmn-dev-sandbox-deployment-base-image-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-dmn-dev-sandbox-deployment-base-image-m2
+          key: ${{ runner.os }}-dmn-dev-deployment-base-image-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-dmn-dev-deployment-base-image-m2
 
       - name: "Setup environment"
         id: setup_env
@@ -160,21 +163,21 @@ jobs:
         id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F @kie-tools/dmn-dev-sandbox-deployment-base-image...
+          pnpm_filter_string: -F @kie-tools/dmn-dev-deployment-base-image...
 
       - name: "Build"
         shell: bash
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
-      - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io"
+      - name: "Push dmn-dev-deployment-base-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.DMN_DEV_SANDBOX__baseImageName }}"
-          tags: "${{ env.DMN_DEV_SANDBOX__baseImageBuildTags }}"
-          registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
-          username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
+          image: "${{ env.DMN_DEV_DEPLOYMENT__baseImageName }}"
+          tags: "${{ env.DMN_DEV_DEPLOYMENT__baseImageBuildTags }}"
+          registry: "${{ env.DMN_DEV_DEPLOYMENT__baseImageRegistry }}/${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
+          username: "${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
   kie_sandbox_image:
@@ -190,18 +193,18 @@ jobs:
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
-      DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
-      DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
-      DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
-      DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
-      DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
+      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
+      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
+      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}"
+      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
 
     outputs:
       kie_sandbox_url: ${{ steps.deploy_kie_sandbox_image.outputs.route_url }}
 
     if: ${{ needs.extract_runners.outputs.kie_sandbox_image == 'true' }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, dmn_dev_sandbox_image, kie_sandbox_extended_services_image, git_cors_proxy_image]
+    needs: [extract_runners, dmn_dev_deployment_base_image, kie_sandbox_extended_services_image, git_cors_proxy_image]
     steps:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
@@ -391,17 +394,17 @@ jobs:
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
-      DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
-      DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
-      DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
-      DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
-      DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
-      DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
-      DMN_DEV_SANDBOX__gtmId: "GTM-PMJ42HB"
+      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
+      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
+      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}"
+      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "latest ${{ inputs.tag }}"
+      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
+      DMN_DEV_DEPLOYMENT__gtmId: "GTM-PMJ42HB"
 
-    if: ${{ always() && needs.extract_runners.outputs.online_editor == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_sandbox_image.result == 'success' || needs.dmn_dev_sandbox_image.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.online_editor == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_deployment_base_image.result == 'success' || needs.dmn_dev_deployment_base_image.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, dmn_dev_sandbox_image, extended_services]
+    needs: [extract_runners, dmn_dev_deployment_base_image, extended_services]
     steps:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
@@ -425,7 +428,7 @@ jobs:
           ref: gh-pages
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
           key: ${{ runner.os }}-release-m2-${{ hashFiles('**/pom.xml') }}
@@ -489,9 +492,9 @@ jobs:
       SWF_CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
       SWF_CHROME_EXTENSION__routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
       SWF_CHROME_EXTENSION__manifestFile: "manifest.prod.json"
-    if: ${{ always() && needs.extract_runners.outputs.chrome_extensions == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_sandbox_image.result == 'success' || needs.dmn_dev_sandbox_image.result == 'skipped') && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.chrome_extensions == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_deployment_base_image.result == 'success' || needs.dmn_dev_deployment_base_image.result == 'skipped') && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, dmn_dev_sandbox_image, extended_services, online_editor]
+    needs: [extract_runners, dmn_dev_deployment_base_image, extended_services, online_editor]
     steps:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
@@ -939,9 +942,9 @@ jobs:
           pnpm $PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json); NPM_PKG_INFO=$(npm view $PKG_NAME@${{ inputs.tag }} name || echo ""); if [ -z $NPM_PKG_INFO ]; then pnpm publish --no-git-checks --access public; fi'
 
   standalone_editors_cdn:
-    if: ${{ always() && needs.extract_runners.outputs.standalone_editors_cdn == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_sandbox_image.result == 'success' || needs.dmn_dev_sandbox_image.result == 'skipped') && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') && (needs.chrome_extensions.result == 'success' || needs.chrome_extensions.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.standalone_editors_cdn == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_deployment_base_image.result == 'success' || needs.dmn_dev_deployment_base_image.result == 'skipped') && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') && (needs.chrome_extensions.result == 'success' || needs.chrome_extensions.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, dmn_dev_sandbox_image, extended_services, online_editor, chrome_extensions]
+    needs: [extract_runners, dmn_dev_deployment_base_image, extended_services, online_editor, chrome_extensions]
     steps:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
@@ -1001,6 +1004,9 @@ jobs:
           git push origin gh-pages
 
   extended_services:
+    env:
+      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online"
+
     if: ${{ needs.extract_runners.outputs.extended_services == 'true' }}
     runs-on: ${{ matrix.os }}
     needs: [extract_runners]
@@ -1241,14 +1247,14 @@ jobs:
           asset_name: "kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
 
-  serverless_logic_sandbox_base_image:
+  serverless_logic_web_tools_swf_builder_image:
     env:
-      SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
-      SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: "latest ${{ inputs.tag }}"
 
-    if: ${{ needs.extract_runners.outputs.serverless_logic_sandbox_base_image == 'true' }}
+    if: ${{ needs.extract_runners.outputs.serverless_logic_web_tools_swf_builder_image == 'true' }}
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
@@ -1261,11 +1267,11 @@ jobs:
           ref: ${{ inputs.base_ref }}
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-serverless-logic-sandbox-base-image-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-serverless-logic-sandbox-base-image-m2
+          key: ${{ runner.os }}-serverless-logic-web-tools-swf-builder-image-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-serverless-logic-web-tools-swf-builder-image-m2
 
       - name: "Setup environment"
         id: setup_env
@@ -1275,30 +1281,31 @@ jobs:
         id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F @kie-tools/serverless-logic-sandbox-base-image...
+          pnpm_filter_string: -F @kie-tools/serverless-logic-web-tools-swf-builder-image...
 
       - name: "Build"
         shell: bash
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
-      - name: "Push serverless-logic-sandbox-base-image to quay.io"
+
+      - name: "Push serverless-logic-web-tools-swf-builder-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-  openjdk11_mvn_image:
+  serverless_logic_web_tools_base_builder_image:
     env:
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "latest ${{ inputs.tag }}"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName: "serverless-logic-web-tools-base-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: "latest ${{ inputs.tag }}"
 
-    if: ${{ needs.extract_runners.outputs.openjdk11_mvn_image == 'true' }}
+    if: ${{ needs.extract_runners.outputs.serverless_logic_web_tools_base_builder_image == 'true' }}
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
@@ -1318,21 +1325,65 @@ jobs:
         id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F @kie-tools/openjdk11-mvn-image...
+          pnpm_filter_string: -F @kie-tools/serverless-logic-web-tools-base-builder-image...
 
       - name: "Build"
         shell: bash
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
-      - name: "Push openjdk11-mvn-image to quay.io"
+      - name: "Push serverless-logic-web-tools-base-builder-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+  dashbuilder_viewer_image:
+    env:
+      DASHBUILDER__viewerImageRegistry: "quay.io"
+      DASHBUILDER__viewerImageAccount: "kie-tools"
+      DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
+      DASHBUILDER__viewerImageBuildTags: "latest ${{ inputs.tag }}"
+
+    if: ${{ needs.extract_runners.outputs.dashbuilder_viewer_image == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup environment"
+        id: setup_env
+        uses: ./.github/actions/setup-env
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/dashbuilder-viewer-image...
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
+      - name: "Push dashbuilder-viewer-image to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER__viewerImageName }}"
+          tags: "${{ env.DASHBUILDER__viewerImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__viewerImageRegistry }}/${{ env.DASHBUILDER__viewerImageAccount }}"
+          username: "${{ env.DASHBUILDER__viewerImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
   serverless_logic_sandbox:
@@ -1343,19 +1394,30 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       SERVERLESS_LOGIC_SANDBOX__gtmId: "GTM-5W2QP3C"
-      SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
-      SERVERLESS_LOGIC_SANDBOX__baseImageTag: "${{ inputs.tag }}"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName: "serverless-logic-web-tools-base-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: "${{ inputs.tag }}"
+      DASHBUILDER__viewerImageRegistry: "quay.io"
+      DASHBUILDER__viewerImageAccount: "kie-tools"
+      DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: "${{ inputs.tag }}"
       SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
-    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_sandbox_base_image.result == 'success' || needs.serverless_logic_sandbox_base_image.result == 'skipped') && (needs.openjdk11_mvn_image.result == 'success' || needs.openjdk11_mvn_image.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_web_tools_swf_builder_image.result == 'success' || needs.serverless_logic_web_tools_swf_builder_image.result == 'skipped') && (needs.serverless_logic_web_tools_base_builder_image.result == 'success' || needs.serverless_logic_web_tools_base_builder_image.result == 'skipped') && (needs.dashbuilder_viewer_image.result == 'success' || needs.dashbuilder_viewer_image.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, serverless_logic_sandbox_base_image, openjdk11_mvn_image, extended_services]
+    needs:
+      [
+        extract_runners,
+        serverless_logic_web_tools_swf_builder_image,
+        serverless_logic_web_tools_base_builder_image,
+        dashbuilder_viewer_image,
+        extended_services,
+      ]
     steps:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
@@ -1379,7 +1441,7 @@ jobs:
           ref: gh-pages
 
       - name: "Cache Maven packages"
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
           key: ${{ runner.os }}-serverless-logic-sandbox-m2-${{ hashFiles('**/pom.xml') }}

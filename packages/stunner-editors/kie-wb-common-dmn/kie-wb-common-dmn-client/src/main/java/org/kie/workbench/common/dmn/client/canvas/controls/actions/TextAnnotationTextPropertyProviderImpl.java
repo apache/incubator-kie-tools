@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.actions;
 
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -62,19 +64,19 @@ public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvi
                         final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                         final Element<? extends Definition> element,
                         final String text) {
-        final Object definition = DefinitionUtils.getElementDefinition(element);
-        final CanvasCommand<AbstractCanvasHandler> command =
-                canvasCommandFactory.updatePropertyValue(element,
-                                                         definitionUtils.getNameIdentifier(definition),
-                                                         text);
-        commandManager.execute(canvasHandler,
-                               command);
+        if (!Objects.equals(text, getText(element))) {
+            final Object definition = DefinitionUtils.getElementDefinition(element);
+            final CanvasCommand<AbstractCanvasHandler> command = canvasCommandFactory.updatePropertyValue(
+                    element,
+                    definitionUtils.getNameIdentifier(definition),
+                    text);
+            commandManager.execute(canvasHandler, command);
+        }
     }
 
     @Override
     public String getText(final Element<? extends Definition> element) {
         final TextAnnotation ta = (TextAnnotation) DefinitionUtils.getElementDefinition(element);
-        final String text = ta.getText().getValue();
-        return text;
+        return ta.getText().getValue();
     }
 }

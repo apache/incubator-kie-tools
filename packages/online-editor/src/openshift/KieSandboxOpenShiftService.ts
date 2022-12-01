@@ -16,6 +16,7 @@
 
 import {
   CreateDeployment,
+  DeleteDeployment,
   GetDeployment,
   ListDeployments,
 } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
@@ -32,10 +33,10 @@ import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/Open
 import { OpenShiftService, OpenShiftServiceArgs } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
 import { OpenShiftDeployedModel, OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
-import { getUploadStatus, postUpload, UploadStatus } from "../editor/DmnDevSandbox/DmnDevSandboxQuarkusAppApi";
+import { getUploadStatus, postUpload, UploadStatus } from "../devDeployments/DmnDevDeploymentQuarkusAppApi";
 
-const RESOURCE_PREFIX = "dmn-dev-sandbox";
-const RESOURCE_OWNER = "online-editor";
+const RESOURCE_PREFIX = "dmn-dev-deployment";
+const RESOURCE_OWNER = "kie-sandbox";
 const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
 export type KieSandboxOpenShiftDeployedModel = OpenShiftDeployedModel & {
@@ -56,8 +57,8 @@ export class KieSandboxOpenShiftService {
     this.openShiftService = new OpenShiftService(args);
   }
 
-  public async isConnectionEstablished(connection: OpenShiftConnection): Promise<boolean> {
-    return this.openShiftService.isConnectionEstablished(connection);
+  public async isConnectionEstablished(): Promise<boolean> {
+    return this.openShiftService.isConnectionEstablished(this.args.connection);
   }
 
   public newResourceName(): string {
@@ -149,7 +150,7 @@ export class KieSandboxOpenShiftService {
           uri: args.targetFilePath,
           baseUrl: routeUrl,
           workspaceName: args.workspaceName,
-          containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl!,
+          containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
           envVars: [
             {
               name: "BASE_URL",
@@ -199,6 +200,35 @@ export class KieSandboxOpenShiftService {
         }
       }, CHECK_UPLOAD_STATUS_POLLING_TIME);
     });
+  }
+
+  public async deleteDeployment(resourceName: string) {
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteDeployment({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
+
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteService({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
+
+    await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteRoute({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
   }
 
   private extractDeploymentStateWithUploadStatus(

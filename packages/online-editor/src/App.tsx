@@ -18,10 +18,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import {
-  EditorEnvelopeLocatorContextProvider,
-  useEditorEnvelopeLocator,
-} from "./envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
@@ -30,15 +27,16 @@ import { SettingsContextProvider } from "./settings/SettingsContext";
 import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./importFromUrl/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./importFromUrl/NewWorkspaceFromUrlPage";
-import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
+import { DevDeploymentsContextProvider } from "./devDeployments/DevDeploymentsContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
 import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
-import { AuthSessionsContextProvider } from "./accounts/authSessions/AuthSessionsContext";
-import { AccountsContextProvider } from "./accounts/AccountsDispatchContext";
+import { AuthSessionsContextProvider } from "./authSessions/AuthSessionsContext";
+import { AccountsContextProvider } from "./accounts/AccountsContext";
+import { GlobalAlertsContextProvider } from "./alerts";
 
 export function App() {
   return (
@@ -51,9 +49,10 @@ export function App() {
         [SettingsContextProvider, {}],
         [AuthSessionsContextProvider, {}],
         [AccountsContextProvider, {}],
+        [GlobalAlertsContextProvider, []],
         [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js" }],
         [DmnRunnerInputsDispatchContextProvider, {}],
-        [DmnDevSandboxContextProvider, {}],
+        [DevDeploymentsContextProvider, {}],
         [NavigationContextProvider, {}],
         [PreviewSvgsContextProvider, {}],
         [RoutesSwitch, {}]

@@ -60,7 +60,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
-import { isServerlessWorkflow } from "../extension";
+import { isDashbuilder, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import {
   useNavigationBlockersBypass,
@@ -180,7 +180,7 @@ export function EditorToolbar(props: Props) {
   }, [isSaved]);
 
   const canBeDeployed = useMemo(
-    () => isServerlessWorkflow(props.workspaceFile.relativePath),
+    () => isServerlessWorkflow(props.workspaceFile.relativePath) || isDashbuilder(props.workspaceFile.relativePath),
     [props.workspaceFile.relativePath]
   );
 

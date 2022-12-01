@@ -15,10 +15,12 @@
  */
 
 import { EnvJson } from "../src/env/EnvJson";
+import { routes } from "../src/navigation/Routes";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../env";
+import { AuthProviderGroup } from "../src/authProviders/AuthProvidersApi";
 const buildEnv: any = env; // build-env is not typed
 
 export const defaultEnvJson: EnvJson = {
@@ -33,6 +35,7 @@ export const defaultEnvJson: EnvJson = {
       name: "GitHub",
       enabled: true,
       iconPath: "",
+      group: AuthProviderGroup.GIT,
     },
     {
       id: "gitlab_dot_com",
@@ -41,7 +44,8 @@ export const defaultEnvJson: EnvJson = {
       type: "gitlab",
       name: "GitLab",
       enabled: false,
-      iconPath: "",
+      iconPath: routes.static.images.gitlabLogo.path({}),
+      group: AuthProviderGroup.GIT,
     },
     {
       id: "bitbucket_dot_com",
@@ -50,7 +54,26 @@ export const defaultEnvJson: EnvJson = {
       type: "bitbucket",
       name: "Bitbucket",
       enabled: false,
-      iconPath: "",
+      iconPath: routes.static.images.bitbucketLogo.path({}),
+      group: AuthProviderGroup.GIT,
+    },
+    {
+      enabled: true,
+      id: "openshift",
+      type: "openshift",
+      name: "OpenShift",
+      domain: undefined,
+      iconPath: routes.static.images.openshiftLogo.path({}),
+      group: AuthProviderGroup.CLOUD,
+    },
+    {
+      enabled: false,
+      id: "kubernetes",
+      type: "openshift",
+      name: "Kubernetes",
+      domain: undefined,
+      iconPath: routes.static.images.kubernetesLogo.path({}),
+      group: AuthProviderGroup.CLOUD,
     },
   ],
 };
