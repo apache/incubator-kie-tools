@@ -21,7 +21,6 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import elemental2.core.JsArray;
-import elemental2.dom.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,9 +35,6 @@ import static org.mockito.Mockito.verify;
 public class ImageProxyTest {
 
     @Mock
-    private elemental2.dom.Image image;
-
-    @Mock
     private ScratchPad normalImage;
 
     @Mock
@@ -50,6 +46,9 @@ public class ImageProxyTest {
     @Mock
     private AbstractImageShape imageShape;
 
+    @Mock
+    private JsImageBitmap image;
+
     private ImageProxy tested;
 
     @Before
@@ -57,18 +56,19 @@ public class ImageProxyTest {
         tested = new ImageProxy<>(imageShape,
                                   normalImage,
                                   filterImage,
-                                  selectImage);
-        image.parentNode = new Node();
+                                  selectImage,
+                                  image);
+
     }
 
     @Test
     public void testDestroy() {
-        tested.destroy(image);
-        verify(image, times(1)).remove();
+        tested.destroy();
         verify(imageShape, times(1)).removeFromParent();
         verify(normalImage, times(1)).clear();
         verify(filterImage, times(1)).clear();
         verify(selectImage, times(1)).clear();
+        verify(image, times(1)).close();
         assertTrue(tested.getFilters().isEmpty());
     }
 }

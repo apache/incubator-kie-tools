@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -149,6 +150,16 @@ public class LienzoBoundsPanelTest
         assertEquals(BOUNDS.getHeight(), bounds.getHeight(), 0);
         verify(refreshCommand, times(1)).run();
         verify(scratchPad, times(1)).setPixelSize(eq(300), eq(500));
+    }
+
+    @Test
+    public void testOnResize()
+    {
+        tested.set(layer);
+        tested.onResize();
+
+        // Refresh is already being called no need to call it on resize
+        verify(tested, never()).refresh();
     }
 
     @Test
