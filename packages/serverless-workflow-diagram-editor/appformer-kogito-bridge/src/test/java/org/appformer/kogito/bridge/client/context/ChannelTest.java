@@ -29,7 +29,6 @@ public class ChannelTest {
         assertEquals(Channel.DEFAULT, Channel.withName("dEfAuLt"));
         assertEquals(Channel.ONLINE, Channel.withName("ONLine"));
         assertEquals(Channel.VSCODE, Channel.withName("VSCode"));
-        assertEquals(Channel.DESKTOP, Channel.withName("Desktop"));
         assertEquals(Channel.EMBEDDED, Channel.withName("emBedDED"));
     }
 
