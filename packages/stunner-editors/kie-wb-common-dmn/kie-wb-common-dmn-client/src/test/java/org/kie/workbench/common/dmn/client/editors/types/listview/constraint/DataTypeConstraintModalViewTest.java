@@ -74,6 +74,9 @@ public class DataTypeConstraintModalViewTest {
     private HTMLDivElement componentContainer;
 
     @Mock
+    private DOMTokenList okButtonClassList;
+
+    @Mock
     private HTMLButtonElement okButton;
 
     @Mock
@@ -103,6 +106,8 @@ public class DataTypeConstraintModalViewTest {
     public void setup() {
         view = spy(new DataTypeConstraintModalView(header, body, footer, componentContainer, okButton, cancelButton, clearAllAnchor, type, selectConstraint, constraintWarningMessage, closeConstraintWarningMessage));
         view.init(presenter);
+
+        when(view.getOkButtonClassList()).thenReturn(okButtonClassList);
     }
 
     @Test
@@ -147,6 +152,24 @@ public class DataTypeConstraintModalViewTest {
         view.onOkButtonClick(mock(ClickEvent.class));
 
         verify(presenter).save();
+    }
+
+    @Test
+    public void testEnableOkButton() {
+
+        view.enableOkButton();
+
+        verify(okButton).setAttribute("disabled", false);
+        verify(okButtonClassList).remove("disabled");
+    }
+
+    @Test
+    public void testDisableOkButton() {
+
+        view.disableOkButton();
+
+        verify(okButton).setAttribute("disabled", true);
+        verify(okButtonClassList).add("disabled");
     }
 
     @Test

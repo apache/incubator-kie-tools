@@ -45,6 +45,7 @@ import {
   SwfPreviewOptions,
   SwfPreviewOptionsChannelApi,
 } from "../api";
+import { SwfStaticEnvelopeContentProviderChannelApi } from "../api/SwfStaticEnvelopeContentProviderChannelApi";
 
 export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombinedEditorChannelApi {
   constructor(
@@ -52,7 +53,8 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
-    private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi
+    private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi,
+    private readonly swfStaticEnvelopeContentProviderChannelApi?: SwfStaticEnvelopeContentProviderChannelApi
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -170,8 +172,28 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
   kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions> {
     return (
       this.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
-        defaultValue: { diagramDefaultWidth: "50%" },
+        defaultValue: { defaultWidth: "50%", editorMode: "full" },
       }
+    );
+  }
+
+  public kogitoSwfGetDiagramEditorEnvelopeContent(): SharedValueProvider<string> {
+    return (
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetDiagramEditorEnvelopeContent() ?? {
+        defaultValue: "",
+      }
+    );
+  }
+
+  public kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
+    return (
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetMermaidEnvelopeContent() ?? { defaultValue: "" }
+    );
+  }
+
+  public kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
+    return (
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ?? { defaultValue: "" }
     );
   }
 

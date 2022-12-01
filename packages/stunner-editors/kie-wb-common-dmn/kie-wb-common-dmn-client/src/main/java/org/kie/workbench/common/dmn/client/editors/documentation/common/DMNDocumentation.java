@@ -45,7 +45,7 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     private String currentDate;
 
-    private String currentUser;
+    private String currentYear;
 
     private String moduleName;
 
@@ -71,8 +71,8 @@ public class DMNDocumentation implements DiagramDocumentation {
                                           final List<DMNDocumentationDataType> dataTypes,
                                           final List<DMNDocumentationDRD> drds,
                                           final String diagramImage,
-                                          final String currentUser,
                                           final String currentDate,
+                                          final String currentYear,
                                           final DMNDocumentationI18n i18n) {
 
         final DMNDocumentation dmn = new DMNDocumentation();
@@ -82,8 +82,8 @@ public class DMNDocumentation implements DiagramDocumentation {
         dmn.namespace = namespace;
         dmn.diagramName = diagramName;
         dmn.diagramDescription = diagramDescription;
-        dmn.currentUser = currentUser;
         dmn.currentDate = currentDate;
+        dmn.currentYear = currentYear;
         dmn.diagramImage = diagramImage;
         dmn.hasGraphNodes = hasGraphNodes;
         dmn.moduleName = GWT.getModuleName();
@@ -121,8 +121,8 @@ public class DMNDocumentation implements DiagramDocumentation {
     }
 
     @JsOverlay
-    public final String getCurrentUser() {
-        return currentUser;
+    public final String getCurrentYear() {
+        return currentYear;
     }
 
     @JsOverlay

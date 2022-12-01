@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorEnvelopeLocator,
+  EnvelopeContentType,
+  EnvelopeMapping,
+} from "@kie-tools-core/editor/dist/api";
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
@@ -36,7 +41,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       type: "dmn",
       filePathGlob: "**/*.dmn",
       resourcesPathPrefix: "envelope",
-      envelopePath: "envelope/envelope.html",
+      envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/envelope.html" },
     }),
   ]);
 

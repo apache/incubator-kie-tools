@@ -45,9 +45,6 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
     static final String DOCUMENTATION_FILENAME = "Documentation";
 
-    @DataField("documentation-panel")
-    private final HTMLDivElement documentationPanel;
-
     @DataField("documentation-content")
     private final HTMLDivElement documentationContent;
 
@@ -61,26 +58,20 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
     private final DMNDocumentationService documentationService;
 
-    private final HTMLDownloadHelper downloadHelper;
-
     private final DMNDocumentationViewButtonsVisibilitySupplier buttonsVisibilitySupplier;
 
     @Inject
-    public DMNDocumentationView(final HTMLDivElement documentationPanel,
-                                final HTMLDivElement documentationContent,
+    public DMNDocumentationView(final HTMLDivElement documentationContent,
                                 final HTMLButtonElement printButton,
                                 final HTMLButtonElement downloadHtmlFile,
                                 final PrintHelper printHelper,
                                 final DMNDocumentationService documentationService,
-                                final HTMLDownloadHelper downloadHelper,
                                 final DMNDocumentationViewButtonsVisibilitySupplier buttonsVisibilitySupplier) {
-        this.documentationPanel = documentationPanel;
         this.documentationContent = documentationContent;
         this.printButton = printButton;
         this.downloadHtmlFile = downloadHtmlFile;
         this.printHelper = printHelper;
         this.documentationService = documentationService;
-        this.downloadHelper = downloadHelper;
         this.buttonsVisibilitySupplier = buttonsVisibilitySupplier;
     }
 
@@ -90,7 +81,6 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
         refreshDocumentationHTMLAfter200ms();
         if (!buttonsVisibilitySupplier.isButtonsVisible()) {
             hide(printButton);
-            hide(downloadHtmlFile);
         }
         return this;
     }
@@ -108,7 +98,7 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
     @EventHandler("download-html-file")
     public void onDownloadHtmlFile(final ClickEvent e) {
         final String html = getCurrentDocumentationHTML();
-        downloadHelper.download(getCurrentDocumentationModelName(), html);
+        HTMLDownloadHelper.downloadHTMLFile(getCurrentDocumentationModelName(), html);
     }
 
     String getCurrentDocumentationHTML() {
@@ -124,7 +114,7 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
     String getCurrentDocumentationModelName() {
         return getDiagram()
-                .map(diagram -> documentationService.processDocumentation(diagram))
+                .map(documentationService::processDocumentation)
                 .map(dmnDocumentation -> DOCUMENTATION_FILENAME + "-" + dmnDocumentation.getDiagramName())
                 .orElse(DOCUMENTATION_FILENAME);
     }
@@ -135,7 +125,7 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
     void refreshDocumentationHTMLAfter200ms() {
         // The canvas takes some milliseconds to be fully refreshed.
-        setTimeout((w) -> refreshDocumentationHTML(), 200);
+        setTimeout(w -> refreshDocumentationHTML(), 200);
     }
 
     void setTimeout(final DomGlobal.SetTimeoutCallbackFn callback,
