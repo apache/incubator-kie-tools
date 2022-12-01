@@ -24,9 +24,9 @@ import { LOGIC_TYPE_SELECTOR_CLASS } from "../ExpressionDefinitionLogicTypeSelec
 import { BeeTableTdIndex } from "./BeeTableTdIndex";
 import { BeeTableTd } from "./BeeTableTd";
 
-export interface BeeTableBodyProps {
+export interface BeeTableBodyProps<R extends object> {
   /** Table instance */
-  reactTableInstance: ReactTable.TableInstance;
+  reactTableInstance: ReactTable.TableInstance<R>;
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** True, for skipping the creation in the DOM of the last defined header group */
@@ -34,18 +34,18 @@ export interface BeeTableBodyProps {
   /** Optional children element to be appended below the table content */
   children?: React.ReactElement[];
   /** Custom function for getting row key prop, and avoid using the row index */
-  getRowKey: (row: ReactTable.Row) => string;
+  getRowKey: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
-  getColumnKey: (column: ReactTable.ColumnInstance) => string;
+  getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** Function to be executed when columns are modified */
-  onColumnsUpdate?: (columns: ReactTable.ColumnInstance[]) => void;
+  onColumnsUpdate?: (columns: ReactTable.ColumnInstance<R>[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
   tdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
 
-export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
+export function BeeTableBody<R extends object>({
   reactTableInstance,
   children,
   headerVisibility = BeeTableHeaderVisibility.Full,
@@ -55,7 +55,7 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
   onColumnsUpdate,
   onCellKeyDown,
   tdProps,
-}) => {
+}: BeeTableBodyProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? BeeTableHeaderVisibility.Full, [headerVisibility]);
@@ -75,20 +75,20 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
   }, [headerVisibility, reactTableInstance]);
 
   const renderCell = useCallback(
-    (cellIndex: number, cell: ReactTable.Cell, rowIndex: number, isInForm: boolean) => {
+    (args: { cellIndex: number; cell: ReactTable.Cell<R>; rowIndex: number; shouldUseCellDelegate: boolean }) => {
       return (
-        <BeeTableTd
-          key={cellIndex}
-          cellIndex={cellIndex}
-          cell={cell}
-          rowIndex={rowIndex}
-          isInForm={isInForm}
+        <BeeTableTd<R>
+          key={args.cellIndex}
+          cellIndex={args.cellIndex}
+          cell={args.cell}
+          rowIndex={args.rowIndex}
+          shouldUseCellDelegate={args.shouldUseCellDelegate}
           onKeyDown={onCellKeyDown}
           reactTableInstance={reactTableInstance}
           getColumnKey={getColumnKey}
           onColumnsUpdate={onColumnsUpdate!}
           getTdProps={tdProps}
-          yPosition={headerRowsLength + rowIndex}
+          yPosition={headerRowsLength + args.rowIndex}
         />
       );
     },
@@ -120,14 +120,14 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
   );
 
   const renderRow = useCallback(
-    (row: ReactTable.Row, rowIndex: number) => {
+    (row: ReactTable.Row<R>, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
       const rowProps = { ...row.getRowProps(), style: {} };
       const RowDelegate = (row.original as any).rowDelegate; // FIXME: Tiago -> Bad typing.
       const rowKey = getRowKey(row);
       const rowClassNames = `${rowKey} table-row`;
 
-      const renderTr = (isInForm: boolean) => (
+      const renderTr = (args: { shouldUseCellDelegate: boolean }) => (
         <PfReactTable.Tr
           className={rowClassNames}
           {...rowProps}
@@ -135,15 +135,19 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
           key={rowKey}
           onClick={onRowClick(rowKey)}
         >
-          {row.cells.map((cell: ReactTable.Cell, cellIndex: number) => {
-            return renderCell(cellIndex, cell, rowIndex, isInForm);
+          {row.cells.map((cell, cellIndex) => {
+            return renderCell({ cellIndex, cell, rowIndex, shouldUseCellDelegate: args.shouldUseCellDelegate });
           })}
         </PfReactTable.Tr>
       );
 
       return (
         <React.Fragment key={rowKey}>
-          {RowDelegate ? <RowDelegate>{renderTr(true)}</RowDelegate> : renderTr(false)}
+          {RowDelegate ? (
+            <RowDelegate>{renderTr({ shouldUseCellDelegate: true })}</RowDelegate> //
+          ) : (
+            renderTr({ shouldUseCellDelegate: false })
+          )}
         </React.Fragment>
       );
     },
@@ -192,4 +196,4 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
       {children ? renderAdditiveRow(reactTableInstance.rows.length) : null}
     </PfReactTable.Tbody>
   );
-};
+}

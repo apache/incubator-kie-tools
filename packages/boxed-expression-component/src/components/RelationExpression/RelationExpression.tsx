@@ -28,6 +28,7 @@ import {
   BeeTableRow,
   BeeTableRowsUpdateArgs,
   BeeTableOperation,
+  ROWGENERICTYPE,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -126,7 +127,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
             .reduce((tableRow, column, columnIndex) => {
               tableRow[column.id] = row.cells[columnIndex] || "";
               return tableRow;
-            }, {} as ReactTable.DataRecord)
+            }, {} as ROWGENERICTYPE)
             .value();
           updatedRow.id = row.id;
           return updatedRow;
@@ -136,9 +137,9 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   );
 
   const onRowsUpdate = useCallback(
-    ({ rows, columns }: BeeTableRowsUpdateArgs) => {
+    ({ rows, columns }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
       const newRows = _.chain(rows)
-        .map((tableRow: ReactTable.DataRecord) => {
+        .map((tableRow: ROWGENERICTYPE) => {
           const cells = _.chain(columns)
             .reduce((row: string[], column: ReactTable.ColumnInstance) => {
               row.push((tableRow[column.accessor] as string) ?? "");

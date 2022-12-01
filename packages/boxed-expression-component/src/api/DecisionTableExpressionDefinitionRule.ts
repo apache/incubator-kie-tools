@@ -16,7 +16,7 @@
 
 import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 
-export interface DecisionTableExpressionDefinitionCaluse {
+export interface DecisionTableExpressionDefinitionClause {
   /** Clause identifier */
   id: string;
   /** Clause name */

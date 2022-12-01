@@ -33,6 +33,7 @@ import {
   resetEntry,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
+  ROWGENERICTYPE,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -64,7 +65,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             dataType: DEFAULT_PARAMETER_DATA_TYPE,
           },
           nameAndDataTypeSynchronized: true,
-        } as ReactTable.DataRecord,
+        } as ROWGENERICTYPE,
       ]
     );
   }, [invocation.bindingEntries]);
@@ -205,9 +206,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [invocation, spreadInvocationExpressionDefinition]
   );
 
-  const onRowAdding = useCallback(() => {
+  const onNewRow = useCallback(() => {
     const generatedName = generateNextAvailableEntryName(
-      beeTableRows.map((row: ReactTable.DataRecord & ContextExpressionDefinitionEntry) => row.entryInfo),
+      beeTableRows.map((row: ROWGENERICTYPE & ContextExpressionDefinitionEntry) => row.entryInfo),
       "p"
     );
     return {
@@ -262,7 +263,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnsUpdate={onColumnsUpdate}
-        onRowAdding={onRowAdding}
+        onNewRow={onNewRow}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKeyCallback}

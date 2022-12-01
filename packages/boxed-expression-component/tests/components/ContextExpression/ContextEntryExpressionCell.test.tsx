@@ -35,7 +35,7 @@ describe("ContextEntryExpressionCell tests", () => {
 
   const value = "value";
   const rowIndex = 0;
-  const onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void = (rowIndex, updatedRow) =>
+  const onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void = (rowIndex, updatedRow) =>
     _.identity({ rowIndex, updatedRow });
 
   test("should show a context entry expression cell with logic type not selected", () => {

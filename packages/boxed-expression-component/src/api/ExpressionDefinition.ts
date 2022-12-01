@@ -24,7 +24,7 @@ import { DecisionTableExpressionDefinitionHitPolicy } from "./DecisionTableExpre
 import { DecisionTableExpressionDefinitionBuiltInAggregation } from "./DecisionTableExpressionDefinitionBuiltInAggregation";
 import {
   DecisionTableExpressionDefinitionAnnotation,
-  DecisionTableExpressionDefinitionCaluse,
+  DecisionTableExpressionDefinitionClause,
   DecisionTableExpressionDefinitionRule,
 } from "./DecisionTableExpressionDefinitionRule";
 import {
@@ -111,9 +111,9 @@ export interface DecisionTableExpressionDefinition extends ExpressionDefinition 
   /** Annotation columns names */
   annotations?: DecisionTableExpressionDefinitionAnnotation[];
   /** Input columns definition */
-  input?: DecisionTableExpressionDefinitionCaluse[];
+  input?: DecisionTableExpressionDefinitionClause[];
   /** Output columns definition */
-  output?: DecisionTableExpressionDefinitionCaluse[];
+  output?: DecisionTableExpressionDefinitionClause[];
   /** Rules represent rows values */
   rules?: DecisionTableExpressionDefinitionRule[];
 }
@@ -148,3 +148,13 @@ export type FunctionExpressionDefinition = ExpressionDefinition & {
   /** Parameters column width */
   parametersWidth?: number;
 } & (FeelFunctionExpressionDefinition | JavaFunctionExpressionDefinition | PmmlFunctionExpressionDefinition);
+
+export type ExpressionSupertype =
+  | LiteralExpressionDefinition
+  | PmmlLiteralExpressionDefinition
+  | RelationExpressionDefinition
+  | ContextExpressionDefinition
+  | DecisionTableExpressionDefinition
+  | ListExpressionDefinition
+  | InvocationExpressionDefinition
+  | FunctionExpressionDefinition;

@@ -35,6 +35,7 @@ import {
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   ExpressionDefinition,
+  ROWGENERICTYPE,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -69,7 +70,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             dataType: DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
           },
           nameAndDataTypeSynchronized: true,
-        } as ReactTable.DataRecord,
+        } as ROWGENERICTYPE,
       ],
     [contextExpression.contextEntries]
   );
@@ -180,7 +181,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [contextExpression, spreadContextExpressionDefinition]
   );
 
-  const onRowAdding = useCallback(() => {
+  const onNewRow = useCallback(() => {
     const generatedName = generateNextAvailableEntryName(
       _.map(beeTableRows, (row: ContextExpressionDefinitionEntry) => row.entryInfo),
       "ContextEntry"
@@ -265,7 +266,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnsUpdate={onColumnsUpdate}
-        onRowAdding={onRowAdding}
+        onNewRow={onNewRow}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}

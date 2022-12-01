@@ -27,8 +27,8 @@ import { wrapComponentInContext } from "../../test-utils";
 
 describe("CopyAndPasteUtils", () => {
   describe("pasteOnTable", () => {
-    let rows: ReactTable.DataRecord[];
-    let rowFactory: () => ReactTable.DataRecord;
+    let rows: ROWGENERICTYPE[];
+    let rowFactory: () => ROWGENERICTYPE;
 
     beforeEach(() => {
       rows = [

@@ -35,7 +35,7 @@ declare module "react-table" {
 
   export interface TableOptions<D extends object> {
     onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
-    onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void;
+    onRowUpdate: (rowIndex: number, updatedRow: D) => void;
   }
 
   export interface ColumnInstance {
@@ -45,8 +45,6 @@ declare module "react-table" {
     accessor: string;
     /** Column group type */
     groupType?: string;
-    /** Current column is an empty TH element, created by react-table to fill a missing header cell element */
-    placeholderOf?: ColumnInstance;
     /** Used to indicate that column operation should be performed directly on column's children */
     appendColumnsOnChildren?: boolean;
     /** Column additive css classes - appended as passed */
@@ -59,8 +57,6 @@ declare module "react-table" {
     inlineEditable?: boolean;
     /** Column data type */
     dataType: DmnBuiltInDataType;
-    /** When resizable, this function returns the resizer props  */
-    getResizerProps: (props?: Partial<TableResizerProps>) => TableResizerProps;
     /** It tells whether column is of type counter or not */
     isCountColumn: boolean;
     /** Disabling table handler on the header of this column */
@@ -68,10 +64,7 @@ declare module "react-table" {
 
     // FIXME: Tiago
     width: number;
-    columns?: ColumnInstance[];
-  }
-
-  export interface DataRecord extends Record<string, unknown> {
-    //
+    setWidth?: (width: number) => void;
+    cellDelegate?: (id: string) => React.ReactNode;
   }
 }

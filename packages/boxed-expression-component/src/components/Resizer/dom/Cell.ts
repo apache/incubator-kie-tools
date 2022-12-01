@@ -84,7 +84,6 @@ export class Cell {
     }
 
     const refSibling = this.getParent()?.parentElement?.nextSibling;
-
     if (!refSibling) {
       return;
     }
@@ -111,10 +110,7 @@ export class Cell {
 
     // sum the colSpan to determine the header size;
     const headerElements = (refSibling as HTMLElement).parentNode?.querySelectorAll(".colspan-header") ?? [];
-    const headerSize = Array.from(headerElements).reduce(
-      (acc, th: HTMLTableHeaderCellElement) => acc + (th.colSpan || 1),
-      0
-    );
+    const headerSize = Array.from(headerElements).reduce((acc, th: HTMLTableCellElement) => acc + (th.colSpan || 1), 0);
 
     // if is header uses the headerType, if not (inputs/outputs cells) use the .data-cell class
     const children: HTMLElement[] = this.isColSpanHeader()
@@ -153,15 +149,15 @@ export class Cell {
     return this.getParent()?.classList.contains("colspan-header") || false;
   }
 
+  // FIXME: Tiago -> Class names should not be used for logic.
   private getHeaderType() {
-    // FIXME: Tiago -> Bad typing.
-    const cssClasses = (this.getParent()?.classList || []) as any as DOMTokenList;
+    const cssClasses = this.getParent()?.classList;
 
-    if (cssClasses.contains("input")) {
+    if (cssClasses?.contains("input")) {
       return "input";
     }
 
-    if (cssClasses.contains("output")) {
+    if (cssClasses?.contains("output")) {
       return "output";
     }
 

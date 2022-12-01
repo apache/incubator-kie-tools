@@ -32,7 +32,7 @@ interface InputField {
   dataType: DmnBuiltInDataType;
   width: number;
   name: string;
-  cellDelegate: (formId: string) => React.ReactNode;
+  cellDelegate: (id: string) => React.ReactNode;
 }
 
 interface InputWithInsideProperties extends InputField {
@@ -150,7 +150,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     return {
       ...this.getBoxedDataType(field),
       name: UnitablesJsonSchemaBridge.removeInputName(joinedName),
-      cellDelegate: (formId: string) => AutoField({ key: joinedName, name: joinedName, form: formId }),
+      cellDelegate: (id: string) => AutoField({ key: joinedName, name: joinedName, form: id }),
     } as InputField;
   }
 

@@ -18,7 +18,7 @@ import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import { ExpressionDefinition } from "./ExpressionDefinition";
 import * as _ from "lodash";
 import * as ReactTable from "react-table";
-import { BeeTableOperationHandlerConfig, BeeTableOperation } from "./BeeTable";
+import { BeeTableOperationHandlerConfig, BeeTableOperation, ROWGENERICTYPE } from "./BeeTable";
 import { BoxedExpressionEditorI18n } from "../i18n";
 
 export interface ContextExpressionDefinitionEntryInfo {
@@ -30,7 +30,7 @@ export interface ContextExpressionDefinitionEntryInfo {
   dataType: DmnBuiltInDataType;
 }
 
-export interface ContextExpressionDefinitionEntry<T = ExpressionDefinition> extends ReactTable.DataRecord {
+export interface ContextExpressionDefinitionEntry<T = ExpressionDefinition> {
   entryInfo: ContextExpressionDefinitionEntryInfo;
   /** Entry expression */
   entryExpression: T;
@@ -70,7 +70,7 @@ export const generateNextAvailableEntryName = (
 
 export const getEntryKey = (row: ReactTable.Row): string => {
   const entryRecord = row.original as ContextExpressionDefinitionEntry;
-  return entryRecord.entryInfo.id ?? (row.original as ReactTable.DataRecord).id; // FIXME: Tiago -> Bad type?
+  return entryRecord.entryInfo.id ?? (row.original as ROWGENERICTYPE).id; // FIXME: Tiago -> Bad type?
 };
 
 export function resetEntry(row: ContextExpressionDefinitionEntry): ContextExpressionDefinitionEntry {

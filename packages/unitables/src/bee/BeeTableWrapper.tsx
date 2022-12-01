@@ -33,6 +33,8 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 
 export const CELL_MINIMUM_WIDTH = 150;
 
+type BTWROW = any;
+
 enum UnitablesBeeTableWrapperColumnType {
   InputClause = "input",
   OutputClause = "output",
@@ -41,8 +43,6 @@ enum UnitablesBeeTableWrapperColumnType {
 
 const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
-
-type DataRecord = Record<string, unknown>;
 
 export interface BeeTableWrapperProps {
   id: string;
@@ -112,14 +112,14 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
     if (config.type === "inputs") {
       return config.inputs.map((inputRow) => {
         if (inputRow.insideProperties) {
-          const insideProperties = inputRow.insideProperties.map((insideInputClauses) => {
+          const insideProperties = inputRow.insideProperties.map((insideProperty) => {
             return {
-              label: insideInputClauses.name,
-              accessor: `input-${insideInputClauses.name}`,
-              dataType: insideInputClauses.dataType,
-              width: insideInputClauses.width,
+              label: insideProperty.name,
+              accessor: `input-${insideProperty.name}`,
+              dataType: insideProperty.dataType,
+              width: insideProperty.width,
               groupType: UnitablesBeeTableWrapperColumnType.InputClause,
-              cellDelegate: insideInputClauses.cellDelegate,
+              cellDelegate: insideProperty.cellDelegate,
             };
           });
           return {
@@ -143,7 +143,7 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
           appendColumnsOnChildren: true,
           cellDelegate: inputRow.cellDelegate,
         };
-      }) as any;
+      });
     } else if (config.type === "outputs") {
       const outputColumns = (config.rows?.[0]?.outputEntries ?? []).map((outputEntry, outputIndex) => {
         if (Array.isArray(outputEntry)) {
@@ -208,7 +208,7 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
           },
         ];
       });
-      return outputColumns.reduce((acc, outp) => [...acc, ...outp], []) as any;
+      return outputColumns.reduce((acc, column) => [...acc, ...column], []) as any;
     }
   }, [config]);
 
@@ -240,9 +240,9 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
   }, [config, beeTableColumns]);
 
   const onRowsUpdate = useCallback(
-    ({ rows, operation, rowIndex }: BeeTableRowsUpdateArgs) => {
-      const newRows = rows.map((row: any) =>
-        getColumnsAtLastLevel(beeTableColumns).reduce((filledRow: DataRecord, column) => {
+    ({ rows, operation, rowIndex }: BeeTableRowsUpdateArgs<BTWROW>) => {
+      const newRows = rows.map((row) =>
+        getColumnsAtLastLevel(beeTableColumns).reduce((filledRow, column) => {
           if (row.rowDelegate) {
             filledRow[column.accessor] = row[column.accessor];
             filledRow.rowDelegate = row.rowDelegate;
@@ -253,21 +253,21 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
             filledRow[column.accessor] = row[column.accessor];
           }
           return filledRow;
-        }, {})
+        }, {} as BTWROW)
       );
       onRowNumberUpdate?.(newRows.length, operation, rowIndex);
     },
     [onRowNumberUpdate, beeTableColumns]
   );
 
-  const onRowAdding = useCallback(() => {
-    return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: DataRecord, column) => {
+  const onNewRow = useCallback(() => {
+    return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow, column) => {
       tableRow[column.accessor] = EMPTY_SYMBOL;
       return tableRow;
-    }, {} as DataRecord);
+    }, {} as BTWROW);
   }, [beeTableColumns]);
 
-  const searchRecursively = useCallback((child: any) => {
+  const recusivelyAssignHeight = useCallback((child: any) => {
     if (!child) {
       return;
     }
@@ -280,7 +280,7 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
     if (!child.childNodes) {
       return;
     }
-    child.childNodes.forEach(searchRecursively);
+    child.childNodes.forEach(recusivelyAssignHeight);
   }, []);
 
   useLayoutEffect(() => {
@@ -289,12 +289,12 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
     // remove id column
     inputsCells.shift();
     inputsCells.forEach((inputCell) => {
-      searchRecursively(inputCell.childNodes[0]);
+      recusivelyAssignHeight(inputCell.childNodes[0]);
     });
-  }, [beeTableColumns, searchRecursively]);
+  }, [beeTableColumns, recusivelyAssignHeight]);
 
   const onBeeTableColumnsUpdate = useCallback(
-    ({ columns }: BeeTableColumnsUpdateArgs) => {
+    ({ columns }: BeeTableColumnsUpdateArgs<BTWROW>) => {
       onColumnsUpdate(columns);
     },
     [onColumnsUpdate]
@@ -317,7 +317,7 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
               rows={beeTableRows}
               onColumnsUpdate={onBeeTableColumnsUpdate}
               onRowsUpdate={onRowsUpdate}
-              onRowAdding={onRowAdding}
+              onNewRow={onNewRow}
               readOnlyCells={true}
               enableKeyboardNavigation={false}
             />

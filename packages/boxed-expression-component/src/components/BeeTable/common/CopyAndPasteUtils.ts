@@ -68,24 +68,25 @@ export const paste = (pasteValue: string, reference: Element, editorElement: HTM
  * @param x (optional) - the initial X coordinate of the table
  * @param y (optional) - the initial Y coordinate of the table
  */
-export const pasteOnTable = (
+export function pasteOnTable<R extends object>(
   pasteValue: string,
-  rows: ReactTable.DataRecord[],
-  rowFactory: () => ReactTable.DataRecord,
+  rows: R[],
+  rowFactory: () => R,
   x: number = 0,
   y: number = 0
-): ReactTable.DataRecord[] => {
+): R[] {
   const newRows = [...rows];
   const colsByIndex = Object.keys(rows[0]);
   const paste = iterableValue(pasteValue);
 
-  const updateStringValue = (rows: ReactTable.DataRecord[], row: number, colName: string, value: string) => {
-    rows[row][colName] = value;
+  const updateStringValue = (rows: R[], row: number, colName: string, value: string) => {
+    // FIXME: Tiago -> Bad typing.
+    (rows as any)[row][colName] = value;
   };
 
-  const updateObjectValue = (rows: ReactTable.DataRecord[], row: number, colName: string, value: string) => {
+  const updateObjectValue = (rows: R[], row: number, colName: string, value: string) => {
     // FIXME: Tiago -> Bad typing.
-    const currentElement: any = rows[row][colName];
+    const currentElement = (rows as any)[row][colName];
     if (typeof currentElement !== "object") {
       return;
     }
@@ -94,7 +95,7 @@ export const pasteOnTable = (
     currentElement.logicType = ExpressionDefinitionLogicType.LiteralExpression;
   };
 
-  const hasAnyObject = (rows: ReactTable.DataRecord[]) => {
+  const hasAnyObject = (rows: R[]) => {
     if (rows.length > 0) {
       const cols = Object.keys(rows[0]);
       return cols.includes("entryExpression");
@@ -119,7 +120,7 @@ export const pasteOnTable = (
   }
 
   return newRows;
-};
+}
 
 /**
  * Covert a string value into an iterable data structure, by following the

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeeTableCell, ContextExpressionDefinitionEntry } from "../../api";
+import { BeeTableCell, ContextExpressionDefinitionEntry, ROWGENERICTYPE } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
@@ -24,7 +24,7 @@ import * as _ from "lodash";
 export interface ContextEntryInfoCellProps extends BeeTableCell {
   // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
   data: ContextExpressionDefinitionEntry[];
-  onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void;
+  onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void;
   editInfoPopoverLabel?: string;
 }
 

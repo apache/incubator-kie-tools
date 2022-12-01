@@ -186,10 +186,10 @@ describe("Table tests", () => {
     });
 
     test("should show a table body with one configured row", () => {
-      const row: ReactTable.DataRecord = {};
+      const row: ROWGENERICTYPE = {};
       const cellValue = "cell value";
       row[columnName] = cellValue;
-      const rows: ReactTable.DataRecord[] = [row];
+      const rows: ROWGENERICTYPE[] = [row];
 
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
@@ -325,8 +325,8 @@ describe("Table tests", () => {
 
   describe("when interacting with body", () => {
     test("should trigger onRowsUpdate, when changing cell value", async () => {
-      const row: ReactTable.DataRecord = {};
-      const newRow: ReactTable.DataRecord = {};
+      const row: ROWGENERICTYPE = {};
+      const newRow: ROWGENERICTYPE = {};
       const rowValue = "value";
       const newRowValue = "new value";
       row[columnName] = rowValue;
@@ -402,8 +402,8 @@ describe("Table tests", () => {
       };
       const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
 
-      const row: ReactTable.DataRecord = {};
-      const newRow: ReactTable.DataRecord = {};
+      const row: ROWGENERICTYPE = {};
+      const newRow: ROWGENERICTYPE = {};
       const rowValue = "value";
       const newRowValue = "new value";
       row[columnName] = rowValue;
@@ -424,7 +424,7 @@ describe("Table tests", () => {
               ]}
               rows={[row]}
               onColumnsUpdate={_.identity}
-              onRowAdding={() => ({})}
+              onNewRow={() => ({})}
               onRowsUpdate={mockedOnRowsUpdate}
               operationHandlerConfig={operationHandlerConfig}
             />
@@ -573,7 +573,7 @@ describe("Table tests", () => {
     });
 
     test("should not trigger onColumnUpdate, when deleting a row number column", async () => {
-      const row: ReactTable.DataRecord = {};
+      const row: ROWGENERICTYPE = {};
       row["#"] = "1";
       row["column-1"] = "column-1 value";
       row["column-2"] = "column-2 value";
@@ -617,7 +617,7 @@ describe("Table tests", () => {
     });
 
     test("should trigger onRowsUpdate, when inserting a new row above", async () => {
-      const row: ReactTable.DataRecord = {};
+      const row: ROWGENERICTYPE = {};
       row[columnName] = "value";
       const columns = [
         {
@@ -662,7 +662,7 @@ describe("Table tests", () => {
     });
 
     test("should trigger onRowsUpdate, when inserting a new row below", async () => {
-      const row: ReactTable.DataRecord = {};
+      const row: ROWGENERICTYPE = {};
       row[columnName] = "value";
       const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs) => {
         _.identity(rows);
@@ -706,8 +706,8 @@ describe("Table tests", () => {
     });
 
     test("should trigger onRowsUpdate, when deleting a row", async () => {
-      const firstRow: ReactTable.DataRecord = {};
-      const secondRow: ReactTable.DataRecord = {};
+      const firstRow: ROWGENERICTYPE = {};
+      const secondRow: ROWGENERICTYPE = {};
       firstRow[columnName] = "value";
       secondRow[columnName] = "another value";
       const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs) => {

@@ -30,6 +30,7 @@ import {
   BeeTableOperationHandlerConfig,
   BeeTableHeaderVisibility,
   BeeTableOperation,
+  ROWGENERICTYPE,
 } from "../../api";
 import { ContextEntryExpressionCell } from "../ContextExpression";
 import { BeeTable } from "../BeeTable";
@@ -98,7 +99,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
       };
 
       updatedDefinition.items = (updatedListExpression?.items ? updatedListExpression.items : beeTableRows).map(
-        (listItem: ReactTable.DataRecord) => listItem.entryExpression as ExpressionDefinition
+        (listItem: ROWGENERICTYPE) => listItem.entryExpression as ExpressionDefinition
       );
 
       executeIfExpressionDefinitionChanged(
@@ -136,11 +137,11 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [listExpression.width, setListWidth]
   );
 
-  const resetRowCustomFunction = useCallback((row: ReactTable.DataRecord) => {
+  const resetRowCustomFunction = useCallback((row: ROWGENERICTYPE) => {
     return { entryExpression: { id: (row.entryExpression as ExpressionDefinition).id } };
   }, []);
 
-  const onRowAdding = useCallback(
+  const onNewRow = useCallback(
     () => ({
       entryExpression: generateLiteralExpression(),
     }),
@@ -148,7 +149,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
   );
 
   const onRowsUpdate = useCallback(
-    ({ rows }: BeeTableRowsUpdateArgs) => {
+    ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
       const newEntryExpressions = rows.map((row) => {
         return { entryExpression: row.entryExpression };
       });
@@ -179,7 +180,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         columns={beeTableColumns}
         rows={beeTableRows}
         onRowsUpdate={onRowsUpdate}
-        onRowAdding={onRowAdding}
+        onNewRow={onNewRow}
         operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}
         resetRowCustomFunction={resetRowCustomFunction}

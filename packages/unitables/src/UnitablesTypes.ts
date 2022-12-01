@@ -25,7 +25,7 @@ export interface UnitablesCell {
   /** Clause width */
   width?: number | string;
 
-  cellDelegate?: (formId: string) => React.ReactNode;
+  cellDelegate?: (id: string) => React.ReactNode;
 
   insideProperties?: any[];
 }

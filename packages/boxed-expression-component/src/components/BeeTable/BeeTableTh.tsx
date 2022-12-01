@@ -46,10 +46,10 @@ export function BeeTableTh({
 
   useEffect(() => {
     const onKeyDownForIndex = onKeyDown(rowSpan);
-    const cell = thRef.current;
-    cell?.addEventListener("keydown", onKeyDownForIndex);
+    const th = thRef.current;
+    th?.addEventListener("keydown", onKeyDownForIndex);
     return () => {
-      cell?.removeEventListener("keydown", onKeyDownForIndex);
+      th?.removeEventListener("keydown", onKeyDownForIndex);
     };
   }, [onKeyDown, rowIndex, rowSpan]);
 

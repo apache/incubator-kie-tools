@@ -15,36 +15,35 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import * as ReactTable from "react-table";
-import { BeeTableColumn, BeeTableCellComponent } from "../../api";
+import { BeeTableCellComponent } from "../../api";
 
-export interface BeeTableTdProps extends BeeTableCellComponent {
-  cell: ReactTable.Cell;
-  getColumnKey: (column: ReactTable.ColumnInstance) => string;
-  isInForm: boolean;
-  onColumnsUpdate: (columns: ReactTable.ColumnInstance[]) => void;
-  reactTableInstance: ReactTable.TableInstance;
+export interface BeeTableTdProps<R extends object> extends BeeTableCellComponent {
+  cell: ReactTable.Cell<R>;
+  getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
+  shouldUseCellDelegate: boolean;
+  onColumnsUpdate: (columns: ReactTable.ColumnInstance<R>[]) => void;
+  reactTableInstance: ReactTable.TableInstance<R>;
   getTdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
 
-export function BeeTableTd({
+export function BeeTableTd<R extends object>({
   cellIndex,
   cell,
   rowIndex,
-  isInForm,
+  shouldUseCellDelegate,
   onKeyDown,
   reactTableInstance,
   getColumnKey,
   onColumnsUpdate,
   getTdProps,
   yPosition,
-}: BeeTableTdProps) {
+}: BeeTableTdProps<R>) {
   let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
-  // FIXME: Tiago -> Bad typing.
-  const column = reactTableInstance.allColumns[cellIndex] as unknown as BeeTableColumn;
+  const column = reactTableInstance.allColumns[cellIndex];
   const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
   const tdRef = useRef<HTMLTableCellElement>(null);
 
@@ -71,7 +70,7 @@ export function BeeTableTd({
       <Resizer width={width} onHorizontalResizeStop={onResize}>
         <>
           {/* FIXME: Tiago -> Bad typing. */}
-          {isInForm && typeof (cell.column as any)?.cellDelegate === "function"
+          {shouldUseCellDelegate && typeof (cell.column as any)?.cellDelegate === "function"
             ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
             : cell.render("Cell")}
         </>

@@ -38,6 +38,7 @@ import {
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableOperation,
+  ROWGENERICTYPE,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import * as ReactTable from "react-table";
@@ -189,7 +190,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
               noHandlerMenu: true,
               contextEntries: extractContextEntriesFromJavaProps,
             },
-          } as ReactTable.DataRecord;
+          } as ROWGENERICTYPE;
         }
         case FunctionExpressionDefinitionKind.Pmml: {
           return {
@@ -201,14 +202,14 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
               noHandlerMenu: true,
               contextEntries: extractContextEntriesFromPmmlProps,
             },
-          } as ReactTable.DataRecord;
+          } as ROWGENERICTYPE;
         }
         case FunctionExpressionDefinitionKind.Feel:
         default: {
           return {
             id: FIRST_ENTRY_ID,
             entryExpression: feelExpression || { logicType: ExpressionDefinitionLogicType.LiteralExpression },
-          } as ReactTable.DataRecord;
+          } as ROWGENERICTYPE;
         }
       }
     },

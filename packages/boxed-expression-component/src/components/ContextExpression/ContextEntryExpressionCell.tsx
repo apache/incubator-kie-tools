@@ -17,7 +17,13 @@
 import "./ContextEntryExpressionCell.css";
 import * as React from "react";
 import { useCallback } from "react";
-import { BeeTableCell, DmnBuiltInDataType, ExpressionDefinition, ContextExpressionDefinitionEntry } from "../../api";
+import {
+  BeeTableCell,
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ContextExpressionDefinitionEntry,
+  ROWGENERICTYPE,
+} from "../../api";
 import * as ReactTable from "react-table";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import * as _ from "lodash";
@@ -25,7 +31,7 @@ import * as _ from "lodash";
 export interface ContextEntryExpressionCellProps extends BeeTableCell {
   // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
   data: ContextExpressionDefinitionEntry[];
-  onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void;
+  onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({

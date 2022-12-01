@@ -30,7 +30,7 @@ describe("ContextEntryInfoCell tests", () => {
   const newValue = "New Value";
   const dataType = DmnBuiltInDataType.Boolean;
   const emptyExpression = { name, dataType };
-  const onRowUpdate: (rowIndex: number, updatedRow: ReactTable.DataRecord) => void = (rowIndex, updatedRow) =>
+  const onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void = (rowIndex, updatedRow) =>
     _.identity({ rowIndex, updatedRow });
 
   test("should show a context entry info cell element with passed name and dataType, when rendering it", () => {

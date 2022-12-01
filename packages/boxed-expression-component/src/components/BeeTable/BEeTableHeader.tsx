@@ -26,10 +26,11 @@ import { focusCurrentCell, getParentCell } from "./common";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../ExpressionDefinitionHeaderMenu";
+import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
-export interface BeeTableHeaderProps {
+export interface BeeTableHeaderProps<R extends object> {
   /** Table instance */
-  reactTableInstance: ReactTable.TableInstance;
+  reactTableInstance: ReactTable.TableInstance<R>;
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
   editColumnLabel?: string | { [groupType: string]: string };
   /** The way in which the header will be rendered */
@@ -37,20 +38,20 @@ export interface BeeTableHeaderProps {
   /** True, for skipping the creation in the DOM of the last defined header group */
   skipLastHeaderGroup: boolean;
   /** Custom function for getting column key prop, and avoid using the column index */
-  getColumnKey: (column: ReactTable.ColumnInstance) => string;
+  getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** Columns instance */
-  tableColumns: ReactTable.ColumnInstance[];
+  tableColumns: ReactTable.ColumnInstance<R>[];
   /** Function to be executed when columns are modified */
-  onColumnsUpdate: (columns: ReactTable.ColumnInstance[]) => void;
+  onColumnsUpdate: (columns: ReactTable.ColumnInstance<R>[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Th props */
-  getThProps: (column: ReactTable.ColumnInstance) => Partial<PfReactTable.ThProps>;
+  getThProps: (column: ReactTable.ColumnInstance<R>) => Partial<PfReactTable.ThProps>;
   /** Option to enable or disable header edits */
   editableHeader: boolean;
 }
 
-export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
+export function BeeTableHeader<R extends object>({
   reactTableInstance,
   editColumnLabel,
   headerVisibility = BeeTableHeaderVisibility.Full,
@@ -61,7 +62,7 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
   onCellKeyDown,
   getThProps,
   editableHeader,
-}) => {
+}: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
@@ -79,14 +80,17 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
   /**
    * Currently, column rename/type update is supported only for the first and the second level of the header
    */
-  const onColumnNameOrDataTypeUpdate = useCallback(
-    (column: ReactTable.ColumnInstance, columnIndex: number) => {
+  const onColumnNameOrDataTypeUpdate = useCallback<
+    <R extends object>(
+      column: ReactTable.ColumnInstance<R>,
+      columnIndex: number
+    ) => (args: { name?: string; dataType?: DmnBuiltInDataType }) => void
+  >(
+    (column, columnIndex) => {
       return ({ name = "", dataType }: { name?: string; dataType?: DmnBuiltInDataType }) => {
-        let columnToUpdate = tableColumns[columnIndex] as ReactTable.ColumnInstance;
+        let columnToUpdate = tableColumns[columnIndex];
         if (column.depth > 0) {
-          const columnsBelongingToParent = (
-            _.find(tableColumns, { accessor: column.parent!.id }) as ReactTable.ColumnInstance
-          ).columns;
+          const columnsBelongingToParent = _.find(tableColumns, { accessor: column.parent!.id })?.columns;
           columnToUpdate = _.find(columnsBelongingToParent, { accessor: column.id })!;
         }
         columnToUpdate.label = name;
@@ -97,8 +101,8 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
     [onColumnsUpdate, tableColumns]
   );
 
-  const renderCountColumn = useCallback(
-    (column: ReactTable.ColumnInstance, rowIndex: number) => {
+  const renderCountColumn = useCallback<(column: ReactTable.ColumnInstance<R>, rowIndex: number) => JSX.Element>(
+    (column, rowIndex) => {
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell counter-header-cell`;
 
@@ -124,16 +128,18 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
     [getColumnKey, onCellKeyDown]
   );
 
-  const renderCellInfoLabel = useCallback(
-    (
-      column: ReactTable.ColumnInstance,
+  const renderCellInfoLabel = useCallback<
+    <R extends object>(
+      column: ReactTable.ColumnInstance<R>,
       columnIndex: number,
       onAnnotationCellToggle?: (isReadMode: boolean) => void
-    ) => {
+    ) => JSX.Element
+  >(
+    (column, columnIndex, onAnnotationCellToggle) => {
       if (column.inlineEditable) {
         return (
           <InlineEditableTextInput
-            value={column.label as string}
+            value={column.label}
             onTextChange={(value) => {
               if (column.label != value) {
                 beeGwtService?.notifyUserAction();
@@ -177,23 +183,24 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
     [renderCellInfoLabel]
   );
 
-  const onHorizontalResizeStop = useCallback(
+  const onHorizontalResizeStop = useCallback<
+    <R extends object>(column: ReactTable.ColumnInstance<R>, columnWidth: number) => void
+  >(
     (column, columnWidth) => {
-      const columnToBeFound = column.placeholderOf || column;
-      let columnToUpdate = _.find(tableColumns, getColumnSearchPredicate(columnToBeFound)) as ReactTable.ColumnInstance;
+      const columnToBeFound = (column.placeholderOf ?? column) as ReactTable.ColumnInstance<R>;
+      let columnToUpdate = _.find(tableColumns, getColumnSearchPredicate(columnToBeFound));
       if (column.parent) {
         columnToUpdate = _.find(
           getColumnsAtLastLevel(tableColumns),
           getColumnSearchPredicate(column)
-        ) as ReactTable.ColumnInstance;
+        ) as ReactTable.ColumnInstance<R>; // FIXME: Tiago -> Bad typing?
       }
       if (columnToUpdate) {
         columnToUpdate.width = columnWidth;
       }
       tableColumns.forEach((tableColumn) => {
         if (tableColumn.width === undefined) {
-          // FIXME: Tiago -> Bad typing.
-          tableColumn.width = (tableColumn as any).columns.reduce((acc: number, column: any) => acc + column.width, 0);
+          tableColumn.width = tableColumn.columns?.reduce((acc, column) => acc + column.width, 0) ?? DEFAULT_MIN_WIDTH;
         }
       });
       onColumnsUpdate(tableColumns);
@@ -208,8 +215,10 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
     [beeGwtService]
   );
 
-  const renderColumn = useCallback(
-    (column: ReactTable.ColumnInstance, rowIndex: number, columnIndex: number, xPosition?: number) =>
+  const renderColumn = useCallback<
+    (column: ReactTable.ColumnInstance<R>, rowIndex: number, columnIndex: number, xPosition?: number) => JSX.Element
+  >(
+    (column, rowIndex, columnIndex, xPosition) =>
       column.isCountColumn ? (
         renderCountColumn(column, rowIndex)
       ) : (
@@ -248,7 +257,7 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
   );
 
   const getHeaderGroups = useCallback(
-    (reactTableInstance) => {
+    (reactTableInstance: ReactTable.TableInstance<R>) => {
       return skipLastHeaderGroup ? _.dropRight(reactTableInstance.headerGroups) : reactTableInstance.headerGroups;
     },
     [skipLastHeaderGroup]
@@ -256,12 +265,12 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
 
   const renderHeaderGroups = useMemo(
     () =>
-      getHeaderGroups(reactTableInstance).map((headerGroup: ReactTable.HeaderGroup, rowIndex: number) => {
+      getHeaderGroups(reactTableInstance).map((headerGroup, rowIndex) => {
         const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
         let xPosition = 0;
         return (
           <PfReactTable.Tr key={key} {...props}>
-            {headerGroup.headers.map((column: ReactTable.ColumnInstance, columnIndex: number) => {
+            {headerGroup.headers.map((column, columnIndex) => {
               const currentXPosition = xPosition;
               xPosition += column.columns?.length ?? 1;
               return renderColumn(column, rowIndex, columnIndex, currentXPosition);
@@ -275,8 +284,8 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
   const renderAtLevelInHeaderGroups = useCallback(
     (level: number) => (
       <PfReactTable.Tr>
-        {_.nth(reactTableInstance.headerGroups as ReactTable.HeaderGroup[], level)!.headers.map(
-          (column: ReactTable.ColumnInstance, columnIndex: number) => renderColumn(column, 0, columnIndex)
+        {_.nth(reactTableInstance.headerGroups, level)!.headers.map((column, columnIndex) =>
+          renderColumn(column, 0, columnIndex)
         )}
       </PfReactTable.Tr>
     ),
@@ -297,4 +306,4 @@ export const BeeTableHeader: React.FunctionComponent<BeeTableHeaderProps> = ({
   }, [headerVisibility, renderHeaderGroups, renderAtLevelInHeaderGroups]);
 
   return <>{header}</>;
-};
+}

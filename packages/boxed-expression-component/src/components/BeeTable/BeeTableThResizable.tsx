@@ -23,33 +23,33 @@ import { BeeTableTh } from "./BeeTableTh";
 import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
 import { DmnBuiltInDataType } from "../../api";
 
-export interface BeeTableThResizableProps {
-  column: ReactTable.ColumnInstance;
+export interface BeeTableThResizableProps<R extends object> {
+  column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
   editableHeader: boolean;
-  getColumnKey: (column: ReactTable.ColumnInstance) => string;
+  getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   onColumnNameOrDataTypeUpdate: (
-    column: ReactTable.ColumnInstance,
+    column: ReactTable.ColumnInstance<R>,
     columnIndex: number
   ) => ({ name, dataType }: { name?: string; dataType?: DmnBuiltInDataType }) => void;
   onHeaderClick: (columnKey: string) => () => void;
-  onHorizontalResizeStop: (column: ReactTable.ColumnInstance, columnWidth: number) => void;
+  onHorizontalResizeStop: (column: ReactTable.ColumnInstance<R>, columnWidth: number) => void;
   rowIndex: number;
-  reactTableInstance: ReactTable.TableInstance;
-  getThProps: (column: ReactTable.ColumnInstance) => Partial<PfReactTable.ThProps>;
+  reactTableInstance: ReactTable.TableInstance<R>;
+  getThProps: (column: ReactTable.ColumnInstance<R>) => Partial<PfReactTable.ThProps>;
   xPosition: number;
   yPosition: number;
   renderHeaderCellInfo: (
-    column: ReactTable.ColumnInstance,
+    column: ReactTable.ColumnInstance<R>,
     columnIndex: number,
     onAnnotationCellToggle?: (isReadMode: boolean) => void
   ) => React.ReactElement;
 }
 
-export const BeeTableThResizable = ({
+export function BeeTableThResizable<R extends object>({
   column,
   columnIndex,
   editableHeader,
@@ -65,7 +65,7 @@ export const BeeTableThResizable = ({
   getThProps,
   xPosition,
   yPosition,
-}: BeeTableThResizableProps) => {
+}: BeeTableThResizableProps<R>) {
   const headerProps = {
     ...column.getHeaderProps(),
     style: {},
@@ -104,6 +104,7 @@ export const BeeTableThResizable = ({
   const getRowSpan = useCallback(
     (cssClasses: string): number => {
       if (
+        // FIXME: Tiago: CSS class names should not be used for logic.
         rowIndex === reactTableInstance.headerGroups.length - 1 &&
         (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
       ) {
@@ -160,4 +161,4 @@ export const BeeTableThResizable = ({
       </Resizer>
     </BeeTableTh>
   );
-};
+}

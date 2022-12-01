@@ -18,20 +18,20 @@ import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import * as React from "react";
 import * as ReactTable from "react-table";
 
-export interface BeeTableColumnsUpdateArgs<T = ReactTable.ColumnInstance> {
-  columns: T[];
+export interface BeeTableColumnsUpdateArgs<R extends object> {
+  columns: ReactTable.ColumnInstance<R>[];
   operation?: BeeTableOperation;
   columnIndex?: number;
 }
 
-export interface BeeTableRowsUpdateArgs<T = ReactTable.DataRecord> {
-  rows: T[];
+export interface BeeTableRowsUpdateArgs<R extends object> {
+  rows: R[];
   operation?: BeeTableOperation;
   rowIndex?: number;
-  columns?: ReactTable.ColumnInstance[];
+  columns?: ReactTable.ColumnInstance<R>[];
 }
 
-export interface BeeTableProps {
+export interface BeeTableProps<R extends object> {
   /** Table identifier, useful for nested structures */
   tableId?: string;
   /** Optional children element to be appended below the table content */
@@ -45,19 +45,17 @@ export interface BeeTableProps {
   /** Top-left cell custom content */
   controllerCell?: string | JSX.Element;
   /** For each column there is a default component to be used to render the related cell */
-  defaultCellByColumnId?: {
-    [columnId: string]: React.FunctionComponent<BeeTableCell>;
-  };
+  defaultCellByColumnId?: { [columnId: string]: React.FunctionComponent<BeeTableCell> };
   /** Table's columns */
-  columns: ReactTable.ColumnInstance[];
+  columns: ReactTable.ColumnInstance<R>[];
   /** Table's cells */
-  rows: ReactTable.DataRecord[];
+  rows: R[];
   /** Function to be executed when columns are modified */
-  onColumnsUpdate?: (args: BeeTableColumnsUpdateArgs) => void;
+  onColumnsUpdate?: (args: BeeTableColumnsUpdateArgs<R>) => void;
   /** Function to be executed when one or more rows are modified */
-  onRowsUpdate?: (args: BeeTableRowsUpdateArgs) => void;
+  onRowsUpdate?: (args: BeeTableRowsUpdateArgs<R>) => void;
   /** Function to be executed when adding a new row to the table */
-  onRowAdding?: () => ReactTable.DataRecord;
+  onNewRow?: () => R;
   /** Custom configuration for the table handler */
   operationHandlerConfig?: BeeTableOperationHandlerConfig;
   /** The way in which the header will be rendered */
@@ -67,11 +65,11 @@ export interface BeeTableProps {
   /** True, for skipping the creation in the DOM of the last defined header group */
   skipLastHeaderGroup?: boolean;
   /** Custom function for getting row key prop, and avoid using the row index */
-  getRowKey?: (row: ReactTable.Row) => string;
+  getRowKey?: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
-  getColumnKey?: (column: ReactTable.ColumnInstance) => string;
+  getColumnKey?: (column: ReactTable.ColumnInstance<R>) => string;
   /** Custom function called for manually resetting a row */
-  resetRowCustomFunction?: (row: ReactTable.DataRecord) => ReactTable.DataRecord;
+  resetRowCustomFunction?: (row: R) => R;
   /** Disable/Enable cell edits. Enabled by default */
   readOnlyCells?: boolean;
   /** Enable the  Keyboar Navigation */
@@ -156,3 +154,5 @@ export interface BeeTableCellComponent {
   /** the y position of the cell */
   yPosition?: number;
 }
+
+export type ROWGENERICTYPE = any;
