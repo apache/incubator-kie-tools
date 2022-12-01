@@ -39,10 +39,10 @@ public class ImageBitmapProxy {
             @Override
             public void onSuccess(JsImageBitmap image) {
                 ImageBitmapProxy.this.image = Js.uncheckedCast(image);
-                ImageBitmapProxy.this.imageElement = image;
                 callback.run();
             }
 
+            @Override
             public void onError(Object error) {
                 LienzoCore.get().error("Error loading Image. Message: [" + error.toString() + "]");
             }
