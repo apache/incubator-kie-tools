@@ -566,7 +566,7 @@ pages:
           margin-bottom: 20px
         html: >-
           Data can be displayed using <i>Displayers</i>. 
-          The usual charts types are supported and Dashbuilder internally use <a href="https://c3js.org/">C3 library</a> to render them. <br />
+          The usual charts types are supported and Dashbuilder internally use <a href="https://echarts.apache.org/en/index.html">ECharts library</a> to render them. <br />
           Displayers configuration is described in the <a href="https://www.dashbuilder.org/docs/#chap-dashbuilder-yaml-guides">YML guide</a>
       - type: TABS
         properties:

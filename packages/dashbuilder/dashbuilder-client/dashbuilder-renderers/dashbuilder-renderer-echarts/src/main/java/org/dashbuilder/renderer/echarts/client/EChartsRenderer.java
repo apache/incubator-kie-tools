@@ -115,7 +115,7 @@ public class EChartsRenderer extends AbstractRendererLibrary {
                 return beanManager.lookupBean(EChartsMeterChartDisplayer.class).newInstance();
             case MAP:
             default:
-                throw new IllegalArgumentException("Type not supported by ECharts");
+                throw new IllegalArgumentException("Type not supported by ECharts, use C3 renderer instead");
         }
     }
 
