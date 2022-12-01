@@ -33,6 +33,7 @@ export enum ChannelType {
   EMBEDDED = "EMBEDDED",
   OTHER = "OTHER",
   ONLINE_MULTI_FILE = "ONLINE_MULTI_FILE",
+  STANDALONE = "STANDALONE",
 }
 
 export interface EditorInitArgs {

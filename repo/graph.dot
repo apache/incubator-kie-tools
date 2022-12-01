@@ -22,6 +22,7 @@ digraph G {
   "kie-tools-examples-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/kie-editors-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/backend-extended-services" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -144,6 +145,7 @@ digraph G {
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-react" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "solid", color = "orange" ];
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
@@ -322,6 +324,7 @@ digraph G {
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-standalone-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];

@@ -16,6 +16,7 @@ importers:
       "@kie-tools-scripts/update-version": workspace:*
       "@nice-move/prettier-plugin-package-json": ^0.6.1
       "@types/node": ^15.0.2
+      filemanager-webpack-plugin: ^7.0.0
       husky: ^6.0.0
       postinstall-postinstall: ^2.1.0
       prettier: ^2.2.1
@@ -28,6 +29,7 @@ importers:
       "@kie-tools-scripts/update-version": link:scripts/update-version
       "@nice-move/prettier-plugin-package-json": 0.6.1_prettier@2.3.0
       "@types/node": 15.6.0
+      filemanager-webpack-plugin: 7.0.0
       husky: 6.0.0
       postinstall-postinstall: 2.1.0
       prettier: 2.3.0
@@ -328,9 +330,11 @@ importers:
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/kie-editors-standalone": workspace:*
       "@kie-tools/root-env": workspace:*
+      "@kie-tools/serverless-workflow-standalone-editor": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
@@ -358,7 +362,9 @@ importers:
       "@kie-tools-examples/todo-list-view": link:../todo-list-view
       "@kie-tools/kie-bc-editors": link:../../packages/kie-bc-editors
       "@kie-tools/kie-editors-standalone": link:../../packages/kie-editors-standalone
+      "@kie-tools/serverless-workflow-standalone-editor": link:../../packages/serverless-workflow-standalone-editor
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       monaco-editor: 0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -572,9 +578,6 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  packages/build-env:
-    specifiers: {}
-
   packages/chrome-extension:
     specifiers:
       "@babel/core": ^7.16.0
@@ -780,20 +783,6 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
       zip-webpack-plugin: 4.0.1_webpack@5.70.0
-
-  packages/cors-proxy-image:
-    specifiers:
-      "@isomorphic-git/cors-proxy": ^2.7.1
-      "@kie-tools/root-env": workspace:*
-      patch-package: ^6.4.7
-      rimraf: ^3.0.2
-      run-script-os: ^1.1.6
-    devDependencies:
-      "@isomorphic-git/cors-proxy": 2.7.1
-      "@kie-tools/root-env": link:../root-env
-      patch-package: 6.4.7
-      rimraf: 3.0.2
-      run-script-os: 1.1.6
 
   packages/dashbuilder:
     specifiers:
@@ -1610,101 +1599,6 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  packages/dashbuilder-editor-viewer:
-    specifiers:
-      "@babel/core": ^7.16.0
-      "@babel/preset-env": ^7.16.0
-      "@babel/preset-react": ^7.16.0
-      "@kie-tools-core/editor": workspace:*
-      "@kie-tools-core/guided-tour": workspace:*
-      "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/dashbuilder-client": workspace:*
-      "@kie-tools/eslint": workspace:*
-      "@kie-tools/root-env": workspace:*
-      "@kie-tools/tsconfig": workspace:*
-      "@patternfly/react-core": ^4.157.3
-      "@patternfly/react-icons": ^4.11.17
-      "@testing-library/jest-dom": ^5.16.1
-      "@types/jest": ^26.0.23
-      "@types/jest-when": ^2.7.4
-      "@types/react": ^17.0.6
-      "@types/testing-library__jest-dom": ^5.9.1
-      copy-webpack-plugin: ^8.1.1
-      copyfiles: ^2.4.1
-      cpr: ^3.0.1
-      cypress: ^10.7.0
-      cypress-file-upload: ^5.0.8
-      cypress-iframe: ^1.0.1
-      cypress-log-to-output: ^1.1.2
-      jest: ^26.6.3
-      jest-junit: ^14.0.0
-      jest-when: ^3.5.0
-      monaco-editor: ^0.33.0
-      monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^4.0.0
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      rimraf: ^3.0.2
-      start-server-and-test: ^1.12.1
-      ts-jest: ^26.5.6
-      typescript: ^4.4.2
-      vscode-json-languageservice: ^4.2.1
-      webpack: ^5.36.2
-      webpack-cli: ^4.7.0
-      webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.7.3
-    dependencies:
-      "@kie-tools-core/editor": link:../editor
-      "@kie-tools-core/guided-tour": link:../guided-tour
-      "@kie-tools-core/notifications": link:../notifications
-      "@kie-tools-core/operating-system": link:../operating-system
-      "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
-      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
-      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      monaco-editor: 0.33.0
-      monaco-yaml: 4.0.0_monaco-editor@0.33.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-    devDependencies:
-      "@babel/core": 7.16.12
-      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
-      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
-      "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/eslint": link:../eslint
-      "@kie-tools/root-env": link:../root-env
-      "@kie-tools/tsconfig": link:../tsconfig
-      "@testing-library/jest-dom": 5.16.1
-      "@types/jest": 26.0.23
-      "@types/jest-when": 2.7.4
-      "@types/react": 17.0.21
-      "@types/testing-library__jest-dom": 5.9.5
-      copy-webpack-plugin: 8.1.1_webpack@5.70.0
-      copyfiles: 2.4.1
-      cpr: 3.0.1
-      cypress: 10.7.0
-      cypress-file-upload: 5.0.8_cypress@10.7.0
-      cypress-iframe: 1.0.1
-      cypress-log-to-output: 1.1.2
-      jest: 26.6.3
-      jest-junit: 14.0.0
-      jest-when: 3.5.0_jest@26.6.3
-      monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
-      rimraf: 3.0.2
-      start-server-and-test: 1.12.1
-      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
-      typescript: 4.5.4
-      vscode-json-languageservice: 4.2.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
-      webpack-merge: 5.8.0
-
   packages/dashbuilder-images:
     specifiers:
       "@kie-tools/dashbuilder": workspace:*
@@ -1821,83 +1715,6 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  packages/dashbuilder-viewer-app:
-    specifiers:
-      "@babel/core": ^7.16.0
-      "@babel/preset-env": ^7.16.0
-      "@babel/preset-react": ^7.16.0
-      "@kie-tools-core/editor": workspace:*
-      "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/dashbuilder-client": workspace:*
-      "@kie-tools/dashbuilder-viewer": workspace:*
-      "@kie-tools/eslint": workspace:*
-      "@kie-tools/root-env": workspace:*
-      "@kie-tools/tsconfig": workspace:*
-      "@patternfly/react-core": ^4.157.3
-      "@patternfly/react-icons": ^4.11.17
-      "@types/jest": ^26.0.23
-      "@types/jest-when": ^2.7.4
-      "@types/react": ^17.0.6
-      "@types/react-dom": ^17.0.5
-      "@types/react-router": ^5.1.14
-      "@types/react-router-dom": ^5.1.7
-      copy-webpack-plugin: ^11.0.0
-      html-replace-webpack-plugin: ^2.6.0
-      html-webpack-plugin: ^5.3.2
-      jest: ^26.6.3
-      jest-junit: ^14.0.0
-      jest-when: ^3.5.0
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      react-router: ^5.2.1
-      react-router-dom: ^5.2.1
-      rimraf: ^3.0.2
-      ts-jest: ^26.5.6
-      typescript: ^4.4.2
-      webpack: ^5.36.2
-      webpack-cli: ^4.10.0
-      webpack-dev-server: ^4.7.3
-      webpack-merge: ^5.8.0
-    dependencies:
-      "@kie-tools-core/editor": link:../editor
-      "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
-      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
-      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-router: 5.2.1_react@17.0.2
-      react-router-dom: 5.3.0_react@17.0.2
-    devDependencies:
-      "@babel/core": 7.16.12
-      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
-      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
-      "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
-      "@kie-tools/eslint": link:../eslint
-      "@kie-tools/root-env": link:../root-env
-      "@kie-tools/tsconfig": link:../tsconfig
-      "@types/jest": 26.0.23
-      "@types/jest-when": 2.7.4
-      "@types/react": 17.0.21
-      "@types/react-dom": 17.0.8
-      "@types/react-router": 5.1.14
-      "@types/react-router-dom": 5.1.7
-      copy-webpack-plugin: 11.0.0_webpack@5.70.0
-      html-replace-webpack-plugin: 2.6.0
-      html-webpack-plugin: 5.3.2_webpack@5.70.0
-      jest: 26.6.3
-      jest-junit: 14.0.0
-      jest-when: 3.5.0_jest@26.6.3
-      rimraf: 3.0.2
-      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
-      typescript: 4.8.4
-      webpack: 5.70.0_webpack-cli@4.10.0
-      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
-      webpack-merge: 5.8.0
-
   packages/dashbuilder-viewer-deployment-webapp:
     specifiers:
       "@babel/core": ^7.16.0
@@ -2005,35 +1822,38 @@ importers:
     devDependencies:
       "@kie-tools/root-env": link:../root-env
 
-  packages/dashbuilder-viewer-webapp:
+  packages/desktop:
     specifiers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
       "@babel/preset-react": ^7.16.0
+      "@electron/remote": ^2.0.8
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/i18n": workspace:*
-      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/react-hooks": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools-core/workspaces-git-fs": workspace:*
-      "@kie-tools/dashbuilder-client": workspace:*
-      "@kie-tools/dashbuilder-viewer": workspace:*
       "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/root-env": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
+      "@testing-library/jest-dom": ^5.16.1
+      "@testing-library/react": ^11.2.6
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
-      "@types/react-router": ^5.1.14
-      "@types/react-router-dom": ^5.1.7
+      "@types/testing-library__jest-dom": ^5.9.1
+      "@types/testing-library__react": ^9.1.2
       copy-webpack-plugin: ^11.0.0
-      html-replace-webpack-plugin: ^2.6.0
-      html-webpack-plugin: ^5.3.2
+      cross-var: ^1.1.0
+      electron: ^15.5.7
+      electron-packager: ^15.2.0
+      electron-rebuild: ^2.3.5
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
@@ -2042,6 +1862,8 @@ importers:
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
       rimraf: ^3.0.2
+      run-script-os: ^1.1.6
+      spectron: ^17.0.0
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       webpack: ^5.36.2
@@ -2049,16 +1871,16 @@ importers:
       webpack-dev-server: ^4.7.3
       webpack-merge: ^5.8.0
     dependencies:
+      "@electron/remote": 2.0.8_electron@15.5.7
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/i18n": link:../i18n
-      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/monaco-editor": link:../monaco-editor
       "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/react-hooks": link:../react-hooks
-      "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
-      "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      electron: 15.5.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
@@ -2068,25 +1890,30 @@ importers:
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/root-env": link:../root-env
+      "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig
+      "@testing-library/jest-dom": 5.16.1
+      "@testing-library/react": 11.2.7_sfoxds7t5ydpegc3knd667wn6m
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
-      "@types/react-router": 5.1.14
-      "@types/react-router-dom": 5.1.7
+      "@types/testing-library__jest-dom": 5.9.5
+      "@types/testing-library__react": 9.1.3
       copy-webpack-plugin: 11.0.0_webpack@5.70.0
-      html-replace-webpack-plugin: 2.6.0
-      html-webpack-plugin: 5.3.2_webpack@5.70.0
+      cross-var: 1.1.0
+      electron-packager: 15.2.0
+      electron-rebuild: 2.3.5
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
       rimraf: 3.0.2
-      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
-      typescript: 4.8.4
+      run-script-os: 1.1.6
+      spectron: 17.0.0_electron@15.5.7
+      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      typescript: 4.5.4
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
@@ -3877,15 +3704,6 @@ importers:
   packages/root-env:
     specifiers: {}
 
-  packages/run-script-if:
-    specifiers:
-      "@kie-tools/build-env": workspace:*
-      yargs: ^17.0.1
-    dependencies:
-      yargs: 17.3.1
-    devDependencies:
-      "@kie-tools/build-env": link:../build-env
-
   packages/serverless-logic-sandbox:
     specifiers:
       "@babel/core": ^7.16.0
@@ -4566,6 +4384,128 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
+
+  packages/serverless-workflow-standalone-editor:
+    specifiers:
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/serverless-workflow-combined-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
+      "@kie-tools/serverless-workflow-language-service": workspace:*
+      "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
+      "@kie-tools/serverless-workflow-text-editor": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/minimatch": ^3.0.4
+      "@types/react": ^17.0.6
+      "@types/react-dom": ^17.0.5
+      "@types/react-router-dom": ^5.1.7
+      "@types/underscore": ^1.11.2
+      copy-webpack-plugin: ^11.0.0
+      cypress: ^11.0.1
+      cypress-file-upload: ^5.0.8
+      cypress-iframe: ^1.0.1
+      cypress-log-to-output: ^1.1.2
+      html-webpack-plugin: ^5.3.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      junit-report-merger: ^2.2.2
+      minimatch: ^3.0.4
+      monaco-editor: ^0.33.0
+      monaco-yaml: ^4.0.0
+      raw-loader: ^4.0.2
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-router-dom: ^5.2.1
+      rimraf: ^3.0.2
+      run-script-os: ^1.1.6
+      start-server-and-test: ^1.12.1
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      underscore: ^1.13.1
+      vscode-json-languageservice: ^4.2.1
+      vscode-languageserver-textdocument: ^1.0.4
+      vscode-languageserver-types: ^3.16.0
+      webpack: ^5.36.2
+      webpack-cli: ^4.10.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.8.0
+      yaml-language-server-parser: ^0.1.3
+    devDependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/kie-bc-editors": link:../kie-bc-editors
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
+      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/minimatch": 3.0.4
+      "@types/react": 17.0.21
+      "@types/react-dom": 17.0.8
+      "@types/react-router-dom": 5.1.7
+      "@types/underscore": 1.11.2
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
+      cypress: 11.0.1
+      cypress-file-upload: 5.0.8_cypress@11.0.1
+      cypress-iframe: 1.0.1
+      cypress-log-to-output: 1.1.2
+      html-webpack-plugin: 5.3.2_webpack@5.70.0
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      junit-report-merger: 2.2.2
+      minimatch: 3.0.5
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      raw-loader: 4.0.2_webpack@5.70.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+      rimraf: 3.0.2
+      run-script-os: 1.1.6
+      start-server-and-test: 1.12.1
+      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
+      typescript: 4.8.4
+      underscore: 1.13.1
+      vscode-json-languageservice: 4.2.1
+      vscode-languageserver-textdocument: 1.0.7
+      vscode-languageserver-types: 3.17.2
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
+      webpack-merge: 5.8.0
+      yaml-language-server-parser: 0.1.3
 
   packages/serverless-workflow-text-editor:
     specifiers:
@@ -6190,19 +6130,6 @@ importers:
     devDependencies:
       rimraf: 3.0.2
       typescript: 4.5.4
-
-  scripts/code-formatter:
-    specifiers:
-      "@nice-move/prettier-plugin-package-json": ^0.6.1
-      prettier: ^2.2.1
-      pretty-quick: ^3.1.0
-    devDependencies:
-      "@nice-move/prettier-plugin-package-json": 0.6.1_prettier@2.3.0
-      prettier: 2.3.0
-      pretty-quick: 3.1.0_prettier@2.3.0
-
-  scripts/maven-config-setup-helper:
-    specifiers: {}
 
   scripts/run-script-if:
     specifiers:
@@ -10450,6 +10377,13 @@ packages:
       { integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ== }
     dev: true
 
+  /@types/archiver/5.3.1:
+    resolution:
+      { integrity: sha512-wKYZaSXaDvTZuInAWjCeGG7BEAgTWG2zZW0/f7IYFcoHB2X2d9lkVFnrOlXl3W6NrvO6Ml3FLLu8Uksyymcpnw== }
+    dependencies:
+      "@types/glob": 7.1.3
+    dev: true
+
   /@types/aria-query/4.2.1:
     resolution:
       { integrity: sha512-S6oPal772qJZHoRZLFc/XoZW2gFvwXusYUmXPXkgxJLuEk2vOt7jc4Yo6z/vtI0EBkbPBVrJJ0B+prLIKiWqHg== }
@@ -10694,7 +10628,6 @@ packages:
       "@types/minimatch": 3.0.4
       "@types/node": 17.0.12
     dev: true
-    optional: true
 
   /@types/graceful-fs/4.1.3:
     resolution:
@@ -11535,17 +11468,6 @@ packages:
       "@xtuc/long": 4.2.2
     dev: true
 
-  /@webpack-cli/configtest/1.0.3_nc5o3ul7aks2kkztlwd2bfthda:
-    resolution:
-      { integrity: sha512-WQs0ep98FXX2XBAfQpRbY0Ma6ADw8JR6xoIkaIiJIzClGOMqVRvPCWqndTxf28DgFopWan0EKtHtg/5W1h0Zkw== }
-    peerDependencies:
-      webpack: 4.x.x || 5.x.x
-      webpack-cli: 4.x.x
-    dependencies:
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-    dev: true
-
   /@webpack-cli/configtest/1.2.0_arvjobxnuton62rnb6f22zdmlm:
     resolution:
       { integrity: sha512-4FB8Tj6xyVkyqjj1OaTqCjXYULB9FMkqQ8yGrZjRDrYh0nOE+7Lhs45WioWQQMV+ceFlE368Ukhe6xdvJM9Egg== }
@@ -11557,16 +11479,6 @@ packages:
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
     dev: true
 
-  /@webpack-cli/info/1.2.4_webpack-cli@4.7.0:
-    resolution:
-      { integrity: sha512-ogE2T4+pLhTTPS/8MM3IjHn0IYplKM4HbVNMCWA9N4NrdPzunwenpCsqKEXyejMfRu6K8mhauIPYf8ZxWG5O6g== }
-    peerDependencies:
-      webpack-cli: 4.x.x
-    dependencies:
-      envinfo: 7.8.1
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-    dev: true
-
   /@webpack-cli/info/1.5.0_webpack-cli@4.10.0:
     resolution:
       { integrity: sha512-e8tSXZpw2hPl2uMJY6fsMswaok5FdlGNRTktvFk2sD8RjH0hE2+XistawJx1vmKteh4NmGmNUrp+Tb2w+udPcQ== }
@@ -11575,20 +11487,6 @@ packages:
     dependencies:
       envinfo: 7.8.1
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
-    dev: true
-
-  /@webpack-cli/serve/1.4.0_2vnqxgbce4ohauwx54aplu43om:
-    resolution:
-      { integrity: sha512-xgT/HqJ+uLWGX+Mzufusl3cgjAcnqYYskaB7o0vRcwOEfuu6hMzSILQpnIzFMGsTaeaX4Nnekl+6fadLbl1/Vg== }
-    peerDependencies:
-      webpack-cli: 4.x.x
-      webpack-dev-server: "*"
-    peerDependenciesMeta:
-      webpack-dev-server:
-        optional: true
-    dependencies:
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
     dev: true
 
   /@webpack-cli/serve/1.7.0_2pilh4owx6vit44ad4uthlnj3q:
@@ -12200,6 +12098,20 @@ packages:
   /archiver/5.3.0:
     resolution:
       { integrity: sha512-iUw+oDwK0fgNpvveEsdQ0Ase6IIKztBJU2U0E9MzszMfmVVUyv1QJhS2ITW9ZCqx8dktAxVAjWWkKehuZE8OPg== }
+    engines: { node: ">= 10" }
+    dependencies:
+      archiver-utils: 2.1.0
+      async: 3.2.3
+      buffer-crc32: 0.2.13
+      readable-stream: 3.6.0
+      readdir-glob: 1.1.1
+      tar-stream: 2.2.0
+      zip-stream: 4.1.0
+    dev: true
+
+  /archiver/5.3.1:
+    resolution:
+      { integrity: sha512-8KyabkmbYrH+9ibcTScQ1xCJC/CGcugdVIwB+53f5sZziXgwUh3iXlAlANMxcZyDEfTHMe6+Z5FofV8nopXP7w== }
     engines: { node: ">= 10" }
     dependencies:
       archiver-utils: 2.1.0
@@ -14348,11 +14260,6 @@ packages:
     hasBin: true
     dev: true
 
-  /colorette/1.2.2:
-    resolution:
-      { integrity: sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w== }
-    dev: true
-
   /colorette/2.0.16:
     resolution:
       { integrity: sha512-hUewv7oMjCp+wkBv5Rm0v87eJhq4woh5rSR+42YSQJKecCqgIqNkZ6lAlQms/BwHPJA5NKMRlpxPRv0n8HQW6g== }
@@ -14630,23 +14537,6 @@ packages:
       schema-utils: 4.0.0
       serialize-javascript: 6.0.0
       webpack: 5.70.0
-    dev: true
-
-  /copy-webpack-plugin/8.1.1_webpack@5.70.0:
-    resolution:
-      { integrity: sha512-rYM2uzRxrLRpcyPqGceRBDpxxUV8vcDqIKxAUKfcnFpcrPxT5+XvhTxv7XLjo5AvEJFPdAE3zCogG2JVahqgSQ== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      webpack: ^5.1.0
-    dependencies:
-      fast-glob: 3.2.11
-      glob-parent: 5.1.2
-      globby: 11.0.4
-      normalize-path: 3.0.0
-      p-limit: 3.1.0
-      schema-utils: 3.1.1
-      serialize-javascript: 5.0.1
-      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -15030,16 +14920,6 @@ packages:
     resolution: { integrity: sha1-XQKkaFCt8bSjF5RqOSj8y1v9BCU= }
     dev: true
 
-  /cypress-file-upload/5.0.8_cypress@10.7.0:
-    resolution:
-      { integrity: sha512-+8VzNabRk3zG6x8f8BWArF/xA/W0VK4IZNx3MV0jFWrJS/qKn8eHfa5nU73P9fOQAgwHFJx7zjg4lwOnljMO8g== }
-    engines: { node: ">=8.2.1" }
-    peerDependencies:
-      cypress: ">3.0.0"
-    dependencies:
-      cypress: 10.7.0
-    dev: true
-
   /cypress-file-upload/5.0.8_cypress@11.0.1:
     resolution:
       { integrity: sha512-+8VzNabRk3zG6x8f8BWArF/xA/W0VK4IZNx3MV0jFWrJS/qKn8eHfa5nU73P9fOQAgwHFJx7zjg4lwOnljMO8g== }
@@ -15090,57 +14970,6 @@ packages:
       cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x
     dependencies:
       cypress: 11.0.1
-    dev: true
-
-  /cypress/10.7.0:
-    resolution:
-      { integrity: sha512-gTFvjrUoBnqPPOu9Vl5SBHuFlzx/Wxg/ZXIz2H4lzoOLFelKeF7mbwYUOzgzgF0oieU2WhJAestQdkgwJMMTvQ== }
-    engines: { node: ">=12.0.0" }
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      "@cypress/request": 2.88.10
-      "@cypress/xvfb": 1.2.4
-      "@types/node": 14.17.0
-      "@types/sinonjs__fake-timers": 8.1.1
-      "@types/sizzle": 2.3.2
-      arch: 2.2.0
-      blob-util: 2.0.2
-      bluebird: 3.7.2
-      buffer: 5.7.1
-      cachedir: 2.3.0
-      chalk: 4.1.2
-      check-more-types: 2.24.0
-      cli-cursor: 3.1.0
-      cli-table3: 0.6.1
-      commander: 5.1.0
-      common-tags: 1.8.0
-      dayjs: 1.10.4
-      debug: 4.3.3_supports-color@8.1.1
-      enquirer: 2.3.6
-      eventemitter2: 6.4.4
-      execa: 4.1.0
-      executable: 4.1.1
-      extract-zip: 2.0.1_supports-color@8.1.1
-      figures: 3.2.0
-      fs-extra: 9.1.0
-      getos: 3.2.1
-      is-ci: 3.0.1
-      is-installed-globally: 0.4.0
-      lazy-ass: 1.6.0
-      listr2: 3.14.0_enquirer@2.3.6
-      lodash: 4.17.21
-      log-symbols: 4.1.0
-      minimist: 1.2.6
-      ospath: 1.2.2
-      pretty-bytes: 5.6.0
-      proxy-from-env: 1.0.0
-      request-progress: 3.0.0
-      semver: 7.3.7
-      supports-color: 8.1.1
-      tmp: 0.2.1
-      untildify: 4.0.0
-      yauzl: 2.10.0
     dev: true
 
   /cypress/11.0.1:
@@ -16165,6 +15994,21 @@ packages:
   /del/6.0.0:
     resolution:
       { integrity: sha512-1shh9DQ23L16oXSZKB2JxpL7iMy2E0S9d517ptA1P8iw0alkPtQcrKH7ru31rYtKwF499HkTu+DRzq3TCKDFRQ== }
+    engines: { node: ">=10" }
+    dependencies:
+      globby: 11.0.4
+      graceful-fs: 4.2.10
+      is-glob: 4.0.3
+      is-path-cwd: 2.2.0
+      is-path-inside: 3.0.2
+      p-map: 4.0.0
+      rimraf: 3.0.2
+      slash: 3.0.0
+    dev: true
+
+  /del/6.1.1:
+    resolution:
+      { integrity: sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg== }
     engines: { node: ">=10" }
     dependencies:
       globby: 11.0.4
@@ -17566,11 +17410,6 @@ packages:
       { integrity: sha512-39F7TBIV0G7gTelxwbEqnwhp90eqCPON1k0NwNfwhgKn4Co4ybUbj2pECcXT0B3ztRKZ7Pw1JujUUgmQJHcVAQ== }
     dev: true
 
-  /eventemitter2/6.4.4:
-    resolution:
-      { integrity: sha512-HLU3NDY6wARrLCEwyGKRBvuWYyvW6mHYv72SJJAH3iJN3a6eVUvkjFkcxah1bcTgGVBBrFdIopBJPhCQFMLyXw== }
-    dev: true
-
   /eventemitter2/6.4.7:
     resolution:
       { integrity: sha512-tYUSVOGeQPKt/eC1ABfhHy5Xd96N3oIijJvN3O9+TsC28T5V9yX9oEfEK5faP0EFSNVOG97qtAS68GBrQB2hDg== }
@@ -18041,6 +17880,23 @@ packages:
     engines: { node: ">=4" }
     dev: true
 
+  /filemanager-webpack-plugin/7.0.0:
+    resolution:
+      { integrity: sha512-Td7jPFke+H9IiJmM9p1u2SPG0LTD0EFQwQU3yXKfQzN2nzHkweoKnJBjrQ713V00Pjg/fOBy5dx8G2SgIAO9GA== }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    peerDependencies:
+      webpack: ^5.0.0
+    dependencies:
+      "@types/archiver": 5.3.1
+      archiver: 5.3.1
+      del: 6.1.1
+      fast-glob: 3.2.11
+      fs-extra: 10.1.0
+      is-glob: 4.0.3
+      normalize-path: 3.0.0
+      schema-utils: 4.0.0
+    dev: true
+
   /filename-reserved-regex/2.0.0:
     resolution: { integrity: sha1-q/c9+rc10EVECr/qLZHzieu/oik= }
     engines: { node: ">=4" }
@@ -18297,6 +18153,16 @@ packages:
   /fs-extra/10.0.0:
     resolution:
       { integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ== }
+    engines: { node: ">=12" }
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
+  /fs-extra/10.1.0:
+    resolution:
+      { integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ== }
     engines: { node: ">=12" }
     dependencies:
       graceful-fs: 4.2.10
@@ -24740,6 +24606,7 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+    dev: false
 
   /prop-types/15.8.1:
     resolution:
@@ -25180,7 +25047,7 @@ packages:
       "@babel/runtime": 7.16.7
       history: 4.10.1
       loose-envify: 1.4.0
-      prop-types: 15.7.2
+      prop-types: 15.8.1
       react: 17.0.2
       react-router: 5.2.1_react@17.0.2
       tiny-invariant: 1.1.0
@@ -26277,13 +26144,6 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       type-fest: 0.20.2
-    dev: true
-
-  /serialize-javascript/5.0.1:
-    resolution:
-      { integrity: sha512-SaaNal9imEO737H2c05Og0/8LUXG7EnsZyMa8MzkmuHoELfT6txuj0cMqRj6zfPKnmQ1yasR4PCJc8x+M4JSPA== }
-    dependencies:
-      randombytes: 2.1.0
     dev: true
 
   /serialize-javascript/6.0.0:
@@ -29113,44 +28973,6 @@ packages:
       webpack-merge: 5.8.0
     dev: true
 
-  /webpack-cli/4.7.0_yqwwn4zy7x4owjsib6p4jmcbki:
-    resolution:
-      { integrity: sha512-7bKr9182/sGfjFm+xdZSwgQuFjgEcy0iCTIBxRUeteJ2Kr8/Wz0qNJX+jw60LU36jApt4nmMkep6+W5AKhok6g== }
-    engines: { node: ">=10.13.0" }
-    hasBin: true
-    peerDependencies:
-      "@webpack-cli/generators": "*"
-      "@webpack-cli/migrate": "*"
-      webpack: 4.x.x || 5.x.x
-      webpack-bundle-analyzer: "*"
-      webpack-dev-server: "*"
-    peerDependenciesMeta:
-      "@webpack-cli/generators":
-        optional: true
-      "@webpack-cli/migrate":
-        optional: true
-      webpack-bundle-analyzer:
-        optional: true
-      webpack-dev-server:
-        optional: true
-    dependencies:
-      "@discoveryjs/json-ext": 0.5.6
-      "@webpack-cli/configtest": 1.0.3_nc5o3ul7aks2kkztlwd2bfthda
-      "@webpack-cli/info": 1.2.4_webpack-cli@4.7.0
-      "@webpack-cli/serve": 1.4.0_2vnqxgbce4ohauwx54aplu43om
-      colorette: 1.2.2
-      commander: 7.2.0
-      execa: 5.1.1
-      fastest-levenshtein: 1.0.12
-      import-local: 3.0.2
-      interpret: 2.2.0
-      rechoir: 0.7.0
-      v8-compile-cache: 2.3.0
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
-      webpack-merge: 5.8.0
-    dev: true
-
   /webpack-dev-middleware/5.3.0_webpack@5.70.0:
     resolution:
       { integrity: sha512-MouJz+rXAm9B1OTOYaJnn6rtD/lWZPy2ufQCH3BPs8Rloh/Du6Jze4p7AeLYHkVi0giJnYLaSGDC7S+GM9arhg== }
@@ -29207,57 +29029,6 @@ packages:
       strip-ansi: 7.0.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-dev-middleware: 5.3.0_webpack@5.70.0
-      ws: 8.4.2
-    transitivePeerDependencies:
-      - "@types/express"
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-    dev: true
-
-  /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:
-    resolution:
-      { integrity: sha512-mlxq2AsIw2ag016nixkzUkdyOE8ST2GTy34uKSABp1c4nhjZvH90D5ZRR+UOLSsG4Z3TFahAi72a3ymRtfRm+Q== }
-    engines: { node: ">= 12.13.0" }
-    hasBin: true
-    peerDependencies:
-      webpack: ^4.37.0 || ^5.0.0
-      webpack-cli: "*"
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      "@types/bonjour": 3.5.10
-      "@types/connect-history-api-fallback": 1.3.5
-      "@types/serve-index": 1.9.1
-      "@types/sockjs": 0.3.33
-      "@types/ws": 8.2.2
-      ansi-html-community: 0.0.8
-      bonjour: 3.5.0
-      chokidar: 3.5.3
-      colorette: 2.0.16
-      compression: 1.7.4
-      connect-history-api-fallback: 1.6.0
-      default-gateway: 6.0.3
-      del: 6.0.0
-      express: 4.17.1
-      graceful-fs: 4.2.10
-      html-entities: 2.3.2
-      http-proxy-middleware: 2.0.2
-      ipaddr.js: 2.0.1
-      open: 8.4.0
-      p-retry: 4.6.1
-      portfinder: 1.0.32
-      schema-utils: 4.0.0
-      selfsigned: 2.0.0
-      serve-index: 1.9.1
-      sockjs: 0.3.21
-      spdy: 4.0.2
-      strip-ansi: 7.0.1
-      webpack: 5.70.0_webpack-cli@4.7.0
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-middleware: 5.3.0_webpack@5.70.0
       ws: 8.4.2
     transitivePeerDependencies:
@@ -29478,48 +29249,6 @@ packages:
       terser-webpack-plugin: 5.3.0_webpack@5.70.0
       watchpack: 2.3.1
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - "@swc/core"
-      - esbuild
-      - uglify-js
-    dev: true
-
-  /webpack/5.70.0_webpack-cli@4.7.0:
-    resolution:
-      { integrity: sha512-ZMWWy8CeuTTjCxbeaQI21xSswseF2oNOwc70QSKNePvmxE7XW36i7vpBMYZFAUHPwQiEbNGCEYIOOlyRbdGmxw== }
-    engines: { node: ">=10.13.0" }
-    hasBin: true
-    peerDependencies:
-      webpack-cli: "*"
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      "@types/eslint-scope": 3.7.3
-      "@types/estree": 0.0.51
-      "@webassemblyjs/ast": 1.11.1
-      "@webassemblyjs/wasm-edit": 1.11.1
-      "@webassemblyjs/wasm-parser": 1.11.1
-      acorn: 8.7.0
-      acorn-import-assertions: 1.8.0_acorn@8.7.0
-      browserslist: 4.20.2
-      chrome-trace-event: 1.0.2
-      enhanced-resolve: 5.9.3
-      es-module-lexer: 0.9.3
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.10
-      json-parse-better-errors: 1.0.2
-      loader-runner: 4.2.0
-      mime-types: 2.1.34
-      neo-async: 2.6.2
-      schema-utils: 3.1.1
-      tapable: 2.2.0
-      terser-webpack-plugin: 5.3.0_webpack@5.70.0
-      watchpack: 2.3.1
-      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-sources: 3.2.3
     transitivePeerDependencies:
       - "@swc/core"
@@ -29849,7 +29578,6 @@ packages:
   /yaml-language-server-parser/0.1.3:
     resolution:
       { integrity: sha512-xD2I+6M/vqQvcy4ded8JpXUaDHXmZMdhIO3OpuiFxstutwnW4whrfDzNcrsfXVdgMWqOUpdv3747Q081PFN1+g== }
-    dev: false
 
   /yaml-language-server/1.10.0:
     resolution:
