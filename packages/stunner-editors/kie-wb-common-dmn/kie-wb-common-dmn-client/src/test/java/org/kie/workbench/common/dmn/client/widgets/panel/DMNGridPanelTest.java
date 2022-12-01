@@ -123,7 +123,6 @@ public class DMNGridPanelTest {
         verify(gridPanel).updatePanelSize();
         verify(gridPanel).refreshScrollPosition();
         verify(viewport).setTransform(eq(newTransform));
-        //GridLayer.batch() is called once during DMNGridPanel construction and once during resize.
-        verify(gridLayer, times(2)).batch();
+        verify(gridLayer, times(1)).batch();
     }
 }

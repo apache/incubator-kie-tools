@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDi
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -266,6 +267,8 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
             @Override
             public void afterCanvasInitialized() {
                 callback.afterCanvasInitialized();
+                ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
+                        .setBackgroundColor("#f2f2f2");
             }
 
             @Override
