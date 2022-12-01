@@ -24,7 +24,12 @@ describe("BoxedExpressionEditor tests", () => {
     test("when prevDef and updatedDef are not equal, functionToExecute gets executed", () => {
       const mockedFunctionToExecute = jest.fn();
 
-      executeIfExpressionDefinitionChanged({ name: "1" }, { name: "2" }, mockedFunctionToExecute, ["name"]);
+      executeIfExpressionDefinitionChanged(
+        { name: "1", logicType: ExpressionDefinitionLogicType.Undefined },
+        { name: "2", logicType: ExpressionDefinitionLogicType.Undefined },
+        mockedFunctionToExecute,
+        ["name"]
+      );
 
       expect(mockedFunctionToExecute).toHaveBeenCalledTimes(1);
     });
@@ -32,7 +37,12 @@ describe("BoxedExpressionEditor tests", () => {
     test("when prevDef and updatedDef are equal, functionToExecute is not executed", () => {
       const mockedFunctionToExecute = jest.fn();
 
-      executeIfExpressionDefinitionChanged({ name: "1" }, { name: "1" }, mockedFunctionToExecute, ["name"]);
+      executeIfExpressionDefinitionChanged(
+        { name: "1", logicType: ExpressionDefinitionLogicType.Undefined },
+        { name: "1", logicType: ExpressionDefinitionLogicType.Undefined },
+        mockedFunctionToExecute,
+        ["name"]
+      );
 
       expect(mockedFunctionToExecute).toHaveBeenCalledTimes(0);
     });
@@ -53,7 +63,11 @@ describe("BoxedExpressionEditor tests", () => {
     test("when prevDef and updatedDef are not equal and propertiesToCheck is not passed, functionToExecute gets executed", () => {
       const mockedFunctionToExecute = jest.fn();
 
-      executeIfExpressionDefinitionChanged({ name: "1" }, { name: "2" }, mockedFunctionToExecute);
+      executeIfExpressionDefinitionChanged(
+        { name: "1", logicType: ExpressionDefinitionLogicType.Undefined },
+        { name: "2", logicType: ExpressionDefinitionLogicType.Undefined },
+        mockedFunctionToExecute
+      );
 
       expect(mockedFunctionToExecute).toHaveBeenCalledTimes(1);
     });

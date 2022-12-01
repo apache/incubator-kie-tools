@@ -15,7 +15,11 @@
  */
 
 import "../../__mocks__/ReactWithSupervisor";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { fireEvent, render } from "@testing-library/react";
 import {
   flushPromises,
@@ -31,7 +35,11 @@ jest.useFakeTimers();
 
 describe("ExpressionDefinitionLogicTypeSelector tests", () => {
   test("should have the clear action disabled on startup", async () => {
-    const expression = { name: "Test", dataType: DmnBuiltInDataType.Undefined };
+    const expression: ExpressionDefinition = {
+      name: "Test",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    };
 
     const { baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
@@ -53,7 +61,7 @@ describe("ExpressionDefinitionLogicTypeSelector tests", () => {
   });
 
   test("should have the clear action enabled, when logic type is selected", async () => {
-    const expression = {
+    const expression: ExpressionDefinition = {
       name: "Test",
       logicType: ExpressionDefinitionLogicType.LiteralExpression,
       dataType: DmnBuiltInDataType.Undefined,
@@ -82,7 +90,7 @@ describe("ExpressionDefinitionLogicTypeSelector tests", () => {
 
 describe("Logic type selection", () => {
   test("should show the pre-selection, when logic type prop is passed", () => {
-    const expression = {
+    const expression: ExpressionDefinition = {
       name: "Test",
       logicType: ExpressionDefinitionLogicType.List,
       dataType: DmnBuiltInDataType.Undefined,
@@ -106,7 +114,8 @@ describe("Logic type selection", () => {
   });
 
   test("should reset the selection, when logic type is selected and clear button gets clicked", async () => {
-    const expression = {
+    // eslint-disable-next-line prefer-const
+    let expression: ExpressionDefinition = {
       name: "Test",
       logicType: ExpressionDefinitionLogicType.LiteralExpression,
       dataType: DmnBuiltInDataType.Undefined,

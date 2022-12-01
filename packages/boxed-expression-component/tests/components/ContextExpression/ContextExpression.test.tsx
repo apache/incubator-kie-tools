@@ -26,7 +26,13 @@ import {
 } from "../test-utils";
 import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as React from "react";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  LiteralExpressionDefinition,
+} from "@kie-tools/boxed-expression-component/dist/api";
+import { ContextExpressionDefinitionEntry } from "../../../src/api";
 
 describe("ContextExpression tests", () => {
   const name = "contextName";
@@ -51,7 +57,7 @@ describe("ContextExpression tests", () => {
     const firstEntryId = "id1";
     const firstEntry = "first entry";
     const firstDataType = DmnBuiltInDataType.Boolean;
-    const firstExpression = {
+    const firstExpression: ExpressionDefinition = {
       name: "expressionName",
       dataType: DmnBuiltInDataType.Any,
       logicType: ExpressionDefinitionLogicType.LiteralExpression,
@@ -59,11 +65,15 @@ describe("ContextExpression tests", () => {
     const secondEntryId = "id2";
     const secondEntry = "second entry";
     const secondDataType = DmnBuiltInDataType.Date;
-    const secondExpression = { name: "anotherName", dataType: DmnBuiltInDataType.Undefined };
+    const secondExpression: ExpressionDefinition = {
+      name: "anotherName",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    };
     const resultEntry = "result entry";
     const resultDataType = DmnBuiltInDataType.Undefined;
 
-    const contextEntries = [
+    const contextEntries: ContextExpressionDefinitionEntry[] = [
       {
         entryInfo: {
           id: firstEntryId,
@@ -71,7 +81,6 @@ describe("ContextExpression tests", () => {
           dataType: firstDataType,
         },
         entryExpression: firstExpression,
-        editInfoPopoverLabel: "Edit entry",
       },
       {
         entryInfo: {
@@ -80,14 +89,13 @@ describe("ContextExpression tests", () => {
           dataType: secondDataType,
         },
         entryExpression: secondExpression,
-        editInfoPopoverLabel: "Edit entry",
       },
     ];
 
-    const result = {
+    const result: ExpressionDefinition = {
       name: resultEntry,
       dataType: resultDataType,
-      expression: {},
+      logicType: ExpressionDefinitionLogicType.Undefined,
     };
 
     const { container } = render(

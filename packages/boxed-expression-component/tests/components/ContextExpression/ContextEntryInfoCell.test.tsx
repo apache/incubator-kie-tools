@@ -19,7 +19,12 @@ import { EDIT_EXPRESSION_NAME, updateElementViaPopover, usingTestingBoxedExpress
 import { ContextEntryInfoCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  ROWGENERICTYPE,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import * as ReactTable from "react-table";
 
 jest.useFakeTimers();
@@ -29,7 +34,7 @@ describe("ContextEntryInfoCell tests", () => {
   const name = "Expression Name";
   const newValue = "New Value";
   const dataType = DmnBuiltInDataType.Boolean;
-  const emptyExpression = { name, dataType };
+  const emptyExpression: ExpressionDefinition = { name, dataType, logicType: ExpressionDefinitionLogicType.Undefined };
   const onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void = (rowIndex, updatedRow) =>
     _.identity({ rowIndex, updatedRow });
 
@@ -74,7 +79,7 @@ describe("ContextEntryInfoCell tests", () => {
     );
 
     await updateElementViaPopover(
-      container.querySelector(".entry-definition") as HTMLTableHeaderCellElement,
+      container.querySelector(".entry-definition") as HTMLTableCellElement,
       baseElement,
       EDIT_EXPRESSION_NAME,
       newValue

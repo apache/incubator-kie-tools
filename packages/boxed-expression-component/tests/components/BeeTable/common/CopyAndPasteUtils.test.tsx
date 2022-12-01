@@ -24,6 +24,7 @@ import {
   pasteOnTable,
 } from "@kie-tools/boxed-expression-component/dist/components/BeeTable/common";
 import { wrapComponentInContext } from "../../test-utils";
+import { ROWGENERICTYPE } from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("CopyAndPasteUtils", () => {
   describe("pasteOnTable", () => {

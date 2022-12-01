@@ -29,7 +29,11 @@ import {
   BoxedExpressionEditorContextProvider,
   BoxedExpressionEditorContextProviderProps,
 } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { BeeGwtService, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BeeGwtService,
+  DmnBuiltInDataType,
+  ExpressionDefinitionLogicType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 
 global.console = { ...global.console, warn: () => ({}) };
 
@@ -123,7 +127,7 @@ export function usingTestingBoxedExpressionProviderContext(
 ) {
   const usedCtx: BoxedExpressionEditorContextProviderProps = {
     decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-    expressionDefinition: {},
+    expressionDefinition: { logicType: ExpressionDefinitionLogicType.Undefined },
     dataTypes,
     pmmlParams,
     isRunnerTable: false,

@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  ROWGENERICTYPE,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { ContextEntryExpressionCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
@@ -28,7 +33,7 @@ jest.useFakeTimers();
 describe("ContextEntryExpressionCell tests", () => {
   const name = "Expression Name";
   const dataType = DmnBuiltInDataType.Boolean;
-  const emptyExpression = { name, dataType };
+  const emptyExpression: ExpressionDefinition = { name, dataType, logicType: ExpressionDefinitionLogicType.Undefined };
   const entryId = "entry-id1";
   const entryName = "entry name";
   const entryDataType = DmnBuiltInDataType.Date;

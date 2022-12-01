@@ -25,6 +25,7 @@ import {
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import { InvocationExpression } from "@kie-tools/boxed-expression-component/dist/components/InvocationExpression";
+import { ContextExpressionDefinitionEntry } from "../../../src/api";
 
 describe("InvocationExpression tests", () => {
   test("should show a table with two levels visible header, with one row and two columns", () => {
@@ -86,18 +87,16 @@ describe("InvocationExpression tests", () => {
     const firstEntryId = "p1";
     const firstEntryName = "param1";
     const firstEntryDataType = DmnBuiltInDataType.Boolean;
-    const firstEntry = {
+    const firstEntry: ContextExpressionDefinitionEntry = {
       entryInfo: { id: firstEntryId, name: firstEntryName, dataType: firstEntryDataType },
-      entryExpression: {},
-      editInfoPopoverLabel: "Edit parameter",
+      entryExpression: { logicType: ExpressionDefinitionLogicType.Undefined },
     };
     const secondEntryId = "p2";
     const secondEntryName = "param2";
     const secondEntryDataType = DmnBuiltInDataType.Any;
-    const secondEntry = {
+    const secondEntry: ContextExpressionDefinitionEntry = {
       entryInfo: { id: secondEntryId, name: secondEntryName, dataType: secondEntryDataType },
-      entryExpression: {},
-      editInfoPopoverLabel: "Edit parameter",
+      entryExpression: { logicType: ExpressionDefinitionLogicType.Undefined },
     };
     const bindingEntries = [firstEntry, secondEntry];
 

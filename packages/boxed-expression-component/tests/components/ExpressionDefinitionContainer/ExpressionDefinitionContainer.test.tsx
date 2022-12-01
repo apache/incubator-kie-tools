@@ -18,11 +18,19 @@ import { ExpressionDefinitionContainer } from "@kie-tools/boxed-expression-compo
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("ExpressionContainer tests", () => {
   test("should render ExpressionContainer component", () => {
-    const expression = { name: "Test", dataType: DmnBuiltInDataType.Undefined };
+    const expression: ExpressionDefinition = {
+      name: "Test",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    };
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
@@ -37,7 +45,11 @@ describe("ExpressionContainer tests", () => {
 
   test("should render expression title, when name prop is passed", () => {
     const expressionTitle = "Test";
-    const expression = { name: expressionTitle, dataType: DmnBuiltInDataType.Undefined };
+    const expression: ExpressionDefinition = {
+      name: expressionTitle,
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    };
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
@@ -51,7 +63,7 @@ describe("ExpressionContainer tests", () => {
   });
 
   test("should render expression type, when type prop is passed", () => {
-    const expression = {
+    const expression: ExpressionDefinition = {
       name: "Test",
       logicType: ExpressionDefinitionLogicType.LiteralExpression,
       dataType: DmnBuiltInDataType.Undefined,
@@ -71,7 +83,11 @@ describe("ExpressionContainer tests", () => {
   });
 
   test("should render expression type as undefined, when type prop is not passed", () => {
-    const expression = { name: "Test", dataType: DmnBuiltInDataType.Undefined };
+    const expression: ExpressionDefinition = {
+      name: "Test",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    };
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(

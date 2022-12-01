@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { ContextEntryExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
@@ -24,7 +28,7 @@ import * as React from "react";
 describe("ContextEntryExpression tests", () => {
   const name = "Expression Name";
   const dataType = DmnBuiltInDataType.Boolean;
-  const emptyExpression = { name, dataType };
+  const emptyExpression: ExpressionDefinition = { name, dataType, logicType: ExpressionDefinitionLogicType.Undefined };
 
   test("should show a context entry element with logic type not selected, when rendering it with an empty expression", () => {
     const { container } = render(

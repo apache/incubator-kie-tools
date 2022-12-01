@@ -120,7 +120,7 @@ export class Cell {
         ]
       : [].slice.call((refSibling as HTMLElement).querySelectorAll(`.data-cell`));
 
-    const colSpan = (this.element?.parentNode as HTMLTableHeaderCellElement)?.colSpan;
+    const colSpan = (this.element?.parentNode as HTMLTableCellElement)?.colSpan;
     if (colSpan > 1) {
       const firstReact = children[properties.cellIndex].getBoundingClientRect();
       const lastReact = children[properties.cellIndex + colSpan - 1].getBoundingClientRect();

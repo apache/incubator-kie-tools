@@ -20,13 +20,13 @@ import { render } from "@testing-library/react";
 import { ContextEntryInfo } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
+import { ExpressionDefinition } from "../../../src/api";
 
 jest.useFakeTimers();
 
 describe("ContextEntryInfo tests", () => {
   const id = "id1";
   const name = "Expression Name";
-  const newValue = "New Value";
   const dataType = DmnBuiltInDataType.Boolean;
 
   test("should show a context entry info element with passed name and dataType, when rendering it", () => {
@@ -50,8 +50,8 @@ describe("ContextEntryInfo tests", () => {
   });
 
   test("should call the onContextEntryUpdate callback when one of its prop changes", async () => {
-    const onContextEntryUpdate: (name: string, dataType: DmnBuiltInDataType) => void = (name, dataType) =>
-      _.identity({ name, dataType });
+    const onContextEntryUpdate: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void = (args) =>
+      _.identity(args);
     const mockedOnContextEntryUpdate = jest.fn(onContextEntryUpdate);
 
     const { container, baseElement } = render(
@@ -66,14 +66,15 @@ describe("ContextEntryInfo tests", () => {
       ).wrapper
     );
 
+    const newName = "New Value";
     await updateElementViaPopover(
-      container.querySelector(".entry-definition") as HTMLTableHeaderCellElement,
+      container.querySelector(".entry-definition") as HTMLTableCellElement,
       baseElement,
       EDIT_EXPRESSION_NAME,
-      newValue
+      newName
     );
 
     expect(mockedOnContextEntryUpdate).toHaveBeenCalled();
-    expect(mockedOnContextEntryUpdate).toHaveBeenCalledWith(newValue, dataType);
+    expect(mockedOnContextEntryUpdate).toHaveBeenCalledWith({ name: newName, dataType });
   });
 });

@@ -18,7 +18,6 @@ import { fireEvent, render } from "@testing-library/react";
 import * as _ from "lodash";
 import * as React from "react";
 import { act } from "react-dom/test-utils";
-import * as ReactTable from "react-table";
 import { PASTE_OPERATION } from "@kie-tools/boxed-expression-component/dist/components/BeeTable/common";
 import {
   BeeGwtService,
@@ -27,6 +26,7 @@ import {
   BeeTableRowsUpdateArgs,
   BeeTableOperationHandlerConfig,
   BeeTableOperation,
+  ROWGENERICTYPE,
 } from "@kie-tools/boxed-expression-component/dist/api";
 
 import {
@@ -125,7 +125,7 @@ describe("Table tests", () => {
                   accessor: columnName,
                   label: columnName,
                   dataType: DmnBuiltInDataType.Undefined,
-                } as ReactTable.ColumnInstance,
+                } as any,
               ]}
               rows={[]}
               onColumnsUpdate={_.identity}
@@ -152,7 +152,7 @@ describe("Table tests", () => {
                   accessor: columnName,
                   headerCellElement,
                   dataType: DmnBuiltInDataType.Undefined,
-                } as ReactTable.ColumnInstance,
+                } as any,
               ]}
               rows={[]}
               onColumnsUpdate={_.identity}
@@ -195,7 +195,12 @@ describe("Table tests", () => {
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
             <BeeTable
-              columns={[{ accessor: columnName, dataType: DmnBuiltInDataType.Undefined } as ReactTable.ColumnInstance]}
+              columns={[
+                {
+                  accessor: columnName,
+                  dataType: DmnBuiltInDataType.Undefined,
+                } as any,
+              ]}
               rows={rows}
               onColumnsUpdate={_.identity}
               onRowsUpdate={_.identity}
@@ -226,7 +231,7 @@ describe("Table tests", () => {
                   label: columnName,
                   accessor: columnName,
                   dataType: DmnBuiltInDataType.Boolean,
-                } as ReactTable.ColumnInstance,
+                } as any,
               ]}
               rows={[]}
               onColumnsUpdate={_.identity}
@@ -238,7 +243,7 @@ describe("Table tests", () => {
       );
 
       await activateNameAndDataTypePopover(
-        container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableHeaderCellElement
+        container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableCellElement
       );
 
       expect(baseElement.querySelector(EXPRESSION_POPOVER_MENU)).toBeTruthy();
@@ -252,7 +257,7 @@ describe("Table tests", () => {
     test("should trigger onColumnUpdate, when changing column name via popover", async () => {
       const columnId = "column-id";
       const newColumnName = "changed";
-      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs) => {
+      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(columns);
       };
       const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
@@ -266,7 +271,7 @@ describe("Table tests", () => {
                   label: columnName,
                   accessor: columnId,
                   dataType: DmnBuiltInDataType.Boolean,
-                } as ReactTable.ColumnInstance,
+                } as any,
               ]}
               rows={[]}
               onColumnsUpdate={mockedOnColumnUpdate}
@@ -277,7 +282,7 @@ describe("Table tests", () => {
         ).wrapper
       );
       await updateElementViaPopover(
-        container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableHeaderCellElement,
+        container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableCellElement,
         baseElement,
         EDIT_EXPRESSION_NAME,
         newColumnName
@@ -290,7 +295,7 @@ describe("Table tests", () => {
             label: newColumnName,
             accessor: columnId,
             dataType: DmnBuiltInDataType.Boolean,
-          } as ReactTable.ColumnInstance,
+          } as any,
         ],
         columnIndex: 0,
       });
@@ -308,7 +313,7 @@ describe("Table tests", () => {
                   label: columnName,
                   accessor: columnName,
                   dataType: DmnBuiltInDataType.Undefined,
-                } as ReactTable.ColumnInstance,
+                } as any,
               ]}
               rows={[]}
             />,
@@ -317,7 +322,7 @@ describe("Table tests", () => {
         ).wrapper
       );
 
-      fireEvent.click(container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableHeaderCellElement);
+      fireEvent.click(container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableCellElement);
 
       expect(mockedSelectObject).toHaveBeenLastCalledWith(columnName);
     });
@@ -332,11 +337,15 @@ describe("Table tests", () => {
       row[columnName] = rowValue;
       newRow[columnName] = newRowValue;
       const columns = [
-        { label: columnName, accessor: columnName, dataType: DmnBuiltInDataType.Boolean } as ReactTable.ColumnInstance,
+        {
+          label: columnName,
+          accessor: columnName,
+          dataType: DmnBuiltInDataType.Boolean,
+        } as any,
       ];
 
       row[columnName] = "value";
-      const orRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs) => {
+      const orRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(rows);
       };
       const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
@@ -380,7 +389,7 @@ describe("Table tests", () => {
                   label: columnName,
                   accessor: columnName,
                   dataType: DmnBuiltInDataType.Undefined,
-                } as ReactTable.ColumnInstance,
+                } as any,
               ]}
               rows={[{ id, columnName: "" }]}
             />,
@@ -397,7 +406,7 @@ describe("Table tests", () => {
 
   describe("when users paste a value", () => {
     test("should trigger onRowsUpdate", async () => {
-      const orRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs) => {
+      const orRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(rows);
       };
       const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
@@ -420,7 +429,7 @@ describe("Table tests", () => {
                   label: columnName,
                   accessor: columnName,
                   dataType: DmnBuiltInDataType.Boolean,
-                } as ReactTable.ColumnInstance,
+                } as any,
               ]}
               rows={[row]}
               onColumnsUpdate={_.identity}
@@ -444,13 +453,13 @@ describe("Table tests", () => {
         accessor: "column-2",
         dataType: DmnBuiltInDataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
-      } as ReactTable.ColumnInstance;
+      } as any;
       const secondColumn = {
         label: "column-3",
         dataType: DmnBuiltInDataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
-      } as ReactTable.ColumnInstance;
-      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs) => {
+      } as any;
+      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(columns);
       };
       const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
@@ -489,13 +498,13 @@ describe("Table tests", () => {
         accessor: "column-2",
         dataType: DmnBuiltInDataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
-      } as ReactTable.ColumnInstance;
+      } as any;
       const secondColumn = {
         label: "column-3",
         dataType: DmnBuiltInDataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
-      } as ReactTable.ColumnInstance;
-      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs) => {
+      } as any;
+      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(columns);
       };
       const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
@@ -533,13 +542,13 @@ describe("Table tests", () => {
         label: "column-1",
         accessor: "column-1",
         dataType: DmnBuiltInDataType.Undefined,
-      } as ReactTable.ColumnInstance;
+      } as any;
       const secondColumn = {
         label: "column-2",
         accessor: "column-2",
         dataType: DmnBuiltInDataType.Undefined,
-      } as ReactTable.ColumnInstance;
-      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs) => {
+      } as any;
+      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(columns);
       };
       const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
@@ -581,13 +590,13 @@ describe("Table tests", () => {
         label: "column-1",
         accessor: "column-1",
         dataType: DmnBuiltInDataType.Undefined,
-      } as ReactTable.ColumnInstance;
+      } as any;
       const secondColumn = {
         label: "column-2",
         accessor: "column-2",
         dataType: DmnBuiltInDataType.Undefined,
-      } as ReactTable.ColumnInstance;
-      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs) => {
+      } as any;
+      const onColumnUpdate = ({ columns }: BeeTableColumnsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(columns);
       };
       const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
@@ -624,9 +633,9 @@ describe("Table tests", () => {
           label: columnName,
           accessor: columnName,
           dataType: DmnBuiltInDataType.Undefined,
-        } as ReactTable.ColumnInstance,
+        } as any,
       ];
-      const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs) => {
+      const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(rows);
       };
       const mockedOnRowsUpdate = jest.fn(onRowsUpdate);
@@ -664,7 +673,7 @@ describe("Table tests", () => {
     test("should trigger onRowsUpdate, when inserting a new row below", async () => {
       const row: ROWGENERICTYPE = {};
       row[columnName] = "value";
-      const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs) => {
+      const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(rows);
       };
       const mockedOnRowsUpdate = jest.fn(onRowsUpdate);
@@ -673,7 +682,7 @@ describe("Table tests", () => {
           label: columnName,
           accessor: columnName,
           dataType: DmnBuiltInDataType.Undefined,
-        } as ReactTable.ColumnInstance,
+        } as any,
       ];
 
       const { container, baseElement } = render(
@@ -710,7 +719,7 @@ describe("Table tests", () => {
       const secondRow: ROWGENERICTYPE = {};
       firstRow[columnName] = "value";
       secondRow[columnName] = "another value";
-      const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs) => {
+      const onRowsUpdate = ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
         _.identity(rows);
       };
       const mockedOnRowsUpdate = jest.fn(onRowsUpdate);
@@ -719,7 +728,7 @@ describe("Table tests", () => {
           label: columnName,
           accessor: columnName,
           dataType: DmnBuiltInDataType.Undefined,
-        } as ReactTable.ColumnInstance,
+        } as any,
       ];
 
       const { container, baseElement } = render(
@@ -762,7 +771,7 @@ describe("Table tests", () => {
         dataType: DmnBuiltInDataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
         inlineEditable: true,
-      } as ReactTable.ColumnInstance;
+      } as any;
 
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
@@ -790,7 +799,7 @@ describe("Table tests", () => {
         dataType: DmnBuiltInDataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
         inlineEditable: true,
-      } as ReactTable.ColumnInstance;
+      } as any;
 
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
