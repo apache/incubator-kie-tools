@@ -35,12 +35,14 @@ import org.mockito.InOrder;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.ait.lienzo.client.core.layout.sugiyama.step04.DefaultVertexPositioning.DEFAULT_LAYER_HORIZONTAL_PADDING;
+import static com.ait.lienzo.client.core.layout.sugiyama.step04.DefaultVertexPositioning.DEFAULT_LAYER_SPACE;
 import static com.ait.lienzo.client.core.layout.sugiyama.step04.DefaultVertexPositioning.DEFAULT_LAYER_VERTICAL_PADDING;
 import static com.ait.lienzo.client.core.layout.sugiyama.step04.DefaultVertexPositioning.DEFAULT_VERTEX_SPACE;
 import static com.ait.lienzo.tools.common.api.java.util.UUID.uuid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
@@ -68,38 +70,28 @@ public class DefaultVertexPositioningTest {
         final HashMap hash = mock(HashMap.class);
         final HashMap layersStartX = mock(HashMap.class);
         final int largestWidth = 100;
-        final int newY = 17;
+        final int newY = DEFAULT_LAYER_SPACE + DEFAULT_VERTEX_SPACE;
+        when(layersStartX.get(any())).thenReturn(0);
         doReturn(hash).when(tested).createHashForLayersWidth();
         doReturn(largestWidth).when(tested).calculateLayersWidth(layers, hash);
         doReturn(layersStartX).when(tested).getLayersStartX(layers.size(), hash, largestWidth);
 
-        doReturn(newY).when(tested).distributeVertices(layers,
-                                                       layersStartX,
-                                                       DEFAULT_LAYER_VERTICAL_PADDING,
-                                                       0,
-                                                       graph);
+        final InOrder inOrder = inOrder(tested);
 
-        doReturn(newY).when(tested).distributeVertices(layers,
-                                                       layersStartX,
-                                                       newY,
-                                                       1,
-                                                       graph);
         tested.arrangeVertices(layers,
                                LayerArrangement.TopDown,
                                graph);
 
-        final InOrder inOrder = inOrder(tested);
-
         inOrder.verify(tested).distributeVertices(layers,
                                                   layersStartX,
                                                   DEFAULT_LAYER_VERTICAL_PADDING,
-                                                  0,
+                                                  1,
                                                   graph);
 
         inOrder.verify(tested).distributeVertices(layers,
                                                   layersStartX,
                                                   newY,
-                                                  1,
+                                                  0,
                                                   graph);
     }
 
@@ -114,19 +106,20 @@ public class DefaultVertexPositioningTest {
         final HashMap layersStartX = mock(HashMap.class);
         final int largestWidth = 100;
         final int newY = 17;
+
         doReturn(hash).when(tested).createHashForLayersWidth();
         doReturn(largestWidth).when(tested).calculateLayersWidth(layers, hash);
         doReturn(layersStartX).when(tested).getLayersStartX(layers.size(), hash, largestWidth);
 
         doReturn(newY).when(tested).distributeVertices(layers,
                                                        layersStartX,
-                                                       newY,
+                                                       DEFAULT_LAYER_VERTICAL_PADDING,
                                                        0,
                                                        graph);
 
         doReturn(newY).when(tested).distributeVertices(layers,
                                                        layersStartX,
-                                                       DEFAULT_LAYER_VERTICAL_PADDING,
+                                                       newY,
                                                        1,
                                                        graph);
         tested.arrangeVertices(layers,
@@ -138,13 +131,13 @@ public class DefaultVertexPositioningTest {
         inOrder.verify(tested).distributeVertices(layers,
                                                   layersStartX,
                                                   DEFAULT_LAYER_VERTICAL_PADDING,
-                                                  1,
+                                                  0,
                                                   graph);
 
         inOrder.verify(tested).distributeVertices(layers,
                                                   layersStartX,
                                                   newY,
-                                                  0,
+                                                  1,
                                                   graph);
     }
 
