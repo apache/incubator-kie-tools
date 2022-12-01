@@ -50,7 +50,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  const rows = useMemo(() => {
+  const beeTableRows = useMemo(() => {
     return (
       invocation.bindingEntries ?? [
         {
@@ -78,7 +78,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         logicType: ExpressionDefinitionLogicType.Invocation,
         name: invocation.name ?? DEFAULT_PARAMETER_NAME,
         dataType: invocation.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
-        bindingEntries: rows as ContextExpressionDefinitionEntry[],
+        bindingEntries: beeTableRows as ContextExpressionDefinitionEntry[],
         invokedFunction: invocation.invokedFunction ?? "",
         entryInfoWidth: invocation.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
         entryExpressionWidth: invocation.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
@@ -107,7 +107,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         );
       }
     },
-    [beeGwtService, invocation, rows, setSupervisorHash]
+    [beeGwtService, invocation, beeTableRows, setSupervisorHash]
   );
 
   const onBlurCallback = useCallback(
@@ -149,7 +149,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [spreadInvocationExpressionDefinition]
   );
 
-  const columns = useMemo(
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
     () => [
       {
         label: invocation.name ?? DEFAULT_PARAMETER_NAME,
@@ -179,7 +179,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             ],
           },
         ],
-      },
+      } as any, // FIXME: Tiago -> Remove this!!,
     ],
     [
       invocation.name,
@@ -207,7 +207,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
 
   const onRowAdding = useCallback(() => {
     const generatedName = generateNextAvailableEntryName(
-      rows.map((row: ReactTable.DataRecord & ContextExpressionDefinitionEntry) => row.entryInfo),
+      beeTableRows.map((row: ReactTable.DataRecord & ContextExpressionDefinitionEntry) => row.entryInfo),
       "p"
     );
     return {
@@ -222,7 +222,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       },
       nameAndDataTypeSynchronized: true,
     };
-  }, [rows]);
+  }, [beeTableRows]);
 
   const getHeaderVisibility = useMemo(
     () => (invocation.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.Full),
@@ -244,7 +244,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       entryInfo: getContextEntryInfoCell(i18n.editParameter),
       entryExpression: ContextEntryExpressionCell,
     }),
-    [i18n.editParameter]
+    [i18n]
   );
 
   const operationHandlerConfig = useMemo(() => {
@@ -259,8 +259,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         headerVisibility={getHeaderVisibility}
         skipLastHeaderGroup={true}
         defaultCellByColumnId={defaultCellByColumnName}
-        columns={columns}
-        rows={rows ?? []}
+        columns={beeTableColumns}
+        rows={beeTableRows}
         onColumnsUpdate={onColumnsUpdate}
         onRowAdding={onRowAdding}
         onRowsUpdate={onRowsUpdate}

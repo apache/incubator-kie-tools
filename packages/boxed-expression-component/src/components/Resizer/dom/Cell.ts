@@ -99,15 +99,14 @@ export class Cell {
     }
   }
 
-  refreshWidthAsLastGroupColumnRunner(properties: any): void {
+  refreshWidthAsLastGroupColumnRunner(properties: { originalIndex: number; cellIndex: number }): void {
     if (!this.isColSpanHeader() && !this.getParentRow()?.classList.contains("table-row")) {
       return;
     }
 
-    let refSibling = this.getParent()?.parentElement?.nextSibling;
-
-    if (!refSibling || (refSibling as any)?.classList?.contains("table-row")) {
-      refSibling = document.querySelector('[role="row"]')?.nextSibling;
+    let refSibling = this.getParent()?.parentElement?.nextSibling as HTMLElement;
+    if (refSibling?.classList?.contains("table-row")) {
+      refSibling = document.querySelector('[role="row"]')?.nextSibling as HTMLElement;
     }
 
     // sum the colSpan to determine the header size;
@@ -155,6 +154,7 @@ export class Cell {
   }
 
   private getHeaderType() {
+    // FIXME: Tiago -> Bad typing.
     const cssClasses = (this.getParent()?.classList || []) as any as DOMTokenList;
 
     if (cssClasses.contains("input")) {

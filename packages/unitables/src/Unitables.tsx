@@ -23,7 +23,7 @@ import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/ap
 import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import nextId from "react-id-generator";
 import { BeeTableWrapper } from "./bee";
-import { UnitablesInputRule } from "./UnitablesBoxedTypes";
+import { UnitablesInputRows } from "./UnitablesTypes";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -46,7 +46,6 @@ interface Props {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
   i18n: UnitablesI18n;
-  name?: string;
   rowCount: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   propertiesEntryPath: string;
@@ -59,7 +58,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
   const inputColumnsCache = useRef<ReactTable.ColumnInstance[]>([]);
 
-  const { inputs, inputRules, updateInputCellsWidth, operationHandler } = useUnitablesInputs(
+  const { inputs, inputRows, updateInputCellsWidth, operationHandler } = useUnitablesInputs(
     props.jsonSchemaBridge,
     props.inputRows,
     props.setInputRows,
@@ -88,9 +87,18 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
 
   useImperativeHandle(forwardRef, () => ({ operationHandler }), [operationHandler]);
 
+  const config = useMemo(
+    () => ({
+      type: "inputs" as const,
+      inputs: inputs,
+      rows: inputRows,
+    }),
+    [inputRows, inputs]
+  );
+
   return (
     <>
-      {inputs && shouldRender && inputRules && (
+      {inputs && shouldRender && inputRows && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
           <BoxedExpressionEditorContextProvider
             expressionDefinition={{}}
@@ -125,12 +133,10 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
                 ))}
               </div>
               <BeeTableWrapper
-                name={props?.name ?? ""}
                 i18n={props.i18n}
                 onRowNumberUpdate={props.onRowNumberUpdate}
                 onColumnsUpdate={onInputColumnsUpdate}
-                input={inputs}
-                rules={inputRules as UnitablesInputRule[]}
+                config={config}
                 id={inputUid}
               />
             </div>

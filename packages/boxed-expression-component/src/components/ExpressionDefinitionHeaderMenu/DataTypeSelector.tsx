@@ -72,7 +72,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
         </SelectGroup>
       );
     },
-    [i18n.dataTypeDropDown]
+    [i18n]
   );
 
   const buildSelectGroups = useCallback(() => {

@@ -63,7 +63,7 @@ class SupervisorExecution {
     cell.refreshWidthAsLastColumn();
   }
 
-  private refreshWidthAsLastGroupColumnRunner(cell: Cell, properties: any) {
+  private refreshWidthAsLastGroupColumnRunner(cell: Cell, properties: { originalIndex: number; cellIndex: number }) {
     cell.refreshWidthAsLastGroupColumnRunner(properties);
     properties.cellIndex++;
   }

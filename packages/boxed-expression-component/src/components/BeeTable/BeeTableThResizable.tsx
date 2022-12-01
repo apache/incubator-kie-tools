@@ -17,28 +17,33 @@
 import * as React from "react";
 import { useState, useCallback } from "react";
 import * as ReactTable from "react-table";
+import * as PfReactTable from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { BeeTableTh } from "./BeeTableTh";
 import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
+import { DmnBuiltInDataType } from "../../api";
 
 export interface BeeTableThResizableProps {
-  column: any;
+  column: ReactTable.ColumnInstance;
   columnIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
   editableHeader: boolean;
-  getColumnKey: (column: ReactTable.Column) => string;
-  getColumnLabel: (groupType: string) => string | undefined;
+  getColumnKey: (column: ReactTable.ColumnInstance) => string;
+  getColumnLabel: (groupType: string | undefined) => string | undefined;
   onCellKeyDown: () => (e: KeyboardEvent) => void;
-  onColumnNameOrDataTypeUpdate: (column: ReactTable.ColumnInstance, columnIndex: number) => any;
+  onColumnNameOrDataTypeUpdate: (
+    column: ReactTable.ColumnInstance,
+    columnIndex: number
+  ) => ({ name, dataType }: { name?: string; dataType?: DmnBuiltInDataType }) => void;
   onHeaderClick: (columnKey: string) => () => void;
-  onHorizontalResizeStop: (column: ReactTable.Column, columnWidth: number) => void;
+  onHorizontalResizeStop: (column: ReactTable.ColumnInstance, columnWidth: number) => void;
   rowIndex: number;
   reactTableInstance: ReactTable.TableInstance;
-  thProps: (column: ReactTable.ColumnInstance) => any;
+  getThProps: (column: ReactTable.ColumnInstance) => Partial<PfReactTable.ThProps>;
   xPosition: number;
   yPosition: number;
   renderHeaderCellInfo: (
-    column: ReactTable.Column,
+    column: ReactTable.ColumnInstance,
     columnIndex: number,
     onAnnotationCellToggle?: (isReadMode: boolean) => void
   ) => React.ReactElement;
@@ -57,7 +62,7 @@ export const BeeTableThResizable = ({
   renderHeaderCellInfo,
   rowIndex,
   reactTableInstance,
-  thProps,
+  getThProps,
   xPosition,
   yPosition,
 }: BeeTableThResizableProps) => {
@@ -79,7 +84,7 @@ export const BeeTableThResizable = ({
     if (isColspan) {
       cssClasses.push("colspan-header");
     }
-    if (column.placeholderOf) {
+    if (column.placeholderOf?.cssClasses && column.placeholderOf?.groupType) {
       cssClasses.push("colspan-header");
       cssClasses.push(column.placeholderOf.cssClasses);
       cssClasses.push(column.placeholderOf.groupType);
@@ -132,7 +137,7 @@ export const BeeTableThResizable = ({
       rowIndex={rowIndex}
       cellIndex={columnIndex}
       rowSpan={getRowSpan(cssClasses)}
-      thProps={thProps(column)}
+      thProps={getThProps(column)}
       xPosition={xPosition}
       yPosition={yPosition}
     >

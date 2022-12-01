@@ -15,5 +15,5 @@
  */
 
 export * from "./Unitables";
-export * from "./UnitablesBoxedTypes";
+export * from "./UnitablesTypes";
 export * from "./UnitablesValidator";

@@ -93,7 +93,7 @@ export const EditorPageDockDrawer = React.forwardRef<
         notificationsPanel.getTab(tabName)?.kogitoNotifications_setNotifications(value.path, value.notifications);
       });
     }
-  }, [i18n.terms.execution, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
+  }, [i18n, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
   const onToggle = useCallback((panel: PanelId) => {
     setPanel((currentPanel) => {

@@ -20,7 +20,7 @@ import * as ReactTable from "react-table";
 import { diff } from "deep-object-diff";
 import { FORMS_ID, InputFields, isInputWithInsideProperties, UnitablesJsonSchemaBridge } from "./uniforms";
 import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
-import { UnitablesInputRule } from "./UnitablesBoxedTypes";
+import { UnitablesInputRows } from "./UnitablesTypes";
 import { useTableOperationHandler } from "./bee/BeeTableOperationHandler";
 import { CELL_MINIMUM_WIDTH } from "./bee";
 
@@ -157,9 +157,9 @@ export function useUnitablesInputs(
   );
 
   // Inputs form
-  const inputRules: UnitablesInputRule[] = useMemo(() => {
+  const inputRules: UnitablesInputRows[] = useMemo(() => {
     if (jsonSchemaBridge === undefined || !formsDivRendered) {
-      return [] as UnitablesInputRule[];
+      return [] as UnitablesInputRows[];
     }
     const inputEntriesLength = inputs?.reduce(
       (length, input) => (isInputWithInsideProperties(input) ? length + input.insideProperties.length : length + 1),
@@ -185,7 +185,7 @@ export function useUnitablesInputs(
             </UnitablesRow>
           );
         },
-      } as UnitablesInputRule;
+      } as UnitablesInputRows;
     });
   }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, inputRowsCache, onModelUpdate]);
 
@@ -193,7 +193,7 @@ export function useUnitablesInputs(
     return {
       jsonSchemaBridge,
       inputs,
-      inputRules,
+      inputRows: inputRules,
       updateInputCellsWidth,
       operationHandler,
     };

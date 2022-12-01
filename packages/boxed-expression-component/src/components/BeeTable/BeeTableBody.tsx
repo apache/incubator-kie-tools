@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { BaseSyntheticEvent, useCallback, useMemo } from "react";
-import { Tbody, Tr } from "@patternfly/react-table";
+import * as PfReactTable from "@patternfly/react-table";
 import { BeeTableHeaderVisibility } from "../../api";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -36,13 +36,13 @@ export interface BeeTableBodyProps {
   /** Custom function for getting row key prop, and avoid using the row index */
   getRowKey: (row: ReactTable.Row) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
-  getColumnKey: (column: ReactTable.Column) => string;
+  getColumnKey: (column: ReactTable.ColumnInstance) => string;
   /** Function to be executed when columns are modified */
-  onColumnsUpdate?: (columns: ReactTable.Column[]) => void;
+  onColumnsUpdate?: (columns: ReactTable.ColumnInstance[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
-  tdProps: (cellIndex: number, rowIndex: number) => any;
+  tdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
 
 export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
@@ -87,7 +87,7 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
           reactTableInstance={reactTableInstance}
           getColumnKey={getColumnKey}
           onColumnsUpdate={onColumnsUpdate!}
-          tdProps={tdProps}
+          getTdProps={tdProps}
           yPosition={headerRowsLength + rowIndex}
         />
       );
@@ -119,29 +119,31 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
     [beeGwtService, eventPathHasNestedExpression]
   );
 
-  const renderBodyRow = useCallback(
+  const renderRow = useCallback(
     (row: ReactTable.Row, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
       const rowProps = { ...row.getRowProps(), style: {} };
-      const RowDelegate = (row.original as any).rowDelegate;
+      const RowDelegate = (row.original as any).rowDelegate; // FIXME: Tiago -> Bad typing.
       const rowKey = getRowKey(row);
       const rowClassNames = `${rowKey} table-row`;
 
-      const buildTableRow = (isInForm: boolean) => (
-        <Tr
+      const renderTr = (isInForm: boolean) => (
+        <PfReactTable.Tr
           className={rowClassNames}
           {...rowProps}
           ouiaId={"expression-row-" + rowIndex}
           key={rowKey}
           onClick={onRowClick(rowKey)}
         >
-          {row.cells.map((cell: ReactTable.Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, isInForm))}
-        </Tr>
+          {row.cells.map((cell: ReactTable.Cell, cellIndex: number) => {
+            return renderCell(cellIndex, cell, rowIndex, isInForm);
+          })}
+        </PfReactTable.Tr>
       );
 
       return (
         <React.Fragment key={rowKey}>
-          {RowDelegate ? <RowDelegate>{buildTableRow(true)}</RowDelegate> : buildTableRow(false)}
+          {RowDelegate ? <RowDelegate>{renderTr(true)}</RowDelegate> : renderTr(false)}
         </React.Fragment>
       );
     },
@@ -150,7 +152,7 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
 
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
-      <Tr className="table-row additive-row">
+      <PfReactTable.Tr className="table-row additive-row">
         <BeeTableTdIndex
           isEmptyCell={true}
           rowIndex={rowIndex}
@@ -174,18 +176,20 @@ export const BeeTableBody: React.FunctionComponent<BeeTableBodyProps> = ({
             </BeeTableTdIndex>
           );
         })}
-      </Tr>
+      </PfReactTable.Tr>
     ),
     [children, onCellKeyDown]
   );
 
   return (
-    <Tbody
+    <PfReactTable.Tbody
       className={`${headerVisibilityMemo === BeeTableHeaderVisibility.None ? "missing-header" : ""}`}
-      {...(reactTableInstance.getTableBodyProps() as any)}
+      {...reactTableInstance.getTableBodyProps()}
     >
-      {reactTableInstance.rows.map((row: ReactTable.Row, rowIndex: number) => renderBodyRow(row, rowIndex))}
+      {reactTableInstance.rows.map((row, rowIndex) => {
+        return renderRow(row, rowIndex);
+      })}
       {children ? renderAdditiveRow(reactTableInstance.rows.length) : null}
-    </Tbody>
+    </PfReactTable.Tbody>
   );
 };

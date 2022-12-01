@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Td } from "@patternfly/react-table";
+import * as PfReactTable from "@patternfly/react-table";
 import { BeeTableCellComponent } from "../../api";
 
 export interface BeeTableTdIndexProps extends BeeTableCellComponent {
@@ -45,7 +45,7 @@ export function BeeTableTdIndex({
   }, [onKeyDown, rowIndex]);
 
   return isEmptyCell ? (
-    <Td
+    <PfReactTable.Td
       ref={tdRef}
       role="cell"
       className="empty-cell"
@@ -54,9 +54,9 @@ export function BeeTableTdIndex({
       data-yposition={yPosition}
     >
       <br />
-    </Td>
+    </PfReactTable.Td>
   ) : (
-    <Td
+    <PfReactTable.Td
       ref={tdRef}
       role="cell"
       key={cellIndex}
@@ -66,6 +66,6 @@ export function BeeTableTdIndex({
       data-yposition={yPosition}
     >
       {children}
-    </Td>
+    </PfReactTable.Td>
   );
 }

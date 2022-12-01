@@ -84,8 +84,8 @@ export const pasteOnTable = (
   };
 
   const updateObjectValue = (rows: ReactTable.DataRecord[], row: number, colName: string, value: string) => {
+    // FIXME: Tiago -> Bad typing.
     const currentElement: any = rows[row][colName];
-
     if (typeof currentElement !== "object") {
       return;
     }

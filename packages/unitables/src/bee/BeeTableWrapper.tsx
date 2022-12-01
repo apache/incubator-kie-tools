@@ -19,7 +19,6 @@ import { useCallback, useLayoutEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableColumnsUpdateArgs,
-  ExpressionDefinition,
   BeeTableRowsUpdateArgs,
   BeeTableOperation,
   BeeTableHeaderVisibility,
@@ -27,14 +26,14 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel, BeeTable } from "@kie-tools/boxed-expression-component/dist/components";
 import "./BeeTableWrapper.css";
-import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../UnitablesBoxedTypes";
+import { UnitablesOutputRows, UnitablesCell, UnitablesInputRows } from "../UnitablesTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 
 export const CELL_MINIMUM_WIDTH = 150;
 
-enum DecisionTableColumnType {
+enum UnitablesBeeTableWrapperColumnType {
   InputClause = "input",
   OutputClause = "output",
   Annotation = "annotation",
@@ -45,26 +44,33 @@ const EMPTY_SYMBOL = "";
 
 type DataRecord = Record<string, unknown>;
 
-export interface BeeTableWrapperProps extends ExpressionDefinition {
+export interface BeeTableWrapperProps {
+  id: string;
   i18n: BoxedExpressionEditorI18n;
-  /** Input columns definition */
-  input?: UnitablesClause[];
-  /** Output columns definition */
-  output?: UnitablesClause[];
-  /** Rules represent rows values */
-  rules?: UnitablesInputRule[] | BoxedExpressionOutputRule[];
+  /** Columns definition */
+  config:
+    | {
+        type: "inputs";
+        rows: UnitablesInputRows[];
+        inputs: UnitablesCell[];
+      }
+    | {
+        type: "outputs";
+        rows: UnitablesOutputRows[];
+        outputs?: UnitablesCell[];
+      };
   /** Callback to be called when columns is updated */
-  onColumnsUpdate: (columns: ReactTable.Column[]) => void;
+  onColumnsUpdate: (columns: ReactTable.ColumnInstance[]) => void;
   /** Callback to be called when row number is updated */
   onRowNumberUpdate?: (rowQtt: number, operation?: BeeTableOperation, updatedRowIndex?: number) => void;
 }
 
-export function BeeTableWrapper(props: BeeTableWrapperProps) {
+export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumberUpdate }: BeeTableWrapperProps) {
   const getColumnPrefix = useCallback((groupType?: string) => {
     switch (groupType) {
-      case DecisionTableColumnType.InputClause:
+      case UnitablesBeeTableWrapperColumnType.InputClause:
         return "input-";
-      case DecisionTableColumnType.OutputClause:
+      case UnitablesBeeTableWrapperColumnType.OutputClause:
         return "output-";
       default:
         return "column-";
@@ -74,156 +80,143 @@ export function BeeTableWrapper(props: BeeTableWrapperProps) {
   const beeTableOperationGroup = useMemo(
     () => [
       {
-        group: props.i18n.decisionRule,
+        group: i18n.decisionRule,
         items: [
-          { name: props.i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
-          { name: props.i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
-          { name: props.i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
-          { name: props.i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
-          { name: props.i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
+          { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
+          { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+          { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
         ],
       },
     ],
-    [props.i18n]
+    [i18n]
   );
 
   const beeTableOperationConfig = useMemo(() => {
     const configuration: { [columnGroupType: string]: BeeTableOperationHandlerGroup[] } = {};
     configuration[EMPTY_SYMBOL] = beeTableOperationGroup;
-    configuration[DecisionTableColumnType.InputClause] = beeTableOperationGroup;
-    configuration[DecisionTableColumnType.OutputClause] = beeTableOperationGroup;
+    configuration[UnitablesBeeTableWrapperColumnType.InputClause] = beeTableOperationGroup;
+    configuration[UnitablesBeeTableWrapperColumnType.OutputClause] = beeTableOperationGroup;
     return configuration;
   }, [beeTableOperationGroup]);
 
   const editColumnLabel = useMemo(() => {
     const editColumnLabel: { [columnGroupType: string]: string } = {};
-    editColumnLabel[DecisionTableColumnType.InputClause] = props.i18n.editClause.input;
-    editColumnLabel[DecisionTableColumnType.OutputClause] = props.i18n.editClause.output;
+    editColumnLabel[UnitablesBeeTableWrapperColumnType.InputClause] = i18n.editClause.input;
+    editColumnLabel[UnitablesBeeTableWrapperColumnType.OutputClause] = i18n.editClause.output;
     return editColumnLabel;
-  }, [props.i18n]);
+  }, [i18n]);
 
-  const columns = useMemo(() => {
-    const inputSection = (props.input ?? []).map((inputClause, inputClauseIndex) => {
-      if (inputClause.insideProperties) {
-        const insideProperties = inputClause.insideProperties.map((insideInputClauses, insideInputClausesIndex) => {
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(() => {
+    if (config.type === "inputs") {
+      return config.inputs.map((inputRow) => {
+        if (inputRow.insideProperties) {
+          const insideProperties = inputRow.insideProperties.map((insideInputClauses) => {
+            return {
+              label: insideInputClauses.name,
+              accessor: `input-${insideInputClauses.name}`,
+              dataType: insideInputClauses.dataType,
+              width: insideInputClauses.width,
+              groupType: UnitablesBeeTableWrapperColumnType.InputClause,
+              cellDelegate: insideInputClauses.cellDelegate,
+            };
+          });
           return {
-            label: `${insideInputClauses.name}-${inputClauseIndex}-${insideInputClausesIndex}`,
-            accessor: `input-${insideInputClauses.name}-${inputClauseIndex}-${insideInputClausesIndex}`,
-            dataType: insideInputClauses.dataType,
-            width: insideInputClauses.width,
-            groupType: DecisionTableColumnType.InputClause,
-            cellDelegate: insideInputClauses.cellDelegate,
+            groupType: UnitablesBeeTableWrapperColumnType.InputClause,
+            label: inputRow.name,
+            accessor: `input-${inputRow.name}`,
+            dataType: inputRow.dataType,
+            width: inputRow.width,
+            cssClasses: "decision-table--input",
+            columns: insideProperties,
+            appendColumnsOnChildren: true,
           };
-        });
+        }
         return {
-          groupType: DecisionTableColumnType.InputClause,
-          label: inputClause.name,
-          accessor: `input-${inputClause.name}-${inputClauseIndex}`,
-          dataType: inputClause.dataType,
-          width: inputClause.width,
+          groupType: UnitablesBeeTableWrapperColumnType.InputClause,
+          label: inputRow.name,
+          accessor: `input-${inputRow.name}`,
+          dataType: inputRow.dataType,
+          width: inputRow.width,
           cssClasses: "decision-table--input",
-          columns: insideProperties,
           appendColumnsOnChildren: true,
+          cellDelegate: inputRow.cellDelegate,
         };
-      }
-      return {
-        groupType: DecisionTableColumnType.InputClause,
-        label: inputClause.name,
-        accessor: `input-${inputClause.name}-${inputClauseIndex}`,
-        dataType: inputClause.dataType,
-        width: inputClause.width,
-        cssClasses: "decision-table--input",
-        appendColumnsOnChildren: true,
-        cellDelegate: inputClause.cellDelegate,
-      };
-    });
-
-    let outputSection = undefined;
-    if (props.output !== undefined) {
-      outputSection = ((props.rules as BoxedExpressionOutputRule[])?.[0]?.outputEntries ?? []).map(
-        (outputEntry, outputIndex) => {
-          if (Array.isArray(outputEntry)) {
-            return outputEntry.map((entry, entryIndex) => {
-              const columns = Object.keys(entry).map((keys) => {
+      }) as any;
+    } else if (config.type === "outputs") {
+      const outputColumns = (config.rows?.[0]?.outputEntries ?? []).map((outputEntry, outputIndex) => {
+        if (Array.isArray(outputEntry)) {
+          return outputEntry.map((entry, entryIndex) => {
+            return {
+              groupType: UnitablesBeeTableWrapperColumnType.OutputClause,
+              label: `${config.outputs?.[outputIndex]?.name}[${entryIndex}]`,
+              accessor: `output-${config.outputs?.[outputIndex]?.name}[${entryIndex}]`,
+              cssClasses: "decision-table--output",
+              columns: Object.keys(entry).map((keys) => {
                 return {
-                  groupType: DecisionTableColumnType.OutputClause,
+                  groupType: UnitablesBeeTableWrapperColumnType.OutputClause,
                   label: `${keys}`,
                   accessor: `output-${keys}-${entryIndex}`,
                   cssClasses: "decision-table--output",
-                } as ReactTable.ColumnInstance;
-              });
-              return {
-                groupType: DecisionTableColumnType.OutputClause,
-                label: `${props.output?.[outputIndex]?.name}[${entryIndex}]`,
-                accessor: `output-${props.output?.[outputIndex]?.name}[${entryIndex}]`,
-                cssClasses: "decision-table--output",
-                columns: columns,
-                appendColumnsOnChildren: true,
-                dataType: props.output?.[outputIndex]?.dataType,
-              } as ReactTable.ColumnInstance;
+                };
+              }),
+              appendColumnsOnChildren: true,
+              dataType: config.outputs?.[outputIndex]?.dataType,
+            };
+          });
+        }
+        if (outputEntry !== null && typeof outputEntry === "object") {
+          const columns = Object.keys(outputEntry).map((entryKey) => {
+            const filteredOutputs = config.outputs?.[outputIndex]?.insideProperties?.find((property) => {
+              return Object.values(property).find((value) => value === entryKey);
             });
-          }
-          if (outputEntry !== null && typeof outputEntry === "object") {
-            const columns = Object.keys(outputEntry).map((entryKey) => {
-              const output = props.output?.[outputIndex]?.insideProperties?.find((property) => {
-                return Object.values(property).find((value) => {
-                  return value === entryKey;
-                });
-              });
-              return {
-                groupType: DecisionTableColumnType.OutputClause,
-                label: entryKey,
-                width: output?.width ?? CELL_MINIMUM_WIDTH,
-                accessor: `output-${entryKey}`,
-                cssClasses: "decision-table--output",
-              } as ReactTable.ColumnInstance;
-            });
-            const width =
-              columns.reduce((acc, column) => acc + (column.width as number), 0) + 2.22 * (columns.length - 1);
-            return [
-              {
-                groupType: DecisionTableColumnType.OutputClause,
-                label: props.output?.[outputIndex]?.name,
-                accessor: `output-${props.output?.[outputIndex]?.name}`,
-                cssClasses: "decision-table--output",
-                columns: columns,
-                width,
-                appendColumnsOnChildren: true,
-                dataType: props.output?.[outputIndex]?.dataType,
-              } as ReactTable.ColumnInstance,
-            ];
-          }
+            return {
+              groupType: UnitablesBeeTableWrapperColumnType.OutputClause,
+              label: entryKey,
+              width: filteredOutputs?.width ?? CELL_MINIMUM_WIDTH,
+              accessor: `output-${entryKey}`,
+              cssClasses: "decision-table--output",
+            };
+          });
+
+          // FIXME: Tiago -> Magic number '2.22'. What does it mean?
+          const width = columns.reduce((acc, column) => acc + column.width, 0) + 2.22 * (columns.length - 1);
+
           return [
             {
-              groupType: DecisionTableColumnType.OutputClause,
-              label: props.output?.[outputIndex]?.name,
-              accessor: `output-${props.output?.[outputIndex]?.name}`,
-              dataType: props.output?.[outputIndex]?.dataType,
-              width: props.output?.[outputIndex]?.width,
+              groupType: UnitablesBeeTableWrapperColumnType.OutputClause,
+              label: config.outputs?.[outputIndex]?.name,
+              accessor: `output-${config.outputs?.[outputIndex]?.name}`,
               cssClasses: "decision-table--output",
+              columns,
+              width,
               appendColumnsOnChildren: true,
+              dataType: config.outputs?.[outputIndex]?.dataType,
             },
           ];
         }
-      );
+        return [
+          {
+            groupType: UnitablesBeeTableWrapperColumnType.OutputClause,
+            label: config.outputs?.[outputIndex]?.name,
+            accessor: `output-${config.outputs?.[outputIndex]?.name}`,
+            dataType: config.outputs?.[outputIndex]?.dataType,
+            width: config.outputs?.[outputIndex]?.width,
+            cssClasses: "decision-table--output",
+            appendColumnsOnChildren: true,
+          },
+        ];
+      });
+      return outputColumns.reduce((acc, outp) => [...acc, ...outp], []) as any;
     }
+  }, [config]);
 
-    const updatedColumns: ReactTable.ColumnInstance[] = [];
-    if (inputSection) {
-      updatedColumns.push(...(inputSection as any));
-    }
-    if (outputSection) {
-      const flattenOutput = outputSection.reduce((acc, outp) => [...acc, ...outp], []);
-      updatedColumns.push(...(flattenOutput as any));
-    }
-    return updatedColumns;
-  }, [props.input, props.output, props.rules]);
-
-  const rows = useMemo(() => {
-    return (props.rules ?? []).map((rule) => {
+  const beeTableRows = useMemo(() => {
+    return config.rows.map((row) => {
       const rowArray = [
-        ...((rule as UnitablesInputRule)?.inputEntries ?? []),
-        ...((rule as BoxedExpressionOutputRule)?.outputEntries ?? []),
+        ...((row as UnitablesInputRows)?.inputEntries ?? []),
+        ...((row as UnitablesOutputRows)?.outputEntries ?? []),
       ].reduce((acc, entry) => {
         if (Array.isArray(entry)) {
           return [
@@ -238,41 +231,41 @@ export function BeeTableWrapper(props: BeeTableWrapperProps) {
         }
         return [...acc, entry];
       }, []);
-      return getColumnsAtLastLevel(columns).reduce((tableRow: any, column, columnIndex: number) => {
+      return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: any, column, columnIndex: number) => {
         tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;
-        tableRow.rowDelegate = (rule as UnitablesInputRule)?.rowDelegate;
+        tableRow.rowDelegate = (row as UnitablesInputRows)?.rowDelegate;
         return tableRow;
       }, {});
     });
-  }, [props.rules, columns]);
+  }, [config, beeTableColumns]);
 
   const onRowsUpdate = useCallback(
     ({ rows, operation, rowIndex }: BeeTableRowsUpdateArgs) => {
       const newRows = rows.map((row: any) =>
-        getColumnsAtLastLevel(columns).reduce((filledRow: DataRecord, column) => {
+        getColumnsAtLastLevel(beeTableColumns).reduce((filledRow: DataRecord, column) => {
           if (row.rowDelegate) {
             filledRow[column.accessor] = row[column.accessor];
             filledRow.rowDelegate = row.rowDelegate;
           } else if (row[column.accessor] === null || row[column.accessor] === undefined) {
             filledRow[column.accessor] =
-              column.groupType === DecisionTableColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
+              column.groupType === UnitablesBeeTableWrapperColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
           } else {
             filledRow[column.accessor] = row[column.accessor];
           }
           return filledRow;
         }, {})
       );
-      props.onRowNumberUpdate?.(newRows.length, operation, rowIndex);
+      onRowNumberUpdate?.(newRows.length, operation, rowIndex);
     },
-    [props.onRowNumberUpdate, columns]
+    [onRowNumberUpdate, beeTableColumns]
   );
 
   const onRowAdding = useCallback(() => {
-    return getColumnsAtLastLevel(columns).reduce((tableRow: DataRecord, column) => {
+    return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: DataRecord, column) => {
       tableRow[column.accessor] = EMPTY_SYMBOL;
       return tableRow;
     }, {} as DataRecord);
-  }, [columns]);
+  }, [beeTableColumns]);
 
   const searchRecursively = useCallback((child: any) => {
     if (!child) {
@@ -298,20 +291,20 @@ export function BeeTableWrapper(props: BeeTableWrapperProps) {
     inputsCells.forEach((inputCell) => {
       searchRecursively(inputCell.childNodes[0]);
     });
-  }, [columns, searchRecursively]);
+  }, [beeTableColumns, searchRecursively]);
 
-  const onColumnsUpdate = useCallback(
+  const onBeeTableColumnsUpdate = useCallback(
     ({ columns }: BeeTableColumnsUpdateArgs) => {
-      props.onColumnsUpdate(columns);
+      onColumnsUpdate(columns);
     },
-    [props.onColumnsUpdate]
+    [onColumnsUpdate]
   );
 
   return (
     <div className="expression-container">
       <div className="expression-name-and-logic-type" />
       <div className="expression-container-box" data-ouia-component-id="expression-container">
-        <div className={`custom-table ${props.id}`}>
+        <div className={`custom-table ${id}`}>
           <div className={`logic-type-selector logic-type-selected`}>
             <BeeTable
               editableHeader={false}
@@ -320,9 +313,9 @@ export function BeeTableWrapper(props: BeeTableWrapperProps) {
               getColumnPrefix={getColumnPrefix}
               editColumnLabel={editColumnLabel}
               operationHandlerConfig={beeTableOperationConfig}
-              columns={columns}
-              rows={rows}
-              onColumnsUpdate={onColumnsUpdate}
+              columns={beeTableColumns}
+              rows={beeTableRows}
+              onColumnsUpdate={onBeeTableColumnsUpdate}
               onRowsUpdate={onRowsUpdate}
               onRowAdding={onRowAdding}
               readOnlyCells={true}

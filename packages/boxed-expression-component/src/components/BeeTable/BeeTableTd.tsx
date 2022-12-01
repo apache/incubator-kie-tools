@@ -16,18 +16,18 @@
 
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Td } from "@patternfly/react-table";
+import * as PfReactTable from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import * as ReactTable from "react-table";
 import { BeeTableColumn, BeeTableCellComponent } from "../../api";
 
 export interface BeeTableTdProps extends BeeTableCellComponent {
   cell: ReactTable.Cell;
-  getColumnKey: (column: ReactTable.Column) => string;
+  getColumnKey: (column: ReactTable.ColumnInstance) => string;
   isInForm: boolean;
-  onColumnsUpdate: (columns: ReactTable.Column[]) => void;
+  onColumnsUpdate: (columns: ReactTable.ColumnInstance[]) => void;
   reactTableInstance: ReactTable.TableInstance;
-  tdProps: (cellIndex: number, rowIndex: number) => any;
+  getTdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
 
 export function BeeTableTd({
@@ -39,13 +39,14 @@ export function BeeTableTd({
   reactTableInstance,
   getColumnKey,
   onColumnsUpdate,
-  tdProps,
+  getTdProps,
   yPosition,
 }: BeeTableTdProps) {
   let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
+  // FIXME: Tiago -> Bad typing.
   const column = reactTableInstance.allColumns[cellIndex] as unknown as BeeTableColumn;
   const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
-  const tdRef = useRef<HTMLElement>(null);
+  const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
     const onKeyDownForIndex = onKeyDown();
@@ -69,6 +70,7 @@ export function BeeTableTd({
     ) : (
       <Resizer width={width} onHorizontalResizeStop={onResize}>
         <>
+          {/* FIXME: Tiago -> Bad typing. */}
           {isInForm && typeof (cell.column as any)?.cellDelegate === "function"
             ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
             : cell.render("Cell")}
@@ -81,8 +83,8 @@ export function BeeTableTd({
   }
 
   return (
-    <Td
-      {...tdProps(cellIndex, rowIndex)}
+    <PfReactTable.Td
+      {...getTdProps(cellIndex, rowIndex)}
       ref={tdRef}
       tabIndex={-1}
       key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
@@ -92,6 +94,6 @@ export function BeeTableTd({
       data-yposition={yPosition ?? rowIndex}
     >
       {cellContent}
-    </Td>
+    </PfReactTable.Td>
   );
 }

@@ -29,7 +29,7 @@ import { DecisionResult } from "./DmnTypes";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { ErrorBoundary } from "@kie-tools/form";
 import { BeeTableWrapper } from "@kie-tools/unitables/dist/bee";
-import { BoxedExpressionOutputRule, UnitablesClause } from "@kie-tools/unitables";
+import { UnitablesOutputRows, UnitablesCell } from "@kie-tools/unitables";
 import { DmnUnitablesI18n } from "./i18n";
 
 interface Props {
@@ -71,6 +71,14 @@ export function DmnTableResults(props: Props) {
     [outputRules]
   );
 
+  const config = useMemo(() => {
+    return {
+      type: "outputs" as const,
+      rows: outputRules,
+      outputs,
+    };
+  }, [outputRules, outputs]);
+
   return (
     <>
       {outputError ? (
@@ -84,11 +92,9 @@ export function DmnTableResults(props: Props) {
             dataTypes={[]}
           >
             <BeeTableWrapper
-              name={"DMN Runner Output"}
               i18n={props.i18n}
               onColumnsUpdate={onOutputColumnsUpdate}
-              output={outputs as UnitablesClause[]}
-              rules={outputRules as BoxedExpressionOutputRule[]}
+              config={config}
               id={outputUid}
               onRowNumberUpdate={props.onRowNumberUpdate}
             />

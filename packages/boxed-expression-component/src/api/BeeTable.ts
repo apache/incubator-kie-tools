@@ -18,7 +18,7 @@ import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import * as React from "react";
 import * as ReactTable from "react-table";
 
-export interface BeeTableColumnsUpdateArgs<T = ReactTable.Column> {
+export interface BeeTableColumnsUpdateArgs<T = ReactTable.ColumnInstance> {
   columns: T[];
   operation?: BeeTableOperation;
   columnIndex?: number;
@@ -28,7 +28,7 @@ export interface BeeTableRowsUpdateArgs<T = ReactTable.DataRecord> {
   rows: T[];
   operation?: BeeTableOperation;
   rowIndex?: number;
-  columns?: ReactTable.Column[];
+  columns?: ReactTable.ColumnInstance[];
 }
 
 export interface BeeTableProps {
@@ -49,7 +49,7 @@ export interface BeeTableProps {
     [columnId: string]: React.FunctionComponent<BeeTableCell>;
   };
   /** Table's columns */
-  columns: ReactTable.Column[];
+  columns: ReactTable.ColumnInstance[];
   /** Table's cells */
   rows: ReactTable.DataRecord[];
   /** Function to be executed when columns are modified */
@@ -69,7 +69,7 @@ export interface BeeTableProps {
   /** Custom function for getting row key prop, and avoid using the row index */
   getRowKey?: (row: ReactTable.Row) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
-  getColumnKey?: (column: ReactTable.Column) => string;
+  getColumnKey?: (column: ReactTable.ColumnInstance) => string;
   /** Custom function called for manually resetting a row */
   resetRowCustomFunction?: (row: ReactTable.DataRecord) => ReactTable.DataRecord;
   /** Disable/Enable cell edits. Enabled by default */

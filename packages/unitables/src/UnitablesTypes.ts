@@ -17,7 +17,7 @@
 import * as React from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
-export interface UnitablesClause {
+export interface UnitablesCell {
   /** Clause name */
   name: string;
   /** Clause data type */
@@ -30,14 +30,14 @@ export interface UnitablesClause {
   insideProperties?: any[];
 }
 
-export interface UnitablesInputRule {
+export interface UnitablesInputRows {
   /** Values for the input columns */
   inputEntries: string[];
   /** Responsible to control a row */
   rowDelegate?: React.FunctionComponent;
 }
 
-export interface BoxedExpressionOutputRule {
+export interface UnitablesOutputRows {
   /** Values for the output columns */
   outputEntries: string[];
 }

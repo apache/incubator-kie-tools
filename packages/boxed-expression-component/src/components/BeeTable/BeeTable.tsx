@@ -18,7 +18,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
-import { TableComposable } from "@patternfly/react-table";
+import * as PfReactTable from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, BeeTableHeaderVisibility, BeeTableOperation, BeeTableProps } from "../../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -51,7 +51,7 @@ const NUMBER_OF_ROWS_SUBCOLUMN = "0";
 export const DEFAULT_ON_ROW_ADDING = () => ({});
 
 export const getColumnsAtLastLevel: (
-  columns: ReactTable.ColumnInstance[] | ReactTable.Column[],
+  columns: ReactTable.ColumnInstance[],
   depth?: number
 ) => ReactTable.ColumnInstance[] = (columns, depth = 0) =>
   _.flatMap(columns, (column: ReactTable.ColumnInstance) => {
@@ -175,7 +175,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
     );
 
   const generateNumberOfRowsColumn = useCallback(
-    (currentControllerCell: string | JSX.Element, columns: ReactTable.Column[]) => {
+    (currentControllerCell: string | JSX.Element, columns: ReactTable.ColumnInstance[]) => {
       const numberOfRowsColumn = {
         label: currentControllerCell,
         accessor: NUMBER_OF_ROWS_COLUMN,
@@ -254,7 +254,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
   ]);
 
   const onColumnsUpdateCallback = useCallback(
-    (columns: ReactTable.Column[], operation?: BeeTableOperation, columnIndex?: number) => {
+    (columns: ReactTable.ColumnInstance[], operation?: BeeTableOperation, columnIndex?: number) => {
       //Removing "# of rows" column
       onColumnsUpdate?.({ columns: columns.slice(1), operation, columnIndex: (columnIndex ?? 1) - 1 });
     },
@@ -327,7 +327,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
     [reactTableColumns]
   );
 
-  const thProps = useCallback(
+  const getThProps = useCallback(
     (column: ReactTable.ColumnInstance) => ({
       onContextMenu: (e: ReactTable.ContextMenuEvent) => {
         const columnIndex = _.findIndex(
@@ -346,7 +346,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
     [getColumnOperations, operationHandlerStateUpdate, contextMenuIsAvailable, reactTableColumns]
   );
 
-  const defaultColumn: Partial<ReactTable.Column> = useMemo(
+  const defaultColumn: Partial<ReactTable.ColumnInstance> = useMemo(
     () => ({
       Cell: (cellProps) => {
         if (cellProps.column.isCountColumn) {
@@ -488,7 +488,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
 
   return (
     <div className={`table-component ${tableId} ${tableEventUUID}`}>
-      <TableComposable
+      <PfReactTable.TableComposable
         {...reactTableInstance.getTableProps()}
         variant="compact"
         ref={tableComposableRef}
@@ -504,7 +504,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
           skipLastHeaderGroup={skipLastHeaderGroup}
           tableColumns={reactTableColumns}
           reactTableInstance={reactTableInstance}
-          thProps={thProps}
+          getThProps={getThProps}
         />
         <BeeTableBody
           getColumnKey={onGetColumnKey}
@@ -518,7 +518,7 @@ export const BeeTable: React.FunctionComponent<BeeTableProps> = ({
         >
           {children}
         </BeeTableBody>
-      </TableComposable>
+      </PfReactTable.TableComposable>
       {showTableOperationHandler && operationHandlerConfig && (
         <BeeTableOperationHandler
           tableColumns={reactTableColumns}

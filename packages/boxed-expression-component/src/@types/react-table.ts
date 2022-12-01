@@ -52,7 +52,7 @@ declare module "react-table" {
     /** Column additive css classes - appended as passed */
     cssClasses?: string;
     /** Column label */
-    label: string | JSX.Element;
+    label: string;
     /** Custom Element to be rendered in place of the column label */
     headerCellElement?: JSX.Element;
     /** It makes this column header inline editable (with double-click) */
@@ -65,6 +65,10 @@ declare module "react-table" {
     isCountColumn: boolean;
     /** Disabling table handler on the header of this column */
     disableHandlerOnHeader?: boolean;
+
+    // FIXME: Tiago
+    width: number;
+    columns?: ColumnInstance[];
   }
 
   export interface DataRecord extends Record<string, unknown> {

@@ -104,7 +104,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [beeGwtService, relationProps, columns, rows]
   );
 
-  const convertColumnsForTheTable = useMemo(
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
     () =>
       columns.map(
         (column: RelationColumn) =>
@@ -113,20 +113,20 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
             label: column.name,
             dataType: column.dataType,
             ...(column.width ? { width: column.width } : {}),
-          } as ReactTable.Column)
+          } as ReactTable.ColumnInstance)
       ),
     [columns]
   );
 
-  const convertRowsForTheTable = useMemo(
+  const beeTableRows = useMemo(
     () =>
       _.chain(rows)
         .map((row) => {
           const updatedRow = _.chain(columns)
-            .reduce((tableRow: ReactTable.DataRecord, column, columnIndex) => {
+            .reduce((tableRow, column, columnIndex) => {
               tableRow[column.id] = row.cells[columnIndex] || "";
               return tableRow;
-            }, {})
+            }, {} as ReactTable.DataRecord)
             .value();
           updatedRow.id = row.id;
           return updatedRow;
@@ -190,8 +190,8 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     <div className="relation-expression">
       <BeeTable
         editColumnLabel={i18n.editRelation}
-        columns={convertColumnsForTheTable}
-        rows={convertRowsForTheTable}
+        columns={beeTableColumns}
+        rows={beeTableRows}
         onColumnsUpdate={onColumnsUpdate}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}

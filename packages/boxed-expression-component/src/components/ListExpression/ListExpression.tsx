@@ -78,7 +78,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     ]
   );
 
-  const items = useMemo(() => {
+  const beeTableRows = useMemo(() => {
     if (listExpression.items === undefined || listExpression.items?.length === 0) {
       return [{ entryExpression: generateLiteralExpression() }];
     } else {
@@ -97,7 +97,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         ...updatedListExpression,
       };
 
-      updatedDefinition.items = (updatedListExpression?.items ? updatedListExpression.items : items).map(
+      updatedDefinition.items = (updatedListExpression?.items ? updatedListExpression.items : beeTableRows).map(
         (listItem: ReactTable.DataRecord) => listItem.entryExpression as ExpressionDefinition
       );
 
@@ -115,7 +115,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         ["width", "items"]
       );
     },
-    [beeGwtService, listExpression, items, setSupervisorHash]
+    [beeGwtService, listExpression, beeTableRows, setSupervisorHash]
   );
 
   const setListWidth = useCallback(
@@ -125,8 +125,14 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [spreadListExpressionDefinition]
   );
 
-  const columns = useMemo(
-    () => [{ accessor: "list", width: listExpression.width ?? LIST_EXPRESSION_MIN_WIDTH, setWidth: setListWidth }],
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
+    () => [
+      {
+        accessor: "list",
+        width: listExpression.width ?? LIST_EXPRESSION_MIN_WIDTH,
+        setWidth: setListWidth,
+      } as any, // FIXME: Tiago -> Remove this!!,
+    ],
     [listExpression.width, setListWidth]
   );
 
@@ -170,8 +176,8 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         tableId={listExpression.id}
         headerVisibility={BeeTableHeaderVisibility.None}
         defaultCellByColumnId={defaultCellByColumnName}
-        columns={columns}
-        rows={items as ReactTable.DataRecord[]}
+        columns={beeTableColumns}
+        rows={beeTableRows}
         onRowsUpdate={onRowsUpdate}
         onRowAdding={onRowAdding}
         operationHandlerConfig={operationHandlerConfig}

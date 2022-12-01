@@ -29,7 +29,7 @@ export interface BeeTableOperationHandlerProps {
   /** Gets the prefix to be used for the next column name */
   getColumnPrefix: (groupType?: string) => string;
   /** Columns instance */
-  tableColumns: ReactTable.Column[];
+  tableColumns: ReactTable.ColumnInstance[];
   /** Last selected column */
   lastSelectedColumn: ReactTable.ColumnInstance;
   /** Last selected row index */
@@ -53,7 +53,7 @@ export interface BeeTableOperationHandlerProps {
   /** Custom function called for manually resetting a row */
   resetRowCustomFunction?: (row: ReactTable.DataRecord) => ReactTable.DataRecord;
   /** Function to be executed when columns are modified */
-  onColumnsUpdate: (columns: ReactTable.Column[], operation?: BeeTableOperation, columnIndex?: number) => void;
+  onColumnsUpdate: (columns: ReactTable.ColumnInstance[], operation?: BeeTableOperation, columnIndex?: number) => void;
 }
 
 export const BeeTableOperationHandler: React.FunctionComponent<BeeTableOperationHandlerProps> = ({
@@ -85,6 +85,7 @@ export const BeeTableOperationHandler: React.FunctionComponent<BeeTableOperation
     setSelectedRowIndex(lastSelectedRowIndex);
   }, [lastSelectedRowIndex]);
 
+  // FIXME: Tiago -> Bad typing.
   const withDefaultValues = <T extends unknown>(element: T) => ({
     width: DEFAULT_MIN_WIDTH,
     ...(element as any),
@@ -128,7 +129,7 @@ export const BeeTableOperationHandler: React.FunctionComponent<BeeTableOperation
     [getColumnPrefix, tableColumns]
   );
 
-  const getLengthOfColumnsByGroupType = useCallback((columns: ReactTable.Column[], groupType: string) => {
+  const getLengthOfColumnsByGroupType = useCallback((columns: ReactTable.ColumnInstance[], groupType: string) => {
     const columnsByGroupType = _.groupBy(columns, (column: ReactTable.ColumnInstance) => column.groupType);
     return columnsByGroupType[groupType]?.length;
   }, []);
@@ -152,7 +153,7 @@ export const BeeTableOperationHandler: React.FunctionComponent<BeeTableOperation
 
   /** These column operations have impact also on the collection of cells */
   const updateColumnsThenRows = useCallback(
-    (operation?: BeeTableOperation, columnIndex?: number, updatedColumns?: any) => {
+    (operation?: BeeTableOperation, columnIndex?: number, updatedColumns?: ReactTable.ColumnInstance[]) => {
       if (updatedColumns) {
         onColumnsUpdate([...updatedColumns], operation, columnIndex);
       } else {

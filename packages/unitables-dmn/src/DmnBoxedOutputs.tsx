@@ -19,7 +19,7 @@ import { useCallback, useMemo } from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as ReactTable from "react-table";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
-import { BoxedExpressionOutputRule } from "@kie-tools/unitables/dist/UnitablesBoxedTypes";
+import { UnitablesOutputRows } from "@kie-tools/unitables/dist/UnitablesTypes";
 import { DecisionResult, DmnSchemaProperties, Result } from "./DmnTypes";
 import { CELL_MINIMUM_WIDTH } from "@kie-tools/unitables/dist/bee";
 
@@ -134,7 +134,7 @@ export function useDmnBoxedOutputs(
   const { outputs, outputRules } = useMemo(() => {
     const decisionResults = results?.filter((result) => result !== undefined);
     if (jsonSchemaBridge === undefined || decisionResults === undefined) {
-      return { outputs: [] as OutputFields[], outputRules: [] as BoxedExpressionOutputRule[] };
+      return { outputs: [] as OutputFields[], outputRules: [] as UnitablesOutputRows[] };
     }
 
     // generate a map that contains output types
@@ -226,7 +226,7 @@ export function useDmnBoxedOutputs(
       return acc;
     }, []);
 
-    const outputRules: BoxedExpressionOutputRule[] = Array.from(Array(rowCount)).map((e, i) => ({
+    const outputRules: UnitablesOutputRows[] = Array.from(Array(rowCount)).map((e, i) => ({
       outputEntries: (outputEntries?.[i] as string[]) ?? [],
     }));
 

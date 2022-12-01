@@ -185,7 +185,6 @@ export function DmnRunnerTable(props: Props) {
                 >
                   <Unitables
                     ref={unitablesRef}
-                    name={`DMN Runner Table - ${props.workspaceFile.relativePath}`}
                     i18n={i18n.dmnRunner.table}
                     jsonSchema={dmnRunnerState.jsonSchema}
                     rowCount={rowCount}

@@ -191,7 +191,7 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
           }
         />
       ),
-      [i18n.selectLogicType, getArrowPlacement, getAppendToPlacement, onLogicTypeSelect, renderLogicTypeItems]
+      [i18n, getArrowPlacement, getAppendToPlacement, onLogicTypeSelect, renderLogicTypeItems]
     );
 
     const executeClearAction = useCallback(() => {

@@ -34,6 +34,7 @@ import {
   resetEntry,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
+  ExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -54,7 +55,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setSupervisorHash, beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
 
-  const rows = useMemo(
+  const beeTableRows = useMemo(
     () =>
       contextExpression.contextEntries ?? [
         {
@@ -80,7 +81,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         logicType: ExpressionDefinitionLogicType.Context,
         name: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
         dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
-        contextEntries: rows as ContextExpressionDefinitionEntry[],
+        contextEntries: beeTableRows as ContextExpressionDefinitionEntry[],
         result: contextExpression.result,
         entryInfoWidth: contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
         entryExpressionWidth: contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
@@ -105,7 +106,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         ["name", "dataType", "contextEntries", "result", "entryInfoWidth", "entryExpressionWidth"]
       );
     },
-    [beeGwtService, contextExpression, setSupervisorHash, rows]
+    [beeGwtService, contextExpression, setSupervisorHash, beeTableRows]
   );
 
   const setInfoWidth = useCallback(
@@ -122,7 +123,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [spreadContextExpressionDefinition]
   );
 
-  const columns = useMemo(
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
     () => [
       {
         label: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
@@ -145,7 +146,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
           },
         ],
-      },
+      } as any, // FIXME: Tiago -> Remove this!!,
     ],
     [
       contextExpression.name,
@@ -181,7 +182,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const onRowAdding = useCallback(() => {
     const generatedName = generateNextAvailableEntryName(
-      _.map(rows, (row: ContextExpressionDefinitionEntry) => row.entryInfo),
+      _.map(beeTableRows, (row: ContextExpressionDefinitionEntry) => row.entryInfo),
       "ContextEntry"
     );
     return {
@@ -197,7 +198,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       editInfoPopoverLabel: i18n.editContextEntry,
       nameAndDataTypeSynchronized: true,
     };
-  }, [i18n.editContextEntry, rows]);
+  }, [i18n, beeTableRows]);
 
   const onRowsUpdate = useCallback(
     ({ rows }: BeeTableRowsUpdateArgs<ContextExpressionDefinitionEntry>) => {
@@ -208,7 +209,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   // FIXME: Tiago
   const onUpdatingRecursiveExpression = useCallback(
-    (expression: any) => {
+    (expression: ExpressionDefinition) => {
       if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
         spreadContextExpressionDefinition({ result: { logicType: ExpressionDefinitionLogicType.Undefined } });
       } else {
@@ -228,7 +229,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       entryInfo: getContextEntryInfoCell(i18n.editContextEntry),
       entryExpression: ContextEntryExpressionCell,
     }),
-    [i18n.editContextEntry]
+    [i18n]
   );
 
   const operationHandlerConfig = useMemo(
@@ -261,8 +262,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         headerLevels={1}
         headerVisibility={getHeaderVisibility}
         defaultCellByColumnId={defaultByColumnNameCell}
-        columns={columns}
-        rows={rows}
+        columns={beeTableColumns}
+        rows={beeTableRows}
         onColumnsUpdate={onColumnsUpdate}
         onRowAdding={onRowAdding}
         onRowsUpdate={onRowsUpdate}

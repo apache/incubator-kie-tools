@@ -16,17 +16,17 @@
 
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Th } from "@patternfly/react-table";
+import * as PfReactTable from "@patternfly/react-table";
 import { BeeTableCellComponent } from "../../api";
 
 export interface BeeTableThProps extends BeeTableCellComponent {
   children?: React.ReactElement;
   className: string;
-  headerProps: any;
+  headerProps: Partial<PfReactTable.ThProps>;
   isFocusable: boolean;
   onClick?: () => void;
   rowSpan: number;
-  thProps?: any;
+  thProps?: Partial<PfReactTable.ThProps>;
 }
 
 export function BeeTableTh({
@@ -42,7 +42,7 @@ export function BeeTableTh({
   xPosition,
   yPosition,
 }: BeeTableThProps) {
-  const thRef = useRef<HTMLElement>(null);
+  const thRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
     const onKeyDownForIndex = onKeyDown(rowSpan);
@@ -54,17 +54,17 @@ export function BeeTableTh({
   }, [onKeyDown, rowIndex, rowSpan]);
 
   return (
-    <Th
+    <PfReactTable.Th
       {...headerProps}
       {...thProps}
       ref={thRef}
       onClick={onClick}
       className={className}
-      tabIndex={isFocusable ? "-1" : undefined}
+      tabIndex={isFocusable ? -1 : undefined}
       data-xposition={xPosition}
       data-yposition={yPosition}
     >
       {children}
-    </Th>
+    </PfReactTable.Th>
   );
 }

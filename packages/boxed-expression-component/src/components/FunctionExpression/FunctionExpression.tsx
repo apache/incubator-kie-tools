@@ -126,7 +126,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         } as LiteralExpressionDefinition,
       },
     ];
-  }, [i18n.class, i18n.methodSignature, javaClassName, javaClassFieldId, javaMethodName, javaMethodFieldId]);
+  }, [i18n, javaClassName, javaClassFieldId, javaMethodName, javaMethodFieldId]);
 
   const extractContextEntriesFromPmmlProps = useMemo(() => {
     return [
@@ -387,7 +387,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [editParametersPopoverAppendTo, i18n.editParameters, functionExpression.formalParameters, setParameters]
   );
 
-  const columns = useMemo(() => {
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(() => {
     return [
       {
         label: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
@@ -458,7 +458,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         items: [{ name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear }],
       },
     ];
-  }, [i18n.function, i18n.rowOperations.clear]);
+  }, [i18n]);
 
   const defaultCellByColumnName = useMemo(
     () => ({
@@ -500,7 +500,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [spreadFunctionExpressionDefinition, functionExpression.functionKind]
   );
 
-  const tableRows = useMemo(() => [rows(functionExpression.functionKind)], [rows, functionExpression.functionKind]);
+  const beeTableRows = useMemo(() => [rows(functionExpression.functionKind)], [rows, functionExpression.functionKind]);
 
   const controllerCell = useMemo(
     () => (
@@ -516,9 +516,9 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     <div className={`function-expression ${functionExpression.id}`}>
       <BeeTable
         operationHandlerConfig={operationHandlerConfig}
-        columns={columns}
         onColumnsUpdate={onColumnsUpdate}
-        rows={tableRows}
+        columns={beeTableColumns}
+        rows={beeTableRows}
         onRowsUpdate={onRowsUpdate}
         headerLevels={1}
         headerVisibility={getHeaderVisibility}
