@@ -55,8 +55,8 @@ export function getColumnsAtLastLevel<R extends object>(
   depth: number = 0
 ): ReactTable.ColumnInstance<R>[] {
   return _.flatMap(columns, (column) => {
-    if (_.has(column, "columns")) {
-      return depth > 0 ? getColumnsAtLastLevel(column.columns!, depth - 1) : column.columns;
+    if (column.columns) {
+      return depth > 0 ? getColumnsAtLastLevel(column.columns, depth - 1) : column.columns;
     }
     return column;
   }) as ReactTable.ColumnInstance<R>[];
@@ -195,6 +195,7 @@ export function BeeTable<R extends object>({
 
   const rowsWithId = useCallback<<R extends object>(rows: R[]) => R[]>((rows) => {
     return rows.map((row) => {
+      // FIXME: Tiago -> Bad typing.
       if (_.isEmpty((row as any).id)) {
         (row as any).id ||= generateUuid();
       }
@@ -229,14 +230,17 @@ export function BeeTable<R extends object>({
       }
 
       const { pasteValue, x, y } = event.detail;
-      const rowFactory = onNewRow;
+
+      // FIXME: Tiago: Not good, as {} doesn't conform to R.
+      const rowFactory = onNewRow ?? ((() => ({})) as any);
 
       const isLockedTable = _.some(tableRowsRef.current[0], (row) => {
+        // FIXME: Tiago -> Logic specific to ExpressionDefinition.
         return (row as any)?.noClearAction;
       });
 
       if (DEFAULT_ON_ROW_ADDING !== rowFactory && !isLockedTable) {
-        const pastedRows = pasteOnTable(pasteValue, tableRowsRef.current, rowFactory ?? ((() => ({})) as any), x, y);
+        const pastedRows = pasteOnTable(pasteValue, tableRowsRef.current, rowFactory, x, y);
         tableRowsRef.current = pastedRows;
         onRowsUpdate?.({ rows: pastedRows, columns });
       }
@@ -398,7 +402,7 @@ export function BeeTable<R extends object>({
 
   const reactTableInstance = ReactTable.useTable<R>(
     {
-      columns: reactTableColumns as any, // FIXME: Tiago
+      columns: reactTableColumns as any, // FIXME: Tiago: ? :)
       data: rows,
       defaultColumn,
       onCellUpdate,

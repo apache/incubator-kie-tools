@@ -161,17 +161,17 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 
   const onColumnsUpdate = useCallback(
-    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance>) => {
+    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance<ROWGENERICTYPE>>) => {
       contextExpression.onUpdatingNameAndDataType?.(column.label as string, column.dataType);
-      const updatedWidth = column.columns?.reduce((acc, e) => {
-        if (e.id === "entryInfo") {
-          acc["entryInfoWidth"] = e.width;
+      const updatedWidth = column.columns?.reduce((acc, column) => {
+        if (column.id === "entryInfo") {
+          acc["entryInfoWidth"] = column.width;
         }
-        if (e.id === "entryExpression") {
-          acc["entryExpressionWidth"] = e.width;
+        if (column.id === "entryExpression") {
+          acc["entryExpressionWidth"] = column.width;
         }
         return acc;
-      }, {} as any);
+      }, {} as ContextExpressionDefinition);
       spreadContextExpressionDefinition({
         name: column.label as string,
         dataType: column.dataType,

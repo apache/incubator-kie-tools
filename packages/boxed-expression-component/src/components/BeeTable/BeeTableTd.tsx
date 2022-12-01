@@ -69,15 +69,14 @@ export function BeeTableTd<R extends object>({
     ) : (
       <Resizer width={width} onHorizontalResizeStop={onResize}>
         <>
-          {/* FIXME: Tiago -> Bad typing. */}
-          {shouldUseCellDelegate && typeof (cell.column as any)?.cellDelegate === "function"
-            ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
+          {shouldUseCellDelegate && cell.column?.cellDelegate
+            ? cell.column?.cellDelegate(`dmn-auto-form-${rowIndex}`)
             : cell.render("Cell")}
         </>
       </Resizer>
     );
 
-  if (typeof (cell.column as any)?.cellDelegate === "function") {
+  if (cell.column?.cellDelegate) {
     cellType += " input";
   }
 

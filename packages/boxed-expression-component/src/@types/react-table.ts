@@ -38,7 +38,7 @@ declare module "react-table" {
     onRowUpdate: (rowIndex: number, updatedRow: D) => void;
   }
 
-  export interface ColumnInstance {
+  export interface ColumnInstance<D extends object> {
     /** Used by react-table to hold the original id chosen for the column, independently from applied operations */
     originalId?: string;
     /** Column identifier */
@@ -66,5 +66,7 @@ declare module "react-table" {
     width: number;
     setWidth?: (width: number) => void;
     cellDelegate?: (id: string) => React.ReactNode;
+
+    placeholderOf?: ColumnInstance<D> | undefined;
   }
 }

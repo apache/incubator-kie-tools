@@ -79,12 +79,12 @@ export function BeeTableOperationHandler<R extends object>({
   const boxedExpressionEditor = useBoxedExpressionEditor();
 
   const [selectedColumn, setSelectedColumn] = useState<ReactTable.ColumnInstance<R> | undefined>(
-    (lastSelectedColumn?.placeholderOf ?? lastSelectedColumn) as any
+    lastSelectedColumn?.placeholderOf ?? lastSelectedColumn
   );
   const [selectedRowIndex, setSelectedRowIndex] = useState(lastSelectedRowIndex);
 
   useEffect(() => {
-    setSelectedColumn((lastSelectedColumn?.placeholderOf ?? lastSelectedColumn) as any);
+    setSelectedColumn(lastSelectedColumn?.placeholderOf ?? lastSelectedColumn);
   }, [lastSelectedColumn]);
 
   useEffect(() => {
@@ -122,6 +122,7 @@ export function BeeTableOperationHandler<R extends object>({
 
   const clearAt = <T extends unknown>(elements: T[], index: number) => [
     ...elements.slice(0, index),
+    // FIXME: Tiago -> Bad typing.
     resetRowCustomFunction(elements[index] as unknown as R),
     ...elements.slice(index + 1),
   ];

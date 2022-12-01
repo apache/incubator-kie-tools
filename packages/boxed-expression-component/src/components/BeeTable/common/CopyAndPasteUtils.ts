@@ -81,7 +81,7 @@ export function pasteOnTable<R extends object>(
 
   const updateStringValue = (rows: R[], row: number, colName: string, value: string) => {
     // FIXME: Tiago -> Bad typing.
-    (rows as any)[row][colName] = value;
+    (rows[row] as any)[colName] = value;
   };
 
   const updateObjectValue = (rows: R[], row: number, colName: string, value: string) => {
