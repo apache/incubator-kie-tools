@@ -310,8 +310,8 @@ export function BeeTable<R extends object>({
   const getColumnOperations = useCallback(
     (columnIndex: number) => {
       const columnsAtLastLevel = getColumnsAtLastLevel(reactTableColumns);
-      const groupTypeForCurrentColumn = (columnsAtLastLevel[columnIndex] as ReactTable.ColumnInstance)?.groupType;
-      const columnsByGroupType = _.groupBy(columnsAtLastLevel, (column: ReactTable.ColumnInstance) => column.groupType);
+      const groupTypeForCurrentColumn = columnsAtLastLevel[columnIndex]?.groupType;
+      const columnsByGroupType = _.groupBy(columnsAtLastLevel, (column) => column.groupType);
       const atLeastTwoColumnsOfTheSameGroupType = groupTypeForCurrentColumn
         ? columnsByGroupType[groupTypeForCurrentColumn].length > 1
         : reactTableColumns.length > 2; // The total number of columns is counting also the # of rows column

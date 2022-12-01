@@ -105,7 +105,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [beeGwtService, relationProps, columns, rows]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
     () =>
       columns.map(
         (column: RelationColumn) =>
@@ -114,7 +114,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
             label: column.name,
             dataType: column.dataType,
             ...(column.width ? { width: column.width } : {}),
-          } as ReactTable.ColumnInstance)
+          } as ReactTable.ColumnInstance<ROWGENERICTYPE>)
       ),
     [columns]
   );
@@ -140,13 +140,11 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     ({ rows, columns }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
       const newRows = _.chain(rows)
         .map((tableRow: ROWGENERICTYPE) => {
-          const cells = _.chain(columns)
-            .reduce((row: string[], column: ReactTable.ColumnInstance) => {
-              row.push((tableRow[column.accessor] as string) ?? "");
-              return row;
-            }, [])
-            .value();
-          return { id: tableRow.id as string, cells };
+          const cells = (columns ?? []).reduce((row: string[], column: ReactTable.ColumnInstance<ROWGENERICTYPE>) => {
+            row.push(tableRow[column.accessor] ?? "");
+            return row;
+          }, []);
+          return { id: tableRow.id, cells };
         })
         .value();
       spreadRelationExpressionDefinition(undefined, newRows);
@@ -156,9 +154,9 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
 
   const onColumnsUpdate = useCallback(
     ({ columns, operation, columnIndex }) => {
-      const newColumns = columns.map((columnInstance: ReactTable.ColumnInstance) => ({
+      const newColumns = columns.map((columnInstance: ReactTable.ColumnInstance<ROWGENERICTYPE>) => ({
         id: columnInstance.accessor,
-        name: columnInstance.label as string,
+        name: columnInstance.label,
         dataType: columnInstance.dataType,
         width: columnInstance.width,
       }));

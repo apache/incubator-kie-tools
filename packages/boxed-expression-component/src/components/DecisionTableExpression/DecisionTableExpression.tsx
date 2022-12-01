@@ -54,7 +54,7 @@ const DECISION_NODE_DEFAULT_NAME = "output-1";
 
 interface SpreadFunction {
   updatedDecisionTable?: Partial<DecisionTableExpressionDefinition>;
-  updatedColumns?: ReactTable.ColumnInstance[];
+  updatedColumns?: ReactTable.ColumnInstance<ROWGENERICTYPE>[];
   updatedRows?: Array<object>;
 }
 
@@ -115,7 +115,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     return editColumnLabel;
   }, [i18n]);
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(() => {
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(() => {
     const inputColumns = _.chain(decisionTable.input ?? [{ name: "input-1", dataType: DmnBuiltInDataType.Undefined }])
       .map((inputClause: DecisionTableExpressionDefinitionClause) => ({
         accessor: inputClause.id ?? generateUuid(),
@@ -148,7 +148,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
             inlineEditable: true,
             groupType: DecisionTableColumnType.Annotation,
             cssClasses: "decision-table--annotation",
-          } as ReactTable.ColumnInstance)
+          } as ReactTable.ColumnInstance<ROWGENERICTYPE>)
       )
       .value();
 
@@ -177,7 +177,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       inlineEditable: true,
     };
 
-    return [inputSection, outputSection, annotationSection] as ReactTable.ColumnInstance[];
+    return [inputSection, outputSection, annotationSection] as ReactTable.ColumnInstance<ROWGENERICTYPE>[];
   }, [
     decisionNodeId,
     decisionTable.annotations,
@@ -225,7 +225,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       )
         .map((inputClause) => ({
           id: inputClause.accessor,
-          name: inputClause.label as string,
+          name: inputClause.label,
           dataType: inputClause.dataType,
           width: inputClause.width,
         }))
@@ -235,7 +235,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       )
         .map((outputClause) => ({
           id: outputClause.accessor,
-          name: outputClause.label as string,
+          name: outputClause.label,
           dataType: outputClause.dataType,
           width: outputClause.width,
         }))
@@ -245,7 +245,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       )
         .map((annotation) => ({
           id: annotation.accessor,
-          name: annotation.label as string,
+          name: annotation.label,
           width: annotation.width,
         }))
         .value();
@@ -264,7 +264,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         }))
         .value();
 
-      const updatedDefinition: Partial<DecisionTableExpressionDefinition> = {
+      const updatedDefinition: DecisionTableExpressionDefinition = {
         id: decisionTable.id,
         logicType: ExpressionDefinitionLogicType.DecisionTable,
         name: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
@@ -296,9 +296,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
           updatedDefinition,
           () => {
             setSupervisorHash(hashfy(updatedDefinition));
-            beeGwtService?.broadcastDecisionTableExpressionDefinition?.(
-              updatedDefinition as DecisionTableExpressionDefinition
-            );
+            beeGwtService?.broadcastDecisionTableExpressionDefinition?.(updatedDefinition);
           },
           ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
         );
@@ -310,17 +308,16 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const singleOutputChildDataType = useRef(DmnBuiltInDataType.Undefined);
 
   const synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType = useCallback(
-    (decisionNodeColumn: ReactTable.ColumnInstance) => {
+    (decisionNodeColumn: ReactTable.ColumnInstance<ROWGENERICTYPE>) => {
       if (_.size(decisionNodeColumn.columns) === 1) {
-        const updatedSingleOutputChildDataType = (_.first(decisionNodeColumn.columns) as ReactTable.ColumnInstance)
-          .dataType;
+        const updatedSingleOutputChildDataType = _.first(decisionNodeColumn.columns)!.dataType;
 
         if (updatedSingleOutputChildDataType !== singleOutputChildDataType.current) {
           singleOutputChildDataType.current = updatedSingleOutputChildDataType;
           decisionNodeColumn.dataType = updatedSingleOutputChildDataType;
         } else if (decisionNodeColumn.dataType !== decisionTable.dataType ?? DmnBuiltInDataType.Undefined) {
           singleOutputChildDataType.current = decisionNodeColumn.dataType;
-          (_.first(decisionNodeColumn.columns) as ReactTable.ColumnInstance).dataType = decisionNodeColumn.dataType;
+          _.first(decisionNodeColumn.columns)!.dataType = decisionNodeColumn.dataType;
         }
       }
     },
@@ -340,11 +337,14 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         },
         updatedColumns: [...columns],
       });
-      decisionTable.onUpdatingNameAndDataType?.(decisionNodeColumn.label, decisionNodeColumn.dataType);
+      decisionTable.onExpressionHeaderUpdated?.({
+        name: decisionNodeColumn.label,
+        dataType: decisionNodeColumn.dataType,
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      decisionTable.onUpdatingNameAndDataType,
+      decisionTable.onExpressionHeaderUpdated,
       spreadDecisionTableExpressionDefinition,
       synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType,
     ]
@@ -354,7 +354,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     (updatedRows: ROWGENERICTYPE[]) =>
       updatedRows.map((row) => {
         const updatedRow = getColumnsAtLastLevel(beeTableColumns).reduce(
-          (filledRow: ROWGENERICTYPE, column: ReactTable.ColumnInstance) => {
+          (filledRow: ROWGENERICTYPE, column: ReactTable.ColumnInstance<ROWGENERICTYPE>) => {
             if (_.isNil(row[column.accessor])) {
               filledRow[column.accessor] =
                 column.groupType === DecisionTableColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
@@ -380,7 +380,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
 
   const onNewRow = useCallback(() => {
     return getColumnsAtLastLevel(beeTableColumns).reduce(
-      (tableRow: ROWGENERICTYPE, column: ReactTable.ColumnInstance) => {
+      (tableRow: ROWGENERICTYPE, column: ReactTable.ColumnInstance<ROWGENERICTYPE>) => {
         tableRow[column.accessor] =
           column.groupType === DecisionTableColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
         return tableRow;

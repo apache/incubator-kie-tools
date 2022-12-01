@@ -24,7 +24,6 @@ import {
   DmnBuiltInDataType,
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
   DEFAULT_ENTRY_INFO_MIN_WIDTH,
-  ContextExpressionDefinitionEntryInfo,
   executeIfExpressionDefinitionChanged,
   generateNextAvailableEntryName,
   generateUuid,
@@ -34,8 +33,8 @@ import {
   resetEntry,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
-  ExpressionDefinition,
   ROWGENERICTYPE,
+  ExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -77,7 +76,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const spreadContextExpressionDefinition = useCallback(
     (contextExpressionUpdated: Partial<ContextExpressionDefinition>) => {
-      const updatedDefinition: Partial<ContextExpressionDefinition> = {
+      const updatedDefinition: ContextExpressionDefinition = {
         id: contextExpression.id,
         logicType: ExpressionDefinitionLogicType.Context,
         name: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
@@ -101,7 +100,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             contextExpression.onUpdatingRecursiveExpression?.(expression);
           } else {
             setSupervisorHash(hashfy(expression));
-            beeGwtService?.broadcastContextExpressionDefinition?.(updatedDefinition as ContextExpressionDefinition);
+            beeGwtService?.broadcastContextExpressionDefinition?.(updatedDefinition);
           }
         },
         ["name", "dataType", "contextEntries", "result", "entryInfoWidth", "entryExpressionWidth"]
@@ -124,7 +123,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [spreadContextExpressionDefinition]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
     () => [
       {
         label: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
@@ -162,7 +161,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const onColumnsUpdate = useCallback(
     ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance<ROWGENERICTYPE>>) => {
-      contextExpression.onUpdatingNameAndDataType?.(column.label as string, column.dataType);
+      contextExpression.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
       const updatedWidth = column.columns?.reduce((acc, column) => {
         if (column.id === "entryInfo") {
           acc["entryInfoWidth"] = column.width;
@@ -173,7 +172,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         return acc;
       }, {} as ContextExpressionDefinition);
       spreadContextExpressionDefinition({
-        name: column.label as string,
+        name: column.label,
         dataType: column.dataType,
         ...updatedWidth,
       });
@@ -214,7 +213,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
         spreadContextExpressionDefinition({ result: { logicType: ExpressionDefinitionLogicType.Undefined } });
       } else {
-        const filteredExpression = _.omit(expression, "onUpdatingRecursiveExpression");
+        const filteredExpression = _.omit(expression, "onUpdatingRecursiveExpression") as ExpressionDefinition;
         spreadContextExpressionDefinition({ result: { ...filteredExpression } });
       }
     },
@@ -238,7 +237,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [i18n, contextExpression.noHandlerMenu]
   );
 
-  const getRowKey = useCallback((row: ReactTable.Row) => {
+  const getRowKey = useCallback((row: ReactTable.Row<ROWGENERICTYPE>) => {
     return getEntryKey(row);
   }, []);
 
@@ -289,7 +288,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
                 onHorizontalResizeStop={onHorizontalResizeStop}
               >
                 <ContextEntryExpression
-                  expression={contextExpression.result ?? {}}
+                  expression={contextExpression.result ?? { logicType: ExpressionDefinitionLogicType.Undefined }}
                   onUpdatingRecursiveExpression={onUpdatingRecursiveExpression}
                 />
               </Resizer>,

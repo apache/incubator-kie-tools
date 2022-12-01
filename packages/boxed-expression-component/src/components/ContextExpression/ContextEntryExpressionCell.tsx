@@ -20,9 +20,9 @@ import { useCallback } from "react";
 import {
   BeeTableCell,
   DmnBuiltInDataType,
-  ExpressionDefinition,
   ContextExpressionDefinitionEntry,
   ROWGENERICTYPE,
+  ExpressionDefinition,
 } from "../../api";
 import * as ReactTable from "react-table";
 import { ContextEntryExpression } from "./ContextEntryExpression";
@@ -41,7 +41,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
 }) => {
   // FIXME: Tiago
   const onUpdatingRecursiveExpression = useCallback(
-    (expression: ExpressionDefinition) => {
+    function (expression: ExpressionDefinition) {
       const updatedEntryInfo = { ...contextEntries[rowIndex].entryInfo };
       if (
         contextEntries[rowIndex].nameAndDataTypeSynchronized &&

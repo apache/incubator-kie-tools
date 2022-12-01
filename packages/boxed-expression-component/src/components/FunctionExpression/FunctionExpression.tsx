@@ -24,7 +24,6 @@ import {
   DmnBuiltInDataType,
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
   executeIfExpressionDefinitionChanged,
-  ExpressionDefinition,
   FeelFunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
   FunctionExpressionDefinition,
@@ -39,6 +38,7 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   ROWGENERICTYPE,
+  ExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import * as ReactTable from "react-table";
@@ -302,7 +302,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
       const updatedDefinition = {
         ...extendedDefinition,
         ...updatedFunctionExpression,
-      };
+      } as FunctionExpressionDefinition;
 
       if (functionExpression.isHeadless) {
         const headlessDefinition = _.omit(updatedDefinition, ["name", "dataType", "isHeadless"]);
@@ -388,7 +388,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [editParametersPopoverAppendTo, i18n.editParameters, functionExpression.formalParameters, setParameters]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(() => {
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(() => {
     return [
       {
         label: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
@@ -405,7 +405,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           },
         ],
       },
-    ] as ReactTable.ColumnInstance[];
+    ] as ReactTable.ColumnInstance<ROWGENERICTYPE>[];
   }, [
     decisionNodeId,
     functionExpression.name,
@@ -430,12 +430,12 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   );
 
   const onColumnsUpdate = useCallback(
-    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance>) => {
-      functionExpression.onUpdatingNameAndDataType?.(column.label as string, column.dataType);
+    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance<ROWGENERICTYPE>>) => {
+      functionExpression.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
       spreadFunctionExpressionDefinition({
-        name: column.label as string,
+        name: column.label,
         dataType: column.dataType,
-        parametersWidth: column.width as number,
+        parametersWidth: column.width,
       });
     },
     [functionExpression, spreadFunctionExpressionDefinition]

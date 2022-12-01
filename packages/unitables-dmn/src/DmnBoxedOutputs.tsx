@@ -68,7 +68,7 @@ export function useDmnBoxedOutputs(
                   if (columnFound) {
                     insideProperty[insidePropertyKey] = {
                       value: insideProperty[insidePropertyKey],
-                      width: columnFound.width as number,
+                      width: columnFound.width,
                     };
                   }
                 });
@@ -77,13 +77,13 @@ export function useDmnBoxedOutputs(
                   (nestedColumn) => nestedColumn.label === insideProperty.name
                 );
                 if (columnFound) {
-                  insideProperty.width = columnFound.width as number;
+                  insideProperty.width = columnFound.width;
                 }
               }
             });
           }
           if (outputToUpdate) {
-            outputToUpdate.width = cachedColumn.width as number;
+            outputToUpdate.width = cachedColumn.width;
           }
         }
       });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeeTableCell, ContextExpressionDefinitionEntry, ROWGENERICTYPE } from "../../api";
+import { BeeTableCell, ContextExpressionDefinitionEntry, ExpressionDefinition, ROWGENERICTYPE } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
@@ -39,7 +39,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const entryExpression = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
 
   const onContextEntryUpdate = useCallback(
-    (name, dataType) => {
+    ({ name, dataType }: Pick<ExpressionDefinition, "name" | "dataType">) => {
       const updatedExpression = { ...entryExpression };
       if (contextEntry.nameAndDataTypeSynchronized && _.size(name) && _.size(dataType)) {
         updatedExpression.name = name;

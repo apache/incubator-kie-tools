@@ -150,7 +150,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [spreadInvocationExpressionDefinition]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
     () => [
       {
         label: invocation.name ?? DEFAULT_PARAMETER_NAME,
@@ -195,13 +195,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   );
 
   const onColumnsUpdate = useCallback(
-    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance>) => {
-      invocation.onUpdatingNameAndDataType?.(column.label as string, column.dataType);
-
-      spreadInvocationExpressionDefinition({
-        name: column.label as string,
-        dataType: column.dataType,
-      });
+    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance<ROWGENERICTYPE>>) => {
+      invocation.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
+      spreadInvocationExpressionDefinition({ name: column.label, dataType: column.dataType });
     },
     [invocation, spreadInvocationExpressionDefinition]
   );

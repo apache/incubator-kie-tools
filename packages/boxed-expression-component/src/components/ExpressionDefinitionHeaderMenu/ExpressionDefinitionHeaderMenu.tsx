@@ -44,7 +44,7 @@ export interface ExpressionDefinitionHeaderMenuProps {
   /** The pre-selected expression name */
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
-  onExpressionUpdate: (expression: ExpressionDefinition) => void;
+  onExpressionHeaderUpdated: (expressionHeader: Pick<ExpressionDefinition, "name" | "dataType">) => void;
 }
 
 export const EXPRESSION_NAME = "Expression Name";
@@ -58,7 +58,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
   dataTypeField,
   selectedDataType = DmnBuiltInDataType.Undefined,
   selectedExpressionName,
-  onExpressionUpdate,
+  onExpressionHeaderUpdated,
 }: ExpressionDefinitionHeaderMenuProps) => {
   const boxedExpressionEditor = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -101,11 +101,11 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
    */
   const saveExpression = useCallback(() => {
     boxedExpressionEditor.beeGwtService?.notifyUserAction();
-    onExpressionUpdate({
+    onExpressionHeaderUpdated({
       name: expressionName,
       dataType: dataType,
     });
-  }, [boxedExpressionEditor.beeGwtService, expressionName, onExpressionUpdate, dataType]);
+  }, [boxedExpressionEditor.beeGwtService, expressionName, onExpressionHeaderUpdated, dataType]);
 
   const onHide = useCallback(() => {
     saveExpression();

@@ -115,12 +115,12 @@ export function useUnitablesInputs(
                   (nestedColumn) => nestedColumn.label === insideProperty.name
                 );
                 if (columnFound && columnFound.width) {
-                  insideProperty.width = columnFound.width as number;
+                  insideProperty.width = columnFound.width;
                 }
               });
             } else if (inputColumn.width) {
               inputToUpdate.insideProperties.forEach((insideProperty) => {
-                const width = (inputColumn.width as number) / inputToUpdate.insideProperties.length;
+                const width = inputColumn.width / inputToUpdate.insideProperties.length;
                 if (width < CELL_MINIMUM_WIDTH) {
                   insideProperty.width = CELL_MINIMUM_WIDTH;
                 } else {
@@ -130,7 +130,7 @@ export function useUnitablesInputs(
             }
           }
           if (inputToUpdate && inputColumn.width && inputColumn.width > inputToUpdate.width) {
-            inputToUpdate.width = inputColumn.width as number;
+            inputToUpdate.width = inputColumn.width;
           }
         }
       });

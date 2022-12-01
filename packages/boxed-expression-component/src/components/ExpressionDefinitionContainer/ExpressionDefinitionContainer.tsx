@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useRef } from "react";
 import "./ExpressionDefinitionContainer.css";
 import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
-import { ExpressionDefinitionLogicTypeSelector as ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
+import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export interface ExpressionDefinitionContainerProps {
@@ -36,15 +36,15 @@ export const ExpressionDefinitionContainer: (props: ExpressionDefinitionContaine
 
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
-  const updateExpressionNameAndDataType = useCallback(
-    (updatedName, updatedDataType) => {
-      if (selectedExpression.name === updatedName && selectedExpression.dataType === updatedDataType) {
+  const onExpressionHeaderUpdated = useCallback(
+    (args) => {
+      if (selectedExpression.name === args.name && selectedExpression.dataType === args.dataType) {
         return;
       }
       onExpressionChange?.({
         ...selectedExpression,
-        name: updatedName,
-        dataType: updatedDataType,
+        name: args.name,
+        dataType: args.dataType,
       });
     },
     [onExpressionChange, selectedExpression]
@@ -61,7 +61,7 @@ export const ExpressionDefinitionContainer: (props: ExpressionDefinitionContaine
   );
 
   const onLogicTypeResetting = useCallback(() => {
-    const updatedExpression = {
+    const updatedExpression: ExpressionDefinition = {
       id: selectedExpression.id,
       name: selectedExpression.name,
       dataType: selectedExpression.dataType,
@@ -89,7 +89,7 @@ export const ExpressionDefinitionContainer: (props: ExpressionDefinitionContaine
           selectedExpression={selectedExpression}
           onLogicTypeUpdating={onLogicTypeUpdating}
           onLogicTypeResetting={onLogicTypeResetting}
-          onUpdatingNameAndDataType={updateExpressionNameAndDataType}
+          onExpressionHeaderUpdated={onExpressionHeaderUpdated}
           getPlacementRef={useCallback(() => expressionContainerRef.current!, [])}
         />
       </div>

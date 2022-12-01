@@ -21,7 +21,6 @@ import {
   ContextExpressionDefinition,
   DmnBuiltInDataType,
   DecisionTableExpressionDefinition,
-  ExpressionDefinition,
   FunctionExpressionDefinitionKind,
   FunctionExpressionDefinition,
   generateUuid,
@@ -31,6 +30,7 @@ import {
   ExpressionDefinitionLogicType,
   PmmlLiteralExpressionDefinition,
   RelationExpressionDefinition,
+  ExpressionDefinition,
 } from "../../api";
 import { LiteralExpression, PmmlLiteralExpression } from "../LiteralExpression";
 import { RelationExpression } from "../RelationExpression";
@@ -54,7 +54,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Function to be invoked when logic type is reset */
   onLogicTypeResetting: () => void;
   /** Function to be invoked to update expression's name and datatype */
-  onUpdatingNameAndDataType?: (updatedName: string, updatedDataType: DmnBuiltInDataType) => void;
+  onExpressionHeaderUpdated?: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
   /** True to have no header for this specific expression component, used in a recursive expression */
@@ -70,7 +70,7 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
     selectedExpression,
     onLogicTypeUpdating,
     onLogicTypeResetting,
-    onUpdatingNameAndDataType,
+    onExpressionHeaderUpdated,
     getPlacementRef,
     isHeadless,
     onUpdatingRecursiveExpression,
@@ -83,10 +83,10 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
         ...selectedExpression,
         id: selectedExpression.id ?? generateUuid(),
         isHeadless: isHeadless ?? false,
-        onUpdatingNameAndDataType,
+        onExpressionHeaderUpdated,
         onUpdatingRecursiveExpression,
       };
-    }, [selectedExpression, isHeadless, onUpdatingNameAndDataType, onUpdatingRecursiveExpression]);
+    }, [selectedExpression, isHeadless, onExpressionHeaderUpdated, onUpdatingRecursiveExpression]);
 
     const isLogicTypeSelected = useMemo(
       () => selectedExpression.logicType && selectedExpression.logicType !== ExpressionDefinitionLogicType.Undefined,
@@ -131,8 +131,6 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
         default:
           return expression.logicType;
       }
-      // logicType is enough for deciding when to re-execute this function
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [expression]);
 
     const getSelectableLogicTypes = useCallback(

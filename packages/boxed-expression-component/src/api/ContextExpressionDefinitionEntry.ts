@@ -20,6 +20,7 @@ import * as _ from "lodash";
 import * as ReactTable from "react-table";
 import { BeeTableOperationHandlerConfig, BeeTableOperation, ROWGENERICTYPE } from "./BeeTable";
 import { BoxedExpressionEditorI18n } from "../i18n";
+import { ExpressionDefinitionLogicType } from "./ExpressionDefinitionLogicType";
 
 export interface ContextExpressionDefinitionEntryInfo {
   /** Entry id */
@@ -30,7 +31,7 @@ export interface ContextExpressionDefinitionEntryInfo {
   dataType: DmnBuiltInDataType;
 }
 
-export interface ContextExpressionDefinitionEntry<T = ExpressionDefinition> {
+export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition = ExpressionDefinition> {
   entryInfo: ContextExpressionDefinitionEntryInfo;
   /** Entry expression */
   entryExpression: T;
@@ -68,7 +69,7 @@ export const generateNextAvailableEntryName = (
   return entryWithCandidateName ? generateNextAvailableEntryName(entryInfos, namePrefix, lastIndex + 1) : candidateName;
 };
 
-export const getEntryKey = (row: ReactTable.Row): string => {
+export const getEntryKey = (row: ReactTable.Row<ROWGENERICTYPE>): string => {
   const entryRecord = row.original as ContextExpressionDefinitionEntry;
   return entryRecord.entryInfo.id ?? (row.original as ROWGENERICTYPE).id; // FIXME: Tiago -> Bad type?
 };
@@ -76,6 +77,9 @@ export const getEntryKey = (row: ReactTable.Row): string => {
 export function resetEntry(row: ContextExpressionDefinitionEntry): ContextExpressionDefinitionEntry {
   return {
     ...row,
-    entryExpression: { id: (row.entryExpression as ExpressionDefinition).id },
+    entryExpression: {
+      id: row.entryExpression.id,
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    },
   };
 }

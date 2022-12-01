@@ -149,7 +149,7 @@ export function BeeTableThResizable<R extends object>({
               title={getColumnLabel(column.groupType)}
               selectedExpressionName={column.label}
               selectedDataType={column.dataType}
-              onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
+              onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
               key={columnKey}
             >
               {renderHeaderCellInfo(column, columnIndex)}

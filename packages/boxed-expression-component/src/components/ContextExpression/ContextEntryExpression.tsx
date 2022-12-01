@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
+import { ExpressionDefinitionLogicType, ExpressionDefinition } from "../../api";
 import * as React from "react";
 import { useCallback, useRef } from "react";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
@@ -50,7 +50,10 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   const onLogicTypeResetting = useCallback(() => {
     onExpressionResetting?.();
     onUpdatingRecursiveExpression(
-      _.omit({ ...expression, logicType: ExpressionDefinitionLogicType.Undefined }, "isHeadless")
+      _.omit(
+        { ...expression, logicType: ExpressionDefinitionLogicType.Undefined },
+        "isHeadless"
+      ) as ExpressionDefinition
     );
   }, [onExpressionResetting, onUpdatingRecursiveExpression, expression]);
 

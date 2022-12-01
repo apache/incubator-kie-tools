@@ -34,7 +34,7 @@ import {
 } from "./FunctionExpressionDefinitionKind";
 import { BeeTableColumn, BeeTableRow } from "./BeeTable";
 
-export interface ExpressionDefinition {
+interface ExpressionDefinitionBase {
   /** Unique identifier used to identify the expression */
   id?: string;
   /** Expression name (which, in DMN world, is equal to the Decision node's name) */
@@ -42,7 +42,7 @@ export interface ExpressionDefinition {
   /** Expression data type */
   dataType?: DmnBuiltInDataType;
   /** Optional callback executed to update expression's name and data type */
-  onUpdatingNameAndDataType?: (updatedName: string, updatedDataType: DmnBuiltInDataType) => void;
+  onExpressionHeaderUpdated?: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   /** Logic type should not be defined at this stage */
   logicType?: ExpressionDefinitionLogicType;
   /** True, to have no header for this specific expression component, used in a recursive expression */
@@ -53,7 +53,7 @@ export interface ExpressionDefinition {
   noClearAction?: boolean;
 }
 
-export interface LiteralExpressionDefinition extends ExpressionDefinition {
+export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be LiteralExpression */
   logicType: ExpressionDefinitionLogicType.LiteralExpression;
   /** Optional content to display for this literal expression */
@@ -62,7 +62,7 @@ export interface LiteralExpressionDefinition extends ExpressionDefinition {
   width?: number;
 }
 
-export interface PmmlLiteralExpressionDefinition extends ExpressionDefinition {
+export interface PmmlLiteralExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be PmmlLiteralExpression */
   logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression;
   /** Callback for retrieving the options to provide in the dropdown */
@@ -75,7 +75,7 @@ export interface PmmlLiteralExpressionDefinition extends ExpressionDefinition {
   testId?: string;
 }
 
-export interface RelationExpressionDefinition extends ExpressionDefinition {
+export interface RelationExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Relation */
   logicType: ExpressionDefinitionLogicType.Relation;
   /** Each column has a name and a data type. Their order is from left to right */
@@ -84,7 +84,7 @@ export interface RelationExpressionDefinition extends ExpressionDefinition {
   rows?: BeeTableRow[];
 }
 
-export interface ContextExpressionDefinition extends ExpressionDefinition {
+export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Context */
   logicType: ExpressionDefinitionLogicType.Context;
   /** Collection of context entries */
@@ -101,7 +101,7 @@ export interface ContextExpressionDefinition extends ExpressionDefinition {
   noHandlerMenu?: boolean;
 }
 
-export interface DecisionTableExpressionDefinition extends ExpressionDefinition {
+export interface DecisionTableExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Decision Table */
   logicType: ExpressionDefinitionLogicType.DecisionTable;
   /** Hit policy for this particular decision table */
@@ -118,7 +118,7 @@ export interface DecisionTableExpressionDefinition extends ExpressionDefinition 
   rules?: DecisionTableExpressionDefinitionRule[];
 }
 
-export interface ListExpressionDefinition extends ExpressionDefinition {
+export interface ListExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be List */
   logicType: ExpressionDefinitionLogicType.List;
   /** List items */
@@ -127,7 +127,8 @@ export interface ListExpressionDefinition extends ExpressionDefinition {
   width?: number;
 }
 
-export interface InvocationExpressionDefinition<T = ExpressionDefinition> extends ExpressionDefinition {
+export interface InvocationExpressionDefinition<T extends ExpressionDefinition = ExpressionDefinition>
+  extends ExpressionDefinitionBase {
   /** Logic type must be Invocation */
   logicType: ExpressionDefinitionLogicType.Invocation;
   /** Function to be invoked */
@@ -140,7 +141,11 @@ export interface InvocationExpressionDefinition<T = ExpressionDefinition> extend
   entryExpressionWidth?: number;
 }
 
-export type FunctionExpressionDefinition = ExpressionDefinition & {
+export interface UndefinedExpressionDefinition extends ExpressionDefinitionBase {
+  logicType: ExpressionDefinitionLogicType.Undefined;
+}
+
+export type FunctionExpressionDefinition = ExpressionDefinitionBase & {
   /** Logic type must be Function */
   logicType: ExpressionDefinitionLogicType.Function;
   /** List of parameters passed to the function */
@@ -149,7 +154,7 @@ export type FunctionExpressionDefinition = ExpressionDefinition & {
   parametersWidth?: number;
 } & (FeelFunctionExpressionDefinition | JavaFunctionExpressionDefinition | PmmlFunctionExpressionDefinition);
 
-export type ExpressionSupertype =
+export type ExpressionDefinition =
   | LiteralExpressionDefinition
   | PmmlLiteralExpressionDefinition
   | RelationExpressionDefinition
@@ -157,4 +162,5 @@ export type ExpressionSupertype =
   | DecisionTableExpressionDefinition
   | ListExpressionDefinition
   | InvocationExpressionDefinition
+  | UndefinedExpressionDefinition
   | FunctionExpressionDefinition;

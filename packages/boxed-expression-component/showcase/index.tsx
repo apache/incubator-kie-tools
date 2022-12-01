@@ -19,7 +19,7 @@ import { useCallback, useState } from "react";
 import * as ReactDOM from "react-dom";
 import "./index.css";
 // noinspection ES6PreferShortImport
-import { BeeGwtService, DmnBuiltInDataType, ExpressionDefinition, ExpressionDefinitionLogicType } from "../src/api";
+import { BeeGwtService, DmnBuiltInDataType, ExpressionDefinitionLogicType, ExpressionDefinition } from "../src/api";
 import { BoxedExpressionEditor } from "../src/components";
 import { Button, Modal } from "@patternfly/react-core";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
@@ -82,10 +82,10 @@ export const App: React.FunctionComponent = () => {
   //This definition comes directly from the decision node
   const selectedExpression: ExpressionDefinition = {
     name: "Expression Name",
-    dataType: DmnBuiltInDataType.Undefined,
+    logicType: ExpressionDefinitionLogicType.Undefined,
   };
 
-  const [expressionDefinition, setExpressionDefinition] = useState(selectedExpression);
+  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>(selectedExpression);
 
   const [typedExpressionDefinition, setTypedExpressionDefinition] = useState(JSON.stringify(selectedExpression));
 
@@ -124,7 +124,10 @@ export const App: React.FunctionComponent = () => {
   const updateExpressionDefinition = useCallback(() => {
     try {
       const parsedTypedExpression = JSON.parse(typedExpressionDefinition);
-      setExpressionDefinition({ logicType: ExpressionDefinitionLogicType.Undefined });
+      setExpressionDefinition({
+        name: "Expression Name",
+        logicType: ExpressionDefinitionLogicType.Undefined,
+      });
       setTimeout(() => {
         setExpressionDefinition(parsedTypedExpression);
       }, 0);

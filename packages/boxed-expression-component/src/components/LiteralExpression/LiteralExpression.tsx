@@ -20,9 +20,9 @@ import { useCallback, useEffect } from "react";
 import {
   DmnBuiltInDataType,
   executeIfExpressionDefinitionChanged,
-  ExpressionDefinition,
   LiteralExpressionDefinition,
   ExpressionDefinitionLogicType,
+  ExpressionDefinition,
 } from "../../api";
 import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../Resizer";
@@ -66,13 +66,13 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
     [beeGwtService, literalExpression]
   );
 
-  const onExpressionUpdate = useCallback(
-    ({ dataType = DmnBuiltInDataType.Undefined, name = EXPRESSION_NAME }: ExpressionDefinition) => {
-      literalExpression.onUpdatingNameAndDataType?.(name, dataType);
-      spreadLiteralExpressionDefinition({
-        name,
-        dataType,
-      });
+  const onExpressionHeaderUpdated = useCallback(
+    ({
+      dataType = DmnBuiltInDataType.Undefined,
+      name = EXPRESSION_NAME,
+    }: Pick<ExpressionDefinition, "name" | "dataType">) => {
+      literalExpression.onExpressionHeaderUpdated?.({ name, dataType });
+      spreadLiteralExpressionDefinition({ name, dataType });
     },
     [literalExpression, spreadLiteralExpressionDefinition]
   );
@@ -126,7 +126,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
             <ExpressionDefinitionHeaderMenu
               selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
               selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
-              onExpressionUpdate={onExpressionUpdate}
+              onExpressionHeaderUpdated={onExpressionHeaderUpdated}
             >
               <div className="expression-info">
                 <p className="expression-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>

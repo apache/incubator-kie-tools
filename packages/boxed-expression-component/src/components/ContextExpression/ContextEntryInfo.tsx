@@ -18,7 +18,7 @@ import "./ContextEntryInfo.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
-import { DmnBuiltInDataType } from "../../api";
+import { DmnBuiltInDataType, ExpressionDefinition } from "../../api";
 
 export interface ContextEntryInfoProps {
   /** Context entry info id */
@@ -28,7 +28,7 @@ export interface ContextEntryInfoProps {
   /** Context Entry info dataType */
   dataType: DmnBuiltInDataType;
   /** Callback to be executed when name or dataType get updated */
-  onContextEntryUpdate: (name: string, dataType: DmnBuiltInDataType) => void;
+  onContextEntryUpdate: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   /** Label used for the popover triggered when editing info section */
   editInfoPopoverLabel?: string;
 }
@@ -40,9 +40,9 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   onContextEntryUpdate,
   editInfoPopoverLabel,
 }) => {
-  const onEntryNameOrDataTypeUpdate = useCallback(
-    ({ name, dataType }) => {
-      onContextEntryUpdate(name, dataType);
+  const onExpressionHeaderUpdated = useCallback(
+    ({ name, dataType }: Pick<ExpressionDefinition, "name" | "dataType">) => {
+      onContextEntryUpdate({ name, dataType });
     },
     [onContextEntryUpdate]
   );
@@ -67,12 +67,12 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
         title={editInfoPopoverLabel}
         selectedExpressionName={name}
         selectedDataType={dataType}
-        onExpressionUpdate={onEntryNameOrDataTypeUpdate}
+        onExpressionHeaderUpdated={onExpressionHeaderUpdated}
       >
         {renderEntryDefinition({ additionalCssClass: "with-popover-menu" })}
       </ExpressionDefinitionHeaderMenu>
     ),
-    [editInfoPopoverLabel, dataType, name, onEntryNameOrDataTypeUpdate, renderEntryDefinition]
+    [editInfoPopoverLabel, dataType, name, onExpressionHeaderUpdated, renderEntryDefinition]
   );
 
   return (

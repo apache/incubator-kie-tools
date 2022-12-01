@@ -21,7 +21,6 @@ import {
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
   executeIfExpressionDefinitionChanged,
-  ExpressionDefinition,
   generateUuid,
   ListExpressionDefinition,
   LiteralExpressionDefinition,
@@ -31,6 +30,7 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   ROWGENERICTYPE,
+  ExpressionDefinition,
 } from "../../api";
 import { ContextEntryExpressionCell } from "../ContextExpression";
 import { BeeTable } from "../BeeTable";
@@ -89,7 +89,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
 
   const spreadListExpressionDefinition = useCallback(
     (updatedListExpression?: Partial<ListExpressionDefinition>) => {
-      const updatedDefinition: Partial<ListExpressionDefinition> = {
+      const updatedDefinition: ListExpressionDefinition = {
         id: listExpression.id,
         name: listExpression.name,
         dataType: listExpression.dataType,
@@ -99,7 +99,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
       };
 
       updatedDefinition.items = (updatedListExpression?.items ? updatedListExpression.items : beeTableRows).map(
-        (listItem: ROWGENERICTYPE) => listItem.entryExpression as ExpressionDefinition
+        (listItem: ROWGENERICTYPE) => listItem.entryExpression
       );
 
       executeIfExpressionDefinitionChanged(
@@ -110,7 +110,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
             listExpression.onUpdatingRecursiveExpression?.(updatedDefinition);
           } else {
             setSupervisorHash(hashfy(updatedDefinition));
-            beeGwtService?.broadcastListExpressionDefinition?.(updatedDefinition as ListExpressionDefinition);
+            beeGwtService?.broadcastListExpressionDefinition?.(updatedDefinition);
           }
         },
         ["width", "items"]
@@ -126,7 +126,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [spreadListExpressionDefinition]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance[]>(
+  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
     () => [
       {
         accessor: "list",
@@ -138,7 +138,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
   );
 
   const resetRowCustomFunction = useCallback((row: ROWGENERICTYPE) => {
-    return { entryExpression: { id: (row.entryExpression as ExpressionDefinition).id } };
+    return { entryExpression: { id: row.entryExpression.id } };
   }, []);
 
   const onNewRow = useCallback(
@@ -154,13 +154,13 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         return { entryExpression: row.entryExpression };
       });
       spreadListExpressionDefinition({
-        items: newEntryExpressions as ExpressionDefinition[],
+        items: newEntryExpressions as any,
       });
     },
     [spreadListExpressionDefinition]
   );
 
-  const getRowKey = useCallback((row: ReactTable.Row) => {
+  const getRowKey = useCallback((row: ReactTable.Row<ROWGENERICTYPE>) => {
     return (row.original as ContextExpressionDefinitionEntry).entryExpression.id!;
   }, []);
 
