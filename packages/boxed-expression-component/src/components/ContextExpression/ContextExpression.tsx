@@ -42,9 +42,9 @@ import * as ReactTable from "react-table";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import * as _ from "lodash";
 import { ContextEntryExpression } from "./ContextEntryExpression";
-import { getContextEntryInfoCell } from "./ContextEntryInfoCell";
 import { hashfy, Resizer } from "../Resizer";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { ContextEntryInfoCell, ContextEntryInfoCellProps } from "./ContextEntryInfoCell";
 
 const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DmnBuiltInDataType.Undefined;
@@ -68,7 +68,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             name: DEFAULT_CONTEXT_ENTRY_NAME,
             dataType: DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
           },
-          nameAndDataTypeSynchronized: true,
         } as ROWGENERICTYPE,
       ],
     [contextExpression.contextEntries]
@@ -196,7 +195,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         dataType: DmnBuiltInDataType.Undefined,
       },
       editInfoPopoverLabel: i18n.editContextEntry,
-      nameAndDataTypeSynchronized: true,
     };
   }, [i18n, beeTableRows]);
 
@@ -224,9 +222,10 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     return contextExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
   }, [contextExpression.isHeadless]);
 
-  const defaultByColumnNameCell = useMemo(
+  const defaultCellByColumnId = useMemo(
     () => ({
-      entryInfo: getContextEntryInfoCell(i18n.editContextEntry),
+      entryInfo: (props: ContextEntryInfoCellProps) =>
+        ContextEntryInfoCell({ ...props, editInfoPopoverLabel: i18n.editContextEntry }),
       entryExpression: ContextEntryExpressionCell,
     }),
     [i18n]
@@ -261,7 +260,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         tableId={contextExpression.id}
         headerLevels={1}
         headerVisibility={getHeaderVisibility}
-        defaultCellByColumnId={defaultByColumnNameCell}
+        defaultCellByColumnId={defaultCellByColumnId}
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnsUpdate={onColumnsUpdate}

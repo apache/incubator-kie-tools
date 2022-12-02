@@ -96,7 +96,7 @@ describe("ContextEntryExpressionCell tests", () => {
     expect(mockedOnRowUpdate).toHaveBeenCalledWith(rowIndex, {
       entryInfo: {
         id: entryId,
-        name: value,
+        name,
         dataType,
       },
       entryExpression: {

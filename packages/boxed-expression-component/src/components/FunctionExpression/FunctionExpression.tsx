@@ -461,7 +461,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     ];
   }, [i18n]);
 
-  const defaultCellByColumnName = useMemo(
+  const defaultCellByColumnId = useMemo(
     () => ({
       parameters: ContextEntryExpressionCell,
     }),
@@ -524,7 +524,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         headerLevels={1}
         headerVisibility={getHeaderVisibility}
         controllerCell={controllerCell}
-        defaultCellByColumnId={defaultCellByColumnName}
+        defaultCellByColumnId={defaultCellByColumnId}
         resetRowCustomFunction={resetRowCustomFunction}
       />
     </div>

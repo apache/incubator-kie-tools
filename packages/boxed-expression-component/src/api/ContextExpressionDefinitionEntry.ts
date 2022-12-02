@@ -35,8 +35,6 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   entryInfo: ContextExpressionDefinitionEntryInfo;
   /** Entry expression */
   entryExpression: T;
-  /** True, for synchronizing name and dataType parameters, between entryInfo and entryExpression */
-  nameAndDataTypeSynchronized?: boolean;
   /** Callback to be invoked on expression resetting */
   onExpressionResetting?: () => void;
 }

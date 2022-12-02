@@ -58,7 +58,7 @@ declare module "react-table" {
     /** Column data type */
     dataType: DmnBuiltInDataType;
     /** It tells whether column is of type counter or not */
-    isCountColumn: boolean;
+    isRowIndexColumn: boolean;
     /** Disabling table handler on the header of this column */
     disableHandlerOnHeader?: boolean;
 

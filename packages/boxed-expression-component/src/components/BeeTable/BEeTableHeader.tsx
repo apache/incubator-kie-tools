@@ -219,7 +219,7 @@ export function BeeTableHeader<R extends object>({
     (column: ReactTable.ColumnInstance<R>, rowIndex: number, columnIndex: number, xPosition?: number) => JSX.Element
   >(
     (column, rowIndex, columnIndex, xPosition) =>
-      column.isCountColumn ? (
+      column.isRowIndexColumn ? (
         renderCountColumn(column, rowIndex)
       ) : (
         <BeeTableThResizable

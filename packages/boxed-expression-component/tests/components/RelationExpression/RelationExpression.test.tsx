@@ -15,11 +15,11 @@
  */
 
 import {
-  BeeTableColumn,
+  RelationExpressionDefinitionColumn,
   DmnBuiltInDataType,
   generateUuid,
   ExpressionDefinitionLogicType,
-  BeeTableRow,
+  RelationExpressionDefinitionRow,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
@@ -74,7 +74,7 @@ describe("RelationExpression tests", () => {
     const columnName = "a column";
     const column = { id: generateUuid(), name: columnName, dataType: DmnBuiltInDataType.Date };
     const rowValue = "value";
-    const row: BeeTableRow = { id: "row-id", cells: [rowValue] };
+    const row: RelationExpressionDefinitionRow = { id: "row-id", cells: [rowValue] };
 
     const container = buildRelationComponent(column, row);
 
@@ -88,7 +88,10 @@ describe("RelationExpression tests", () => {
     const columnName = "a column";
     const column = { id: generateUuid(), name: columnName, dataType: DmnBuiltInDataType.Date };
     const rowValue = "value";
-    const row: BeeTableRow = { id: "row-id", cells: [rowValue, "another value", "and another one"] };
+    const row: RelationExpressionDefinitionRow = {
+      id: "row-id",
+      cells: [rowValue, "another value", "and another one"],
+    };
 
     const container = buildRelationComponent(column, row);
 
@@ -98,7 +101,7 @@ describe("RelationExpression tests", () => {
   });
 });
 
-function buildRelationComponent(column: BeeTableColumn, row: BeeTableRow) {
+function buildRelationComponent(column: RelationExpressionDefinitionColumn, row: RelationExpressionDefinitionRow) {
   const { container } = render(
     usingTestingBoxedExpressionI18nContext(
       usingTestingBoxedExpressionProviderContext(

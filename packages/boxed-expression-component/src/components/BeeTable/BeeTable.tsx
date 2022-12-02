@@ -45,10 +45,8 @@ import { BeeTableHeader } from "./BeeTableHeader";
 
 export const NO_TABLE_CONTEXT_MENU_CLASS = "no-table-context-menu";
 
-const ROW_NUMBER_COLUMN = "#";
-const ROW_NUMBER_SUB_COLUMN = "0";
-
-export const DEFAULT_ON_ROW_ADDING = () => ({});
+const ROW_INDEX_COLUMN_ACCESOR = "#";
+const ROW_INDEX_SUB_COLUMN = "0";
 
 export function getColumnsAtLastLevel<R extends object>(
   columns: ReactTable.ColumnInstance<R>[],
@@ -101,28 +99,33 @@ const onCellArrowNavigation = (e: KeyboardEvent, rowSpan = 1): void => {
   const currentTarget = e.currentTarget as HTMLElement;
 
   if (NavigationKeysUtils.isArrowLeft(key)) {
+    e.preventDefault();
     return focusPrevCellByArrowKey(currentTarget, rowSpan);
   }
   if (NavigationKeysUtils.isArrowRight(key)) {
+    e.preventDefault();
     return focusNextCellByArrowKey(currentTarget, rowSpan);
   }
   if (NavigationKeysUtils.isArrowUp(key)) {
+    e.preventDefault();
     return focusUpperCell(currentTarget);
   }
-
-  return focusLowerCell(currentTarget);
+  if (NavigationKeysUtils.isArrowDown(key)) {
+    e.preventDefault();
+    return focusLowerCell(currentTarget);
+  }
 };
 
 export function BeeTable<R extends object>({
   tableId,
   children,
-  getColumnPrefix,
+  getNewColumnIdPrefix,
   editColumnLabel,
   editableHeader = true,
   onColumnsUpdate,
   onRowsUpdate,
   onNewRow,
-  controllerCell = ROW_NUMBER_COLUMN,
+  controllerCell = ROW_INDEX_COLUMN_ACCESOR,
   defaultCellByColumnId,
   rows,
   columns,
@@ -141,8 +144,8 @@ export function BeeTable<R extends object>({
   const boxedExpressionEditor = useBoxedExpressionEditor();
 
   const onGetColumnPrefix = useCallback(
-    (groupType?: string) => getColumnPrefix?.(groupType) ?? "column-",
-    [getColumnPrefix]
+    (groupType?: string) => getNewColumnIdPrefix?.(groupType) ?? "column-",
+    [getNewColumnIdPrefix]
   );
 
   const generateRowNumberSubColumnRecursively: <R extends object>(
@@ -154,12 +157,12 @@ export function BeeTable<R extends object>({
         _.assign(column, {
           columns: [
             {
-              label: headerVisibility === BeeTableHeaderVisibility.Full ? ROW_NUMBER_SUB_COLUMN : controllerCell,
-              accessor: ROW_NUMBER_SUB_COLUMN,
+              label: headerVisibility === BeeTableHeaderVisibility.Full ? ROW_INDEX_SUB_COLUMN : controllerCell,
+              accessor: ROW_INDEX_SUB_COLUMN,
               minWidth: 60,
               width: 60,
               disableResizing: true,
-              isCountColumn: true,
+              isRowIndexColumn: true,
               hideFilter: true,
             },
           ],
@@ -182,10 +185,10 @@ export function BeeTable<R extends object>({
     (currentControllerCell, columns) => {
       const rowNumberColumn = {
         label: currentControllerCell,
-        accessor: ROW_NUMBER_COLUMN,
+        accessor: ROW_INDEX_COLUMN_ACCESOR,
         width: 60,
         minWidth: 60,
-        isCountColumn: true,
+        isRowIndexColumn: true,
       } as ReactTable.ColumnInstance<R>;
       generateRowNumberSubColumnRecursively(rowNumberColumn, headerLevels);
       return [rowNumberColumn, ...columns];
@@ -193,6 +196,7 @@ export function BeeTable<R extends object>({
     [generateRowNumberSubColumnRecursively, headerLevels]
   );
 
+  // FIXME: TIAGO(NOW) Remove this. If ID is required, there should be a type enforcement.
   const rowsWithId = useCallback<<R extends object>(rows: R[]) => R[]>((rows) => {
     return rows.map((row) => {
       // FIXME: Tiago -> Bad typing.
@@ -239,7 +243,7 @@ export function BeeTable<R extends object>({
         return (row as any)?.noClearAction;
       });
 
-      if (DEFAULT_ON_ROW_ADDING !== rowFactory && !isLockedTable) {
+      if (!isLockedTable) {
         const pastedRows = pasteOnTable(pasteValue, tableRowsRef.current, rowFactory, x, y);
         tableRowsRef.current = pastedRows;
         onRowsUpdate?.({ rows: pastedRows, columns });
@@ -252,7 +256,7 @@ export function BeeTable<R extends object>({
     };
   }, [tableEventUUID, tableRowsRef, onRowsUpdate, onColumnsUpdate, onNewRow, columns, boxedExpressionEditor.editorRef]);
 
-  const onColumnsUpdateCallback = useCallback<
+  const callOnColumnsUpdateWithoutRowIndexColumn = useCallback<
     (columns: ReactTable.ColumnInstance<R>[], operation?: BeeTableOperation, columnIndex?: number) => void
   >(
     (columns, operation, columnIndex) => {
@@ -262,7 +266,7 @@ export function BeeTable<R extends object>({
     [onColumnsUpdate]
   );
 
-  const onRowsUpdateCallback = useCallback(
+  const callOnRowsUpdate = useCallback(
     (rows: R[], operation?: BeeTableOperation, rowIndex?: number) => {
       tableRowsRef.current = rows;
       onRowsUpdate?.({ rows: [...rows], operation, rowIndex, columns });
@@ -270,26 +274,26 @@ export function BeeTable<R extends object>({
     [onRowsUpdate, columns]
   );
 
+  // FIXME: Tiago -> Bad typing
   const onCellUpdate = useCallback(
     (rowIndex: number, columnId: string, value: string) => {
-      const updatedTableCells = [...tableRowsRef.current];
-      // FIXME: Tiago -> Bad typing
-      (updatedTableCells as any)[rowIndex][columnId] = value;
-      onRowsUpdateCallback(updatedTableCells);
+      const cells = [...tableRowsRef.current];
+      (cells as any)[rowIndex][columnId] = value;
+      callOnRowsUpdate(cells);
     },
-    [onRowsUpdateCallback]
+    [callOnRowsUpdate]
   );
 
   const onRowUpdate = useCallback(
     (rowIndex: number, updatedRow: R) => {
       const updatedRows = [...tableRowsRef.current];
       updatedRows[rowIndex] = updatedRow;
-      onRowsUpdateCallback(updatedRows);
+      callOnRowsUpdate(updatedRows);
     },
-    [onRowsUpdateCallback]
+    [callOnRowsUpdate]
   );
 
-  const contextMenuIsAvailable = useCallback((target: HTMLElement) => {
+  const isContextMenuAvailable = useCallback((target: HTMLElement) => {
     const targetIsContainedInCurrentTable = target.closest("table") === tableComposableRef.current;
     const contextMenuAvailableForTarget = !target.classList.contains(NO_TABLE_CONTEXT_MENU_CLASS);
     return targetIsContainedInCurrentTable && contextMenuAvailableForTarget;
@@ -338,20 +342,20 @@ export function BeeTable<R extends object>({
         );
         const target = e.target as HTMLElement;
         const handlerOnHeaderIsAvailable = !column.disableHandlerOnHeader;
-        if (contextMenuIsAvailable(target) && handlerOnHeaderIsAvailable) {
+        if (isContextMenuAvailable(target) && handlerOnHeaderIsAvailable) {
           e.preventDefault();
           setAllowedOperations(getColumnOperations(columnIndex));
           operationHandlerStateUpdate(target, column);
         }
       },
     }),
-    [getColumnOperations, operationHandlerStateUpdate, contextMenuIsAvailable, reactTableColumns]
+    [getColumnOperations, operationHandlerStateUpdate, isContextMenuAvailable, reactTableColumns]
   );
 
   const defaultColumn = useMemo(
     () => ({
       Cell: (cellProps: ReactTable.CellProps<R>) => {
-        if (cellProps.column.isCountColumn) {
+        if (cellProps.column.isRowIndexColumn) {
           return cellProps.value;
         } else {
           const DefaultCellComponentForColumn = defaultCellByColumnId?.[cellProps.column.id];
@@ -376,11 +380,11 @@ export function BeeTable<R extends object>({
     [defaultCellByColumnId, readOnlyCells]
   );
 
-  const tdProps = useCallback(
+  const getTdProps = useCallback(
     (columnIndex: number, rowIndex: number) => ({
       onContextMenu: (e: ReactTable.ContextMenuEvent) => {
         const target = e.target as HTMLElement;
-        if (contextMenuIsAvailable(target)) {
+        if (isContextMenuAvailable(target)) {
           e.preventDefault();
           setAllowedOperations([
             ...getColumnOperations(columnIndex),
@@ -397,7 +401,7 @@ export function BeeTable<R extends object>({
         }
       },
     }),
-    [getColumnOperations, operationHandlerStateUpdate, contextMenuIsAvailable, reactTableColumns, rows, headerLevels]
+    [getColumnOperations, operationHandlerStateUpdate, isContextMenuAvailable, reactTableColumns, rows, headerLevels]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(
@@ -426,7 +430,8 @@ export function BeeTable<R extends object>({
         return getRowKey(row);
       } else {
         if (row.original) {
-          return (row.original as ReactTable.Row).id;
+          // FIXME: Tiago -> Bad typing.
+          return (row.original as any).id;
         }
         return row.id;
       }
@@ -502,7 +507,7 @@ export function BeeTable<R extends object>({
           getColumnKey={onGetColumnKey}
           headerVisibility={headerVisibility}
           onCellKeyDown={onCellKeyDown}
-          onColumnsUpdate={onColumnsUpdateCallback}
+          onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
           skipLastHeaderGroup={skipLastHeaderGroup}
           tableColumns={reactTableColumns}
           reactTableInstance={reactTableInstance}
@@ -513,10 +518,10 @@ export function BeeTable<R extends object>({
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
           onCellKeyDown={onCellKeyDown}
-          onColumnsUpdate={onColumnsUpdateCallback}
+          onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
           skipLastHeaderGroup={skipLastHeaderGroup}
           reactTableInstance={reactTableInstance}
-          tdProps={tdProps}
+          tdProps={getTdProps}
         >
           {children}
         </BeeTableBody>
@@ -524,19 +529,19 @@ export function BeeTable<R extends object>({
       {showTableOperationHandler && operationHandlerConfig && (
         <BeeTableOperationHandler<R>
           tableColumns={reactTableColumns}
-          getColumnPrefix={onGetColumnPrefix}
+          getNewColumnIdPrefix={onGetColumnPrefix}
           operationHandlerConfig={operationHandlerConfig}
           lastSelectedColumn={lastSelectedColumn}
           lastSelectedRowIndex={lastSelectedRowIndex}
           tableRows={tableRowsRef}
-          onRowsUpdate={onRowsUpdateCallback}
+          onRowsUpdate={callOnRowsUpdate}
           onNewRow={onNewRow}
           showTableOperationHandler={showTableOperationHandler}
           setShowTableOperationHandler={setShowTableOperationHandler}
           allowedOperations={allowedOperations}
           operationHandlerTarget={operationHandlerTarget}
           resetRowCustomFunction={resetRowCustomFunction}
-          onColumnsUpdate={onColumnsUpdateCallback}
+          onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
         />
       )}
     </div>

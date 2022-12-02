@@ -18,7 +18,6 @@ import { FeelInput, FeelInputRef, FeelEditorService } from "@kie-tools/feel-inpu
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BeeTableCell } from "../../api";
 import {
   blurActiveElement,
   focusCurrentCell,
@@ -45,13 +44,15 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
 export const READ_MODE = "editable-cell--read-mode";
 export const EDIT_MODE = "editable-cell--edit-mode";
 
-export interface BeeTableEditableCellContentProps extends BeeTableCell {
+export interface BeeTableEditableCellContentProps {
   /** Cell's value */
   value: string;
   /** Function executed each time a cell gets updated */
   onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
   /** Enable/Disable readonly cells */
   readOnly?: boolean;
+  rowIndex: number;
+  columnId: string;
 }
 
 export function BeeTableEditableCellContent({

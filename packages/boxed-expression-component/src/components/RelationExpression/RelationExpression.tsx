@@ -20,12 +20,12 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import "@patternfly/react-styles/css/utilities/Text/text.css";
 import {
-  BeeTableColumn as RelationColumn,
+  RelationExpressionDefinitionColumn,
   DmnBuiltInDataType,
   executeIfExpressionDefinitionChanged,
   generateUuid,
   RelationExpressionDefinition,
-  BeeTableRow,
+  RelationExpressionDefinitionRow,
   BeeTableRowsUpdateArgs,
   BeeTableOperation,
   ROWGENERICTYPE,
@@ -62,7 +62,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     },
   ];
 
-  const columns: RelationColumn[] = useMemo(
+  const columns: RelationExpressionDefinitionColumn[] = useMemo(
     () =>
       relationProps.columns === undefined
         ? [
@@ -77,12 +77,12 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [relationProps]
   );
 
-  const rows: BeeTableRow[] = useMemo(() => {
+  const rows: RelationExpressionDefinitionRow[] = useMemo(() => {
     return relationProps.rows === undefined ? [{ id: generateUuid(), cells: [""] }] : relationProps.rows;
   }, [relationProps]);
 
   const spreadRelationExpressionDefinition = useCallback(
-    (newColumns?: RelationColumn[], newRows?: BeeTableRow[]) => {
+    (newColumns?: RelationExpressionDefinitionColumn[], newRows?: RelationExpressionDefinitionRow[]) => {
       const expressionDefinition = {
         ...relationProps,
         columns: newColumns ?? columns,
@@ -108,7 +108,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
     () =>
       columns.map(
-        (column: RelationColumn) =>
+        (column: RelationExpressionDefinitionColumn) =>
           ({
             accessor: column.id,
             label: column.name,
@@ -153,14 +153,22 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   );
 
   const onColumnsUpdate = useCallback(
-    ({ columns, operation, columnIndex }) => {
-      const newColumns = columns.map((columnInstance: ReactTable.ColumnInstance<ROWGENERICTYPE>) => ({
+    ({
+      columns,
+      operation,
+      columnIndex,
+    }: {
+      columns: ReactTable.ColumnInstance<ROWGENERICTYPE>[];
+      operation: BeeTableOperation;
+      columnIndex: number;
+    }) => {
+      const newColumns = columns.map((columnInstance) => ({
         id: columnInstance.accessor,
         name: columnInstance.label,
         dataType: columnInstance.dataType,
         width: columnInstance.width,
       }));
-      const newRows = rows.map((tableRow: BeeTableRow) => {
+      const newRows = rows.map((tableRow) => {
         switch (operation) {
           case BeeTableOperation.ColumnInsertLeft:
             return {

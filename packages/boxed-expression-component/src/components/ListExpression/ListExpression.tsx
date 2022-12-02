@@ -30,7 +30,6 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   ROWGENERICTYPE,
-  ExpressionDefinition,
 } from "../../api";
 import { ContextEntryExpressionCell } from "../ContextExpression";
 import { BeeTable } from "../BeeTable";
@@ -164,7 +163,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     return (row.original as ContextExpressionDefinitionEntry).entryExpression.id!;
   }, []);
 
-  const defaultCellByColumnName = useMemo(
+  const defaultCellByColumnId = useMemo(
     () => ({
       list: ContextEntryExpressionCell,
     }),
@@ -176,7 +175,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
       <BeeTable
         tableId={listExpression.id}
         headerVisibility={BeeTableHeaderVisibility.None}
-        defaultCellByColumnId={defaultCellByColumnName}
+        defaultCellByColumnId={defaultCellByColumnId}
         columns={beeTableColumns}
         rows={beeTableRows}
         onRowsUpdate={onRowsUpdate}

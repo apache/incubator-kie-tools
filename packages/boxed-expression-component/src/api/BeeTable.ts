@@ -37,7 +37,7 @@ export interface BeeTableProps<R extends object> {
   /** Optional children element to be appended below the table content */
   children?: React.ReactElement[];
   /** Gets the prefix to be used for the next column name */
-  getColumnPrefix?: (groupType?: string) => string;
+  getNewColumnIdPrefix?: (groupType?: string) => string;
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
   editColumnLabel?: string | { [groupType: string]: string };
   /** Option to enable or disable header edits */
@@ -45,7 +45,9 @@ export interface BeeTableProps<R extends object> {
   /** Top-left cell custom content */
   controllerCell?: string | JSX.Element;
   /** For each column there is a default component to be used to render the related cell */
-  defaultCellByColumnId?: { [columnId: string]: React.FunctionComponent<BeeTableCell> };
+  defaultCellByColumnId?: {
+    [columnId: string]: React.FunctionComponent<{ data: any; rowIndex: number; columnId: string }>;
+  };
   /** Table's columns */
   columns: ReactTable.ColumnInstance<R>[];
   /** Table's cells */
@@ -72,7 +74,7 @@ export interface BeeTableProps<R extends object> {
   resetRowCustomFunction?: (row: R) => R;
   /** Disable/Enable cell edits. Enabled by default */
   readOnlyCells?: boolean;
-  /** Enable the  Keyboar Navigation */
+  /** Enable keyboard navigation */
   enableKeyboardNavigation?: boolean;
 }
 
@@ -112,14 +114,14 @@ export type BeeTableOperationHandlerConfig =
   | BeeTableOperationHandlerGroup[]
   | { [columnGroupType: string]: BeeTableOperationHandlerGroup[] };
 
-export type BeeTableRow = {
+export type RelationExpressionDefinitionRow = {
   /** Row identifier */
   id: string;
   /** Cells */
   cells: string[];
 };
 
-export interface BeeTableColumn {
+export interface RelationExpressionDefinitionColumn {
   /** Column identifier */
   id: string;
   /** Column name */
@@ -127,16 +129,9 @@ export interface BeeTableColumn {
   /** Column data type */
   dataType: DmnBuiltInDataType;
   /** Column width */
-  width?: string | number;
+  width?: number;
   /** Set column width */
   setWidth?: (width: string | number) => void;
-}
-
-export interface BeeTableCell {
-  /** Cell's row properties */
-  rowIndex: number;
-  /** Cell's column properties */
-  columnId: string;
 }
 
 /**

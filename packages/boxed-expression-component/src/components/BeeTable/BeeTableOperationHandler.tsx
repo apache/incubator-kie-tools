@@ -27,7 +27,7 @@ import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
 export interface BeeTableOperationHandlerProps<R extends object> {
   /** Gets the prefix to be used for the next column name */
-  getColumnPrefix: (groupType?: string) => string;
+  getNewColumnIdPrefix: (groupType?: string) => string;
   /** Columns instance */
   tableColumns: ReactTable.ColumnInstance<R>[];
   /** Last selected column */
@@ -61,7 +61,7 @@ export interface BeeTableOperationHandlerProps<R extends object> {
 }
 
 export function BeeTableOperationHandler<R extends object>({
-  getColumnPrefix,
+  getNewColumnIdPrefix,
   tableColumns,
   lastSelectedColumn,
   lastSelectedRowIndex,
@@ -129,11 +129,11 @@ export function BeeTableOperationHandler<R extends object>({
 
   const generateNextAvailableColumnName: (lastIndex: number, groupType?: string) => string = useCallback(
     (lastIndex, groupType) => {
-      const candidateName = `${getColumnPrefix(groupType)}${lastIndex}`;
+      const candidateName = `${getNewColumnIdPrefix(groupType)}${lastIndex}`;
       const columnWithCandidateName = _.find(getColumnsAtLastLevel(tableColumns), { label: candidateName });
       return columnWithCandidateName ? generateNextAvailableColumnName(lastIndex + 1, groupType) : candidateName;
     },
-    [getColumnPrefix, tableColumns]
+    [getNewColumnIdPrefix, tableColumns]
   );
 
   const getLengthOfColumnsByGroupType = useCallback((columns: ReactTable.ColumnInstance<R>[], groupType: string) => {

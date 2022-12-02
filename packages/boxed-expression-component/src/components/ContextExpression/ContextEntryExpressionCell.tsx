@@ -17,21 +17,16 @@
 import "./ContextEntryExpressionCell.css";
 import * as React from "react";
 import { useCallback } from "react";
-import {
-  BeeTableCell,
-  DmnBuiltInDataType,
-  ContextExpressionDefinitionEntry,
-  ROWGENERICTYPE,
-  ExpressionDefinition,
-} from "../../api";
-import * as ReactTable from "react-table";
+import { DmnBuiltInDataType, ContextExpressionDefinitionEntry, ROWGENERICTYPE, ExpressionDefinition } from "../../api";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import * as _ from "lodash";
 
-export interface ContextEntryExpressionCellProps extends BeeTableCell {
+export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
   data: ContextExpressionDefinitionEntry[];
   onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void;
+  rowIndex: number;
+  columnId: string;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
@@ -43,11 +38,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
   const onUpdatingRecursiveExpression = useCallback(
     function (expression: ExpressionDefinition) {
       const updatedEntryInfo = { ...contextEntries[rowIndex].entryInfo };
-      if (
-        contextEntries[rowIndex].nameAndDataTypeSynchronized &&
-        _.size(expression.name) &&
-        _.size(expression.dataType)
-      ) {
+      if (_.size(expression.name) && _.size(expression.dataType)) {
         updatedEntryInfo.name = expression.name as string;
         updatedEntryInfo.dataType = expression.dataType as DmnBuiltInDataType;
       }

@@ -25,7 +25,6 @@ import {
   ExpressionDefinitionLogicType,
   ROWGENERICTYPE,
 } from "@kie-tools/boxed-expression-component/dist/api";
-import * as ReactTable from "react-table";
 
 jest.useFakeTimers();
 
@@ -92,7 +91,10 @@ describe("ContextEntryInfoCell tests", () => {
         name: newValue,
         dataType,
       },
-      entryExpression: emptyExpression,
+      entryExpression: {
+        ...emptyExpression,
+        name: newValue,
+      },
     });
   });
 });

@@ -66,7 +66,7 @@ export interface BeeTableWrapperProps {
 }
 
 export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumberUpdate }: BeeTableWrapperProps) {
-  const getColumnPrefix = useCallback((groupType?: string) => {
+  const getNewColumnIdPrefix = useCallback((groupType?: string) => {
     switch (groupType) {
       case UnitablesBeeTableWrapperColumnType.InputClause:
         return "input-";
@@ -310,7 +310,7 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
               editableHeader={false}
               headerLevels={1}
               headerVisibility={BeeTableHeaderVisibility.Full}
-              getColumnPrefix={getColumnPrefix}
+              getNewColumnIdPrefix={getNewColumnIdPrefix}
               editColumnLabel={editColumnLabel}
               operationHandlerConfig={beeTableOperationConfig}
               columns={beeTableColumns}

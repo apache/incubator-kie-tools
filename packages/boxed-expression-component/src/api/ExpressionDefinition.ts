@@ -32,7 +32,10 @@ import {
   JavaFunctionExpressionDefinition,
   PmmlFunctionExpressionDefinition,
 } from "./FunctionExpressionDefinitionKind";
-import { BeeTableColumn, BeeTableRow } from "./BeeTable";
+import {
+  RelationExpressionDefinitionColumn as RelationExpressionDefinitionColumn,
+  RelationExpressionDefinitionRow as RelationExpressionDefinitionRow,
+} from "./BeeTable";
 
 interface ExpressionDefinitionBase {
   /** Unique identifier used to identify the expression */
@@ -79,9 +82,9 @@ export interface RelationExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Relation */
   logicType: ExpressionDefinitionLogicType.Relation;
   /** Each column has a name and a data type. Their order is from left to right */
-  columns?: BeeTableColumn[];
+  columns?: RelationExpressionDefinitionColumn[];
   /** Rows order is from top to bottom. Each row has a collection of cells, one for each column */
-  rows?: BeeTableRow[];
+  rows?: RelationExpressionDefinitionRow[];
 }
 
 export interface ContextExpressionDefinition extends ExpressionDefinitionBase {

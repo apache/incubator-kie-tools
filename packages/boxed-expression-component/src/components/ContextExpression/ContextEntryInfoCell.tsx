@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import { BeeTableCell, ContextExpressionDefinitionEntry, ExpressionDefinition, ROWGENERICTYPE } from "../../api";
+import { ContextExpressionDefinitionEntry, ExpressionDefinition, ROWGENERICTYPE } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import * as ReactTable from "react-table";
 import { ContextEntryInfo } from "./ContextEntryInfo";
 import * as _ from "lodash";
 
-export interface ContextEntryInfoCellProps extends BeeTableCell {
+export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
   data: ContextExpressionDefinitionEntry[];
   onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void;
   editInfoPopoverLabel?: string;
+  rowIndex: number;
+  columnId: string;
 }
 
 export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellProps> = ({
@@ -41,7 +42,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const onContextEntryUpdate = useCallback(
     ({ name, dataType }: Pick<ExpressionDefinition, "name" | "dataType">) => {
       const updatedExpression = { ...entryExpression };
-      if (contextEntry.nameAndDataTypeSynchronized && _.size(name) && _.size(dataType)) {
+      if (_.size(name) && _.size(dataType)) {
         updatedExpression.name = name;
         updatedExpression.dataType = dataType;
       }
@@ -65,8 +66,4 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
       />
     </div>
   );
-};
-
-export const getContextEntryInfoCell = (editInfoPopoverLabel: string) => {
-  return (props: ContextEntryInfoCellProps) => ContextEntryInfoCell({ ...props, editInfoPopoverLabel });
 };

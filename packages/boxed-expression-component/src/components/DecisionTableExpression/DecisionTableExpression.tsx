@@ -63,7 +63,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
 
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  const getColumnPrefix = useCallback((groupType?: string) => {
+  const getNewColumnIdPrefix = useCallback((groupType?: string) => {
     switch (groupType) {
       case DecisionTableColumnType.InputClause:
         return "input-";
@@ -430,7 +430,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       <BeeTable
         headerLevels={1}
         headerVisibility={BeeTableHeaderVisibility.Full}
-        getColumnPrefix={getColumnPrefix}
+        getNewColumnIdPrefix={getNewColumnIdPrefix}
         editColumnLabel={getEditColumnLabel}
         operationHandlerConfig={operationHandlerConfig}
         columns={beeTableColumns}
