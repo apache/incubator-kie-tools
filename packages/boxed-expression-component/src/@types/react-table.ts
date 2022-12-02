@@ -45,6 +45,8 @@ declare module "react-table" {
     accessor: string;
     /** Column group type */
     groupType?: string;
+    /** Current column is an empty TH element, created by react-table to fill a missing header cell element */
+    placeholderOf?: ColumnInstance<D> | undefined;
     /** Used to indicate that column operation should be performed directly on column's children */
     appendColumnsOnChildren?: boolean;
     /** Column additive css classes - appended as passed */
@@ -66,7 +68,5 @@ declare module "react-table" {
     width: number;
     setWidth?: (width: number) => void;
     cellDelegate?: (id: string) => React.ReactNode;
-
-    placeholderOf?: ColumnInstance<D> | undefined;
   }
 }
