@@ -74,10 +74,8 @@ public class C3BarChartDisplayer extends C3XYDisplayer<C3BarChartDisplayer.View>
     
     @Override
     public DisplayerConstraints createDisplayerConstraints() {
-        DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setGroupRequired(true)
-                .setGroupColumn(true)
-                .setMaxColumns(10)
+        DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()                
+                .setMaxColumns(20)
                 .setMinColumns(2)
                 .setExtraColumnsAllowed(true)
                 .setExtraColumnsType( ColumnType.NUMBER)

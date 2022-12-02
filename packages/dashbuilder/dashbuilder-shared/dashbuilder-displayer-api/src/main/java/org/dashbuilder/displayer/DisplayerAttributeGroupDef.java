@@ -47,6 +47,8 @@ public class DisplayerAttributeGroupDef extends DisplayerAttributeDef {
     
     public static final DisplayerAttributeGroupDef MAP_GROUP = new DisplayerAttributeGroupDef( "map" );
     
+    public static final DisplayerAttributeGroupDef BUBBLE_GROUP = new DisplayerAttributeGroupDef( "bubble" );
+    
     public static final DisplayerAttributeGroupDef EXTERNAL_COMPONENT_GROUP = new DisplayerAttributeGroupDef( "external" );
 
     // SUBGROUPS
