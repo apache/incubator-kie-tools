@@ -40,9 +40,9 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** Columns instance */
-  tableColumns: ReactTable.ColumnInstance<R>[];
+  tableColumns: ReactTable.Column<R>[];
   /** Function to be executed when columns are modified */
-  onColumnsUpdate: (columns: ReactTable.ColumnInstance<R>[]) => void;
+  onColumnsUpdate: (columns: ReactTable.Column<R>[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Th props */
@@ -88,10 +88,10 @@ export function BeeTableHeader<R extends object>({
   >(
     (column, columnIndex) => {
       return ({ name = "", dataType = DmnBuiltInDataType.Undefined }) => {
-        let columnToUpdate: ReactTable.ColumnInstance<R> | undefined = tableColumns[columnIndex];
+        let columnToUpdate: ReactTable.Column<R> | undefined = tableColumns[columnIndex];
         if (column.depth > 0) {
-          const columnsBelongingToParent = _.find(tableColumns, { accessor: column.parent?.id })?.columns;
-          columnToUpdate = _.find(columnsBelongingToParent ?? [], { accessor: column.id });
+          const columnsBelongingToParent = tableColumns.find((s) => s.accessor === column.parent?.id)?.columns;
+          columnToUpdate = (columnsBelongingToParent ?? []).find((s) => s.accessor === column.id);
         }
 
         if (columnToUpdate) {

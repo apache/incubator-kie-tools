@@ -29,7 +29,7 @@ export interface BeeTableOperationHandlerProps<R extends object> {
   /** Gets the prefix to be used for the next column name */
   getNewColumnIdPrefix: (groupType?: string) => string;
   /** Columns instance */
-  tableColumns: ReactTable.ColumnInstance<R>[];
+  tableColumns: ReactTable.Column<R>[];
   /** Last selected column */
   lastSelectedColumn: ReactTable.ColumnInstance<R> | undefined;
   /** Last selected row index */
@@ -53,11 +53,7 @@ export interface BeeTableOperationHandlerProps<R extends object> {
   /** Custom function called for manually resetting a row */
   resetRowCustomFunction?: (row: R) => R;
   /** Function to be executed when columns are modified */
-  onColumnsUpdate: (
-    columns: ReactTable.ColumnInstance<R>[],
-    operation?: BeeTableOperation,
-    columnIndex?: number
-  ) => void;
+  onColumnsUpdate: (columns: ReactTable.Column<R>[], operation?: BeeTableOperation, columnIndex?: number) => void;
 }
 
 export function BeeTableOperationHandler<R extends object>({
@@ -136,12 +132,12 @@ export function BeeTableOperationHandler<R extends object>({
     [getNewColumnIdPrefix, tableColumns]
   );
 
-  const getLengthOfColumnsByGroupType = useCallback((columns: ReactTable.ColumnInstance<R>[], groupType: string) => {
-    const columnsByGroupType = _.groupBy(columns, (column: ReactTable.ColumnInstance<R>) => column.groupType);
+  const getLengthOfColumnsByGroupType = useCallback((columns: ReactTable.Column<R>[], groupType: string) => {
+    const columnsByGroupType = _.groupBy(columns, (column) => column.groupType);
     return columnsByGroupType[groupType]?.length;
   }, []);
 
-  const generateNextAvailableColumn = useCallback((): ReactTable.ColumnInstance<R> => {
+  const generateNextAvailableColumn = useCallback((): ReactTable.Column<R> => {
     const groupType = selectedColumn?.groupType;
     const cssClasses = selectedColumn?.cssClasses;
     const columns = getColumnsAtLastLevel(tableColumns);
@@ -156,12 +152,12 @@ export function BeeTableOperationHandler<R extends object>({
       groupType,
       cssClasses,
       isRowIndexColumn: false,
-    } as ReactTable.ColumnInstance<R>;
+    };
   }, [generateNextAvailableColumnName, getLengthOfColumnsByGroupType, selectedColumn, tableColumns]);
 
   /** These column operations have impact also on the collection of cells */
   const updateColumnsThenRows = useCallback(
-    (operation?: BeeTableOperation, columnIndex?: number, updatedColumns?: ReactTable.ColumnInstance<R>[]) => {
+    (operation?: BeeTableOperation, columnIndex?: number, updatedColumns?: ReactTable.Column<R>[]) => {
       if (updatedColumns) {
         onColumnsUpdate([...updatedColumns], operation, columnIndex);
       } else {
@@ -191,7 +187,7 @@ export function BeeTableOperationHandler<R extends object>({
       operation: BeeTableOperation
     ) => {
       if (selectedColumn?.parent) {
-        const parent = _.find(tableColumns, areEqualColumns(selectedColumn.parent)) as ReactTable.ColumnInstance<R>;
+        const parent = _.find(tableColumns, areEqualColumns(selectedColumn.parent)) as ReactTable.Column<R>;
         parent.columns = operationCallback(
           parent.columns!,
           _.findIndex(parent.columns, areEqualColumns(selectedColumn)),
@@ -202,7 +198,7 @@ export function BeeTableOperationHandler<R extends object>({
           appendOnColumnChildren(operationCallback);
         } else {
           let columnIndex = -1;
-          for (const column of tableColumns as Array<ReactTable.ColumnInstance<R>>) {
+          for (const column of tableColumns) {
             const foundIndex = column.columns?.findIndex(areEqualColumns(selectedColumn));
             if (column.columns && foundIndex !== undefined && foundIndex !== -1) {
               column.columns = operationCallback(column.columns!, foundIndex, generateNextAvailableColumn());

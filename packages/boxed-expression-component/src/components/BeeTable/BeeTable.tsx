@@ -201,7 +201,7 @@ export function BeeTable<R extends object>({
 
       addRowIndexColumnsRecursively(rowIndexColumn, headerLevelCount);
 
-      // This is a special case because the controller cell doesn't have a dataType, but...
+      // FIXME: Tiago -> This is a special case because the controller cell doesn't have a dataType, but...
       return [rowIndexColumn as ReactTable.Column<R>, ...columns];
     },
     [addRowIndexColumnsRecursively, headerLevelCount]
@@ -239,7 +239,7 @@ export function BeeTable<R extends object>({
   }, [rows]);
 
   const callOnColumnsUpdateWithoutRowIndexColumn = useCallback<
-    (columns: ReactTable.ColumnInstance<R>[], operation?: BeeTableOperation, columnIndex?: number) => void
+    (columns: ReactTable.Column<R>[], operation?: BeeTableOperation, columnIndex?: number) => void
   >(
     (columns, operation, columnIndex) => {
       const originalColumns = columns.slice(1); //Removing row index column

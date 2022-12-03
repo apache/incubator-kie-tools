@@ -210,12 +210,15 @@ function createContext() {
                               name: "ContextEntry-1",
                               dataType: "<Undefined>",
                             },
-                            entryExpression: {},
+                            entryExpression: {
+                              logicType: "<Undefined>",
+                            },
                             editInfoPopoverLabel: "Edit Context Entry",
                           },
                         ],
                         result: {
                           id: "id7",
+                          logicType: "<Undefined>",
                         },
                         entryInfoWidth: 257,
                         entryExpressionWidth: 370,
@@ -225,6 +228,7 @@ function createContext() {
                   ],
                   result: {
                     id: "id5",
+                    logicType: "<Undefined>",
                   },
                   entryInfoWidth: 713,
                   entryExpressionWidth: 691,
@@ -234,6 +238,7 @@ function createContext() {
             ],
             result: {
               id: "id3",
+              logicType: "<Undefined>",
             },
             entryInfoWidth: 150,
             entryExpressionWidth: 1468,

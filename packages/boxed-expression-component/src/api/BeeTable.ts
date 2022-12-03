@@ -19,7 +19,7 @@ import * as React from "react";
 import * as ReactTable from "react-table";
 
 export interface BeeTableColumnsUpdateArgs<R extends object> {
-  columns: ReactTable.ColumnInstance<R>[];
+  columns: ReactTable.Column<R>[];
   operation?: BeeTableOperation;
   columnIndex?: number;
 }

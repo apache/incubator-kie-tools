@@ -38,7 +38,7 @@ export interface BeeTableBodyProps<R extends object> {
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** Function to be executed when columns are modified */
-  onColumnsUpdate: (columns: ReactTable.ColumnInstance<R>[]) => void;
+  onColumnsUpdate: (columns: ReactTable.Column<R>[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */

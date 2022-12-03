@@ -25,7 +25,7 @@ export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProp
   cell: ReactTable.Cell<R>;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   shouldUseCellDelegate: boolean;
-  onColumnsUpdate: (columns: ReactTable.ColumnInstance<R>[]) => void;
+  onColumnsUpdate: (columns: ReactTable.Column<R>[]) => void;
   reactTableInstance: ReactTable.TableInstance<R>;
   getTdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
@@ -59,8 +59,9 @@ export function BeeTableTd<R extends object>({
   const onResize = (width: number) => {
     if (column.setWidth) {
       column.setWidth(width);
-      reactTableInstance.allColumns[index].width = width;
-      onColumnsUpdate?.(reactTableInstance.columns);
+      // reactTableInstance.allColumns[index].width = width;
+      // // FIXME: Tiago -> Not good.
+      // onColumnsUpdate?.(reactTableInstance.columns as unknown as ReactTable.Column<R>[]);
     }
   };
   const tdContent =
