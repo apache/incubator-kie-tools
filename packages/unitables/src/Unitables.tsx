@@ -60,7 +60,7 @@ interface Props {
 export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRef) => {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-  const inputColumnsCache = useRef<ReactTable.ColumnInstance[]>([]);
+  const inputColumnsCache = useRef<ReactTable.Column[]>([]);
 
   const { inputs, inputRows, updateInputCellsWidth, operationHandler } = useUnitablesInputs(
     props.jsonSchemaBridge,
@@ -77,7 +77,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
 
   // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
   const onInputColumnsUpdate = useCallback(
-    (columns: ReactTable.ColumnInstance[]) => {
+    (columns: ReactTable.Column[]) => {
       inputColumnsCache.current = columns;
       updateInputCellsWidth(inputs);
     },

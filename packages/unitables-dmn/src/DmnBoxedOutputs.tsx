@@ -51,7 +51,7 @@ export function useDmnBoxedOutputs(
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined,
   rowCount: number,
-  outputColumnsCache: React.MutableRefObject<ReactTable.ColumnInstance[]>
+  outputColumnsCache: React.MutableRefObject<ReactTable.Column[]>
 ) {
   const updateOutputCellsWidth = useCallback(
     (outputs: OutputFields[]) => {

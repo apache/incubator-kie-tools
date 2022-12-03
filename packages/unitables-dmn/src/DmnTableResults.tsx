@@ -47,7 +47,7 @@ interface Props {
 export function DmnTableResults(props: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const outputColumnsCache = useRef<ReactTable.ColumnInstance[]>([]);
+  const outputColumnsCache = useRef<ReactTable.Column[]>([]);
 
   const [outputError, setOutputError] = useState<boolean>(false);
 
@@ -59,7 +59,7 @@ export function DmnTableResults(props: Props) {
   );
 
   const onOutputColumnsUpdate = useCallback(
-    (columns: ReactTable.ColumnInstance[]) => {
+    (columns: ReactTable.Column[]) => {
       outputColumnsCache.current = columns;
       updateOutputCellsWidth(outputs);
     },

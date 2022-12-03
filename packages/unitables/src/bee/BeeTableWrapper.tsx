@@ -60,7 +60,7 @@ export interface BeeTableWrapperProps {
         outputs?: UnitablesCell[];
       };
   /** Callback to be called when columns is updated */
-  onColumnsUpdate: (columns: ReactTable.ColumnInstance[]) => void;
+  onColumnsUpdate: (columns: ReactTable.Column[]) => void;
   /** Callback to be called when row number is updated */
   onRowNumberUpdate?: (rowQtt: number, operation?: BeeTableOperation, updatedRowIndex?: number) => void;
 }

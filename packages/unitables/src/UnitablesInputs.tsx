@@ -43,7 +43,7 @@ export function useUnitablesInputs(
   setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>,
   rowCount: number,
   formsDivRendered: boolean,
-  inputColumnsCache: React.MutableRefObject<ReactTable.ColumnInstance[]>,
+  inputColumnsCache: React.MutableRefObject<ReactTable.Column[]>,
   propertiesEntryPath = "definitions"
 ) {
   const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);
