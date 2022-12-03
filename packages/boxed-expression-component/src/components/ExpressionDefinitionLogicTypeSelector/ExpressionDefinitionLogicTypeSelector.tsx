@@ -14,37 +14,28 @@
  * limitations under the License.
  */
 
-import "./ExpressionDefinitionLogicTypeSelector.css";
+import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
+import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import {
-  ContextExpressionDefinition,
-  DmnBuiltInDataType,
-  DecisionTableExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-  FunctionExpressionDefinition,
-  generateUuid,
-  InvocationExpressionDefinition,
-  ListExpressionDefinition,
-  LiteralExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  PmmlLiteralExpressionDefinition,
-  RelationExpressionDefinition,
   ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  FunctionExpressionDefinitionKind,
+  generateUuid,
 } from "../../api";
-import { LiteralExpression, PmmlLiteralExpression } from "../LiteralExpression";
-import { RelationExpression } from "../RelationExpression";
-import { ContextExpression } from "../ContextExpression";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { PopoverMenu } from "../PopoverMenu";
-import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
-import * as _ from "lodash";
 import { useContextMenuHandler } from "../../hooks";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { ContextExpression } from "../ContextExpression";
 import { DecisionTableExpression } from "../DecisionTableExpression";
-import { ListExpression } from "../ListExpression";
-import { InvocationExpression } from "../InvocationExpression";
 import { FunctionExpression } from "../FunctionExpression";
+import { InvocationExpression } from "../InvocationExpression";
+import { ListExpression } from "../ListExpression";
+import { LiteralExpression, PmmlLiteralExpression } from "../LiteralExpression";
+import { PopoverMenu } from "../PopoverMenu";
+import { RelationExpression } from "../RelationExpression";
+import "./ExpressionDefinitionLogicTypeSelector.css";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -105,21 +96,22 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
     const { setContextMenuOpen } = useBoxedExpressionEditor();
 
     const renderExpression = useMemo(() => {
-      switch (expression.logicType) {
+      const logicType = expression.logicType;
+      switch (logicType) {
         case ExpressionDefinitionLogicType.LiteralExpression:
-          return <LiteralExpression {...(expression as LiteralExpressionDefinition)} />;
+          return <LiteralExpression {...expression} />;
         case ExpressionDefinitionLogicType.PmmlLiteralExpression:
-          return <PmmlLiteralExpression {...(expression as PmmlLiteralExpressionDefinition)} />;
+          return <PmmlLiteralExpression {...expression} />;
         case ExpressionDefinitionLogicType.Relation:
-          return <RelationExpression {...(expression as RelationExpressionDefinition)} />;
+          return <RelationExpression {...expression} />;
         case ExpressionDefinitionLogicType.Context:
-          return <ContextExpression {...(expression as ContextExpressionDefinition)} />;
+          return <ContextExpression {...expression} />;
         case ExpressionDefinitionLogicType.DecisionTable:
-          return <DecisionTableExpression {...(expression as DecisionTableExpressionDefinition)} />;
+          return <DecisionTableExpression {...expression} />;
         case ExpressionDefinitionLogicType.Invocation:
-          return <InvocationExpression {...(expression as InvocationExpressionDefinition)} />;
+          return <InvocationExpression {...expression} />;
         case ExpressionDefinitionLogicType.List:
-          return <ListExpression {...(expression as ListExpressionDefinition)} />;
+          return <ListExpression {...expression} />;
         case ExpressionDefinitionLogicType.Function:
           return (
             <FunctionExpression
@@ -128,8 +120,10 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
               })}
             />
           );
+        case ExpressionDefinitionLogicType.Undefined:
+          return <></>; // Shouldn't ever reach this point, though
         default:
-          return expression.logicType;
+          assertUnreachable(logicType);
       }
     }, [expression]);
 
@@ -261,3 +255,7 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
       </div>
     );
   };
+
+export function assertUnreachable(_x: never): never {
+  throw new Error("Didn't expect to get here");
+}
