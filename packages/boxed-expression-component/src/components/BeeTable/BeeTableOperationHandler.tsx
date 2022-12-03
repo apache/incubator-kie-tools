@@ -22,7 +22,7 @@ import * as ReactTable from "react-table";
 import { Popover } from "@patternfly/react-core";
 import { BeeTableOperationHandlerMenu } from "./BeeTableOperationHandlerMenu";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./BeeTable";
+import { getColumnsAtLastLevel, areEqualColumns } from "./BeeTable";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
 export interface BeeTableOperationHandlerProps<R extends object> {
@@ -141,7 +141,7 @@ export function BeeTableOperationHandler<R extends object>({
     return columnsByGroupType[groupType]?.length;
   }, []);
 
-  const generateNextAvailableColumn = useCallback(() => {
+  const generateNextAvailableColumn = useCallback((): ReactTable.ColumnInstance<R> => {
     const groupType = selectedColumn?.groupType;
     const cssClasses = selectedColumn?.cssClasses;
     const columns = getColumnsAtLastLevel(tableColumns);
@@ -149,12 +149,13 @@ export function BeeTableOperationHandler<R extends object>({
     const nextAvailableColumnName = generateNextAvailableColumnName(columnsLength, groupType);
 
     return {
-      accessor: generateUuid(),
+      accessor: generateUuid() as any,
       label: nextAvailableColumnName,
-      ...(selectedColumn?.dataType ? { dataType: DmnBuiltInDataType.Undefined } : {}),
+      dataType: selectedColumn?.dataType ?? DmnBuiltInDataType.Undefined,
       inlineEditable: selectedColumn?.inlineEditable,
       groupType,
       cssClasses,
+      isRowIndexColumn: false,
     } as ReactTable.ColumnInstance<R>;
   }, [generateNextAvailableColumnName, getLengthOfColumnsByGroupType, selectedColumn, tableColumns]);
 
@@ -173,7 +174,7 @@ export function BeeTableOperationHandler<R extends object>({
 
   const appendOnColumnChildren = useCallback(
     (operation: <T extends unknown>(elements: T[], index: number, element: T) => T[]) => {
-      const children = _.find(tableColumns, getColumnSearchPredicate(selectedColumn))?.columns;
+      const children = tableColumns.find(areEqualColumns(selectedColumn))?.columns;
       if (operation === insertBefore) {
         children?.unshift(generateNextAvailableColumn());
       } else if (operation === insertAfter) {
@@ -190,13 +191,10 @@ export function BeeTableOperationHandler<R extends object>({
       operation: BeeTableOperation
     ) => {
       if (selectedColumn?.parent) {
-        const parent = _.find(
-          tableColumns,
-          getColumnSearchPredicate(selectedColumn.parent)
-        ) as ReactTable.ColumnInstance<R>;
+        const parent = _.find(tableColumns, areEqualColumns(selectedColumn.parent)) as ReactTable.ColumnInstance<R>;
         parent.columns = operationCallback(
           parent.columns!,
-          _.findIndex(parent.columns, getColumnSearchPredicate(selectedColumn)),
+          _.findIndex(parent.columns, areEqualColumns(selectedColumn)),
           generateNextAvailableColumn()
         );
       } else {
@@ -205,7 +203,7 @@ export function BeeTableOperationHandler<R extends object>({
         } else {
           let columnIndex = -1;
           for (const column of tableColumns as Array<ReactTable.ColumnInstance<R>>) {
-            const foundIndex = column.columns?.findIndex(getColumnSearchPredicate(selectedColumn));
+            const foundIndex = column.columns?.findIndex(areEqualColumns(selectedColumn));
             if (column.columns && foundIndex !== undefined && foundIndex !== -1) {
               column.columns = operationCallback(column.columns!, foundIndex, generateNextAvailableColumn());
               columnIndex = foundIndex;
@@ -215,7 +213,7 @@ export function BeeTableOperationHandler<R extends object>({
           if (columnIndex !== -1) {
             updateColumnsThenRows(operation, columnIndex, tableColumns);
           } else {
-            const columnIndex = _.findIndex(tableColumns, getColumnSearchPredicate(selectedColumn));
+            const columnIndex = _.findIndex(tableColumns, areEqualColumns(selectedColumn));
             const updatedColumns = operationCallback(tableColumns, columnIndex, generateNextAvailableColumn());
             updateColumnsThenRows(operation, columnIndex, updatedColumns);
           }

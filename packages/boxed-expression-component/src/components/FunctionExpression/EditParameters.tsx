@@ -76,10 +76,12 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
   );
 
   const onParameterRemove = useCallback(
-    (index: number) => () => {
-      beeGwtService?.notifyUserAction();
-      setParameters([...parameters.slice(0, index), ...parameters.slice(index + 1)]);
-    },
+    (index: number): React.MouseEventHandler<HTMLButtonElement> =>
+      (e) => {
+        e.stopPropagation();
+        beeGwtService?.notifyUserAction();
+        setParameters([...parameters.slice(0, index), ...parameters.slice(index + 1)]);
+      },
     [beeGwtService, parameters, setParameters]
   );
 

@@ -29,6 +29,7 @@ import {
   BeeTableRowsUpdateArgs,
   BeeTableOperation,
   ROWGENERICTYPE,
+  BeeTableColumnsUpdateArgs,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -37,9 +38,10 @@ import { DEFAULT_MIN_WIDTH } from "../Resizer";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export const RelationExpression: React.FunctionComponent<RelationExpressionDefinition> = (
-  relationProps: RelationExpressionDefinition
+  relationExpression: RelationExpressionDefinition
 ) => {
   const FIRST_COLUMN_NAME = "column-1";
+
   const { i18n } = useBoxedExpressionEditorI18n();
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -64,7 +66,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
 
   const columns: RelationExpressionDefinitionColumn[] = useMemo(
     () =>
-      relationProps.columns === undefined
+      relationExpression.columns === undefined
         ? [
             {
               id: generateUuid(),
@@ -73,28 +75,28 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
               width: DEFAULT_MIN_WIDTH,
             },
           ]
-        : relationProps.columns,
-    [relationProps]
+        : relationExpression.columns,
+    [relationExpression]
   );
 
   const rows: RelationExpressionDefinitionRow[] = useMemo(() => {
-    return relationProps.rows === undefined ? [{ id: generateUuid(), cells: [""] }] : relationProps.rows;
-  }, [relationProps]);
+    return relationExpression.rows ?? [{ id: generateUuid(), cells: [""] }];
+  }, [relationExpression]);
 
   const spreadRelationExpressionDefinition = useCallback(
     (newColumns?: RelationExpressionDefinitionColumn[], newRows?: RelationExpressionDefinitionRow[]) => {
       const expressionDefinition = {
-        ...relationProps,
+        ...relationExpression,
         columns: newColumns ?? columns,
         rows: newRows ?? rows,
       };
 
       executeIfExpressionDefinitionChanged(
-        relationProps,
+        relationExpression,
         expressionDefinition,
         () => {
-          if (relationProps.isHeadless) {
-            relationProps.onUpdatingRecursiveExpression?.(expressionDefinition);
+          if (relationExpression.isHeadless) {
+            relationExpression.onUpdatingRecursiveExpression?.(expressionDefinition);
           } else {
             beeGwtService?.broadcastRelationExpressionDefinition?.(expressionDefinition);
           }
@@ -102,7 +104,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         ["columns", "rows"]
       );
     },
-    [beeGwtService, relationProps, columns, rows]
+    [beeGwtService, relationExpression, columns, rows]
   );
 
   const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
@@ -153,37 +155,33 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   );
 
   const onColumnsUpdate = useCallback(
-    ({
-      columns,
-      operation,
-      columnIndex,
-    }: {
-      columns: ReactTable.ColumnInstance<ROWGENERICTYPE>[];
-      operation: BeeTableOperation;
-      columnIndex: number;
-    }) => {
-      const newColumns = columns.map((columnInstance) => ({
+    (args: BeeTableColumnsUpdateArgs<ROWGENERICTYPE>) => {
+      const newColumns = args.columns.map((columnInstance) => ({
         id: columnInstance.accessor,
         name: columnInstance.label,
         dataType: columnInstance.dataType,
         width: columnInstance.width,
       }));
       const newRows = rows.map((tableRow) => {
-        switch (operation) {
+        switch (args.operation) {
           case BeeTableOperation.ColumnInsertLeft:
             return {
               ...tableRow,
-              cells: [...tableRow.cells.slice(0, columnIndex), "", ...tableRow.cells.slice(columnIndex)],
+              cells: [...tableRow.cells.slice(0, args.columnIndex), "", ...tableRow.cells.slice(args.columnIndex)],
             };
           case BeeTableOperation.ColumnInsertRight:
             return {
               ...tableRow,
-              cells: [...tableRow.cells.slice(0, columnIndex + 1), "", ...tableRow.cells.slice(columnIndex + 1)],
+              cells: [
+                ...tableRow.cells.slice(0, args.columnIndex! + 1),
+                "",
+                ...tableRow.cells.slice(args.columnIndex! + 1),
+              ],
             };
           case BeeTableOperation.ColumnDelete:
             return {
               ...tableRow,
-              cells: [...tableRow.cells.slice(0, columnIndex), ...tableRow.cells.slice(columnIndex + 1)],
+              cells: [...tableRow.cells.slice(0, args.columnIndex), ...tableRow.cells.slice(args.columnIndex! + 1)],
             };
         }
         return { ...tableRow };

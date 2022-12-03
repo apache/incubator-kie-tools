@@ -120,7 +120,7 @@ export function useUnitablesInputs(
               });
             } else if (inputColumn.width) {
               inputToUpdate.insideProperties.forEach((insideProperty) => {
-                const width = inputColumn.width / inputToUpdate.insideProperties.length;
+                const width = inputColumn.width ? inputColumn.width / inputToUpdate.insideProperties.length : 0;
                 if (width < CELL_MINIMUM_WIDTH) {
                   insideProperty.width = CELL_MINIMUM_WIDTH;
                 } else {

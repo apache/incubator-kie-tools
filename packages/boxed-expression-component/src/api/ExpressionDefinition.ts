@@ -46,8 +46,6 @@ interface ExpressionDefinitionBase {
   dataType?: DmnBuiltInDataType;
   /** Optional callback executed to update expression's name and data type */
   onExpressionHeaderUpdated?: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
-  /** Logic type should not be defined at this stage */
-  logicType?: ExpressionDefinitionLogicType;
   /** True, to have no header for this specific expression component, used in a recursive expression */
   isHeadless?: boolean;
   /** When a component is headless, it will call this function to pass its most updated expression definition */

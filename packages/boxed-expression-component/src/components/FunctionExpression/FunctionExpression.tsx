@@ -37,7 +37,6 @@ import {
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableOperation,
-  ROWGENERICTYPE,
   ExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
@@ -52,6 +51,8 @@ import { EditParameters } from "./EditParameters";
 import { hashfy } from "../Resizer";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
+
+type ROWTYPE = ContextExpressionDefinitionEntry;
 
 export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefinition> = (
   functionExpression: PropsWithChildren<FunctionExpressionDefinition>
@@ -106,25 +107,33 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [(functionExpression as FeelFunctionExpressionDefinition).expression]
   );
 
-  const extractContextEntriesFromJavaProps = useMemo(() => {
+  const extractContextEntriesFromJavaProps: ContextExpressionDefinitionEntry[] = useMemo(() => {
     return [
       {
-        entryInfo: { id: FIRST_ENTRY_ID, name: i18n.class, dataType: DmnBuiltInDataType.String },
+        entryInfo: {
+          id: FIRST_ENTRY_ID,
+          name: i18n.class,
+          dataType: DmnBuiltInDataType.String,
+        },
         entryExpression: {
           id: javaClassFieldId,
           noClearAction: true,
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
           content: javaClassName ?? "",
-        } as LiteralExpressionDefinition,
+        },
       },
       {
-        entryInfo: { id: SECOND_ENTRY_ID, name: i18n.methodSignature, dataType: DmnBuiltInDataType.String },
+        entryInfo: {
+          id: SECOND_ENTRY_ID,
+          name: i18n.methodSignature,
+          dataType: DmnBuiltInDataType.String,
+        },
         entryExpression: {
           id: javaMethodFieldId,
           noClearAction: true,
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
           content: javaMethodName ?? "",
-        } as LiteralExpressionDefinition,
+        },
       },
     ];
   }, [i18n, javaClassName, javaClassFieldId, javaMethodName, javaMethodFieldId]);
@@ -178,11 +187,15 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   }, [pmmlParams, pmmlModel, pmmlDocument]);
 
   const rows = useCallback(
-    (functionKind: FunctionExpressionDefinitionKind) => {
+    (functionKind: FunctionExpressionDefinitionKind): ROWTYPE => {
       switch (functionKind) {
         case FunctionExpressionDefinitionKind.Java: {
           return {
-            id: FIRST_ENTRY_ID,
+            entryInfo: {
+              id: FIRST_ENTRY_ID,
+              name: FIRST_ENTRY_ID,
+              dataType: undefined as any,
+            },
             entryExpression: {
               logicType: ExpressionDefinitionLogicType.Context,
               noClearAction: true,
@@ -190,11 +203,15 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
               noHandlerMenu: true,
               contextEntries: extractContextEntriesFromJavaProps,
             },
-          } as ROWGENERICTYPE;
+          };
         }
         case FunctionExpressionDefinitionKind.Pmml: {
           return {
-            id: FIRST_ENTRY_ID,
+            entryInfo: {
+              id: FIRST_ENTRY_ID,
+              name: FIRST_ENTRY_ID,
+              dataType: undefined as any,
+            },
             entryExpression: {
               logicType: ExpressionDefinitionLogicType.Context,
               noClearAction: true,
@@ -202,14 +219,20 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
               noHandlerMenu: true,
               contextEntries: extractContextEntriesFromPmmlProps,
             },
-          } as ROWGENERICTYPE;
+          };
         }
         case FunctionExpressionDefinitionKind.Feel:
         default: {
           return {
-            id: FIRST_ENTRY_ID,
-            entryExpression: feelExpression || { logicType: ExpressionDefinitionLogicType.LiteralExpression },
-          } as ROWGENERICTYPE;
+            entryInfo: {
+              id: FIRST_ENTRY_ID,
+              name: FIRST_ENTRY_ID,
+              dataType: undefined as any,
+            },
+            entryExpression: feelExpression || {
+              logicType: ExpressionDefinitionLogicType.LiteralExpression,
+            },
+          };
         }
       }
     },
@@ -388,24 +411,28 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [editParametersPopoverAppendTo, i18n.editParameters, functionExpression.formalParameters, setParameters]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(() => {
-    return [
-      {
-        label: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
-        accessor: decisionNodeId,
-        dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
-        disableHandlerOnHeader: true,
-        columns: [
-          {
-            headerCellElement,
-            accessor: "parameters",
-            disableHandlerOnHeader: true,
-            width: functionExpression.parametersWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-            minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-          },
-        ],
-      },
-    ] as ReactTable.ColumnInstance<ROWGENERICTYPE>[];
+  const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
+    const columns: ReactTable.Column<ROWTYPE> = {
+      label: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
+      accessor: decisionNodeId as any, // FIXME: Tiago -> No bueno.
+      dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
+      disableOperationHandlerOnHeader: true,
+      isRowIndexColumn: false,
+      columns: [
+        {
+          headerCellElement,
+          accessor: "parameters" as any, // FIXME: Tiago -> No bueno.
+          disableOperationHandlerOnHeader: true,
+          width: functionExpression.parametersWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+          minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+          label: "",
+          isRowIndexColumn: false,
+          dataType: undefined as any, // FIXME: Tiago -> No bueno.
+        },
+      ],
+    };
+
+    return [columns];
   }, [
     decisionNodeId,
     functionExpression.name,
@@ -430,7 +457,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   );
 
   const onColumnsUpdate = useCallback(
-    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ReactTable.ColumnInstance<ROWGENERICTYPE>>) => {
+    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
       functionExpression.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
       spreadFunctionExpressionDefinition({
         name: column.label,
@@ -442,7 +469,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   );
 
   const resetRowCustomFunction = useCallback(
-    (row) => {
+    (row: ROWTYPE) => {
       spreadFunctionExpressionDefinition({
         functionKind: FunctionExpressionDefinitionKind.Feel,
         formalParameters: [],
@@ -469,30 +496,30 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   );
 
   const onRowsUpdate = useCallback(
-    ({ rows: [row] }: BeeTableRowsUpdateArgs<ContextExpressionDefinitionEntry<ContextExpressionDefinition>>) => {
+    ({ rows: [row] }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
       switch (functionExpression.functionKind) {
         case FunctionExpressionDefinitionKind.Feel:
           spreadFunctionExpressionDefinition({ expression: row.entryExpression });
           break;
         case FunctionExpressionDefinitionKind.Java:
-          if (row.entryExpression.contextEntries) {
+          if (row.entryExpression.logicType === ExpressionDefinitionLogicType.Context) {
             spreadFunctionExpressionDefinition({
               className:
-                (row.entryExpression.contextEntries[0]?.entryExpression as LiteralExpressionDefinition).content ?? "",
+                (row.entryExpression.contextEntries?.[0]?.entryExpression as LiteralExpressionDefinition).content ?? "",
               methodName:
-                (row.entryExpression.contextEntries[1]?.entryExpression as LiteralExpressionDefinition).content ?? "",
+                (row.entryExpression.contextEntries?.[1]?.entryExpression as LiteralExpressionDefinition).content ?? "",
             });
           }
           break;
         case FunctionExpressionDefinitionKind.Pmml:
-          if (row.entryExpression.contextEntries) {
+          if (row.entryExpression.logicType === ExpressionDefinitionLogicType.Context) {
             spreadFunctionExpressionDefinition({
               document:
-                (row.entryExpression.contextEntries[0]?.entryExpression as PmmlLiteralExpressionDefinition).selected ??
-                "",
+                (row.entryExpression.contextEntries?.[0]?.entryExpression as PmmlLiteralExpressionDefinition)
+                  .selected ?? "",
               model:
-                (row.entryExpression.contextEntries[1]?.entryExpression as PmmlLiteralExpressionDefinition).selected ??
-                "",
+                (row.entryExpression.contextEntries?.[1]?.entryExpression as PmmlLiteralExpressionDefinition)
+                  .selected ?? "",
             });
           }
           break;
@@ -515,13 +542,13 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 
   return (
     <div className={`function-expression ${functionExpression.id}`}>
-      <BeeTable
+      <BeeTable<ROWTYPE>
         operationHandlerConfig={operationHandlerConfig}
         onColumnsUpdate={onColumnsUpdate}
         columns={beeTableColumns}
         rows={beeTableRows}
         onRowsUpdate={onRowsUpdate}
-        headerLevels={1}
+        headerLevelCount={1}
         headerVisibility={getHeaderVisibility}
         controllerCell={controllerCell}
         defaultCellByColumnId={defaultCellByColumnId}

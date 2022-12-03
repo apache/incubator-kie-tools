@@ -28,14 +28,14 @@ export interface BeeTableRowsUpdateArgs<R extends object> {
   rows: R[];
   operation?: BeeTableOperation;
   rowIndex?: number;
-  columns?: ReactTable.ColumnInstance<R>[];
+  columns?: ReactTable.Column<R>[];
 }
 
 export interface BeeTableProps<R extends object> {
   /** Table identifier, useful for nested structures */
   tableId?: string;
   /** Optional children element to be appended below the table content */
-  children?: React.ReactElement[];
+  additionalRow?: React.ReactElement[];
   /** Gets the prefix to be used for the next column name */
   getNewColumnIdPrefix?: (groupType?: string) => string;
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
@@ -49,7 +49,7 @@ export interface BeeTableProps<R extends object> {
     [columnId: string]: React.FunctionComponent<{ data: any; rowIndex: number; columnId: string }>;
   };
   /** Table's columns */
-  columns: ReactTable.ColumnInstance<R>[];
+  columns: ReactTable.Column<R>[];
   /** Table's cells */
   rows: R[];
   /** Function to be executed when columns are modified */
@@ -63,7 +63,7 @@ export interface BeeTableProps<R extends object> {
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** Number of levels in the header, 0-based */
-  headerLevels?: number;
+  headerLevelCount?: number;
   /** True, for skipping the creation in the DOM of the last defined header group */
   skipLastHeaderGroup?: boolean;
   /** Custom function for getting row key prop, and avoid using the row index */
@@ -131,19 +131,19 @@ export interface RelationExpressionDefinitionColumn {
   /** Column width */
   width?: number;
   /** Set column width */
-  setWidth?: (width: string | number) => void;
+  setWidth?: (width: number | undefined) => void;
 }
 
 /**
  * Interface to be inherited from the table cell components (td, th)
  */
-export interface BeeTableCellComponent {
+export interface BeeTableTdsAndThsProps {
   /** event fired when the user press a key */
   onKeyDown: (rowSpan?: number) => (e: KeyboardEvent) => void;
   /** the row index */
   rowIndex: number;
   /** the cell index */
-  cellIndex: number;
+  index: number;
   /** the x position of the cell. Colspan are counted */
   xPosition?: number;
   /** the y position of the cell */

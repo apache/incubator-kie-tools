@@ -308,7 +308,7 @@ export function BeeTableWrapper({ id, i18n, config, onColumnsUpdate, onRowNumber
           <div className={`logic-type-selector logic-type-selected`}>
             <BeeTable
               editableHeader={false}
-              headerLevels={1}
+              headerLevelCount={1}
               headerVisibility={BeeTableHeaderVisibility.Full}
               getNewColumnIdPrefix={getNewColumnIdPrefix}
               editColumnLabel={editColumnLabel}

@@ -125,7 +125,7 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
             <FunctionExpression
               {..._.defaults(expression, {
                 functionKind: FunctionExpressionDefinitionKind.Feel,
-              } as FunctionExpressionDefinition)}
+              })}
             />
           );
         default:

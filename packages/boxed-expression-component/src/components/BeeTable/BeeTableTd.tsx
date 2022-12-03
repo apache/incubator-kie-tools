@@ -19,9 +19,9 @@ import { useEffect, useRef } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import * as ReactTable from "react-table";
-import { BeeTableCellComponent } from "../../api";
+import { BeeTableTdsAndThsProps } from "../../api";
 
-export interface BeeTableTdProps<R extends object> extends BeeTableCellComponent {
+export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProps {
   cell: ReactTable.Cell<R>;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   shouldUseCellDelegate: boolean;
@@ -31,7 +31,7 @@ export interface BeeTableTdProps<R extends object> extends BeeTableCellComponent
 }
 
 export function BeeTableTd<R extends object>({
-  cellIndex,
+  index,
   cell,
   rowIndex,
   shouldUseCellDelegate,
@@ -42,56 +42,57 @@ export function BeeTableTd<R extends object>({
   getTdProps,
   yPosition,
 }: BeeTableTdProps<R>) {
-  let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
-  const column = reactTableInstance.allColumns[cellIndex];
-  const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
+  let cellType = index === 0 ? "counter-cell" : "data-cell";
+  const column = reactTableInstance.allColumns[index];
+  const width = column?.width ?? DEFAULT_MIN_WIDTH;
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
     const onKeyDownForIndex = onKeyDown();
-    const cell = tdRef.current;
-    cell?.addEventListener("keydown", onKeyDownForIndex);
+    const td = tdRef.current;
+    td?.addEventListener("keydown", onKeyDownForIndex);
     return () => {
-      cell?.removeEventListener("keydown", onKeyDownForIndex);
+      td?.removeEventListener("keydown", onKeyDownForIndex);
     };
   }, [onKeyDown, rowIndex]);
 
   const onResize = (width: number) => {
     if (column.setWidth) {
       column.setWidth(width);
-      reactTableInstance.allColumns[cellIndex].width = width;
+      reactTableInstance.allColumns[index].width = width;
       onColumnsUpdate?.(reactTableInstance.columns);
     }
   };
-  const cellContent =
-    cellIndex === 0 ? (
+  const tdContent =
+    index === 0 ? (
       <>{rowIndex + 1}</>
     ) : (
       <Resizer width={width} onHorizontalResizeStop={onResize}>
         <>
           {shouldUseCellDelegate && cell.column?.cellDelegate
-            ? cell.column?.cellDelegate(`dmn-auto-form-${rowIndex}`)
+            ? cell.column?.cellDelegate(`cell-delegate-${rowIndex}`)
             : cell.render("Cell")}
         </>
       </Resizer>
     );
 
+  // FIXME: Tiago -> DMN Runner-specific logic
   if (cell.column?.cellDelegate) {
     cellType += " input";
   }
 
   return (
     <PfReactTable.Td
-      {...getTdProps(cellIndex, rowIndex)}
+      {...getTdProps(index, rowIndex)}
       ref={tdRef}
       tabIndex={-1}
-      key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
-      data-ouia-component-id={"expression-column-" + cellIndex}
+      key={`${rowIndex}-${getColumnKey(cell.column)}-${index}`}
+      data-ouia-component-id={"expression-column-" + index}
       className={`${cellType}`}
-      data-xposition={cellIndex}
+      data-xposition={index}
       data-yposition={yPosition ?? rowIndex}
     >
-      {cellContent}
+      {tdContent}
     </PfReactTable.Td>
   );
 }

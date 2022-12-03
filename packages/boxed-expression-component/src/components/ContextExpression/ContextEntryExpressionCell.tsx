@@ -36,11 +36,11 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
 }) => {
   // FIXME: Tiago
   const onUpdatingRecursiveExpression = useCallback(
-    function (expression: ExpressionDefinition) {
+    (expression: ExpressionDefinition) => {
       const updatedEntryInfo = { ...contextEntries[rowIndex].entryInfo };
-      if (_.size(expression.name) && _.size(expression.dataType)) {
-        updatedEntryInfo.name = expression.name as string;
-        updatedEntryInfo.dataType = expression.dataType as DmnBuiltInDataType;
+      if (expression.name && expression.dataType) {
+        updatedEntryInfo.name = expression.name;
+        updatedEntryInfo.dataType = expression.dataType;
       }
 
       onRowUpdate(rowIndex, { ...contextEntries[rowIndex], entryInfo: updatedEntryInfo, entryExpression: expression });

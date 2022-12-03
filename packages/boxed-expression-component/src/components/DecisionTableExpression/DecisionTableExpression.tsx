@@ -428,7 +428,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   return (
     <div className={`decision-table-expression ${decisionTable.id}`}>
       <BeeTable
-        headerLevels={1}
+        headerLevelCount={1}
         headerVisibility={BeeTableHeaderVisibility.Full}
         getNewColumnIdPrefix={getNewColumnIdPrefix}
         editColumnLabel={getEditColumnLabel}

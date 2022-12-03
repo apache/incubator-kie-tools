@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import * as PfReactTable from "@patternfly/react-table";
-import { BeeTableCellComponent } from "../../api";
+import { BeeTableTdsAndThsProps } from "../../api";
 
-export interface BeeTableThProps extends BeeTableCellComponent {
+export interface BeeTableThProps extends BeeTableTdsAndThsProps {
   children?: React.ReactElement;
   className: string;
   headerProps: Partial<PfReactTable.ThProps>;

@@ -17,30 +17,30 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import * as PfReactTable from "@patternfly/react-table";
-import { BeeTableCellComponent } from "../../api";
+import { BeeTableTdsAndThsProps } from "../../api";
 
-export interface BeeTableTdIndexProps extends BeeTableCellComponent {
+export interface BeeTableTdForAdditionalRowProps extends BeeTableTdsAndThsProps {
   children?: React.ReactElement;
   isEmptyCell?: boolean;
 }
 
-export function BeeTableTdIndex({
+export function BeeTableTdForAdditionalRow({
   children,
-  cellIndex,
+  index: cellIndex,
   isEmptyCell = false,
   onKeyDown,
   rowIndex,
   xPosition,
   yPosition,
-}: BeeTableTdIndexProps) {
+}: BeeTableTdForAdditionalRowProps) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
     const onKeyDownForIndex = onKeyDown();
-    const cell = tdRef.current;
-    cell?.addEventListener("keydown", onKeyDownForIndex);
+    const td = tdRef.current;
+    td?.addEventListener("keydown", onKeyDownForIndex);
     return () => {
-      cell?.removeEventListener("keydown", onKeyDownForIndex);
+      td?.removeEventListener("keydown", onKeyDownForIndex);
     };
   }, [onKeyDown, rowIndex]);
 

@@ -24,7 +24,11 @@ import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expressio
 import * as ReactTable from "react-table";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
-import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BeeTableOperation,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { DecisionResult } from "./DmnTypes";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { ErrorBoundary } from "@kie-tools/form";
@@ -79,6 +83,14 @@ export function DmnTableResults(props: Props) {
     };
   }, [outputRules, outputs]);
 
+  const expressionDefinition = useMemo<ExpressionDefinition>(() => {
+    return { logicType: ExpressionDefinitionLogicType.Undefined };
+  }, []);
+
+  const dataTypes = useMemo(() => {
+    return [];
+  }, []);
+
   return (
     <>
       {outputError ? (
@@ -86,10 +98,10 @@ export function DmnTableResults(props: Props) {
       ) : outputEntriesLength > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
           <BoxedExpressionEditorContextProvider
-            expressionDefinition={{}}
+            expressionDefinition={expressionDefinition}
             isRunnerTable={true}
             decisionNodeId={outputUid}
-            dataTypes={[]}
+            dataTypes={dataTypes}
           >
             <BeeTableWrapper
               i18n={props.i18n}

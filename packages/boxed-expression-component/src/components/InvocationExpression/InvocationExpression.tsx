@@ -152,37 +152,47 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [spreadInvocationExpressionDefinition]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWTYPE>[]>(
+  const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
         label: invocation.name ?? DEFAULT_PARAMETER_NAME,
-        accessor: decisionNodeId,
+        accessor: decisionNodeId as keyof ROWTYPE,
         dataType: invocation.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
-        disableHandlerOnHeader: true,
+        disableOperationHandlerOnHeader: true,
+        isRowIndexColumn: false,
         columns: [
           {
             headerCellElement,
-            accessor: "functionDefinition",
-            disableHandlerOnHeader: true,
+            accessor: "functionDefinition" as keyof ROWTYPE,
+            disableOperationHandlerOnHeader: true,
+            isRowIndexColumn: false,
+            label: "functionDefinition",
+            dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
             columns: [
               {
                 accessor: "entryInfo",
-                disableHandlerOnHeader: true,
+                disableOperationHandlerOnHeader: true,
                 width: invocation.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
                 setWidth: setInfoWidth,
                 minWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+                isRowIndexColumn: false,
+                label: "entryInfo",
+                dataType: DEFAULT_PARAMETER_DATA_TYPE,
               },
               {
                 accessor: "entryExpression",
-                disableHandlerOnHeader: true,
+                disableOperationHandlerOnHeader: true,
                 width: invocation.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
                 setWidth: setExpressionWidth,
                 minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+                isRowIndexColumn: false,
+                label: "entryExpression",
+                dataType: DEFAULT_PARAMETER_DATA_TYPE,
               },
             ],
           },
         ],
-      } as any, // FIXME: Tiago -> Remove this!!,
+      },
     ],
     [
       invocation.name,
@@ -255,7 +265,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     <div className={`invocation-expression ${invocation.id}`}>
       <BeeTable<ROWTYPE>
         tableId={invocation.id}
-        headerLevels={2}
+        headerLevelCount={2}
         headerVisibility={getHeaderVisibility}
         skipLastHeaderGroup={true}
         defaultCellByColumnId={defaultCellByColumnId}

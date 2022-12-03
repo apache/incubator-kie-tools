@@ -19,7 +19,11 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import { UnitablesI18n } from "./i18n";
 import * as ReactTable from "react-table";
 import { useUnitablesInputs } from "./UnitablesInputs";
-import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BeeTableOperation,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import nextId from "react-id-generator";
 import { BeeTableWrapper } from "./bee";
@@ -96,15 +100,23 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
     [inputRows, inputs]
   );
 
+  const expressionDefinition = useMemo<ExpressionDefinition>(() => {
+    return { logicType: ExpressionDefinitionLogicType.Undefined };
+  }, []);
+
+  const dataTypes = useMemo(() => {
+    return [];
+  }, []);
+
   return (
     <>
       {inputs && shouldRender && inputRows && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
           <BoxedExpressionEditorContextProvider
-            expressionDefinition={{}}
+            expressionDefinition={expressionDefinition}
             isRunnerTable={true}
             decisionNodeId={inputUid}
-            dataTypes={[]}
+            dataTypes={dataTypes}
           >
             <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
               <div style={{ display: "flex", flexDirection: "column" }}>

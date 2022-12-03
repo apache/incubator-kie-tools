@@ -21,7 +21,7 @@ import { BeeTableHeaderVisibility } from "../../api";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { LOGIC_TYPE_SELECTOR_CLASS } from "../ExpressionDefinitionLogicTypeSelector";
-import { BeeTableTdIndex } from "./BeeTableTdIndex";
+import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
 
 export interface BeeTableBodyProps<R extends object> {
@@ -32,13 +32,13 @@ export interface BeeTableBodyProps<R extends object> {
   /** True, for skipping the creation in the DOM of the last defined header group */
   skipLastHeaderGroup: boolean;
   /** Optional children element to be appended below the table content */
-  children?: React.ReactElement[];
+  additionalRow?: React.ReactElement[];
   /** Custom function for getting row key prop, and avoid using the row index */
   getRowKey: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** Function to be executed when columns are modified */
-  onColumnsUpdate?: (columns: ReactTable.ColumnInstance<R>[]) => void;
+  onColumnsUpdate: (columns: ReactTable.ColumnInstance<R>[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
@@ -47,7 +47,7 @@ export interface BeeTableBodyProps<R extends object> {
 
 export function BeeTableBody<R extends object>({
   reactTableInstance,
-  children,
+  additionalRow,
   headerVisibility = BeeTableHeaderVisibility.Full,
   skipLastHeaderGroup,
   getRowKey,
@@ -58,10 +58,15 @@ export function BeeTableBody<R extends object>({
 }: BeeTableBodyProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
-  const headerVisibilityMemo = useMemo(() => headerVisibility ?? BeeTableHeaderVisibility.Full, [headerVisibility]);
+  const headerVisibilityMemo = useMemo(() => {
+    return headerVisibility ?? BeeTableHeaderVisibility.Full;
+  }, [headerVisibility]);
 
   const headerRowsLength = useMemo(() => {
-    const headerGroupsLength = reactTableInstance.headerGroups.length - (skipLastHeaderGroup ? 1 : 0);
+    const headerGroupsLength = skipLastHeaderGroup
+      ? reactTableInstance.headerGroups.length - 1
+      : reactTableInstance.headerGroups.length;
+
     switch (headerVisibility) {
       case BeeTableHeaderVisibility.Full:
         return headerGroupsLength;
@@ -72,28 +77,7 @@ export function BeeTableBody<R extends object>({
       default:
         return 0;
     }
-  }, [headerVisibility, reactTableInstance]);
-
-  const renderCell = useCallback(
-    (args: { cellIndex: number; cell: ReactTable.Cell<R>; rowIndex: number; shouldUseCellDelegate: boolean }) => {
-      return (
-        <BeeTableTd<R>
-          key={args.cellIndex}
-          cellIndex={args.cellIndex}
-          cell={args.cell}
-          rowIndex={args.rowIndex}
-          shouldUseCellDelegate={args.shouldUseCellDelegate}
-          onKeyDown={onCellKeyDown}
-          reactTableInstance={reactTableInstance}
-          getColumnKey={getColumnKey}
-          onColumnsUpdate={onColumnsUpdate!}
-          getTdProps={tdProps}
-          yPosition={headerRowsLength + args.rowIndex}
-        />
-      );
-    },
-    [getColumnKey, onColumnsUpdate, reactTableInstance, tdProps, onCellKeyDown, headerRowsLength]
-  );
+  }, [headerVisibility, reactTableInstance.headerGroups.length]);
 
   const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
     let currentPathTarget: EventTarget = event.target;
@@ -136,7 +120,21 @@ export function BeeTableBody<R extends object>({
           onClick={onRowClick(rowKey)}
         >
           {row.cells.map((cell, cellIndex) => {
-            return renderCell({ cellIndex, cell, rowIndex, shouldUseCellDelegate: args.shouldUseCellDelegate });
+            return (
+              <BeeTableTd<R>
+                key={cellIndex}
+                index={cellIndex}
+                cell={cell}
+                rowIndex={rowIndex}
+                shouldUseCellDelegate={args.shouldUseCellDelegate}
+                onKeyDown={onCellKeyDown}
+                reactTableInstance={reactTableInstance}
+                getColumnKey={getColumnKey}
+                onColumnsUpdate={onColumnsUpdate}
+                getTdProps={tdProps}
+                yPosition={headerRowsLength + rowIndex}
+              />
+            );
           })}
         </PfReactTable.Tr>
       );
@@ -151,39 +149,12 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [getRowKey, onRowClick, renderCell, reactTableInstance]
+    [getColumnKey, getRowKey, headerRowsLength, onCellKeyDown, onColumnsUpdate, onRowClick, reactTableInstance, tdProps]
   );
 
-  const renderAdditiveRow = useCallback(
-    (rowIndex: number) => (
-      <PfReactTable.Tr className="table-row additive-row">
-        <BeeTableTdIndex
-          isEmptyCell={true}
-          rowIndex={rowIndex}
-          cellIndex={0}
-          onKeyDown={onCellKeyDown}
-          xPosition={0}
-          yPosition={headerRowsLength + rowIndex}
-        />
-        {children?.map((child, childIndex) => {
-          return (
-            <BeeTableTdIndex
-              key={childIndex}
-              cellIndex={childIndex}
-              isEmptyCell={false}
-              rowIndex={rowIndex}
-              onKeyDown={onCellKeyDown}
-              xPosition={childIndex + 1}
-              yPosition={headerRowsLength + rowIndex}
-            >
-              {child}
-            </BeeTableTdIndex>
-          );
-        })}
-      </PfReactTable.Tr>
-    ),
-    [children, onCellKeyDown]
-  );
+  const additionalRowIndex = useMemo(() => {
+    return reactTableInstance.rows.length;
+  }, [reactTableInstance.rows.length]);
 
   return (
     <PfReactTable.Tbody
@@ -193,7 +164,31 @@ export function BeeTableBody<R extends object>({
       {reactTableInstance.rows.map((row, rowIndex) => {
         return renderRow(row, rowIndex);
       })}
-      {children ? renderAdditiveRow(reactTableInstance.rows.length) : null}
+      {additionalRow && (
+        <PfReactTable.Tr className="table-row additive-row">
+          <BeeTableTdForAdditionalRow
+            isEmptyCell={true}
+            rowIndex={additionalRowIndex}
+            index={0}
+            onKeyDown={onCellKeyDown}
+            xPosition={0}
+            yPosition={headerRowsLength + additionalRowIndex}
+          />
+          {additionalRow.map((elem, elemIndex) => (
+            <BeeTableTdForAdditionalRow
+              key={elemIndex}
+              index={elemIndex}
+              isEmptyCell={false}
+              rowIndex={additionalRowIndex}
+              onKeyDown={onCellKeyDown}
+              xPosition={elemIndex + 1}
+              yPosition={headerRowsLength + additionalRowIndex}
+            >
+              {elem}
+            </BeeTableTdForAdditionalRow>
+          ))}
+        </PfReactTable.Tr>
+      )}
     </PfReactTable.Tbody>
   );
 }
