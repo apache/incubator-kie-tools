@@ -50,7 +50,7 @@ export interface BeeTableEditableCellContentProps {
   /** Function executed each time a cell gets updated */
   onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
   /** Enable/Disable readonly cells */
-  readOnly?: boolean;
+  isReadOnly?: boolean;
   rowIndex: number;
   columnId: string;
 }
@@ -60,7 +60,7 @@ export function BeeTableEditableCellContent({
   rowIndex,
   columnId,
   onCellUpdate,
-  readOnly,
+  isReadOnly,
 }: BeeTableEditableCellContentProps) {
   const [isSelected, setSelected] = useState(false);
   const [mode, setMode] = useState(READ_MODE);
@@ -265,7 +265,7 @@ export function BeeTableEditableCellContent({
           value={textValue}
           onChange={onTextAreaChange}
           onBlur={onTextAreaBlur}
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           onKeyDown={onTextAreaKeyDown}
         />
         <FeelInput

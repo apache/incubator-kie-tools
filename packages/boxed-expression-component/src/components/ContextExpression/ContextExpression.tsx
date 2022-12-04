@@ -79,7 +79,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         logicType: ExpressionDefinitionLogicType.Context,
         name: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
         dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
-        contextEntries: beeTableRows as ContextExpressionDefinitionEntry[],
+        contextEntries: beeTableRows,
         result: contextExpression.result,
         entryInfoWidth: contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
         entryExpressionWidth: contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
@@ -108,14 +108,14 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 
   const setInfoWidth = useCallback(
-    (newInfoWidth) => {
+    (newInfoWidth: number) => {
       spreadContextExpressionDefinition({ entryInfoWidth: newInfoWidth });
     },
     [spreadContextExpressionDefinition]
   );
 
   const setExpressionWidth = useCallback(
-    (newEntryExpressionWidth) => {
+    (newEntryExpressionWidth: number) => {
       spreadContextExpressionDefinition({ entryExpressionWidth: newEntryExpressionWidth });
     },
     [spreadContextExpressionDefinition]
@@ -207,12 +207,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   // FIXME: Tiago
   const onUpdatingRecursiveExpression = useCallback(
     (expression: ExpressionDefinition) => {
-      if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
-        spreadContextExpressionDefinition({ result: { logicType: ExpressionDefinitionLogicType.Undefined } });
-      } else {
-        const filteredExpression = _.omit(expression, "onUpdatingRecursiveExpression") as ExpressionDefinition;
-        spreadContextExpressionDefinition({ result: { ...filteredExpression } });
-      }
+      // if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
+      //   spreadContextExpressionDefinition({ result: { logicType: ExpressionDefinitionLogicType.Undefined } });
+      // } else {
+      //   const filteredExpression = _.omit(expression, "onUpdatingRecursiveExpression") as ExpressionDefinition;
+      //   spreadContextExpressionDefinition({ result: { ...filteredExpression } });
+      // }
     },
     [spreadContextExpressionDefinition]
   );
@@ -248,7 +248,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const onHorizontalResizeStop = useCallback(
     (width: number) => {
-      setExpressionWidth(width);
+      return setExpressionWidth(width);
     },
     [setExpressionWidth]
   );

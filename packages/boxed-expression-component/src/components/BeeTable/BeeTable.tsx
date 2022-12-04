@@ -145,7 +145,7 @@ export function BeeTable<R extends object>({
   getRowKey,
   getColumnKey,
   resetRowCustomFunction,
-  readOnlyCells = false,
+  isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
   const tableComposableRef = useRef<HTMLTableElement>(null);
@@ -334,13 +334,13 @@ export function BeeTable<R extends object>({
               {...cellProps}
               rowIndex={cellProps.row.index}
               columnId={cellProps.column.id}
-              readOnly={readOnlyCells}
+              isReadOnly={isReadOnly}
             />
           );
         }
       },
     }),
-    [defaultCellByColumnId, readOnlyCells]
+    [defaultCellByColumnId, isReadOnly]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(
@@ -530,7 +530,7 @@ export function BeeTable<R extends object>({
           onCellKeyDown={onCellKeyDown}
           onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
           skipLastHeaderGroup={skipLastHeaderGroup}
-          tableColumns={columnsWithAddedIndexColumns as any}
+          tableColumns={columnsWithAddedIndexColumns}
           reactTableInstance={reactTableInstance}
           getThProps={getThProps}
         />
@@ -547,7 +547,7 @@ export function BeeTable<R extends object>({
       </PfReactTable.TableComposable>
       {showTableOperationHandler && operationHandlerConfig && (
         <BeeTableOperationHandler<R>
-          tableColumns={columnsWithAddedIndexColumns as any}
+          tableColumns={columnsWithAddedIndexColumns}
           getNewColumnIdPrefix={onGetColumnPrefix}
           operationHandlerConfig={operationHandlerConfig}
           lastSelectedColumn={lastSelectedColumn}

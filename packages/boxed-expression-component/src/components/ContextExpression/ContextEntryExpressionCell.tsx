@@ -17,7 +17,7 @@
 import "./ContextEntryExpressionCell.css";
 import * as React from "react";
 import { useCallback } from "react";
-import { DmnBuiltInDataType, ContextExpressionDefinitionEntry, ROWGENERICTYPE, ExpressionDefinition } from "../../api";
+import { ContextExpressionDefinitionEntry, ROWGENERICTYPE, ExpressionDefinition } from "../../api";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import * as _ from "lodash";
 

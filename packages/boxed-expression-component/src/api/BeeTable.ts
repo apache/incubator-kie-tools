@@ -73,7 +73,7 @@ export interface BeeTableProps<R extends object> {
   /** Custom function called for manually resetting a row */
   resetRowCustomFunction?: (row: R) => R;
   /** Disable/Enable cell edits. Enabled by default */
-  readOnlyCells?: boolean;
+  isReadOnly?: boolean;
   /** Enable keyboard navigation */
   enableKeyboardNavigation?: boolean;
 }
