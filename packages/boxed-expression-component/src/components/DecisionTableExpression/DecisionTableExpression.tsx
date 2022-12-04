@@ -337,17 +337,15 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         },
         updatedColumns: [...columns],
       });
-      decisionTable.onExpressionHeaderUpdated?.({
-        name: decisionNodeColumn.label,
-        dataType: decisionNodeColumn.dataType,
-      });
+
+      // FIXME: Tiago -> Apparently this is not necessary
+      // decisionTable.onExpressionHeaderUpdated?.({
+      //   name: decisionNodeColumn.label,
+      //   dataType: decisionNodeColumn.dataType,
+      // });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      decisionTable.onExpressionHeaderUpdated,
-      spreadDecisionTableExpressionDefinition,
-      synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType,
-    ]
+    [spreadDecisionTableExpressionDefinition, synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType]
   );
 
   const fillMissingCellValues = useCallback(

@@ -19,7 +19,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
-import { DmnBuiltInDataType, BeeTableHeaderVisibility } from "../../api";
+import { DmnBuiltInDataType, BeeTableHeaderVisibility, ExpressionDefinition } from "../../api";
 import { getColumnsAtLastLevel, areEqualColumns } from "./BeeTable";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { focusCurrentCell, getParentCell } from "./common";
@@ -27,6 +27,7 @@ import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../ExpressionDefinitionHeaderMenu";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
+import { NavigationKeysUtils } from "../../keysUtils";
 
 export interface BeeTableHeaderProps<R extends object> {
   /** Table instance */
@@ -84,14 +85,14 @@ export function BeeTableHeader<R extends object>({
     (
       column: ReactTable.ColumnInstance<R>,
       columnIndex: number
-    ) => (args: { name?: string; dataType?: DmnBuiltInDataType }) => void
+    ) => (args: Pick<ExpressionDefinition, "name" | "dataType">) => void
   >(
     (column, columnIndex) => {
       return ({ name = "", dataType = DmnBuiltInDataType.Undefined }) => {
         let columnToUpdate: ReactTable.Column<R> | undefined = tableColumns[columnIndex];
         if (column.depth > 0) {
-          const columnsBelongingToParent = tableColumns.find((s) => s.accessor === column.parent?.id)?.columns;
-          columnToUpdate = (columnsBelongingToParent ?? []).find((s) => s.accessor === column.id);
+          const columnsBelongingToParent = tableColumns.find((c) => c.accessor === column.parent?.id)?.columns;
+          columnToUpdate = (columnsBelongingToParent ?? []).find((c) => c.accessor === column.id);
         }
 
         if (columnToUpdate) {
@@ -153,7 +154,7 @@ export function BeeTableHeader<R extends object>({
               const parentCell = getParentCell(event.target as HTMLElement);
               //this timeout prevent the cell focus to call the input's blur and the onValueBlur
               setTimeout(() => {
-                if (/(enter)/i.test(event.key)) {
+                if (NavigationKeysUtils.isEnter(event.key)) {
                   focusCurrentCell(parentCell);
                 }
               }, 0);
@@ -231,7 +232,7 @@ export function BeeTableHeader<R extends object>({
           getColumnKey={getColumnKey}
           getColumnLabel={getColumnLabel}
           onCellKeyDown={onCellKeyDown}
-          onColumnNameOrDataTypeUpdate={onColumnNameOrDataTypeUpdate}
+          onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
           onHeaderClick={onHeaderClick}
           onHorizontalResizeStop={onHorizontalResizeStop}
           renderHeaderCellInfo={renderHeaderCellInfo}

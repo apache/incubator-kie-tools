@@ -37,8 +37,6 @@ export interface BeeTableBodyProps<R extends object> {
   getRowKey: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
-  /** Function to be executed when columns are modified */
-  onColumnsUpdate: (columns: ReactTable.Column<R>[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
@@ -52,7 +50,6 @@ export function BeeTableBody<R extends object>({
   skipLastHeaderGroup,
   getRowKey,
   getColumnKey,
-  onColumnsUpdate,
   onCellKeyDown,
   tdProps,
 }: BeeTableBodyProps<R>) {
@@ -77,7 +74,7 @@ export function BeeTableBody<R extends object>({
       default:
         return 0;
     }
-  }, [headerVisibility, reactTableInstance.headerGroups.length]);
+  }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
 
   const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
     let currentPathTarget: EventTarget = event.target;
@@ -128,9 +125,8 @@ export function BeeTableBody<R extends object>({
                 rowIndex={rowIndex}
                 shouldUseCellDelegate={args.shouldUseCellDelegate}
                 onKeyDown={onCellKeyDown}
-                reactTableInstance={reactTableInstance}
+                column={reactTableInstance.allColumns[cellIndex]}
                 getColumnKey={getColumnKey}
-                onColumnsUpdate={onColumnsUpdate}
                 getTdProps={tdProps}
                 yPosition={headerRowsLength + rowIndex}
               />
@@ -149,7 +145,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [getColumnKey, getRowKey, headerRowsLength, onCellKeyDown, onColumnsUpdate, onRowClick, reactTableInstance, tdProps]
+    [getColumnKey, getRowKey, headerRowsLength, onCellKeyDown, onRowClick, reactTableInstance, tdProps]
   );
 
   const additionalRowIndex = useMemo(() => {

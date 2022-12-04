@@ -41,8 +41,8 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   editInfoPopoverLabel,
 }) => {
   const onExpressionHeaderUpdated = useCallback(
-    ({ name, dataType }: Pick<ExpressionDefinition, "name" | "dataType">) => {
-      onContextEntryUpdate({ name, dataType });
+    (args: Pick<ExpressionDefinition, "name" | "dataType">) => {
+      onContextEntryUpdate(args);
     },
     [onContextEntryUpdate]
   );

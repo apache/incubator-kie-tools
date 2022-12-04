@@ -17,7 +17,6 @@
 import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import { ExpressionDefinition } from "./ExpressionDefinition";
 import * as _ from "lodash";
-import * as ReactTable from "react-table";
 import { BeeTableOperationHandlerConfig, BeeTableOperation, ROWGENERICTYPE } from "./BeeTable";
 import { BoxedExpressionEditorI18n } from "../i18n";
 import { ExpressionDefinitionLogicType } from "./ExpressionDefinitionLogicType";
@@ -36,13 +35,13 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   /** Entry expression */
   entryExpression: T;
   /** Callback to be invoked on expression resetting */
-  onExpressionResetting?: () => void;
+  onExpressionReset?: () => void;
 }
 
 export const DEFAULT_ENTRY_INFO_MIN_WIDTH = 150;
 export const DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
 
-export const operationHandlerConfig = (
+export const getOperationHandlerConfig = (
   i18n: BoxedExpressionEditorI18n,
   groupName: string
 ): BeeTableOperationHandlerConfig => [
@@ -57,26 +56,23 @@ export const operationHandlerConfig = (
   },
 ];
 
-export const generateNextAvailableEntryName = (
+export const getNextAvailableContextExpressionEntryName = (
   entryInfos: ContextExpressionDefinitionEntryInfo[],
   namePrefix: string,
   lastIndex: number = entryInfos.length
 ): string => {
   const candidateName = `${namePrefix}-${lastIndex === 0 ? 1 : lastIndex}`;
   const entryWithCandidateName = _.find(entryInfos, { name: candidateName });
-  return entryWithCandidateName ? generateNextAvailableEntryName(entryInfos, namePrefix, lastIndex + 1) : candidateName;
+  return entryWithCandidateName
+    ? getNextAvailableContextExpressionEntryName(entryInfos, namePrefix, lastIndex + 1)
+    : candidateName;
 };
 
-export const getEntryKey = (row: ReactTable.Row<ROWGENERICTYPE>): string => {
-  const entryRecord = row.original as ContextExpressionDefinitionEntry;
-  return entryRecord.entryInfo.id ?? (row.original as ROWGENERICTYPE).id; // FIXME: Tiago -> Bad type?
-};
-
-export function resetEntry(row: ContextExpressionDefinitionEntry): ContextExpressionDefinitionEntry {
+export function resetContextExpressionEntry(entry: ContextExpressionDefinitionEntry): ContextExpressionDefinitionEntry {
   return {
-    ...row,
+    ...entry,
     entryExpression: {
-      id: row.entryExpression.id,
+      id: entry.entryExpression.id,
       logicType: ExpressionDefinitionLogicType.Undefined,
     },
   };

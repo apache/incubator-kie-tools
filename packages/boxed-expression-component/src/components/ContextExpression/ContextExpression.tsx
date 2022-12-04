@@ -25,12 +25,11 @@ import {
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
   DEFAULT_ENTRY_INFO_MIN_WIDTH,
   executeIfExpressionDefinitionChanged,
-  generateNextAvailableEntryName,
+  getNextAvailableContextExpressionEntryName,
   generateUuid,
-  getEntryKey,
-  operationHandlerConfig as getOperationHandlerConfig,
+  getOperationHandlerConfig,
   ExpressionDefinitionLogicType,
-  resetEntry,
+  resetContextExpressionEntry,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   ExpressionDefinition,
@@ -41,7 +40,7 @@ import * as ReactTable from "react-table";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import * as _ from "lodash";
 import { ContextEntryExpression } from "./ContextEntryExpression";
-import { DEFAULT_MIN_WIDTH, hashfy, Resizer } from "../Resizer";
+import { hashfy, Resizer } from "../Resizer";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ContextEntryInfoCell, ContextEntryInfoCellProps } from "./ContextEntryInfoCell";
 
@@ -167,7 +166,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const onColumnsUpdate = useCallback(
     ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
-      contextExpression.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
+      // FIXME: Tiago -> Apparently this is not necessary
+      // contextExpression.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
       spreadContextExpressionDefinition({
         name: column.label,
         dataType: column.dataType,
@@ -175,11 +175,11 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         entryExpressionWidth: column.columns?.[1].width,
       });
     },
-    [contextExpression, spreadContextExpressionDefinition]
+    [spreadContextExpressionDefinition]
   );
 
   const onNewRow = useCallback((): ROWTYPE => {
-    const generatedName = generateNextAvailableEntryName(
+    const generatedName = getNextAvailableContextExpressionEntryName(
       beeTableRows.map((row) => row.entryInfo),
       "ContextEntry"
     );
@@ -217,7 +217,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [spreadContextExpressionDefinition]
   );
 
-  const getHeaderVisibility = useMemo(() => {
+  const headerVisibility = useMemo(() => {
     return contextExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
   }, [contextExpression.isHeadless]);
 
@@ -236,11 +236,11 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
-    return getEntryKey(row);
+    return row.original.entryInfo.id;
   }, []);
 
   const resetRowCustomFunction = useCallback((entry: ContextExpressionDefinitionEntry) => {
-    const updatedEntry = resetEntry(entry);
+    const updatedEntry = resetContextExpressionEntry(entry);
     updatedEntry.entryExpression.name = updatedEntry.entryInfo.name ?? DEFAULT_CONTEXT_ENTRY_NAME;
     updatedEntry.entryExpression.dataType = updatedEntry.entryInfo.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE;
     return updatedEntry;
@@ -258,7 +258,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       <BeeTable
         tableId={contextExpression.id}
         headerLevelCount={1}
-        headerVisibility={getHeaderVisibility}
+        headerVisibility={headerVisibility}
         defaultCellByColumnId={defaultCellByColumnId}
         columns={beeTableColumns}
         rows={beeTableRows}

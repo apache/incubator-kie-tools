@@ -41,11 +41,9 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
   selectedExpression: ExpressionDefinition;
   /** Function to be invoked when logic type changes */
-  onLogicTypeUpdating: (logicType: ExpressionDefinitionLogicType) => void;
+  onLogicTypeSelected: (logicType: ExpressionDefinitionLogicType) => void;
   /** Function to be invoked when logic type is reset */
-  onLogicTypeResetting: () => void;
-  /** Function to be invoked to update expression's name and datatype */
-  onExpressionHeaderUpdated?: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
+  onLogicTypeReset: () => void;
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
   /** True to have no header for this specific expression component, used in a recursive expression */
@@ -59,9 +57,8 @@ export const LOGIC_TYPE_SELECTOR_CLASS = "logic-type-selector";
 export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<ExpressionDefinitionLogicTypeSelectorProps> =
   ({
     selectedExpression,
-    onLogicTypeUpdating,
-    onLogicTypeResetting,
-    onExpressionHeaderUpdated,
+    onLogicTypeSelected,
+    onLogicTypeReset,
     getPlacementRef,
     isHeadless,
     onUpdatingRecursiveExpression,
@@ -74,10 +71,9 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
         ...selectedExpression,
         id: selectedExpression.id ?? generateUuid(),
         isHeadless: isHeadless ?? false,
-        onExpressionHeaderUpdated,
         onUpdatingRecursiveExpression,
       };
-    }, [selectedExpression, isHeadless, onExpressionHeaderUpdated, onUpdatingRecursiveExpression]);
+    }, [selectedExpression, isHeadless, onUpdatingRecursiveExpression]);
 
     const isLogicTypeSelected = useMemo(
       () => selectedExpression.logicType && selectedExpression.logicType !== ExpressionDefinitionLogicType.Undefined,
@@ -159,13 +155,13 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
       (event?: React.MouseEvent, itemId?: string | number) => {
         boxedExpressionEditor.beeGwtService?.notifyUserAction();
         const selectedLogicType = itemId as ExpressionDefinitionLogicType;
-        onLogicTypeUpdating(selectedLogicType);
+        onLogicTypeSelected(selectedLogicType);
         setContextMenuOpen(false);
         if (!isHeadless) {
           boxedExpressionEditor.beeGwtService?.onLogicTypeSelect(selectedLogicType);
         }
       },
-      [boxedExpressionEditor.beeGwtService, isHeadless, onLogicTypeUpdating, setContextMenuOpen]
+      [boxedExpressionEditor.beeGwtService, isHeadless, onLogicTypeSelected, setContextMenuOpen]
     );
 
     const buildLogicSelectorMenu = useMemo(
@@ -188,8 +184,8 @@ export const ExpressionDefinitionLogicTypeSelector: React.FunctionComponent<Expr
 
     const executeClearAction = useCallback(() => {
       setContextMenuVisible(false);
-      onLogicTypeResetting();
-    }, [onLogicTypeResetting, setContextMenuVisible]);
+      onLogicTypeReset();
+    }, [onLogicTypeReset, setContextMenuVisible]);
 
     const buildContextMenu = useMemo(
       () => (

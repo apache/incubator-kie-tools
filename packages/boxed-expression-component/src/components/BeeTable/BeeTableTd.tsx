@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import * as ReactTable from "react-table";
@@ -23,59 +23,45 @@ import { BeeTableTdsAndThsProps } from "../../api";
 
 export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProps {
   cell: ReactTable.Cell<R>;
-  getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
+  column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
-  onColumnsUpdate: (columns: ReactTable.Column<R>[]) => void;
-  reactTableInstance: ReactTable.TableInstance<R>;
+  getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getTdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
 
 export function BeeTableTd<R extends object>({
   index,
   cell,
+  column,
   rowIndex,
   shouldUseCellDelegate,
   onKeyDown,
-  reactTableInstance,
   getColumnKey,
-  onColumnsUpdate,
   getTdProps,
   yPosition,
 }: BeeTableTdProps<R>) {
   let cellType = index === 0 ? "counter-cell" : "data-cell";
-  const column = reactTableInstance.allColumns[index];
   const width = column?.width ?? DEFAULT_MIN_WIDTH;
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
-    const onKeyDownForIndex = onKeyDown();
+    const handler = onKeyDown();
     const td = tdRef.current;
-    td?.addEventListener("keydown", onKeyDownForIndex);
+    td?.addEventListener("keydown", handler);
     return () => {
-      td?.removeEventListener("keydown", onKeyDownForIndex);
+      td?.removeEventListener("keydown", handler);
     };
   }, [onKeyDown, rowIndex]);
 
-  const onResize = (width: number) => {
-    if (column.setWidth) {
-      column.setWidth(width);
+  const onHorizontalResizeStop = useCallback(
+    (width: number) => {
+      column.setWidth?.(width);
+      // // FIXME: Tiago -> Everything seems to work well even without this code.
       // reactTableInstance.allColumns[index].width = width;
-      // // FIXME: Tiago -> Not good.
       // onColumnsUpdate?.(reactTableInstance.columns as unknown as ReactTable.Column<R>[]);
-    }
-  };
-  const tdContent =
-    index === 0 ? (
-      <>{rowIndex + 1}</>
-    ) : (
-      <Resizer width={width} onHorizontalResizeStop={onResize}>
-        <>
-          {shouldUseCellDelegate && cell.column?.cellDelegate
-            ? cell.column?.cellDelegate(`cell-delegate-${rowIndex}`)
-            : cell.render("Cell")}
-        </>
-      </Resizer>
-    );
+    },
+    [column]
+  );
 
   // FIXME: Tiago -> DMN Runner-specific logic
   if (cell.column?.cellDelegate) {
@@ -93,7 +79,17 @@ export function BeeTableTd<R extends object>({
       data-xposition={index}
       data-yposition={yPosition ?? rowIndex}
     >
-      {tdContent}
+      {index === 0 ? (
+        <>{rowIndex + 1}</>
+      ) : (
+        <Resizer width={width} onHorizontalResizeStop={onHorizontalResizeStop}>
+          <>
+            {shouldUseCellDelegate && cell.column?.cellDelegate
+              ? cell.column?.cellDelegate(`cell-delegate-${rowIndex}`)
+              : cell.render("Cell")}
+          </>
+        </Resizer>
+      )}
     </PfReactTable.Td>
   );
 }

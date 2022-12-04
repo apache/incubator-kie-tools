@@ -23,17 +23,17 @@ import * as _ from "lodash";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressionDefinition> = (
-  props: PmmlLiteralExpressionDefinition
+  pmmlLiteralExpression: PmmlLiteralExpressionDefinition
 ) => {
   const boxedExpressionEditor = useBoxedExpressionEditor();
 
-  const selection = useRef(props.selected);
+  const selection = useRef(pmmlLiteralExpression.selected);
 
   const [selectOpen, setSelectOpen] = useState(false);
 
   const onSelectToggle = useCallback(
     (isOpen) => {
-      if (!props.getOptions() || !props.getOptions().length) {
+      if (!pmmlLiteralExpression.getOptions() || !pmmlLiteralExpression.getOptions().length) {
         return;
       }
       setSelectOpen(isOpen);
@@ -46,46 +46,46 @@ export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressio
     (event, updatedSelection) => {
       setSelectOpen(false);
       selection.current = updatedSelection;
-      props.onUpdatingRecursiveExpression?.({
-        ...props,
+      pmmlLiteralExpression.onUpdatingRecursiveExpression?.({
+        ...pmmlLiteralExpression,
         selected: updatedSelection,
       } as PmmlLiteralExpressionDefinition);
     },
-    [props]
+    [pmmlLiteralExpression]
   );
 
   const getOptions = useCallback(() => {
-    return _.map(props.getOptions(), (key) => (
+    return _.map(pmmlLiteralExpression.getOptions(), (key) => (
       <SelectOption data-testid={`pmml-${key}`} key={key} value={key} data-ouia-component-id={key}>
         {key}
       </SelectOption>
     ));
-  }, [props]);
+  }, [pmmlLiteralExpression]);
 
   const getSelection = useCallback(() => {
-    return _.includes(props.getOptions(), selection.current) ? selection.current : undefined;
-  }, [props]);
+    return _.includes(pmmlLiteralExpression.getOptions(), selection.current) ? selection.current : undefined;
+  }, [pmmlLiteralExpression]);
 
   const showingPlaceholder = useCallback(() => _.isEmpty(getSelection()), [getSelection]);
 
   const onSelectorClick = useCallback(() => {
-    boxedExpressionEditor.beeGwtService?.selectObject(props.id);
-  }, [boxedExpressionEditor.beeGwtService, props.id]);
+    boxedExpressionEditor.beeGwtService?.selectObject(pmmlLiteralExpression.id);
+  }, [boxedExpressionEditor.beeGwtService, pmmlLiteralExpression.id]);
 
   return (
-    <div onClick={onSelectorClick} className={`${props.id} pmml-literal-expression`}>
+    <div onClick={onSelectorClick} className={`${pmmlLiteralExpression.id} pmml-literal-expression`}>
       <Select
         className={`pmml-selector ${showingPlaceholder() ? "showing-placeholder" : ""}`}
         menuAppendTo={boxedExpressionEditor.editorRef?.current ?? "inline"}
         ouiaId="pmml-literal-expression-selector"
-        placeholderText={props.noOptionsLabel}
-        aria-placeholder={props.noOptionsLabel}
+        placeholderText={pmmlLiteralExpression.noOptionsLabel}
+        aria-placeholder={pmmlLiteralExpression.noOptionsLabel}
         variant={SelectVariant.single}
         onToggle={onSelectToggle}
         onSelect={onSelect}
         isOpen={selectOpen}
         selections={getSelection()}
-        data-testid={props.testId}
+        data-testid={pmmlLiteralExpression.testId}
       >
         {getOptions()}
       </Select>

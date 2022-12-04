@@ -44,7 +44,7 @@ export interface ExpressionDefinitionHeaderMenuProps {
   /** The pre-selected expression name */
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
-  onExpressionHeaderUpdated: (expressionHeader: Pick<ExpressionDefinition, "name" | "dataType">) => void;
+  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
 }
 
 export const EXPRESSION_NAME = "Expression Name";
@@ -83,7 +83,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
     setDataType(selectedDataType);
   }, [selectedDataType]);
 
-  const onExpressionNameChange = useCallback((event) => {
+  const onExpressionNameChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setExpressionName(event.target.value);
   }, []);
 
@@ -101,10 +101,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
    */
   const saveExpression = useCallback(() => {
     boxedExpressionEditor.beeGwtService?.notifyUserAction();
-    onExpressionHeaderUpdated({
-      name: expressionName,
-      dataType: dataType,
-    });
+    onExpressionHeaderUpdated({ name: expressionName, dataType: dataType });
   }, [boxedExpressionEditor.beeGwtService, expressionName, onExpressionHeaderUpdated, dataType]);
 
   const onHide = useCallback(() => {
@@ -119,12 +116,9 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
     setDataType(selectedDataType);
   }, [selectedExpressionName, selectedDataType]);
 
-  const onCancel = useCallback(
-    (_event: MouseEvent | KeyboardEvent) => {
-      resetFormData();
-    },
-    [resetFormData]
-  );
+  const onCancel = useCallback(() => {
+    resetFormData();
+  }, [resetFormData]);
 
   const onShown = useCallback(() => {
     expressionNameRef.current?.focus();

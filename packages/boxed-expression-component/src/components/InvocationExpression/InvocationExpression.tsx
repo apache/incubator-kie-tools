@@ -24,13 +24,12 @@ import {
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
   DEFAULT_ENTRY_INFO_MIN_WIDTH,
   executeIfExpressionDefinitionChanged,
-  generateNextAvailableEntryName,
+  getNextAvailableContextExpressionEntryName,
   generateUuid,
-  getEntryKey,
-  operationHandlerConfig as getOperationHandlerConfig,
+  getOperationHandlerConfig,
   InvocationExpressionDefinition,
   ExpressionDefinitionLogicType,
-  resetEntry,
+  resetContextExpressionEntry,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
 } from "../../api";
@@ -208,14 +207,15 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
 
   const onColumnsUpdate = useCallback(
     ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
-      invocation.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
+      // FIXME: Tiago -> Apparently this is not necessary
+      // invocation.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
       spreadInvocationExpressionDefinition({ name: column.label, dataType: column.dataType });
     },
-    [invocation, spreadInvocationExpressionDefinition]
+    [spreadInvocationExpressionDefinition]
   );
 
   const onNewRow = useCallback<() => ROWTYPE>(() => {
-    const generatedName = generateNextAvailableEntryName(
+    const generatedName = getNextAvailableContextExpressionEntryName(
       beeTableRows.map((row) => row.entryInfo),
       "p"
     );
@@ -233,7 +233,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     };
   }, [beeTableRows]);
 
-  const getHeaderVisibility = useMemo(
+  const headerVisibility = useMemo(
     () => (invocation.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.Full),
     [invocation.isHeadless]
   );
@@ -245,8 +245,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [spreadInvocationExpressionDefinition]
   );
 
-  const getRowKeyCallback = useCallback((row) => getEntryKey(row), []);
-  const resetEntryCallback = useCallback((row) => resetEntry(row), []);
+  const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return row.original.entryInfo.id;
+  }, []);
 
   const defaultCellByColumnId = useMemo(
     () => ({
@@ -266,7 +267,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       <BeeTable<ROWTYPE>
         tableId={invocation.id}
         headerLevelCount={2}
-        headerVisibility={getHeaderVisibility}
+        headerVisibility={headerVisibility}
         skipLastHeaderGroup={true}
         defaultCellByColumnId={defaultCellByColumnId}
         columns={beeTableColumns}
@@ -275,8 +276,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         onNewRow={onNewRow}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
-        getRowKey={getRowKeyCallback}
-        resetRowCustomFunction={resetEntryCallback}
+        getRowKey={getRowKey}
+        resetRowCustomFunction={resetContextExpressionEntry}
       />
     </div>
   );

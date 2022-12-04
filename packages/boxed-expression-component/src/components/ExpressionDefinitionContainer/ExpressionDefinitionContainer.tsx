@@ -36,31 +36,12 @@ export const ExpressionDefinitionContainer: (props: ExpressionDefinitionContaine
 
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
-  const onExpressionHeaderUpdated = useCallback(
-    (args) => {
-      if (selectedExpression.name === args.name && selectedExpression.dataType === args.dataType) {
-        return;
-      }
-      onExpressionChange?.({
-        ...selectedExpression,
-        name: args.name,
-        dataType: args.dataType,
-      });
-    },
+  const onLogicTypeSelected = useCallback(
+    (logicType) => onExpressionChange?.({ ...selectedExpression, logicType: logicType }),
     [onExpressionChange, selectedExpression]
   );
 
-  const onLogicTypeUpdating = useCallback(
-    (logicType) => {
-      onExpressionChange?.({
-        ...selectedExpression,
-        logicType: logicType,
-      });
-    },
-    [onExpressionChange, selectedExpression]
-  );
-
-  const onLogicTypeResetting = useCallback(() => {
+  const onLogicTypeReset = useCallback(() => {
     const updatedExpression: ExpressionDefinition = {
       id: selectedExpression.id,
       name: selectedExpression.name,
@@ -87,9 +68,8 @@ export const ExpressionDefinitionContainer: (props: ExpressionDefinitionContaine
       >
         <ExpressionDefinitionLogicTypeSelector
           selectedExpression={selectedExpression}
-          onLogicTypeUpdating={onLogicTypeUpdating}
-          onLogicTypeResetting={onLogicTypeResetting}
-          onExpressionHeaderUpdated={onExpressionHeaderUpdated}
+          onLogicTypeSelected={onLogicTypeSelected}
+          onLogicTypeReset={onLogicTypeReset}
           getPlacementRef={useCallback(() => expressionContainerRef.current!, [])}
         />
       </div>

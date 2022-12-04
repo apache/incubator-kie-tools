@@ -29,7 +29,7 @@ import { Resizer } from "../Resizer";
 import { BeeTableEditableCellContent } from "../BeeTable";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
-const HEADER_WIDTH = 250;
+const DEFAULT_HEADER_WIDTH = 250;
 
 export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinition> = (
   literalExpression: LiteralExpressionDefinition
@@ -44,7 +44,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
         dataType: literalExpression.dataType ?? DmnBuiltInDataType.Undefined,
         logicType: ExpressionDefinitionLogicType.LiteralExpression,
         content: literalExpression.content ?? "",
-        ...(!literalExpression.isHeadless && literalExpression.width !== HEADER_WIDTH
+        ...(!literalExpression.isHeadless && literalExpression.width !== DEFAULT_HEADER_WIDTH
           ? { width: literalExpression.width }
           : {}),
         ...literalExpressionUpdate,
@@ -71,13 +71,14 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
       dataType = DmnBuiltInDataType.Undefined,
       name = EXPRESSION_NAME,
     }: Pick<ExpressionDefinition, "name" | "dataType">) => {
-      literalExpression.onExpressionHeaderUpdated?.({ name, dataType });
+      // FIXME: Tiago -> Apparently this is not necessary
+      // literalExpression.onExpressionHeaderUpdated?.({ name, dataType });
       spreadLiteralExpressionDefinition({ name, dataType });
     },
-    [literalExpression, spreadLiteralExpressionDefinition]
+    [spreadLiteralExpressionDefinition]
   );
 
-  const onHorizontalResizeStop = useCallback(
+  const updateWidth = useCallback(
     (width) => {
       spreadLiteralExpressionDefinition({
         width,
@@ -86,7 +87,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
     [spreadLiteralExpressionDefinition]
   );
 
-  const onCellUpdate = useCallback(
+  const updateValue = useCallback(
     (_number, _columnId, value) => {
       spreadLiteralExpressionDefinition({
         content: value,
@@ -106,22 +107,22 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onHeaderClick = useCallback(() => {
+  const selectDecisionNode = useCallback(() => {
     beeGwtService?.selectObject(decisionNodeId);
   }, [beeGwtService, decisionNodeId]);
 
-  const onBodyClick = useCallback(() => {
+  const selectLiteralExpression = useCallback(() => {
     beeGwtService?.selectObject(literalExpression.id);
   }, [beeGwtService, literalExpression.id]);
 
   return (
     <div className="literal-expression">
       {!literalExpression.isHeadless && (
-        <div className="literal-expression-header" onClick={onHeaderClick}>
+        <div className="literal-expression-header" onClick={selectDecisionNode}>
           <Resizer
-            width={literalExpression.width ?? HEADER_WIDTH}
-            minWidth={HEADER_WIDTH}
-            onHorizontalResizeStop={onHorizontalResizeStop}
+            width={literalExpression.width ?? DEFAULT_HEADER_WIDTH}
+            minWidth={DEFAULT_HEADER_WIDTH}
+            onHorizontalResizeStop={updateWidth}
           >
             <ExpressionDefinitionHeaderMenu
               selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
@@ -138,12 +139,12 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
           </Resizer>
         </div>
       )}
-      <div className={`${literalExpression.id} literal-expression-body`} onClick={onBodyClick}>
+      <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>
         <BeeTableEditableCellContent
           value={literalExpression.content ?? ""}
           rowIndex={0}
           columnId={literalExpression.id ?? "-"}
-          onCellUpdate={onCellUpdate}
+          onCellUpdate={updateValue}
         />
       </div>
     </div>

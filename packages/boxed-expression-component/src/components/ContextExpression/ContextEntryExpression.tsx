@@ -26,13 +26,13 @@ export interface ContextEntryExpressionProps {
   /** Function invoked when updating expression */
   onUpdatingRecursiveExpression: (expression: ExpressionDefinition) => void;
   /** Function invoked when resetting expression */
-  onExpressionResetting?: () => void;
+  onExpressionReset?: () => void;
 }
 
 export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpressionProps> = ({
   expression,
   onUpdatingRecursiveExpression,
-  onExpressionResetting,
+  onExpressionReset,
 }) => {
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
@@ -40,22 +40,22 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
     return expressionContainerRef.current!;
   }, []);
 
-  const onLogicTypeUpdating = useCallback(
+  const onLogicTypeSelected = useCallback(
     (logicType) => {
       onUpdatingRecursiveExpression(_.omit({ ...expression, logicType }, "isHeadless"));
     },
     [onUpdatingRecursiveExpression, expression]
   );
 
-  const onLogicTypeResetting = useCallback(() => {
-    onExpressionResetting?.();
+  const onLogicTypeReset = useCallback(() => {
+    onExpressionReset?.();
     onUpdatingRecursiveExpression(
       _.omit(
         { ...expression, logicType: ExpressionDefinitionLogicType.Undefined },
         "isHeadless"
       ) as ExpressionDefinition
     );
-  }, [onExpressionResetting, onUpdatingRecursiveExpression, expression]);
+  }, [onExpressionReset, onUpdatingRecursiveExpression, expression]);
 
   return (
     <div className="entry-expression" ref={expressionContainerRef}>
@@ -63,8 +63,8 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
         isHeadless={true}
         onUpdatingRecursiveExpression={onUpdatingRecursiveExpression}
         selectedExpression={expression}
-        onLogicTypeUpdating={onLogicTypeUpdating}
-        onLogicTypeResetting={onLogicTypeResetting}
+        onLogicTypeSelected={onLogicTypeSelected}
+        onLogicTypeReset={onLogicTypeReset}
         getPlacementRef={getLogicTypeSelectorRef}
       />
     </div>

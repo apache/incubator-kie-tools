@@ -539,7 +539,6 @@ export function BeeTable<R extends object>({
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
           onCellKeyDown={onCellKeyDown}
-          onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
           skipLastHeaderGroup={skipLastHeaderGroup}
           reactTableInstance={reactTableInstance}
           tdProps={getTdProps}

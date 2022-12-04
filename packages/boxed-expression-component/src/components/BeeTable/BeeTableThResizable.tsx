@@ -21,7 +21,7 @@ import * as PfReactTable from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { BeeTableTh } from "./BeeTableTh";
 import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
-import { DmnBuiltInDataType } from "../../api";
+import { ExpressionDefinition } from "../../api";
 
 export interface BeeTableThResizableProps<R extends object> {
   column: ReactTable.ColumnInstance<R>;
@@ -31,10 +31,7 @@ export interface BeeTableThResizableProps<R extends object> {
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
   onCellKeyDown: () => (e: KeyboardEvent) => void;
-  onColumnNameOrDataTypeUpdate: (
-    column: ReactTable.ColumnInstance<R>,
-    columnIndex: number
-  ) => ({ name, dataType }: { name?: string; dataType?: DmnBuiltInDataType }) => void;
+  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   onHeaderClick: (columnKey: string) => () => void;
   onHorizontalResizeStop: (column: ReactTable.ColumnInstance<R>, columnWidth: number) => void;
   rowIndex: number;
@@ -56,7 +53,7 @@ export function BeeTableThResizable<R extends object>({
   getColumnKey,
   getColumnLabel,
   onCellKeyDown,
-  onColumnNameOrDataTypeUpdate,
+  onExpressionHeaderUpdated,
   onHeaderClick,
   onHorizontalResizeStop,
   renderHeaderCellInfo,
@@ -149,7 +146,7 @@ export function BeeTableThResizable<R extends object>({
               title={getColumnLabel(column.groupType)}
               selectedExpressionName={column.label}
               selectedDataType={column.dataType}
-              onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
+              onExpressionHeaderUpdated={onExpressionHeaderUpdated}
               key={columnKey}
             >
               {renderHeaderCellInfo(column, columnIndex)}
