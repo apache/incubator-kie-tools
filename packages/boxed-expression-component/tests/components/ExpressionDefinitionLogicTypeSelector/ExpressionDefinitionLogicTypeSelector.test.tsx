@@ -47,8 +47,8 @@ describe("ExpressionDefinitionLogicTypeSelector tests", () => {
           <ExpressionDefinitionLogicTypeSelector
             selectedExpression={expression}
             getPlacementRef={() => document.body as HTMLDivElement}
-            onLogicTypeResetting={_.identity}
-            onLogicTypeUpdating={_.identity}
+            onLogicTypeReset={_.identity}
+            onLogicTypeSelected={_.identity}
           />
         ).wrapper
       ).wrapper
@@ -73,8 +73,8 @@ describe("ExpressionDefinitionLogicTypeSelector tests", () => {
           <ExpressionDefinitionLogicTypeSelector
             selectedExpression={expression}
             getPlacementRef={() => document.body as HTMLDivElement}
-            onLogicTypeResetting={_.identity}
-            onLogicTypeUpdating={_.identity}
+            onLogicTypeReset={_.identity}
+            onLogicTypeSelected={_.identity}
           />
         ).wrapper
       ).wrapper
@@ -102,8 +102,8 @@ describe("Logic type selection", () => {
           <ExpressionDefinitionLogicTypeSelector
             selectedExpression={expression}
             getPlacementRef={() => document.body as HTMLDivElement}
-            onLogicTypeResetting={_.identity}
-            onLogicTypeUpdating={_.identity}
+            onLogicTypeReset={_.identity}
+            onLogicTypeSelected={_.identity}
           />
         ).wrapper
       ).wrapper
@@ -120,7 +120,7 @@ describe("Logic type selection", () => {
       logicType: ExpressionDefinitionLogicType.LiteralExpression,
       dataType: DmnBuiltInDataType.Undefined,
     };
-    const onLogicTypeResetting = jest.fn().mockImplementation(() => {
+    const onLogicTypeReset = jest.fn().mockImplementation(() => {
       expression.logicType = ExpressionDefinitionLogicType.Undefined;
     });
 
@@ -129,8 +129,8 @@ describe("Logic type selection", () => {
         <ExpressionDefinitionLogicTypeSelector
           selectedExpression={expression}
           getPlacementRef={() => document.body as HTMLDivElement}
-          onLogicTypeResetting={onLogicTypeResetting}
-          onLogicTypeUpdating={_.identity}
+          onLogicTypeReset={onLogicTypeReset}
+          onLogicTypeSelected={_.identity}
         />
       ).wrapper
     ).wrapper;
