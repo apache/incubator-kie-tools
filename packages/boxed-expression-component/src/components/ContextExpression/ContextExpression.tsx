@@ -67,6 +67,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         dataType: DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
         logicType: ExpressionDefinitionLogicType.Undefined,
       },
+      nameAndDataTypeSynchronized: true,
     };
 
     return contextExpression.contextEntries ?? [defaultRow];
@@ -194,6 +195,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         dataType: DmnBuiltInDataType.Undefined,
         logicType: ExpressionDefinitionLogicType.Undefined,
       },
+      nameAndDataTypeSynchronized: true,
     };
   }, [beeTableRows]);
 
@@ -207,12 +209,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   // FIXME: Tiago
   const onUpdatingRecursiveExpression = useCallback(
     (expression: ExpressionDefinition) => {
-      // if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
-      //   spreadContextExpressionDefinition({ result: { logicType: ExpressionDefinitionLogicType.Undefined } });
-      // } else {
-      //   const filteredExpression = _.omit(expression, "onUpdatingRecursiveExpression") as ExpressionDefinition;
-      //   spreadContextExpressionDefinition({ result: { ...filteredExpression } });
-      // }
+      if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
+        spreadContextExpressionDefinition({ result: { logicType: ExpressionDefinitionLogicType.Undefined } });
+      } else {
+        const filteredExpression = _.omit(expression, "onUpdatingRecursiveExpression") as ExpressionDefinition;
+        spreadContextExpressionDefinition({ result: { ...filteredExpression } });
+      }
     },
     [spreadContextExpressionDefinition]
   );

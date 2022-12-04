@@ -66,6 +66,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             dataType: DEFAULT_PARAMETER_DATA_TYPE,
             logicType: DEFAULT_PARAMETER_LOGIC_TYPE,
           },
+          nameAndDataTypeSynchronized: true,
         },
       ]
     );
@@ -230,6 +231,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         dataType: DEFAULT_PARAMETER_DATA_TYPE,
         logicType: DEFAULT_PARAMETER_LOGIC_TYPE,
       },
+      nameAndDataTypeSynchronized: true,
     };
   }, [beeTableRows]);
 

@@ -38,7 +38,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
   const onUpdatingRecursiveExpression = useCallback(
     (expression: ExpressionDefinition) => {
       const updatedEntryInfo = { ...contextEntries[rowIndex].entryInfo };
-      if (expression.name && expression.dataType) {
+      if (contextEntries[rowIndex].nameAndDataTypeSynchronized && expression.name && expression.dataType) {
         updatedEntryInfo.name = expression.name;
         updatedEntryInfo.dataType = expression.dataType;
       }

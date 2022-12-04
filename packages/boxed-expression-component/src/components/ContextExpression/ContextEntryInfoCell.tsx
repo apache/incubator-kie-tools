@@ -42,7 +42,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const onContextEntryUpdate = useCallback(
     ({ name, dataType }: Pick<ExpressionDefinition, "name" | "dataType">) => {
       const updatedExpression = { ...entryExpression };
-      if (_.size(name) && _.size(dataType)) {
+      if (contextEntry.nameAndDataTypeSynchronized && _.size(name) && _.size(dataType)) {
         updatedExpression.name = name;
         updatedExpression.dataType = dataType;
       }

@@ -259,7 +259,6 @@ export const focusCellByCoordinates = (currentEl: HTMLElement | null, cellCoordi
   }
 
   const currentTable = currentCell.closest("table");
-
   if (!currentTable) {
     return;
   }
