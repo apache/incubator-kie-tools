@@ -100,6 +100,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
+        width: functionExpression.parametersWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
         columns: [
           {
             headerCellElement: parametersColumnHeader,

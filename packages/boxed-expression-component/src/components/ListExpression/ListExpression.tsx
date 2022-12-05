@@ -39,7 +39,7 @@ import * as ReactTable from "react-table";
 import { hashfy } from "../Resizer";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
-const LIST_EXPRESSION_MIN_WIDTH = 430;
+export const LIST_EXPRESSION_MIN_WIDTH = 430;
 
 export const ListExpression: React.FunctionComponent<ListExpressionDefinition> = (
   listExpression: ListExpressionDefinition

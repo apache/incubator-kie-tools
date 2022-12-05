@@ -191,24 +191,24 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   );
 
   return (
-    <ResizableBox
-      className={resizerClassName}
-      width={resizerWidth}
-      minConstraints={[resizerMinWidth, 0]}
-      height={0}
-      axis="x"
-      onResize={onResize}
-      onResizeStop={onResizeStop}
-      onResizeStart={onResizeStart}
-      handle={
-        <div className="pf-c-drawer">
-          <div className="pf-c-drawer__splitter pf-m-vertical">
-            <div className="pf-c-drawer__splitter-handle" />
-          </div>
-        </div>
-      }
-    >
-      {children}
-    </ResizableBox>
+    // <ResizableBox
+    //   className={resizerClassName}
+    //   width={resizerWidth}
+    //   minConstraints={[resizerMinWidth, 0]}
+    //   height={0}
+    //   axis="x"
+    //   onResize={onResize}
+    //   onResizeStop={onResizeStop}
+    //   onResizeStart={onResizeStart}
+    //   handle={
+    //     <div className="pf-c-drawer">
+    //       <div className="pf-c-drawer__splitter pf-m-vertical">
+    //         <div className="pf-c-drawer__splitter-handle" />
+    //       </div>
+    //     </div>
+    //   }
+    // >
+    <div style={{ width }}>{children}</div>
+    // </ResizableBox>
   );
 };

@@ -27,12 +27,12 @@ export interface ContextEntryExpressionProps {
 }
 
 export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpressionProps> = ({ expression }) => {
-  const logicTypeContainerref = useRef<HTMLDivElement>(null);
+  const logicTypeContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const getLogicTypeSelectorRef = useCallback(() => {
-    return logicTypeContainerref.current!;
+    return logicTypeContainerRef.current!;
   }, []);
 
   const onLogicTypeSelected = useCallback(
@@ -57,7 +57,7 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   }, [setExpression]);
 
   return (
-    <div className="entry-expression" ref={logicTypeContainerref}>
+    <div className="entry-expression" ref={logicTypeContainerRef}>
       <ExpressionDefinitionLogicTypeSelector
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}

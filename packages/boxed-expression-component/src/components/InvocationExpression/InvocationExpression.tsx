@@ -162,6 +162,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         dataType: invocation.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
+        width: (invocation.entryInfoWidth ?? 0) + (invocation.entryExpressionWidth ?? 0) + 2, // 2px for border
         columns: [
           {
             headerCellElement,
@@ -170,6 +171,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             isRowIndexColumn: false,
             label: "functionDefinition",
             dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
+            width: (invocation.entryInfoWidth ?? 0) + (invocation.entryExpressionWidth ?? 0) + 2,
             columns: [
               {
                 accessor: "entryInfo",

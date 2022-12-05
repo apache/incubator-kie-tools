@@ -116,12 +116,12 @@ export function BeeTableBody<R extends object>({
           key={rowKey}
           onClick={onRowClick(rowKey)}
         >
-          {row.cells.map((cell, cellIndex) => {
+          {row.cells.map((_, cellIndex) => {
             return (
               <BeeTableTd<R>
                 key={cellIndex}
                 index={cellIndex}
-                cell={cell}
+                row={row}
                 rowIndex={rowIndex}
                 shouldUseCellDelegate={args.shouldUseCellDelegate}
                 onKeyDown={onCellKeyDown}

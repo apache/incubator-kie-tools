@@ -28,11 +28,6 @@ declare module "react-table" {
     };
   }
 
-  export interface TableOptions<D extends object> {
-    onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
-    onRowUpdate: (rowIndex: number, updatedRow: D) => void;
-  }
-
   export interface ColumnInstance<D extends object> {
     /** Current column is an empty TH element, created by react-table to fill a missing header cell element */
     placeholderOf?: ColumnInstance<D> | undefined;

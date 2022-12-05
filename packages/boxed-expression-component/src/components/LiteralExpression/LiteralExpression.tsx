@@ -16,14 +16,8 @@
 
 import "./LiteralExpression.css";
 import * as React from "react";
-import { useCallback, useEffect } from "react";
-import {
-  DmnBuiltInDataType,
-  executeIfExpressionDefinitionChanged,
-  LiteralExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  ExpressionDefinition,
-} from "../../api";
+import { useCallback } from "react";
+import { DmnBuiltInDataType, LiteralExpressionDefinition, ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../Resizer";
 import { BeeTableEditableCellContent } from "../BeeTable";
@@ -52,7 +46,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     [setExpression]
   );
 
-  const updateValue = useCallback(
+  const updateContent = useCallback(
     (_number, _columnId, value) => {
       setExpression((prev) => ({ ...prev, content: value }));
     },
@@ -96,7 +90,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           value={literalExpression.content ?? ""}
           rowIndex={0}
           columnId={literalExpression.id ?? "-"}
-          onCellUpdate={updateValue}
+          onCellUpdate={updateContent}
         />
       </div>
     </div>

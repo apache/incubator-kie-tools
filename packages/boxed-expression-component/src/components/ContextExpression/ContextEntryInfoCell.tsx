@@ -23,7 +23,7 @@ import * as _ from "lodash";
 export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
   data: readonly ContextExpressionDefinitionEntry[];
-  onRowUpdate: (rowIndex: number, updatedRow: ContextExpressionDefinitionEntry) => void;
+  onEntryUpdate: (rowIndex: number, updatedRow: ContextExpressionDefinitionEntry) => void;
   editInfoPopoverLabel?: string;
   rowIndex: number;
   columnId: string;
@@ -32,7 +32,7 @@ export interface ContextEntryInfoCellProps {
 export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellProps> = ({
   data: contextEntries,
   rowIndex,
-  onRowUpdate,
+  onEntryUpdate,
   editInfoPopoverLabel,
 }) => {
   const contextEntry = useMemo(() => contextEntries[rowIndex], [contextEntries, rowIndex]);
@@ -46,13 +46,13 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
         updatedExpression.name = name;
         updatedExpression.dataType = dataType;
       }
-      onRowUpdate(rowIndex, {
+      onEntryUpdate(rowIndex, {
         ...contextEntry,
         entryExpression: updatedExpression,
         entryInfo: { id: entryInfo.id, name, dataType },
       });
     },
-    [entryExpression, contextEntry, rowIndex, onRowUpdate, entryInfo.id]
+    [entryExpression, contextEntry, rowIndex, onEntryUpdate, entryInfo.id]
   );
 
   return (

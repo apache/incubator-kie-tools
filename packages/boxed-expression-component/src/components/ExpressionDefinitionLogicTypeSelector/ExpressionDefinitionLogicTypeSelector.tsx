@@ -65,6 +65,8 @@ export function ExpressionDefinitionLogicTypeSelector({
   const { i18n } = useBoxedExpressionEditorI18n();
   const boxedExpressionEditor = useBoxedExpressionEditor();
 
+  const { setContextMenuOpen } = useBoxedExpressionEditor();
+
   const isLogicTypeSelected = useMemo(
     () => expression.logicType && expression.logicType !== ExpressionDefinitionLogicType.Undefined,
     [expression.logicType]
@@ -116,8 +118,9 @@ export function ExpressionDefinitionLogicTypeSelector({
   const selectLogicType = useCallback(
     (_: React.MouseEvent, itemId?: string | number) => {
       onLogicTypeSelected(itemId as ExpressionDefinitionLogicType);
+      setContextMenuOpen(false);
     },
-    [onLogicTypeSelected]
+    [onLogicTypeSelected, setContextMenuOpen]
   );
 
   const resetLogicType = useCallback(() => {

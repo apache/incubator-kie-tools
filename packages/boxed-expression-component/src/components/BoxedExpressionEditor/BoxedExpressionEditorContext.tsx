@@ -70,33 +70,45 @@ export interface BoxedExpressionEditorContextProviderProps extends React.PropsWi
   isRunnerTable: boolean;
 }
 
-export function BoxedExpressionEditorContextProvider(props: BoxedExpressionEditorContextProviderProps) {
+export function BoxedExpressionEditorContextProvider({
+  expressionDefinition,
+  setExpressionDefinition,
+  dataTypes,
+  decisionNodeId,
+  isRunnerTable,
+  beeGwtService,
+  children,
+  isClearSupportedOnRootExpression,
+  pmmlParams,
+}: BoxedExpressionEditorContextProviderProps) {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
-  const [supervisorHash, setSupervisorHash] = useState(hashfy(props.expressionDefinition));
+  const [supervisorHash, setSupervisorHash] = useState(hashfy(expressionDefinition));
   const [isContextMenuOpen, setContextMenuOpen] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setSupervisorHash(hashfy(props.expressionDefinition));
-  }, [props.expressionDefinition]);
+    setSupervisorHash(hashfy(expressionDefinition));
+  }, [expressionDefinition]);
 
   const dispatch = useMemo(() => {
     return {
-      setExpression: props.setExpressionDefinition,
+      setExpression: (a: ExpressionDefinition) => {
+        return setExpressionDefinition(a);
+      },
     };
-  }, [props.setExpressionDefinition]);
+  }, [setExpressionDefinition]);
 
   return (
     <BoxedExpressionEditorContext.Provider
       value={{
         //plumbing
-        beeGwtService: props.beeGwtService,
+        beeGwtService,
         editorRef,
 
         // props
-        decisionNodeId: props.decisionNodeId,
-        dataTypes: props.dataTypes,
-        pmmlParams: props.pmmlParams,
+        decisionNodeId,
+        dataTypes,
+        pmmlParams,
 
         //state
         supervisorHash,
@@ -108,12 +120,10 @@ export function BoxedExpressionEditorContextProvider(props: BoxedExpressionEdito
       }}
     >
       <BoxedExpressionEditorDispatchContext.Provider value={dispatch}>
-        <ResizerSupervisor isRunnerTable={props.isRunnerTable}>
-          <div className="boxed-expression-provider" ref={editorRef}>
-            {props.children}
-          </div>
-        </ResizerSupervisor>
-        {props.isRunnerTable === false && <CellSelectionBox />}
+        <div className="boxed-expression-provider" ref={editorRef}>
+          {children}
+        </div>
+        {isRunnerTable === false && <CellSelectionBox />}
       </BoxedExpressionEditorDispatchContext.Provider>
     </BoxedExpressionEditorContext.Provider>
   );

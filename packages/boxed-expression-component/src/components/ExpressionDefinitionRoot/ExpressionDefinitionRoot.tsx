@@ -19,15 +19,20 @@ import { useCallback, useRef } from "react";
 import "./ExpressionDefinitionRoot.css";
 import {
   ContextExpressionDefinition,
+  DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+  DEFAULT_ENTRY_INFO_MIN_WIDTH,
   DmnBuiltInDataType,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   FunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
   generateUuid,
+  InvocationExpressionDefinition,
+  ListExpressionDefinition,
 } from "../../api";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
 
 export interface ExpressionDefinitionRootProps {
   decisionNodeId: string;
@@ -44,6 +49,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       functionKind: FunctionExpressionDefinitionKind.Feel,
       formalParameters: [],
+      parametersWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH + DEFAULT_ENTRY_INFO_MIN_WIDTH,
       expression: {
         logicType: ExpressionDefinitionLogicType.LiteralExpression,
         isHeadless: true,
@@ -54,6 +60,8 @@ export function getDefaultExpressionDefinitionByLogicType(
     const contextExpression: ContextExpressionDefinition = {
       ...prev,
       logicType,
+      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+      entryExpressionWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
       contextEntries: [
         {
           entryInfo: {
@@ -71,6 +79,30 @@ export function getDefaultExpressionDefinitionByLogicType(
       ],
     };
     return contextExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.List) {
+    const listExpression: ListExpressionDefinition = {
+      ...prev,
+      logicType,
+      isHeadless: true,
+      width: LIST_EXPRESSION_MIN_WIDTH,
+      items: [
+        {
+          logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          isHeadless: true,
+          content: "",
+        },
+      ],
+    };
+    return listExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.Invocation) {
+    const invocationExpression: InvocationExpressionDefinition = {
+      ...prev,
+      logicType,
+      isHeadless: true,
+      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+      entryExpressionWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+    };
+    return invocationExpression;
   } else {
     return prev;
   }

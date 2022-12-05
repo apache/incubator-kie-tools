@@ -36,8 +36,6 @@ export interface BeeTableCellProps<R extends object> {
   data: readonly R[];
   rowIndex: number;
   columnId: string;
-  onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
-  onRowUpdate: (rowIndex: number, updatedRow: R) => void;
 }
 
 export interface BeeTableProps<R extends object> {

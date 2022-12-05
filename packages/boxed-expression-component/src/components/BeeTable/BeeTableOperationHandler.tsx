@@ -35,9 +35,9 @@ export interface BeeTableOperationHandlerProps<R extends object> {
   /** Last selected row index */
   lastSelectedRowIndex: number;
   /** Rows instance */
-  tableRows: React.MutableRefObject<R[]>;
+  tableRows: R[];
   /** Function to be executed when one or more rows are modified */
-  onRowsUpdate: (rows: R[], operation?: BeeTableOperation, rowIndex?: number) => void;
+  onRowsUpdate?: (rows: R[], operation?: BeeTableOperation, rowIndex?: number) => void;
   /** Function to be executed when adding a new row to the table */
   onNewRow: (() => R) | undefined;
   /** Show/hide table handler */
@@ -163,7 +163,7 @@ export function BeeTableOperationHandler<R extends object>({
       } else {
         onColumnsUpdate([...tableColumns], operation, columnIndex);
       }
-      onRowsUpdate([...tableRows.current]);
+      onRowsUpdate?.([...tableRows]);
     },
     [onColumnsUpdate, onRowsUpdate, tableColumns, tableRows]
   );
@@ -224,9 +224,6 @@ export function BeeTableOperationHandler<R extends object>({
   const generateRow = useCallback(() => {
     // FIXME: Tiago -> Bad typing
     const row: any = onNewRow?.() ?? ({} as R);
-    if (_.isEmpty(row.id)) {
-      row.id = generateUuid();
-    }
     return row;
   }, [onNewRow]);
 
@@ -244,31 +241,27 @@ export function BeeTableOperationHandler<R extends object>({
           updateTargetColumns(deleteAt, BeeTableOperation.ColumnDelete);
           break;
         case BeeTableOperation.RowInsertAbove:
-          onRowsUpdate(
-            insertBefore(tableRows.current, selectedRowIndex, generateRow()),
+          onRowsUpdate?.(
+            insertBefore(tableRows, selectedRowIndex, generateRow()),
             BeeTableOperation.RowInsertAbove,
             selectedRowIndex
           );
           break;
         case BeeTableOperation.RowInsertBelow:
-          onRowsUpdate(
-            insertAfter(tableRows.current, selectedRowIndex, generateRow()),
+          onRowsUpdate?.(
+            insertAfter(tableRows, selectedRowIndex, generateRow()),
             BeeTableOperation.RowInsertBelow,
             selectedRowIndex
           );
           break;
         case BeeTableOperation.RowDelete:
-          onRowsUpdate(deleteAt(tableRows.current, selectedRowIndex), BeeTableOperation.RowDelete, selectedRowIndex);
+          onRowsUpdate?.(deleteAt(tableRows, selectedRowIndex), BeeTableOperation.RowDelete, selectedRowIndex);
           break;
         case BeeTableOperation.RowClear:
-          onRowsUpdate(clearAt(tableRows.current, selectedRowIndex), BeeTableOperation.RowClear, selectedRowIndex);
+          onRowsUpdate?.(clearAt(tableRows, selectedRowIndex), BeeTableOperation.RowClear, selectedRowIndex);
           break;
         case BeeTableOperation.RowDuplicate:
-          onRowsUpdate(
-            duplicateAfter(tableRows.current, selectedRowIndex),
-            BeeTableOperation.RowDuplicate,
-            selectedRowIndex
-          );
+          onRowsUpdate?.(duplicateAfter(tableRows, selectedRowIndex), BeeTableOperation.RowDuplicate, selectedRowIndex);
       }
       setShowTableOperationHandler(false);
       boxedExpressionEditor.setContextMenuOpen(false);

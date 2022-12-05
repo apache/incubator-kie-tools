@@ -107,17 +107,15 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [beeGwtService, relationExpression, columns, rows]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
+  const beeTableColumns = useMemo<ReactTable.Column<ROWGENERICTYPE>[]>(
     () =>
-      columns.map(
-        (column: RelationExpressionDefinitionColumn) =>
-          ({
-            accessor: column.id,
-            label: column.name,
-            dataType: column.dataType,
-            ...(column.width ? { width: column.width } : {}),
-          } as ReactTable.ColumnInstance<ROWGENERICTYPE>)
-      ),
+      columns.map((column) => ({
+        accessor: column.id,
+        label: column.name,
+        dataType: column.dataType,
+        isRowIndexColumn: false,
+        ...(column.width ? { width: column.width } : {}),
+      })),
     [columns]
   );
 

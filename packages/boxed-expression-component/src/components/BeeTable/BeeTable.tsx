@@ -207,18 +207,6 @@ export function BeeTable<R extends object>({
     [addRowIndexColumnsRecursively, headerLevelCount]
   );
 
-  // FIXME: TIAGO(NOW) Remove this. If ID is required, there should be a type enforcement.
-  const rowsWithId = useCallback<<R extends object>(rows: R[]) => R[]>((rows) => {
-    return rows.map((row) => {
-      // FIXME: Tiago -> Bad typing.
-      if (_.isEmpty((row as any).id)) {
-        (row as any).id ||= generateUuid();
-      }
-      return row;
-    });
-  }, []);
-
-  const tableRowsRef = useRef<R[]>(rowsWithId(rows));
   const [showTableOperationHandler, setShowTableOperationHandler] = useState(false);
   const [operationHandlerTarget, setOperationHandlerTarget] = useState<HTMLElement>(
     boxedExpressionEditor.editorRef.current!
@@ -234,10 +222,6 @@ export function BeeTable<R extends object>({
     [addRowIndexColumns, columns, controllerCell]
   );
 
-  useEffect(() => {
-    tableRowsRef.current = rows;
-  }, [rows]);
-
   const callOnColumnsUpdateWithoutRowIndexColumn = useCallback<
     (columns: ReactTable.Column<R>[], operation?: BeeTableOperation, columnIndex?: number) => void
   >(
@@ -246,33 +230,6 @@ export function BeeTable<R extends object>({
       onColumnsUpdate?.({ columns: originalColumns, operation, columnIndex: (columnIndex ?? 1) - 1 });
     },
     [onColumnsUpdate]
-  );
-
-  const callOnRowsUpdate = useCallback(
-    (rows: R[], operation?: BeeTableOperation, rowIndex?: number) => {
-      tableRowsRef.current = rows;
-      onRowsUpdate?.({ rows: [...rows], operation, rowIndex, columns });
-    },
-    [onRowsUpdate, columns]
-  );
-
-  // FIXME: Tiago -> Bad typing
-  const onCellUpdate = useCallback(
-    (rowIndex: number, columnId: string, value: string) => {
-      const cells = [...tableRowsRef.current];
-      (cells as any)[rowIndex][columnId] = value;
-      callOnRowsUpdate(cells);
-    },
-    [callOnRowsUpdate]
-  );
-
-  const onRowUpdate = useCallback(
-    (rowIndex: number, updatedRow: R) => {
-      const updatedRows = [...tableRowsRef.current];
-      updatedRows[rowIndex] = updatedRow;
-      callOnRowsUpdate(updatedRows);
-    },
-    [callOnRowsUpdate]
   );
 
   const isContextMenuAvailable = useCallback((target: HTMLElement) => {
@@ -324,14 +281,15 @@ export function BeeTable<R extends object>({
           const DefaultCellComponentForColumn = defaultCellByColumnId?.[cellProps.column.id];
           if (DefaultCellComponentForColumn) {
             return DefaultCellComponentForColumn({
-              ...cellProps,
+              data: cellProps.data,
               rowIndex: cellProps.row.index,
               columnId: cellProps.column.id,
             });
           }
           return (
             <BeeTableEditableCellContent
-              {...cellProps}
+              onCellUpdate={() => {}} // FIXME: Tiago -> STATE GAP
+              value={cellProps.value}
               rowIndex={cellProps.row.index}
               columnId={cellProps.column.id}
               isReadOnly={isReadOnly}
@@ -348,8 +306,6 @@ export function BeeTable<R extends object>({
       columns: columnsWithAddedIndexColumns,
       data: rows,
       defaultColumn,
-      onCellUpdate,
-      onRowUpdate,
     },
     ReactTable.useBlockLayout,
     ReactTable.useResizeColumns
@@ -408,34 +364,36 @@ export function BeeTable<R extends object>({
     ]
   );
 
-  useEffect(() => {
-    function listener(event: CustomEvent) {
-      if (event.detail.type !== PASTE_OPERATION || !tableRowsRef.current || tableRowsRef.current.length === 0) {
-        return;
-      }
+  // FIXME: Tiago -> Pasting
+  //
+  // useEffect(() => {
+  //   function listener(event: CustomEvent) {
+  //     if (event.detail.type !== PASTE_OPERATION || !tableRowsRef.current || tableRowsRef.current.length === 0) {
+  //       return;
+  //     }
 
-      const { pasteValue, x, y } = event.detail;
+  //     const { pasteValue, x, y } = event.detail;
 
-      // FIXME: Tiago: Not good, as {} doesn't conform to R.
-      const rowFactory = onNewRow ?? ((() => ({})) as any);
+  //     // FIXME: Tiago: Not good, as {} doesn't conform to R.
+  //     const rowFactory = onNewRow ?? ((() => ({})) as any);
 
-      const isLockedTable = _.some(tableRowsRef.current[0], (row) => {
-        // FIXME: Tiago -> Logic specific to ExpressionDefinition.
-        return (row as any)?.noClearAction;
-      });
+  //     const isLockedTable = _.some(tableRowsRef.current[0], (row) => {
+  //       // FIXME: Tiago -> Logic specific to ExpressionDefinition.
+  //       return (row as any)?.noClearAction;
+  //     });
 
-      if (!isLockedTable) {
-        const pastedRows = pasteOnTable(pasteValue, tableRowsRef.current, rowFactory, x, y);
-        tableRowsRef.current = pastedRows;
-        onRowsUpdate?.({ rows: pastedRows, columns });
-      }
-    }
+  //     if (!isLockedTable) {
+  //       const pastedRows = pasteOnTable(pasteValue, tableRowsRef.current, rowFactory, x, y);
+  //       tableRowsRef.current = pastedRows;
+  //       onRowsUpdate?.({ rows: pastedRows, columns });
+  //     }
+  //   }
 
-    boxedExpressionEditor.editorRef.current?.addEventListener(tableEventUUID, listener);
-    return () => {
-      boxedExpressionEditor.editorRef.current?.removeEventListener(tableEventUUID, listener);
-    };
-  }, [tableEventUUID, tableRowsRef, onRowsUpdate, onColumnsUpdate, onNewRow, boxedExpressionEditor.editorRef, columns]);
+  //   boxedExpressionEditor.editorRef.current?.addEventListener(tableEventUUID, listener);
+  //   return () => {
+  //     boxedExpressionEditor.editorRef.current?.removeEventListener(tableEventUUID, listener);
+  //   };
+  // }, [tableEventUUID, tableRowsRef, onRowsUpdate, onColumnsUpdate, onNewRow, boxedExpressionEditor.editorRef, columns]);
 
   const onGetColumnKey = useCallback<(column: ReactTable.ColumnInstance<R>) => string>(
     (column) => {
@@ -552,8 +510,7 @@ export function BeeTable<R extends object>({
           operationHandlerConfig={operationHandlerConfig}
           lastSelectedColumn={lastSelectedColumn}
           lastSelectedRowIndex={lastSelectedRowIndex}
-          tableRows={tableRowsRef}
-          onRowsUpdate={callOnRowsUpdate}
+          tableRows={rows}
           onNewRow={onNewRow}
           showTableOperationHandler={showTableOperationHandler}
           setShowTableOperationHandler={setShowTableOperationHandler}
