@@ -52,7 +52,7 @@ const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 
 const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
-const EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION =
+export const EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION =
   // 60 = rowIndexColumn,
   // 14 = clear margin,
   // 2 + 2 = entry and expression column borders
@@ -228,10 +228,10 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         );
       },
       entryExpression: (props) => {
-        return <NestedContextEntryCell {...props} />;
+        return <NestedContextEntryCell {...props} containerWidth={entryExpressionColumnWidthDeep} />;
       },
     }),
-    [i18n, updateEntry]
+    [entryExpressionColumnWidthDeep, i18n.editContextEntry, updateEntry]
   );
 
   const operationHandlerConfig = useMemo(
@@ -267,11 +267,11 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             minWidth={DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH}
             onHorizontalResizeStop={setExpressionWidth}
           >
-            <ResultExpression contextExpression={contextExpression} />
+            <ResultExpression contextExpression={contextExpression} containerWidth={entryExpressionColumnWidthDeep} />
           </Resizer>,
         ]
       : undefined;
-  }, [contextExpression, getEntryExpressionColumnWidthDeep, setExpressionWidth]);
+  }, [contextExpression, entryExpressionColumnWidthDeep, getEntryExpressionColumnWidthDeep, setExpressionWidth]);
 
   return (
     <div className={`context-expression ${contextExpression.id}`}>
@@ -293,7 +293,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 };
 
-function ResultExpression(props: { contextExpression: ContextExpressionDefinition }) {
+function ResultExpression(props: { contextExpression: ContextExpressionDefinition } & { containerWidth: number }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
@@ -311,13 +311,15 @@ function ResultExpression(props: { contextExpression: ContextExpressionDefinitio
   }, [props.contextExpression.result]);
 
   return (
-    <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-      <ContextEntryExpression expression={expression} />
-    </NestedExpressionDispatchContextProvider>
+    <NestedExpressionContainerWidthContext.Provider value={props.containerWidth}>
+      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+        <ContextEntryExpression expression={expression} />
+      </NestedExpressionDispatchContextProvider>
+    </NestedExpressionContainerWidthContext.Provider>
   );
 }
 
-function NestedContextEntryCell(props: BeeTableCellProps<ROWTYPE>) {
+function NestedContextEntryCell(props: BeeTableCellProps<ROWTYPE> & { containerWidth: number }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
@@ -334,9 +336,11 @@ function NestedContextEntryCell(props: BeeTableCellProps<ROWTYPE>) {
   );
 
   return (
-    <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-      <ContextEntryExpressionCell {...props} />
-    </NestedExpressionDispatchContextProvider>
+    <NestedExpressionContainerWidthContext.Provider value={props.containerWidth}>
+      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+        <ContextEntryExpressionCell {...props} />
+      </NestedExpressionDispatchContextProvider>
+    </NestedExpressionContainerWidthContext.Provider>
   );
 }
 
@@ -363,4 +367,10 @@ export function NestedExpressionDispatchContextProvider({
       {children}
     </BoxedExpressionEditorDispatchContext.Provider>
   );
+}
+
+const NestedExpressionContainerWidthContext = React.createContext<number>(-1);
+
+export function useNestedExpressionContainerWidth() {
+  return React.useContext(NestedExpressionContainerWidthContext);
 }

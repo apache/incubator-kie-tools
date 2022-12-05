@@ -33,6 +33,7 @@ import {
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
+import { EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION, useNestedExpressionContainerWidth } from "../ContextExpression";
 
 export interface ExpressionDefinitionRootProps {
   decisionNodeId: string;
@@ -41,6 +42,7 @@ export interface ExpressionDefinitionRootProps {
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinitionLogicType,
+  containerWidth: number,
   prev: ExpressionDefinition
 ) {
   if (logicType === ExpressionDefinitionLogicType.Function) {
@@ -49,7 +51,8 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       functionKind: FunctionExpressionDefinitionKind.Feel,
       formalParameters: [],
-      parametersWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH + DEFAULT_ENTRY_INFO_MIN_WIDTH,
+      parametersWidth:
+        Math.max(DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH, containerWidth) - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2,
       expression: {
         logicType: ExpressionDefinitionLogicType.LiteralExpression,
         isHeadless: true,
@@ -61,7 +64,10 @@ export function getDefaultExpressionDefinitionByLogicType(
       ...prev,
       logicType,
       entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
-      entryExpressionWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+      entryExpressionWidth: Math.max(
+        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+      ),
       contextEntries: [
         {
           entryInfo: {
@@ -84,7 +90,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       ...prev,
       logicType,
       isHeadless: true,
-      width: LIST_EXPRESSION_MIN_WIDTH,
+      width: containerWidth - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2, // 2px for border
       items: [
         {
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
@@ -100,7 +106,10 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       isHeadless: true,
       entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
-      entryExpressionWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+      entryExpressionWidth: Math.max(
+        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+      ),
     };
     return invocationExpression;
   } else {
@@ -112,13 +121,14 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const expressionContainerWidth = DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH;
 
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       return setExpression((prev) => {
         {
           return {
-            ...getDefaultExpressionDefinitionByLogicType(logicType, prev),
+            ...getDefaultExpressionDefinitionByLogicType(logicType, expressionContainerWidth, prev),
             logicType,
             isHeadless: false,
             id: prev.id ?? generateUuid(),
@@ -126,7 +136,7 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
         }
       });
     },
-    [setExpression]
+    [expressionContainerWidth, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {
