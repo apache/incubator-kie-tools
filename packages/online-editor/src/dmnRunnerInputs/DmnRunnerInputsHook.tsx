@@ -61,22 +61,26 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
 
         console.debug(`Subscribing to ${dmnRunnerInputsFileUniqueId}`);
         const broadcastChannel = new BroadcastChannel(dmnRunnerInputsFileUniqueId);
-        broadcastChannel.onmessage = ({ data }: MessageEvent<CompanionFsServiceBroadcastEvents>) => {
+        broadcastChannel.onmessage = ({ data: companionEvent }: MessageEvent<CompanionFsServiceBroadcastEvents>) => {
           if (canceled.get()) {
             return;
           }
-          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
-          if (data.type === "CFSF_MOVE" || data.type == "CFSF_RENAME") {
+          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(companionEvent)}`);
+          if (companionEvent.type === "CFSF_MOVE" || companionEvent.type == "CFSF_RENAME") {
             // Ignore, as content remains the same.
-          } else if (data.type === "CFSF_UPDATE" || data.type === "CFSF_ADD" || data.type === "CFSF_DELETE") {
+          } else if (
+            companionEvent.type === "CFSF_UPDATE" ||
+            companionEvent.type === "CFSF_ADD" ||
+            companionEvent.type === "CFSF_DELETE"
+          ) {
             // Triggered by the tab
-            if (data.content === lastInputRows.current) {
-              setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(data.content));
+            if (companionEvent.content === lastInputRows.current) {
+              setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
               return;
             }
             // Triggered by the other tab
-            lastInputRows.current = data.content;
-            setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(data.content));
+            lastInputRows.current = companionEvent.content;
+            setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
             setDidUpdateInputRows(true);
           }
         };
