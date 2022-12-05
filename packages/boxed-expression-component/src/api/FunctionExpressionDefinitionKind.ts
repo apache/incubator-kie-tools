@@ -27,7 +27,7 @@ export interface FeelFunctionExpressionDefinition {
   /** Feel Function */
   functionKind: FunctionExpressionDefinitionKind.Feel;
   /** The Expression related to the function */
-  expression?: ExpressionDefinition;
+  expression: ExpressionDefinition;
 }
 
 export interface JavaFunctionExpressionDefinition {

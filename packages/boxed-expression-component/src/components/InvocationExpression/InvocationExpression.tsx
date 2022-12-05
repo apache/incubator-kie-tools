@@ -32,6 +32,7 @@ import {
   resetContextExpressionEntry,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
+  BeeTableProps,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -65,6 +66,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             name: DEFAULT_PARAMETER_NAME,
             dataType: DEFAULT_PARAMETER_DATA_TYPE,
             logicType: DEFAULT_PARAMETER_LOGIC_TYPE,
+            isHeadless: true,
           },
           nameAndDataTypeSynchronized: true,
         },
@@ -251,7 +253,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     return row.original.entryInfo.id;
   }, []);
 
-  const defaultCellByColumnId = useMemo(
+  const defaultCellByColumnId: BeeTableProps<ROWTYPE>["defaultCellByColumnId"] = useMemo(
     () => ({
       entryInfo: (props: ContextEntryInfoCellProps) =>
         ContextEntryInfoCell({ ...props, editInfoPopoverLabel: i18n.editParameter }),

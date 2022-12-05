@@ -178,7 +178,7 @@ export function BeeTable<R extends object>({
           ],
         });
 
-        if (column?.columns?.length) {
+        if (column.columns?.length) {
           addRowIndexColumnsRecursively(column.columns[0], headerLevelCount - 1);
         }
       }

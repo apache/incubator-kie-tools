@@ -24,7 +24,7 @@ import {
   boxedExpressionEditorI18nDefaults,
 } from "../../i18n";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
-import { ExpressionDefinitionContainer } from "../ExpressionDefinitionContainer";
+import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import "./base-no-reset-wrapped.css";
 
@@ -35,6 +35,7 @@ export interface BoxedExpressionEditorProps {
   decisionNodeId: string;
   /** All expression properties used to define it */
   expressionDefinition: ExpressionDefinition;
+  setExpressionDefinition: React.Dispatch<React.SetStateAction<ExpressionDefinition>>;
   /**
    * A boolean used for making (or not) the clear button available on the root expression
    * Note that this parameter will be used only for the root expression.
@@ -49,28 +50,25 @@ export interface BoxedExpressionEditorProps {
   pmmlParams?: PmmlParam[];
 }
 
-export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
-  const noClearAction = useMemo(
-    () => props.isClearSupportedOnRootExpression === false,
-    [props.isClearSupportedOnRootExpression]
-  );
-
-  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>({
-    ...props.expressionDefinition,
-    noClearAction: props.isClearSupportedOnRootExpression === false,
-  });
+export function BoxedExpressionEditor({
+  dataTypes,
+  decisionNodeId,
+  expressionDefinition,
+  setExpressionDefinition,
+  beeGwtService,
+  isClearSupportedOnRootExpression,
+  pmmlParams,
+}: BoxedExpressionEditorProps) {
+  const noClearAction = useMemo(() => {
+    return isClearSupportedOnRootExpression === false;
+  }, [isClearSupportedOnRootExpression]);
 
   useEffect(() => {
-    setExpressionDefinition({
-      ...props.expressionDefinition,
+    setExpressionDefinition((prev) => ({
+      ...prev,
       noClearAction,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.expressionDefinition]);
-
-  const onExpressionChange = useCallback((updatedExpression: ExpressionDefinition) => {
-    setExpressionDefinition(updatedExpression);
-  }, []);
+    }));
+  }, [noClearAction, setExpressionDefinition]);
 
   return (
     <I18nDictionariesProvider
@@ -80,17 +78,15 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
       ctx={BoxedExpressionEditorI18nContext}
     >
       <BoxedExpressionEditorContextProvider
-        beeGwtService={props.beeGwtService}
-        decisionNodeId={props.decisionNodeId}
+        beeGwtService={beeGwtService}
+        decisionNodeId={decisionNodeId}
         expressionDefinition={expressionDefinition}
-        dataTypes={props.dataTypes}
-        pmmlParams={props.pmmlParams}
+        setExpressionDefinition={setExpressionDefinition}
+        dataTypes={dataTypes}
+        pmmlParams={pmmlParams}
         isRunnerTable={false}
       >
-        <ExpressionDefinitionContainer
-          selectedExpression={expressionDefinition}
-          onExpressionChange={onExpressionChange}
-        />
+        <ExpressionDefinitionRoot decisionNodeId={decisionNodeId} expression={expressionDefinition} />
       </BoxedExpressionEditorContextProvider>
     </I18nDictionariesProvider>
   );

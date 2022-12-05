@@ -87,7 +87,7 @@ export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Context */
   logicType: ExpressionDefinitionLogicType.Context;
   /** Collection of context entries */
-  contextEntries?: ContextExpressionDefinitionEntry[];
+  contextEntries: ContextExpressionDefinitionEntry[];
   /** Context result */
   result?: ExpressionDefinition;
   /** False, to avoid the rendering of the result section */
@@ -148,7 +148,7 @@ export type FunctionExpressionDefinition = ExpressionDefinitionBase & {
   /** Logic type must be Function */
   logicType: ExpressionDefinitionLogicType.Function;
   /** List of parameters passed to the function */
-  formalParameters?: ContextExpressionDefinitionEntryInfo[];
+  formalParameters: ContextExpressionDefinitionEntryInfo[];
   /** Parameters column width */
   parametersWidth?: number;
 } & (FeelFunctionExpressionDefinition | JavaFunctionExpressionDefinition | PmmlFunctionExpressionDefinition);

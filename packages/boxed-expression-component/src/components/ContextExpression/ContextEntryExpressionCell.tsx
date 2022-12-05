@@ -16,45 +16,23 @@
 
 import "./ContextEntryExpressionCell.css";
 import * as React from "react";
-import { useCallback } from "react";
-import { ContextExpressionDefinitionEntry, ROWGENERICTYPE, ExpressionDefinition } from "../../api";
+import { ContextExpressionDefinitionEntry } from "../../api";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import * as _ from "lodash";
 
 export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
-  data: ContextExpressionDefinitionEntry[];
-  onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void;
+  data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
-  columnId: string;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
   data: contextEntries,
   rowIndex,
-  onRowUpdate,
 }) => {
-  // FIXME: Tiago
-  const onUpdatingRecursiveExpression = useCallback(
-    (expression: ExpressionDefinition) => {
-      const updatedEntryInfo = { ...contextEntries[rowIndex].entryInfo };
-      if (contextEntries[rowIndex].nameAndDataTypeSynchronized && expression.name && expression.dataType) {
-        updatedEntryInfo.name = expression.name;
-        updatedEntryInfo.dataType = expression.dataType;
-      }
-
-      onRowUpdate(rowIndex, { ...contextEntries[rowIndex], entryInfo: updatedEntryInfo, entryExpression: expression });
-    },
-    [onRowUpdate, contextEntries, rowIndex]
-  );
-
   return (
     <div className="context-entry-expression-cell">
-      <ContextEntryExpression
-        expression={contextEntries[rowIndex].entryExpression}
-        onUpdatingRecursiveExpression={onUpdatingRecursiveExpression}
-        onExpressionReset={contextEntries[rowIndex].onExpressionReset}
-      />
+      <ContextEntryExpression expression={contextEntries[rowIndex].entryExpression} />
     </div>
   );
 };

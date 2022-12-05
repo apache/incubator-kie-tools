@@ -27,85 +27,37 @@ import {
 import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../Resizer";
 import { BeeTableEditableCellContent } from "../BeeTable";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 const DEFAULT_HEADER_WIDTH = 250;
 
-export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinition> = (
-  literalExpression: LiteralExpressionDefinition
-) => {
+export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
   const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
-
-  const spreadLiteralExpressionDefinition = useCallback(
-    (literalExpressionUpdate?: Partial<LiteralExpressionDefinition>) => {
-      const expressionDefinition: LiteralExpressionDefinition = {
-        id: literalExpression.id,
-        name: literalExpression.name ?? EXPRESSION_NAME,
-        dataType: literalExpression.dataType ?? DmnBuiltInDataType.Undefined,
-        logicType: ExpressionDefinitionLogicType.LiteralExpression,
-        content: literalExpression.content ?? "",
-        ...(!literalExpression.isHeadless && literalExpression.width !== DEFAULT_HEADER_WIDTH
-          ? { width: literalExpression.width }
-          : {}),
-        ...literalExpressionUpdate,
-      };
-
-      executeIfExpressionDefinitionChanged(
-        literalExpression,
-        expressionDefinition,
-        () => {
-          if (literalExpression.isHeadless) {
-            literalExpression.onUpdatingRecursiveExpression?.(expressionDefinition);
-          } else {
-            beeGwtService?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
-          }
-        },
-        ["name", "dataType", "content", "width"]
-      );
-    },
-    [beeGwtService, literalExpression]
-  );
+  const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onExpressionHeaderUpdated = useCallback(
-    ({
-      dataType = DmnBuiltInDataType.Undefined,
-      name = EXPRESSION_NAME,
-    }: Pick<ExpressionDefinition, "name" | "dataType">) => {
-      // FIXME: Tiago -> Apparently this is not necessary
-      // literalExpression.onExpressionHeaderUpdated?.({ name, dataType });
-      spreadLiteralExpressionDefinition({ name, dataType });
+    ({ dataType, name }: Pick<ExpressionDefinition, "name" | "dataType">) => {
+      setExpression((prev) => ({ ...prev, name, dataType }));
     },
-    [spreadLiteralExpressionDefinition]
+    [setExpression]
   );
 
   const updateWidth = useCallback(
     (width) => {
-      spreadLiteralExpressionDefinition({
-        width,
-      });
+      setExpression((prev) => ({ ...prev, width }));
     },
-    [spreadLiteralExpressionDefinition]
+    [setExpression]
   );
 
   const updateValue = useCallback(
     (_number, _columnId, value) => {
-      spreadLiteralExpressionDefinition({
-        content: value,
-      });
+      setExpression((prev) => ({ ...prev, content: value }));
     },
-    [spreadLiteralExpressionDefinition]
+    [setExpression]
   );
-
-  // TODO: https://issues.redhat.com/browse/KOGITO-6341
-  useEffect(() => {
-    if (!literalExpression.isHeadless) {
-      beeGwtService?.broadcastLiteralExpressionDefinition?.({
-        ...literalExpression,
-        logicType: ExpressionDefinitionLogicType.LiteralExpression,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const selectDecisionNode = useCallback(() => {
     beeGwtService?.selectObject(decisionNodeId);
@@ -149,4 +101,4 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionDefinit
       </div>
     </div>
   );
-};
+}

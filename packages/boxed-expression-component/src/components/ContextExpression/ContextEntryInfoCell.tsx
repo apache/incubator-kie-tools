@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ContextExpressionDefinitionEntry, ExpressionDefinition, ROWGENERICTYPE } from "../../api";
+import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinition, ROWGENERICTYPE } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { ContextEntryInfo } from "./ContextEntryInfo";
@@ -22,8 +22,8 @@ import * as _ from "lodash";
 
 export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used as a "defaultCell" on "defaultCellByColumnName".
-  data: ContextExpressionDefinitionEntry[];
-  onRowUpdate: (rowIndex: number, updatedRow: ROWGENERICTYPE) => void;
+  data: readonly ContextExpressionDefinitionEntry[];
+  onRowUpdate: (rowIndex: number, updatedRow: ContextExpressionDefinitionEntry) => void;
   editInfoPopoverLabel?: string;
   rowIndex: number;
   columnId: string;
@@ -40,7 +40,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const entryExpression = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
 
   const onContextEntryUpdate = useCallback(
-    ({ name, dataType }: Pick<ExpressionDefinition, "name" | "dataType">) => {
+    ({ name = "", dataType = DmnBuiltInDataType.Undefined }: Pick<ExpressionDefinition, "name" | "dataType">) => {
       const updatedExpression = { ...entryExpression };
       if (contextEntry.nameAndDataTypeSynchronized && _.size(name) && _.size(dataType)) {
         updatedExpression.name = name;

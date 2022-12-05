@@ -17,6 +17,7 @@
 import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import * as React from "react";
 import * as ReactTable from "react-table";
+import { BeeTableEditableCellContentProps } from "../components";
 
 export interface BeeTableColumnsUpdateArgs<R extends object> {
   columns: ReactTable.Column<R>[];
@@ -29,6 +30,14 @@ export interface BeeTableRowsUpdateArgs<R extends object> {
   operation?: BeeTableOperation;
   rowIndex?: number;
   columns?: ReactTable.Column<R>[];
+}
+
+export interface BeeTableCellProps<R extends object> {
+  data: readonly R[];
+  rowIndex: number;
+  columnId: string;
+  onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
+  onRowUpdate: (rowIndex: number, updatedRow: R) => void;
 }
 
 export interface BeeTableProps<R extends object> {
@@ -45,9 +54,7 @@ export interface BeeTableProps<R extends object> {
   /** Top-left cell custom content */
   controllerCell?: string | JSX.Element;
   /** For each column there is a default component to be used to render the related cell */
-  defaultCellByColumnId?: {
-    [columnId: string]: React.FunctionComponent<{ data: any; rowIndex: number; columnId: string }>;
-  };
+  defaultCellByColumnId?: { [columnId: string]: React.FunctionComponent<BeeTableCellProps<R>> };
   /** Table's columns */
   columns: ReactTable.Column<R>[];
   /** Table's cells */

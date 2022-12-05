@@ -24,15 +24,14 @@ import {
   DmnBuiltInDataType,
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
   DEFAULT_ENTRY_INFO_MIN_WIDTH,
-  executeIfExpressionDefinitionChanged,
   getNextAvailableContextExpressionEntryName,
   generateUuid,
   getOperationHandlerConfig,
   ExpressionDefinitionLogicType,
   resetContextExpressionEntry,
-  BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   ExpressionDefinition,
+  BeeTableProps,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -40,9 +39,13 @@ import * as ReactTable from "react-table";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import * as _ from "lodash";
 import { ContextEntryExpression } from "./ContextEntryExpression";
-import { hashfy, Resizer } from "../Resizer";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ContextEntryInfoCell, ContextEntryInfoCellProps } from "./ContextEntryInfoCell";
+import { Resizer } from "../Resizer";
+import {
+  BoxedExpressionEditorDispatchContext,
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 
 const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DmnBuiltInDataType.Undefined;
@@ -53,73 +56,21 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   contextExpression: ContextExpressionDefinition
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setSupervisorHash, beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
-
-  const beeTableRows = useMemo(() => {
-    const defaultRow: ROWTYPE = {
-      entryInfo: {
-        id: generateUuid(),
-        name: DEFAULT_CONTEXT_ENTRY_NAME,
-        dataType: DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
-      },
-      entryExpression: {
-        name: DEFAULT_CONTEXT_ENTRY_NAME,
-        dataType: DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
-        logicType: ExpressionDefinitionLogicType.Undefined,
-      },
-      nameAndDataTypeSynchronized: true,
-    };
-
-    return contextExpression.contextEntries ?? [defaultRow];
-  }, [contextExpression.contextEntries]);
-
-  const spreadContextExpressionDefinition = useCallback(
-    (contextExpressionUpdated: Partial<ContextExpressionDefinition>) => {
-      const updatedDefinition: ContextExpressionDefinition = {
-        id: contextExpression.id,
-        logicType: ExpressionDefinitionLogicType.Context,
-        name: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
-        dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
-        contextEntries: beeTableRows,
-        result: contextExpression.result,
-        entryInfoWidth: contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
-        entryExpressionWidth: contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-        noClearAction: contextExpression.noClearAction,
-        renderResult: contextExpression.renderResult,
-        noHandlerMenu: contextExpression.noHandlerMenu,
-        ...contextExpressionUpdated,
-      };
-
-      const expression = _.omit(updatedDefinition, ["name", "dataType", "isHeadless"]);
-      executeIfExpressionDefinitionChanged(
-        contextExpression,
-        updatedDefinition,
-        () => {
-          if (contextExpression.isHeadless) {
-            contextExpression.onUpdatingRecursiveExpression?.(expression);
-          } else {
-            setSupervisorHash(hashfy(expression));
-            beeGwtService?.broadcastContextExpressionDefinition?.(updatedDefinition);
-          }
-        },
-        ["name", "dataType", "contextEntries", "result", "entryInfoWidth", "entryExpressionWidth"]
-      );
-    },
-    [beeGwtService, contextExpression, setSupervisorHash, beeTableRows]
-  );
+  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const setInfoWidth = useCallback(
     (newInfoWidth: number) => {
-      spreadContextExpressionDefinition({ entryInfoWidth: newInfoWidth });
+      setExpression((prev) => ({ ...prev, entryInfoWidth: newInfoWidth }));
     },
-    [spreadContextExpressionDefinition]
+    [setExpression]
   );
 
   const setExpressionWidth = useCallback(
     (newEntryExpressionWidth: number) => {
-      spreadContextExpressionDefinition({ entryExpressionWidth: newEntryExpressionWidth });
+      setExpression((prev) => ({ ...prev, entryExpressionWidth: newEntryExpressionWidth }));
     },
-    [spreadContextExpressionDefinition]
+    [setExpression]
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
@@ -167,21 +118,21 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const onColumnsUpdate = useCallback(
     ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
-      // FIXME: Tiago -> Apparently this is not necessary
-      // contextExpression.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
-      spreadContextExpressionDefinition({
+      // FIXME: Tiago -> This is not good. We shouldn't need to rely on the table to update those values.
+      setExpression((prev) => ({
+        ...prev,
         name: column.label,
         dataType: column.dataType,
         entryInfoWidth: column.columns?.[0].width,
         entryExpressionWidth: column.columns?.[1].width,
-      });
+      }));
     },
-    [spreadContextExpressionDefinition]
+    [setExpression]
   );
 
   const onNewRow = useCallback((): ROWTYPE => {
     const generatedName = getNextAvailableContextExpressionEntryName(
-      beeTableRows.map((row) => row.entryInfo),
+      contextExpression.contextEntries.map((row) => row.entryInfo),
       "ContextEntry"
     );
     return {
@@ -197,39 +148,50 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       },
       nameAndDataTypeSynchronized: true,
     };
-  }, [beeTableRows]);
-
-  const onRowsUpdate = useCallback(
-    ({ rows }: BeeTableRowsUpdateArgs<ContextExpressionDefinitionEntry>) => {
-      spreadContextExpressionDefinition({ contextEntries: [...rows] });
-    },
-    [spreadContextExpressionDefinition]
-  );
-
-  // FIXME: Tiago
-  const onUpdatingRecursiveExpression = useCallback(
-    (expression: ExpressionDefinition) => {
-      if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
-        spreadContextExpressionDefinition({ result: { logicType: ExpressionDefinitionLogicType.Undefined } });
-      } else {
-        const filteredExpression = _.omit(expression, "onUpdatingRecursiveExpression") as ExpressionDefinition;
-        spreadContextExpressionDefinition({ result: { ...filteredExpression } });
-      }
-    },
-    [spreadContextExpressionDefinition]
-  );
+  }, [contextExpression.contextEntries]);
 
   const headerVisibility = useMemo(() => {
     return contextExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
   }, [contextExpression.isHeadless]);
 
-  const defaultCellByColumnId = useMemo(
+  const defaultCellByColumnId: BeeTableProps<ROWTYPE>["defaultCellByColumnId"] = useMemo(
     () => ({
-      entryInfo: (props: ContextEntryInfoCellProps) =>
-        ContextEntryInfoCell({ ...props, editInfoPopoverLabel: i18n.editContextEntry }),
-      entryExpression: ContextEntryExpressionCell,
+      entryInfo: (props) => {
+        return (
+          <ContextEntryInfoCell
+            {...props}
+            editInfoPopoverLabel={i18n.editContextEntry}
+            onRowUpdate={(rowIndex, newEntry) => {
+              setExpression((prev) => {
+                const contextEntries = [...((prev as ContextExpressionDefinition).contextEntries ?? [])];
+                contextEntries[rowIndex] = newEntry;
+                return { ...prev, contextEntries };
+              });
+            }}
+          />
+        );
+      },
+      entryExpression: (props) => {
+        return (
+          <NestedExpressionDispatchContextProvider
+            onSetExpression={({ getNewExpression }) => {
+              setExpression((prev) => {
+                const contextEntries = [...((prev as ContextExpressionDefinition).contextEntries ?? [])];
+                contextEntries[props.rowIndex].entryExpression = getNewExpression(
+                  contextEntries[props.rowIndex]?.entryExpression ?? {
+                    logicType: ExpressionDefinitionLogicType.Undefined,
+                  }
+                );
+                return { ...prev, contextEntries };
+              });
+            }}
+          >
+            <ContextEntryExpressionCell {...props} />
+          </NestedExpressionDispatchContextProvider>
+        );
+      },
     }),
-    [i18n]
+    [i18n, setExpression]
   );
 
   const operationHandlerConfig = useMemo(
@@ -248,13 +210,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     return updatedEntry;
   }, []);
 
-  const onHorizontalResizeStop = useCallback(
-    (width: number) => {
-      return setExpressionWidth(width);
-    },
-    [setExpressionWidth]
-  );
-
   return (
     <div className={`context-expression ${contextExpression.id}`}>
       <BeeTable
@@ -263,10 +218,9 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         headerVisibility={headerVisibility}
         defaultCellByColumnId={defaultCellByColumnId}
         columns={beeTableColumns}
-        rows={beeTableRows}
+        rows={contextExpression.contextEntries}
         onColumnsUpdate={onColumnsUpdate}
         onNewRow={onNewRow}
-        onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}
         resetRowCustomFunction={resetRowCustomFunction}
@@ -277,7 +231,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
                   key="context-result"
                   width={contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH}
                   minWidth={DEFAULT_ENTRY_INFO_MIN_WIDTH}
-                  onHorizontalResizeStop={onHorizontalResizeStop}
+                  onHorizontalResizeStop={setExpressionWidth}
                 >
                   <div className="context-result">{`<result>`}</div>
                 </Resizer>,
@@ -285,12 +239,24 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
                   key="context-expression"
                   width={contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH}
                   minWidth={DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH}
-                  onHorizontalResizeStop={onHorizontalResizeStop}
+                  onHorizontalResizeStop={setExpressionWidth}
                 >
-                  <ContextEntryExpression
-                    expression={contextExpression.result ?? { logicType: ExpressionDefinitionLogicType.Undefined }}
-                    onUpdatingRecursiveExpression={onUpdatingRecursiveExpression}
-                  />
+                  <NestedExpressionDispatchContextProvider
+                    onSetExpression={({ getNewExpression }) => {
+                      setExpression((prev) => ({
+                        ...prev,
+                        result: getNewExpression(
+                          (prev as ContextExpressionDefinition).result ?? {
+                            logicType: ExpressionDefinitionLogicType.Undefined,
+                          }
+                        ),
+                      }));
+                    }}
+                  >
+                    <ContextEntryExpression
+                      expression={contextExpression.result ?? { logicType: ExpressionDefinitionLogicType.Undefined }}
+                    />
+                  </NestedExpressionDispatchContextProvider>
                 </Resizer>,
               ]
             : undefined
@@ -299,3 +265,28 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     </div>
   );
 };
+
+export function NestedExpressionDispatchContextProvider({
+  onSetExpression,
+  children,
+}: React.PropsWithChildren<{
+  onSetExpression: (args: { getNewExpression: (prev: ExpressionDefinition) => ExpressionDefinition }) => void;
+}>) {
+  const nestedExpressionDispatch = useMemo(() => {
+    return {
+      setExpression: (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
+        function getNewExpression(prev: ExpressionDefinition) {
+          return typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
+        }
+
+        onSetExpression({ getNewExpression });
+      },
+    };
+  }, [onSetExpression]);
+
+  return (
+    <BoxedExpressionEditorDispatchContext.Provider value={nestedExpressionDispatch}>
+      {children}
+    </BoxedExpressionEditorDispatchContext.Provider>
+  );
+}

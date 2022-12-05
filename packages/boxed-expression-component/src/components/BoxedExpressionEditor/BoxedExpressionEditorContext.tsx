@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
-import { BeeGwtService, DmnDataType, PmmlParam } from "../../api";
+import { useContext, useMemo } from "react";
+import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
 import { useEffect, useRef, useState } from "react";
 import "./BoxedExpressionEditorContextProvider.css";
 import { hashfy, ResizerSupervisor } from "../Resizer";
@@ -45,12 +45,24 @@ export interface BoxedExpressionEditorContextType {
   >;
 }
 
+export interface BoxedExpressionEditorDispatchContextType {
+  setExpression: React.Dispatch<React.SetStateAction<ExpressionDefinition>>;
+}
+
 export const BoxedExpressionEditorContext = React.createContext<BoxedExpressionEditorContextType>(
   {} as BoxedExpressionEditorContextType
 );
 
+export const BoxedExpressionEditorDispatchContext = React.createContext<BoxedExpressionEditorDispatchContextType>(
+  {} as BoxedExpressionEditorDispatchContextType
+);
+
 export function useBoxedExpressionEditor() {
   return useContext(BoxedExpressionEditorContext);
+}
+
+export function useBoxedExpressionEditorDispatch() {
+  return useContext(BoxedExpressionEditorDispatchContext);
 }
 
 export interface BoxedExpressionEditorContextProviderProps extends React.PropsWithChildren<BoxedExpressionEditorProps> {
@@ -67,6 +79,12 @@ export function BoxedExpressionEditorContextProvider(props: BoxedExpressionEdito
   useEffect(() => {
     setSupervisorHash(hashfy(props.expressionDefinition));
   }, [props.expressionDefinition]);
+
+  const dispatch = useMemo(() => {
+    return {
+      setExpression: props.setExpressionDefinition,
+    };
+  }, [props.setExpressionDefinition]);
 
   return (
     <BoxedExpressionEditorContext.Provider
@@ -89,12 +107,14 @@ export function BoxedExpressionEditorContextProvider(props: BoxedExpressionEdito
         setCurrentlyOpenedHandlerCallback,
       }}
     >
-      <ResizerSupervisor isRunnerTable={props.isRunnerTable}>
-        <div className="boxed-expression-provider" ref={editorRef}>
-          {props.children}
-        </div>
-      </ResizerSupervisor>
-      {props.isRunnerTable === false && <CellSelectionBox />}
+      <BoxedExpressionEditorDispatchContext.Provider value={dispatch}>
+        <ResizerSupervisor isRunnerTable={props.isRunnerTable}>
+          <div className="boxed-expression-provider" ref={editorRef}>
+            {props.children}
+          </div>
+        </ResizerSupervisor>
+        {props.isRunnerTable === false && <CellSelectionBox />}
+      </BoxedExpressionEditorDispatchContext.Provider>
     </BoxedExpressionEditorContext.Provider>
   );
 }
