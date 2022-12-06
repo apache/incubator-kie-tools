@@ -2036,6 +2036,27 @@ importers:
       "@kie-tools/root-env": link:../root-env
       run-script-os: 1.1.6
 
+  packages/dmn-language-service:
+    specifiers:
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+    dependencies:
+      "@kie-tools-core/backend": link:../backend
+      "@kie-tools-core/envelope": link:../envelope
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+    devDependencies:
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_typescript@4.8.4
+      typescript: 4.8.4
+
   packages/editor:
     specifiers:
       "@babel/core": ^7.16.0
@@ -27624,6 +27645,28 @@ packages:
       make-error: 1.3.6
       mkdirp: 1.0.4
       semver: 7.3.7
+      yargs-parser: 20.2.7
+    dev: true
+
+  /ts-jest/26.5.6_typescript@4.8.4:
+    resolution:
+      { integrity: sha512-rua+rCP8DxpA8b4DQD/6X2HQS8Zy/xzViVYfEs2OQu68tkCuKLV0Md8pmX55+W24uRIyAsf/BajRfxOs+R2MKA== }
+    engines: { node: ">= 10" }
+    hasBin: true
+    peerDependencies:
+      jest: ">=26 <27"
+      typescript: ">=3.8 <5.0"
+    dependencies:
+      bs-logger: 0.2.6
+      buffer-from: 1.1.1
+      fast-json-stable-stringify: 2.1.0
+      jest-util: 26.6.2
+      json5: 2.2.1
+      lodash: 4.17.21
+      make-error: 1.3.6
+      mkdirp: 1.0.4
+      semver: 7.3.7
+      typescript: 4.8.4
       yargs-parser: 20.2.7
     dev: true
 

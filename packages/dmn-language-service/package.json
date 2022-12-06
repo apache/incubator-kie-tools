@@ -1,0 +1,36 @@
+{
+  "name": "@kie-tools-core/dmn-language-service",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/envelope": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2"
+  }
+}
