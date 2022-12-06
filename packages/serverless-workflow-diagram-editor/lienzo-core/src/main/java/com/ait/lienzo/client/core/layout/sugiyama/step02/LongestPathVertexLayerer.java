@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.layout.ReorderedGraph;
 import com.ait.lienzo.client.core.layout.VertexPosition;
@@ -77,45 +75,8 @@ public final class LongestPathVertexLayerer implements VertexLayerer {
             visit(vertexPosition);
         }
 
-        // Reorder to put ending vertex alone
-        final List<VertexPosition> lastLayer = getLayeredVertices().get(1);
-
-        if (!Objects.isNull(this.graph.getEndingVertexId())) {
-            isolateEndingVertex(lastLayer);
-        }
-
         // Add and create layers
         getLayeredVertices().forEach((layer, verticesInLayer) -> verticesInLayer.forEach(v -> addToLayer(v, layer)));
-    }
-
-    void isolateEndingVertex(final List<VertexPosition> lastLayer) {
-
-        if (lastLayer.stream().noneMatch(v -> Objects.equals(v.getId(), this.graph.getEndingVertexId()))) {
-
-            for (final List<VertexPosition> layer : getLayeredVertices().values()) {
-
-                final Optional<VertexPosition> endingVertex = layer.stream()
-                        .filter(vertexPosition -> Objects.equals(vertexPosition.getId(), this.graph.getEndingVertexId()))
-                        .findFirst();
-
-                if (endingVertex.isPresent()) {
-                    layer.remove(endingVertex.get());
-                    lastLayer.add(endingVertex.get());
-                    break;
-                }
-            }
-        }
-
-        if (lastLayer.size() != 1) {
-            final List<VertexPosition> nonEndingVertices = lastLayer.stream()
-                    .filter(vertexPosition -> !Objects.equals(vertexPosition.getId(), this.graph.getEndingVertexId()))
-                    .collect(Collectors.toList());
-
-            lastLayer.removeAll(nonEndingVertices);
-
-            final List<VertexPosition> previousLayer = getLayeredVertices().get(2);
-            previousLayer.addAll(nonEndingVertices);
-        }
     }
 
     private int visit(final VertexPosition vertexPosition) {
@@ -126,7 +87,7 @@ public final class LongestPathVertexLayerer implements VertexLayerer {
 
         int maxHeight = 1;
 
-        final String[] verticesFromHere = graph.getVerticesFrom(vertexPosition.getId());
+        final String[] verticesFromHere = graph.getVerticesTo(vertexPosition.getId());
         for (final String nextVertex : verticesFromHere) {
             if (!Objects.equals(nextVertex, vertexPosition.getId())) {
                 final VertexPosition next = Arrays.stream(this.vertices)
@@ -141,6 +102,7 @@ public final class LongestPathVertexLayerer implements VertexLayerer {
             }
         }
 
+        this.vertexHeight.put(vertexPosition.getId(), maxHeight);
         addToLayeredVertices(vertexPosition, maxHeight);
 
         return maxHeight;

@@ -16,7 +16,6 @@
   <description>Drools Workbench - Scenario Simulation Editor - Kogito - Testing Webapp</description>
 
   <properties>
-    <wildfly.home>${project.build.directory}/wildfly-${version.org.wildfly}</wildfly.home>
     <gwt.helper.includes>Client,Marshaller,KogitoEditor,WebappBase</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
   </properties>
@@ -166,7 +165,7 @@
 
     <!-- GWT and extensions -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -177,7 +176,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
     </dependency>

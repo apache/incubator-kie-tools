@@ -65,6 +65,7 @@ public class WiresConnectorLabel implements IDestroyable {
     public WiresConnectorLabel configure(Consumer<Text> consumer) {
         consumer.accept(text);
         refresh();
+        batch();
         return this;
     }
 

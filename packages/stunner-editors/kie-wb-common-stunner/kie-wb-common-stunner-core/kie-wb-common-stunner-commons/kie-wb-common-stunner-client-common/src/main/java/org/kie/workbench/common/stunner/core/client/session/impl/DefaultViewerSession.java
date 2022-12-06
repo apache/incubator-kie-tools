@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -59,7 +59,7 @@ public class DefaultViewerSession
                      final Command callback) {
         init(s -> s.registerCanvasControl(MediatorsControl.class)
                      .registerCanvasHandlerControl(SelectionControl.class,
-                                                   MultipleSelection.class),
+                                                   SingleSelection.class),
              metadata,
              callback);
     }

@@ -73,6 +73,11 @@ public enum DisplayerType {
      * Meter Chart
      */
     METERCHART(),
+    
+    /**
+     * Scatter Chart
+     */
+    SCATTERCHART(),
 
     /**
      * Table reports

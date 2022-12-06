@@ -21,7 +21,7 @@ import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesSt
 
 export enum DependentFeature {
   DMN_RUNNER = "DMN_RUNNER",
-  DMN_DEV_SANDBOX = "DMN_DEV_SANDBOX",
+  DEV_DEPLOYMENTS = "DMN_DEV_SANDBOX",
 }
 
 export interface KieSandboxExtendedServicesContextType {
@@ -39,6 +39,6 @@ export interface KieSandboxExtendedServicesContextType {
 
 export const KieSandboxExtendedServicesContext = React.createContext<KieSandboxExtendedServicesContextType>({} as any);
 
-export function useKieSandboxExtendedServices() {
+export function useExtendedServices() {
   return useContext(KieSandboxExtendedServicesContext);
 }

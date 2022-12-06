@@ -34,6 +34,18 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "21345",
       description: "Extended Services port",
     },
+    EXTENDED_SERVICES__nativeBinaryPath_macOS: {
+      default: "./node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor",
+      description: "",
+    },
+    EXTENDED_SERVICES__nativeBinaryPath_linux: {
+      default: "./node_modules/@kie-tools/jitexecutor-native/dist/linux/jitexecutor",
+      description: "",
+    },
+    EXTENDED_SERVICES__nativeBinaryPath_win32: {
+      default: ".\\node_modules\\@kie-tools\\jitexecutor-native\\dist\\win32\\jitexecutor.exe",
+      description: "",
+    },
   }),
   get env() {
     return {
@@ -42,6 +54,13 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         kieSandboxUrl: getOrDefault(this.vars.EXTENDED_SERVICES__kieSandboxUrl),
         ip: getOrDefault(this.vars.EXTENDED_SERVICES__ip),
         port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
+        jitexecutor: {
+          nativeBinaryPath: {
+            macOS: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_macOS),
+            linux: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_linux),
+            win32: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_win32),
+          },
+        },
       },
     };
   },

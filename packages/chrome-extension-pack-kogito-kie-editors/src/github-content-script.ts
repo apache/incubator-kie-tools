@@ -16,7 +16,7 @@
 
 import { ChromeRouter } from "./ChromeRouter";
 import { startExtension } from "@kie-tools-core/chrome-extension";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
@@ -36,19 +36,19 @@ startExtension({
       type: "bpmn",
       filePathGlob: "**/*.bpmn?(2)",
       resourcesPathPrefix: `${resourcesPathPrefix}/bpmn`,
-      envelopePath: `${resourcesPathPrefix}/bpmn-envelope.html`,
+      envelopeContent: { type: EnvelopeContentType.PATH, path: `${resourcesPathPrefix}/bpmn-envelope.html` },
     }),
     new EnvelopeMapping({
       type: "dmn",
       filePathGlob: "**/*.dmn",
       resourcesPathPrefix: `${resourcesPathPrefix}/dmn`,
-      envelopePath: `${resourcesPathPrefix}/dmn-envelope.html`,
+      envelopeContent: { type: EnvelopeContentType.PATH, path: `${resourcesPathPrefix}/dmn-envelope.html` },
     }),
     new EnvelopeMapping({
       type: "scesim",
       filePathGlob: "**/*.scesim",
       resourcesPathPrefix: `${resourcesPathPrefix}/scesim`,
-      envelopePath: `${resourcesPathPrefix}/scesim-envelope.html`,
+      envelopeContent: { type: EnvelopeContentType.PATH, path: `${resourcesPathPrefix}/scesim-envelope.html` },
     }),
   ]),
 });

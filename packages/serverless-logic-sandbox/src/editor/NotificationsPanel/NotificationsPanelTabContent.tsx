@@ -28,9 +28,10 @@ import {
 } from "@patternfly/react-core/dist/js/components/NotificationDrawer";
 
 interface Props {
-  name: string;
-  onNotificationsLengthChange: (name: string, newQtt: number) => void;
   expandAll: boolean | undefined;
+  name: string;
+  onNotificationClick?: (notification: Notification) => void;
+  onNotificationsLengthChange: (name: string, newQtt: number) => void;
   setExpandAll: React.Dispatch<boolean | undefined>;
 }
 
@@ -108,6 +109,7 @@ export const NotificationPanelTabContent = React.forwardRef<NotificationsChannel
                             key={`validation-notification-${notificationIndex}`}
                             isRead={true}
                             variant={variant(notification.severity)}
+                            onClick={() => props.onNotificationClick?.(notification)}
                           >
                             <NotificationDrawerListItemHeader
                               title={notification.message}

@@ -34,7 +34,9 @@ import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.dashbuilder.navigation.NavTree;
+import org.dashbuilder.shared.event.UpdatedGlobalSettingsEvent;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
+import org.dashbuilder.shared.model.GlobalSettings;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,6 +82,9 @@ public class RuntimeClientLoaderTest {
     Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent;
     
     @Mock
+    Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent;
+    
+    @Mock
     Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent;
 
     @Mock
@@ -90,7 +95,7 @@ public class RuntimeClientLoaderTest {
 
     @Before
     public void setup() {
-        runtimeClientLoader.mode = RuntimeClientMode.APP;
+        runtimeClientLoader.mode = RuntimeClientMode.APP;        
     }
 
     @Test
@@ -101,7 +106,7 @@ public class RuntimeClientLoaderTest {
         List<LayoutTemplate> perspectives = Arrays.asList(perspective);
         var navTree = mock(NavTree.class);
         var runtimeModel = new RuntimeModel(navTree, perspectives, System.currentTimeMillis(), Collections.emptyList(),
-                Collections.emptyMap());
+                Collections.emptyMap(), new GlobalSettings());
 
         doAnswer(answer -> {
             Consumer<Optional<RuntimeModel>> modelConsumer = (Consumer<Optional<RuntimeModel>>) answer.getArgument(1);

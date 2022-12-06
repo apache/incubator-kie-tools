@@ -54,13 +54,13 @@
 
     <!-- Must come after errai-common is inherited for patched JUnitShell -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
       <exclusions>

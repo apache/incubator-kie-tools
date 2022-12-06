@@ -16,12 +16,12 @@ jobs:
     env:
       KIE_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
       KIE_TOOLS_BUILD__buildContainerImages: "true"
-      DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
-      DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
-      DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
-      DMN_DEV_SANDBOX__baseImageTag: "daily-dev"
-      DMN_DEV_SANDBOX__baseImageBuildTags: "daily-dev"
-      DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online/dev"
+      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
+      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
+      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT__baseImageTag: "daily-dev"
+      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "daily-dev"
+      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online/dev"
       EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
@@ -44,17 +44,22 @@ jobs:
       OPENSHIFT_PART_OF: "daily-dev-kie-sandbox-app"
       DEPLOY_TAG: "daily-dev"
 
+      DASHBUILDER__viewerImageRegistry: "quay.io"
+      DASHBUILDER__viewerImageAccount: "kie-tools"
+      DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
+      DASHBUILDER__viewerImageBuildTags: "daily-dev"
+      SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: "daily-dev"
       SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
-      SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
-      SERVERLESS_LOGIC_SANDBOX__baseImageTag: "daily-dev"
-      SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: "daily-dev"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "daily-dev"
-      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "daily-dev"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: "daily-dev"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: "daily-dev"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName: "serverless-logic-web-tools-base-builder-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: "daily-dev"
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: "daily-dev"
       SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
     steps:
@@ -116,14 +121,14 @@ jobs:
           cd kie-tools
           pnpm -r build:prod
 
-      - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io (Ubuntu only)"
+      - name: "Push dmn-dev-deployment-base-image to quay.io (Ubuntu only)"
         if: runner.os == 'Linux'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.DMN_DEV_SANDBOX__baseImageName }}"
-          tags: "${{ env.DMN_DEV_SANDBOX__baseImageBuildTags }}"
-          registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
-          username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
+          image: "${{ env.DMN_DEV_DEPLOYMENT__baseImageName }}"
+          tags: "${{ env.DMN_DEV_DEPLOYMENT__baseImageBuildTags }}"
+          registry: "${{ env.DMN_DEV_DEPLOYMENT__baseImageRegistry }}/${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
+          username: "${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"
@@ -156,24 +161,34 @@ jobs:
           username: "${{ env.KIE_SANDBOX__imageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
-      - name: "Push serverless-logic-sandbox-base-image to quay.io (Ubuntu only)"
+      - name: "Push serverless-logic-web-tools-swf-builder-image to quay.io (Ubuntu only)"
         if: runner.os == 'Linux'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
-      - name: "Push openjdk11-mvn-image to quay.io (Ubuntu only)"
+      - name: "Push serverless-logic-web-tools-base-builder-image to quay.io (Ubuntu only)"
         if: runner.os == 'Linux'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+
+      - name: "Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
+        if: runner.os == 'Linux'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER__viewerImageName }}"
+          tags: "${{ env.DASHBUILDER__viewerImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__viewerImageRegistry }}/${{ env.DASHBUILDER__viewerImageAccount }}"
+          username: "${{ env.DASHBUILDER__viewerImageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Deploy kie-sandbox-extended-services-image to OpenShift (Ubuntu only)"

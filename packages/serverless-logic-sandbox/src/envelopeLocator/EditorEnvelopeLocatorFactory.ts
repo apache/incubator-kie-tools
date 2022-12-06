@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
+import {
+  EditorEnvelopeLocator,
+  EnvelopeContentType,
+  EnvelopeMapping,
+} from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 import { GLOB_PATTERN } from "../extension";
 
 export class EditorEnvelopeLocatorFactory {
@@ -24,19 +28,19 @@ export class EditorEnvelopeLocatorFactory {
         type: "swf",
         filePathGlob: GLOB_PATTERN.sw,
         resourcesPathPrefix: ".",
-        envelopePath: "serverless-workflow-combined-editor-envelope.html",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "serverless-workflow-combined-editor-envelope.html" },
       }),
       new EnvelopeMapping({
         type: "dash",
         filePathGlob: GLOB_PATTERN.dash,
         resourcesPathPrefix: "",
-        envelopePath: "dashbuilder-editor-envelope.html",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dashbuilder-editor-envelope.html" },
       }),
       new EnvelopeMapping({
         type: "text",
         filePathGlob: GLOB_PATTERN.all,
         resourcesPathPrefix: "",
-        envelopePath: "text-editor-envelope.html",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "text-editor-envelope.html" },
       }),
     ]);
   }

@@ -71,7 +71,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Enabling authentication with a GitHub Enterprise Server instance.
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{"id":"github_at_my_company","domain":"github.my-company.com","supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"],"type":"github","name":"GitHub @ MyCompany","enabled":true }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{"id":"github_at_my_company","domain":"github.my-company.com","supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"],"type":"github","name":"GitHub @ MyCompany","enabled":true, "group":"git" }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
 1. Write a custom `Containerfile/Dockerfile` from the image:

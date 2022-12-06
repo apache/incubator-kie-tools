@@ -68,9 +68,6 @@ public class C3AreaChartDisplayer extends C3XYDisplayer<C3AreaChartDisplayer.Vie
     public DisplayerConstraints createDisplayerConstraints() {
 
         DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setGroupRequired(true)
-                .setGroupColumn(true)
-                .setMaxGroups(1)
                 .setMinColumns(2)
                 .setMaxColumns(10)
                 .setExtraColumnsAllowed(true)

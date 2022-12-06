@@ -121,8 +121,6 @@ public class WiresConnectorViewExt<T>
     public T setTitle(final String title) {
         return Optional.ofNullable(title)
                 .map(t -> label.map(l -> l.configure(text -> {
-                                                         l.rectangle.setHeight(text.getBoundingBox().getHeight());
-                                                         l.rectangle.setWidth(text.getBoundingBox().getWidth());
                                                          text.setFillColor("white");
                                                          text.setStrokeColor("white");
                                                          text.setFontFamily("Verdana");

@@ -16,7 +16,6 @@
 package org.dashbuilder.displayer.client;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -74,10 +73,10 @@ public class RendererManager {
     }
 
     protected void lookupRenderers(RendererSettings settings) {
-        String defaultUUID = settings.getDefaultRenderer();
-        boolean onlyOffline = settings.isOffline();
+        var defaultUUID = settings.getDefaultRenderer();
+        var onlyOffline = settings.isOffline();
+        var beanDefs = beanManager.lookupBeans(RendererLibrary.class);
         renderersList = new ArrayList<>();
-        Collection<SyncBeanDef<RendererLibrary>> beanDefs = beanManager.lookupBeans(RendererLibrary.class);
         
         if (onlyOffline) {
             beanDefs = beanDefs.stream().filter(bd -> bd.getInstance().isOffline()).collect(Collectors.toList());
@@ -91,9 +90,9 @@ public class RendererManager {
                         rend.getSupportedTypes().forEach(c -> renderersDefault.put(c, rend))
             );
         }
-        for (SyncBeanDef<RendererLibrary> beanDef : beanDefs) {
+        for (var beanDef : beanDefs) {
 
-            RendererLibrary lib = beanDef.getInstance();
+            var lib = beanDef.getInstance();
             renderersList.add(lib);
 
             for (DisplayerType displayerType : DisplayerType.values()) {
@@ -101,21 +100,21 @@ public class RendererManager {
                     renderersDefault.putIfAbsent(displayerType, lib);
                 }
             }
-            List<DisplayerType> types = lib.getSupportedTypes();
+            var types = lib.getSupportedTypes();
             if (types != null && !types.isEmpty()) {
 
-                for (DisplayerType type : types) {
-                    List<RendererLibrary> set = renderersByType.get(type);
+                for (var type : types) {
+                    var set = renderersByType.get(type);
                     if (set == null) {
                         set = new ArrayList<>();
                         renderersByType.put(type, set);
                     }
                     set.add(lib);
 
-                    List<DisplayerSubType> subTypes = lib.getSupportedSubtypes(type);
+                    var subTypes = lib.getSupportedSubtypes(type);
                     if (subTypes != null && !subTypes.isEmpty()) {
-                        for (DisplayerSubType subType : subTypes) {
-                            List<RendererLibrary> subset = renderersBySubType.get(subType);
+                        for (var subType : subTypes) {
+                            var subset = renderersBySubType.get(subType);
                             if (subset == null) {
                                 subset = new ArrayList<>();
                                 renderersBySubType.put(subType, subset);

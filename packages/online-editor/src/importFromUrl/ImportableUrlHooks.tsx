@@ -25,10 +25,10 @@ import { extname } from "path";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
-import { AuthProviderIcon } from "../accounts/authProviders/AuthProviderIcon";
-import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { AuthSession } from "../accounts/authSessions/AuthSessionApi";
-import { AuthInfo } from "../accounts/authSessions/AuthSessionsContext";
+import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
+import { useAuthProvider } from "../authProviders/AuthProvidersContext";
+import { AuthSession, AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
+import { AuthInfo } from "../authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { getGitRefName, getGitRefType } from "../gitRefs/GitRefs";
@@ -360,7 +360,7 @@ export function useClonableUrl(
 export function useGitServerRefs(url: URL | undefined, authInfo: AuthInfo | undefined) {
   const workspaces = useWorkspaces();
 
-  const gitServerRefsPromise = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
+  const [gitServerRefsPromise] = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
     useMemo(() => {
       if (!url) {
         return { error: "Can't determine Git refs without URL." };
@@ -418,6 +418,13 @@ export function useImportableUrlValidation(
       };
     }
 
+    if (!(authSession?.type === "git" || authSession?.type === AUTH_SESSION_NONE.type)) {
+      return {
+        option: ValidatedOptions.error,
+        helperTextInvalid: `Incompatible AuthSession type '${authSession?.type}'.`,
+      };
+    }
+
     return {
       option: ValidatedOptions.success,
       helperText: (
@@ -457,7 +464,7 @@ export function useImportableUrlValidation(
     clonableUrl.clonableUrl.error,
     gitRefName,
     authProvider,
-    authSession?.login,
+    authSession,
     advancedImportModalRef,
   ]);
 }

@@ -22,6 +22,7 @@ export const PROJECT_FILES = {
   dockerFile: "Dockerfile",
   dockerIgnore: ".dockerignore",
   kogitoYml: "kogito.yml",
+  quarkusRunJar: "quarkus-run.jar",
 };
 
 export function isProject(files: WorkspaceFile[]): boolean {
@@ -44,6 +45,7 @@ export interface ProjectPaths {
   files: {
     pomXml: string;
     kogitoYaml: string;
+    quarkusRunJar: string;
   };
 }
 
@@ -58,6 +60,7 @@ export const buildProjectPaths = (projectFolder: string): ProjectPaths => ({
   files: {
     pomXml: `${projectFolder}/${PROJECT_FILES.pomXml}`,
     kogitoYaml: `${projectFolder}/target/kubernetes/${PROJECT_FILES.kogitoYml}`,
+    quarkusRunJar: `${projectFolder}/target/quarkus-app/${PROJECT_FILES.quarkusRunJar}`,
   },
 });
 

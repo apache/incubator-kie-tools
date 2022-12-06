@@ -15,7 +15,7 @@
  */
 
 import { startExtension } from "@kie-tools-core/chrome-extension";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
 const resourcesPathPrefix = process.env["WEBPACK_REPLACE__targetOrigin"];
 
@@ -37,7 +37,7 @@ startExtension({
       type: "base64png",
       filePathGlob: "**/*.base64png",
       resourcesPathPrefix: `${resourcesPathPrefix}/dist/`,
-      envelopePath: `${resourcesPathPrefix}/dist/envelope/index.html`,
+      envelopeContent: { type: EnvelopeContentType.PATH, path: `${resourcesPathPrefix}/dist/envelope/index.html` },
     }),
   ]),
 });

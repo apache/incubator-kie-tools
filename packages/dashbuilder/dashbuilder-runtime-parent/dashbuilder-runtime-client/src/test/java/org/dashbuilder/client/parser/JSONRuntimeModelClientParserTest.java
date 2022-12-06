@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.client.parser;
 
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,6 +49,14 @@ public class JSONRuntimeModelClientParserTest {
     public void setup() {
         parser = new JSONRuntimeModelClientParser();
         parser.replaceService = new PropertyReplacementService();
+        parser.globalDisplayerSettings = new GlobalDisplayerSettings() {
+            
+            @Override
+            public void setDisplayerSettings(DisplayerSettings settings) {
+                // empty
+                
+            }
+        };
     }
 
     @Test
