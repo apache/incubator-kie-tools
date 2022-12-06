@@ -33,6 +33,10 @@ import {
   ExpressionDefinition,
   BeeTableProps,
   BeeTableCellProps,
+  ListExpressionDefinition,
+  InvocationExpressionDefinition,
+  FunctionExpressionDefinitionKind,
+  FunctionExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -47,6 +51,7 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
+import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
 
 const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 
@@ -60,12 +65,168 @@ export const EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION =
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
+export function getDefaultExpressionDefinitionByLogicType(
+  logicType: ExpressionDefinitionLogicType,
+  containerWidth: number,
+  prev: ExpressionDefinition
+) {
+  if (logicType === ExpressionDefinitionLogicType.Function) {
+    const functionExpression: FunctionExpressionDefinition = {
+      ...prev,
+      logicType,
+      functionKind: FunctionExpressionDefinitionKind.Feel,
+      formalParameters: [],
+      parametersWidth:
+        Math.max(DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH, containerWidth) - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2,
+      expression: {
+        logicType: ExpressionDefinitionLogicType.LiteralExpression,
+        isHeadless: true,
+      },
+    };
+    return functionExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.Context) {
+    const contextExpression: ContextExpressionDefinition = {
+      ...prev,
+      logicType,
+      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+      entryExpressionWidth: Math.max(
+        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+      ),
+      contextEntries: [
+        {
+          entryInfo: {
+            id: generateUuid(),
+            name: "ContextEntry-1",
+            dataType: DmnBuiltInDataType.Undefined,
+          },
+          entryExpression: {
+            name: "ContextEntry-1",
+            dataType: DmnBuiltInDataType.Undefined,
+            logicType: ExpressionDefinitionLogicType.Undefined,
+          },
+          nameAndDataTypeSynchronized: true,
+        },
+      ],
+    };
+    return contextExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.List) {
+    const listExpression: ListExpressionDefinition = {
+      ...prev,
+      logicType,
+      isHeadless: true,
+      width: containerWidth - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2, // 2px for border
+      items: [
+        {
+          logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          isHeadless: true,
+          content: "",
+        },
+      ],
+    };
+    return listExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.Invocation) {
+    const invocationExpression: InvocationExpressionDefinition = {
+      ...prev,
+      logicType,
+      isHeadless: true,
+      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+      entryExpressionWidth: Math.max(
+        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+      ),
+    };
+    return invocationExpression;
+  } else {
+    return prev;
+  }
+}
+
 export const ContextExpression: React.FunctionComponent<ContextExpressionDefinition> = (
   contextExpression: ContextExpressionDefinition
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const nestedExpressionContainerWidth = useNestedExpressionContainerWidth();
+
+  const getEntryExpressionColumnWidthDeep = useCallback(
+    ({ contextEntries, result }: ContextExpressionDefinition): number => {
+      const entriesMaxWidth = Math.max(
+        ...contextEntries.map(({ entryExpression: nestedExpression }) => {
+          if (nestedExpression.logicType === ExpressionDefinitionLogicType.Context) {
+            return Math.max(
+              getEntryExpressionColumnWidthDeep(nestedExpression) +
+                (nestedExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
+                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+              (nestedExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
+                (nestedExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
+                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+            );
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
+            return nestedExpression.width ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH; // FIXME: Tiago ?
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.List) {
+            return nestedExpression.width ?? LIST_EXPRESSION_MIN_WIDTH;
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Function) {
+            return (
+              (nestedExpression.parametersWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
+              EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+            );
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Invocation) {
+            return (
+              (nestedExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
+              (nestedExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
+              EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+            );
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
+            return 0; //FIXME: Tiago -> TODO
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Relation) {
+            return 0; //FIXME: Tiago -> TODO
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
+            return 0; //FIXME: Tiago -> TODO
+          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Undefined) {
+            return 0; //FIXME: Tiago -> TODO
+          } else {
+            throw new Error("Shouldn't ever reach this point");
+          }
+        })
+      );
+
+      const resultWidth =
+        result?.logicType === ExpressionDefinitionLogicType.Context
+          ? Math.max(
+              getEntryExpressionColumnWidthDeep(result) +
+                (result.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
+                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+              (result.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
+                (result.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
+                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+            )
+          : 0;
+
+      return Math.max(entriesMaxWidth, resultWidth);
+    },
+    []
+  );
+
+  const entryExpressionColumnWidth = useMemo(
+    () =>
+      Math.max(
+        Math.max(
+          getEntryExpressionColumnWidthDeep(contextExpression),
+          contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH
+        ),
+
+        nestedExpressionContainerWidth -
+          (contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) -
+          EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+      ),
+    [contextExpression, getEntryExpressionColumnWidthDeep, nestedExpressionContainerWidth]
+  );
+
+  const headerColumnWidth = useMemo(() => {
+    return (contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) + entryExpressionColumnWidth + 2; // 2px for border
+  }, [contextExpression.entryInfoWidth, entryExpressionColumnWidth]);
 
   const setInfoWidth = useCallback(
     (newInfoWidth: number) => {
@@ -80,54 +241,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     },
     [setExpression]
   );
-
-  const getEntryExpressionColumnWidthDeep = useCallback(
-    (contextExpression: ContextExpressionDefinition, current: number): number => {
-      const entriesWidth = contextExpression.contextEntries
-        .map(({ entryExpression: nestedExpression }) => {
-          if (nestedExpression.logicType === ExpressionDefinitionLogicType.Context) {
-            return (
-              getEntryExpressionColumnWidthDeep(nestedExpression, EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION) +
-              (nestedExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH)
-            );
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
-            return nestedExpression.width ?? 0;
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.List) {
-            return EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION; // FIXME: Tiago -> ??
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Function) {
-            return EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 60; // FIXME: Tiago -> ??
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Invocation) {
-            return EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + DEFAULT_ENTRY_INFO_MIN_WIDTH; // FIXME: Tiago -> ??
-          } else {
-            return 0;
-          }
-        })
-        .reduce((acc, w) => acc + w, current);
-
-      const resultWidth =
-        contextExpression.result?.logicType === ExpressionDefinitionLogicType.Context
-          ? getEntryExpressionColumnWidthDeep(contextExpression.result, current) +
-            (contextExpression.result.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
-            EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-          : 0;
-
-      return Math.max(entriesWidth, resultWidth);
-    },
-    []
-  );
-
-  const entryExpressionColumnWidthDeep = useMemo(
-    () =>
-      getEntryExpressionColumnWidthDeep(
-        contextExpression,
-        contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH
-      ),
-    [contextExpression, getEntryExpressionColumnWidthDeep]
-  );
-
-  const headerColumnWidth = useMemo(() => {
-    return (contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) + entryExpressionColumnWidthDeep + 2; // 2px for border
-  }, [contextExpression.entryInfoWidth, entryExpressionColumnWidthDeep]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -153,7 +266,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             accessor: "entryExpression",
             label: "entryExpression",
             disableOperationHandlerOnHeader: true,
-            width: entryExpressionColumnWidthDeep,
+            width: entryExpressionColumnWidth,
             setWidth: setExpressionWidth,
             minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
             isRowIndexColumn: false,
@@ -166,7 +279,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     contextExpression,
     decisionNodeId,
     headerColumnWidth,
-    entryExpressionColumnWidthDeep,
+    entryExpressionColumnWidth,
     setInfoWidth,
     setExpressionWidth,
   ]);
@@ -211,8 +324,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const updateEntry = useCallback(
     (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => {
-      setExpression((prev) => {
-        const contextEntries = [...((prev as ContextExpressionDefinition).contextEntries ?? [])];
+      setExpression((prev: ContextExpressionDefinition) => {
+        const contextEntries = [...prev.contextEntries];
         contextEntries[rowIndex] = newEntry;
         return { ...prev, contextEntries };
       });
@@ -224,14 +337,20 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     () => ({
       entryInfo: (props) => {
         return (
-          <ContextEntryInfoCell {...props} editInfoPopoverLabel={i18n.editContextEntry} onEntryUpdate={updateEntry} />
+          <>
+            <ContextEntryInfoCell {...props} editInfoPopoverLabel={i18n.editContextEntry} onEntryUpdate={updateEntry} />
+          </>
         );
       },
       entryExpression: (props) => {
-        return <NestedContextEntryCell {...props} containerWidth={entryExpressionColumnWidthDeep} />;
+        return (
+          <>
+            <ContextEntryCell {...props} nestedExpressioContainerWidth={entryExpressionColumnWidth} />
+          </>
+        );
       },
     }),
-    [entryExpressionColumnWidthDeep, i18n.editContextEntry, updateEntry]
+    [entryExpressionColumnWidth, i18n.editContextEntry, updateEntry]
   );
 
   const operationHandlerConfig = useMemo(
@@ -263,15 +382,18 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           </Resizer>,
           <Resizer
             key="context-expression"
-            width={getEntryExpressionColumnWidthDeep(contextExpression, contextExpression.entryExpressionWidth ?? 0)}
+            width={entryExpressionColumnWidth}
             minWidth={DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH}
             onHorizontalResizeStop={setExpressionWidth}
           >
-            <ResultExpression contextExpression={contextExpression} containerWidth={entryExpressionColumnWidthDeep} />
+            <ResultExpressionCell
+              contextExpression={contextExpression}
+              nestedExpressioContainerWidth={entryExpressionColumnWidth}
+            />
           </Resizer>,
         ]
       : undefined;
-  }, [contextExpression, entryExpressionColumnWidthDeep, getEntryExpressionColumnWidthDeep, setExpressionWidth]);
+  }, [contextExpression, entryExpressionColumnWidth, setExpressionWidth]);
 
   return (
     <div className={`context-expression ${contextExpression.id}`}>
@@ -293,7 +415,9 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 };
 
-function ResultExpression(props: { contextExpression: ContextExpressionDefinition } & { containerWidth: number }) {
+function ResultExpressionCell(
+  props: { contextExpression: ContextExpressionDefinition } & { nestedExpressioContainerWidth: number }
+) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
@@ -311,7 +435,7 @@ function ResultExpression(props: { contextExpression: ContextExpressionDefinitio
   }, [props.contextExpression.result]);
 
   return (
-    <NestedExpressionContainerWidthContext.Provider value={props.containerWidth}>
+    <NestedExpressionContainerWidthContext.Provider value={props.nestedExpressioContainerWidth}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ContextEntryExpression expression={expression} />
       </NestedExpressionDispatchContextProvider>
@@ -319,7 +443,7 @@ function ResultExpression(props: { contextExpression: ContextExpressionDefinitio
   );
 }
 
-function NestedContextEntryCell(props: BeeTableCellProps<ROWTYPE> & { containerWidth: number }) {
+function ContextEntryCell(props: BeeTableCellProps<ROWTYPE> & { nestedExpressioContainerWidth: number }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
@@ -336,7 +460,7 @@ function NestedContextEntryCell(props: BeeTableCellProps<ROWTYPE> & { containerW
   );
 
   return (
-    <NestedExpressionContainerWidthContext.Provider value={props.containerWidth}>
+    <NestedExpressionContainerWidthContext.Provider value={props.nestedExpressioContainerWidth}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ContextEntryExpressionCell {...props} />
       </NestedExpressionDispatchContextProvider>

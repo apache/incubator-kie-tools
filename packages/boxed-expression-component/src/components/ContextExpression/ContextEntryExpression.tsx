@@ -20,8 +20,7 @@ import { useCallback, useRef } from "react";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { getDefaultExpressionDefinitionByLogicType } from "../ExpressionDefinitionRoot/ExpressionDefinitionRoot";
-import { useNestedExpressionContainerWidth } from "./ContextExpression";
+import { getDefaultExpressionDefinitionByLogicType, useNestedExpressionContainerWidth } from "./ContextExpression";
 
 export interface ContextEntryExpressionProps {
   expression: ExpressionDefinition;

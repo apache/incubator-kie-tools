@@ -16,112 +16,27 @@
 
 import * as React from "react";
 import { useCallback, useRef } from "react";
-import "./ExpressionDefinitionRoot.css";
 import {
-  ContextExpressionDefinition,
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-  DEFAULT_ENTRY_INFO_MIN_WIDTH,
-  DmnBuiltInDataType,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
   generateUuid,
-  InvocationExpressionDefinition,
-  ListExpressionDefinition,
 } from "../../api";
-import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
-import { EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION, useNestedExpressionContainerWidth } from "../ContextExpression";
+import { getDefaultExpressionDefinitionByLogicType } from "../ContextExpression";
+import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
+import "./ExpressionDefinitionRoot.css";
 
 export interface ExpressionDefinitionRootProps {
   decisionNodeId: string;
   expression: ExpressionDefinition;
 }
 
-export function getDefaultExpressionDefinitionByLogicType(
-  logicType: ExpressionDefinitionLogicType,
-  containerWidth: number,
-  prev: ExpressionDefinition
-) {
-  if (logicType === ExpressionDefinitionLogicType.Function) {
-    const functionExpression: FunctionExpressionDefinition = {
-      ...prev,
-      logicType,
-      functionKind: FunctionExpressionDefinitionKind.Feel,
-      formalParameters: [],
-      parametersWidth:
-        Math.max(DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH, containerWidth) - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2,
-      expression: {
-        logicType: ExpressionDefinitionLogicType.LiteralExpression,
-        isHeadless: true,
-      },
-    };
-    return functionExpression;
-  } else if (logicType === ExpressionDefinitionLogicType.Context) {
-    const contextExpression: ContextExpressionDefinition = {
-      ...prev,
-      logicType,
-      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
-      entryExpressionWidth: Math.max(
-        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-      ),
-      contextEntries: [
-        {
-          entryInfo: {
-            id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
-          },
-          entryExpression: {
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
-            logicType: ExpressionDefinitionLogicType.Undefined,
-          },
-          nameAndDataTypeSynchronized: true,
-        },
-      ],
-    };
-    return contextExpression;
-  } else if (logicType === ExpressionDefinitionLogicType.List) {
-    const listExpression: ListExpressionDefinition = {
-      ...prev,
-      logicType,
-      isHeadless: true,
-      width: containerWidth - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2, // 2px for border
-      items: [
-        {
-          logicType: ExpressionDefinitionLogicType.LiteralExpression,
-          isHeadless: true,
-          content: "",
-        },
-      ],
-    };
-    return listExpression;
-  } else if (logicType === ExpressionDefinitionLogicType.Invocation) {
-    const invocationExpression: InvocationExpressionDefinition = {
-      ...prev,
-      logicType,
-      isHeadless: true,
-      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
-      entryExpressionWidth: Math.max(
-        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-      ),
-    };
-    return invocationExpression;
-  } else {
-    return prev;
-  }
-}
-
 export function ExpressionDefinitionRoot({ decisionNodeId, expression }: ExpressionDefinitionRootProps) {
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const expressionContainerWidth = DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH;
+  const expressionContainerWidth = DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH; // FIXME: Tiago -> What's the default for all?
 
   const onLogicTypeSelected = useCallback(
     (logicType) => {
