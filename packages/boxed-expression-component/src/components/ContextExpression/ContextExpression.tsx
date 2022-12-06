@@ -22,8 +22,8 @@ import {
   ContextExpressionDefinitionEntry,
   ContextExpressionDefinition,
   DmnBuiltInDataType,
-  DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-  DEFAULT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_INFO_MIN_WIDTH,
   getNextAvailableContextExpressionEntryName,
   generateUuid,
   getOperationHandlerConfig,
@@ -37,6 +37,7 @@ import {
   InvocationExpressionDefinition,
   FunctionExpressionDefinitionKind,
   FunctionExpressionDefinition,
+  LiteralExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -44,7 +45,7 @@ import * as ReactTable from "react-table";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import * as _ from "lodash";
 import { ContextEntryExpression } from "./ContextEntryExpression";
-import { Resizer } from "../Resizer";
+import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import {
   BoxedExpressionEditorDispatchContext,
   useBoxedExpressionEditor,
@@ -52,6 +53,10 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
+import {
+  DEFAULT_LITERAL_EXPRESSION_WIDTH as LITERAL_EXPRESSION_MIN_WIDTH,
+  LITERAL_EXPRESSION_EXTRA_WIDTH,
+} from "../LiteralExpression";
 
 const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 
@@ -70,14 +75,21 @@ export function getDefaultExpressionDefinitionByLogicType(
   containerWidth: number,
   prev: ExpressionDefinition
 ) {
-  if (logicType === ExpressionDefinitionLogicType.Function) {
+  if (logicType === ExpressionDefinitionLogicType.LiteralExpression) {
+    const literalExpression: LiteralExpressionDefinition = {
+      ...prev,
+      logicType,
+      width: Math.max(containerWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH),
+    };
+    return literalExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.Function) {
     const functionExpression: FunctionExpressionDefinition = {
       ...prev,
       logicType,
       functionKind: FunctionExpressionDefinitionKind.Feel,
       formalParameters: [],
       parametersWidth:
-        Math.max(DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH, containerWidth) - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2,
+        Math.max(CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, containerWidth) - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2,
       expression: {
         logicType: ExpressionDefinitionLogicType.LiteralExpression,
         isHeadless: true,
@@ -88,10 +100,10 @@ export function getDefaultExpressionDefinitionByLogicType(
     const contextExpression: ContextExpressionDefinition = {
       ...prev,
       logicType,
-      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
       entryExpressionWidth: Math.max(
-        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        containerWidth - CONTEXT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
       ),
       contextEntries: [
         {
@@ -130,10 +142,10 @@ export function getDefaultExpressionDefinitionByLogicType(
       ...prev,
       logicType,
       isHeadless: true,
-      entryInfoWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
       entryExpressionWidth: Math.max(
-        DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-        containerWidth - DEFAULT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        containerWidth - CONTEXT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
       ),
     };
     return invocationExpression;
@@ -142,91 +154,117 @@ export function getDefaultExpressionDefinitionByLogicType(
   }
 }
 
+function getExpressionMinWidth(expression?: ExpressionDefinition): number {
+  if (!expression) {
+    return DEFAULT_MIN_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Context) {
+    return Math.max(
+      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+      Math.max(...expression.contextEntries.map(({ entryExpression }) => getExpressionMinWidth(entryExpression))) +
+        CONTEXT_ENTRY_INFO_MIN_WIDTH +
+        EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+      getExpressionMinWidth(expression.result) +
+        CONTEXT_ENTRY_INFO_MIN_WIDTH +
+        EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+    );
+  } else if (expression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
+    return LITERAL_EXPRESSION_MIN_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+    return LIST_EXPRESSION_MIN_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
+    return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
+    return (
+      CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+    );
+  } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
+    return 0; //FIXME: Tiago -> TODO
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
+    return 0; //FIXME: Tiago -> TODO
+  } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
+    return 0; //FIXME: Tiago -> TODO
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
+    return 0;
+  } else {
+    throw new Error("Shouldn't ever reach this point");
+  }
+}
+
+function getExpressionWidth(expression?: ExpressionDefinition): number {
+  if (!expression) {
+    return getExpressionMinWidth(expression);
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Context) {
+    return Math.max(
+      getEntryExpressionColumnWidthDeep(expression) +
+        (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
+        EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+      (expression.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
+        (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
+        EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+    );
+  } else if (expression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
+    return (expression.width ?? LITERAL_EXPRESSION_MIN_WIDTH) + LITERAL_EXPRESSION_EXTRA_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+    return expression.width ?? LIST_EXPRESSION_MIN_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
+    return (
+      (expression.parametersWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) + EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+    );
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
+    return (
+      (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
+      (expression.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
+      EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+    );
+  } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
+    return 0; //FIXME: Tiago -> TODO
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
+    return 0; //FIXME: Tiago -> TODO
+  } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
+    return 0; //FIXME: Tiago -> TODO
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
+    return 0; //FIXME: Tiago -> TODO
+  } else {
+    throw new Error("Shouldn't ever reach this point");
+  }
+}
+
+function getEntryExpressionColumnMinWidthDeep({ contextEntries, result }: ContextExpressionDefinition): number {
+  return Math.max(
+    Math.max(...contextEntries.map(({ entryExpression }) => getExpressionMinWidth(entryExpression))),
+    getExpressionMinWidth(result)
+  );
+}
+
+function getEntryExpressionColumnWidthDeep({ contextEntries, result }: ContextExpressionDefinition): number {
+  return Math.max(
+    Math.max(...contextEntries.map(({ entryExpression }) => getExpressionWidth(entryExpression))),
+    getExpressionWidth(result)
+  );
+}
+
 export const ContextExpression: React.FunctionComponent<ContextExpressionDefinition> = (
   contextExpression: ContextExpressionDefinition
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const nestedExpressionContainerWidth = useNestedExpressionContainerWidth();
-
-  const getEntryExpressionColumnWidthDeep = useCallback(
-    ({ contextEntries, result }: ContextExpressionDefinition): number => {
-      const entriesMaxWidth = Math.max(
-        ...contextEntries.map(({ entryExpression: nestedExpression }) => {
-          if (nestedExpression.logicType === ExpressionDefinitionLogicType.Context) {
-            return Math.max(
-              getEntryExpressionColumnWidthDeep(nestedExpression) +
-                (nestedExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
-                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
-              (nestedExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
-                (nestedExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
-                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-            );
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
-            return nestedExpression.width ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH; // FIXME: Tiago ?
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.List) {
-            return nestedExpression.width ?? LIST_EXPRESSION_MIN_WIDTH;
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Function) {
-            return (
-              (nestedExpression.parametersWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
-              EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-            );
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Invocation) {
-            return (
-              (nestedExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
-              (nestedExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
-              EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-            );
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
-            return 0; //FIXME: Tiago -> TODO
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Relation) {
-            return 0; //FIXME: Tiago -> TODO
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
-            return 0; //FIXME: Tiago -> TODO
-          } else if (nestedExpression.logicType === ExpressionDefinitionLogicType.Undefined) {
-            return 0; //FIXME: Tiago -> TODO
-          } else {
-            throw new Error("Shouldn't ever reach this point");
-          }
-        })
-      );
-
-      const resultWidth =
-        result?.logicType === ExpressionDefinitionLogicType.Context
-          ? Math.max(
-              getEntryExpressionColumnWidthDeep(result) +
-                (result.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
-                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
-              (result.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
-                (result.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
-                EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-            )
-          : 0;
-
-      return Math.max(entriesMaxWidth, resultWidth);
-    },
-    []
-  );
+  const nestedExpressionContainer = useNestedExpressionContainer();
 
   const entryExpressionColumnWidth = useMemo(
     () =>
       Math.max(
         Math.max(
           getEntryExpressionColumnWidthDeep(contextExpression),
-          contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH
+          contextExpression.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
         ),
 
-        nestedExpressionContainerWidth -
-          (contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) -
+        nestedExpressionContainer.width -
+          (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
           EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
       ),
-    [contextExpression, getEntryExpressionColumnWidthDeep, nestedExpressionContainerWidth]
+    [contextExpression, nestedExpressionContainer]
   );
-
-  const headerColumnWidth = useMemo(() => {
-    return (contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) + entryExpressionColumnWidth + 2; // 2px for border
-  }, [contextExpression.entryInfoWidth, entryExpressionColumnWidth]);
 
   const setInfoWidth = useCallback(
     (newInfoWidth: number) => {
@@ -242,6 +280,57 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [setExpression]
   );
 
+  const setExpressionWidthFromHeader = useCallback(
+    (newHeaderWidth: number) => {
+      setExpression((prev: ContextExpressionDefinition) => ({
+        ...prev,
+        entryExpressionWidth: newHeaderWidth - (prev.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) - 2, // 2px for border
+      }));
+    },
+    [setExpression]
+  );
+
+  const expressionEntryColumnMinWidth = useMemo(() => {
+    return Math.max(
+      getEntryExpressionColumnMinWidthDeep(contextExpression),
+      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+      nestedExpressionContainer.minWidth -
+        (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
+        EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
+    );
+  }, [contextExpression, nestedExpressionContainer.minWidth]);
+
+  const entryExpressionContainer: NestedExpressionContainerContextType = useMemo(() => {
+    return {
+      width: entryExpressionColumnWidth,
+      minWidth: expressionEntryColumnMinWidth,
+    };
+  }, [entryExpressionColumnWidth, expressionEntryColumnMinWidth]);
+
+  const headerColumnWidth = useMemo(() => {
+    return (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) + entryExpressionColumnWidth + 2; // 2px for border
+  }, [contextExpression.entryInfoWidth, entryExpressionColumnWidth]);
+
+  const headerColumnMinWidth = useMemo(() => {
+    return expressionEntryColumnMinWidth + CONTEXT_ENTRY_INFO_MIN_WIDTH + 2; // 2px for border
+  }, [expressionEntryColumnMinWidth]);
+
+  const entryExpressionColumnWidthIfOwn = useMemo(() => {
+    const entriesHaveExpressions =
+      contextExpression.contextEntries.filter(
+        (s) => s.entryExpression.logicType !== ExpressionDefinitionLogicType.Undefined
+      ).length > 0;
+
+    const resultHasExpression =
+      contextExpression.result && contextExpression.result.logicType !== ExpressionDefinitionLogicType.Undefined;
+
+    if (entriesHaveExpressions || resultHasExpression) {
+      return undefined; // Let width be automatic;
+    }
+
+    return entryExpressionColumnWidth;
+  }, [contextExpression, entryExpressionColumnWidth]);
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
@@ -251,14 +340,16 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
         width: headerColumnWidth,
+        setWidth: setExpressionWidthFromHeader,
+        minWidth: headerColumnMinWidth,
         columns: [
           {
             accessor: "entryInfo",
             label: "entryInfo",
             disableOperationHandlerOnHeader: true,
-            width: contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
+            width: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
             setWidth: setInfoWidth,
-            minWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+            minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
           },
@@ -266,9 +357,9 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             accessor: "entryExpression",
             label: "entryExpression",
             disableOperationHandlerOnHeader: true,
-            width: entryExpressionColumnWidth,
+            width: entryExpressionColumnWidthIfOwn,
             setWidth: setExpressionWidth,
-            minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+            minWidth: expressionEntryColumnMinWidth,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
           },
@@ -279,9 +370,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     contextExpression,
     decisionNodeId,
     headerColumnWidth,
-    entryExpressionColumnWidth,
+    setExpressionWidthFromHeader,
+    headerColumnMinWidth,
     setInfoWidth,
+    entryExpressionColumnWidthIfOwn,
     setExpressionWidth,
+    expressionEntryColumnMinWidth,
   ]);
 
   const onColumnsUpdate = useCallback(
@@ -345,12 +439,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       entryExpression: (props) => {
         return (
           <>
-            <ContextEntryCell {...props} nestedExpressioContainerWidth={entryExpressionColumnWidth} />
+            <ContextEntryCell {...props} nestedExpressionContainer={entryExpressionContainer} />
           </>
         );
       },
     }),
-    [entryExpressionColumnWidth, i18n.editContextEntry, updateEntry]
+    [entryExpressionContainer, i18n.editContextEntry, updateEntry]
   );
 
   const operationHandlerConfig = useMemo(
@@ -374,26 +468,33 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       ? [
           <Resizer
             key="context-result"
-            width={contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH}
-            minWidth={DEFAULT_ENTRY_INFO_MIN_WIDTH}
-            onHorizontalResizeStop={setExpressionWidth}
+            width={contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH}
+            minWidth={CONTEXT_ENTRY_INFO_MIN_WIDTH}
+            setWidth={setInfoWidth}
           >
             <div className="context-result">{`<result>`}</div>
           </Resizer>,
           <Resizer
             key="context-expression"
-            width={entryExpressionColumnWidth}
-            minWidth={DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH}
-            onHorizontalResizeStop={setExpressionWidth}
+            width={entryExpressionColumnWidthIfOwn}
+            minWidth={expressionEntryColumnMinWidth}
+            setWidth={setExpressionWidth}
           >
             <ResultExpressionCell
               contextExpression={contextExpression}
-              nestedExpressioContainerWidth={entryExpressionColumnWidth}
+              nestedExpressionContainer={entryExpressionContainer}
             />
           </Resizer>,
         ]
       : undefined;
-  }, [contextExpression, entryExpressionColumnWidth, setExpressionWidth]);
+  }, [
+    entryExpressionColumnWidthIfOwn,
+    contextExpression,
+    entryExpressionContainer,
+    expressionEntryColumnMinWidth,
+    setExpressionWidth,
+    setInfoWidth,
+  ]);
 
   return (
     <div className={`context-expression ${contextExpression.id}`}>
@@ -416,7 +517,9 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 };
 
 function ResultExpressionCell(
-  props: { contextExpression: ContextExpressionDefinition } & { nestedExpressioContainerWidth: number }
+  props: { contextExpression: ContextExpressionDefinition } & {
+    nestedExpressionContainer: NestedExpressionContainerContextType;
+  }
 ) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -435,15 +538,17 @@ function ResultExpressionCell(
   }, [props.contextExpression.result]);
 
   return (
-    <NestedExpressionContainerWidthContext.Provider value={props.nestedExpressioContainerWidth}>
+    <NestedExpressionContainerContext.Provider value={props.nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ContextEntryExpression expression={expression} />
       </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerWidthContext.Provider>
+    </NestedExpressionContainerContext.Provider>
   );
 }
 
-function ContextEntryCell(props: BeeTableCellProps<ROWTYPE> & { nestedExpressioContainerWidth: number }) {
+function ContextEntryCell(
+  props: BeeTableCellProps<ROWTYPE> & { nestedExpressionContainer: NestedExpressionContainerContextType }
+) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
@@ -460,11 +565,11 @@ function ContextEntryCell(props: BeeTableCellProps<ROWTYPE> & { nestedExpressioC
   );
 
   return (
-    <NestedExpressionContainerWidthContext.Provider value={props.nestedExpressioContainerWidth}>
+    <NestedExpressionContainerContext.Provider value={props.nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ContextEntryExpressionCell {...props} />
       </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerWidthContext.Provider>
+    </NestedExpressionContainerContext.Provider>
   );
 }
 
@@ -493,8 +598,13 @@ export function NestedExpressionDispatchContextProvider({
   );
 }
 
-const NestedExpressionContainerWidthContext = React.createContext<number>(-1);
+export type NestedExpressionContainerContextType = { minWidth: number; width: number };
 
-export function useNestedExpressionContainerWidth() {
-  return React.useContext(NestedExpressionContainerWidthContext);
+const NestedExpressionContainerContext = React.createContext<NestedExpressionContainerContextType>({
+  width: -1,
+  minWidth: -1,
+});
+
+export function useNestedExpressionContainer() {
+  return React.useContext(NestedExpressionContainerContext);
 }

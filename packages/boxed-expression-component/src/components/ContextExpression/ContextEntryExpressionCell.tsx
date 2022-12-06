@@ -30,9 +30,5 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
   data: contextEntries,
   rowIndex,
 }) => {
-  return (
-    <div className="context-entry-expression-cell">
-      <ContextEntryExpression expression={contextEntries[rowIndex].entryExpression} />
-    </div>
-  );
+  return <ContextEntryExpression expression={contextEntries[rowIndex].entryExpression} />;
 };

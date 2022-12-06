@@ -33,7 +33,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   onHeaderClick: (columnKey: string) => () => void;
-  onHorizontalResizeStop: (column: ReactTable.ColumnInstance<R>, columnWidth: number) => void;
+  setWidth?: (width: number) => void;
   rowIndex: number;
   reactTableInstance: ReactTable.TableInstance<R>;
   getThProps: (column: ReactTable.ColumnInstance<R>) => Partial<PfReactTable.ThProps>;
@@ -55,7 +55,7 @@ export function BeeTableThResizable<R extends object>({
   onCellKeyDown,
   onExpressionHeaderUpdated,
   onHeaderClick,
-  onHorizontalResizeStop,
+  setWidth,
   renderHeaderCellInfo,
   rowIndex,
   reactTableInstance,
@@ -65,9 +65,9 @@ export function BeeTableThResizable<R extends object>({
 }: BeeTableThResizableProps<R>) {
   const headerProps = {
     ...column.getHeaderProps(),
-    style: {},
+    style: { flexGrow: "1" },
   };
-  const width = column.width || DEFAULT_MIN_WIDTH;
+  const width = column.width;
   const isColspan = (column.columns?.length ?? 0) > 0 || false;
   const columnKey = getColumnKey(column);
   const isFocusable = /^(_\w{8}-(\w{4}-){3}\w{12}|parameters|functionDefinition)$/.test(columnKey);
@@ -139,7 +139,7 @@ export function BeeTableThResizable<R extends object>({
       xPosition={xPosition}
       yPosition={yPosition}
     >
-      <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
+      <Resizer width={width} setWidth={column.setWidth} minWidth={column.minWidth}>
         <div className="header-cell" data-ouia-component-type="expression-column-header">
           {column.dataType && editableHeader ? (
             <ExpressionDefinitionHeaderMenu

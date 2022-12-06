@@ -21,8 +21,8 @@ import {
   BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-  DEFAULT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_INFO_MIN_WIDTH,
   executeIfExpressionDefinitionChanged,
   getNextAvailableContextExpressionEntryName,
   generateUuid,
@@ -85,8 +85,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         dataType: invocation.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
         bindingEntries: beeTableRows as ROWTYPE[],
         invokedFunction: invocation.invokedFunction ?? "",
-        entryInfoWidth: invocation.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
-        entryExpressionWidth: invocation.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+        entryInfoWidth: invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
+        entryExpressionWidth: invocation.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         ...invocationExpressionUpdated,
       };
 
@@ -162,7 +162,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         dataType: invocation.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
-        width: (invocation.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) + (invocation.entryExpressionWidth ?? 0) + 2, // 2px for border
+        width: (invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) + (invocation.entryExpressionWidth ?? 0) + 2, // 2px for border
         columns: [
           {
             headerCellElement,
@@ -172,16 +172,16 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             label: "functionDefinition",
             dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
             width:
-              (invocation.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH) +
-              (invocation.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH) +
+              (invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
+              (invocation.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
               2,
             columns: [
               {
                 accessor: "entryInfo",
                 disableOperationHandlerOnHeader: true,
-                width: invocation.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
+                width: invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
                 setWidth: setInfoWidth,
-                minWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+                minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
                 isRowIndexColumn: false,
                 label: "entryInfo",
                 dataType: DEFAULT_PARAMETER_DATA_TYPE,
@@ -189,9 +189,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
               {
                 accessor: "entryExpression",
                 disableOperationHandlerOnHeader: true,
-                width: invocation.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+                width: invocation.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
                 setWidth: setExpressionWidth,
-                minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+                minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
                 isRowIndexColumn: false,
                 label: "entryExpression",
                 dataType: DEFAULT_PARAMETER_DATA_TYPE,

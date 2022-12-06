@@ -191,27 +191,6 @@ export function BeeTableHeader<R extends object>({
     [renderCellInfoLabel]
   );
 
-  const onHorizontalResizeStop = useCallback<(column: ReactTable.ColumnInstance<R>, columnWidth: number) => void>(
-    (column, columnWidth) => {
-      const columnToBeFound = column.placeholderOf ?? column;
-      let columnToUpdate = tableColumns.find(areEqualColumns(columnToBeFound));
-      if (column.parent) {
-        columnToUpdate = getColumnsAtLastLevel(tableColumns).find(areEqualColumns(column));
-      }
-      if (columnToUpdate) {
-        columnToUpdate.width = columnWidth;
-      }
-      tableColumns.forEach((tableColumn) => {
-        if (tableColumn.width === undefined) {
-          tableColumn.width =
-            tableColumn.columns?.reduce((acc, column) => acc + (column.width ?? 0), 0) ?? DEFAULT_MIN_WIDTH;
-        }
-      });
-      onColumnsUpdate(tableColumns);
-    },
-    [onColumnsUpdate, tableColumns]
-  );
-
   const onHeaderClick = useCallback(
     (columnKey: string) => () => {
       beeGwtService?.selectObject(columnKey);
@@ -234,7 +213,7 @@ export function BeeTableHeader<R extends object>({
           onCellKeyDown={onCellKeyDown}
           onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
           onHeaderClick={onHeaderClick}
-          onHorizontalResizeStop={onHorizontalResizeStop}
+          setWidth={column.setWidth}
           renderHeaderCellInfo={renderHeaderCellInfo}
           getThProps={getThProps}
           reactTableInstance={reactTableInstance}
@@ -253,7 +232,6 @@ export function BeeTableHeader<R extends object>({
       onCellKeyDown,
       onColumnNameOrDataTypeUpdate,
       onHeaderClick,
-      onHorizontalResizeStop,
       renderHeaderCellInfo,
       reactTableInstance,
       getThProps,
@@ -282,7 +260,7 @@ export function BeeTableHeader<R extends object>({
 
   const renderAtLevelInHeaderGroups = useCallback(
     (level: number) => (
-      <PfReactTable.Tr>
+      <PfReactTable.Tr style={{ display: "flex", backgroundColor: "#ffcccd" }}>
         {_.nth(reactTableInstance.headerGroups, level)!.headers.map((column, columnIndex) =>
           renderColumn(column, 0, columnIndex)
         )}

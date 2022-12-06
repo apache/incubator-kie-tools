@@ -42,7 +42,6 @@ export function BeeTableTd<R extends object>({
   yPosition,
 }: BeeTableTdProps<R>) {
   let cellType = index === 0 ? "counter-cell" : "data-cell";
-  const width = column?.width ?? DEFAULT_MIN_WIDTH;
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
@@ -53,13 +52,6 @@ export function BeeTableTd<R extends object>({
       td?.removeEventListener("keydown", handler);
     };
   }, [onKeyDown, rowIndex]);
-
-  const onHorizontalResizeStop = useCallback(
-    (width: number) => {
-      return column.setWidth?.(width);
-    },
-    [column]
-  );
 
   // FIXME: Tiago -> DMN Runner-specific logic
   if (column.cellDelegate) {
@@ -86,13 +78,16 @@ export function BeeTableTd<R extends object>({
       className={`${cellType}`}
       data-xposition={index}
       data-yposition={yPosition ?? rowIndex}
+      style={{ flexGrow: index === row.cells.length - 1 ? "1" : "0" }}
     >
       {index === 0 ? (
         <>{rowIndex + 1}</>
       ) : (
-        <Resizer width={width} onHorizontalResizeStop={onHorizontalResizeStop}>
-          <>{tdContent}</>
-        </Resizer>
+        <>
+          <Resizer width={column.width} setWidth={cell.column.setWidth} minWidth={cell.column.minWidth}>
+            <>{tdContent}</>
+          </Resizer>
+        </>
       )}
     </PfReactTable.Td>
   );

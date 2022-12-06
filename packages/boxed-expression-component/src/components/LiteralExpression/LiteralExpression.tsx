@@ -16,7 +16,7 @@
 
 import "./LiteralExpression.css";
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { DmnBuiltInDataType, LiteralExpressionDefinition, ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../Resizer";
@@ -25,12 +25,17 @@ import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useNestedExpressionContainer } from "../ContextExpression";
 
-const DEFAULT_HEADER_WIDTH = 250;
+export const DEFAULT_LITERAL_EXPRESSION_WIDTH = 250;
+
+// 14px for padding, 2px for border
+export const LITERAL_EXPRESSION_EXTRA_WIDTH = 14 + 2; // 14px for margin, 2px for border
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
   const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const nestedExpressionContainer = useNestedExpressionContainer();
 
   const onExpressionHeaderUpdated = useCallback(
     ({ dataType, name }: Pick<ExpressionDefinition, "name" | "dataType">) => {
@@ -39,7 +44,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     [setExpression]
   );
 
-  const updateWidth = useCallback(
+  const setWidth = useCallback(
     (width) => {
       setExpression((prev) => ({ ...prev, width }));
     },
@@ -61,15 +66,25 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     beeGwtService?.selectObject(literalExpression.id);
   }, [beeGwtService, literalExpression.id]);
 
+  const width = useMemo(() => {
+    return Math.max(
+      nestedExpressionContainer.width - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      literalExpression.width ?? DEFAULT_LITERAL_EXPRESSION_WIDTH
+    );
+  }, [literalExpression.width, nestedExpressionContainer]);
+
+  const minWidth = useMemo(() => {
+    return Math.max(
+      nestedExpressionContainer.minWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      DEFAULT_LITERAL_EXPRESSION_WIDTH
+    );
+  }, [nestedExpressionContainer]);
+
   return (
     <div className="literal-expression">
       {!literalExpression.isHeadless && (
         <div className="literal-expression-header" onClick={selectDecisionNode}>
-          <Resizer
-            width={literalExpression.width ?? DEFAULT_HEADER_WIDTH}
-            minWidth={DEFAULT_HEADER_WIDTH}
-            onHorizontalResizeStop={updateWidth}
-          >
+          <Resizer width={width} minWidth={minWidth} setWidth={setWidth}>
             <ExpressionDefinitionHeaderMenu
               selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
               selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
@@ -86,12 +101,14 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         </div>
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>
-        <BeeTableEditableCellContent
-          value={literalExpression.content ?? ""}
-          rowIndex={0}
-          columnId={literalExpression.id ?? "-"}
-          onCellUpdate={updateContent}
-        />
+        <Resizer width={width} minWidth={minWidth} setWidth={setWidth}>
+          <BeeTableEditableCellContent
+            value={literalExpression.content ?? ""}
+            rowIndex={0}
+            columnId={literalExpression.id ?? "-"}
+            onCellUpdate={updateContent}
+          />
+        </Resizer>
       </div>
     </div>
   );

@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.expression-container .literal-expression .pf-c-drawer__splitter {
-  background-color: inherit;
-}
-
-.expression-container .literal-expression .pf-c-drawer {
-  --pf-c-drawer__splitter--after--BorderLeftWidth: var(--pf-global--BorderWidth--sm);
-  position: absolute;
-  min-width: 0.625rem;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
 
 .expression-container .literal-expression {
   width: 100%;
@@ -50,7 +38,7 @@
   justify-content: center;
   flex-wrap: wrap;
   position: relative;
-  padding: 0.5em 0.1em 0.5em 0.5em;
+  padding: 0.5em 0;
   border: 1px solid var(--pf-global--palette--black-300);
   background-color: #def3ff;
   color: black;

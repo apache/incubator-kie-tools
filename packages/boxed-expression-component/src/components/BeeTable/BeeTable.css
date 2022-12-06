@@ -137,15 +137,22 @@
 
 /** Drawer for resizing columns */
 
+.expression-container .pf-c-drawer {
+  background-color: inherit;
+  width: 8px;
+  min-width: 8px;
+}
+
 .expression-container .pf-c-drawer__splitter {
   background-color: inherit;
+  width: 8px;
 }
 
 .expression-container .pf-c-drawer {
   --pf-c-drawer__splitter--after--BorderLeftWidth: var(--pf-global--BorderWidth--sm);
   position: absolute;
-  min-width: 10px;
-  max-width: 10px;
+  min-width: 8px;
+  max-width: 8px;
   right: 0;
   top: 0;
   bottom: 0;
@@ -157,6 +164,18 @@
 
 .expression-container .pf-c-drawer.resizer-disabled .pf-c-drawer__splitter {
   background-color: lightgray;
+}
+
+.expression-container .pf-c-drawer .pf-c-drawer__splitter {
+  background-color: #00000010;
+}
+
+.expression-container .pf-c-drawer .pf-c-drawer__splitter.smallest {
+  background-color: #ff000010;
+}
+
+.expression-container .pf-c-drawer .pf-c-drawer__splitter.min {
+  background-color: #00ffb739;
 }
 
 .expression-container

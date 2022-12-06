@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useRef } from "react";
 import {
-  DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   generateUuid,
@@ -36,14 +36,13 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const expressionContainerWidth = DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH; // FIXME: Tiago -> What's the default for all?
 
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       return setExpression((prev) => {
         {
           return {
-            ...getDefaultExpressionDefinitionByLogicType(logicType, expressionContainerWidth, prev),
+            ...getDefaultExpressionDefinitionByLogicType(logicType, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, prev),
             logicType,
             isHeadless: false,
             id: prev.id ?? generateUuid(),
@@ -51,7 +50,7 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
         }
       });
     },
-    [expressionContainerWidth, setExpression]
+    [setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {

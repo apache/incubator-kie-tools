@@ -40,8 +40,8 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   onExpressionReset?: () => void;
 }
 
-export const DEFAULT_ENTRY_INFO_MIN_WIDTH = 150;
-export const DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
+export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 150;
+export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
 
 export const getOperationHandlerConfig = (
   i18n: BoxedExpressionEditorI18n,

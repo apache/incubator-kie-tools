@@ -21,17 +21,19 @@ import { BeeTableTdsAndThsProps } from "../../api";
 
 export interface BeeTableTdForAdditionalRowProps extends BeeTableTdsAndThsProps {
   children?: React.ReactElement;
-  isEmptyCell?: boolean;
+  isEmptyCell: boolean;
+  isLastColumn: boolean;
 }
 
 export function BeeTableTdForAdditionalRow({
   children,
-  index: cellIndex,
-  isEmptyCell = false,
+  index,
+  isEmptyCell,
   onKeyDown,
   rowIndex,
   xPosition,
   yPosition,
+  isLastColumn,
 }: BeeTableTdForAdditionalRowProps) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
@@ -52,6 +54,7 @@ export function BeeTableTdForAdditionalRow({
       tabIndex={-1}
       data-xposition={xPosition}
       data-yposition={yPosition}
+      style={{ flexGrow: isLastColumn ? "1" : "0" }}
     >
       <br />
     </PfReactTable.Td>
@@ -59,11 +62,12 @@ export function BeeTableTdForAdditionalRow({
     <PfReactTable.Td
       ref={tdRef}
       role="cell"
-      key={cellIndex}
+      key={index}
       className="row-remainder-content"
       tabIndex={-1}
       data-xposition={xPosition}
       data-yposition={yPosition}
+      style={{ flexGrow: isLastColumn ? "1" : "0" }}
     >
       {children}
     </PfReactTable.Td>

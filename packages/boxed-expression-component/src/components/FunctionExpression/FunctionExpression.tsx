@@ -21,7 +21,7 @@ import {
   BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   FunctionExpressionDefinitionKind,
   FunctionExpressionDefinition,
   ExpressionDefinitionLogicType,
@@ -100,14 +100,14 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
-        width: functionExpression.parametersWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+        width: functionExpression.parametersWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         columns: [
           {
             headerCellElement: parametersColumnHeader,
             accessor: "parameters" as any, // FIXME: Tiago -> No bueno.
             disableOperationHandlerOnHeader: true,
-            width: functionExpression.parametersWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-            minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+            width: functionExpression.parametersWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+            minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
             label: "",
             isRowIndexColumn: false,
             dataType: undefined as any, // FIXME: Tiago -> No bueno.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinition, ROWGENERICTYPE } from "../../api";
+import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinition } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { ContextEntryInfo } from "./ContextEntryInfo";

@@ -20,7 +20,7 @@ import { useCallback, useRef } from "react";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { getDefaultExpressionDefinitionByLogicType, useNestedExpressionContainerWidth } from "./ContextExpression";
+import { getDefaultExpressionDefinitionByLogicType, useNestedExpressionContainer } from "./ContextExpression";
 
 export interface ContextEntryExpressionProps {
   expression: ExpressionDefinition;
@@ -30,7 +30,7 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   const logicTypeContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const expressionContainerWidth = useNestedExpressionContainerWidth();
+  const expressionContainer = useNestedExpressionContainer();
 
   const getLogicTypeSelectorRef = useCallback(() => {
     return logicTypeContainerRef.current!;
@@ -39,13 +39,13 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev) => ({
-        ...getDefaultExpressionDefinitionByLogicType(logicType, expressionContainerWidth, prev),
+        ...getDefaultExpressionDefinitionByLogicType(logicType, expressionContainer.width, prev),
         logicType,
         isHeadless: true,
         id: prev.id ?? generateUuid(),
       }));
     },
-    [expressionContainerWidth, setExpression]
+    [expressionContainer, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {
@@ -58,7 +58,7 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   }, [setExpression]);
 
   return (
-    <div className="entry-expression" ref={logicTypeContainerRef}>
+    <div className="entry-expression" ref={logicTypeContainerRef} style={{ width: "100%" }}>
       <ExpressionDefinitionLogicTypeSelector
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}

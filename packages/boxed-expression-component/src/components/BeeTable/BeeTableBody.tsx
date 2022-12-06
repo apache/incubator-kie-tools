@@ -115,6 +115,7 @@ export function BeeTableBody<R extends object>({
           ouiaId={"expression-row-" + rowIndex}
           key={rowKey}
           onClick={onRowClick(rowKey)}
+          style={{ display: "flex", backgroundColor: "#f9e9d6" }}
         >
           {row.cells.map((_, cellIndex) => {
             return (
@@ -163,6 +164,7 @@ export function BeeTableBody<R extends object>({
       {additionalRow && (
         <PfReactTable.Tr className="table-row additive-row">
           <BeeTableTdForAdditionalRow
+            isLastColumn={false}
             isEmptyCell={true}
             rowIndex={additionalRowIndex}
             index={0}
@@ -172,6 +174,7 @@ export function BeeTableBody<R extends object>({
           />
           {additionalRow.map((elem, elemIndex) => (
             <BeeTableTdForAdditionalRow
+              isLastColumn={elemIndex === additionalRow.length - 1}
               key={elemIndex}
               index={elemIndex}
               isEmptyCell={false}
