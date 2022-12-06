@@ -23,11 +23,6 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --verbose --passWithNoTests\""
   },
-  "dependencies": {
-    "@kie-tools-core/backend": "workspace:*",
-    "@kie-tools-core/envelope": "workspace:*",
-    "@kie-tools-core/envelope-bus": "workspace:*"
-  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",

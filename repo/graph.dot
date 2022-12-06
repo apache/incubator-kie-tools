@@ -220,8 +220,9 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
-  "@kie-tools/dmn-language-service" -> "@kie-tools-core/backend" [ style = "solid", color = "blue" ];
-  "@kie-tools/dmn-language-service" -> "@kie-tools-core/envelope" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-language-service" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-language-service" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-language-service" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/backend" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/envelope" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/guided-tour" [ style = "solid", color = "purple" ];
