@@ -3262,6 +3262,7 @@ importers:
       "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
       "@kie-tools/dmn-dev-deployment-base-image-env": workspace:*
+      "@kie-tools/dmn-language-service": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/extended-services": workspace:*
@@ -3343,6 +3344,7 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
+      "@kie-tools/dmn-language-service": link:../dmn-language-service
       "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn

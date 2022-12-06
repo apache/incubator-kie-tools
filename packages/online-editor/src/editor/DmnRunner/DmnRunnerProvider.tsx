@@ -20,7 +20,7 @@ import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
-import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
+import { DmnRunnerModelPayload, DmnRunnerService, DmnRunnerModelResource } from "./DmnRunnerService";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
@@ -35,6 +35,7 @@ import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { DmnLanguageService } from "@kie-tools/dmn-language-service/src";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -63,6 +64,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const [isExpanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.FORM);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
+  const dmnLanguageService = useMemo(() => new DmnLanguageService(), []);
 
   const status = useMemo(() => {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
@@ -73,27 +75,60 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     [settings.kieSandboxExtendedServices.config]
   );
 
+  const getImportedModels = useCallback(
+    async (importedModels: (string | null)[], resources: DmnRunnerModelResource[]) => {
+      if (importedModels.length > 0) {
+        const filteredModels = importedModels.filter((impotedModel) => impotedModel !== null) as string[];
+        const fileContents = await Promise.all(
+          filteredModels.map((importedModel) => {
+            return workspaces.getFileContent({
+              workspaceId: props.workspaceFile.workspaceId,
+              relativePath: importedModel,
+            });
+          }, [] as Array<Promise<Uint8Array>>)
+        );
+        const decodedContents = fileContents.map((fileContent) => decoder.decode(fileContent));
+
+        // set resources
+        filteredModels.forEach((filteredModel, index) => {
+          resources.push({
+            URI: filteredModel,
+            content: decodedContents[index],
+          });
+        });
+
+        const importedFiles = decodedContents.flatMap((content) => dmnLanguageService.getImportedModels(content));
+        await getImportedModels(importedFiles, resources);
+      }
+      return resources;
+    },
+    [workspaces, props.workspaceFile.workspaceId, dmnLanguageService]
+  );
+
   const preparePayload = useCallback(
     async (formData?: InputRow) => {
-      const files = (
-        await workspaces.getFiles({
-          workspaceId: props.workspaceFile.workspaceId,
-        })
-      ).filter((f) => f.extension === "dmn");
+      const currentFile = await workspaces.getFileContent({
+        workspaceId: props.workspaceFile.workspaceId,
+        relativePath: props.workspaceFile.relativePath,
+      });
 
-      const contents = await Promise.all(files.map((file) => file.getFileContents()));
-      const resources = contents.map((content, i) => ({
-        URI: files[i].relativePath,
-        content: decoder.decode(content),
-      }));
+      const currentContentFile = decoder.decode(currentFile);
+      const importedModels = dmnLanguageService.getImportedModels(currentContentFile);
+      const resources = [
+        {
+          URI: props.workspaceFile.relativePath,
+          content: currentContentFile,
+        },
+      ];
+      const importedModelsResources = await getImportedModels(importedModels, resources);
 
       return {
         mainURI: props.workspaceFile.relativePath,
-        resources,
+        resources: importedModelsResources,
         context: formData,
       } as DmnRunnerModelPayload;
     },
-    [props.workspaceFile, workspaces]
+    [props.workspaceFile, workspaces, dmnLanguageService, getImportedModels]
   );
 
   useEffect(() => {
