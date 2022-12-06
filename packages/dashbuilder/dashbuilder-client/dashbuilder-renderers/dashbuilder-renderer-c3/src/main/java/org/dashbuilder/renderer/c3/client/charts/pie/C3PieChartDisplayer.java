@@ -109,8 +109,6 @@ public class C3PieChartDisplayer extends C3Displayer<C3PieChartDisplayer.View> {
     @Override
     public DisplayerConstraints createDisplayerConstraints() {
         DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setGroupRequired(true)
-                .setGroupColumn(true)
                 .setMaxColumns(2)
                 .setMinColumns(2)
                 .setExtraColumnsAllowed(false)

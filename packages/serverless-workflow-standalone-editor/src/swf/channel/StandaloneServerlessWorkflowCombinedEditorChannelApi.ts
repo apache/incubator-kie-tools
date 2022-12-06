@@ -35,6 +35,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { Position as MonacoPosition } from "monaco-editor";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
@@ -207,5 +208,9 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
         defaultValue: "",
       }
     );
+  }
+
+  public kogitoSwfCombinedEditor_moveCursorToPosition(_position: MonacoPosition): void {
+    // no-op
   }
 }

@@ -167,7 +167,6 @@ public class DefaultVertexPositioning implements VertexPositioning {
                     .findFirst();
 
             if (nextEdge.isPresent()) {
-                bendingPoints.add(createBendingPoint(virtualVertices.get(nextVertexId)));
                 addBendingPoints(nextVertexId, edges, virtualVertices, bendingPoints, nextEdge.get());
             }
         }
@@ -203,11 +202,11 @@ public class DefaultVertexPositioning implements VertexPositioning {
         final HashMap<Integer, Integer> layersStartX = getLayersStartX(layers.size(), layersWidth, largestWidth);
 
         int y = DEFAULT_LAYER_VERTICAL_PADDING;
-        if (arrangement == LayerArrangement.TopDown) {
+        if (arrangement == LayerArrangement.BottomUp) {
             for (int i = 0; i < layers.size(); i++) {
                 y = distributeVertices(layers, layersStartX, y, i, graph);
             }
-        } else if (arrangement == LayerArrangement.BottomUp) {
+        } else if (arrangement == LayerArrangement.TopDown) {
             for (int i = layers.size() - 1; i >= 0; i--) {
                 y = distributeVertices(layers, layersStartX, y, i, graph);
             }

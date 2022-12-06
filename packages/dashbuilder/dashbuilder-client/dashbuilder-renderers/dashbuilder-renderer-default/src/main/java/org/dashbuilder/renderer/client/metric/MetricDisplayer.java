@@ -25,12 +25,12 @@ import javax.inject.Inject;
 
 import org.dashbuilder.common.client.StringTemplateBuilder;
 import org.dashbuilder.common.client.StringUtils;
-import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
+import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.displayer.client.resources.i18n.DisplayerConstants;
 import org.dashbuilder.displayer.client.widgets.sourcecode.HasHtmlTemplate;
@@ -80,6 +80,8 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
             "    ${doFilter};\n" +
             "  };\n" +
             "}";
+    
+    private static final String DARK_MODE_DEFAULT_COLOR = "#211d3b";
 
     protected View view;
     protected boolean filterOn = false;
@@ -105,9 +107,7 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
                 .setMinColumns(1)
                 .setFunctionRequired(true)
                 .setExtraColumnsAllowed(false)
-                .setColumnsTitle(view.getColumnsTitle())
-                .setColumnTypes(new ColumnType[] {
-                        ColumnType.NUMBER});
+                .setColumnsTitle(view.getColumnsTitle());
 
         return new DisplayerConstraints(lookupConstraints)
                 .supportsAttribute(DisplayerAttributeDef.TYPE)
@@ -131,6 +131,10 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
 
     @Override
     protected void updateVisualization() {
+        if (displayerSettings.getMode() == Mode.DARK &&
+            "".equals(displayerSettings.getChartBackgroundColor()) ) {
+            displayerSettings.setChartBackgroundColor(DARK_MODE_DEFAULT_COLOR);
+        }
         String template = getHtmlTemplate();
         String html = parseHtmlTemplate(template);
         view.setHtml(html);

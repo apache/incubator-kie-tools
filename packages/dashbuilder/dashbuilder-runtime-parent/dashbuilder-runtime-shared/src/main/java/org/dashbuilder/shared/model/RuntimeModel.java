@@ -32,8 +32,10 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 @Portable
 public class RuntimeModel {
 
+    GlobalSettings globalSettings;
+
     NavTree navTree;
-    
+
     Map<String, String> properties;
 
     List<LayoutTemplate> layoutTemplates;
@@ -41,18 +43,19 @@ public class RuntimeModel {
     List<ExternalDataSetDef> clientDataSets;
 
     Long lastModified;
-    
-    
+
     public RuntimeModel(@MapsTo("navTree") final NavTree navTree,
                         @MapsTo("layoutTemplates") final List<LayoutTemplate> layoutTemplates,
                         @MapsTo("lastModified") Long lastModified,
                         @MapsTo("clientDataSets") List<ExternalDataSetDef> clientDataSets,
-                        @MapsTo("properties") Map<String, String> properties) {
+                        @MapsTo("properties") Map<String, String> properties,
+                        @MapsTo("globalSettings") GlobalSettings globalSettings) {
         this.navTree = navTree;
         this.layoutTemplates = layoutTemplates;
         this.lastModified = lastModified;
         this.clientDataSets = clientDataSets;
-        this.properties = properties; 
+        this.properties = properties;
+        this.globalSettings = globalSettings;
     }
 
     public NavTree getNavTree() {
@@ -71,9 +74,12 @@ public class RuntimeModel {
         return clientDataSets;
     }
 
-
     public Map<String, String> getProperties() {
         return properties;
+    }
+
+    public GlobalSettings getGlobalSettings() {
+        return globalSettings;
     }
 
 }

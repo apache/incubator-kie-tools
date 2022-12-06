@@ -36,6 +36,7 @@ export enum PanelId {
 
 interface EditorPageDockDrawerProps {
   isEditorReady?: boolean;
+  onNotificationClick?: (notification: Notification) => void;
   workspaceFile: WorkspaceFile;
 }
 
@@ -125,7 +126,11 @@ export const EditorPageDockDrawer = React.forwardRef<
                 {props.isEditorReady && (
                   <>
                     {panel === PanelId.NOTIFICATIONS_PANEL && (
-                      <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
+                      <NotificationsPanel
+                        ref={notificationsPanelRef}
+                        tabNames={notificationsPanelTabNames}
+                        onNotificationClick={props.onNotificationClick}
+                      />
                     )}
                   </>
                 )}
