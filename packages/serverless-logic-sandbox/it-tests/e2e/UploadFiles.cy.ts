@@ -41,7 +41,7 @@ describe("Serverless Logic Web Tools - Upload files test", () => {
     });
   });
 
-  it("should upload 2 files (JSON and YAML) and check", () => {
+  it("should upload 2 files (JSON and YAML) and check editors and diagrams content", () => {
     // upload JSON and YAML files
     cy.get("#upload-field").attachFile(
       ["uploadFile/helloJsonWorkflow.sw.json", "uploadFile/helloYamlWorkflow.sw.yaml"],
