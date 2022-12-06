@@ -18,7 +18,7 @@ describe("Serverless Logic Web Tools - Upload files test", () => {
     cy.visit("/");
   });
 
-  it("should upload dashbuider file and check", () => {
+  it("should upload dashbuider file and check rendered content", () => {
     // upload dashbuilder file
     cy.get("#upload-field").attachFile("uploadFile/helloDashbuilder.dash.yaml", { subjectType: "drag-n-drop" });
     cy.loadEditor();
@@ -49,7 +49,7 @@ describe("Serverless Logic Web Tools - Upload files test", () => {
     );
     cy.loadEditor();
 
-    // check header labels
+    // check JSON header labels
     cy.ouia({ ouiaId: "file-name-input" }).should("have.value", "helloJsonWorkflow");
     cy.ouia({ ouiaId: "file-type-label" }).should("have.text", "Serverless Workflow");
     cy.ouia({ ouiaId: "directory-name-input" }).should("have.value", "Untitled Folder");
@@ -81,7 +81,7 @@ describe("Serverless Logic Web Tools - Upload files test", () => {
     cy.get("a[download]").eq(0).should("have.attr", "download", "helloYamlWorkflow.sw.yaml");
     cy.loadEditor();
 
-    // check header labels
+    // check YAML header labels
     cy.ouia({ ouiaId: "file-name-input" }).should("have.value", "helloYamlWorkflow");
     cy.ouia({ ouiaId: "file-type-label" }).should("have.text", "Serverless Workflow");
     cy.ouia({ ouiaId: "directory-name-input" }).should("have.value", "Untitled Folder");
