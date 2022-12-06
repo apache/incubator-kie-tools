@@ -80,13 +80,6 @@ public class PreviewWindow {
         style.setBorderColor("#808080");
     }
 
-    private void deleteWidget() {
-        if (null != previewRoot) {
-            previewRoot.removeFromParent();
-            previewRoot = null;
-        }
-    }
-
     private void close() {
         if (null != previewRoot && previewRoot.isVisible() && !closing) {
             closing = true;
@@ -107,6 +100,13 @@ public class PreviewWindow {
                 }
             };
             hideTimer.schedule(DURATION);
+        }
+    }
+
+    private void deleteWidget() {
+        if (null != previewRoot) {
+            previewRoot.removeFromParent();
+            previewRoot = null;
         }
     }
 
