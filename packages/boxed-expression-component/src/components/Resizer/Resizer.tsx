@@ -22,7 +22,7 @@ import { DEFAULT_MIN_WIDTH } from "./dom";
 import "./Resizer.css";
 
 export interface ResizerProps {
-  width: number | undefined;
+  width?: number;
   setWidth?: (width: number) => void;
   setResizingWidth?: (width: number) => void;
   height?: number | "100%";
@@ -80,6 +80,10 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     setResizing(true);
   }, []);
 
+  const onDoubleClick = useCallback(() => {
+    setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
+  }, [minWidth, setWidth]);
+
   return (
     <>
       {(width && (
@@ -93,7 +97,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           className={resizerClassName}
           axis={"x"}
           handle={
-            <div className="pf-c-drawer">
+            <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>
               <div
                 className={`pf-c-drawer__splitter pf-m-vertical ${
                   minWidth === _resizingWidth ? (isResizing ? "smallest" : "min") : ""
@@ -104,11 +108,11 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             </div>
           }
         >
-          <div style={{ width: _resizingWidth }}>{children}</div>
+          <div style={{ width: _resizingWidth, minWidth }}>{children}</div>
         </Resizable>
       )) || (
         <>
-          <div style={{ width: _resizingWidth }}>{children}</div>
+          <div style={{ width, minWidth }}>{children}</div>
         </>
       )}
     </>

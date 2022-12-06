@@ -101,10 +101,6 @@ export function getDefaultExpressionDefinitionByLogicType(
       ...prev,
       logicType,
       entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      entryExpressionWidth: Math.max(
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-        containerWidth - CONTEXT_ENTRY_INFO_MIN_WIDTH - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION
-      ),
       contextEntries: [
         {
           entryInfo: {
@@ -273,23 +269,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [setExpression]
   );
 
-  const setExpressionWidth = useCallback(
-    (newEntryExpressionWidth: number) => {
-      setExpression((prev) => ({ ...prev, entryExpressionWidth: newEntryExpressionWidth }));
-    },
-    [setExpression]
-  );
-
-  const setExpressionWidthFromHeader = useCallback(
-    (newHeaderWidth: number) => {
-      setExpression((prev: ContextExpressionDefinition) => ({
-        ...prev,
-        entryExpressionWidth: newHeaderWidth - (prev.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) - 2, // 2px for border
-      }));
-    },
-    [setExpression]
-  );
-
   const expressionEntryColumnMinWidth = useMemo(() => {
     return Math.max(
       getEntryExpressionColumnMinWidthDeep(contextExpression),
@@ -307,30 +286,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     };
   }, [entryExpressionColumnWidth, expressionEntryColumnMinWidth]);
 
-  const headerColumnWidth = useMemo(() => {
-    return (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) + entryExpressionColumnWidth + 2; // 2px for border
-  }, [contextExpression.entryInfoWidth, entryExpressionColumnWidth]);
-
-  const headerColumnMinWidth = useMemo(() => {
-    return expressionEntryColumnMinWidth + CONTEXT_ENTRY_INFO_MIN_WIDTH + 2; // 2px for border
-  }, [expressionEntryColumnMinWidth]);
-
-  const entryExpressionColumnWidthIfOwn = useMemo(() => {
-    const entriesHaveExpressions =
-      contextExpression.contextEntries.filter(
-        (s) => s.entryExpression.logicType !== ExpressionDefinitionLogicType.Undefined
-      ).length > 0;
-
-    const resultHasExpression =
-      contextExpression.result && contextExpression.result.logicType !== ExpressionDefinitionLogicType.Undefined;
-
-    if (entriesHaveExpressions || resultHasExpression) {
-      return undefined; // Let width be automatic;
-    }
-
-    return entryExpressionColumnWidth;
-  }, [contextExpression, entryExpressionColumnWidth]);
-
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
@@ -339,9 +294,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
-        width: headerColumnWidth,
-        setWidth: setExpressionWidthFromHeader,
-        minWidth: headerColumnMinWidth,
         columns: [
           {
             accessor: "entryInfo",
@@ -357,26 +309,15 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             accessor: "entryExpression",
             label: "entryExpression",
             disableOperationHandlerOnHeader: true,
-            width: entryExpressionColumnWidthIfOwn,
-            setWidth: setExpressionWidth,
-            minWidth: expressionEntryColumnMinWidth,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
+            width: undefined,
+            minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
           },
         ],
       },
     ];
-  }, [
-    contextExpression,
-    decisionNodeId,
-    headerColumnWidth,
-    setExpressionWidthFromHeader,
-    headerColumnMinWidth,
-    setInfoWidth,
-    entryExpressionColumnWidthIfOwn,
-    setExpressionWidth,
-    expressionEntryColumnMinWidth,
-  ]);
+  }, [contextExpression, decisionNodeId, setInfoWidth]);
 
   const onColumnsUpdate = useCallback(
     ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
@@ -385,8 +326,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         ...prev,
         name: column.label,
         dataType: column.dataType,
-        entryInfoWidth: column.columns?.[0].width,
-        entryExpressionWidth: column.columns?.[1].width,
       }));
     },
     [setExpression]
@@ -474,12 +413,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           >
             <div className="context-result">{`<result>`}</div>
           </Resizer>,
-          <Resizer
-            key="context-expression"
-            width={entryExpressionColumnWidthIfOwn}
-            minWidth={expressionEntryColumnMinWidth}
-            setWidth={setExpressionWidth}
-          >
+          <Resizer key="context-expression">
             <ResultExpressionCell
               contextExpression={contextExpression}
               nestedExpressionContainer={entryExpressionContainer}
@@ -487,14 +421,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           </Resizer>,
         ]
       : undefined;
-  }, [
-    entryExpressionColumnWidthIfOwn,
-    contextExpression,
-    entryExpressionContainer,
-    expressionEntryColumnMinWidth,
-    setExpressionWidth,
-    setInfoWidth,
-  ]);
+  }, [contextExpression, entryExpressionContainer, setInfoWidth]);
 
   return (
     <div className={`context-expression ${contextExpression.id}`}>

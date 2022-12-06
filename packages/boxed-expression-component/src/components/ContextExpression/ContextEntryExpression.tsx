@@ -58,7 +58,7 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   }, [setExpression]);
 
   return (
-    <div className="entry-expression" ref={logicTypeContainerRef} style={{ width: "100%" }}>
+    <div className="entry-expression" ref={logicTypeContainerRef}>
       <ExpressionDefinitionLogicTypeSelector
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}
