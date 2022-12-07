@@ -34,7 +34,6 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
-import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service/src";
 import { ResourceContent } from "@kie-tools-core/workspace/dist/api";
 
@@ -174,23 +173,33 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         const importedModels = dmnLanguageService.getImportedModels(currentResourceContent.content ?? "");
         getAllImportedModelsResources(importedModels)
           .then((importedModelsResources) => {
-            const dmnResources = [currentResourceContent, ...importedModelsResources].map((resources) => ({
-              URI: resources.path,
-              content: resources.content ?? "",
-            }));
-
+            const resources = [currentResourceContent, ...importedModelsResources];
             const payload: DmnRunnerModelPayload = {
               mainURI: props.workspaceFile.relativePath,
-              resources: dmnResources,
+              resources: resources.map((resources) => ({
+                URI: resources.path,
+                content: resources.content ?? "",
+              })),
             };
 
             service.validate(payload).then((validationResults) => {
-              const notifications: Notification[] = validationResults.map((validationResult) => ({
-                type: "PROBLEM",
-                path: dmnResources.length > 1 ? validationResult.path : "",
-                severity: validationResult.severity,
-                message: `${validationResult.messageType}: ${validationResult.message}`,
-              }));
+              const notifications: Notification[] = validationResults.map((validationResult) => {
+                let path = payload.resources.length > 1 ? validationResult.path : "";
+                if (
+                  validationResult.severity === "ERROR" &&
+                  validationResult.sourceId === null &&
+                  validationResult.messageType === "REQ_NOT_FOUND"
+                ) {
+                  const nodeId = validationResult.message.split("'")[1] ?? "";
+                  path = dmnLanguageService.getPathFromNodeId(resources, nodeId);
+                }
+                return {
+                  type: "PROBLEM",
+                  path,
+                  severity: validationResult.severity,
+                  message: `${validationResult.messageType}: ${validationResult.message}`,
+                };
+              });
               props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
             });
           })

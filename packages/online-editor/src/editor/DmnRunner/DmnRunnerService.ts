@@ -32,7 +32,7 @@ export interface JitExecutorValidateResponse {
   severity: NotificationSeverity;
   message: string;
   messageType: string;
-  sourceId: string;
+  sourceId: string | null;
   path: string;
   level: string;
 }

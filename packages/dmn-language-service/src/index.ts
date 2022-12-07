@@ -15,8 +15,10 @@
  */
 
 const DMN_IMPORT = "dmn:import";
+const DMN_INPUT_DATA = "dmn:inputData";
 const XML_MIME = "text/xml";
 const LOCATION_URI_ATTRIBUTE = "locationURI";
+const ID_ATTRIBUTE = "id";
 
 export class DmnLanguageService {
   private readonly parser = new DOMParser();
@@ -36,5 +38,19 @@ export class DmnLanguageService {
     return Array.from(importedModels)
       .map((importedModel) => importedModel.getAttribute(LOCATION_URI_ATTRIBUTE))
       .filter((e) => e !== null) as string[];
+  }
+
+  // Receive all contents and paths and a node ID and returns the model that contains the node.
+  public getPathFromNodeId(resourceContents: { path: string; content?: string }[], nodeId: string): string {
+    for (const resourceContent of resourceContents) {
+      const xmlContent = this.parser.parseFromString(resourceContent.content ?? "", XML_MIME);
+      const inputs = xmlContent.getElementsByTagName(DMN_INPUT_DATA);
+      for (const input of Array.from(inputs)) {
+        if (input.id === nodeId) {
+          return resourceContent.path;
+        }
+      }
+    }
+    return "";
   }
 }
