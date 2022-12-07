@@ -22,17 +22,19 @@ export class DmnLanguageService {
   private readonly parser = new DOMParser();
   DmnLanguageService() {}
 
-  public getImportedModels(models: string | string[]): (string | null)[] {
+  public getImportedModels(models: string | string[]): string[] {
     if (Array.isArray(models)) {
-      return models.flatMap((model) => {
-        const xmlContent = this.parser.parseFromString(model, XML_MIME);
-        const importedModels = xmlContent.getElementsByTagName(DMN_IMPORT);
-        return Array.from(importedModels).map((importedModel) => importedModel.getAttribute(LOCATION_URI_ATTRIBUTE));
-      });
+      return models.flatMap((model) => this.getImportedModel(model));
     }
 
-    const xmlContent = this.parser.parseFromString(models, XML_MIME);
+    return this.getImportedModel(models);
+  }
+
+  private getImportedModel(model: string) {
+    const xmlContent = this.parser.parseFromString(model, XML_MIME);
     const importedModels = xmlContent.getElementsByTagName(DMN_IMPORT);
-    return Array.from(importedModels).map((importedModel) => importedModel.getAttribute(LOCATION_URI_ATTRIBUTE));
+    return Array.from(importedModels)
+      .map((importedModel) => importedModel.getAttribute(LOCATION_URI_ATTRIBUTE))
+      .filter((e) => e !== null) as string[];
   }
 }
