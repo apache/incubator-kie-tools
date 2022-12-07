@@ -15,7 +15,7 @@
  */
 
 import { setDiagnosticsOptions } from "monaco-yaml";
-import { DASHBOARD_SCHEMA } from "../schemas";
+import { DASHBUILDER_SCHEMA } from "../schemas";
 import { JSONSchema7 } from "json-schema";
 
 export function initYamlSchemaDiagnostics() {
@@ -28,7 +28,7 @@ export function initYamlSchemaDiagnostics() {
       {
         uri: "https://dashbuilder.org/schemas/0.1/dashbuilder.json",
         fileMatch: ["*"],
-        schema: DASHBOARD_SCHEMA as JSONSchema7,
+        schema: DASHBUILDER_SCHEMA as JSONSchema7,
       },
     ],
   });

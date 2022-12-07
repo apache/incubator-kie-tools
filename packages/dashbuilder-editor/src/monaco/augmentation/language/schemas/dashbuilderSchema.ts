@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const DASHBOARD_SCHEMA = {
+export const DASHBUILDER_SCHEMA = {
   $id: "https://dashbuilder.org/schemas/0.1/dashbuilder.json",
   $schema: "http://json-schema.org/draft-07/schema#",
   description: "Schema for Dashboards",

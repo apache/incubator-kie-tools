@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { DASHBOARD_SCHEMA } from "./dashbuilderSchema";
+export { DASHBUILDER_SCHEMA } from "./dashbuilderSchema";
