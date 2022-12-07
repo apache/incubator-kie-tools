@@ -24,7 +24,7 @@ envs:
     description: "By default Jobs Service doesn't integrate with message systems (e.g. Kafka). Set this variable to true to enable the events add-on."
   - name: "JOBS_SERVICE_PERSISTENCE"
     example: "mongodb"
-    description: "The all in one image contains all the supported jdbc plugins for Jobs Service, ephemeral, infinispan, mongodb and infinispan, if empty, defaults to ephemeral"
+    description: "The all in one image contains all the supported jdbc plugins for Jobs Service, ephemeral, postgresql, mongodb and infinispan, if empty, defaults to ephemeral"
 
 ports:
   - value: 8080

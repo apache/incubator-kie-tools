@@ -1,0 +1,36 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
+  jobs-service-all-in-one:
+    image: quay.io/kiegroup/kogito-jobs-service-allinone:latest
+    container_name: jobs-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      JOBS_SERVICE_PERSISTENCE: mongodb
+      QUARKUS_MONGODB_CONNECTION_STRING: mongodb://mongo:27017
+      QUARKUS_MONGODB_DATABASE: kogito
+      MONGODB_HOST: mongodb:27017
+      QUARKUS_MONGODB_CREDENTIALS_USERNAME: root
+      QUARKUS_MONGODB_CREDENTIALS_PASSWORD: example
+      QUARKUS_MONGODB_CREDENTIALS_AUTH_SOURCE: admin
+      KOGITO_JOBS_SERVICE_KNATIVE_EVENTS: "false"

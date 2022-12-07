@@ -764,9 +764,46 @@ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-infi
 You should notice a few debug messages being printed in the system output.
 
 The ephemeral image does not have external dependencies like a backend persistence provider, it uses in-memory persistence
-while working with Jobs Services `allinone`, `infinispan`, `mongodb` and `postgresql` variants, it will need to have an Infinispan, MongoDB or PostgreSQL server,
-respectively, previously running.
+while working with Jobs Services `allinone`, `infinispan`, `mongodb` and `postgresql` variants, it will need to 
+have an Infinispan, MongoDB or PostgreSQL server, respectively, previously running.
 
+#### Jobs Services All-in-one 
+
+The Jobs Services All in One image provides the option to run any supported variant that we have at disposal, which are:
+
+- PostgreSQL
+- Infinispan
+- MongoDB
+- Ephemeral (default if no variant is specified)
+
+There are 3 exposed environment variables that can be used to configure the behaviour, which are:
+
+- SCRIPT_DEBUG: enable debug level of the image and its operations
+- ENABLE_EVENTS: enable the events add-on
+- JOBS_SERVICE_PERSISTENCE: select which persistence variant to use
+
+Note: As the Jobs Services are built on top of Quarkus, we can also set any configuration supported by Quarkus
+using either environment variables or system properties.
+
+Using environment variables:
+```bash
+podman run -it -e VARIABLE_NAME=value quay.io/kiegroup/kogito-jobs-service-allinone:latest
+```
+
+Using system properties:
+```bash
+podman run -it -e JAVA_OPTIONS='-Dmy.sys.prop1=value1 -Dmy.sys.prop2=value2' \
+  quay.io/kiegroup/kogito-jobs-service-allinone:latest
+```
+
+For convenience there are `container-compose` files that can be used to start the Jobs Service with the desired
+persistence variant, to use execute the following command:
+
+```bash
+podman-compose -f contrib/jobs-service/container-compose-<variant>.yaml up
+```
+
+The above command will spinup the Jobs-service so you can connect your application.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Jobs Service
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications
