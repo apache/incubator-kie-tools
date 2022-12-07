@@ -36,7 +36,6 @@ import { ContextEntryExpressionCell } from "../ContextExpression";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
-import { hashfy } from "../Resizer";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export const LIST_EXPRESSION_MIN_WIDTH = 430;
@@ -45,7 +44,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
   listExpression: ListExpressionDefinition
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { beeGwtService, setSupervisorHash } = useBoxedExpressionEditor();
+  const { beeGwtService } = useBoxedExpressionEditor();
 
   const generateLiteralExpression: () => LiteralExpressionDefinition = useCallback(
     () => ({
@@ -109,14 +108,13 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
           if (listExpression.isHeadless) {
             listExpression.onUpdatingRecursiveExpression?.(updatedDefinition);
           } else {
-            setSupervisorHash(hashfy(updatedDefinition));
             beeGwtService?.broadcastListExpressionDefinition?.(updatedDefinition);
           }
         },
         ["width", "items"]
       );
     },
-    [beeGwtService, listExpression, beeTableRows, setSupervisorHash]
+    [beeGwtService, listExpression, beeTableRows]
   );
 
   const setListWidth = useCallback(

@@ -17,9 +17,8 @@
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import "./BoxedExpressionEditorContextProvider.css";
-import { hashfy, ResizerSupervisor } from "../Resizer";
 import * as _ from "lodash";
 import { CellSelectionBox } from "../SelectionBox";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
@@ -35,8 +34,6 @@ export interface BoxedExpressionEditorContextType {
   dataTypes: DmnDataType[];
 
   // State
-  supervisorHash: string;
-  setSupervisorHash: (hash: string) => void;
   isContextMenuOpen: boolean;
   setContextMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentlyOpenedHandlerCallback: React.Dispatch<React.SetStateAction<boolean>>;
@@ -71,24 +68,18 @@ export interface BoxedExpressionEditorContextProviderProps extends React.PropsWi
 }
 
 export function BoxedExpressionEditorContextProvider({
-  expressionDefinition,
   setExpressionDefinition,
   dataTypes,
   decisionNodeId,
   isRunnerTable,
   beeGwtService,
   children,
-  isClearSupportedOnRootExpression,
+  isClearSupportedOnRootExpression, // FIXME: Bring it back
   pmmlParams,
 }: BoxedExpressionEditorContextProviderProps) {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
-  const [supervisorHash, setSupervisorHash] = useState(hashfy(expressionDefinition));
   const [isContextMenuOpen, setContextMenuOpen] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setSupervisorHash(hashfy(expressionDefinition));
-  }, [expressionDefinition]);
 
   const dispatch = useMemo(() => {
     return {
@@ -111,8 +102,6 @@ export function BoxedExpressionEditorContextProvider({
         pmmlParams,
 
         //state
-        supervisorHash,
-        setSupervisorHash,
         isContextMenuOpen,
         setContextMenuOpen,
         currentlyOpenedHandlerCallback,

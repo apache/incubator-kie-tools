@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import * as PfReactTable from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
@@ -33,7 +33,6 @@ export interface BeeTableThResizableProps<R extends object> {
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   onHeaderClick: (columnKey: string) => () => void;
-  setWidth?: (width: number) => void;
   rowIndex: number;
   reactTableInstance: ReactTable.TableInstance<R>;
   getThProps: (column: ReactTable.ColumnInstance<R>) => Partial<PfReactTable.ThProps>;
@@ -55,7 +54,6 @@ export function BeeTableThResizable<R extends object>({
   onCellKeyDown,
   onExpressionHeaderUpdated,
   onHeaderClick,
-  setWidth,
   renderHeaderCellInfo,
   rowIndex,
   reactTableInstance,
@@ -63,21 +61,31 @@ export function BeeTableThResizable<R extends object>({
   xPosition,
   yPosition,
 }: BeeTableThResizableProps<R>) {
-  const headerProps = {
-    ...column.getHeaderProps(),
-    style: { flexGrow: "1" },
-  };
-  const width = column.width;
-  const isColspan = (column.columns?.length ?? 0) > 0 || false;
-  const columnKey = getColumnKey(column);
-  const isFocusable = /^(_\w{8}-(\w{4}-){3}\w{12}|parameters|functionDefinition)$/.test(columnKey);
+  const headerProps = useMemo(
+    () => ({
+      ...column.getHeaderProps(),
+      style: { flexGrow: "1" },
+    }),
+    [column]
+  );
+
+  const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
+
+  // FIXME: Tiago -> Specific logic
+  const isFocusable = useMemo(
+    () => /^(_\w{8}-(\w{4}-){3}\w{12}|parameters|functionDefinition)$/.test(columnKey),
+    [columnKey]
+  );
+
+  // FIXME: Tiago -> Specific logic
   const [isAnnotationCellEditMode, setIsAnnotationCellEditMode] = useState(false);
 
-  const getCssClass = useCallback(() => {
+  const cssClasses = useMemo(() => {
     const cssClasses = [columnKey, "data-header-cell"];
     if (!column.dataType) {
       cssClasses.push("no-clickable-cell");
     }
+    const isColspan = (column.columns?.length ?? 0) > 0 || false;
     if (isColspan) {
       cssClasses.push("colspan-header");
     }
@@ -90,7 +98,7 @@ export function BeeTableThResizable<R extends object>({
     cssClasses.push(column.cssClasses || "");
     cssClasses.push(isAnnotationCellEditMode ? "focused" : "");
     return cssClasses.join(" ");
-  }, [column, columnKey, isAnnotationCellEditMode, isColspan]);
+  }, [column, columnKey, isAnnotationCellEditMode]);
 
   /**
    * Get the rowspan value.
@@ -101,7 +109,8 @@ export function BeeTableThResizable<R extends object>({
   const getRowSpan = useCallback(
     (cssClasses: string): number => {
       if (
-        // FIXME: Tiago: CSS class names should not be used for logic.
+        // FIXME: Tiago -> CSS class names should not be used for logic.
+        // FIXME: Tiago -> DecisionTable-specific logic
         rowIndex === reactTableInstance.headerGroups.length - 1 &&
         (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
       ) {
@@ -118,11 +127,26 @@ export function BeeTableThResizable<R extends object>({
    *
    * @param isReadMode true if is read mode, false otherwise
    */
+  // FIXME: Tiago -> DecisionTable-specific logic
   const onAnnotationCellToggle = useCallback((isReadMode: boolean) => {
     setIsAnnotationCellEditMode(!isReadMode);
   }, []);
 
-  const cssClasses = getCssClass();
+  const onClick = useMemo(() => {
+    return onHeaderClick(columnKey);
+  }, [columnKey, onHeaderClick]);
+
+  const rowSpan = useMemo(() => {
+    return getRowSpan(cssClasses);
+  }, [cssClasses, getRowSpan]);
+
+  const thProps = useMemo(() => {
+    return getThProps(column);
+  }, [column, getThProps]);
+
+  const columnLabel = useMemo(() => {
+    return getColumnLabel(column.groupType);
+  }, [column.groupType, getColumnLabel]);
 
   return (
     <BeeTableTh
@@ -130,20 +154,26 @@ export function BeeTableThResizable<R extends object>({
       headerProps={headerProps}
       isFocusable={isFocusable}
       key={columnKey}
-      onClick={onHeaderClick(columnKey)}
+      // onClick={onClick}
       onKeyDown={onCellKeyDown}
       rowIndex={rowIndex}
       index={columnIndex}
-      rowSpan={getRowSpan(cssClasses)}
-      thProps={getThProps(column)}
+      rowSpan={rowSpan}
+      thProps={thProps}
       xPosition={xPosition}
       yPosition={yPosition}
     >
-      <Resizer width={width} setWidth={column.setWidth} minWidth={column.minWidth}>
+      <Resizer
+        width={column.width}
+        setWidth={column.setWidth}
+        minWidth={column.minWidth}
+        resizingWidth={column.resizingWidth}
+        setResizingWidth={column.setResizingWidth}
+      >
         <div className="header-cell" data-ouia-component-type="expression-column-header">
           {column.dataType && editableHeader ? (
             <ExpressionDefinitionHeaderMenu
-              title={getColumnLabel(column.groupType)}
+              title={columnLabel}
               selectedExpressionName={column.label}
               selectedDataType={column.dataType}
               onExpressionHeaderUpdated={onExpressionHeaderUpdated}

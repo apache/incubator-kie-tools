@@ -66,6 +66,9 @@ declare module "react-table" {
     width?: number;
     setWidth?(width: number): void;
 
+    resizingWidth?: number;
+    setResizingWidth?(width: number): void;
+
     columns?: Array<Column<D>>;
   }
 }

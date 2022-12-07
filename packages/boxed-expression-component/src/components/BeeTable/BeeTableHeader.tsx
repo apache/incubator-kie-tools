@@ -211,7 +211,6 @@ export function BeeTableHeader<R extends object>({
           onCellKeyDown={onCellKeyDown}
           onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
           onHeaderClick={onHeaderClick}
-          setWidth={column.setWidth}
           renderHeaderCellInfo={renderHeaderCellInfo}
           getThProps={getThProps}
           reactTableInstance={reactTableInstance}

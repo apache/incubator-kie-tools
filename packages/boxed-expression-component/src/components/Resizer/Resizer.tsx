@@ -18,14 +18,16 @@ import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { Resizable } from "react-resizable";
 import { v4 as uuid } from "uuid";
-import { DEFAULT_MIN_WIDTH } from "./dom";
 import "./Resizer.css";
+
+export const DEFAULT_MIN_WIDTH = 100;
 
 export interface ResizerProps {
   actualWidth?: number;
   width?: number;
-  setWidth?: (width: number) => void;
-  setResizingWidth?: (width: number) => void;
+  setWidth?: (width: number | undefined) => void;
+  resizingWidth?: number;
+  setResizingWidth?: (width: number | undefined) => void;
   height?: number | "100%";
   minWidth?: number;
   children?: React.ReactElement;
@@ -37,6 +39,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   minWidth,
   width,
   setWidth,
+  resizingWidth,
   setResizingWidth,
   actualWidth,
 }) => {
@@ -53,38 +56,31 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     return `${heightClass} ${id}`;
   }, [height, id]);
 
-  const [isResizing, setResizing] = useState(false);
+  const [isResizingHappening, setResizeHappening] = useState(false);
+  const [__resizingWidth, __setResizingWidth] = useState(width);
+
   const onResizeStop = useCallback(
     (_, data) => {
-      // Batching updates
-      // setTimeout(() => {
-      setResizing(false);
-      _setResizingWidth(data.size.width);
-      setResizingWidth?.(data.size.width);
+      setResizeHappening(false);
+      (setResizingWidth ?? __setResizingWidth)(data.size.width);
       setWidth?.(data.size.width);
-      // });
     },
     [setResizingWidth, setWidth]
   );
 
-  const [_resizingWidth, _setResizingWidth] = useState(width);
   useLayoutEffect(() => {
-    _setResizingWidth(width);
-  }, [width]);
+    (setResizingWidth ?? __setResizingWidth)(width);
+  }, [setResizingWidth, width]);
 
   const onResize = useCallback(
     (_, data) => {
-      // Batching updates
-      // setTimeout(() => {
-      _setResizingWidth(data.size.width);
-      setResizingWidth?.(data.size.width);
-      // });
+      (setResizingWidth ?? __setResizingWidth)(data.size.width);
     },
     [setResizingWidth]
   );
 
   const onResizeStart = useCallback((_, data) => {
-    setResizing(true);
+    setResizeHappening(true);
   }, []);
 
   const onDoubleClick = useCallback(() => {
@@ -111,7 +107,13 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       {(width && (
         <Resizable
-          width={_resizingWidth!}
+          width={
+            resizingWidth ??
+            __resizingWidth ??
+            (() => {
+              throw new Error("oh-ow");
+            })()
+          }
           height={0}
           onResize={onResize}
           onResizeStop={onResizeStop}
@@ -123,15 +125,15 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>
               <div
                 className={`pf-c-drawer__splitter pf-m-vertical ${
-                  minWidth === _resizingWidth ? (isResizing ? "smallest" : "min") : ""
-                } ${(_resizingWidth ?? 0) < (minWidth ?? 0) ? "error" : ""}`}
+                  minWidth === (resizingWidth ?? __resizingWidth) ? (isResizingHappening ? "smallest" : "min") : ""
+                } ${(resizingWidth ?? __resizingWidth ?? 0) < (minWidth ?? 0) ? "error" : ""}`}
               >
                 <div className={`pf-c-drawer__splitter-handle`} />
               </div>
             </div>
           }
         >
-          <div style={{ width: _resizingWidth, minWidth }}>{children}</div>
+          <div style={{ width: resizingWidth ?? __resizingWidth, minWidth }}>{children}</div>
         </Resizable>
       )) || (
         <>

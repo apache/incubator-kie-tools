@@ -61,6 +61,8 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
     [dataType, name]
   );
 
+  const ref = React.useRef<HTMLDivElement>(null);
+
   const renderEntryDefinitionWithPopoverMenu = useMemo(
     () => (
       <ExpressionDefinitionHeaderMenu
@@ -76,7 +78,7 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   );
 
   return (
-    <div className={`${id} entry-info`}>
+    <div className={`${id} entry-info`} ref={ref}>
       {editInfoPopoverLabel ? renderEntryDefinitionWithPopoverMenu : renderEntryDefinition({})}
     </div>
   );

@@ -24,7 +24,7 @@ export interface BeeTableThProps extends BeeTableTdsAndThsProps {
   className: string;
   headerProps: Partial<PfReactTable.ThProps>;
   isFocusable: boolean;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler;
   rowSpan: number;
   thProps?: Partial<PfReactTable.ThProps>;
 }

@@ -18,10 +18,11 @@ import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import { SelectionBox, SelectionRect } from ".";
-import { CELL_CSS_SELECTOR } from "../Resizer";
 import { paste } from "../BeeTable/common";
 import "./CellSelectionBox.css";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+
+const CELL_CSS_SELECTOR = ".react-resizable";
 
 const SELECTED_CELL = "cell--selected";
 

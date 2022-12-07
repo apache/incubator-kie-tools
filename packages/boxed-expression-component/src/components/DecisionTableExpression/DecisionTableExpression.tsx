@@ -37,7 +37,6 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { hashfy } from "../Resizer";
 import { getColumnsAtLastLevel, BeeTable } from "../BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector } from "./HitPolicySelector";
@@ -59,7 +58,7 @@ interface SpreadFunction {
 }
 
 export function DecisionTableExpression(decisionTable: PropsWithChildren<DecisionTableExpressionDefinition>) {
-  const { setSupervisorHash, decisionNodeId, beeGwtService } = useBoxedExpressionEditor();
+  const { decisionNodeId, beeGwtService } = useBoxedExpressionEditor();
 
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -295,14 +294,13 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
           decisionTable,
           updatedDefinition,
           () => {
-            setSupervisorHash(hashfy(updatedDefinition));
             beeGwtService?.broadcastDecisionTableExpressionDefinition?.(updatedDefinition);
           },
           ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
         );
       }
     },
-    [beeGwtService, beeTableColumns, decisionTable, beeTableRows, setSupervisorHash]
+    [beeGwtService, beeTableColumns, decisionTable, beeTableRows]
   );
 
   const singleOutputChildDataType = useRef(DmnBuiltInDataType.Undefined);

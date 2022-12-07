@@ -81,20 +81,18 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     <div className="literal-expression">
       {!literalExpression.isHeadless && (
         <div className="literal-expression-header" onClick={selectDecisionNode}>
-          <Resizer width={width} minWidth={minWidth} setWidth={setWidth} actualWidth={literalExpression.width}>
-            <ExpressionDefinitionHeaderMenu
-              selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
-              selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
-              onExpressionHeaderUpdated={onExpressionHeaderUpdated}
-            >
-              <div className="expression-info">
-                <p className="expression-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>
-                <p className="expression-data-type pf-u-text-truncate">
-                  ({literalExpression.dataType ?? DmnBuiltInDataType.Undefined})
-                </p>
-              </div>
-            </ExpressionDefinitionHeaderMenu>
-          </Resizer>
+          <ExpressionDefinitionHeaderMenu
+            selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
+            selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
+            onExpressionHeaderUpdated={onExpressionHeaderUpdated}
+          >
+            <div className="expression-info">
+              <p className="expression-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>
+              <p className="expression-data-type pf-u-text-truncate">
+                ({literalExpression.dataType ?? DmnBuiltInDataType.Undefined})
+              </p>
+            </div>
+          </ExpressionDefinitionHeaderMenu>
         </div>
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>

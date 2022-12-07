@@ -40,7 +40,6 @@ import * as ReactTable from "react-table";
 import { ContextEntryExpressionCell, ContextEntryInfoCell, ContextEntryInfoCellProps } from "../ContextExpression";
 import * as _ from "lodash";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { hashfy } from "../Resizer";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -74,7 +73,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     );
   }, [invocation.bindingEntries]);
 
-  const { beeGwtService, setSupervisorHash, decisionNodeId } = useBoxedExpressionEditor();
+  const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
 
   const spreadInvocationExpressionDefinition = useCallback(
     (invocationExpressionUpdated?: Partial<InvocationExpressionDefinition>) => {
@@ -105,14 +104,13 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
           invocation,
           updatedDefinition,
           () => {
-            setSupervisorHash(hashfy(updatedDefinition));
             beeGwtService?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
           },
           ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
         );
       }
     },
-    [beeGwtService, invocation, beeTableRows, setSupervisorHash]
+    [beeGwtService, invocation, beeTableRows]
   );
 
   const onBlurCallback = useCallback(

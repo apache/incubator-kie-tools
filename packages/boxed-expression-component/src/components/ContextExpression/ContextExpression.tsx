@@ -16,7 +16,7 @@
 
 import "./ContextExpression.css";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
@@ -290,6 +290,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     };
   }, [entryExpressionColumnWidth, expressionEntryColumnMinWidth]);
 
+  const [entryInfoColumnResizingWidth, setEntryInfoColumnResizingWidth] = useState(contextExpression.entryInfoWidth);
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
@@ -305,6 +307,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             disableOperationHandlerOnHeader: true,
             width: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
             setWidth: setInfoWidth,
+            resizingWidth: entryInfoColumnResizingWidth,
+            setResizingWidth: setEntryInfoColumnResizingWidth,
             minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
@@ -321,7 +325,14 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         ],
       },
     ];
-  }, [contextExpression, decisionNodeId, setInfoWidth]);
+  }, [
+    contextExpression.dataType,
+    contextExpression.entryInfoWidth,
+    contextExpression.name,
+    decisionNodeId,
+    entryInfoColumnResizingWidth,
+    setInfoWidth,
+  ]);
 
   const onColumnsUpdate = useCallback(
     ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
@@ -412,6 +423,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           <Resizer
             key="context-result"
             width={contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH}
+            resizingWidth={entryInfoColumnResizingWidth}
+            setResizingWidth={setEntryInfoColumnResizingWidth}
             minWidth={CONTEXT_ENTRY_INFO_MIN_WIDTH}
             setWidth={setInfoWidth}
           >
@@ -425,13 +438,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           </Resizer>,
         ]
       : undefined;
-  }, [contextExpression, entryExpressionContainer, setInfoWidth]);
+  }, [contextExpression, entryExpressionContainer, entryInfoColumnResizingWidth, setInfoWidth]);
 
   return (
     <div className={`context-expression ${contextExpression.id}`}>
       <BeeTable
-        // Every time the container width/minWidth changes, we need to refresh the table.
-        key={entryExpressionContainer.minWidth + entryExpressionContainer.width}
+        key={entryExpressionContainer.minWidth + entryExpressionContainer.width} // Every time the container width/minWidth changes, we need to refresh the table.
         tableId={contextExpression.id}
         headerLevelCount={1}
         headerVisibility={headerVisibility}
