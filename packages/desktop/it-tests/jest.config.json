@@ -1,7 +1,0 @@
-{
-  "transform": {
-    "^.+\\.(ts)$": "ts-jest"
-  },
-  "testRegex": ["it-tests/.*Test.ts"],
-  "testTimeout": 100000
-}

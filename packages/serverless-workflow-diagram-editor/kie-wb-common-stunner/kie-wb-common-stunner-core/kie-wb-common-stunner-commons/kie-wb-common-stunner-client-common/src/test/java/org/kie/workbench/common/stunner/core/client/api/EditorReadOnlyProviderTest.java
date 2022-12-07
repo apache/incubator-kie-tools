@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.appformer.client.context.Channel.DEFAULT;
-import static org.appformer.client.context.Channel.DESKTOP;
 import static org.appformer.client.context.Channel.EMBEDDED;
 import static org.appformer.client.context.Channel.GITHUB;
 import static org.appformer.client.context.Channel.ONLINE;
@@ -66,12 +65,6 @@ public class EditorReadOnlyProviderTest {
     @Test
     public void testIsReadOnlyDiagramWhenIsOnline() {
         when(contextProvider.getChannel()).thenReturn(ONLINE);
-        assertFalse(readOnlyProvider.isReadOnlyDiagram());
-    }
-
-    @Test
-    public void testIsReadOnlyDiagramWhenIsDesktop() {
-        when(contextProvider.getChannel()).thenReturn(DESKTOP);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
