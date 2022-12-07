@@ -273,6 +273,13 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [contextExpression, nestedExpressionContainer.width]
   );
 
+  const entryExpressionColumnResizingWidth = useMemo(
+    () =>
+      getEntryExpressionColumnWidthDeep(contextExpression) -
+      (entryInfoColumnResizingWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH),
+    [contextExpression, entryInfoColumnResizingWidth]
+  );
+
   const expressionEntryColumnMinWidth = useMemo(() => {
     return Math.max(
       getEntryExpressionColumnMinWidthDeep(contextExpression),
@@ -287,8 +294,9 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     return {
       width: entryExpressionColumnWidth,
       minWidth: expressionEntryColumnMinWidth,
+      resizingWidth: entryExpressionColumnResizingWidth,
     };
-  }, [entryExpressionColumnWidth, expressionEntryColumnMinWidth]);
+  }, [entryExpressionColumnResizingWidth, entryExpressionColumnWidth, expressionEntryColumnMinWidth]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -541,11 +549,16 @@ export function NestedExpressionDispatchContextProvider({
   );
 }
 
-export type NestedExpressionContainerContextType = { minWidth: number; width: number };
+export type NestedExpressionContainerContextType = {
+  minWidth: number;
+  width: number;
+  resizingWidth: number;
+};
 
 export const NestedExpressionContainerContext = React.createContext<NestedExpressionContainerContextType>({
   width: -1,
   minWidth: -1,
+  resizingWidth: -1,
 });
 
 export function useNestedExpressionContainer() {

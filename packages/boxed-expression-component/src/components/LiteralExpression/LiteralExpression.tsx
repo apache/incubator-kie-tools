@@ -68,7 +68,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   const width = useMemo(() => {
     return Math.max(
-      nestedExpressionContainer.width - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
       literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
     );
   }, [literalExpression.width, nestedExpressionContainer]);

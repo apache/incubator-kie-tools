@@ -397,8 +397,9 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 
   const expressionContainer = useMemo(() => {
     return {
-      width: nestedExpressionContainer.width - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
       minWidth: nestedExpressionContainer.minWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
+      width: nestedExpressionContainer.width - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
+      resizingWidth: nestedExpressionContainer.width - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
     };
   }, [nestedExpressionContainer]);
 
