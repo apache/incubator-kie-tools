@@ -846,7 +846,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const deleteFileDropdownItem = useMemo(() => {
     return (
-      <DropdownItem key={"delete-dropdown-item"} onClick={deleteWorkspaceFile}>
+      <DropdownItem key={"delete-dropdown-item"} onClick={deleteWorkspaceFile} ouiaId={"delete-file-button"}>
         <Flex flexWrap={{ default: "nowrap" }}>
           <FlexItem>
             <TrashIcon />
@@ -906,7 +906,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const commitSuccessAlert = useAlert(
     props.alerts,
     useCallback(({ close }) => {
-      return <Alert variant="success" title={`Commit created.`} />;
+      return <Alert variant="success" title={`Commit created.`} ouiaId={"commit-created-alert"} />;
     }, []),
     { durationInSeconds: 2 }
   );
@@ -926,6 +926,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           commitSuccessAlert.show();
         }}
         description={"Create a save point"}
+        ouiaId={"commit-button"}
       >
         Commit
       </DropdownItem>
@@ -1333,6 +1334,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       className={"kogito--editor__toolbar-subtitle"}
                       onBlur={(e) => onRenameWorkspace(e.target.value)}
                       style={{ fontStyle: "italic" }}
+                      ouiaId={"directory-name-input"}
                     />
                   </div>
                   <WorkspaceStatusIndicator workspace={workspace} />

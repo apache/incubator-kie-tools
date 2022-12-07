@@ -49,7 +49,9 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 style={{ textDecoration: "none" }}
               >
                 <TextContent>
-                  <Text component={TextVariants.h1}>{APP_NAME}</Text>
+                  <Text component={TextVariants.h1} ouiaId={"app-title"}>
+                    {APP_NAME}
+                  </Text>
                 </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>

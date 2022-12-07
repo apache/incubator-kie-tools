@@ -199,7 +199,12 @@ export function HomePage() {
       <PageSection isFilled={false} style={{ paddingRight: 0 }}>
         <Showcase />
       </PageSection>
-      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={false}>
+      <PageSection
+        isFilled={true}
+        variant={"light"}
+        hasOverflowScroll={false}
+        data-ouia-component-id={"recent-models-section"}
+      >
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
@@ -220,7 +225,7 @@ export function HomePage() {
                     />
                   }
                 >
-                  <DrawerContentBody>
+                  <DrawerContentBody data-ouia-component-id={"recent-models-section-body"}>
                     {workspaceDescriptors.length > 0 && (
                       <Stack hasGutter={true} style={{ padding: "10px" }}>
                         {workspaceDescriptors
@@ -242,7 +247,7 @@ export function HomePage() {
                       <Bullseye>
                         <EmptyState>
                           <EmptyStateIcon icon={CubesIcon} />
-                          <Title headingLevel="h4" size="lg">
+                          <Title headingLevel="h4" size="lg" ouiaId={"empty-recent-models-title"}>
                             {`Nothing here`}
                           </Title>
                           <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
@@ -489,7 +494,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
   const routes = useRoutes();
 
   return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true}>
+    <Card isFullHeight={true} isPlain={true} isLarge={true} ouiaId={`${props.title}-card`}>
       <CardTitle>
         <FileLabel style={{ fontSize: "0.8em" }} extension={props.extension} />
       </CardTitle>
@@ -520,7 +525,7 @@ export function NewServerlessModelCard(props: {
   const routes = useRoutes();
 
   return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true}>
+    <Card isFullHeight={true} isPlain={true} isLarge={true} ouiaId={`${props.title}-card`}>
       <CardTitle>
         <FileLabel style={{ fontSize: "0.8em" }} extension={props.jsonExtension} />
       </CardTitle>

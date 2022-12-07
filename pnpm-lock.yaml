@@ -3662,6 +3662,7 @@ importers:
       buffer: ^6.0.3
       copy-webpack-plugin: ^11.0.0
       cypress: ^11.0.1
+      cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       dexie: ^3.2.2
@@ -3760,6 +3761,7 @@ importers:
       "@types/react-router-dom": 5.1.7
       copy-webpack-plugin: 11.0.0_webpack@5.70.0
       cypress: 11.0.1
+      cypress-file-upload: 5.0.8_cypress@11.0.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       html-replace-webpack-plugin: 2.6.0
