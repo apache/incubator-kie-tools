@@ -136,10 +136,6 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       isHeadless: true,
       entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      entryExpressionWidth: Math.max(
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-        containerWidth - CONTEXT_ENTRY_INFO_MIN_WIDTH - CONTEXT_ENTRY_EXTRA_WIDTH
-      ),
     };
     return invocationExpression;
   } else {
@@ -195,7 +191,7 @@ function getExpressionWidth(expression?: ExpressionDefinition): number {
       getEntryExpressionColumnWidthDeep(expression) +
         (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
         CONTEXT_ENTRY_EXTRA_WIDTH,
-      (expression.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
+      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
         (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
         CONTEXT_ENTRY_EXTRA_WIDTH
     );
@@ -216,7 +212,10 @@ function getExpressionWidth(expression?: ExpressionDefinition): number {
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     return (
       (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
-      (expression.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
+      Math.max(
+        ...(expression.bindingEntries ?? []).map(({ entryExpression }) => getExpressionWidth(entryExpression)),
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
+      ) +
       CONTEXT_ENTRY_EXTRA_WIDTH
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
@@ -253,6 +252,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const nestedExpressionContainer = useNestedExpressionContainer();
+  const [entryInfoColumnResizingWidth, setEntryInfoColumnResizingWidth] = useState(contextExpression.entryInfoWidth);
 
   const setInfoWidth = useCallback(
     (newInfoWidth: number) => {
@@ -265,12 +265,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     () =>
       Math.max(
         getEntryExpressionColumnWidthDeep(contextExpression),
-        contextExpression.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         nestedExpressionContainer.width -
           (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
           CONTEXT_ENTRY_EXTRA_WIDTH
       ),
-    [contextExpression, nestedExpressionContainer]
+    [contextExpression, nestedExpressionContainer.width]
   );
 
   const expressionEntryColumnMinWidth = useMemo(() => {
@@ -290,8 +290,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     };
   }, [entryExpressionColumnWidth, expressionEntryColumnMinWidth]);
 
-  const [entryInfoColumnResizingWidth, setEntryInfoColumnResizingWidth] = useState(contextExpression.entryInfoWidth);
-
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
@@ -305,11 +303,11 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             accessor: "entryInfo",
             label: "entryInfo",
             disableOperationHandlerOnHeader: true,
+            minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
             width: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
             setWidth: setInfoWidth,
             resizingWidth: entryInfoColumnResizingWidth,
             setResizingWidth: setEntryInfoColumnResizingWidth,
-            minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
           },
@@ -422,11 +420,11 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       ? [
           <Resizer
             key="context-result"
+            minWidth={CONTEXT_ENTRY_INFO_MIN_WIDTH}
             width={contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH}
+            setWidth={setInfoWidth}
             resizingWidth={entryInfoColumnResizingWidth}
             setResizingWidth={setEntryInfoColumnResizingWidth}
-            minWidth={CONTEXT_ENTRY_INFO_MIN_WIDTH}
-            setWidth={setInfoWidth}
           >
             <div className="context-result">{`<result>`}</div>
           </Resizer>,
