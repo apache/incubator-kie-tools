@@ -137,7 +137,7 @@ export interface InvocationExpressionDefinition<T extends ExpressionDefinition =
   /** Entry info width */
   entryInfoWidth?: number;
   /** Entry expression width */
-  entryExpressionWidth?: number;
+  entryExpressionWidth?: number; // FIXME: Tiago -> Remove
 }
 
 export interface UndefinedExpressionDefinition extends ExpressionDefinitionBase {
@@ -150,7 +150,7 @@ export type FunctionExpressionDefinition = ExpressionDefinitionBase & {
   /** List of parameters passed to the function */
   formalParameters: ContextExpressionDefinitionEntryInfo[];
   /** Parameters column width */
-  parametersWidth?: number;
+  parametersWidth?: number; // FIXME: Tiago -> Remove
 } & (FeelFunctionExpressionDefinition | JavaFunctionExpressionDefinition | PmmlFunctionExpressionDefinition);
 
 export type ExpressionDefinition =

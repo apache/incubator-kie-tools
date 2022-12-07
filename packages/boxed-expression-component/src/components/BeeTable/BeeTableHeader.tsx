@@ -20,13 +20,11 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import { DmnBuiltInDataType, BeeTableHeaderVisibility, ExpressionDefinition } from "../../api";
-import { getColumnsAtLastLevel, areEqualColumns } from "./BeeTable";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { focusCurrentCell, getParentCell } from "./common";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../ExpressionDefinitionHeaderMenu";
-import { DEFAULT_MIN_WIDTH } from "../Resizer";
 import { NavigationKeysUtils } from "../../keysUtils";
 
 export interface BeeTableHeaderProps<R extends object> {

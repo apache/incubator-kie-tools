@@ -112,7 +112,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
         </Resizable>
       )) || (
         <>
-          <div style={{ width, minWidth }}>{children}</div>
+          <div style={{ width: width, minWidth }}>{children}</div>
         </>
       )}
     </>

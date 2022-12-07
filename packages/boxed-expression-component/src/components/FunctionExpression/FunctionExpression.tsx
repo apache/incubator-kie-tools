@@ -21,7 +21,6 @@ import {
   BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   FunctionExpressionDefinitionKind,
   FunctionExpressionDefinition,
   ExpressionDefinitionLogicType,
@@ -34,7 +33,13 @@ import {
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import * as ReactTable from "react-table";
-import { ContextEntryExpressionCell, NestedExpressionDispatchContextProvider } from "../ContextExpression";
+import {
+  ContextEntryExpressionCell,
+  EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+  NestedExpressionContainerContext,
+  NestedExpressionDispatchContextProvider,
+  useNestedExpressionContainer,
+} from "../ContextExpression";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { PopoverMenu } from "../PopoverMenu";
 import * as _ from "lodash";
@@ -57,6 +62,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const nestedExpressionContainer = useNestedExpressionContainer();
 
   const { editorRef, pmmlParams, decisionNodeId } = useBoxedExpressionEditor();
 
@@ -100,17 +106,16 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
-        width: functionExpression.parametersWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        width: undefined,
         columns: [
           {
             headerCellElement: parametersColumnHeader,
             accessor: "parameters" as any, // FIXME: Tiago -> No bueno.
             disableOperationHandlerOnHeader: true,
-            width: functionExpression.parametersWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-            minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
             label: "",
             isRowIndexColumn: false,
             dataType: undefined as any, // FIXME: Tiago -> No bueno.
+            width: undefined,
           },
         ],
       },
@@ -126,6 +131,9 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
       setExpression((prev) => {
         if (kind === FunctionExpressionDefinitionKind.Feel) {
           return {
+            name: prev.name,
+            id: prev.id,
+            noClearAction: prev.noClearAction,
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Feel,
             formalParameters: [],
@@ -136,12 +144,18 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           };
         } else if (kind === FunctionExpressionDefinitionKind.Java) {
           return {
+            name: prev.name,
+            id: prev.id,
+            noClearAction: prev.noClearAction,
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Java,
             formalParameters: [],
           };
         } else if (kind === FunctionExpressionDefinitionKind.Pmml) {
           return {
+            name: prev.name,
+            id: prev.id,
+            noClearAction: prev.noClearAction,
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Pmml,
             formalParameters: [],
@@ -161,7 +175,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         ...prev,
         name: column.label,
         dataType: column.dataType,
-        parametersWidth: column.width,
       }));
     },
     [setExpression]
@@ -339,54 +352,64 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [functionExpression.functionKind, onFunctionKindSelect]
   );
 
+  const onSetExpression = useCallback(
+    ({ getNewExpression }) => {
+      setExpression((prev) => {
+        if (prev.logicType !== ExpressionDefinitionLogicType.Function) {
+          return prev;
+        }
+
+        // FEEL
+        if (prev.functionKind === FunctionExpressionDefinitionKind.Feel) {
+          return { ...prev, expression: getNewExpression(prev.expression) };
+        }
+
+        // Java
+        else if (prev.functionKind === FunctionExpressionDefinitionKind.Java) {
+          const newExpression = getNewExpression(javaContextExpression) as ContextExpressionDefinition;
+          return {
+            ...prev,
+            className: (newExpression.contextEntries![0].entryExpression as LiteralExpressionDefinition).content,
+            classFieldId: (newExpression.contextEntries![0].entryExpression as LiteralExpressionDefinition).content,
+            methodName: (newExpression.contextEntries![1].entryExpression as LiteralExpressionDefinition).content,
+            methodFieldId: (newExpression.contextEntries![1].entryExpression as LiteralExpressionDefinition).content,
+          };
+        }
+
+        // PMML
+        else if (prev.functionKind === FunctionExpressionDefinitionKind.Pmml) {
+          const newExpression = getNewExpression(pmmlContextExpression) as ContextExpressionDefinition;
+          // FIXME: Tiago -> STATE GAP
+          return { ...prev };
+        }
+
+        // default
+        else {
+          throw new Error("Shouldn't ever reach this point.");
+        }
+      });
+    },
+    [javaContextExpression, pmmlContextExpression, setExpression]
+  );
+
+  const expressionContainer = useMemo(() => {
+    return {
+      width: nestedExpressionContainer.width - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2, // 2px for border
+      minWidth: nestedExpressionContainer.minWidth - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2, // 2px for border
+    };
+  }, [nestedExpressionContainer]);
+
   const defaultCellByColumnId: BeeTableProps<ROWTYPE>["defaultCellByColumnId"] = useMemo(
     () => ({
       parameters: (props) => (
-        <NestedExpressionDispatchContextProvider
-          onSetExpression={({ getNewExpression }) => {
-            setExpression((prev) => {
-              if (prev.logicType !== ExpressionDefinitionLogicType.Function) {
-                return prev;
-              }
-
-              // FEEL
-              if (prev.functionKind === FunctionExpressionDefinitionKind.Feel) {
-                return { ...prev, expression: getNewExpression(prev.expression) };
-              }
-
-              // Java
-              else if (prev.functionKind === FunctionExpressionDefinitionKind.Java) {
-                const newExpression = getNewExpression(javaContextExpression) as ContextExpressionDefinition;
-                return {
-                  ...prev,
-                  className: (newExpression.contextEntries![0].entryExpression as LiteralExpressionDefinition).content,
-                  classFieldId: (newExpression.contextEntries![0].entryExpression as LiteralExpressionDefinition)
-                    .content,
-                  methodName: (newExpression.contextEntries![1].entryExpression as LiteralExpressionDefinition).content,
-                  methodFieldId: (newExpression.contextEntries![1].entryExpression as LiteralExpressionDefinition)
-                    .content,
-                };
-              }
-
-              // PMML
-              else if (prev.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-                const newExpression = getNewExpression(pmmlContextExpression) as ContextExpressionDefinition;
-                // FIXME: Tiago -> STATE GAP
-                return { ...prev };
-              }
-
-              // default
-              else {
-                throw new Error("Shouldn't ever reach this point.");
-              }
-            });
-          }}
-        >
-          <ContextEntryExpressionCell {...props} />
-        </NestedExpressionDispatchContextProvider>
+        <NestedExpressionContainerContext.Provider value={expressionContainer}>
+          <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+            <ContextEntryExpressionCell {...props} />
+          </NestedExpressionDispatchContextProvider>
+        </NestedExpressionContainerContext.Provider>
       ),
     }),
-    [javaContextExpression, pmmlContextExpression, setExpression]
+    [expressionContainer, onSetExpression]
   );
 
   return (

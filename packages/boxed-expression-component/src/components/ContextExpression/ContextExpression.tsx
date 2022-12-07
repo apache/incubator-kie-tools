@@ -54,6 +54,7 @@ import {
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
 import {
+  DEFAULT_LITERAL_EXPRESSION_WIDTH,
   DEFAULT_LITERAL_EXPRESSION_WIDTH as LITERAL_EXPRESSION_MIN_WIDTH,
   LITERAL_EXPRESSION_EXTRA_WIDTH,
 } from "../LiteralExpression";
@@ -74,12 +75,12 @@ export function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinitionLogicType,
   containerWidth: number,
   prev: ExpressionDefinition
-) {
+): ExpressionDefinition {
   if (logicType === ExpressionDefinitionLogicType.LiteralExpression) {
     const literalExpression: LiteralExpressionDefinition = {
       ...prev,
       logicType,
-      width: Math.max(containerWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH),
+      width: Math.max(containerWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, DEFAULT_LITERAL_EXPRESSION_WIDTH),
     };
     return literalExpression;
   } else if (logicType === ExpressionDefinitionLogicType.Function) {
@@ -88,11 +89,15 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       functionKind: FunctionExpressionDefinitionKind.Feel,
       formalParameters: [],
-      parametersWidth:
-        Math.max(CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, containerWidth) - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2,
       expression: {
-        logicType: ExpressionDefinitionLogicType.LiteralExpression,
-        isHeadless: true,
+        ...getDefaultExpressionDefinitionByLogicType(
+          ExpressionDefinitionLogicType.LiteralExpression,
+          containerWidth - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+          {
+            logicType: ExpressionDefinitionLogicType.LiteralExpression,
+            isHeadless: true,
+          }
+        ),
       },
     };
     return functionExpression;
@@ -527,7 +532,7 @@ export function NestedExpressionDispatchContextProvider({
 
 export type NestedExpressionContainerContextType = { minWidth: number; width: number };
 
-const NestedExpressionContainerContext = React.createContext<NestedExpressionContainerContextType>({
+export const NestedExpressionContainerContext = React.createContext<NestedExpressionContainerContextType>({
   width: -1,
   minWidth: -1,
 });
