@@ -30,7 +30,7 @@ export class DmnLanguageService {
     return this.getImportedModel(models);
   }
 
-  private getImportedModel(model: string) {
+  private getImportedModel(model: string): string[] {
     const xmlContent = this.parser.parseFromString(model, XML_MIME);
     const importedModels = xmlContent.getElementsByTagName(DMN_IMPORT);
     return Array.from(importedModels)

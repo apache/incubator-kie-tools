@@ -78,7 +78,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
   // recursively get imported models
   const getAllImportedModelsResources = useCallback(
-    async (importedModels?: string[], resources: ResourceContent[] = []) => {
+    async (importedModels?: string[], resources: ResourceContent[] = []): Promise<ResourceContent[]> => {
       if (importedModels && importedModels.length > 0) {
         // get impoted models resources
         const importedModelsResources = (
@@ -94,7 +94,10 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
         const contents = importedModelsResources.map((resources) => resources.content ?? "");
         const importedFiles = dmnLanguageService.getImportedModels(contents);
-        resources = [...resources, ...(await getAllImportedModelsResources(importedFiles))];
+        if (importedFiles.length > 0) {
+          return [...importedModelsResources, ...(await getAllImportedModelsResources(importedFiles))];
+        }
+        return [...importedModelsResources];
       }
       return resources;
     },
@@ -159,31 +162,51 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
-    props.workspaceFile
-      .getFileContents()
-      .then((fileContents) => {
-        const payload: DmnRunnerModelPayload = {
-          mainURI: props.workspaceFile.relativePath,
-          resources: [
-            {
-              URI: props.workspaceFile.relativePath,
-              content: decoder.decode(fileContents),
-            },
-          ],
-        };
+    workspaces
+      .resourceContentGet({
+        workspaceId: props.workspaceFile.workspaceId,
+        relativePath: props.workspaceFile.relativePath,
+      })
+      .then((currentResourceContent) => {
+        if (!currentResourceContent) {
+          throw new Error("Missing resource content from current file");
+        }
+        const importedModels = dmnLanguageService.getImportedModels(currentResourceContent.content ?? "");
+        getAllImportedModelsResources(importedModels)
+          .then((importedModelsResources) => {
+            const dmnResources = [currentResourceContent, ...importedModelsResources].map((resources) => ({
+              URI: resources.path,
+              content: resources.content ?? "",
+            }));
 
-        service.validate(payload).then((validationResults) => {
-          const notifications: Notification[] = validationResults.map((validationResult: any) => ({
-            type: "PROBLEM",
-            path: "",
-            severity: validationResult.severity,
-            message: `${validationResult.messageType}: ${validationResult.message}`,
-          }));
-          props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-        });
+            const payload: DmnRunnerModelPayload = {
+              mainURI: props.workspaceFile.relativePath,
+              resources: dmnResources,
+            };
+
+            service.validate(payload).then((validationResults) => {
+              const notifications: Notification[] = validationResults.map((validationResult) => ({
+                type: "PROBLEM",
+                path: dmnResources.length > 1 ? validationResult.path : "",
+                severity: validationResult.severity,
+                message: `${validationResult.messageType}: ${validationResult.message}`,
+              }));
+              props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
+            });
+          })
+          .catch((err) => console.error(err));
       })
       .catch((err) => console.error(err));
-  }, [props.workspaceFile, props.editorPageDock, extendedServices.status, service, i18n.terms.validation]);
+  }, [
+    workspaces,
+    getAllImportedModelsResources,
+    dmnLanguageService,
+    props.workspaceFile,
+    props.editorPageDock,
+    extendedServices.status,
+    service,
+    i18n.terms.validation,
+  ]);
 
   useEffect(() => {
     if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
