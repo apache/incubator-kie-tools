@@ -15,6 +15,7 @@
  */
 
 import { DmnLanguageService } from "../src";
+import { readFile } from "fs/promises";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 
@@ -33,5 +34,17 @@ describe("DmnLanguageService", () => {
       const file = readFileSync(path, "utf8");
       expect(service.getImportedModels(file)).toEqual(expected);
     });
+  });
+
+  it("getImportedModels - multiple files", async () => {
+    const files = (
+      await Promise.all(
+        tests.map(({ modelPath }) => {
+          return readFile(resolve(__dirname, modelPath));
+        })
+      )
+    ).map((e) => e.toString("utf8"));
+
+    expect(service.getImportedModels(files)).toEqual(tests.flatMap((e) => e.expected));
   });
 });
