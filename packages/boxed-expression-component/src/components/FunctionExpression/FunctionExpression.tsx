@@ -37,6 +37,7 @@ import {
   ContextEntryExpressionCell,
   CONTEXT_ENTRY_EXTRA_WIDTH,
   NestedExpressionContainerContext,
+  NestedExpressionContainerContextType,
   NestedExpressionDispatchContextProvider,
   useNestedExpressionContainer,
 } from "../ContextExpression";
@@ -395,7 +396,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [javaContextExpression, pmmlContextExpression, setExpression]
   );
 
-  const expressionContainer = useMemo(() => {
+  const expressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
     return {
       minWidth: nestedExpressionContainer.minWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
       width: nestedExpressionContainer.width - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border

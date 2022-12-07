@@ -275,22 +275,17 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   const entryExpressionColumnResizingWidth = useMemo(
     () =>
-      getEntryExpressionColumnWidthDeep(contextExpression) -
-      (entryInfoColumnResizingWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH),
-    [contextExpression, entryInfoColumnResizingWidth]
+      Math.max(nestedExpressionContainer.resizingWidth, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) -
+      (entryInfoColumnResizingWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
+      CONTEXT_ENTRY_EXTRA_WIDTH,
+    [entryInfoColumnResizingWidth, nestedExpressionContainer.resizingWidth]
   );
 
   const expressionEntryColumnMinWidth = useMemo(() => {
-    return Math.max(
-      getEntryExpressionColumnMinWidthDeep(contextExpression),
-      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-      nestedExpressionContainer.minWidth -
-        (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
-        CONTEXT_ENTRY_EXTRA_WIDTH
-    );
-  }, [contextExpression, nestedExpressionContainer.minWidth]);
+    return Math.max(getEntryExpressionColumnMinWidthDeep(contextExpression), CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
+  }, [contextExpression]);
 
-  const entryExpressionContainer: NestedExpressionContainerContextType = useMemo(() => {
+  const entryExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
     return {
       width: entryExpressionColumnWidth,
       minWidth: expressionEntryColumnMinWidth,
