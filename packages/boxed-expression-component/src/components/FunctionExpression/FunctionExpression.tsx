@@ -35,7 +35,7 @@ import { BeeTable } from "../BeeTable";
 import * as ReactTable from "react-table";
 import {
   ContextEntryExpressionCell,
-  EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION,
+  CONTEXT_ENTRY_EXTRA_WIDTH,
   NestedExpressionContainerContext,
   NestedExpressionDispatchContextProvider,
   useNestedExpressionContainer,
@@ -397,8 +397,8 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 
   const expressionContainer = useMemo(() => {
     return {
-      width: nestedExpressionContainer.width - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2, // 2px for border
-      minWidth: nestedExpressionContainer.minWidth - EXTRA_WIDTH_FOR_NESTED_CONTEXT_EXPRESSION + 2, // 2px for border
+      width: nestedExpressionContainer.width - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
+      minWidth: nestedExpressionContainer.minWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
     };
   }, [nestedExpressionContainer]);
 

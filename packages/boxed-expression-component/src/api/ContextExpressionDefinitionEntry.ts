@@ -40,7 +40,7 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   onExpressionReset?: () => void;
 }
 
-export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 160;
+export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 150;
 export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
 
 export const getOperationHandlerConfig = (

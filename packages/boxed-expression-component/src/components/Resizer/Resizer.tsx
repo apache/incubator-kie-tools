@@ -22,6 +22,7 @@ import { DEFAULT_MIN_WIDTH } from "./dom";
 import "./Resizer.css";
 
 export interface ResizerProps {
+  actualWidth?: number;
   width?: number;
   setWidth?: (width: number) => void;
   setResizingWidth?: (width: number) => void;
@@ -37,6 +38,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   width,
   setWidth,
   setResizingWidth,
+  actualWidth,
 }) => {
   const id = useMemo(() => {
     return `uuid-${uuid()}`;
@@ -54,10 +56,13 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const [isResizing, setResizing] = useState(false);
   const onResizeStop = useCallback(
     (_, data) => {
+      // Batching updates
+      // setTimeout(() => {
       setResizing(false);
-      setWidth?.(data.size.width);
       _setResizingWidth(data.size.width);
       setResizingWidth?.(data.size.width);
+      setWidth?.(data.size.width);
+      // });
     },
     [setResizingWidth, setWidth]
   );
@@ -69,8 +74,11 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onResize = useCallback(
     (_, data) => {
+      // Batching updates
+      // setTimeout(() => {
       _setResizingWidth(data.size.width);
       setResizingWidth?.(data.size.width);
+      // });
     },
     [setResizingWidth]
   );
@@ -85,6 +93,22 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   return (
     <>
+      {actualWidth && (
+        <div className="pf-c-drawer" style={{ position: "absolute", left: actualWidth }}>
+          <div className={`pf-c-drawer__splitter pf-m-vertical actual`}>
+            <div className={`pf-c-drawer__splitter-handle`} />
+          </div>
+        </div>
+      )}
+
+      {width && minWidth && (
+        <div className="pf-c-drawer" style={{ position: "absolute", left: minWidth }}>
+          <div className={`pf-c-drawer__splitter pf-m-vertical min-basis`}>
+            <div className={`pf-c-drawer__splitter-handle`} />
+          </div>
+        </div>
+      )}
+
       {(width && (
         <Resizable
           width={_resizingWidth!}
@@ -100,7 +124,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
               <div
                 className={`pf-c-drawer__splitter pf-m-vertical ${
                   minWidth === _resizingWidth ? (isResizing ? "smallest" : "min") : ""
-                }`}
+                } ${(_resizingWidth ?? 0) < (minWidth ?? 0) ? "error" : ""}`}
               >
                 <div className={`pf-c-drawer__splitter-handle`} />
               </div>

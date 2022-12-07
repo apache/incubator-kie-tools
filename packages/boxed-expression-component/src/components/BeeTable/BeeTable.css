@@ -178,6 +178,18 @@
   background-color: #00ffb739;
 }
 
+.expression-container .pf-c-drawer .pf-c-drawer__splitter.min-basis {
+  background-color: #ffe10039;
+}
+
+.expression-container .pf-c-drawer .pf-c-drawer__splitter.actual {
+  background-color: rgba(144, 0, 255, 0.137);
+}
+
+.expression-container .pf-c-drawer .pf-c-drawer__splitter.error {
+  background-color: red;
+}
+
 .expression-container
   .table-component
   table

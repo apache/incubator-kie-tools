@@ -27,7 +27,7 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useNestedExpressionContainer } from "../ContextExpression";
 
-export const DEFAULT_LITERAL_EXPRESSION_WIDTH = 250;
+export const LITERAL_EXPRESSION_MIN_WIDTH = 250;
 
 // 14px for padding, 2px for border
 export const LITERAL_EXPRESSION_EXTRA_WIDTH = 14 + 2; // 14px for margin, 2px for border
@@ -69,22 +69,19 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const width = useMemo(() => {
     return Math.max(
       nestedExpressionContainer.width - LITERAL_EXPRESSION_EXTRA_WIDTH,
-      literalExpression.width ?? DEFAULT_LITERAL_EXPRESSION_WIDTH
+      literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
     );
   }, [literalExpression.width, nestedExpressionContainer]);
 
   const minWidth = useMemo(() => {
-    return Math.max(
-      nestedExpressionContainer.minWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
-      DEFAULT_LITERAL_EXPRESSION_WIDTH
-    );
+    return Math.max(nestedExpressionContainer.minWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH);
   }, [nestedExpressionContainer]);
 
   return (
     <div className="literal-expression">
       {!literalExpression.isHeadless && (
         <div className="literal-expression-header" onClick={selectDecisionNode}>
-          <Resizer width={width} minWidth={minWidth} setWidth={setWidth}>
+          <Resizer width={width} minWidth={minWidth} setWidth={setWidth} actualWidth={literalExpression.width}>
             <ExpressionDefinitionHeaderMenu
               selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
               selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
@@ -101,7 +98,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         </div>
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>
-        <Resizer width={width} minWidth={minWidth} setWidth={setWidth}>
+        <Resizer width={width} minWidth={minWidth} setWidth={setWidth} actualWidth={literalExpression.width}>
           <BeeTableEditableCellContent
             value={literalExpression.content ?? ""}
             rowIndex={0}
