@@ -84,7 +84,7 @@ export function BeeTableTd<R extends object>({
         <>{rowIndex + 1}</>
       ) : (
         <>
-          <Resizer width={column.width} setWidth={column.setWidth} minWidth={column.minWidth}>
+          <Resizer width={cell.column.width} setWidth={cell.column.setWidth} minWidth={cell.column.minWidth}>
             <>{tdContent}</>
           </Resizer>
         </>

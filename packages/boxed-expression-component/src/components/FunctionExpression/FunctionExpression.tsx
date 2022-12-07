@@ -203,105 +203,108 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     ];
   }, [i18n]);
 
-  const javaContextExpression: ExpressionDefinition = useMemo(() => {
-    if (
-      !(
-        functionExpression.logicType === ExpressionDefinitionLogicType.Function &&
-        functionExpression.functionKind === FunctionExpressionDefinitionKind.Java
-      )
-    ) {
-      return { logicType: ExpressionDefinitionLogicType.Undefined };
-    }
+  const javaContextExpression = useCallback(
+    (prev: ExpressionDefinition): ExpressionDefinition => {
+      if (
+        !(
+          prev.logicType === ExpressionDefinitionLogicType.Function &&
+          prev.functionKind === FunctionExpressionDefinitionKind.Java
+        )
+      ) {
+        return { logicType: ExpressionDefinitionLogicType.Undefined };
+      }
 
-    return {
-      logicType: ExpressionDefinitionLogicType.Context,
-      noClearAction: true,
-      renderResult: false,
-      noHandlerMenu: true,
-      contextEntries: [
-        {
-          entryInfo: {
-            id: FIRST_ENTRY_ID,
-            name: i18n.class,
-            dataType: DmnBuiltInDataType.String,
+      return {
+        logicType: ExpressionDefinitionLogicType.Context,
+        noClearAction: true,
+        renderResult: false,
+        noHandlerMenu: true,
+        contextEntries: [
+          {
+            entryInfo: {
+              id: FIRST_ENTRY_ID,
+              name: i18n.class,
+              dataType: DmnBuiltInDataType.String,
+            },
+            entryExpression: {
+              id: prev.classFieldId,
+              noClearAction: true,
+              logicType: ExpressionDefinitionLogicType.LiteralExpression,
+              content: prev.className ?? "",
+              isHeadless: true,
+            },
           },
-          entryExpression: {
-            id: functionExpression.classFieldId,
-            noClearAction: true,
-            logicType: ExpressionDefinitionLogicType.LiteralExpression,
-            content: functionExpression.className ?? "",
-            isHeadless: true,
+          {
+            entryInfo: {
+              id: SECOND_ENTRY_ID,
+              name: i18n.methodSignature,
+              dataType: DmnBuiltInDataType.String,
+            },
+            entryExpression: {
+              id: prev.methodFieldId,
+              noClearAction: true,
+              logicType: ExpressionDefinitionLogicType.LiteralExpression,
+              content: prev.methodName ?? "",
+              isHeadless: true,
+            },
           },
-        },
-        {
-          entryInfo: {
-            id: SECOND_ENTRY_ID,
-            name: i18n.methodSignature,
-            dataType: DmnBuiltInDataType.String,
-          },
-          entryExpression: {
-            id: functionExpression.methodFieldId,
-            noClearAction: true,
-            logicType: ExpressionDefinitionLogicType.LiteralExpression,
-            content: functionExpression.methodName ?? "",
-            isHeadless: true,
-          },
-        },
-      ],
-      isHeadless: true,
-    };
-  }, [functionExpression, i18n]);
+        ],
+        isHeadless: true,
+      };
+    },
+    [i18n]
+  );
 
-  const pmmlContextExpression: ExpressionDefinition = useMemo(() => {
-    if (
-      !(
-        functionExpression.logicType === ExpressionDefinitionLogicType.Function &&
-        functionExpression.functionKind === FunctionExpressionDefinitionKind.Pmml
-      )
-    ) {
-      return { logicType: ExpressionDefinitionLogicType.Undefined };
-    }
+  const pmmlContextExpression = useCallback(
+    (prev: ExpressionDefinition): ExpressionDefinition => {
+      if (
+        !(
+          prev.logicType === ExpressionDefinitionLogicType.Function &&
+          prev.functionKind === FunctionExpressionDefinitionKind.Pmml
+        )
+      ) {
+        return { logicType: ExpressionDefinitionLogicType.Undefined };
+      }
 
-    return {
-      logicType: ExpressionDefinitionLogicType.Context,
-      noClearAction: true,
-      renderResult: false,
-      noHandlerMenu: true,
-      contextEntries: [
-        {
-          entryInfo: { id: FIRST_ENTRY_ID, name: i18n.document, dataType: DmnBuiltInDataType.String },
-          entryExpression: {
-            id: functionExpression.documentFieldId,
-            noClearAction: true,
-            logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
-            testId: "pmml-selector-document",
-            noOptionsLabel: i18n.pmml.firstSelection,
-            getOptions: () => _.map(pmmlParams, "document"),
-            selected: functionExpression.document ?? "",
-            isHeadless: true,
+      return {
+        logicType: ExpressionDefinitionLogicType.Context,
+        noClearAction: true,
+        renderResult: false,
+        noHandlerMenu: true,
+        contextEntries: [
+          {
+            entryInfo: { id: FIRST_ENTRY_ID, name: i18n.document, dataType: DmnBuiltInDataType.String },
+            entryExpression: {
+              id: prev.documentFieldId,
+              noClearAction: true,
+              logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
+              testId: "pmml-selector-document",
+              noOptionsLabel: i18n.pmml.firstSelection,
+              getOptions: () => _.map(pmmlParams, "document"),
+              selected: prev.document ?? "",
+              isHeadless: true,
+            },
           },
-        },
-        {
-          entryInfo: { id: SECOND_ENTRY_ID, name: i18n.model, dataType: DmnBuiltInDataType.String },
-          entryExpression: {
-            id: functionExpression.modelFieldId,
-            noClearAction: true,
-            logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
-            noOptionsLabel: i18n.pmml.secondSelection,
-            testId: "pmml-selector-model",
-            getOptions: () =>
-              _.map(
-                _.find(pmmlParams, (param) => param.document === functionExpression.document)?.modelsFromDocument,
-                "model"
-              ),
-            selected: functionExpression.model ?? "",
-            isHeadless: true,
+          {
+            entryInfo: { id: SECOND_ENTRY_ID, name: i18n.model, dataType: DmnBuiltInDataType.String },
+            entryExpression: {
+              id: prev.modelFieldId,
+              noClearAction: true,
+              logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
+              noOptionsLabel: i18n.pmml.secondSelection,
+              testId: "pmml-selector-model",
+              getOptions: () =>
+                _.map(_.find(pmmlParams, (param) => param.document === prev.document)?.modelsFromDocument, "model"),
+              selected: prev.model ?? "",
+              isHeadless: true,
+            },
           },
-        },
-      ],
-      isHeadless: true,
-    };
-  }, [functionExpression, i18n, pmmlParams]);
+        ],
+        isHeadless: true,
+      };
+    },
+    [i18n, pmmlParams]
+  );
 
   const beeTableRows = useMemo(() => {
     function rows(): ContextExpressionDefinitionEntry {
@@ -313,7 +316,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
               name: FIRST_ENTRY_ID,
               dataType: undefined as any, // FIXME: Tiago -> Not good.
             },
-            entryExpression: javaContextExpression,
+            entryExpression: javaContextExpression(functionExpression),
           };
         }
         case FunctionExpressionDefinitionKind.Pmml: {
@@ -323,7 +326,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
               name: FIRST_ENTRY_ID,
               dataType: undefined as any, // FIXME: Tiago -> Not good.
             },
-            entryExpression: pmmlContextExpression,
+            entryExpression: pmmlContextExpression(functionExpression),
           };
         }
         case FunctionExpressionDefinitionKind.Feel:
@@ -366,7 +369,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 
         // Java
         else if (prev.functionKind === FunctionExpressionDefinitionKind.Java) {
-          const newExpression = getNewExpression(javaContextExpression) as ContextExpressionDefinition;
+          const newExpression = getNewExpression(javaContextExpression(prev)) as ContextExpressionDefinition;
           return {
             ...prev,
             className: (newExpression.contextEntries![0].entryExpression as LiteralExpressionDefinition).content,
@@ -378,7 +381,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 
         // PMML
         else if (prev.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-          const newExpression = getNewExpression(pmmlContextExpression) as ContextExpressionDefinition;
+          const newExpression = getNewExpression(pmmlContextExpression(prev)) as ContextExpressionDefinition;
           // FIXME: Tiago -> STATE GAP
           return { ...prev };
         }
@@ -412,11 +415,16 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [expressionContainer, onSetExpression]
   );
 
+  const getRowKey = useCallback((r: ReactTable.Row<ROWTYPE>) => {
+    return r.original.entryInfo.id;
+  }, []);
+
   return (
     <div className={`function-expression ${functionExpression.id}`}>
       <BeeTable<ROWTYPE>
         operationHandlerConfig={operationHandlerConfig}
         onColumnsUpdate={onColumnsUpdate}
+        getRowKey={getRowKey}
         columns={beeTableColumns}
         rows={beeTableRows}
         headerLevelCount={1}

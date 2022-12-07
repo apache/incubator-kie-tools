@@ -69,7 +69,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onResize = useCallback(
     (_, data) => {
-      console.info(data);
       _setResizingWidth(data.size.width);
       setResizingWidth?.(data.size.width);
     },
