@@ -18,7 +18,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
 import { Key, TextEditor } from "vscode-extension-tester";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
@@ -217,7 +217,9 @@ end: true`);
 
   async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {
     const contentAssist = await textEditor.toggleContentAssist(true);
-    let item = await contentAssist?.getItem(value);
+    const item = await contentAssist?.getItem(value);
+    await sleep(500);
+    expect(await item?.getLabel()).contain(value);
     await item?.click();
   }
 });
