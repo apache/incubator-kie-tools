@@ -26,8 +26,6 @@ import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
-import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
 
 public class PanelMediators {
@@ -41,11 +39,8 @@ public class PanelMediators {
     private Supplier<LienzoBoundsPanel> panelSupplier;
     private MouseWheelZoomMediator zoomMediator;
     private MousePanMediator panMediator;
-    private PanelPreviewMediator previewMediator;
 
-    EventListener mouseLeaveListener;
     HTMLDivElement panelElement;
-    static final String ON_MOUSE_LEAVE = "mouseleave";
 
     public static PanelMediators build(final LienzoBoundsPanel panel) {
 
@@ -65,15 +60,6 @@ public class PanelMediators {
     public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier,
                                IEventFilter eventFilterZoom,
                                IEventFilter eventFilterPan) {
-        return init(panelSupplier,
-                    () -> PanelPreviewMediator.build((ScrollablePanel) panelSupplier.get()),
-                    eventFilterZoom,
-                    eventFilterPan);
-    }
-
-    public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier,
-                               final Supplier<PanelPreviewMediator> previewMediatorBuilder,
-                               IEventFilter eventFilterZoom, IEventFilter eventFilterPan) {
         this.panelSupplier = panelSupplier;
         final LienzoBoundsPanel panel = panelSupplier.get();
         this.panelElement = panel.getElement();
@@ -96,32 +82,7 @@ public class PanelMediators {
         viewport.getMediators().push(zoomMediator);
         viewport.getMediators().push(panMediator);
 
-        if (panel instanceof ScrollablePanel) {
-            previewMediator = previewMediatorBuilder.get();
-        }
-
-        mouseLeaveListener = mouseLeaveEvent -> disablePreview();
-        panel.getElement().addEventListener(ON_MOUSE_LEAVE, mouseLeaveListener);
-
         return this;
-    }
-
-    public boolean enablePreview() {
-        if (null == previewMediator) {
-            return false;
-        }
-        zoomMediator.setEnabled(false);
-        panMediator.setEnabled(false);
-        previewMediator.enable();
-        return true;
-    }
-
-    public void disablePreview() {
-        if (null != previewMediator) {
-            previewMediator.disable();
-        }
-        zoomMediator.setEnabled(true);
-        panMediator.setEnabled(true);
     }
 
     public void destroy() {
@@ -138,14 +99,6 @@ public class PanelMediators {
             viewport.getMediators().remove(panMediator);
             panMediator = null;
         }
-        if (null != previewMediator) {
-            previewMediator.removeHandler();
-            previewMediator = null;
-        }
-        if (null != panelElement && null != mouseLeaveListener) {
-            panelElement.removeEventListener(ON_MOUSE_LEAVE, mouseLeaveListener);
-            mouseLeaveListener = null;
-        }
     }
 
     public MouseWheelZoomMediator getZoomMediator() {
@@ -154,10 +107,6 @@ public class PanelMediators {
 
     public MousePanMediator getPanMediator() {
         return panMediator;
-    }
-
-    public PanelPreviewMediator getPreviewMediator() {
-        return previewMediator;
     }
 
     private Layer getLayer() {

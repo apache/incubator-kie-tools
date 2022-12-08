@@ -17,6 +17,8 @@
 package com.ait.lienzo.client.core.mediator;
 
 import com.ait.lienzo.client.core.event.NodeMouseWheelEvent;
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
@@ -295,6 +297,10 @@ public class MouseWheelZoomMediator extends AbstractMediator {
             final double translatedY = m_yconstrained && transform.getTranslateY() > 0 ? transform.getTranslateY() * -1 / transform.getScaleY(): 0.0;
 
             transform.translate(translatedX, translatedY);
+
+            Viewport v = getViewport();
+
+            BoundingBox boundingBox = getViewport().getScene().getBoundingBox();
 
         } else {
             transform.scale(scaleDelta);

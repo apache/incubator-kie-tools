@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Layer;
@@ -35,6 +36,8 @@ import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
+import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewUtils;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
@@ -59,6 +62,7 @@ public class ZoomLevelSelectorPresenter {
     private final ClientTranslationService translationService;
     private final FloatingView<IsWidget> floatingView;
     private final ZoomLevelSelector selector;
+    private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final Element selectorElement;
     private Supplier<LienzoCanvas> canvas;
     private double minScale;
@@ -74,17 +78,20 @@ public class ZoomLevelSelectorPresenter {
     @Inject
     public ZoomLevelSelectorPresenter(final ClientTranslationService translationService,
                                       final FloatingView<IsWidget> floatingView,
-                                      final ZoomLevelSelector selector) {
-        this(translationService, floatingView, selector, Js.cast(selector.asWidget().getElement()));
+                                      final ZoomLevelSelector selector,
+                                      final Event<TogglePreviewEvent> togglePreviewEvent) {
+        this(translationService, floatingView, selector, togglePreviewEvent, Js.cast(selector.asWidget().getElement()));
     }
 
     ZoomLevelSelectorPresenter(final ClientTranslationService translationService,
                                final FloatingView<IsWidget> floatingView,
                                final ZoomLevelSelector selector,
+                               final Event<TogglePreviewEvent> togglePreviewEvent,
                                final Element selectorElement) {
         this.translationService = translationService;
         this.floatingView = floatingView;
         this.selector = selector;
+        this.togglePreviewEvent = togglePreviewEvent;
         this.selectorElement = selectorElement;
         this.minScale = 0;
         this.maxScale = Double.MAX_VALUE;
@@ -111,6 +118,7 @@ public class ZoomLevelSelectorPresenter {
         selector
                 .setText(parseLevel(1))
                 .dropUp()
+                .onPreview(() -> togglePreview())
                 .onScaleToFitSize(this::scaleToFitPanel)
                 .onIncreaseLevel(this::increaseLevel)
                 .onDecreaseLevel(this::decreaseLevel)
@@ -128,14 +136,23 @@ public class ZoomLevelSelectorPresenter {
         if (panel.getView() instanceof ScrollablePanel) {
             final ScrollablePanel scrollablePanel = (ScrollablePanel) panel.getView();
             panelResizeEventListener =
-                    scrollablePanel.addResizeEventListener(evt -> onPanelResize(scrollablePanel.getWidePx(),
-                                                                                scrollablePanel.getHighPx()));
+                    scrollablePanel.addResizeEventListener(evt -> {
+                        onPanelResize(scrollablePanel.getWidePx(),
+                                      scrollablePanel.getHighPx());
+                        TogglePreviewEvent event = TogglePreviewUtils.buildEvent(panel.getView(),
+                                                                                 TogglePreviewEvent.EventType.RESIZE);
+                        togglePreviewEvent.fire(event);
+                    });
         }
 
         transformChangedHandler = layer.getViewport().addViewportTransformChangedHandler(event -> onViewportTransformChanged());
 
         selectorMouseOverEventListener = mouseOverEvent -> cancelHide();
         selectorElement.addEventListener(ON_MOUSE_OVER, selectorMouseOverEventListener);
+
+        TogglePreviewEvent event = TogglePreviewUtils.buildEvent(panel.getView(),
+                                                                 TogglePreviewEvent.EventType.HIDE);
+        togglePreviewEvent.fire(event);
 
         return this;
     }
@@ -208,6 +225,7 @@ public class ZoomLevelSelectorPresenter {
     private void onViewportTransformChanged() {
         final double level = computeLevel(getLayer().getViewport());
         updateSelectorLevel(level);
+        updatePreviewStatus();
         reposition();
     }
 
@@ -226,6 +244,13 @@ public class ZoomLevelSelectorPresenter {
         final double x = absoluteLeft + width - zoomLevelSelectorWidth - MARGIN;
         final double y = absoluteTop + height - zoomLevelSelectorHeight - MARGIN;
         return at(x, y);
+    }
+
+    private void togglePreview() {
+        final LienzoPanel panel = getPanel();
+        TogglePreviewEvent event = TogglePreviewUtils.buildEvent(panel.getView(),
+                                                                 TogglePreviewEvent.EventType.TOGGLE);
+        togglePreviewEvent.fire(event);
     }
 
     private double increaseLevel() {
@@ -264,12 +289,27 @@ public class ZoomLevelSelectorPresenter {
         setScaleLevel(getLayer().getViewport(), level);
         getLayer().batch();
         updateSelectorLevel(level);
+        updatePreviewStatus();
         return level;
     }
 
     private void updateSelectorLevel(final double level) {
         selector.setText(parseLevel(level));
         reposition();
+    }
+
+    private void updatePreviewStatus() {
+        final LienzoPanel panel = getPanel();
+        if (panel.getView() instanceof ScrollablePanel) {
+            ScrollablePanel scrollablePanel = (ScrollablePanel) panel.getView();
+            boolean isPreviewAvailable = TogglePreviewUtils.IsPreviewAvailable(scrollablePanel);
+            selector.setPreviewEnabled(isPreviewAvailable);
+            if (!isPreviewAvailable) {
+                TogglePreviewEvent event = TogglePreviewUtils.buildEvent(panel.getView(),
+                                                                         TogglePreviewEvent.EventType.HIDE);
+                togglePreviewEvent.fire(event);
+            }
+        }
     }
 
     private Layer getLayer() {

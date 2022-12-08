@@ -21,23 +21,24 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.mediator.MousePanMediator;
 import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.mediators.PanelMediators;
 import org.appformer.client.context.EditorContextProvider;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
-import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoCanvasNotification;
+import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
+import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyEventHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyShortcutKeyDownThenUp;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 import static com.ait.lienzo.client.core.mediator.EventFilter.ALT;
 import static com.ait.lienzo.client.core.mediator.EventFilter.META;
@@ -56,21 +57,19 @@ public class LienzoCanvasMediators {
     static final AbstractCanvas.Cursors CURSOR_ZOOM_OUT = AbstractCanvas.Cursors.ZOOM_OUT;
 
     private final KeyEventHandler keyEventHandler;
-    private final ClientTranslationService translationService;
-    private final LienzoCanvasNotification notification;
     private final Function<LienzoBoundsPanel, PanelMediators> mediatorsBuilder;
+    private final Event<TogglePreviewEvent> togglePreviewEvent;
     private PanelMediators mediators;
+    private LienzoPanel panel;
     Consumer<AbstractCanvas.Cursors> cursor;
 
     @Inject
     public LienzoCanvasMediators(final KeyEventHandler keyEventHandler,
-                                 final ClientTranslationService translationService,
-                                 final LienzoCanvasNotification notification,
-                                 final EditorContextProvider editorContextProvider) {
+                                 final EditorContextProvider editorContextProvider,
+                                 final Event<TogglePreviewEvent> togglePreviewEvent) {
         this(keyEventHandler,
-             translationService,
-             notification,
-             getMediatorsBuilder(editorContextProvider));
+             getMediatorsBuilder(editorContextProvider),
+             togglePreviewEvent);
     }
 
     private static Function<LienzoBoundsPanel, PanelMediators> getMediatorsBuilder(final EditorContextProvider editorContextProvider) {
@@ -80,20 +79,18 @@ public class LienzoCanvasMediators {
     }
 
     LienzoCanvasMediators(final KeyEventHandler keyEventHandler,
-                          final ClientTranslationService translationService,
-                          final LienzoCanvasNotification notification,
-                          final Function<LienzoBoundsPanel, PanelMediators> mediatorsBuilder) {
+                          final Function<LienzoBoundsPanel, PanelMediators> mediatorsBuilder,
+                          final Event<TogglePreviewEvent> togglePreviewEvent) {
         this.keyEventHandler = keyEventHandler;
-        this.translationService = translationService;
-        this.notification = notification;
         this.mediatorsBuilder = mediatorsBuilder;
+        this.togglePreviewEvent = togglePreviewEvent;
     }
 
     public void init(final Supplier<LienzoCanvas> canvas) {
         keyEventHandler.setEnabled(true);
         keyEventHandler.addKeyShortcutCallback(new KogitoKeyShortcutKeyDownThenUp(new Key[]{Key.ALT}, "Navigate | Hold and drag to Pan", this::enablePan, this::clear));
         keyEventHandler.addKeyShortcutCallback(new KogitoKeyShortcutKeyDownThenUp(new Key[]{Key.CONTROL}, "Navigate | Hold and scroll to Zoom", this::enableZoom, this::clear));
-        keyEventHandler.addKeyShortcutCallback(new KogitoKeyShortcutKeyDownThenUp(new Key[]{Key.CONTROL, Key.ALT}, "Navigate | Hold to Preview", this::enablePreview, this::clear));
+        keyEventHandler.addKeyShortcutCallback(new KogitoKeyShortcutKeyDownThenUp(new Key[]{Key.CONTROL, Key.ALT}, "Navigate | Hold to Preview", this::enablePreview, this::disablePreview));
 
         keyEventHandler
                 .setTimerDelay(150)
@@ -118,12 +115,13 @@ public class LienzoCanvasMediators {
 
                     @Override
                     public void onKeyUp(Key key) {
+                        disablePreview();
                         clear();
                     }
                 });
 
         cursor = c -> canvas.get().getView().setCursor(c);
-        final LienzoPanel panel = (LienzoPanel) canvas.get().getView().getPanel();
+        panel = (LienzoPanel) canvas.get().getView().getPanel();
 
         mediators = mediatorsBuilder.apply(panel.getView());
         mediators.getZoomMediator().setCallback(new MouseWheelZoomMediator.Callback() {
@@ -169,7 +167,8 @@ public class LienzoCanvasMediators {
             }
         });
 
-        this.notification.init(() -> panel);
+        disablePreview();
+
         setScaleAboutPoint(true);
     }
 
@@ -179,7 +178,6 @@ public class LienzoCanvasMediators {
 
     public void setMaxScale(final double maxScale) {
         mediators.getZoomMediator().setMaxScale(maxScale);
-        mediators.getPreviewMediator().setMaxScale(maxScale);
     }
 
     public void setZoomFactor(final double factor) {
@@ -229,10 +227,20 @@ public class LienzoCanvasMediators {
     }
 
     private void enablePreview() {
-        if (null != mediators && mediators.enablePreview()) {
-            cursor.accept(CURSOR_PREVIEW);
-            notification.show(translationService.getNotNullValue(CoreTranslationMessages.MEDIATOR_PREVIEW));
+        if (panel.getView() instanceof ScrollablePanel) {
+            ScrollablePanel scrollablePanel = (ScrollablePanel) panel.getView();
+            if (TogglePreviewUtils.IsPreviewAvailable(scrollablePanel)) {
+                if (null != mediators) {
+                    TogglePreviewEvent event = TogglePreviewUtils.buildEvent(scrollablePanel,
+                                                                             TogglePreviewEvent.EventType.TOGGLE);
+                    togglePreviewEvent.fire(event);
+                }
+            }
         }
+    }
+
+    private void disablePreview() {
+        togglePreviewEvent.fire(new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE));
     }
 
     private void clear() {
@@ -245,9 +253,6 @@ public class LienzoCanvasMediators {
             if (null != mousePanMediator) {
                 mousePanMediator.attempt_deactivate();
             }
-            cursor.accept(CURSOR_DEFAULT);
-            mediators.disablePreview();
-            notification.hide();
         }
     }
 }
