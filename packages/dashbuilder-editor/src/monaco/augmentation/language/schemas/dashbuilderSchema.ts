@@ -637,7 +637,7 @@ export const DASHBUILDER_SCHEMA = {
         },
         renderer: {
           type: "string",
-          enum: ["c3"],
+          enum: ["c3", "echarts"],
           title: "renderer",
         },
         selector: {
@@ -782,27 +782,7 @@ export const DASHBUILDER_SCHEMA = {
           },
         },
         type: {
-          oneOf: [
-            {
-              $ref: "#/definitions/ChartType",
-            },
-            {
-              type: "string",
-              enum: ["SELECTOR"],
-            },
-            {
-              type: "string",
-              enum: ["METRIC"],
-            },
-            {
-              type: "string",
-              enum: ["METERCHART"],
-            },
-            {
-              type: "string",
-              enum: ["MAP"],
-            },
-          ],
+          $ref: "#/definitions/ChartType",
         },
         chart: {
           $ref: "#/definitions/ChartProperties",
@@ -927,7 +907,18 @@ export const DASHBUILDER_SCHEMA = {
     },
     ChartType: {
       type: "string",
-      enum: ["BARCHART", "LINECHART", "AREACHART", "PIECHART", "BUBBLECHART", "SCATTERCHART"],
+      enum: [
+        "BARCHART",
+        "LINECHART",
+        "AREACHART",
+        "PIECHART",
+        "BUBBLECHART",
+        "SCATTERCHART",
+        "SELECTOR",
+        "METRIC",
+        "METERCHART",
+        "MAP",
+      ],
       title: "ChartType",
     },
     BarChartTypes: {
