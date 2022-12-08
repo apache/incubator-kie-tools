@@ -400,8 +400,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     return {
       minWidthLocal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
       minWidthGlobal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
-      width: nestedExpressionContainer.width - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
-      resizingWidth: nestedExpressionContainer.width - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
+      resizingWidth: nestedExpressionContainer.resizingWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
     };
   }, [nestedExpressionContainer]);
 

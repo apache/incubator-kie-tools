@@ -132,7 +132,6 @@ export function BeeTable<R extends object>({
   editColumnLabel,
   editableHeader = true,
   onColumnsUpdate,
-  onRowsUpdate,
   onNewRow,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
   defaultCellByColumnId,
@@ -280,11 +279,13 @@ export function BeeTable<R extends object>({
         } else {
           const DefaultCellComponentForColumn = defaultCellByColumnId?.[cellProps.column.id];
           if (DefaultCellComponentForColumn) {
-            return DefaultCellComponentForColumn({
-              data: cellProps.data,
-              rowIndex: cellProps.row.index,
-              columnId: cellProps.column.id,
-            });
+            return (
+              <DefaultCellComponentForColumn
+                data={cellProps.data}
+                rowIndex={cellProps.row.index}
+                columnId={cellProps.column.id}
+              />
+            );
           }
           return (
             <BeeTableEditableCellContent

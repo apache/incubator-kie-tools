@@ -30,7 +30,7 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   const logicTypeContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const expressionContainer = useNestedExpressionContainer();
+  const nestedExpressionContainer = useNestedExpressionContainer();
 
   const getLogicTypeSelectorRef = useCallback(() => {
     return logicTypeContainerRef.current!;
@@ -39,13 +39,13 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev) => ({
-        ...getDefaultExpressionDefinitionByLogicType(logicType, expressionContainer.width, prev),
+        ...getDefaultExpressionDefinitionByLogicType(logicType, nestedExpressionContainer.resizingWidth, prev),
         logicType,
         isHeadless: true,
         id: prev.id ?? generateUuid(),
       }));
     },
-    [expressionContainer, setExpression]
+    [nestedExpressionContainer.resizingWidth, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {

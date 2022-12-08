@@ -59,18 +59,28 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const [isResizingHappening, setResizeHappening] = useState(false);
   const [__resizingWidth, __setResizingWidth] = useState(width);
 
+  React.useEffect(() => {
+    const BC = new BroadcastChannel("resize");
+    BC.onmessage = () => {
+      if (resizingWidth !== width) {
+        setWidth?.(resizingWidth); // This needs to be batched to avoid multiple states updates.
+      }
+    };
+
+    return () => {
+      BC.close();
+    };
+  }, [width, resizingWidth, setWidth]);
+
   const onResizeStop = useCallback(
     (_, data) => {
       setResizeHappening(false);
       (setResizingWidth ?? __setResizingWidth)(data.size.width);
-      setWidth?.(data.size.width);
+      const BC = new BroadcastChannel("resize");
+      BC.postMessage("RESIZE_STOP");
     },
-    [setResizingWidth, setWidth]
+    [setResizingWidth]
   );
-
-  useLayoutEffect(() => {
-    (setResizingWidth ?? __setResizingWidth)(width);
-  }, [setResizingWidth, width]);
 
   const onResize = useCallback(
     (_, data) => {
@@ -83,9 +93,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     setResizeHappening(true);
   }, []);
 
-  const onDoubleClick = useCallback(() => {
-    setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
-  }, [minWidth, setWidth]);
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      (setResizingWidth ?? __setResizingWidth)(minWidth ?? DEFAULT_MIN_WIDTH);
+      setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
+    },
+    [minWidth, setResizingWidth, setWidth]
+  );
 
   return (
     <>
@@ -137,7 +152,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
         </Resizable>
       )) || (
         <>
-          <div style={{ width: width, minWidth }}>{children}</div>
+          <div style={{ minWidth }}>{children}</div>
         </>
       )}
     </>

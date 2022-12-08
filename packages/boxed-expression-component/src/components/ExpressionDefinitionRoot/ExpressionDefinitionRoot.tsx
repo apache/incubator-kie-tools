@@ -15,13 +15,14 @@
  */
 
 import * as React from "react";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   generateUuid,
 } from "../../api";
+import { useContextMenuHandler } from "../../hooks";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getDefaultExpressionDefinitionByLogicType } from "../ContextExpression";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
@@ -65,24 +66,73 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
   const getLogicTypeSelectorRef = useCallback(() => expressionContainerRef.current!, []);
 
   return (
-    <div className="expression-container">
-      <div className="expression-name-and-logic-type">
-        <span className="expression-title">{expression.name}</span>
-        <span className="expression-type">({expression.logicType || ExpressionDefinitionLogicType.Undefined})</span>
-      </div>
+    <ResizingWidthContextProvider>
+      <div className="expression-container">
+        <div className="expression-name-and-logic-type">
+          <span className="expression-title">{expression.name}</span>
+          &nbsp;
+          <span className="expression-type">({expression.logicType})</span>
+        </div>
 
-      <div
-        className={`expression-container-box ${decisionNodeId}`}
-        ref={expressionContainerRef}
-        data-ouia-component-id="expression-container"
-      >
-        <ExpressionDefinitionLogicTypeSelector
-          expression={expression}
-          onLogicTypeSelected={onLogicTypeSelected}
-          onLogicTypeReset={onLogicTypeReset}
-          getPlacementRef={getLogicTypeSelectorRef}
-        />
+        <div
+          className={`expression-container-box ${decisionNodeId}`}
+          ref={expressionContainerRef}
+          data-ouia-component-id="expression-container"
+        >
+          <ExpressionDefinitionLogicTypeSelector
+            expression={expression}
+            onLogicTypeSelected={onLogicTypeSelected}
+            onLogicTypeReset={onLogicTypeReset}
+            getPlacementRef={getLogicTypeSelectorRef}
+          />
+        </div>
       </div>
-    </div>
+    </ResizingWidthContextProvider>
   );
+}
+
+export function ResizingWidthContextProvider({ children }: React.PropsWithChildren<{}>) {
+  const [resizingWidths, setResizingWidths] = useState<ResizingWidthContextType["resizingWidths"]>(new Map());
+
+  const value = useMemo(() => {
+    return { resizingWidths };
+  }, [resizingWidths]);
+
+  const dispatch = useMemo<ResizingWidthDispatchContextType>(() => {
+    return {
+      updateResizingWidth: (id, resizingWidth) => {
+        setResizingWidths((prev) => {
+          const n = new Map(prev);
+          n.set(id, { resizingWidth });
+          return n;
+        });
+      },
+    };
+  }, []);
+
+  return (
+    <ResizingWidthContext.Provider value={value}>
+      <ResizingWidthDispatchContext.Provider value={dispatch}>
+        <>{children}</>
+      </ResizingWidthDispatchContext.Provider>
+    </ResizingWidthContext.Provider>
+  );
+}
+
+export type ResizingWidthContextType = {
+  resizingWidths: Map<string, { resizingWidth: number }>;
+};
+export type ResizingWidthDispatchContextType = {
+  updateResizingWidth(id: string, resizingWidth: number): void;
+};
+
+const ResizingWidthContext = React.createContext({} as ResizingWidthContextType);
+const ResizingWidthDispatchContext = React.createContext({} as ResizingWidthDispatchContextType);
+
+export function useResizingWidths() {
+  return React.useContext(ResizingWidthContext);
+}
+
+export function useResizingWidthDispatch() {
+  return React.useContext(ResizingWidthDispatchContext);
 }

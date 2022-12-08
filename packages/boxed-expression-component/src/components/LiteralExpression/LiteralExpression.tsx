@@ -26,6 +26,7 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useNestedExpressionContainer } from "../ContextExpression";
+import { useResizingWidthDispatch, useResizingWidths } from "../ExpressionDefinitionRoot";
 
 export const LITERAL_EXPRESSION_MIN_WIDTH = 250;
 
@@ -80,31 +81,33 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     );
   }, [nestedExpressionContainer]);
 
-  const parentWidth = useMemo(() => {
-    return Math.max(nestedExpressionContainer.width - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH);
-  }, [nestedExpressionContainer]);
+  //// RESIZING WIDTH
 
-  const width = useMemo(() => {
-    return Math.max(
-      minWidthLocal,
-      minWidthGlobal,
-      parentWidth,
-      nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
-      literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
-    );
-  }, [literalExpression.width, minWidthGlobal, minWidthLocal, nestedExpressionContainer.resizingWidth, parentWidth]);
+  const resizingWidthsDispatch = useResizingWidthDispatch();
+  const { resizingWidths } = useResizingWidths();
+
+  const setResizingWidth = useCallback(
+    (newResizingWidth: number) => {
+      resizingWidthsDispatch.updateResizingWidth(literalExpression.id!, newResizingWidth); // FIXME: Tiago -> id optional
+    },
+    [literalExpression.id, resizingWidthsDispatch]
+  );
+
+  const { resizingWidth } = useMemo(() => {
+    return (
+      resizingWidths.get(literalExpression.id!) ?? {
+        resizingWidth: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+      }
+    ); // FIXME: Tiago -> id optional
+  }, [literalExpression.id, literalExpression.width, resizingWidths]);
 
   React.useEffect(() => {
-    if (minWidthGlobal > (literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH)) {
-      setWidth(minWidthGlobal);
-      return;
-    }
+    setResizingWidth(literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH);
+  }, [literalExpression.width, setResizingWidth]);
 
-    if (minWidthLocal > (literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH)) {
-      setWidth(minWidthLocal);
-      return;
-    }
-  }, [literalExpression.width, minWidthGlobal, minWidthLocal, setWidth]);
+  React.useEffect(() => {
+    setResizingWidth(nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH);
+  }, [nestedExpressionContainer.resizingWidth, setResizingWidth]);
 
   return (
     <div className="literal-expression">
@@ -125,9 +128,16 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         </div>
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>
-        <Resizer width={width} minWidth={minWidthGlobal} setWidth={setWidth} actualWidth={literalExpression.width}>
+        <Resizer
+          width={literalExpression.width}
+          minWidth={minWidthGlobal}
+          setWidth={setWidth}
+          actualWidth={literalExpression.width}
+          resizingWidth={resizingWidth}
+          setResizingWidth={setResizingWidth}
+        >
           <BeeTableEditableCellContent
-            value={literalExpression.content ?? ""}
+            value={`${literalExpression.id?.substring(0, 5)} - ${nestedExpressionContainer.resizingWidth}`}
             rowIndex={0}
             columnId={literalExpression.id ?? "-"}
             onCellUpdate={updateContent}
