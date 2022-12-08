@@ -18,11 +18,8 @@ package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
@@ -30,17 +27,13 @@ import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseDownHandler;
@@ -49,7 +42,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseUpH
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.GridWidgetScrollIntoViewAnimation;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.GridWidgetConnector;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
@@ -72,7 +64,6 @@ public class DefaultGridLayer extends Layer implements GridLayer,
     private final DefaultPinnedModeManager pinnedModeManager = new DefaultPinnedModeManager(this);
     private Set<GridWidget> explicitGridWidgets = new LinkedHashSet<>();
     private Set<GridWidget> registeredGridWidgets = new LinkedHashSet<>();
-    private Map<GridWidgetConnector, Line> gridWidgetConnectors = new HashMap<>();
     private final GridLayerRedrawManager.PrioritizedCommand REDRAW = new GridLayerRedrawManager.PrioritizedCommand(Integer.MIN_VALUE) {
         @Override
         public void execute() {
@@ -154,7 +145,6 @@ public class DefaultGridLayer extends Layer implements GridLayer,
 
         //We use Layer.batch() to ensure rendering is tied to the browser's requestAnimationFrame()
         //however this calls back into Layer.draw() so update dependent Shapes here.
-        updateGridWidgetConnectors();
         return super.draw();
     }
 
@@ -167,30 +157,6 @@ public class DefaultGridLayer extends Layer implements GridLayer,
     public Layer batch(final GridLayerRedrawManager.PrioritizedCommand command) {
         GridLayerRedrawManager.get().schedule(command);
         return this;
-    }
-
-    @Override
-    public Set<IPrimitive<?>> getGridWidgetConnectors() {
-        return Collections.unmodifiableSet(new HashSet<>(gridWidgetConnectors.values()));
-    }
-
-    private void updateGridWidgetConnectors() {
-        for (Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet()) {
-            final GridWidgetConnector connector = e.getKey();
-            final Line line = e.getValue();
-            final GridColumn<?> sourceGridColumn = connector.getSourceColumn();
-            final GridColumn<?> targetGridColumn = connector.getTargetColumn();
-            final GridWidget sourceGridWidget = getLinkedGridWidget(sourceGridColumn);
-            final GridWidget targetGridWidget = getLinkedGridWidget(targetGridColumn);
-
-            final Point2D sp = new Point2D(sourceGridWidget.getX() + sourceGridWidget.getWidth() / 2,
-                                           sourceGridWidget.getY() + sourceGridWidget.getHeight() / 2);
-            final Point2D ep = new Point2D(targetGridWidget.getX() + targetGridWidget.getWidth() / 2,
-                                           targetGridWidget.getY() + targetGridWidget.getHeight() / 2);
-
-            line.setPoints(Point2DArray.fromArrayOfPoint2D(sp,
-                                                           ep));
-        }
     }
 
     /**
@@ -216,7 +182,6 @@ public class DefaultGridLayer extends Layer implements GridLayer,
                 final GridWidget gridWidget = (GridWidget) c;
                 register(gridWidget);
                 explicitGridWidgets.add(gridWidget);
-                addGridWidgetConnectors();
             }
         }
     }
@@ -224,62 +189,6 @@ public class DefaultGridLayer extends Layer implements GridLayer,
     @Override
     public void register(final GridWidget gridWidget) {
         registeredGridWidgets.add(gridWidget);
-    }
-
-    @Override
-    public void refreshGridWidgetConnectors() {
-        for (Line line : gridWidgetConnectors.values()) {
-            remove(line);
-        }
-        gridWidgetConnectors.clear();
-        addGridWidgetConnectors();
-    }
-
-    private void addGridWidgetConnectors() {
-        for (GridWidget gridWidget : explicitGridWidgets) {
-            final GridData gridModel = gridWidget.getModel();
-            for (GridColumn<?> gridColumn : gridModel.getColumns()) {
-                if (gridColumn.isVisible()) {
-                    if (gridColumn.isLinked()) {
-                        final GridWidget linkedGridWidget = getLinkedGridWidget(gridColumn.getLink());
-                        if (linkedGridWidget != null) {
-                            final Point2D sp = new Point2D(gridWidget.getX() + gridWidget.getWidth() / 2,
-                                                           gridWidget.getY() + gridWidget.getHeight() / 2);
-                            final Point2D ep = new Point2D(linkedGridWidget.getX() + linkedGridWidget.getWidth() / 2,
-                                                           linkedGridWidget.getY() + linkedGridWidget.getHeight() / 2);
-
-                            final GridWidgetConnector connector = new GridWidgetConnector(gridColumn,
-                                                                                          gridColumn.getLink());
-
-                            if (!gridWidgetConnectors.containsKey(connector)) {
-                                final Line line = new Line(sp,
-                                                           ep)
-                                        .setVisible(!isGridPinned())
-                                        .setStrokeColor(ColorName.DARKGRAY)
-                                        .setFillColor(ColorName.TAN)
-                                        .setStrokeWidth(2.0);
-                                gridWidgetConnectors.put(connector,
-                                                         line);
-                                super.add(line);
-                                line.moveToBottom();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private GridWidget getLinkedGridWidget(final GridColumn<?> linkedGridColumn) {
-        GridWidget linkedGridWidget = null;
-        for (GridWidget gridWidget : explicitGridWidgets) {
-            final GridData gridModel = gridWidget.getModel();
-            if (gridModel.getColumns().contains(linkedGridColumn)) {
-                linkedGridWidget = gridWidget;
-                break;
-            }
-        }
-        return linkedGridWidget;
     }
 
     /**
@@ -323,7 +232,6 @@ public class DefaultGridLayer extends Layer implements GridLayer,
                 final GridWidget gridWidget = (GridWidget) c;
                 deregister(gridWidget);
                 explicitGridWidgets.remove(gridWidget);
-                removeGridWidgetConnectors(gridWidget);
             }
         }
     }
@@ -333,25 +241,9 @@ public class DefaultGridLayer extends Layer implements GridLayer,
         registeredGridWidgets.remove(gridWidget);
     }
 
-    private void removeGridWidgetConnectors(final GridWidget gridWidget) {
-        final GridData gridModel = gridWidget.getModel();
-        final List<GridWidgetConnector> removedConnectors = new ArrayList<GridWidgetConnector>();
-        for (Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet()) {
-            if (gridModel.getColumns().contains(e.getKey().getSourceColumn()) || gridModel.getColumns().contains(e.getKey().getTargetColumn())) {
-                remove(e.getValue());
-                removedConnectors.add(e.getKey());
-            }
-        }
-        //Remove Connectors from HashMap after iteration of EntrySet to avoid ConcurrentModificationException
-        for (GridWidgetConnector c : removedConnectors) {
-            gridWidgetConnectors.remove(c);
-        }
-    }
-
     @Override
     public Layer removeAll() {
         explicitGridWidgets.clear();
-        gridWidgetConnectors.clear();
         registeredGridWidgets.clear();
         return super.removeAll();
     }
@@ -372,20 +264,6 @@ public class DefaultGridLayer extends Layer implements GridLayer,
         }
         if (selectionChanged) {
             batch();
-        }
-    }
-
-    @Override
-    public void selectLinkedColumn(final GridColumn<?> selectedGridColumn) {
-        final GridWidget gridWidget = getLinkedGridWidget(selectedGridColumn);
-        if (gridWidget == null) {
-            return;
-        }
-
-        if (isGridPinned()) {
-            flipToGridWidget(gridWidget);
-        } else {
-            scrollToGridWidget(gridWidget);
         }
     }
 

@@ -23,7 +23,6 @@ import com.ait.lienzo.client.core.animation.IAnimation;
 import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.TimedAnimation;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
@@ -39,7 +38,6 @@ public class GridWidgetExitPinnedModeAnimation extends TimedAnimation {
 
     public GridWidgetExitPinnedModeAnimation(final GridPinnedModeManager.PinnedContext state,
                                              final Set<GridWidget> gridWidgets,
-                                             final Set<IPrimitive<?>> gridWidgetConnectors,
                                              final Command onCompleteCommand,
                                              final List<Command> onExitPinnedModeCommands) {
         super(500,
@@ -76,10 +74,6 @@ public class GridWidgetExitPinnedModeAnimation extends TimedAnimation {
                       for (GridWidget gw : gridWidgets) {
                           gw.setVisible(true);
                       }
-                      for (IPrimitive<?> p : gridWidgetConnectors) {
-                          p.setVisible(true);
-                      }
-
                       gridWidget.getLayer().setListening(false);
                       gridWidget.getLayer().batch();
                   }
@@ -100,7 +94,6 @@ public class GridWidgetExitPinnedModeAnimation extends TimedAnimation {
                                                                             frameScaleY);
 
                       showGridWidgets(pct);
-                      showGridWidgetConnectors(pct);
 
                       gridWidget.getLayer().batch();
                   }
@@ -138,12 +131,6 @@ public class GridWidgetExitPinnedModeAnimation extends TimedAnimation {
                   private void showGridWidgets(final double pct) {
                       for (GridWidget gw : gridWidgets) {
                           gw.setAlpha(pct);
-                      }
-                  }
-
-                  private void showGridWidgetConnectors(final double pct) {
-                      for (IPrimitive<?> p : gridWidgetConnectors) {
-                          p.setAlpha(pct);
                       }
                   }
               });

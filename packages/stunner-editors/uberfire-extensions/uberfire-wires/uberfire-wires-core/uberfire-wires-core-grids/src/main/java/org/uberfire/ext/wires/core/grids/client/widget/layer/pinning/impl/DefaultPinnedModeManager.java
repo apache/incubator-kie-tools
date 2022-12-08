@@ -23,7 +23,6 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.user.client.Command;
@@ -72,7 +71,6 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
 
         final Set<GridWidget> gridWidgetsToFadeFromView = new HashSet<>(gridLayer.getGridWidgets());
         gridWidgetsToFadeFromView.remove(gridWidget);
-        final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView = gridLayer.getGridWidgetConnectors();
 
         doEnterPinnedMode(() -> {
                               context = newState;
@@ -80,17 +78,14 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
                               enableGridTransformMediator(gridWidget);
                           },
                           gridWidget,
-                          gridWidgetsToFadeFromView,
-                          gridWidgetConnectorsToFadeFromView);
+                          gridWidgetsToFadeFromView);
     }
 
     protected void doEnterPinnedMode(final Command onStartCommand,
                                      final GridWidget gridWidget,
-                                     final Set<GridWidget> gridWidgetsToFadeFromView,
-                                     final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView) {
+                                     final Set<GridWidget> gridWidgetsToFadeFromView) {
         final GridWidgetEnterPinnedModeAnimation enterAnimation = new GridWidgetEnterPinnedModeAnimation(gridWidget,
                                                                                                          gridWidgetsToFadeFromView,
-                                                                                                         gridWidgetConnectorsToFadeFromView,
                                                                                                          onStartCommand,
                                                                                                          onEnterPinnedModeCommands);
         enterAnimation.run();
@@ -104,23 +99,19 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
 
         final Set<GridWidget> gridWidgetsToFadeIntoView = new HashSet<>(gridLayer.getGridWidgets());
         gridWidgetsToFadeIntoView.remove(context.getGridWidget());
-        final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView = gridLayer.getGridWidgetConnectors();
 
         doExitPinnedMode(() -> {
                              context = null;
                              onCompleteCommand.execute();
                              enableDefaultTransformMediator();
                          },
-                         gridWidgetsToFadeIntoView,
-                         gridWidgetConnectorsToFadeIntoView);
+                         gridWidgetsToFadeIntoView);
     }
 
     protected void doExitPinnedMode(final Command onCompleteCommand,
-                                    final Set<GridWidget> gridWidgetsToFadeIntoView,
-                                    final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView) {
+                                    final Set<GridWidget> gridWidgetsToFadeIntoView) {
         final GridWidgetExitPinnedModeAnimation exitAnimation = new GridWidgetExitPinnedModeAnimation(context,
                                                                                                       gridWidgetsToFadeIntoView,
-                                                                                                      gridWidgetConnectorsToFadeIntoView,
                                                                                                       onCompleteCommand,
                                                                                                       onExitPinnedModeCommands);
         exitAnimation.run();
