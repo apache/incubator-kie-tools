@@ -77,6 +77,12 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     return Math.max(nestedExpressionContainer.minWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH);
   }, [nestedExpressionContainer]);
 
+  React.useEffect(() => {
+    if (minWidth > (literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH)) {
+      setWidth(minWidth);
+    }
+  }, [literalExpression.width, minWidth, setWidth, width]);
+
   return (
     <div className="literal-expression">
       {!literalExpression.isHeadless && (
