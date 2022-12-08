@@ -16,6 +16,7 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -26,6 +27,13 @@ import (
 
 func warnError(err error) {
 	fmt.Fprintf(GinkgoWriter, "warning: %v\n", err)
+}
+
+func OutputAllPods() error {
+	cmd := exec.Command("kubectl", "get", "pods", "-A")
+	podsOutput, err := Run(cmd)
+	fmt.Println(string(podsOutput))
+	return err
 }
 
 // Run executes the provided command within this context
@@ -51,14 +59,42 @@ func Run(cmd *exec.Cmd) ([]byte, error) {
 	return output, nil
 }
 
-// LoadImageToKindCluster loads a local docker image to the kind cluster
-func LoadImageToKindClusterWithName(name string) error {
+// LoadImageToClusterWithName loads a local docker image to the given cluster. Default is Kind.
+func LoadImageToClusterWithName(name string) error {
 	cluster := "kind"
-	if v, ok := os.LookupEnv("KIND_CLUSTER"); ok {
+	if v, ok := os.LookupEnv("CLUSTER_TYPE"); ok {
 		cluster = v
 	}
-	kindOptions := []string{"load", "docker-image", name, "--name", cluster}
+
+	if cluster == "kind" {
+		return LoadImageToKindClusterWithName(name)
+	} else if cluster == "minikube" {
+		return LoadImageToMinikubeClusterWithName(name)
+	} else {
+		return fmt.Errorf("Unknow cluster type %s", cluster)
+	}
+}
+
+// LoadImageToKindClusterWithName loads a local docker image to the kind cluster
+func LoadImageToKindClusterWithName(name string) error {
+	clusterName := "kind"
+	if v, ok := os.LookupEnv("KIND_CLUSTER"); ok {
+		clusterName = v
+	}
+	kindOptions := []string{"load", "docker-image", name, "--name", clusterName}
 	cmd := exec.Command("kind", kindOptions...)
+	_, err := Run(cmd)
+	return err
+}
+
+// LoadImageToMinikubeClusterWithName loads a local docker image to the minikube cluster
+func LoadImageToMinikubeClusterWithName(name string) error {
+	clusterName := "minikube"
+	if v, ok := os.LookupEnv("MINIKUBE_CLUSTER"); ok {
+		clusterName = v
+	}
+	minikubeOptions := []string{"image", "load", name, "-p", clusterName, "--overwrite", "true"}
+	cmd := exec.Command("minikube", minikubeOptions...)
 	_, err := Run(cmd)
 	return err
 }
@@ -85,4 +121,14 @@ func GetProjectDir() (string, error) {
 	}
 	wd = strings.Replace(wd, "/test/e2e", "", -1)
 	return wd, nil
+}
+
+// StringToLines read lines from a string
+func StringToLines(s string) (lines []string, err error) {
+	scanner := bufio.NewScanner(strings.NewReader(s))
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	err = scanner.Err()
+	return
 }

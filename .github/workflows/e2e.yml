@@ -1,0 +1,76 @@
+name: E2E checks
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - "LICENSE"
+      - "**/.gitignore"
+      - "**.md"
+      - "**.adoc"
+      - "*.txt"
+      - "docsimg/**"
+      - ".ci/jenkins/**"
+
+env:
+  GO_VERSION: 1.19
+  # Kubernetes version should aligned with OCP LTS, aka OCP 4.10 (k8s 1.23) for now
+  # https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.23.md
+  # WARNING: kindest/node is not always existing with given version ...
+  KUBERNETES_VERSION: v1.23.13
+
+jobs:
+  e2e:
+    concurrency:
+      group: kogito-serverless-operator-e2e-tests-${{ matrix.cluster-type }}-${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 120
+    strategy:
+      matrix:
+        cluster-type:
+        - kind
+        - minikube
+      fail-fast: false
+    runs-on: ubuntu-latest
+    name: End-to-end tests (${{ matrix.cluster-type }})
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    
+    - name: Install Go
+      id: go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        cache: true
+
+    - name: Setup Minikube cluster
+      if: ${{ matrix.cluster-type == 'minikube' }}
+      id: minikube
+      uses: medyagh/setup-minikube@latest
+      with:
+        addons: registry,metrics-server
+        kubernetes-version: ${{ env.KUBERNETES_VERSION }}
+        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+        cpu: max
+        memory: max
+
+    - name: Setup KinD cluster
+      if: ${{ matrix.cluster-type == 'kind' }}
+      id: kind
+      uses: container-tools/kind-action@v2
+      with:
+        version: v0.17.0
+        node_image: kindest/node:${{ env.KUBERNETES_VERSION }}
+        kubectl_version: ${{ env.KUBERNETES_VERSION }}
+        wait: 120s
+
+    - name: Check pods
+      run: |
+        kubectl version
+        kubectl get pods -A
+
+    - name: Run tests
+      run: |
+        make test-e2e
+      env:
+        CLUSTER_TYPE: ${{ matrix.cluster-type }}

@@ -302,3 +302,7 @@ addheaders:
 
 .PHONY: generate-all
 generate-all: generate generate-deploy bundle
+
+.PHONY: test-e2e # You will need to have a Minikube/Kind cluster up in running to run this target
+test-e2e: install-operator-sdk
+	go test ./test/e2e/* -v -ginkgo.v
