@@ -281,17 +281,33 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [entryInfoColumnResizingWidth, nestedExpressionContainer.resizingWidth]
   );
 
-  const expressionEntryColumnMinWidth = useMemo(() => {
+  const expressionEntryColumnMinWidthGlobal = useMemo(() => {
+    return Math.max(
+      getEntryExpressionColumnMinWidthDeep(contextExpression),
+      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+      nestedExpressionContainer.minWidthLocal -
+        (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
+        CONTEXT_ENTRY_EXTRA_WIDTH
+    );
+  }, [contextExpression, nestedExpressionContainer.minWidthLocal]);
+
+  const expressionEntryColumnMinWidthLocal = useMemo(() => {
     return Math.max(getEntryExpressionColumnMinWidthDeep(contextExpression), CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
   }, [contextExpression]);
 
   const entryExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
     return {
       width: entryExpressionColumnWidth,
-      minWidth: expressionEntryColumnMinWidth,
+      minWidthLocal: expressionEntryColumnMinWidthLocal,
+      minWidthGlobal: expressionEntryColumnMinWidthGlobal,
       resizingWidth: entryExpressionColumnResizingWidth,
     };
-  }, [entryExpressionColumnResizingWidth, entryExpressionColumnWidth, expressionEntryColumnMinWidth]);
+  }, [
+    entryExpressionColumnResizingWidth,
+    entryExpressionColumnWidth,
+    expressionEntryColumnMinWidthGlobal,
+    expressionEntryColumnMinWidthLocal,
+  ]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -444,7 +460,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   return (
     <div className={`context-expression ${contextExpression.id}`}>
       <BeeTable
-        key={entryExpressionContainer.minWidth + entryExpressionContainer.width} // Every time the container width/minWidth changes, we need to refresh the table.
+        key={entryExpressionContainer.minWidthLocal + entryExpressionContainer.width} // Every time the container width/minWidth changes, we need to refresh the table.
         tableId={contextExpression.id}
         headerLevelCount={1}
         headerVisibility={headerVisibility}
@@ -545,14 +561,16 @@ export function NestedExpressionDispatchContextProvider({
 }
 
 export type NestedExpressionContainerContextType = {
-  minWidth: number;
+  minWidthLocal: number;
+  minWidthGlobal: number;
   width: number;
   resizingWidth: number;
 };
 
 export const NestedExpressionContainerContext = React.createContext<NestedExpressionContainerContextType>({
   width: -1,
-  minWidth: -1,
+  minWidthLocal: -1,
+  minWidthGlobal: -1,
   resizingWidth: -1,
 });
 

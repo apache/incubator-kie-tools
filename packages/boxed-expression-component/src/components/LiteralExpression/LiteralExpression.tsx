@@ -66,22 +66,45 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     beeGwtService?.selectObject(literalExpression.id);
   }, [beeGwtService, literalExpression.id]);
 
+  const minWidthLocal = useMemo(() => {
+    return Math.max(
+      nestedExpressionContainer.minWidthLocal - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      LITERAL_EXPRESSION_MIN_WIDTH
+    );
+  }, [nestedExpressionContainer]);
+
+  const minWidthGlobal = useMemo(() => {
+    return Math.max(
+      nestedExpressionContainer.minWidthGlobal - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      LITERAL_EXPRESSION_MIN_WIDTH
+    );
+  }, [nestedExpressionContainer]);
+
+  const parentWidth = useMemo(() => {
+    return Math.max(nestedExpressionContainer.width - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH);
+  }, [nestedExpressionContainer]);
+
   const width = useMemo(() => {
     return Math.max(
+      minWidthLocal,
+      minWidthGlobal,
+      parentWidth,
       nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
       literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
     );
-  }, [literalExpression.width, nestedExpressionContainer]);
-
-  const minWidth = useMemo(() => {
-    return Math.max(nestedExpressionContainer.minWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH);
-  }, [nestedExpressionContainer]);
+  }, [literalExpression.width, minWidthGlobal, minWidthLocal, nestedExpressionContainer.resizingWidth, parentWidth]);
 
   React.useEffect(() => {
-    if (minWidth > (literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH)) {
-      setWidth(minWidth);
+    if (minWidthGlobal > (literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH)) {
+      setWidth(minWidthGlobal);
+      return;
     }
-  }, [literalExpression.width, minWidth, setWidth, width]);
+
+    if (minWidthLocal > (literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH)) {
+      setWidth(minWidthLocal);
+      return;
+    }
+  }, [literalExpression.width, minWidthGlobal, minWidthLocal, setWidth]);
 
   return (
     <div className="literal-expression">
@@ -102,7 +125,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         </div>
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>
-        <Resizer width={width} minWidth={minWidth} setWidth={setWidth} actualWidth={literalExpression.width}>
+        <Resizer width={width} minWidth={minWidthGlobal} setWidth={setWidth} actualWidth={literalExpression.width}>
           <BeeTableEditableCellContent
             value={literalExpression.content ?? ""}
             rowIndex={0}
