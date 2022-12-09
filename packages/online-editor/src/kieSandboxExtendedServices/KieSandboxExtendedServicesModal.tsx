@@ -48,7 +48,6 @@ import { ExtendedServicesConfig } from "../settings/SettingsContext";
 enum ModalPage {
   INITIAL,
   WIZARD,
-  USE,
 }
 
 const UBUNTU_APP_INDICATOR_LIB = "apt install libappindicator3-dev";
@@ -611,8 +610,6 @@ export function KieSandboxExtendedServicesModal() {
       setModalPage(ModalPage.INITIAL);
     } else if (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED) {
       setModalPage(ModalPage.WIZARD);
-    } else if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-      setModalPage(ModalPage.USE);
     }
 
     if (extendedServices.outdated) {
@@ -631,7 +628,6 @@ export function KieSandboxExtendedServicesModal() {
   const modalTitle = useMemo(() => {
     switch (modalPage) {
       case ModalPage.INITIAL:
-      case ModalPage.USE:
         return "";
       case ModalPage.WIZARD:
         return i18n.dmnRunner.modal.wizard.title;
@@ -641,7 +637,6 @@ export function KieSandboxExtendedServicesModal() {
   const modalVariant = useMemo(() => {
     switch (modalPage) {
       case ModalPage.INITIAL:
-      case ModalPage.USE:
         return ModalVariant.medium;
       case ModalPage.WIZARD:
         return ModalVariant.large;
@@ -679,7 +674,6 @@ export function KieSandboxExtendedServicesModal() {
               />
             </div>
           )}
-          {modalPage === ModalPage.USE && <></>}
         </>
       }
     >
@@ -777,34 +771,6 @@ export function KieSandboxExtendedServicesModal() {
           />
         </div>
       )}
-      {modalPage === ModalPage.USE && (
-        <div className={"kogito--editor__kie-sandbox-extended-services-modal-use"}>
-          <div className={"kogito--editor__kie-sandbox-extended-services-modal-use-title"}>
-            <TextContent>
-              <Text component={TextVariants.h1}>{i18n.dmnRunner.modal.use.title}</Text>
-            </TextContent>
-          </div>
-          <div className={"kogito--editor__kie-sandbox-extended-services-modal-use-main-content"}>
-            <TextContent className={"kogito--editor__kie-sandbox-extended-services-modal-use-margin"}>
-              <Text
-                component={TextVariants.h3}
-                className={"kogito--editor__kie-sandbox-extended-services-modal-use-text-align"}
-              >
-                {i18n.dmnRunner.modal.use.connected}
-              </Text>
-            </TextContent>
-            <br />
-            <Button
-              variant={"primary"}
-              type="submit"
-              onClick={onClose}
-              className={"kogito--editor__kie-sandbox-extended-services-modal-use-margin"}
-            >
-              {i18n.dmnRunner.modal.use.backToEditor}
-            </Button>
-          </div>
-        </div>
-      )}
     </Modal>
   );
 }
@@ -824,7 +790,7 @@ function KieSandboxExtendedServicesWizardFooter(props: WizardImperativeControlPr
     if (status === KieSandboxExtendedServicesStatus.STOPPED) {
       wizardContext.goToStepByName(props.steps[1].name);
     }
-  }, [status, props.setModalPage]);
+  }, [status, props.steps, wizardContext]);
 
   return (
     <WizardFooter>

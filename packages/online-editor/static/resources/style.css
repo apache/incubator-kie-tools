@@ -377,33 +377,6 @@
   margin: 10px;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-use {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-title {
-  margin: 20px;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-main-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-text-align {
-  text-align: center;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-margin {
-  margin: 10px;
-}
-
 .kogito--editor__notifications-panel-button {
   display: flex;
   flex-direction: column;

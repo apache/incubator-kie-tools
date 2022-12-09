@@ -367,15 +367,6 @@ interface OnlineDictionary extends ReferenceDictionary {
           helperTextInvalid: string;
         };
       };
-      use: {
-        title: string;
-        connected: string;
-        fillTheForm: string;
-        deployTheModel: string;
-        backToEditor: string;
-        setupDevDeployments: string;
-        devDeploymentsAlreadySetup: string;
-      };
     };
     dropdown: {
       label: string;
