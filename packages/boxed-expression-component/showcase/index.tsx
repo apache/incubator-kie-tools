@@ -124,7 +124,6 @@ export const App: React.FunctionComponent = () => {
   }, [expressionString]);
 
   useEffect(() => {
-    console.info("oi");
     setExpressionString(JSON.stringify(expression));
   }, [expression]);
 

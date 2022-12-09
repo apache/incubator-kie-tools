@@ -77,7 +77,7 @@ export function getDefaultExpressionDefinitionByLogicType(
     const literalExpression: LiteralExpressionDefinition = {
       ...prev,
       logicType,
-      width: Math.max(containerWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH),
+      width: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH - LITERAL_EXPRESSION_EXTRA_WIDTH, // Change to container's minWdith
     };
     return literalExpression;
   } else if (logicType === ExpressionDefinitionLogicType.Function) {
@@ -306,7 +306,13 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         entryExpressionsResizingWidth +
         CONTEXT_ENTRY_EXTRA_WIDTH
     );
-  }, [contextExpression.entryInfoWidth, entryExpressionsResizingWidth, entryInfoResizingWidth, setResizingWidth]);
+  }, [
+    contextExpression.entryInfoWidth,
+    contextExpression.id,
+    entryExpressionsResizingWidth,
+    entryInfoResizingWidth,
+    setResizingWidth,
+  ]);
 
   ///
 
@@ -490,8 +496,20 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   // }, []);
 
   const value = useMemo(() => {
-    return { entryExpressionsResizingWidth };
-  }, [entryExpressionsResizingWidth]);
+    return {
+      entryExpressionsResizingWidth: Math.max(
+        entryExpressionsResizingWidth,
+        nestedExpressionContainer.resizingWidth -
+          (entryInfoResizingWidth ?? contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
+          CONTEXT_ENTRY_EXTRA_WIDTH
+      ),
+    };
+  }, [
+    contextExpression.entryInfoWidth,
+    entryExpressionsResizingWidth,
+    entryInfoResizingWidth,
+    nestedExpressionContainer.resizingWidth,
+  ]);
 
   return (
     <ContextExpressionContext.Provider value={value}>

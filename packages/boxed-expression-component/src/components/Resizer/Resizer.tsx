@@ -58,28 +58,30 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const [isResizingHappening, setResizeHappening] = useState(false);
   const [__resizingWidth, __setResizingWidth] = useState(width);
+  const [pivotingWidth, setPivotingWidth] = useState(resizingWidth);
 
-  React.useEffect(() => {
-    const BC = new BroadcastChannel("resize");
-    BC.onmessage = () => {
-      if (resizingWidth !== width) {
-        setWidth?.(resizingWidth); // This needs to be batched to avoid multiple states updates.
-      }
-    };
+  // React.useEffect(() => {
+  //   const BC = new BroadcastChannel("resize");
+  //   BC.onmessage = () => {
+  //     if (resizingWidth !== width) {
+  //       setWidth?.(resizingWidth); // This needs to be batched to avoid multiple states updates.
+  //     }
+  //   };
 
-    return () => {
-      BC.close();
-    };
-  }, [width, resizingWidth, setWidth]);
+  //   return () => {
+  //     BC.close();
+  //   };
+  // }, [width, resizingWidth, setWidth]);
 
   const onResizeStop = useCallback(
     (_, data) => {
       setResizeHappening(false);
       (setResizingWidth ?? __setResizingWidth)(data.size.width);
+      setWidth?.(resizingWidth);
       const BC = new BroadcastChannel("resize");
       BC.postMessage("RESIZE_STOP");
     },
-    [setResizingWidth]
+    [resizingWidth, setResizingWidth, setWidth]
   );
 
   const onResize = useCallback(
