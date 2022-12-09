@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
@@ -56,7 +57,11 @@ public class TransitionShape<W>
             getShapeView().setTitleBackgroundColor("orange");
         } else if (transitionType instanceof DataConditionTransition) {
             final DataConditionTransition definition = (DataConditionTransition) transitionType;
-            getShapeView().setTitle(definition.getCondition());
+            if (StringUtils.nonEmpty(definition.getName())) {
+                getShapeView().setTitle(definition.getName());
+            } else {
+                getShapeView().setTitle(definition.getCondition());
+            }
             getShapeView().setTitleBackgroundColor("gray");
         }
 
@@ -79,7 +84,7 @@ public class TransitionShape<W>
         } else if (clazz.equals(DataConditionTransition.class)) {
             return "#757575";
         } else if (clazz.equals(DefaultConditionTransition.class)) {
-            return "#3e8635";
+            return "#12DE70";
         } else if (clazz.equals(ActionTransition.class)) {
             return "#757575";
         } else if (clazz.equals(CompensationTransition.class)) {
