@@ -33,9 +33,7 @@ export function KieSandboxExtendedServicesIcon() {
   const settingsDispatch = useSettingsDispatch();
 
   const toggleKieSandboxExtendedServices = useCallback(() => {
-    if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-      settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
-    }
+    settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
 
     if (!extendedServices.outdated) {
       return;
