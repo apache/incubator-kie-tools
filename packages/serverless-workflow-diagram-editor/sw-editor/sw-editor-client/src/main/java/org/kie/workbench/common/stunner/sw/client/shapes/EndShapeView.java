@@ -20,29 +20,14 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 
 public class EndShapeView extends ServerlessWorkflowBasicShape<EndShapeView> {
 
+    private final static int END_SHAPE_SIZE = 46;
+
     public EndShapeView() {
         super(new MultiPath()
-                      .rect(0, 0, 46, 46)
-                      .setCornerRadius(0.00)
-                      .setDraggable(false)
-                      .setID("end")
-                      .setAlpha(1.00)
-                      .setListening(true)
-                      .setScale(1.00, 1.00)
-                      .setOffset(0.00, 0.00)
-                      .setFillColor("#fff")
-                      .setStrokeColor("#ccc")
-                      .setStrokeWidth(2.00));
-        setTitle("End");
-        setTitleBoundaries(46, 46);
-        setTitleXOffsetPosition(0.0);
-        setTitlePosition(VerticalAlignment.MIDDLE, HorizontalAlignment.CENTER, ReferencePosition.INSIDE, Orientation.HORIZONTAL);
-        setTitleFontColor("#929292");
-        setTitleFontFamily("Open Sans");
-        setTitleFontSize(12);
-        setTitleStrokeWidth(0);
-        setTitleStrokeAlpha(0);
-        setTitleStrokeColor("#929292");
-        isTitleListening(false);
+                      .rect(0, 0, END_SHAPE_SIZE, END_SHAPE_SIZE)
+                      .setID("end"),
+              "End");
+        setTitleBoundaries(END_SHAPE_SIZE, END_SHAPE_SIZE);
+        setTitleXOffsetPosition(0.0); // Looks like a bug in horizontal aligning without OffsetPosition 0
     }
 }

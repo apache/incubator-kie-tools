@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.sw.client;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.appformer.kogito.bridge.client.resource.ResourceContentService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.sw.client.resources.GlyphFactory;
@@ -58,6 +60,9 @@ import static org.kie.workbench.common.stunner.core.definition.adapter.binding.B
 public class ShapeFactory
         implements org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory<Object, Shape> {
 
+    @Inject
+    ResourceContentService resourceContentService;
+
     @Override
     @SuppressWarnings("all")
     public Shape newShape(Object instance) {
@@ -66,13 +71,11 @@ public class ShapeFactory
         } else if (instance instanceof End) {
             return new EndShape();
         } else if (instance instanceof State) {
-            State state = (State) instance;
-            return StateShape.create(state.getName()).setType(state.getType());
+            return new StateShape((State) instance, resourceContentService);
         } else if (TransitionShape.isTransition(instance)) {
             return TransitionShape.create(instance).setAppearance(instance);
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override
