@@ -53,6 +53,7 @@ digraph G {
   "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dashbuilder-quarkus-extension-parent" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-viewer-deployment-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -199,6 +200,7 @@ digraph G {
   "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-quarkus-extension-parent" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "blue" ];

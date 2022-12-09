@@ -143,13 +143,10 @@ public class RouterScreen {
     }
 
     public void loadDashboard(String importId) {
-        String newUrl = GWT.getHostPageBaseURL() + "?" +
+        final var newUrl = GWT.getHostPageBaseURL() + "?" +
                 RuntimeClientLoader.IMPORT_ID_PARAM + "=" +
                 importId;
-        DomGlobal.window.history.replaceState(null,
-                "Dashbuilder Runtime |" + importId,
-                newUrl);
-        doRoute();
+        DomGlobal.window.location.href = newUrl;
     }
 
     public void listDashboards() {

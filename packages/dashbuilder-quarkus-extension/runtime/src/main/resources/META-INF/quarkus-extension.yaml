@@ -1,0 +1,10 @@
+name: Dashbuilder
+metadata:
+  keywords:
+    - "dashbuilder"
+    - "dashboards"
+    - "dataviz"
+  guide: "https://quarkus.io/guides/kogito"
+  categories:
+    - "miscellaneous"
+  status: "preview"
