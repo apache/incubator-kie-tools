@@ -87,8 +87,8 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const { resizingWidths } = useResizingWidths();
 
   const setResizingWidth = useCallback(
-    (newResizingWidth: number) => {
-      resizingWidthsDispatch.updateResizingWidth(literalExpression.id!, newResizingWidth); // FIXME: Tiago -> id optional
+    (newResizingWidth: number, pivotArgs: { isPivot: boolean }) => {
+      resizingWidthsDispatch.updateResizingWidth(literalExpression.id!, newResizingWidth, pivotArgs); // FIXME: Tiago -> id optional
     },
     [literalExpression.id, resizingWidthsDispatch]
   );
@@ -102,12 +102,18 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   }, [literalExpression.id, literalExpression.width, resizingWidths]);
 
   React.useEffect(() => {
-    setResizingWidth(literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH);
+    setResizingWidth(literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH, { isPivot: false });
   }, [literalExpression.width, setResizingWidth]);
 
   React.useEffect(() => {
-    setResizingWidth(nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH);
-  }, [nestedExpressionContainer.resizingWidth, setResizingWidth]);
+    setResizingWidth(
+      Math.max(
+        nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
+        literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
+      ),
+      { isPivot: false }
+    );
+  }, [literalExpression.width, nestedExpressionContainer.resizingWidth, setResizingWidth]);
 
   return (
     <div className="literal-expression">

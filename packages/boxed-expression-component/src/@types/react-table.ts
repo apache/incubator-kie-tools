@@ -67,7 +67,7 @@ declare module "react-table" {
     setWidth?(width: number): void;
 
     resizingWidth?: number;
-    setResizingWidth?(width: number): void;
+    setResizingWidth?(width: number, pivotArgs?: { isPivot: boolean }): void;
 
     columns?: Array<Column<D>>;
   }

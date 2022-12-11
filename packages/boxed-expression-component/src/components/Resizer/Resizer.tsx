@@ -27,7 +27,7 @@ export interface ResizerProps {
   width?: number;
   setWidth?: (width: number | undefined) => void;
   resizingWidth?: number;
-  setResizingWidth?: (width: number | undefined) => void;
+  setResizingWidth?: (width: number | undefined, pivotArgs: { isPivot: boolean }) => void;
   height?: number | "100%";
   minWidth?: number;
   children?: React.ReactElement;
@@ -57,8 +57,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   }, [height, id]);
 
   const [isResizingHappening, setResizeHappening] = useState(false);
-  const [__resizingWidth, __setResizingWidth] = useState(width);
-  const [pivotingWidth, setPivotingWidth] = useState(resizingWidth);
+  const [__resizingWidth, __setResizingWidth] = useState(width); // internal
 
   // React.useEffect(() => {
   //   const BC = new BroadcastChannel("resize");
@@ -76,7 +75,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onResizeStop = useCallback(
     (_, data) => {
       setResizeHappening(false);
-      (setResizingWidth ?? __setResizingWidth)(data.size.width);
+      (setResizingWidth ?? __setResizingWidth)(data.size.width, { isPivot: false });
       setWidth?.(resizingWidth);
       const BC = new BroadcastChannel("resize");
       BC.postMessage("RESIZE_STOP");
@@ -86,7 +85,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onResize = useCallback(
     (_, data) => {
-      (setResizingWidth ?? __setResizingWidth)(data.size.width);
+      (setResizingWidth ?? __setResizingWidth)(data.size.width, { isPivot: true });
     },
     [setResizingWidth]
   );
@@ -98,7 +97,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      (setResizingWidth ?? __setResizingWidth)(minWidth ?? DEFAULT_MIN_WIDTH);
+      (setResizingWidth ?? __setResizingWidth)(minWidth ?? DEFAULT_MIN_WIDTH, { isPivot: false });
       setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
     },
     [minWidth, setResizingWidth, setWidth]
