@@ -31,8 +31,8 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants.KieAssetsDropdownView_Select;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

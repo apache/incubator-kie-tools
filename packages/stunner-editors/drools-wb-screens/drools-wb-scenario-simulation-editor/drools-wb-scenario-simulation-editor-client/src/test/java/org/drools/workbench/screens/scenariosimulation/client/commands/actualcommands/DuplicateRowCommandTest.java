@@ -24,8 +24,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

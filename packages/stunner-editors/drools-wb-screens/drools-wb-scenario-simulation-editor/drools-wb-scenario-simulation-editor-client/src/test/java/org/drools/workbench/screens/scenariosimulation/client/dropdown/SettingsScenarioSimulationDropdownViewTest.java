@@ -23,8 +23,8 @@ import org.junit.runner.RunWith;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DEFAULT_VALUE;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
