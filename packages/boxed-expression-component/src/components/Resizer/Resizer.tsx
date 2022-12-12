@@ -58,30 +58,46 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   }, [height, id]);
 
   const [isResizingHappening, setResizeHappening] = useState(false);
+  const [isGlobalResizingHappening, setGlobalResizeHappening] = useState(false);
   const [__resizingWidth, __setResizingWidth] = useState<ResizingWidth>({
     value: width ?? DEFAULT_MIN_WIDTH,
     isPivoting: false,
   }); // internal
 
-  // React.useEffect(() => {
-  //   const BC = new BroadcastChannel("resize");
-  //   BC.onmessage = () => {
-  //     if (resizingWidth !== width) {
-  //       setWidth?.(resizingWidth); // This needs to be batched to avoid multiple states updates.
-  //     }
-  //   };
+  React.useEffect(() => {
+    const BC = new BroadcastChannel("resize_stop");
+    BC.onmessage = () => {
+      setGlobalResizeHappening(false);
+    };
 
-  //   return () => {
-  //     BC.close();
-  //   };
-  // }, [width, resizingWidth, setWidth]);
+    return () => {
+      BC.close();
+    };
+  }, [width, resizingWidth, setWidth]);
+
+  React.useEffect(() => {
+    const BC1 = new BroadcastChannel("resize_stop");
+    BC1.onmessage = () => {
+      setGlobalResizeHappening(false);
+    };
+
+    const BC2 = new BroadcastChannel("resize_start");
+    BC2.onmessage = () => {
+      setGlobalResizeHappening(true);
+    };
+
+    return () => {
+      BC1.close();
+      BC2.close();
+    };
+  }, []);
 
   const onResizeStop = useCallback(
     (_, data) => {
       setResizeHappening(false);
       (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: false }));
       setWidth?.(resizingWidth?.value);
-      const BC = new BroadcastChannel("resize");
+      const BC = new BroadcastChannel("resize_stop");
       BC.postMessage("RESIZE_STOP");
     },
     [resizingWidth, setResizingWidth, setWidth]
@@ -98,6 +114,8 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     (_, data) => {
       setResizeHappening(true);
       (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: true }));
+      const BC = new BroadcastChannel("resize_start");
+      BC.postMessage("RESIZE_START");
     },
     [setResizingWidth]
   );
@@ -132,6 +150,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
         </div>
       )}
 
+      {/* {(width && !(isGlobalResizingHappening && !isResizingHappening) && ( */}
       {(width && (
         <Resizable
           width={resizingWidth?.value ?? __resizingWidth.value}

@@ -104,14 +104,14 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     );
   }, [literalExpression.id, literalExpression.width, resizingWidths]);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     setResizingWidth((prev) => ({
       value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
       isPivoting: false,
     }));
   }, [literalExpression.width, setResizingWidth]);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     setResizingWidth((prev) => {
       return prev.isPivoting
         ? {

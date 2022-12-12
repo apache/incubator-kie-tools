@@ -16,7 +16,7 @@
 
 import "./ContextExpression.css";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
@@ -364,20 +364,14 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [contextExpression.id, resizingWidthsDispatch]
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     setResizingWidth((prev) => {
       return {
         value: entryInfoResizingWidth.value + entryExpressionsResizingWidthValue + CONTEXT_ENTRY_EXTRA_WIDTH,
         isPivoting: isContextExpressionPivoting,
       };
     });
-  }, [
-    contextExpression.entryInfoWidth,
-    entryExpressionsResizingWidthValue,
-    entryInfoResizingWidth.value,
-    isContextExpressionPivoting,
-    setResizingWidth,
-  ]);
+  }, [entryExpressionsResizingWidthValue, entryInfoResizingWidth.value, isContextExpressionPivoting, setResizingWidth]);
 
   ///
 
