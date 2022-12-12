@@ -30,6 +30,7 @@ import {
   ContextExpressionDefinition,
   LiteralExpressionDefinition,
   BeeTableProps,
+  generateUuid,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import * as ReactTable from "react-table";
@@ -219,6 +220,10 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         logicType: ExpressionDefinitionLogicType.Context,
         noClearAction: true,
         renderResult: false,
+        result: {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+        },
         noHandlerMenu: true,
         contextEntries: [
           {
@@ -272,6 +277,10 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         noClearAction: true,
         renderResult: false,
         noHandlerMenu: true,
+        result: {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+        },
         contextEntries: [
           {
             entryInfo: { id: FIRST_ENTRY_ID, name: i18n.document, dataType: DmnBuiltInDataType.String },

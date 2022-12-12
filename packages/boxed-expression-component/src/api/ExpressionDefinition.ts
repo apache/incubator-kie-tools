@@ -89,7 +89,7 @@ export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   /** Collection of context entries */
   contextEntries: ContextExpressionDefinitionEntry[];
   /** Context result */
-  result?: ExpressionDefinition;
+  result: ExpressionDefinition;
   /** False, to avoid the rendering of the result section */
   renderResult?: boolean;
   /** Entry info width */

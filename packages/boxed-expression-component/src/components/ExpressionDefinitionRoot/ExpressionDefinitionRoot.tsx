@@ -100,11 +100,12 @@ export function ResizingWidthContextProvider({ children }: React.PropsWithChildr
 
   const dispatch = useMemo<ResizingWidthDispatchContextType>(() => {
     return {
-      updateResizingWidth: (id, resizingWidth, pivotArgs) => {
+      updateResizingWidth: (id, update) => {
         setResizingWidths((prev) => {
-          const n = new Map(prev);
-          n.set(id, { resizingWidth, isPivot: pivotArgs.isPivot });
-          return n;
+          const prevCopy = new Map(prev);
+          const newValue = update(prevCopy.get(id));
+          prevCopy.set(id, newValue);
+          return prevCopy;
         });
       },
     };
@@ -119,12 +120,14 @@ export function ResizingWidthContextProvider({ children }: React.PropsWithChildr
   );
 }
 
+export type ResizingWidth = { resizingWidth: number; isPivoting: boolean };
+
 export type ResizingWidthContextType = {
-  resizingWidths: Map<string, { resizingWidth: number; isPivot: boolean }>;
+  resizingWidths: Map<string, ResizingWidth>;
 };
 
 export type ResizingWidthDispatchContextType = {
-  updateResizingWidth(id: string, resizingWidth: number, pivotArgs: { isPivot: boolean }): void;
+  updateResizingWidth(id: string, getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth): void;
 };
 
 const ResizingWidthContext = React.createContext({} as ResizingWidthContextType);

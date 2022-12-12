@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { DmnBuiltInDataType } from "../api";
+import { ResizingWidth } from "../components/ExpressionDefinitionRoot";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -67,7 +68,7 @@ declare module "react-table" {
     setWidth?(width: number): void;
 
     resizingWidth?: number;
-    setResizingWidth?(width: number, pivotArgs?: { isPivot: boolean }): void;
+    setResizingWidth?(getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth): void;
 
     columns?: Array<Column<D>>;
   }
