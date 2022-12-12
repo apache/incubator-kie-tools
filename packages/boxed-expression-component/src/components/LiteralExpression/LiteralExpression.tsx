@@ -162,7 +162,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           setResizingWidth={setResizingWidth}
         >
           <BeeTableEditableCellContent
-            value={`${literalExpression.id?.substring(0, 5)} - ${nestedExpressionContainer.resizingWidth.value}`}
+            value={literalExpression.content ?? ""}
             rowIndex={0}
             columnId={literalExpression.id ?? "-"}
             onCellUpdate={updateContent}

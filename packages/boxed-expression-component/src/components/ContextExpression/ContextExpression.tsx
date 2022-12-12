@@ -91,6 +91,7 @@ export function getDefaultExpressionDefinitionByLogicType(
           ExpressionDefinitionLogicType.LiteralExpression,
           containerResizingWidth,
           {
+            id: generateUuid(),
             logicType: ExpressionDefinitionLogicType.LiteralExpression,
             isHeadless: true,
           }
@@ -181,26 +182,28 @@ function getExpressionMinWidth(expression?: ExpressionDefinition): number {
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
     return LITERAL_EXPRESSION_MIN_WIDTH;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
-    return LIST_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
       return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH - 2; // 2px for the missing entry info border
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH;
+      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 2;
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH;
+      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 2;
     } else {
       throw new Error("Should never get here");
     }
+
+    // TODO: Tiago -> Implement those
+  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+    return LIST_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     return CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
-    return 0; //FIXME: Tiago -> TODO
+    return 0;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
-    return 0; //FIXME: Tiago -> TODO
+    return 0;
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
-    return 0; //FIXME: Tiago -> TODO
+    return 0;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
     return 0;
   } else {
@@ -232,31 +235,25 @@ function getExpressionResizingWidth(
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
     return (resizingWidth ?? expression.width ?? LITERAL_EXPRESSION_MIN_WIDTH) + LITERAL_EXPRESSION_EXTRA_WIDTH;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
-    return resizingWidth ?? expression.width ?? LIST_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
       return getExpressionResizingWidth(expression.expression, resizingWidths) + CONTEXT_ENTRY_EXTRA_WIDTH - 2; // 2px for the missing entry info border
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH;
+      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 2;
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH;
+      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 2;
     } else {
       throw new Error("Should never get here");
     }
+  }
+
+  // TODO: Tiago -> Implement those
+  else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+    return resizingWidth ?? expression.width ?? LIST_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
-    return DEFAULT_MIN_WIDTH;
-    // Math.max(
-    //   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-    //   ...(expression.bindingEntries ?? []).map(({ entryExpression }) =>
-    //     getExpressionResizingWidth(entryExpression, resizingWidths)
-    //   )
-    // ) +
-    // (resizingWidth ?? expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
-    // CONTEXT_ENTRY_EXTRA_WIDTH
-    //FIXME: Tiago -> TODO
+    return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
-    return resizingWidth ?? DEFAULT_MIN_WIDTH; //FIXME: Tiago -> TODO
+    return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
     return (
       resizingWidth ??
@@ -264,9 +261,9 @@ function getExpressionResizingWidth(
       DEFAULT_MIN_WIDTH
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
-    return resizingWidth ?? DEFAULT_MIN_WIDTH; //FIXME: Tiago -> TODO
+    return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
-    return resizingWidth ?? DEFAULT_MIN_WIDTH; //FIXME: Tiago -> TODO
+    return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else {
     throw new Error("Shouldn't ever reach this point");
   }
@@ -631,15 +628,22 @@ function ContextEntryCell(props: BeeTableCellProps<ROWTYPE>) {
   );
 }
 
-interface ContextExpressionContextType {
+export interface ContextExpressionContextType {
   entryExpressionsResizingWidth: ResizingWidth;
   entryExpressionsMinWidthGlobal: number;
   entryExpressionsMinWidthLocal: number;
 }
 
-const ContextExpressionContext = React.createContext({} as ContextExpressionContextType);
+export const ContextExpressionContext = React.createContext<ContextExpressionContextType>({
+  entryExpressionsMinWidthLocal: -2,
+  entryExpressionsMinWidthGlobal: -2,
+  entryExpressionsResizingWidth: {
+    value: -2,
+    isPivoting: false,
+  },
+});
 
-function useContextExpressionContext() {
+export function useContextExpressionContext() {
   return React.useContext(ContextExpressionContext);
 }
 

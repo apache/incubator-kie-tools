@@ -61,17 +61,22 @@ export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
   width?: number;
 }
 
+export enum PmmlLiteralExpressionDefinitionKind {
+  Document,
+  Model,
+}
+
 export interface PmmlLiteralExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be PmmlLiteralExpression */
   logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression;
-  /** Callback for retrieving the options to provide in the dropdown */
-  getOptions: () => string[];
   /** Dropdown's selected option */
   selected?: string;
   /** Label displayed (in italic style) when no options are available */
   noOptionsLabel: string;
   /** Property used for test purposes only */
   testId?: string;
+  /** Kind  */
+  kind: PmmlLiteralExpressionDefinitionKind;
 }
 
 export interface RelationExpressionDefinition extends ExpressionDefinitionBase {

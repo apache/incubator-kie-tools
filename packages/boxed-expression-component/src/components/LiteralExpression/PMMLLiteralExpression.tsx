@@ -16,55 +16,71 @@
 
 import "./PmmlLiteralExpression.css";
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
-import { PmmlLiteralExpressionDefinition } from "../../api";
+import { useCallback, useMemo, useState } from "react";
+import { PmmlLiteralExpressionDefinition, PmmlLiteralExpressionDefinitionKind } from "../../api";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as _ from "lodash";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressionDefinition> = (
   pmmlLiteralExpression: PmmlLiteralExpressionDefinition
 ) => {
   const boxedExpressionEditor = useBoxedExpressionEditor();
-
-  const selection = useRef(pmmlLiteralExpression.selected);
+  const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const [selectOpen, setSelectOpen] = useState(false);
 
+  const options = useMemo<string[]>(() => {
+    if (pmmlLiteralExpression.kind === PmmlLiteralExpressionDefinitionKind.Document) {
+      return (boxedExpressionEditor.pmmlParams ?? []).map(({ document }) => document);
+    } else if (pmmlLiteralExpression.kind === PmmlLiteralExpressionDefinitionKind.Model) {
+      return (
+        (boxedExpressionEditor.pmmlParams ?? [])
+          // .filter((s) => s.document === selectedDocumentOnFunctionExpression) // FIXME: Tiago -> STATE GAP
+          .flatMap(({ modelsFromDocument }) => modelsFromDocument ?? [])
+          .map(({ model }) => model)
+      );
+    } else {
+      throw new Error("Shouldn't ever reach here.");
+    }
+  }, [boxedExpressionEditor.pmmlParams, pmmlLiteralExpression.kind]);
+
   const onSelectToggle = useCallback(
     (isOpen) => {
-      if (!pmmlLiteralExpression.getOptions() || !pmmlLiteralExpression.getOptions().length) {
+      if (!options) {
         return;
       }
       setSelectOpen(isOpen);
       boxedExpressionEditor.setContextMenuOpen(isOpen);
     },
-    [boxedExpressionEditor]
+    [boxedExpressionEditor, options]
   );
 
   const onSelect = useCallback(
     (event, updatedSelection) => {
       setSelectOpen(false);
-      selection.current = updatedSelection;
-      pmmlLiteralExpression.onUpdatingRecursiveExpression?.({
-        ...pmmlLiteralExpression,
+      setExpression((prev: PmmlLiteralExpressionDefinition) => ({
+        ...prev,
         selected: updatedSelection,
-      } as PmmlLiteralExpressionDefinition);
+      }));
     },
-    [pmmlLiteralExpression]
+    [setExpression]
   );
 
   const getOptions = useCallback(() => {
-    return _.map(pmmlLiteralExpression.getOptions(), (key) => (
+    return _.map(options, (key) => (
       <SelectOption data-testid={`pmml-${key}`} key={key} value={key} data-ouia-component-id={key}>
         {key}
       </SelectOption>
     ));
-  }, [pmmlLiteralExpression]);
+  }, [options]);
 
   const getSelection = useCallback(() => {
-    return _.includes(pmmlLiteralExpression.getOptions(), selection.current) ? selection.current : undefined;
-  }, [pmmlLiteralExpression]);
+    return _.includes(options, pmmlLiteralExpression.selected) ? pmmlLiteralExpression.selected : undefined;
+  }, [options, pmmlLiteralExpression.selected]);
 
   const showingPlaceholder = useCallback(() => _.isEmpty(getSelection()), [getSelection]);
 
