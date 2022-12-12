@@ -18,14 +18,6 @@
   width: 100%;
 }
 
-.expression-container .context-expression.pivoting * {
-  color: red;
-}
-
-.expression-container .context-expression.not-pivoting * {
-  color: black !important;
-}
-
 .expression-container .context-expression .context-result {
   font-style: italic;
   color: gray;

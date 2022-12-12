@@ -98,7 +98,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     return (
       // FIXME: Tiago -> id optional
       resizingWidths.get(literalExpression.id!) ?? {
-        resizingWidth: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+        value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
         isPivoting: false,
       }
     );
@@ -106,7 +106,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   React.useEffect(() => {
     setResizingWidth((prev) => ({
-      resizingWidth: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+      value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
       isPivoting: false,
     }));
   }, [literalExpression.width, setResizingWidth]);
@@ -115,21 +115,21 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     setResizingWidth((prev) => {
       return prev.isPivoting
         ? {
-            resizingWidth: nestedExpressionContainer.resizingWidth.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
+            value: nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
             isPivoting: true,
           }
         : {
-            resizingWidth: Math.max(
-              nestedExpressionContainer.resizingWidth.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
+            value: Math.max(
+              nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
               literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
             ),
-            isPivoting: prev.isPivoting,
+            isPivoting: false,
           };
     });
   }, [literalExpression.id, literalExpression.width, nestedExpressionContainer.resizingWidth, setResizingWidth]);
 
   return (
-    <div className="literal-expression">
+    <div className={`literal-expression ${resizingWidth.isPivoting ? "pivoting" : "not-pivoting"}`}>
       {!literalExpression.isHeadless && (
         <div className="literal-expression-header" onClick={selectDecisionNode}>
           <ExpressionDefinitionHeaderMenu
@@ -156,9 +156,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           setResizingWidth={setResizingWidth}
         >
           <BeeTableEditableCellContent
-            value={`${literalExpression.id?.substring(0, 5)} - ${
-              nestedExpressionContainer.resizingWidth.resizingWidth
-            }`}
+            value={`${literalExpression.id?.substring(0, 5)} - ${nestedExpressionContainer.resizingWidth.value}`}
             rowIndex={0}
             columnId={literalExpression.id ?? "-"}
             onCellUpdate={updateContent}

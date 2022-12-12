@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+.pivoting * {
+  color: red;
+}
+
+.not-pivoting * {
+  color: black !important;
+}
+
 .showcase {
   display: flex;
   flex-direction: column;

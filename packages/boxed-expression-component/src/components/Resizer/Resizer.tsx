@@ -59,7 +59,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const [isResizingHappening, setResizeHappening] = useState(false);
   const [__resizingWidth, __setResizingWidth] = useState<ResizingWidth>({
-    resizingWidth: width ?? DEFAULT_MIN_WIDTH,
+    value: width ?? DEFAULT_MIN_WIDTH,
     isPivoting: false,
   }); // internal
 
@@ -79,8 +79,8 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onResizeStop = useCallback(
     (_, data) => {
       setResizeHappening(false);
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ resizingWidth: data.size.width, isPivoting: false }));
-      setWidth?.(resizingWidth?.resizingWidth);
+      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: false }));
+      setWidth?.(resizingWidth?.value);
       const BC = new BroadcastChannel("resize");
       BC.postMessage("RESIZE_STOP");
     },
@@ -89,7 +89,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onResize = useCallback(
     (_, data) => {
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ resizingWidth: data.size.width, isPivoting: true }));
+      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: true }));
     },
     [setResizingWidth]
   );
@@ -97,7 +97,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onResizeStart = useCallback(
     (_, data) => {
       setResizeHappening(true);
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ resizingWidth: data.size.width, isPivoting: true }));
+      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: true }));
     },
     [setResizingWidth]
   );
@@ -106,7 +106,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     (e: React.MouseEvent) => {
       e.stopPropagation();
       (setResizingWidth ?? __setResizingWidth)((prev) => ({
-        resizingWidth: minWidth ?? DEFAULT_MIN_WIDTH,
+        value: minWidth ?? DEFAULT_MIN_WIDTH,
         isPivoting: false,
       }));
       setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
@@ -134,7 +134,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       {(width && (
         <Resizable
-          width={resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth}
+          width={resizingWidth?.value ?? __resizingWidth.value}
           height={0}
           onResize={onResize}
           onResizeStop={onResizeStop}
@@ -146,23 +146,19 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>
               <div
                 className={`pf-c-drawer__splitter pf-m-vertical ${
-                  minWidth === (resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth)
+                  minWidth === (resizingWidth?.value ?? __resizingWidth.value)
                     ? isResizingHappening
                       ? "smallest"
                       : "min"
                     : ""
-                } ${
-                  (resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth ?? 0) < (minWidth ?? 0) ? "error" : ""
-                }`}
+                } ${(resizingWidth?.value ?? __resizingWidth.value ?? 0) < (minWidth ?? 0) ? "error" : ""}`}
               >
                 <div className={`pf-c-drawer__splitter-handle`} />
               </div>
             </div>
           }
         >
-          <div style={{ width: resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth, minWidth }}>
-            {children}
-          </div>
+          <div style={{ width: resizingWidth?.value ?? __resizingWidth.value, minWidth }}>{children}</div>
         </Resizable>
       )) || (
         <>

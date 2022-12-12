@@ -45,7 +45,7 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
           return {
             ...getDefaultExpressionDefinitionByLogicType(
               logicType,
-              { resizingWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, isPivoting: false },
+              { value: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, isPivoting: false },
               prev
             ),
             logicType,
@@ -107,7 +107,7 @@ export function ResizingWidthContextProvider({ children }: React.PropsWithChildr
       updateResizingWidth: (id, update) => {
         setResizingWidths((prev) => {
           const prevCopy = new Map(prev);
-          const newValue = update(prevCopy.get(id));
+          const newValue = update(prevCopy.get(id) ?? { value: -2, isPivoting: false });
           prevCopy.set(id, newValue);
           return prevCopy;
         });
@@ -124,7 +124,7 @@ export function ResizingWidthContextProvider({ children }: React.PropsWithChildr
   );
 }
 
-export type ResizingWidth = { resizingWidth: number; isPivoting: boolean };
+export type ResizingWidth = { value: number; isPivoting: boolean };
 
 export type ResizingWidthContextType = {
   resizingWidths: Map<string, ResizingWidth>;
