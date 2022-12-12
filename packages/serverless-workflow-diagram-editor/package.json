@@ -21,8 +21,8 @@
     "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs -Pno-showcase",
     "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs `-Pno-showcase\"",
     "build:prod": "run-script-os",
-    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs -Pno-showcase",
-    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) ` -DskipITs` -Pno-showcase\"",
+    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env integrationTests.run --not) -Pno-showcase",
+    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env integrationTests.run --not) `-Pno-showcase\"",
     "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"

@@ -84,8 +84,7 @@ public class JsCanvas implements JsCanvasNodeLister {
     }
 
     public HTMLCanvasElement getCanvas() {
-        HTMLCanvasElement canvasElement = getLayer().getCanvasElement();
-        return canvasElement;
+        return getLayer().getCanvasElement();
     }
 
     public Viewport getViewport() {
@@ -93,8 +92,9 @@ public class JsCanvas implements JsCanvasNodeLister {
     }
 
     public void translate(double x, double y) {
-        // TODO: Composite transform ops or create new matrix?
-        getViewport().getTransform().translate(x, y);
+        getViewport().setTransform(new Transform()
+                                           .scaleWithXY(getScaleX(), getScaleY())
+                                           .translate(x, y));
     }
 
     public double getTranslateX() {
@@ -106,8 +106,15 @@ public class JsCanvas implements JsCanvasNodeLister {
     }
 
     public void scale(int factor) {
-        // TODO: Composite transform ops or create new matrix?
-        getViewport().getTransform().scale(factor);
+        getViewport().setTransform(new Transform()
+                                           .translate(getTranslateX(), getTranslateY())
+                                           .scale(factor));
+    }
+
+    public void scaleWithXY(double x, double y) {
+        getViewport().setTransform(new Transform()
+                                           .translate(getTranslateX(), getTranslateY())
+                                           .scaleWithXY(x, y));
     }
 
     public double getScaleX() {
@@ -120,8 +127,7 @@ public class JsCanvas implements JsCanvasNodeLister {
 
     public NativeContext2D getNativeContent() {
         Context2D context = getLayer().getContext();
-        NativeContext2D nativeContext = context.getNativeContext();
-        return nativeContext;
+        return context.getNativeContext();
     }
 
     public void rotateGroupOverCenter(Group group, double degrees, double duration) {
@@ -133,8 +139,8 @@ public class JsCanvas implements JsCanvasNodeLister {
                 child.setOffset(boundingBox.getWidth() / 2, boundingBox.getHeight() / 2);
                 if (duration > 0) {
                     child.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(
-                                    AnimationProperty.Properties.ROTATION_DEGREES(degrees)
-                            ), duration)
+                            AnimationProperty.Properties.ROTATION_DEGREES(degrees)
+                    ), duration)
                             .run();
                 } else {
                     child.setRotationDegrees(degrees);
@@ -166,13 +172,11 @@ public class JsCanvas implements JsCanvasNodeLister {
     }
 
     public int getPanelOffsetLeft() {
-        int result = panel.getElement().offsetLeft;
-        return result;
+        return panel.getElement().offsetLeft;
     }
 
     public int getPanelOffsetTop() {
-        int result = panel.getElement().offsetTop;
-        return result;
+        return panel.getElement().offsetTop;
     }
 
     public void add(IPrimitive<?> shape) {
@@ -414,11 +418,8 @@ public class JsCanvas implements JsCanvasNodeLister {
         final double areaMaxX = visibleAreaX + visibleBounds.getWidth();
         final double areaMaxY = visibleAreaY + visibleBounds.getHeight();
 
-        if ((shapeX >= visibleAreaX && shapeMaxX <= areaMaxX) &&
-                (shapeY >= visibleAreaY && shapeMaxY <= areaMaxY)) {
-            return true;
-        }
-        return false;
+        return (shapeX >= visibleAreaX && shapeMaxX <= areaMaxX) &&
+                (shapeY >= visibleAreaY && shapeMaxY <= areaMaxY);
     }
 
     @Override

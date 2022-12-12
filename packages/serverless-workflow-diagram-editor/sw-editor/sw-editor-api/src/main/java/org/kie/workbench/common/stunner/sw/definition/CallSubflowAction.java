@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.definition;
+package org.kie.workbench.common.stunner.sw.definition;
 
-import org.uberfire.workbench.type.ResourceTypeDefinition;
+import jsinterop.annotations.JsType;
 
-// TODO: Since kogito, this can be removed.
-public interface DefinitionSetResourceType extends ResourceTypeDefinition {
+@JsType
+public class CallSubflowAction extends ActionNode {
 
-    Class<?> getDefinitionSetType();
 }

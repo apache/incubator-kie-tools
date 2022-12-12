@@ -24,9 +24,8 @@ import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 
-// TODO
 @ApplicationScoped
-public class JsMorphAdapter implements MorphAdapter<Object> {
+public class EmptyJsMorhAdapter implements MorphAdapter<Object> {
 
     @Override
     public <T> Iterable<MorphDefinition> getMorphDefinitions(T definition) {

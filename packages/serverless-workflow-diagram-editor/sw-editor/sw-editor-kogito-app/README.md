@@ -73,68 +73,87 @@ Navigate to the test page in your root context path, eg: `http://localhost:8080/
         // Get the actual workflows' content
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().getContent()
 
-        // Standalone SWF Editor (low-level) API
-        frames[0].editor
-        frames[0].canvas
+- Editor's low-level Js API
 
-        // Stunner - Js Canvas (low-level) API
-        var jsl = window.frames.editorFrame.contentWindow.editor.canvas
-        jsl.getNodeIds() // Get id of all nodes
-        jsl.getBackgroundColor('_A9481DBC-3E87-40EE-9925-733B24404BC0')         // gets background color
-        jsl.setBackgroundColor('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'blue') // sets background color
-        jsl.getBorderColor('_A9481DBC-3E87-40EE-9925-733B24404BC0')             // gets border color
-        jsl.setBorderColor('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red')      // sets border color
-        jsl.getLocation('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red')         // gets location
-        jsl.getAbsoluteLocation('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red') // gets absolute location
-        jsl.getDimensions('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red')       // gets dimensions
-        jsl.applyState('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'invalid')      // applies state (none, highlight, selected, invalid)
-        jsl.centerNode('_A9481DBC-3E87-40EE-9925-733B24404BC0')                 // centers node in viewable canvas
+  #### Canvas API (Lienzo)
 
-        // Stunner - (Wires) Shapes (low-level) API
-        var jsl = window.frames.editorFrame.contentWindow.editor.canvas
-        jsl.log().logWiresShapes()
-        var s = jsl.getWiresShape('_A9481DBC-3E87-40EE-9925-733B24404BC0')
-        s.getChild(1).fillColor = "red"
+        // Get canvas instance
+        var canvas = window.frames.editorFrame.contentWindow.canvas
 
-# TODO: FOR DEMO
+  | Function              | Parameters                                             |    Return Type    | Description                                              |
+  | :-------------------- | :----------------------------------------------------- | :---------------: | :------------------------------------------------------- |
+  | getNodeIds            |                                                        |     String[]      | get all nodes ids                                        |
+  | getBackgroundColor    | String id                                              |      String       | get background color                                     |
+  | setBackgroundColor    | String id, <br/>String color                           |                   | set background color                                     |
+  | getBorderColor        | String id                                              |      String       | get border color                                         |
+  | setBorderColor        | String id, <br/>string color                           |                   | set border color                                         |
+  | getLocation           | String id                                              |     Number[]      | get location [x, y]                                      |
+  | getAbsoluteLocation   | String id                                              |     Number[]      | get absolute location [x, y]                             |
+  | getDimensions         | String id                                              |     Number[]      | get dimensions [width, height]                           |
+  | applyState            | String id, <br/>String state                           |                   | apply state {'none', 'highlight', 'selected', 'invalid'} |
+  | center                | String id                                              |                   | center node in the viewable canvas                       |
+  | calculateCenter       | String id                                              |     Number[]      | get node center location [x, y]                          |
+  | isConnected           | String id1, <br/>String id2                            |      boolean      | check if two nodes are connected                         |
+  | isShapeVisible        | String id1                                             |      boolean      | check if the node is within the viewable canvas          |
+  | translate             | Number x, <br/>Number y                                |                   | move canvas viewable area                                |
+  | getTranslateX         |                                                        |      Number       | get X position of the viewable canvas                    |
+  | getTranslateY         |                                                        |      Number       | get Y position of the viewable canvas                    |
+  | scale                 | Number factor                                          |                   | scale the diagram (zoom in/out)                          |
+  | scaleWithXY           | Number x, <br/>Number y                                |                   | scale the diagram (zoom in/out)                          |
+  | getScaleX             |                                                        |      Number       | get X scale factor                                       |
+  | getScaleY             |                                                        |      Number       | get Y scale factor                                       |
+  | rotateGroupOverCenter | Group group, <br/>Number degrees, <br/>Number duration |      Number       | get Y scale factor                                       |
+  | getLayer              |                                                        |       Layer       | get HTMLCanvasElement element                            |
+  | getCanvas             |                                                        | HTMLCanvasElement | get canvas Layer instance                                |
+  | getViewport           |                                                        |     Viewport      | get canvas NativeContext2D instance                      |
+  | getNativeContext      |                                                        |  NativeContext2D  | get canvas Viewport instance                             |
+  | draw                  |                                                        |                   | repaint canvas                                           |
+  | add                   | Primitive shape                                        |                   | add shape to the canvas                                  |
+  | getShape              | String id                                              |     Primitive     | get shape instance                                       |
+  | getWiresManager       |                                                        |   WiresManager    | get WiresManager instance                                |
+  | log                   |                                                        |   CanvasLogger    | get Canvas WireShape Logger instance                     |
+  | getNodeIdSet          |                                                        |        Set        | get WireShape ids                                        |
+  | getWiresShape         | String id                                              |    WiresShape     | get WiresShape instance                                  |
+  | close                 |                                                        |                   | close canvas                                             |
 
-++++ INIT
-var cw = window.frames.editorFrame.contentWindow;
-var jse = cw.editor;
-var session = jse.session;
-var canvas = jse.session.canvas;
+  #### Session API (Stunner)
 
-++ VIEWPORT
-canvas.getScaleX()
-canvas.getScaleY()
-canvas.scale(2)
-canvas.translate(50, 50)
+       // Get session instance
+       var session = window.frames.editorFrame.contentWindow.editor.session
 
-++ GRAPH - QUERY
-session.getNodeByUUID(uuid)
-session.getNodeByName(name)
+  | Function               | Parameters        | Return Type | Description                       |
+  | :--------------------- | :---------------- | :---------: | :-------------------------------- |
+  | getNodeByUUID          | String id         |    Node     | get Node instance by id           |
+  | getNodeByName          | String name       |    Node     | get Node instance by name         |
+  | getNodeName            | Node node         |   String    | get name from Node instance       |
+  | getEdgeByUUID          | String id         |    Edge     | get Edge instance by id           |
+  | getSelectedElementUUID |                   |   String    | get selected element id           |
+  | selectByUUID           | String id         |             | select element by id              |
+  | selectByName           | String name       |             | select element by name            |
+  | clearSelection         |                   |             | clear selection                   |
+  | getSelectedNode        |                   |    Node     | get selected Node instance        |
+  | getSelectedEdge        |                   |    Edge     | get selected Edge instance        |
+  | getSelectedDefinition  |                   | Definition  | get selected Definition instance  |
+  | getName                | Object definition |   String    | get name from Definition instance |
 
-++ SELECTION - QUERY
-session.getSelectedElementUUID()
-session.getSelectedNode()
-session.getSelectedEdge()
-session.getSelectedDefinition()
-session.getName(session.getSelectedDefinition())
+  #### Domain Definitions API (Stunner)
 
-++ SELECTION - UPDATE
-session.selectByUUID(uuid)
-session.selectByName('node name')
-session.clearSelection()
+       // Get definitions instance
+       var definitions = window.frames.editorFrame.contentWindow.editor.definitions
 
-++++ UPDATE STATE NAME
-session.commands.updateFieldValue(session.getSelectedNode(), 'name', 'Inject State2')
-
-++++ SWF - ROTATE SHAPE
-var uuid = session.getSelectedElementUUID()
-var shape = canvas.getWiresShape(uuid)
-var iconGroup = shape.getChild(2).getChildren()[1]
-canvas.rotateGroupOverCenter(iconGroup, 360, 1500)
-
-++++ SWF - CHANGE / ADD STATE ICON/S
-var shape = canvas.getWiresShape('UUID')
-var iconGroup = shape.getChild(2).getChildren()[1]
+  | Function                      | Parameters                                          | Return Type  | Description                                        |
+  | :---------------------------- | :-------------------------------------------------- | :----------: | :------------------------------------------------- |
+  | initializeDefinitionSet       | Object definitionSet                                |              | initialize domain definitions                      |
+  | initializeDefinitionsField    | String definitionsField                             |              | set domain definitions field name                  |
+  | initializeCategory            | String definitionId, <br/>String category           |              | set category for a definitionId                    |
+  | initializeLabels              | String definitionId, <br/>String[] definitionLabels |              | set labels for a definitionId                      |
+  | initializeDefinitionNameField | String definitionId, <br/>String nameField          |              | set field name for a definitionId                  |
+  | initializeDomainQualifier     | Annotation domainQualifier                          |              | initialize domain qualifier                        |
+  | initializeRules               | RuleSet ruleSet                                     |              | set domain rules                                   |
+  | getId                         | Object definition                                   | DefinitionId | get DefinitionId instance from definition instance |
+  | getCategory                   | Object definition                                   |    String    | get category from definition instance              |
+  | getTitle                      | Object definition                                   |    String    | get title from definition instance                 |
+  | getName                       | Object definition                                   |    String    | get name from definition instance                  |
+  | getDescription                | Object definition                                   |    String    | get description from definition instance           |
+  | getLabels                     | Object definition                                   |   String[]   | get labels from definition instance                |
+  | getPropertyFields             | Object definition                                   |   String[]   | get property fields from definition instance       |

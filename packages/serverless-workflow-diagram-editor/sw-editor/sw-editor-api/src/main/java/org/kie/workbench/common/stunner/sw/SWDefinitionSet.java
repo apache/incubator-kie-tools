@@ -17,6 +17,10 @@
 package org.kie.workbench.common.stunner.sw;
 
 import jsinterop.annotations.JsType;
+import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
+import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
+import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
+import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
@@ -58,14 +62,18 @@ public class SWDefinitionSet {
                                    ParallelState.class,
                                    ForEachState.class,
                                    CallbackState.class,
+                                   ActionsContainer.class,
                                    OnEvent.class,
                                    EventRef.class,
+                                   CallFunctionAction.class,
+                                   CallSubflowAction.class,
                                    EventTimeout.class,
                                    StartTransition.class,
                                    ErrorTransition.class,
                                    EventConditionTransition.class,
                                    DataConditionTransition.class,
                                    DefaultConditionTransition.class,
+                                   ActionTransition.class,
                                    CompensationTransition.class,
                                    Transition.class);
     }

@@ -23,6 +23,8 @@ public class OnEvent {
 
     public String[] eventRefs;
 
+    public ActionNode[] actions;
+
     public EventDataFilter eventDataFilter;
 
     public OnEvent() {
@@ -34,6 +36,14 @@ public class OnEvent {
 
     public void setEventRefs(String[] eventRefs) {
         this.eventRefs = eventRefs;
+    }
+
+    public ActionNode[] getActions() {
+        return actions;
+    }
+
+    public void setActions(ActionNode[] actions) {
+        this.actions = actions;
     }
 
     public EventDataFilter getEventDataFilter() {

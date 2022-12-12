@@ -17,35 +17,20 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
-@JSONMapper
 @JsType
-public class CallbackState extends State {
+public class ActionTransition {
 
-    public static final String TYPE_CALLBACK = "callback";
+    public String name;
 
-    public String eventRef;
-
-    public ActionNode action;
-
-    public CallbackState() {
-        this.type = TYPE_CALLBACK;
+    public ActionTransition() {
     }
 
-    public String getEventRef() {
-        return eventRef;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setEventRef(String eventRef) {
-        this.eventRef = eventRef;
-    }
-
-    public ActionNode getAction() {
-        return action;
-    }
-
-    public void setAction(ActionNode action) {
-        this.action = action;
+    public String getName() {
+        return name;
     }
 }

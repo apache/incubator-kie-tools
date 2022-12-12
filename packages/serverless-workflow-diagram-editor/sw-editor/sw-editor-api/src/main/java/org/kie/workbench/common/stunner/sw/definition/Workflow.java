@@ -46,6 +46,8 @@ public class Workflow {
 
     public String name;
 
+    public String description;
+
     public String specVersion;
 
     public String version;
@@ -82,7 +84,7 @@ public class Workflow {
     @JsonbTypeDeserializer(ErrorJsonDeserializer.class)
     public Object errors;
 
-    private Retry[] retries;
+    public Retry[] retries;
 
     public Workflow() {
     }
@@ -139,6 +141,14 @@ public class Workflow {
     public Workflow setStates(State[] states) {
         this.states = states;
         return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getSpecVersion() {

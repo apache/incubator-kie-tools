@@ -49,8 +49,11 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.command.DrawParentNodeCommand;
+import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
+import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
+import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 
 // TODO: This is just a PoC fow now. Its goal is to display state node details, by unmarshalling and drawing nodes on demand.
@@ -271,7 +274,16 @@ public class StateDetailsPresenter {
             OnEvent[] onEvents = es.getOnEvents();
             return onEvents;
         }
-
+        if (def instanceof OperationState) {
+            OperationState os = (OperationState) def;
+            ActionNode[] actions = os.getActions();
+            return actions;
+        }
+        if (def instanceof ForEachState) {
+            ForEachState os = (ForEachState) def;
+            ActionNode[] actions = os.getActions();
+            return actions;
+        }
         return null;
     }
 }

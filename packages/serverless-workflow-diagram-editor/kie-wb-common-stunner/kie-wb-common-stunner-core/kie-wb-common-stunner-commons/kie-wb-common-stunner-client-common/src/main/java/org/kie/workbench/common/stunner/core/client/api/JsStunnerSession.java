@@ -65,22 +65,26 @@ public class JsStunnerSession {
 
     public Node getSelectedNode() {
         String selectedUUID = getSelectedElementUUID();
-        return getNodeByUUID(selectedUUID);
+        return null == selectedUUID ? null : getNodeByUUID(selectedUUID);
     }
 
     public Edge getSelectedEdge() {
         String selectedUUID = getSelectedElementUUID();
-        return getEdgeByUUID(selectedUUID);
+        return null == selectedUUID ? null : getEdgeByUUID(selectedUUID);
     }
 
     public Object getSelectedDefinition() {
         Node node = getSelectedNode();
+
+        if (null == node) {
+            return null;
+        }
+
         View<?> content = (View<?>) node.getContent();
         Object definition = content.getDefinition();
         return definition;
     }
 
-    // TODO: Multiple selection / center selection.
     public void selectByUUID(String uuid) {
         session.getSelectionControl().clearSelection().addSelection(uuid);
     }

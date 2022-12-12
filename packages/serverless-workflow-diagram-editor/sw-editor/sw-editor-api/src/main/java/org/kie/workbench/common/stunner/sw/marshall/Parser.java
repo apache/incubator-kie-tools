@@ -20,6 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.sw.definition.ActionNode;
+import org.kie.workbench.common.stunner.sw.definition.CallEventAction;
+import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
+import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
@@ -138,15 +142,29 @@ public class Parser {
     }
 
     private CallbackState parseCallbackState(State jso) {
-        return (CallbackState) parse(CallbackState.class, jso);
+        CallbackState state = (CallbackState) parse(CallbackState.class, jso);
+        if (null != state.getAction()) {
+            state.setAction(parse(ActionNode.class, state.getAction()));
+        }
+        return state;
     }
 
     private ForEachState parseForEachState(State jso) {
-        return (ForEachState) parse(ForEachState.class, jso);
+        ForEachState state = (ForEachState) parse(ForEachState.class, jso);
+        ActionNode[] actions = state.getActions();
+        if (null != actions) {
+            state.setActions(actions);
+        }
+        return state;
     }
 
     private OperationState parseOperationState(State jso) {
-        return (OperationState) parse(OperationState.class, jso);
+        OperationState state = (OperationState) parse(OperationState.class, jso);
+        ActionNode[] actions = state.getActions();
+        if (null != actions) {
+            state.setActions(actions);
+        }
+        return state;
     }
 
     private EventState parseEventState(State jso) {
@@ -164,7 +182,33 @@ public class Parser {
     }
 
     private OnEvent parseOnEvent(OnEvent jso) {
-        return parse(OnEvent.class, jso);
+        OnEvent onEvent = parse(OnEvent.class, jso);
+        ActionNode[] actions = jso.getActions();
+        if (null != actions) {
+            onEvent.setActions(new ActionNode[actions.length]);
+            for (int i = 0; i < actions.length; i++) {
+                ActionNode a = actions[i];
+                ActionNode action = parseAction(a);
+                onEvent.getActions()[i] = action;
+            }
+        }
+        return onEvent;
+    }
+
+    private ActionNode parseAction(ActionNode jso) {
+        ActionNode action = null;
+        if (null != jso.getFunctionRef()) {
+            action = parse(CallFunctionAction.class, jso);
+            action.setFunctionRef(jso.getFunctionRef());
+        } else if (null != jso.getSubFlowRef()) {
+            action = parse(CallSubflowAction.class, jso);
+            action.setSubFlowRef(jso.getSubFlowRef());
+        } else if (null != jso.getEventRef()) {
+            action = parse(CallEventAction.class, jso);
+            action.setEventRef(jso.getEventRef());
+        }
+
+        return action;
     }
 
     private ErrorTransition parseErrorTransition(ErrorTransition jso) {

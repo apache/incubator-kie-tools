@@ -23,13 +23,13 @@ import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper
 @JsType
 public class Function {
 
-    private String name;
+    public String name;
 
-    private String operation;
+    public String operation;
 
-    private FunctionType type;
+    public FunctionType type;
 
-    private String authRef;
+    public String authRef;
 
     public final String getName() {
         return name;
