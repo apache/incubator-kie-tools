@@ -115,7 +115,7 @@ export function BeeTableBody<R extends object>({
           ouiaId={"expression-row-" + rowIndex}
           key={rowKey}
           onClick={onRowClick(rowKey)}
-          style={{ display: "flex", backgroundColor: "#f9e9d6" }}
+          style={{ display: "flex" }}
         >
           {row.cells.map((_, cellIndex) => {
             return (

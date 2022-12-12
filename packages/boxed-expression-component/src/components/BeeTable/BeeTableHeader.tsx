@@ -257,7 +257,7 @@ export function BeeTableHeader<R extends object>({
 
   const renderAtLevelInHeaderGroups = useCallback(
     (level: number) => (
-      <PfReactTable.Tr style={{ display: "flex", backgroundColor: "#ffcccd" }}>
+      <PfReactTable.Tr style={{ display: "flex" }}>
         {_.nth(reactTableInstance.headerGroups, level)!.headers.map((column, columnIndex) =>
           renderColumn(column, 0, columnIndex)
         )}

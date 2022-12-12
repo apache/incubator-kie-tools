@@ -170,10 +170,6 @@
   background-color: #00000010;
 }
 
-.expression-container .pf-c-drawer .pf-c-drawer__splitter.smallest {
-  background-color: #ff000010;
-}
-
 .expression-container .pf-c-drawer .pf-c-drawer__splitter.min {
   background-color: #00ffb739;
 }

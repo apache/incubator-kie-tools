@@ -15,7 +15,7 @@
  */
 
 .pivoting * {
-  color: red;
+  color: red !important;
 }
 
 .not-pivoting * {

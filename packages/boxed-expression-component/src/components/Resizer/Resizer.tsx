@@ -57,65 +57,29 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     return `${heightClass} ${id}`;
   }, [height, id]);
 
-  const [isResizingHappening, setResizeHappening] = useState(false);
-  const [isGlobalResizingHappening, setGlobalResizeHappening] = useState(false);
   const [__resizingWidth, __setResizingWidth] = useState<ResizingWidth>({
     value: width ?? DEFAULT_MIN_WIDTH,
     isPivoting: false,
   }); // internal
 
-  React.useEffect(() => {
-    const BC = new BroadcastChannel("resize_stop");
-    BC.onmessage = () => {
-      setGlobalResizeHappening(false);
-    };
-
-    return () => {
-      BC.close();
-    };
-  }, [width, resizingWidth, setWidth]);
-
-  React.useEffect(() => {
-    const BC1 = new BroadcastChannel("resize_stop");
-    BC1.onmessage = () => {
-      setGlobalResizeHappening(false);
-    };
-
-    const BC2 = new BroadcastChannel("resize_start");
-    BC2.onmessage = () => {
-      setGlobalResizeHappening(true);
-    };
-
-    return () => {
-      BC1.close();
-      BC2.close();
-    };
-  }, []);
-
   const onResizeStop = useCallback(
     (_, data) => {
-      setResizeHappening(false);
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: false }));
+      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: Math.floor(data.size.width), isPivoting: false }));
       setWidth?.(resizingWidth?.value);
-      const BC = new BroadcastChannel("resize_stop");
-      BC.postMessage("RESIZE_STOP");
     },
     [resizingWidth, setResizingWidth, setWidth]
   );
 
   const onResize = useCallback(
     (_, data) => {
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: true }));
+      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: Math.floor(data.size.width), isPivoting: true }));
     },
     [setResizingWidth]
   );
 
   const onResizeStart = useCallback(
     (_, data) => {
-      setResizeHappening(true);
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: data.size.width, isPivoting: true }));
-      const BC = new BroadcastChannel("resize_start");
-      BC.postMessage("RESIZE_START");
+      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: Math.floor(data.size.width), isPivoting: true }));
     },
     [setResizingWidth]
   );
@@ -150,7 +114,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
         </div>
       )}
 
-      {/* {(width && !(isGlobalResizingHappening && !isResizingHappening) && ( */}
       {(width && (
         <Resizable
           width={resizingWidth?.value ?? __resizingWidth.value}
@@ -165,11 +128,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>
               <div
                 className={`pf-c-drawer__splitter pf-m-vertical ${
-                  minWidth === (resizingWidth?.value ?? __resizingWidth.value)
-                    ? isResizingHappening
-                      ? "smallest"
-                      : "min"
-                    : ""
+                  minWidth === (resizingWidth?.value ?? __resizingWidth.value) ? "min" : ""
                 } ${(resizingWidth?.value ?? __resizingWidth.value ?? 0) < (minWidth ?? 0) ? "error" : ""}`}
               >
                 <div className={`pf-c-drawer__splitter-handle`} />

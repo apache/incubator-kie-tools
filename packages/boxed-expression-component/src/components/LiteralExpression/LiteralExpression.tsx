@@ -16,7 +16,7 @@
 
 import "./LiteralExpression.css";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { DmnBuiltInDataType, LiteralExpressionDefinition, ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../Resizer";
@@ -67,12 +67,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     beeGwtService?.selectObject(literalExpression.id);
   }, [beeGwtService, literalExpression.id]);
 
-  const minWidthLocal = useMemo(() => {
-    return Math.max(
-      nestedExpressionContainer.minWidthLocal - LITERAL_EXPRESSION_EXTRA_WIDTH,
-      LITERAL_EXPRESSION_MIN_WIDTH
-    );
-  }, [nestedExpressionContainer]);
+  //// RESIZING WIDTH
 
   const minWidthGlobal = useMemo(() => {
     return Math.max(
@@ -80,8 +75,6 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       LITERAL_EXPRESSION_MIN_WIDTH
     );
   }, [nestedExpressionContainer]);
-
-  //// RESIZING WIDTH
 
   const resizingWidthsDispatch = useResizingWidthDispatch();
   const { resizingWidths } = useResizingWidths();
@@ -104,29 +97,42 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     );
   }, [literalExpression.id, literalExpression.width, resizingWidths]);
 
-  React.useLayoutEffect(() => {
+  useEffect(() => {
     setResizingWidth((prev) => ({
       value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
       isPivoting: false,
     }));
   }, [literalExpression.width, setResizingWidth]);
 
-  React.useLayoutEffect(() => {
+  useEffect(() => {
     setResizingWidth((prev) => {
       return prev.isPivoting
         ? {
-            value: nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
+            value: Math.max(
+              nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
+              minWidthGlobal
+            ),
             isPivoting: true,
           }
         : {
             value: Math.max(
               nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
+              minWidthGlobal,
               literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
             ),
             isPivoting: false,
           };
     });
-  }, [literalExpression.id, literalExpression.width, nestedExpressionContainer.resizingWidth, setResizingWidth]);
+  }, [
+    literalExpression.id,
+    literalExpression.width,
+    minWidthGlobal,
+    nestedExpressionContainer.minWidthGlobal,
+    nestedExpressionContainer.resizingWidth,
+    setResizingWidth,
+  ]);
+
+  //
 
   return (
     <div className={`literal-expression ${resizingWidth.isPivoting ? "pivoting" : "not-pivoting"}`}>
