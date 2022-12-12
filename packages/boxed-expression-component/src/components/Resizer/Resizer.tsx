@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { Resizable } from "react-resizable";
 import { v4 as uuid } from "uuid";
-import { ResizingWidth, ResizingWidthContextType } from "../ExpressionDefinitionRoot";
+import { ResizingWidth } from "../ExpressionDefinitionRoot";
 import "./Resizer.css";
 
 export const DEFAULT_MIN_WIDTH = 100;
@@ -27,7 +27,7 @@ export interface ResizerProps {
   actualWidth?: number;
   width?: number;
   setWidth?: (width: number | undefined) => void;
-  resizingWidth?: number;
+  resizingWidth?: ResizingWidth;
   setResizingWidth?: (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void;
   height?: number | "100%";
   minWidth?: number;
@@ -80,7 +80,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     (_, data) => {
       setResizeHappening(false);
       (setResizingWidth ?? __setResizingWidth)((prev) => ({ resizingWidth: data.size.width, isPivoting: false }));
-      setWidth?.(resizingWidth);
+      setWidth?.(resizingWidth?.resizingWidth);
       const BC = new BroadcastChannel("resize");
       BC.postMessage("RESIZE_STOP");
     },
@@ -134,7 +134,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       {(width && (
         <Resizable
-          width={resizingWidth ?? __resizingWidth.resizingWidth}
+          width={resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth}
           height={0}
           onResize={onResize}
           onResizeStop={onResizeStop}
@@ -146,15 +146,23 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>
               <div
                 className={`pf-c-drawer__splitter pf-m-vertical ${
-                  minWidth === (resizingWidth ?? __resizingWidth) ? (isResizingHappening ? "smallest" : "min") : ""
-                } ${(resizingWidth ?? __resizingWidth ?? 0) < (minWidth ?? 0) ? "error" : ""}`}
+                  minWidth === (resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth)
+                    ? isResizingHappening
+                      ? "smallest"
+                      : "min"
+                    : ""
+                } ${
+                  (resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth ?? 0) < (minWidth ?? 0) ? "error" : ""
+                }`}
               >
                 <div className={`pf-c-drawer__splitter-handle`} />
               </div>
             </div>
           }
         >
-          <div style={{ width: resizingWidth ?? __resizingWidth.resizingWidth, minWidth }}>{children}</div>
+          <div style={{ width: resizingWidth?.resizingWidth ?? __resizingWidth.resizingWidth, minWidth }}>
+            {children}
+          </div>
         </Resizable>
       )) || (
         <>

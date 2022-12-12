@@ -43,7 +43,11 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
       return setExpression((prev) => {
         {
           return {
-            ...getDefaultExpressionDefinitionByLogicType(logicType, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, prev),
+            ...getDefaultExpressionDefinitionByLogicType(
+              logicType,
+              { resizingWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, isPivoting: false },
+              prev
+            ),
             logicType,
             isHeadless: false,
             id: prev.id ?? generateUuid(),

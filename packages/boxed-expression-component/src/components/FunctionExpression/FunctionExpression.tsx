@@ -409,8 +409,10 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     return {
       minWidthLocal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
       minWidthGlobal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
-      resizingWidth: nestedExpressionContainer.resizingWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
-      isPivot: false,
+      resizingWidth: {
+        resizingWidth: nestedExpressionContainer.resizingWidth.resizingWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // contextEntry is not present, to -2px for border
+        isPivoting: false,
+      },
     };
   }, [nestedExpressionContainer]);
 

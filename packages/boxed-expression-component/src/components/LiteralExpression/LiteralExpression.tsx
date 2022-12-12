@@ -88,17 +88,20 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   const setResizingWidth = useCallback(
     (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      resizingWidthsDispatch.updateResizingWidth(literalExpression.id!, getNewResizingWidth); // FIXME: Tiago -> id optional
+      // FIXME: Tiago -> id optional
+      resizingWidthsDispatch.updateResizingWidth(literalExpression.id!, getNewResizingWidth);
     },
     [literalExpression.id, resizingWidthsDispatch]
   );
 
-  const { resizingWidth } = useMemo(() => {
+  const resizingWidth = useMemo<ResizingWidth>(() => {
     return (
+      // FIXME: Tiago -> id optional
       resizingWidths.get(literalExpression.id!) ?? {
         resizingWidth: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+        isPivoting: false,
       }
-    ); // FIXME: Tiago -> id optional
+    );
   }, [literalExpression.id, literalExpression.width, resizingWidths]);
 
   React.useEffect(() => {
@@ -112,12 +115,12 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     setResizingWidth((prev) => {
       return prev.isPivoting
         ? {
-            resizingWidth: nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
+            resizingWidth: nestedExpressionContainer.resizingWidth.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
             isPivoting: true,
           }
         : {
             resizingWidth: Math.max(
-              nestedExpressionContainer.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
+              nestedExpressionContainer.resizingWidth.resizingWidth - LITERAL_EXPRESSION_EXTRA_WIDTH,
               literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
             ),
             isPivoting: prev.isPivoting,
@@ -153,7 +156,9 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           setResizingWidth={setResizingWidth}
         >
           <BeeTableEditableCellContent
-            value={`${literalExpression.id?.substring(0, 5)} - ${nestedExpressionContainer.resizingWidth}`}
+            value={`${literalExpression.id?.substring(0, 5)} - ${
+              nestedExpressionContainer.resizingWidth.resizingWidth
+            }`}
             rowIndex={0}
             columnId={literalExpression.id ?? "-"}
             onCellUpdate={updateContent}
