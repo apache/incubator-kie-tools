@@ -183,10 +183,11 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
         verify(scenarioGridMock, times(1)).clearSelections();
 
         final int expectedClickPointY = 260; // clickPointY - Scenario.ContextMenuRegistry.BIGGEST_MENU_HEIGHT_PX
-        verify(gridContextMenuMock).show(GridWidget.SIMULATION,
-                clickPointX,
-                expectedClickPointY,
-                0);
+        verify(gridContextMenuMock)
+                .show(GridWidget.SIMULATION,
+                        clickPointX,
+                        expectedClickPointY,
+                        0);
         verify(scenarioGridMock, times(1)).setSelectedCell(eq(0), eq(0));
     }
 }

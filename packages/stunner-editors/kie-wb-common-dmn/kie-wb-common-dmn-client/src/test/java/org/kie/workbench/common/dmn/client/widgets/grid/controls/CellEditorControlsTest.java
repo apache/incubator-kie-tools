@@ -99,9 +99,10 @@ public class CellEditorControlsTest {
 
         controls.show(editor, 10, 450);
 
-        verify(view).show(eq(editor),
-                eq(60),
-                eq(210)); // 450 + 10 - CellEditorControls.BIGGEST_MENU_HEIGHT_PX
+        verify(view)
+                .show(eq(editor),
+                        eq(60),
+                        eq(210)); // 450 + 10 - CellEditorControls.BIGGEST_MENU_HEIGHT_PX
     }
 
     @Test

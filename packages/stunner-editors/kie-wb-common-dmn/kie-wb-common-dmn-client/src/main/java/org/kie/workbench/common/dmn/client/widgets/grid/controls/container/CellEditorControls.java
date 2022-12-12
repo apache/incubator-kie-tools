@@ -81,7 +81,7 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
         int yCoordinate = (int) ((y * transform.getScaleY()) + transform.getTranslateY()) + gridPanel.getAbsoluteTop();
         final int absoluteGridBottom = gridPanel.getElement().getAbsoluteBottom();
 
-        if(yCoordinate +  BIGGEST_MENU_HEIGHT_PX > absoluteGridBottom) {
+        if (yCoordinate + BIGGEST_MENU_HEIGHT_PX > absoluteGridBottom) {
             yCoordinate -= BIGGEST_MENU_HEIGHT_PX;
         }
 
