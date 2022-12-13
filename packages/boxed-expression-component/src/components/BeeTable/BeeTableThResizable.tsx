@@ -64,7 +64,7 @@ export function BeeTableThResizable<R extends object>({
   const headerProps = useMemo(
     () => ({
       ...column.getHeaderProps(),
-      style: { flexGrow: "1" },
+      style: column.width ? {} : { flexGrow: 1 },
     }),
     [column]
   );
@@ -154,7 +154,7 @@ export function BeeTableThResizable<R extends object>({
       headerProps={headerProps}
       isFocusable={isFocusable}
       key={columnKey}
-      // onClick={onClick}
+      onClick={onClick}
       onKeyDown={onCellKeyDown}
       rowIndex={rowIndex}
       index={columnIndex}

@@ -22,7 +22,6 @@ export * from "./DmnBuiltInDataType";
 export * from "./DmnDataType";
 export * from "./DecisionTableExpressionDefinitionRule";
 export * from "./ExpressionDefinition";
-export * from "./FunctionExpressionDefinitionKind";
 export * from "./DecisionTableExpressionDefinitionHitPolicy";
 export * from "./ExpressionDefinitionLogicType";
 export * from "./BeeTable";

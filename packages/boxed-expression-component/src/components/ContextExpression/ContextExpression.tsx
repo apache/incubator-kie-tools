@@ -38,6 +38,7 @@ import {
   FunctionExpressionDefinitionKind,
   FunctionExpressionDefinition,
   LiteralExpressionDefinition,
+  RelationExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -55,16 +56,21 @@ import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
 import { LITERAL_EXPRESSION_MIN_WIDTH, LITERAL_EXPRESSION_EXTRA_WIDTH } from "../LiteralExpression";
 import { ResizingWidth, useResizingWidthDispatch, useResizingWidths } from "../ExpressionDefinitionRoot";
+import { RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "../RelationExpression";
 
 const CONTEXT_ENTRY_DEFAULT_NAME = "ContextEntry-1";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
+export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
+
+export const NESTED_EXPRESSION_CLEAR_MARGIN = 14;
+
 export const CONTEXT_ENTRY_EXTRA_WIDTH =
-  // 60 = rowIndexColumn,
-  // 14 = clear margin,
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+  NESTED_EXPRESSION_CLEAR_MARGIN +
   // 2 + 2 = info and expression column borders
-  60 + 14 + 2 + 2;
+  (2 + 2);
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -162,12 +168,58 @@ export function getDefaultExpressionDefinitionByLogicType(
       entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
     };
     return invocationExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.Relation) {
+    const relationExpression: RelationExpressionDefinition = {
+      ...prev,
+      logicType,
+      columns: [
+        {
+          id: generateUuid(),
+          name: "column-1",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "column-2",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "column-3",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "column-4",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+      ],
+      rows: [
+        {
+          id: generateUuid(),
+          cells: ["a", "b", "c", "d"],
+        },
+        {
+          id: generateUuid(),
+          cells: ["e", "f", "g", "h"],
+        },
+        {
+          id: generateUuid(),
+          cells: ["i", "j", "k", "l"],
+        },
+      ],
+    };
+    return relationExpression;
   } else {
     return prev;
   }
 }
 
-function getExpressionMinWidth(expression?: ExpressionDefinition): number {
+export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
   if (!expression) {
     return DEFAULT_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Context) {
@@ -192,15 +244,21 @@ function getExpressionMinWidth(expression?: ExpressionDefinition): number {
     } else {
       throw new Error("Should never get here");
     }
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
+    return (
+      (expression.columns?.length ?? 0) * RELATION_EXPRESSION_COLUMN_MIN_WIDTH +
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+      NESTED_EXPRESSION_CLEAR_MARGIN +
+      (expression.columns?.length ?? 0) * 2 // 2px for border of each column
+    );
+  }
 
-    // TODO: Tiago -> Implement those
-  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+  // TODO: Tiago -> Implement those
+  else if (expression.logicType === ExpressionDefinitionLogicType.List) {
     return LIST_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     return CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
-    return 0;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
     return 0;
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
     return 0;
@@ -211,7 +269,7 @@ function getExpressionMinWidth(expression?: ExpressionDefinition): number {
   }
 }
 
-function getExpressionResizingWidth(
+export function getExpressionResizingWidth(
   expression: ExpressionDefinition | undefined,
   resizingWidths: Map<string, ResizingWidth>
 ): number {
@@ -245,6 +303,14 @@ function getExpressionResizingWidth(
     } else {
       throw new Error("Should never get here");
     }
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
+    return (
+      resizingWidth ??
+      (expression.columns ?? []).reduce(
+        (acc, { width }) => acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH),
+        CONTEXT_ENTRY_EXTRA_WIDTH + (expression.columns?.length ?? 0)
+      )
+    );
   }
 
   // TODO: Tiago -> Implement those
@@ -254,12 +320,6 @@ function getExpressionResizingWidth(
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
-    return (
-      resizingWidth ??
-      expression.columns?.reduce((acc, { width }) => acc + (width ?? DEFAULT_MIN_WIDTH), 0) ??
-      DEFAULT_MIN_WIDTH
-    );
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
@@ -374,6 +434,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
+        width: undefined,
         columns: [
           {
             accessor: "entryInfo",
@@ -404,9 +465,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     contextExpression.dataType,
     contextExpression.entryInfoWidth,
     decisionNodeId,
-    setEntryInfoWidth,
     entryInfoResizingWidth,
-    setEntryInfoResizingWidth,
+    setEntryInfoWidth,
   ]);
 
   const onColumnsUpdate = useCallback(

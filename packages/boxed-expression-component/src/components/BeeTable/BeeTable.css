@@ -17,7 +17,6 @@
 .expression-container .table-component,
 .expression-container .table-component table {
   font-style: normal;
-  width: 100%;
 }
 
 .expression-container .table-component,
@@ -26,7 +25,6 @@
 .expression-container .table-component table thead tr,
 .expression-container .table-component table tbody,
 .expression-container .table-component table tbody tr {
-  width: 100%;
   box-sizing: border-box;
 }
 

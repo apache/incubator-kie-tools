@@ -27,15 +27,6 @@ import {
   DecisionTableExpressionDefinitionClause,
   DecisionTableExpressionDefinitionRule,
 } from "./DecisionTableExpressionDefinitionRule";
-import {
-  FeelFunctionExpressionDefinition,
-  JavaFunctionExpressionDefinition,
-  PmmlFunctionExpressionDefinition,
-} from "./FunctionExpressionDefinitionKind";
-import {
-  RelationExpressionDefinitionColumn as RelationExpressionDefinitionColumn,
-  RelationExpressionDefinitionRow as RelationExpressionDefinitionRow,
-} from "./BeeTable";
 
 interface ExpressionDefinitionBase {
   /** Unique identifier used to identify the expression */
@@ -86,6 +77,24 @@ export interface RelationExpressionDefinition extends ExpressionDefinitionBase {
   columns?: RelationExpressionDefinitionColumn[];
   /** Rows order is from top to bottom. Each row has a collection of cells, one for each column */
   rows?: RelationExpressionDefinitionRow[];
+}
+
+export interface RelationExpressionDefinitionRow {
+  /** Row identifier */
+  id: string;
+  /** Cells */
+  cells: string[];
+}
+
+export interface RelationExpressionDefinitionColumn {
+  /** Column identifier */
+  id: string;
+  /** Column name */
+  name: string;
+  /** Column data type */
+  dataType: DmnBuiltInDataType;
+  /** Column width */
+  width?: number;
 }
 
 export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
@@ -157,6 +166,53 @@ export type FunctionExpressionDefinition = ExpressionDefinitionBase & {
   /** Parameters column width */
   parametersWidth?: number; // FIXME: Tiago -> Remove
 } & (FeelFunctionExpressionDefinition | JavaFunctionExpressionDefinition | PmmlFunctionExpressionDefinition);
+
+export enum FunctionExpressionDefinitionKind {
+  Feel = "FEEL",
+  Java = "Java",
+  Pmml = "PMML",
+}
+
+export interface FeelFunctionExpressionDefinition {
+  /** Feel Function */
+  functionKind: FunctionExpressionDefinitionKind.Feel;
+  /** The Expression related to the function */
+  expression: ExpressionDefinition;
+}
+
+export interface JavaFunctionExpressionDefinition {
+  /** Java Function */
+  functionKind: FunctionExpressionDefinitionKind.Java;
+  /** Java class */
+  className?: string;
+  /** Method signature */
+  methodName?: string;
+  /** Class text field identifier */
+  classFieldId?: string;
+  /** Method text field identifier */
+  methodFieldId?: string;
+}
+
+export interface PmmlParam {
+  document: string;
+  modelsFromDocument?: {
+    model: string;
+    parametersFromModel?: ContextExpressionDefinitionEntryInfo[];
+  }[];
+}
+
+export interface PmmlFunctionExpressionDefinition {
+  /** Pmml Function */
+  functionKind: FunctionExpressionDefinitionKind.Pmml;
+  /** Selected PMML document */
+  document?: string;
+  /** Selected PMML model */
+  model?: string;
+  /** Document dropdown field identifier */
+  documentFieldId?: string;
+  /** Model dropdown field identifier */
+  modelFieldId?: string;
+}
 
 export type ExpressionDefinition =
   | LiteralExpressionDefinition

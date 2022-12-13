@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import * as React from "react";
 import * as ReactTable from "react-table";
-import { BeeTableEditableCellContentProps } from "../components";
 
 export interface BeeTableColumnsUpdateArgs<R extends object> {
   columns: ReactTable.Column<R>[];
@@ -118,26 +116,6 @@ export interface BeeTableOperationHandlerGroup {
 export type BeeTableOperationHandlerConfig =
   | BeeTableOperationHandlerGroup[]
   | { [columnGroupType: string]: BeeTableOperationHandlerGroup[] };
-
-export type RelationExpressionDefinitionRow = {
-  /** Row identifier */
-  id: string;
-  /** Cells */
-  cells: string[];
-};
-
-export interface RelationExpressionDefinitionColumn {
-  /** Column identifier */
-  id: string;
-  /** Column name */
-  name: string;
-  /** Column data type */
-  dataType: DmnBuiltInDataType;
-  /** Column width */
-  width?: number;
-  /** Set column width */
-  setWidth?: (width: number | undefined) => void;
-}
 
 /**
  * Interface to be inherited from the table cell components (td, th)
