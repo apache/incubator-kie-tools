@@ -142,6 +142,7 @@ public class TestProperties {
     public static final Map<String, String> EXPECTED_MAP_FOR_EXPANDABLE_TYPE_2 = new HashMap<>();
 
     public static final Double GRID_WIDTH = 100.0;
+    public static final Double GRID_HEIGHT = 400.0;
     public static final Double HEADER_HEIGHT = 10.0;
     public static final Double HEADER_ROW_HEIGHT = 10.0;
     public static final int UI_COLUMN_INDEX = 0;

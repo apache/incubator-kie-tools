@@ -29,6 +29,8 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 @Dependent
 public class CellEditorControls implements CellEditorControlsView.Presenter {
 
+    private static final int BIGGEST_MENU_HEIGHT_PX = 250;
+
     private Optional<Supplier<DMNGridPanel>> gridPanelSupplier;
     private CellEditorControlsView view;
 
@@ -76,6 +78,13 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
     private int getTransformedY(final int y) {
         final DMNGridPanel gridPanel = gridPanelSupplier.get().get();
         final Transform transform = gridPanel.getViewport().getTransform();
-        return (int) ((y * transform.getScaleY()) + transform.getTranslateY()) + gridPanel.getAbsoluteTop();
+        int yCoordinate = (int) ((y * transform.getScaleY()) + transform.getTranslateY()) + gridPanel.getAbsoluteTop();
+        final int absoluteGridBottom = gridPanel.getElement().getAbsoluteBottom();
+
+        if (yCoordinate + BIGGEST_MENU_HEIGHT_PX > absoluteGridBottom) {
+            yCoordinate -= BIGGEST_MENU_HEIGHT_PX;
+        }
+
+        return yCoordinate;
     }
 }
