@@ -24,7 +24,6 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
-import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
@@ -285,22 +284,20 @@ export function NewWorkspaceFromUrlPage() {
 
   return (
     <>
-      <OnlineEditorPage>
-        {importingError && <EditorPageErrorPage path={importableUrl.url.toString()} errors={[importingError]} />}
-        {!importingError && (
-          <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-            <Bullseye>
-              <TextContent>
-                <Bullseye>
-                  <Spinner />
-                </Bullseye>
-                <br />
-                <Text component={TextVariants.p}>{`Importing from '${queryParamUrl}'`}</Text>
-              </TextContent>
-            </Bullseye>
-          </PageSection>
-        )}
-      </OnlineEditorPage>
+      {importingError && <EditorPageErrorPage path={importableUrl.url.toString()} errors={[importingError]} />}
+      {!importingError && (
+        <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Importing from '${queryParamUrl}'`}</Text>
+            </TextContent>
+          </Bullseye>
+        </PageSection>
+      )}
     </>
   );
 }

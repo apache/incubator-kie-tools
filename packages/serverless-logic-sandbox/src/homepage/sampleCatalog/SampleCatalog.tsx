@@ -16,16 +16,17 @@
 
 import * as React from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Sample, SampleCard, SampleType } from "./SampleCard";
-import { ReactComponent as GreetingsSvg } from "../../static/samples/greetings/greetings.svg";
-import { ReactComponent as GreetingsKafkaSvg } from "../../static/samples/greetings-kafka/greetings-kafka.svg";
-import { ReactComponent as ProductsDashboardSvg } from "../../static/samples/products-dashboard/products-dashboard.svg";
-import { ReactComponent as SwfReportSvg } from "../../static/samples/swf-report/swf-report.svg";
-import { ReactComponent as KitchensinkSvg } from "../../static/samples/kitchensink/kitchensink.svg";
-import { ReactComponent as CompensationSvg } from "../../static/samples/compensation/compensation.svg";
+import { Sample, SampleType } from "./Types";
+import { ReactComponent as GreetingsSvg } from "../../../static/samples/greetings/greetings.svg";
+import { ReactComponent as GreetingsKafkaSvg } from "../../../static/samples/greetings-kafka/greetings-kafka.svg";
+import { ReactComponent as ProductsDashboardSvg } from "../../../static/samples/products-dashboard/products-dashboard.svg";
+import { ReactComponent as SwfReportSvg } from "../../../static/samples/swf-report/swf-report.svg";
+import { ReactComponent as KitchensinkSvg } from "../../../static/samples/kitchensink/kitchensink.svg";
+import { ReactComponent as CompensationSvg } from "../../../static/samples/compensation/compensation.svg";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { SampleCard } from "./SampleCard";
 
-export const samples: Array<Sample> = [
+const samples: Array<Sample> = [
   {
     name: "Greetings",
     fileName: "greetings",
@@ -72,7 +73,7 @@ export const samples: Array<Sample> = [
   },
 ];
 
-export function Showcase() {
+export function SampleCatalog() {
   return (
     <>
       <TextContent>

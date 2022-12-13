@@ -34,7 +34,6 @@ import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocat
 import { isEditable, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
-import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
@@ -353,55 +352,53 @@ export function EditorPage(props: Props) {
   }, [workspaceFilePromise.data, editor, swfLanguageService, editorPageDock, i18n.terms.validation]);
 
   return (
-    <OnlineEditorPage>
-      <PromiseStateWrapper
-        promise={workspaceFilePromise}
-        pending={<LoadingSpinner />}
-        rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
-        resolved={(file) => (
-          <>
-            <Page>
-              <EditorToolbar
-                workspaceFile={file.workspaceFile}
-                editor={editor}
-                alerts={alerts}
-                alertsRef={alertsRef}
-                editorPageDock={editorPageDock}
-              />
-              <Divider />
-              <EditorPageDockDrawer
-                ref={editorPageDockRef}
-                isEditorReady={editor?.isReady}
-                workspaceFile={file.workspaceFile}
-              >
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
-                  <div style={{ height: "100%" }}>
-                    {!isEditorReady && <LoadingSpinner />}
-                    <div style={{ display: isEditorReady ? "inline" : "none" }}>
-                      {embeddedEditorFile && (
-                        <EmbeddedEditor
-                          /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                           * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                           */
-                          key={uniqueFileId}
-                          ref={editorRef}
-                          file={embeddedEditorFile}
-                          editorEnvelopeLocator={editorEnvelopeLocator}
-                          channelType={ChannelType.ONLINE_MULTI_FILE}
-                          locale={locale}
-                          customChannelApiImpl={apiImpl}
-                          stateControl={stateControl}
-                          isReady={isReady}
-                        />
-                      )}
-                    </div>
+    <PromiseStateWrapper
+      promise={workspaceFilePromise}
+      pending={<LoadingSpinner />}
+      rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
+      resolved={(file) => (
+        <>
+          <Page>
+            <EditorToolbar
+              workspaceFile={file.workspaceFile}
+              editor={editor}
+              alerts={alerts}
+              alertsRef={alertsRef}
+              editorPageDock={editorPageDock}
+            />
+            <Divider />
+            <EditorPageDockDrawer
+              ref={editorPageDockRef}
+              isEditorReady={editor?.isReady}
+              workspaceFile={file.workspaceFile}
+            >
+              <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+                <div style={{ height: "100%" }}>
+                  {!isEditorReady && <LoadingSpinner />}
+                  <div style={{ display: isEditorReady ? "inline" : "none" }}>
+                    {embeddedEditorFile && (
+                      <EmbeddedEditor
+                        /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                         * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                         */
+                        key={uniqueFileId}
+                        ref={editorRef}
+                        file={embeddedEditorFile}
+                        editorEnvelopeLocator={editorEnvelopeLocator}
+                        channelType={ChannelType.ONLINE_MULTI_FILE}
+                        locale={locale}
+                        customChannelApiImpl={apiImpl}
+                        stateControl={stateControl}
+                        isReady={isReady}
+                      />
+                    )}
                   </div>
-                </PageSection>
-              </EditorPageDockDrawer>
-            </Page>
-          </>
-        )}
-      />
-    </OnlineEditorPage>
+                </div>
+              </PageSection>
+            </EditorPageDockDrawer>
+          </Page>
+        </>
+      )}
+    />
   );
 }
