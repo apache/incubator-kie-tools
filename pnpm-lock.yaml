@@ -123,9 +123,9 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@types/vscode": ^1.66.0
+      "@vscode/vsce": ^2.15.0
       rimraf: ^3.0.2
       typescript: ^4.4.2
-      vsce: ^2.14.0
       webpack: ^5.36.2
       webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
@@ -142,9 +142,9 @@ importers:
       "@kie-tools/root-env": link:../../packages/root-env
       "@kie-tools/tsconfig": link:../../packages/tsconfig
       "@types/vscode": 1.66.0
+      "@vscode/vsce": 2.15.0
       rimraf: 3.0.2
       typescript: 4.5.4
-      vsce: 2.14.0
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
@@ -290,9 +290,9 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@types/vscode": ^1.66.0
+      "@vscode/vsce": ^2.15.0
       rimraf: ^3.0.2
       typescript: ^4.4.2
-      vsce: ^2.14.0
       webpack: ^5.36.2
       webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
@@ -307,9 +307,9 @@ importers:
       "@kie-tools/root-env": link:../../packages/root-env
       "@kie-tools/tsconfig": link:../../packages/tsconfig
       "@types/vscode": 1.66.0
+      "@vscode/vsce": 2.15.0
       rimraf: 3.0.2
       typescript: 4.5.4
-      vsce: 2.14.0
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
@@ -11137,61 +11137,6 @@ packages:
       xml2js: 0.4.23
       yauzl: 2.10.0
       yazl: 2.5.1
-    dev: true
-
-  /@wdio/config/7.16.13:
-    resolution:
-      { integrity: sha512-LSGoa83tWQIBppB+LeHjY40B9tuuvmDV1qdBLVXR1ROcOUWWz/oQP3NFLtLm3266LXoJUbwebzGcRIK1EcNk3Q== }
-    engines: { node: ">=12.0.0" }
-    dependencies:
-      "@wdio/logger": 7.16.0
-      "@wdio/types": 7.16.13
-      deepmerge: 4.2.2
-      glob: 7.2.0
-    dev: true
-
-  /@wdio/logger/7.16.0:
-    resolution:
-      { integrity: sha512-/6lOGb2Iow5eSsy7RJOl1kCwsP4eMlG+/QKro5zUJsuyNJSQXf2ejhpkzyKWLgQbHu83WX6cM1014AZuLkzoQg== }
-    engines: { node: ">=12.0.0" }
-    dependencies:
-      chalk: 4.1.2
-      loglevel: 1.7.1
-      loglevel-plugin-prefix: 0.8.4
-      strip-ansi: 6.0.1
-    dev: true
-
-  /@wdio/protocols/7.16.7:
-    resolution:
-      { integrity: sha512-Wv40pNQcLiPzQ3o98Mv4A8T1EBQ6k4khglz/e2r16CTm+F3DDYh8eLMAsU5cgnmuwwDKX1EyOiFwieykBn5MCg== }
-    engines: { node: ">=12.0.0" }
-    dev: true
-
-  /@wdio/repl/7.16.13:
-    resolution:
-      { integrity: sha512-XWh3dzp6U8LLL4cNGWFra+quVyXZ25Ym38zpsBVtV0/z5NCHJmjRS4ytyvvkzbQ8SyqQ7Y3G8MjfGNi2sBNkIQ== }
-    engines: { node: ">=12.0.0" }
-    dependencies:
-      "@wdio/utils": 7.16.13
-    dev: true
-
-  /@wdio/types/7.16.13:
-    resolution:
-      { integrity: sha512-HIeXKCL+mUjyJxvnHSoaIo3NRgZLbeekyRIwo6USfd9qGlQ8dQ6fyCR3ZU9VqNz9j4+JIn+LRQ7imbz5SdnGbw== }
-    engines: { node: ">=12.0.0" }
-    dependencies:
-      "@types/node": 17.0.12
-      got: 11.8.2
-    dev: true
-
-  /@wdio/utils/7.16.13:
-    resolution:
-      { integrity: sha512-O6D89Ghtm5XtTv4DPKvCBKZOZYNONIcBM5/hmdr3V9mzVrTFq8Q3uE8pmmq303Oh91KcoN8Em5zoAG7Zpc5tRg== }
-    engines: { node: ">=12.0.0" }
-    dependencies:
-      "@wdio/logger": 7.16.0
-      "@wdio/types": 7.16.13
-      p-iteration: 1.1.8
     dev: true
 
   /@webassemblyjs/ast/1.11.1:
@@ -26858,9 +26803,9 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vsce/2.14.0:
+  /vsce/2.15.0:
     resolution:
-      { integrity: sha512-LH0j++sHjcFNT++SYcJ86Zyw49GvyoTRfzYJGmaCgfzTyL7MyMhZeVEnj9K9qKh/m1N3/sdWWNxP+PFS/AvWiA== }
+      { integrity: sha512-P8E9LAZvBCQnoGoizw65JfGvyMqNGlHdlUXD1VAuxtvYAaHBKLBdKPnpy60XKVDAkQCfmMu53g+gq9FM+ydepw== }
     engines: { node: ">= 14" }
     deprecated: vsce has been renamed to @vscode/vsce. Install using @vscode/vsce instead.
     hasBin: true
@@ -26919,7 +26864,7 @@ packages:
       selenium-webdriver: 4.7.0
       targz: 1.0.1
       unzip-stream: 0.3.1
-      vsce: 2.14.0
+      vsce: 2.15.0
       vscode-extension-tester-locators: 3.2.0_5kervo72hwkne6ppoyy3sve44y
     transitivePeerDependencies:
       - bufferutil
