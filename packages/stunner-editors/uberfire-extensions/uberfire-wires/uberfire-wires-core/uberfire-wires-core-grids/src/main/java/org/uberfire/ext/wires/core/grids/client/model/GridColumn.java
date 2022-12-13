@@ -80,24 +80,6 @@ public interface GridColumn<T> {
     void setWidth(final double width);
 
     /**
-     * Returns a flag indicating this column is linked to another
-     * @return
-     */
-    boolean isLinked();
-
-    /**
-     * Returns the column to which this column is linked
-     * @return
-     */
-    GridColumn<?> getLink();
-
-    /**
-     * Sets the column to which this column is linked
-     * @param link
-     */
-    void setLink(final GridColumn<?> link);
-
-    /**
      * Returns the logical index to which this column relates. Columns may be re-ordered and therefore, to
      * avoid manipulating the underlying row data, the logical index of the column may be different to their
      * physical index (i.e. the order in which they were added to the grid).

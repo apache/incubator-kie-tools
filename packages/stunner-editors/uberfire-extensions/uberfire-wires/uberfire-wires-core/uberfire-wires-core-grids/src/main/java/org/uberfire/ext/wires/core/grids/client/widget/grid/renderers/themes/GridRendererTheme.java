@@ -67,13 +67,6 @@ public interface GridRendererTheme {
     Rectangle getHeaderBackground(final GridColumn<?> column);
 
     /**
-     * Delegates the Header's background Rectangle, used for "linked" columns to sub-classes.
-     * @param column The column being rendered.
-     * @return A {@link Rectangle} for a header's background for a "linked" column.
-     */
-    Rectangle getHeaderLinkBackground(final GridColumn<?> column);
-
-    /**
      * Delegates the Header's grid lines to sub-classes.
      * @return A {@link MultiPath} to be used to render the header's grid lines.
      */

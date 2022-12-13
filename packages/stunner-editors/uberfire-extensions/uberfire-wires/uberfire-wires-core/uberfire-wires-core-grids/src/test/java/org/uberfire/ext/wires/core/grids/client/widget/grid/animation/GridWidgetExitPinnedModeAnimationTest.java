@@ -65,7 +65,6 @@ public class GridWidgetExitPinnedModeAnimationTest {
         }};
         final GridWidgetExitPinnedModeAnimation animation = new GridWidgetExitPinnedModeAnimation(state,
                                                                                                   gridWidgets,
-                                                                                                  gridWidgetConnectors,
                                                                                                   onCompleteCommand,
                                                                                                   onExitPinnedModeCommands);
 
