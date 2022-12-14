@@ -16,8 +16,42 @@
 
 package org.kie.workbench.common.stunner.sw.definition.custom;
 
-public class ArgumentsValueHolderJsonbTypeSerializer extends ValueHolderJsonbTypeSerializer {
-    public ArgumentsValueHolderJsonbTypeSerializer() {
-        super("arguments");
+import jakarta.json.JsonValue;
+import jakarta.json.bind.serializer.DeserializationContext;
+import jakarta.json.bind.serializer.JsonbSerializer;
+import jakarta.json.bind.serializer.SerializationContext;
+import jakarta.json.stream.JsonGenerator;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.ValueHolder;
+
+public class ArgumentsValueHolderJsonbTypeSerializer extends JsonbDeserializer<Object>  implements JsonbSerializer<Object>  {
+
+    private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
+    private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
+
+    private static final ValueHolderJsonbTypeSerializer valueHolderJsonbTypeSerializer = new ValueHolderJsonbTypeSerializer("arguments");
+    private static final ValueHolderJsonbTypeDeserializer valueHolderJsonbTypeDeserializer = new ValueHolderJsonbTypeDeserializer();
+
+    @Override
+    public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
+        if (obj instanceof String) {
+            stringJsonSerializer.serialize((String) obj, "arguments", generator, ctx);
+        } else {
+            valueHolderJsonbTypeSerializer.serialize((ValueHolder) obj,  generator, ctx);
+        }
+    }
+
+    @Override
+    public Object deserialize(JsonValue value, DeserializationContext ctx) {
+        if (value.getValueType() != JsonValue.ValueType.NULL) {
+            if (value.getValueType() == JsonValue.ValueType.STRING) {
+                return stringJsonDeserializer.deserialize(value, ctx);
+            } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
+                return valueHolderJsonbTypeDeserializer.deserialize(value, ctx);
+            }
+        }
+        return null;
     }
 }
