@@ -20,9 +20,9 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import elemental2.dom.Event;
+import elemental2.dom.MouseEvent;
 import org.jboss.errai.common.client.api.annotations.BrowserEvent;
-import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.MouseEvent;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

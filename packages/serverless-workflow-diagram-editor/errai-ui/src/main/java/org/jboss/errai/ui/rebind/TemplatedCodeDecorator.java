@@ -435,9 +435,9 @@ public class TemplatedCodeDecorator extends IOCDecoratorExtension<Templated> {
 
     for (final String dataFieldName : targetDataFieldNames) {
       final ObjectBuilder listener = ObjectBuilder
-        .newInstanceOf(org.jboss.errai.common.client.dom.EventListener.class)
+        .newInstanceOf(elemental2.dom.EventListener.class)
         .extend()
-        .publicOverridesMethod("call", Parameter.of(org.jboss.errai.common.client.dom.Event.class, "event"))
+        .publicOverridesMethod("call", Parameter.of(elemental2.dom.Event.class, "event"))
           .append(InjectUtil
                   .invokePublicOrPrivateMethod(controller,
                                                method,
@@ -458,7 +458,7 @@ public class TemplatedCodeDecorator extends IOCDecoratorExtension<Templated> {
         elementStmt = loadVariable(dataFieldElementsVarName).invoke("get", dataFieldName);
       }
       final String listenerVarName = "listenerFor" + eventType.getName() + "Calling" + capitalize(method.getName());
-      initStmts.add(declareFinalVariable(listenerVarName, org.jboss.errai.common.client.dom.EventListener.class, listener));
+      initStmts.add(declareFinalVariable(listenerVarName, elemental2.dom.EventListener.class, listener));
       for (final String browserEventType : browserEventTypes) {
         initStmts.add(invokeStatic(TemplateUtil.class, "setupBrowserEventListener", instance, elementStmt,
                 loadVariable(listenerVarName), loadLiteral(browserEventType)));

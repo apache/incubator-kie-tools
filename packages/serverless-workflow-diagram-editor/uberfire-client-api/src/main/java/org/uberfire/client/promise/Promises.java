@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
+import elemental2.core.JsObject;
 import elemental2.promise.Promise;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -145,7 +145,7 @@ public class Promises {
                                             final Function<RuntimeException, Promise<T>> catchBlock,
                                             final Function<V, Promise<T>> expectedRejectionHandler) {
 
-        if (o instanceof JavaScriptObject) {
+        if (o instanceof JsObject) {
             // A RuntimeException occurred inside a promise and was transformed in a JavaScriptObject
             return resolve()
                     .then(i -> catchBlock.apply(new RuntimeException("Client-side exception inside Promise: " + o.toString())))

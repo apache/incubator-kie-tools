@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;

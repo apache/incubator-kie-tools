@@ -21,16 +21,15 @@
 
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireAPI"/>
-  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
 
   <!-- Appformer Kogito Bridge -->
   <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge"/>
 
   <!-- Errai, Drools etc -->
-  <inherits name="org.gwtbootstrap3.extras.toggleswitch.ToggleSwitch"/>
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
 
   <!-- Stunner -->
+  <inherits name="org.gwtbootstrap3.extras.notify.Notify"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
 
   <!-- SW -->

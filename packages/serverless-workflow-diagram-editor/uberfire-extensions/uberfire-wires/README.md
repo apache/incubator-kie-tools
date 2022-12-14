@@ -1,3 +1,0 @@
-# wires
-
-wires canvas

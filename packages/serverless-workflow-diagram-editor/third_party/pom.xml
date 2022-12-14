@@ -17,5 +17,6 @@
         <module>jakarta-spec</module>
         <module>stdlib</module>
         <module>tooling</module>
+        <module>gwtbootstrap3</module>
     </modules>
 </project>
