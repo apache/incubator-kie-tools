@@ -93,21 +93,10 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [setExpression]
   );
 
-  const setColumnResizingWidth = useCallback(
-    (columnIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      setColumnResizingWidths((prev: ResizingWidth[]) => {
-        const newResizingWidths = [...prev];
-        newResizingWidths[columnIndex] = getNewResizingWidth(newResizingWidths[columnIndex]);
-        return newResizingWidths;
-      });
-    },
-    []
-  );
-
   useEffect(() => {
     setColumnResizingWidths((prev) => {
-      return columns.map((c, i) => ({
-        value: Math.max(c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH, prev[i].value),
+      return columns.map((column, columnIndex) => ({
+        value: Math.max(column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH, prev[columnIndex].value),
         isPivoting: false,
       }));
     });
@@ -117,52 +106,148 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     return columnResizingWidths.some(({ isPivoting }) => isPivoting);
   }, [columnResizingWidths]);
 
-  const [nestedExpressionContainerResizingWidthValue, setNestedExpressionContainerResizingWidthValue] = useState(
-    nestedExpressionContainer.resizingWidth.value
-  );
+  const [pivotAwareNestedExpressionContainer, setPivotAwareNestedExpressionContainer] =
+    useState(nestedExpressionContainer);
   useEffect(() => {
-    setNestedExpressionContainerResizingWidthValue((prev) => {
-      return isRelationExpressionPivoting ? prev : nestedExpressionContainer.resizingWidth.value;
+    setPivotAwareNestedExpressionContainer((prev) => {
+      return isRelationExpressionPivoting ? prev : nestedExpressionContainer;
     });
-  }, [isRelationExpressionPivoting, nestedExpressionContainer.resizingWidth.value]);
+  }, [isRelationExpressionPivoting, nestedExpressionContainer]);
+
+  const setColumnResizingWidth = useCallback(
+    (columnIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
+      setColumnResizingWidths((prev: ResizingWidth[]) => {
+        const newResizingWidth = getNewResizingWidth(prev[columnIndex]).value;
+        const totalAvailableSpaceForColumns =
+          pivotAwareNestedExpressionContainer.resizingWidth.value -
+          BEE_TABLE_ROW_INDEX_COLUMN_WIDTH -
+          NESTED_EXPRESSION_CLEAR_MARGIN -
+          columns.length * 2; // 2px for border of each column
+
+        const equallyProportionalWidth = Math.max(
+          Math.floor(totalAvailableSpaceForColumns / columns.length),
+          RELATION_EXPRESSION_COLUMN_MIN_WIDTH
+        );
+
+        const proportionalColumns = columns.reduce(
+          (acc, column, i) => {
+            const columnWidth =
+              i === columnIndex ? newResizingWidth : column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH;
+            if (columnWidth > equallyProportionalWidth) {
+              return {
+                totalSpaceLeft: acc.totalSpaceLeft - columnWidth,
+                count: acc.count - 1,
+              };
+            } else {
+              return acc;
+            }
+          },
+          {
+            totalSpaceLeft: totalAvailableSpaceForColumns,
+            count: columns.length,
+          }
+        );
+
+        const proportionalColumnWidth = Math.max(
+          Math.floor(proportionalColumns.totalSpaceLeft / proportionalColumns.count),
+          RELATION_EXPRESSION_COLUMN_MIN_WIDTH
+        );
+
+        let currentSpaceLeft = totalAvailableSpaceForColumns;
+        const a = columns.map((column, i) => {
+          const columnWidth = column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH;
+          if (i === columnIndex) {
+            currentSpaceLeft -= newResizingWidth;
+            return {
+              value: newResizingWidth,
+              isPivoting: false,
+            };
+          } else if (columnWidth > equallyProportionalWidth) {
+            currentSpaceLeft -= columnWidth;
+            return {
+              value: columnWidth,
+              isPivoting: false,
+            };
+          } else if (i === columns.length - 1) {
+            return {
+              value: currentSpaceLeft,
+              isPivoting: false,
+            };
+          } else {
+            currentSpaceLeft -= proportionalColumnWidth;
+            return {
+              value: proportionalColumnWidth,
+              isPivoting: false,
+            };
+          }
+        });
+
+        return a;
+      });
+    },
+    [columns, pivotAwareNestedExpressionContainer]
+  );
 
   useEffect(() => {
     setColumnResizingWidths((prev) => {
       const totalAvailableSpaceForColumns =
-        nestedExpressionContainerResizingWidthValue -
+        pivotAwareNestedExpressionContainer.resizingWidth.value -
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH -
         NESTED_EXPRESSION_CLEAR_MARGIN -
         columns.length * 2; // 2px for border of each column
 
-      const columnIntegerWidth = Math.max(
+      const equallyProportionalWidth = Math.max(
         Math.floor(totalAvailableSpaceForColumns / columns.length),
         RELATION_EXPRESSION_COLUMN_MIN_WIDTH
       );
 
-      let spaceLeftToDivideBetweenColumns = totalAvailableSpaceForColumns;
-      return columns.map((c, i) => {
-        if (i === prev.length - 1) {
+      const proportionalColumns = columns.reduce(
+        (acc, column) => {
+          const columnWidth = column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH;
+          if (columnWidth > equallyProportionalWidth) {
+            return {
+              totalSpaceLeft: acc.totalSpaceLeft - columnWidth,
+              count: acc.count - 1,
+            };
+          } else {
+            return acc;
+          }
+        },
+        {
+          totalSpaceLeft: totalAvailableSpaceForColumns,
+          count: columns.length,
+        }
+      );
+
+      const proportionalColumnWidth = Math.max(
+        Math.floor(proportionalColumns.totalSpaceLeft / proportionalColumns.count),
+        RELATION_EXPRESSION_COLUMN_MIN_WIDTH
+      );
+
+      let currentSpaceLeft = totalAvailableSpaceForColumns;
+      return columns.map((column, columnIndex) => {
+        const columnWidth = column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH;
+        if (columnWidth > equallyProportionalWidth) {
+          currentSpaceLeft -= columnWidth;
           return {
-            value: spaceLeftToDivideBetweenColumns,
+            value: columnWidth,
             isPivoting: false,
           };
-        }
-        if (c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH > columnIntegerWidth) {
-          spaceLeftToDivideBetweenColumns -= c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH;
+        } else if (columnIndex === columns.length - 1) {
           return {
-            value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+            value: currentSpaceLeft,
             isPivoting: false,
           };
         } else {
-          spaceLeftToDivideBetweenColumns -= columnIntegerWidth;
+          currentSpaceLeft -= proportionalColumnWidth;
           return {
-            value: columnIntegerWidth,
+            value: proportionalColumnWidth,
             isPivoting: false,
           };
         }
       });
     });
-  }, [columns, nestedExpressionContainerResizingWidthValue]);
+  }, [columns, pivotAwareNestedExpressionContainer]);
 
   useEffect(() => {
     updateResizingWidth(relationExpression.id!, (prev) =>

@@ -425,16 +425,13 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     return {
       entryExpressionsMinWidthGlobal: nestedExpressionContainer.minWidthGlobal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
       entryExpressionsMinWidthLocal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
+      entryExpressionsActualWidth: nestedExpressionContainer.actualWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
       entryExpressionsResizingWidth: {
         value: nestedExpressionContainer.resizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
         isPivoting: false,
       },
     };
-  }, [
-    nestedExpressionContainer.minWidthGlobal,
-    nestedExpressionContainer.minWidthLocal,
-    nestedExpressionContainer.resizingWidth.value,
-  ]);
+  }, [nestedExpressionContainer]);
 
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
@@ -509,20 +506,17 @@ function ParametersCell(props: BeeTableCellProps<ROWTYPE>) {
     [i18n, setExpression]
   );
 
-  const nestedExpressionsContainer = useMemo<NestedExpressionContainerContextType>(() => {
+  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
     return {
-      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
       minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
+      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
+      actualWidth: contextExpression.entryExpressionsActualWidth,
       resizingWidth: contextExpression.entryExpressionsResizingWidth,
     };
-  }, [
-    contextExpression.entryExpressionsMinWidthGlobal,
-    contextExpression.entryExpressionsMinWidthLocal,
-    contextExpression.entryExpressionsResizingWidth,
-  ]);
+  }, [contextExpression]);
 
   return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionsContainer}>
+    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ContextEntryExpressionCell {...props} />
       </NestedExpressionDispatchContextProvider>
