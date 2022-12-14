@@ -903,7 +903,9 @@ jobs:
         uses: ./kie-tools/.github/actions/bootstrap
         with:
           working_dir: kie-tools
-          pnpm_filter_string: -F @kie-tools/kie-editors-standalone...
+          pnpm_filter_string: >-
+            -F @kie-tools/kie-editors-standalone...
+            -F @kie-tools/serverless-workflow-standalone-editor...
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
@@ -917,11 +919,12 @@ jobs:
         env:
           STANDALONE_EDITORS_DIR: ./standalone/${{ inputs.tag }}
         run: |
-          echo "Copy Chrome Extension resources"
+          echo "Copy standalone resources"
           rm -rf $STANDALONE_EDITORS_DIR
           mkdir $STANDALONE_EDITORS_DIR
           cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js $STANDALONE_EDITORS_DIR/bpmn
           cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js $STANDALONE_EDITORS_DIR/dmn
+          cp ${{ github.workspace }}/kie-tools/packages/serverless-workflow-standalone-editor/dist/swf/index.js $STANDALONE_EDITORS_DIR/swf
 
           echo "Commit changes and push"
           git add .
