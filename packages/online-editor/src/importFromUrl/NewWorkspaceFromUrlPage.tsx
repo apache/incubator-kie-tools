@@ -39,7 +39,7 @@ import {
 } from "./ImportableUrlHooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
-import { useOctokit } from "../github/Hooks";
+import { useGitHubClient } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
@@ -50,6 +50,7 @@ import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
+import { useBitbucketClient } from "../bitbucket/Hooks";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -221,11 +222,12 @@ export function NewWorkspaceFromUrlPage() {
     [routes, history, workspaces]
   );
 
-  const octokit = useOctokit(authSession);
+  const gitHubClient = useGitHubClient(authSession);
+  const bitbucketClient = useBitbucketClient(authSession);
 
   const doImportAsSingleFile = useCallback(
     async (importableUrl: ImportableUrl) => {
-      const singleFileContent = await fetchSingleFileContent(importableUrl, octokit);
+      const singleFileContent = await fetchSingleFileContent(importableUrl, gitHubClient, bitbucketClient);
 
       if (singleFileContent.error) {
         setImportingError(singleFileContent.error);
@@ -237,7 +239,7 @@ export function NewWorkspaceFromUrlPage() {
         fileContents: encoder.encode(singleFileContent.content!),
       });
     },
-    [createWorkspaceForFile, octokit]
+    [bitbucketClient, createWorkspaceForFile, gitHubClient]
   );
 
   const doImport = useCallback(async () => {
@@ -272,8 +274,12 @@ export function NewWorkspaceFromUrlPage() {
         }
       }
 
-      // git but not gist
-      else if (importableUrl.type === UrlType.GITHUB_DOT_COM || importableUrl.type === UrlType.GIT) {
+      // git but not gist or snippet
+      else if (
+        importableUrl.type === UrlType.GITHUB_DOT_COM ||
+        importableUrl.type === UrlType.BITBUCKET_DOT_ORG ||
+        importableUrl.type === UrlType.GIT
+      ) {
         if (gitServerRefsPromise.data?.defaultBranch) {
           await cloneGitRepository({
             origin: {
@@ -299,6 +305,26 @@ export function NewWorkspaceFromUrlPage() {
           await cloneGitRepository({
             origin: {
               kind: WorkspaceKind.GITHUB_GIST,
+              url: importableUrl.url.toString(),
+              branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
+            },
+            gitAuthSessionId: queryParamAuthSessionId,
+            gitConfig,
+            authInfo,
+          });
+        } else {
+          setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
+          return;
+        }
+      }
+
+      // snippet
+      else if (importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET) {
+        importableUrl.url.hash = "";
+        if (gitServerRefsPromise.data?.defaultBranch) {
+          await cloneGitRepository({
+            origin: {
+              kind: WorkspaceKind.BITBUCKET_SNIPPET,
               url: importableUrl.url.toString(),
               branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },

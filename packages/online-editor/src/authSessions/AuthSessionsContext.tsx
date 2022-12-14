@@ -199,6 +199,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
 
 export interface AuthInfo {
   username: string;
+  uuid?: string;
   password: string;
 }
 
@@ -242,6 +243,7 @@ export function useAuthSession(authSessionId: string | undefined): {
     return (
       authSession && {
         username: authSession.login,
+        uuid: authSession.uuid,
         password: authSession.token,
       }
     );

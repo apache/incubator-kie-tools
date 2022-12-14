@@ -28,6 +28,7 @@ export type GitAuthSession = {
   id: string;
   token: string;
   login: string;
+  uuid?: string;
   email?: string;
   name?: string;
   authProviderId: string;

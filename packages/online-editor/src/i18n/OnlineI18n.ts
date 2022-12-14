@@ -30,8 +30,11 @@ interface OnlineDictionary extends ReferenceDictionary {
       };
       copy: string;
       updateGist: string;
+      updateSnippet: string;
       createGist: string;
+      createSnippet: string;
       errorPushingGist: string;
+      errorPushingSnippet: string;
       forcePushWarning: string;
       invalidCurrentGist: string;
       invalidGistFilename: string;
@@ -54,6 +57,9 @@ interface OnlineDictionary extends ReferenceDictionary {
     createGist: string;
     cantCreateGistTooltip: string;
     cantUpdateGistTooltip: string;
+    createSnippet: string;
+    cantCreateSnippetTooltip: string;
+    cantUpdateSnippetTooltip: string;
     share: string;
     embed: string;
   };
@@ -171,6 +177,21 @@ interface OnlineDictionary extends ReferenceDictionary {
     copiedToClipboard: string;
   };
   githubTokenModal: {
+    header: {
+      title: string;
+      subtitle: string;
+    };
+    footer: {
+      createNewToken: string;
+      placeHolder: string;
+    };
+    body: {
+      disclaimer: string;
+      learnMore: string;
+      note: string;
+    };
+  };
+  bitbucketTokenModal: {
     header: {
       title: string;
       subtitle: string;

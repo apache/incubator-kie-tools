@@ -20,9 +20,32 @@ export enum WorkspaceKind {
   GITHUB_GIST = "GITHUB_GIST",
   GIT = "GIT",
   LOCAL = "LOCAL",
+  BITBUCKET_SNIPPET = "BITBUCKET_SNIPPET",
 }
 
-export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubOrigin;
+const gitBasedTypeKeys = [WorkspaceKind.GIT, WorkspaceKind.BITBUCKET_SNIPPET, WorkspaceKind.GITHUB_GIST] as const;
+export type WorkspaceKindGitBased = (typeof gitBasedTypeKeys)[number];
+
+export const isGitBasedWorkspaceKind = (maybeGitBasedType: WorkspaceKind | undefined): boolean => {
+  if (maybeGitBasedType === undefined) {
+    return false;
+  }
+  const gitBasedType = gitBasedTypeKeys.find((validKey) => validKey === maybeGitBasedType);
+  return !!gitBasedType;
+};
+
+const gistLikeTypeKeys = [WorkspaceKind.GITHUB_GIST, WorkspaceKind.BITBUCKET_SNIPPET] as const;
+export type WorkspaceKindGistLike = (typeof gistLikeTypeKeys)[number];
+
+export const isGistLikeWorkspaceKind = (maybeGistLikeType: WorkspaceKind | undefined): boolean => {
+  if (maybeGistLikeType === undefined) {
+    return false;
+  }
+  const gistLikeType = gistLikeTypeKeys.find((validKey) => validKey === maybeGistLikeType);
+  return !!gistLikeType;
+};
+
+export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
 
 export interface LocalOrigin {
   kind: WorkspaceKind.LOCAL;
@@ -36,8 +59,20 @@ export interface GitHubOrigin {
   branch: string;
 }
 
+export interface BitbucketOrigin {
+  kind: WorkspaceKind.GIT;
+  url: string;
+  branch: string;
+}
+
 export interface GistOrigin {
   kind: WorkspaceKind.GITHUB_GIST;
+  url: string;
+  branch: string;
+}
+
+export interface SnippetOrigin {
+  kind: WorkspaceKind.BITBUCKET_SNIPPET;
   url: string;
   branch: string;
 }

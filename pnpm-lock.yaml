@@ -3209,6 +3209,7 @@ importers:
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       cypress-real-events: ^1.7.4
+      form-data: ^4.0.0
       history: ^4.9.0
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
@@ -3264,6 +3265,7 @@ importers:
       "@patternfly/react-tokens": 4.33.1
       bowser: 2.11.0
       buffer: 6.0.3
+      form-data: 4.0.0
       history: 4.10.1
       isomorphic-git: 1.11.1
       moment: 2.29.4
@@ -12142,7 +12144,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -13560,7 +13562,7 @@ packages:
       normalize-path: 3.0.0
       schema-utils: 4.0.0
       serialize-javascript: 6.0.0
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.10.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -16834,6 +16836,17 @@ packages:
       tabbable: 5.1.5
     dev: false
 
+  /follow-redirects/1.14.9:
+    resolution:
+      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
+    engines: { node: ">=4.0" }
+    peerDependencies:
+      debug: "*"
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: true
+
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -16845,6 +16858,7 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.1
+    dev: false
 
   /for-in/1.0.2:
     resolution:
@@ -17769,7 +17783,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -19286,7 +19300,7 @@ packages:
     peerDependencies:
       jest: ">= 25"
     dependencies:
-      jest: 26.6.3
+      jest: 26.6.3_ts-node@10.9.1
     dev: true
 
   /jest-worker/26.6.2:
@@ -25747,7 +25761,7 @@ packages:
       bs-logger: 0.2.6
       buffer-from: 1.1.1
       fast-json-stable-stringify: 2.1.0
-      jest: 26.6.3
+      jest: 26.6.3_ts-node@10.9.1
       jest-util: 26.6.2
       json5: 2.2.1
       lodash: 4.17.21

@@ -19,7 +19,7 @@ import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 
-export function useOctokit(authSession: AuthSession | undefined): Octokit {
+export function useGitHubClient(authSession: AuthSession | undefined): Octokit {
   const authProviders = useAuthProviders();
 
   return useMemo(() => {

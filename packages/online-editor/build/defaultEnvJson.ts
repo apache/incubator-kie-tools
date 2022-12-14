@@ -20,7 +20,7 @@ import { routes } from "../src/navigation/Routes";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../env";
-import { AuthProviderGroup } from "../src/authProviders/AuthProvidersApi";
+import { AuthProviderGroup, AuthProviderType } from "../src/authProviders/AuthProvidersApi";
 const buildEnv: any = env; // build-env is not typed
 
 export const defaultEnvJson: EnvJson = {
@@ -31,7 +31,7 @@ export const defaultEnvJson: EnvJson = {
       id: "github_dot_com",
       domain: "github.com",
       supportedGitRemoteDomains: ["github.com", "gist.github.com"],
-      type: "github",
+      type: AuthProviderType.github,
       name: "GitHub",
       enabled: true,
       iconPath: "",
@@ -41,26 +41,26 @@ export const defaultEnvJson: EnvJson = {
       id: "gitlab_dot_com",
       domain: "gitlab.com",
       supportedGitRemoteDomains: ["gitlab.com"],
-      type: "gitlab",
+      type: AuthProviderType.gitlab,
       name: "GitLab",
       enabled: false,
       iconPath: routes.static.images.gitlabLogo.path({}),
       group: AuthProviderGroup.GIT,
     },
     {
-      id: "bitbucket_dot_com",
-      domain: "bitbucket.com",
-      supportedGitRemoteDomains: ["bitbucket.com"],
-      type: "bitbucket",
+      id: "bitbucket_dot_org",
+      domain: "bitbucket.org",
+      supportedGitRemoteDomains: ["bitbucket.org"],
+      type: AuthProviderType.bitbucket,
       name: "Bitbucket",
-      enabled: false,
+      enabled: true,
       iconPath: routes.static.images.bitbucketLogo.path({}),
       group: AuthProviderGroup.GIT,
     },
     {
       enabled: true,
       id: "openshift",
-      type: "openshift",
+      type: AuthProviderType.openshift,
       name: "OpenShift",
       domain: undefined,
       iconPath: routes.static.images.openshiftLogo.path({}),
@@ -69,7 +69,7 @@ export const defaultEnvJson: EnvJson = {
     {
       enabled: false,
       id: "kubernetes",
-      type: "openshift",
+      type: AuthProviderType.openshift,
       name: "Kubernetes",
       domain: undefined,
       iconPath: routes.static.images.kubernetesLogo.path({}),

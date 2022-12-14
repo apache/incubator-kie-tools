@@ -19,7 +19,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -34,7 +33,17 @@ import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/c
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
-import { useOctokit } from "../github/Hooks";
+import { useBitbucketClient } from "../bitbucket/Hooks";
+import { GithubIcon, BitbucketIcon } from "@patternfly/react-icons";
+import { useGitHubClient } from "../github/Hooks";
+import { SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
+import { useAuthProvider } from "../authProviders/AuthProvidersContext";
+import { switchExpression } from "../switchExpression/switchExpression";
+
+export interface CreateRepositoryResponse {
+  cloneUrl: string;
+  htmlUrl: string;
+}
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -42,7 +51,7 @@ const getSuggestedRepositoryName = (name: string) =>
     .toLocaleLowerCase()
     .replace(/[^._\-\w\d]/g, "");
 
-export function CreateGitHubRepositoryModal(props: {
+export function CreateGitRepositoryModal(props: {
   workspace: WorkspaceDescriptor;
   isOpen: boolean;
   onClose: () => void;
@@ -51,7 +60,9 @@ export function CreateGitHubRepositoryModal(props: {
   const workspaces = useWorkspaces();
   const settingsDispatch = useSettingsDispatch();
   const { authSession, gitConfig, authInfo } = useAuthSession(props.workspace.gitAuthSessionId);
-  const octokit = useOctokit(authSession);
+  const authProvider = useAuthProvider(authSession);
+  const bitbucketClient = useBitbucketClient(authSession);
+  const gitHubClient = useGitHubClient(authSession);
 
   const [isPrivate, setPrivate] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -62,6 +73,49 @@ export function CreateGitHubRepositoryModal(props: {
     setName(getSuggestedRepositoryName(props.workspace.name));
   }, [props.workspace.name]);
 
+  const createBitbucketRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
+    const repoResponse = await bitbucketClient.createRepo(name, isPrivate);
+    if (!repoResponse.ok) {
+      throw new Error(
+        `Bitbucket repository creation request failed with: ${repoResponse.status} ${repoResponse.statusText}`
+      );
+    }
+    const repo = await repoResponse.json();
+
+    if (!repo.links || !repo.links.clone || !Array.isArray(repo.links.clone)) {
+      throw new Error("Unexpected contents of the Bitbucket repository creation response.");
+    }
+
+    const cloneLinks: any[] = repo.links.clone;
+    const cloneUrl = cloneLinks.filter((e) => {
+      return (e.name = "https" && e.href.startsWith("https"));
+    })[0].href;
+    return { cloneUrl, htmlUrl: repo.links.html.href };
+  }, [bitbucketClient, isPrivate, name]);
+
+  const createGitHubRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
+    const repo = await gitHubClient.request("POST /user/repos", {
+      name,
+      private: isPrivate,
+    });
+
+    if (!repo.data.clone_url) {
+      throw new Error("Repo creation failed.");
+    }
+
+    const cloneUrl = repo.data.clone_url;
+    return { cloneUrl, htmlUrl: repo.data.html_url };
+  }, [isPrivate, name, gitHubClient]);
+
+  const pushEmptyCommitIntoBitbucket = useCallback(async (): Promise<void> => {
+    // need an empty commit push through REST API first
+    await bitbucketClient.pushEmptyCommit(name, props.workspace.origin.branch).then((response) => {
+      if (!response.ok) {
+        throw new Error(`Initial commit push failed: ${response.status} ${response.statusText}`);
+      }
+    });
+  }, [bitbucketClient, name, props.workspace.origin.branch]);
+
   const create = useCallback(async () => {
     try {
       if (!authInfo || !gitConfig) {
@@ -70,16 +124,24 @@ export function CreateGitHubRepositoryModal(props: {
 
       setError(undefined);
       setLoading(true);
-      const repo = await octokit.request("POST /user/repos", {
-        name,
-        private: isPrivate,
-      });
 
-      if (!repo.data.clone_url) {
-        throw new Error("Repo creation failed.");
+      const createRepositoryCommand: () => Promise<CreateRepositoryResponse> = switchExpression(
+        authProvider?.type as SupportedGitAuthProviders,
+        {
+          bitbucket: createBitbucketRepository,
+          github: createGitHubRepository,
+        }
+      );
+
+      if (!createRepositoryCommand) {
+        throw new Error("Undefined create repository command for auth type " + authProvider?.type);
       }
-
-      const cloneUrl = repo.data.clone_url;
+      const { cloneUrl, htmlUrl: websiteUrl } = await createRepositoryCommand();
+      const initializeEmptyRepositoryCommand = switchExpression(authProvider?.type as SupportedGitAuthProviders, {
+        bitbucket: pushEmptyCommitIntoBitbucket,
+        default: async (): Promise<void> => {},
+      });
+      await initializeEmptyRepositoryCommand();
 
       await workspaces.addRemote({
         workspaceId: props.workspace.workspaceId,
@@ -98,29 +160,42 @@ export function CreateGitHubRepositoryModal(props: {
         remote: GIT_ORIGIN_REMOTE_NAME,
         ref: props.workspace.origin.branch,
         remoteRef: `refs/heads/${props.workspace.origin.branch}`,
-        force: false,
+        force: switchExpression(authProvider?.type as SupportedGitAuthProviders, {
+          github: false,
+          bitbucket: true,
+        }),
         authInfo,
       });
 
       await workspaces.initGitOnWorkspace({
         workspaceId: props.workspace.workspaceId,
         remoteUrl: new URL(cloneUrl),
+        branch: props.workspace.origin.branch,
       });
 
       await workspaces.renameWorkspace({
         workspaceId: props.workspace.workspaceId,
-        newName: new URL(repo.data.html_url).pathname.substring(1),
+        newName: new URL(websiteUrl).pathname.substring(1),
       });
 
       props.onClose();
-      props.onSuccess({ url: repo.data.html_url });
+      props.onSuccess({ url: websiteUrl });
     } catch (err) {
       setError(err);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [authInfo, gitConfig, isPrivate, name, octokit, props, workspaces]);
+  }, [
+    authInfo,
+    gitConfig,
+    authProvider?.type,
+    createBitbucketRepository,
+    createGitHubRepository,
+    pushEmptyCommitIntoBitbucket,
+    workspaces,
+    props,
+  ]);
 
   const isNameValid = useMemo(() => {
     return name.match(/^[._\-\w\d]+$/g);
@@ -137,12 +212,18 @@ export function CreateGitHubRepositoryModal(props: {
   return (
     <Modal
       variant={ModalVariant.medium}
-      aria-label={"Create a new GitHub repository"}
+      aria-label={`Create a new ${authProvider?.type} repository`}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      title={"Create GitHub repository"}
-      titleIconVariant={GithubIcon}
-      description={`The contents of '${props.workspace.name}' will be all in the new GitHub Repository.`}
+      title={`Create ${authProvider?.type} repository`}
+      titleIconVariant={
+        authProvider &&
+        switchExpression(authProvider.type as SupportedGitAuthProviders, {
+          bitbucket: BitbucketIcon,
+          github: GithubIcon,
+        })
+      }
+      description={`The contents of '${props.workspace.name}' will be all in the new ${authProvider?.type} Repository.`}
       actions={[
         <Button isLoading={isLoading} key="create" variant="primary" onClick={create} isDisabled={!isNameValid}>
           Create
@@ -161,7 +242,11 @@ export function CreateGitHubRepositoryModal(props: {
       >
         {error && (
           <FormAlert>
-            <Alert variant="danger" title={"Error creating GitHub Repository. " + error} isInline={true} />
+            <Alert
+              variant="danger"
+              title={`Error creating ${authProvider?.type} Repository. ${error}`}
+              isInline={true}
+            />
             <br />
           </FormAlert>
         )}
@@ -173,11 +258,11 @@ export function CreateGitHubRepositoryModal(props: {
           }
           helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
           helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="github-repository-name"
+          fieldId="repository-name"
           validated={validated}
         >
           <TextInput
-            id={"github-repo-name"}
+            id={"repo-name"}
             validated={validated}
             isRequired={true}
             placeholder={"Name"}
@@ -189,12 +274,12 @@ export function CreateGitHubRepositoryModal(props: {
         <FormGroup
           helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
           helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="github-repo-visibility"
+          fieldId="repo-visibility"
         >
           <Radio
             isChecked={!isPrivate}
-            id={"github-repository-public"}
-            name={"github-repository-public"}
+            id={"repository-public"}
+            name={"repository-public"}
             label={
               <>
                 <UsersIcon />
@@ -207,8 +292,8 @@ export function CreateGitHubRepositoryModal(props: {
           <br />
           <Radio
             isChecked={isPrivate}
-            id={"github-repository-private"}
-            name={"github-repository-private"}
+            id={"repository-private"}
+            name={"repository-private"}
             label={
               <>
                 <LockIcon />

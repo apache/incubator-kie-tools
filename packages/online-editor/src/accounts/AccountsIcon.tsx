@@ -41,6 +41,7 @@ import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { ConnectToBitbucketSection } from "./bitbucket/ConnectToBitbucketSection";
 
 export function AccountsIcon() {
   const accounts = useAccounts();
@@ -138,6 +139,32 @@ export function AccountsIcon() {
                   </Flex>
                 </>
               )}
+              {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
+                <>
+                  <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                    <FlexItem>
+                      <Flex
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        spaceItems={{ default: "spaceItemsSm" }}
+                      >
+                        <TextContent>
+                          <Text component={TextVariants.h2}>
+                            {`Connect to`}
+                            &nbsp;
+                            {accounts.selectedAuthProvider.name}
+                          </Text>
+                        </TextContent>
+                        <TextContent>
+                          <Text component={TextVariants.small}>
+                            <i>{accounts.selectedAuthProvider.domain}</i>
+                          </Text>
+                        </TextContent>
+                      </Flex>
+                    </FlexItem>
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
+                  </Flex>
+                </>
+              )}
               {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && (
                 <>
                   <TextContent>
@@ -193,6 +220,9 @@ export function AccountsIcon() {
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
                   <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
+                  <ConnectToBitbucketSection authProvider={accounts.selectedAuthProvider} />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
               </>

@@ -137,7 +137,9 @@ export function ImportFromUrlCard() {
         </CardTitle>
         <CardBody>
           <TextContent>
-            <Text component={TextVariants.p}>Import a Git repository, a GitHub Gist, or any other file URL.</Text>
+            <Text component={TextVariants.p}>
+              Import a Git repository, a GitHub Gist, Bitbucket Snippet, or any other file URL.
+            </Text>
           </TextContent>
           <br />
           <Form onSubmit={onSubmit}>

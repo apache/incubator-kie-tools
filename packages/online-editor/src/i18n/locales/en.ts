@@ -34,10 +34,13 @@ export const en: OnlineI18n = {
       updateGist: "Gist successfully updated.",
       createGist: "Gist successfully created.",
       errorPushingGist: "Failed to Push an update to your current Gist. Attempt to Push forcefully?",
+      updateSnippet: "Snippet successfully updated.",
+      createSnippet: "Snippet successfully created.",
+      errorPushingSnippet: "Failed to Push an update to your current Snippet. Attempt to Push forcefully?",
       forcePushWarning: "WARNING: This will overwrite your Gist with the local changes!",
       invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
       invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
-      error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
+      error: `An error occurred trying to perform the last operation. Check if your authentication token is still valid and try again later.`,
       unsaved: {
         titleLocal: "You have new changes since your last download.",
         titleGit: "You have new changes since your last Push.",
@@ -56,6 +59,9 @@ export const en: OnlineI18n = {
     createGist: "Create Gist",
     cantCreateGistTooltip: `You can't create a Gist because you're either not logged in, or your models are in nested directories.`,
     cantUpdateGistTooltip: `You can't update your Gist because you're either not logged in, not the owner, or your models are in nested directories.`,
+    createSnippet: "Create Snippet",
+    cantCreateSnippetTooltip: `You can't create a Snippet because you're either not logged in, or your models are in nested directories.`,
+    cantUpdateSnippetTooltip: `You can't update your Snippet because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
     embed: "Embed",
   },
@@ -193,6 +199,21 @@ export const en: OnlineI18n = {
     body: {
       disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
+      note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+    },
+  },
+  bitbucketTokenModal: {
+    header: {
+      title: `${en_common.names.bitbucket} ${en_common.names.oauth} ${en_common.terms.token}`,
+      subtitle: `Set up your ${en_common.names.bitbucket} token so you can create and update gist.`,
+    },
+    footer: {
+      createNewToken: "Generate new token",
+      placeHolder: "Paste your token here",
+    },
+    body: {
+      disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
+      learnMore: `Learn more about ${en_common.names.bitbucket} tokens`,
       note: `You should provide a token with the ${"'gist'".bold()} permission.`,
     },
   },

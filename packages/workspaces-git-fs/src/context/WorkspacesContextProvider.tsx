@@ -19,7 +19,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { LocalFile } from "../worker/api/LocalFile";
-import { GistOrigin, GitHubOrigin } from "../worker/api/WorkspaceOrigin";
+import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "../worker/api/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 
@@ -83,9 +83,9 @@ export function WorkspacesContextProvider(props: Props) {
         password: string;
       };
     }) =>
-      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_push(args)
-      ),
+      workspacesSharedWorker.withBus((workspacesWorkerBus) => {
+        return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_push(args);
+      }),
     [workspacesSharedWorker]
   );
 
@@ -195,7 +195,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createWorkspaceFromGitRepository = useCallback(
     async (args: {
-      origin: GistOrigin | GitHubOrigin;
+      origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
       gitConfig?: { email: string; name: string };
       gitAuthSessionId: string | undefined;
       authInfo?: {
@@ -404,11 +404,12 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const initGitOnWorkspace = useCallback(
-    async (args: { workspaceId: string; remoteUrl: URL }) =>
+    async (args: { workspaceId: string; remoteUrl: URL; branch?: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitOnExistingWorkspace({
           workspaceId: args.workspaceId,
           remoteUrl: args.remoteUrl.toString(),
+          branch: args.branch,
         })
       ),
     [workspacesSharedWorker]
@@ -418,6 +419,18 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: { workspaceId: string; remoteUrl: URL; branch: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
+          workspaceId: args.workspaceId,
+          remoteUrl: args.remoteUrl.toString(),
+          branch: args.branch,
+        })
+      ),
+    [workspacesSharedWorker]
+  );
+
+  const initSnippetOnWorkspace = useCallback(
+    async (args: { workspaceId: string; remoteUrl: URL; branch: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace({
           workspaceId: args.workspaceId,
           remoteUrl: args.remoteUrl.toString(),
           branch: args.branch,
@@ -483,6 +496,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      initSnippetOnWorkspace,
       changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,
@@ -522,6 +536,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      initSnippetOnWorkspace,
       changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,
