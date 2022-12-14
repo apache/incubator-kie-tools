@@ -61,6 +61,7 @@ import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommand
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
@@ -280,30 +281,49 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                     this::getHeaderItems,
                                                                                     this::onItemSelected));
                 } else {
-                    metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
-                                                                      oc,
-                                                                      clearValueConsumer(false, new Name()),
-                                                                      setValueConsumer(false),
-                                                                      setTypeRefConsumer(),
-                                                                      translationService,
-                                                                      cellEditorControls,
-                                                                      headerEditor,
-                                                                      listSelector,
-                                                                      this::getHeaderItems,
-                                                                      this::onItemSelected));
+                    final HasName hn = new HasName() {
+                        @Override public Name getName() {
+                            return new Name(ContextUIModelMapper.DEFAULT_ROW_CAPTION);
+                        }
+
+                        @Override public void setName(Name name) {
+                            // name can not be changed
+                        }
+                    };
+
+                    final OutputClauseColumnHeaderMetaData hm = new OutputClauseColumnHeaderMetaData(hn,
+                            () -> dtable,
+                            hasName -> {
+                                // name can not be cleared
+                            },
+                            (hasName, name) -> {
+                                // name can not be changed
+                            },
+                            setTypeRefConsumer(),
+                            translationService,
+                            cellEditorControls,
+                            headerEditor,
+                            listSelector,
+                            this::getHeaderItems,
+                            this::onItemSelected);
+                    hm.setHeaderPlacement(OutputClauseColumnHeaderMetaData.OutputClauseColumnHeaderMetaDataPlacement.TOP);
+
+                    metaData.add(hm);
                 }
                 if (dtable.getOutput().size() > 1) {
-                    metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
-                                                                      oc,
-                                                                      clearValueConsumer(false, new Name()),
-                                                                      setValueConsumer(false),
-                                                                      setTypeRefConsumer(),
-                                                                      translationService,
-                                                                      cellEditorControls,
-                                                                      headerEditor,
-                                                                      listSelector,
-                                                                      this::getHeaderItems,
-                                                                      this::onItemSelected));
+                    final OutputClauseColumnHeaderMetaData hm = new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
+                            () -> oc,
+                            clearValueConsumer(false, new Name()),
+                            setValueConsumer(false),
+                            setTypeRefConsumer(),
+                            translationService,
+                            cellEditorControls,
+                            headerEditor,
+                            listSelector,
+                            this::getHeaderItems,
+                            this::onItemSelected);
+                    hm.setHeaderPlacement(OutputClauseColumnHeaderMetaData.OutputClauseColumnHeaderMetaDataPlacement.BOTTOM);
+                    metaData.add(hm);
                 }
             });
             return metaData;
