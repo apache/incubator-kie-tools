@@ -58,7 +58,7 @@ public class DashbuilderProcessor {
 
     private static final String DASHBUILDER_STATIC_PATH = "META-INF/resources/dashbuilder";
 
-    private static final String DASHBOARDS_WEB_CONTEXT = "dashboards";
+    private static final String DASHBOARDS_WEB_CONTEXT = "__dashboard";
 
     @BuildStep
     public FeatureBuildItem feature() {
@@ -94,7 +94,8 @@ public class DashbuilderProcessor {
                     }
                 });
             });
-            log.infof("Found %d valid dashboards", watchList.size());
+            int n = dashboardsBuildItem.list().size();
+            log.info("Found " + n + " dashboard" + (n == 1 ? "" : "s"));
         } else {
             for (var db : dashboards.get()) {
                 var name = getDashboardName(Paths.get(db));
@@ -102,6 +103,7 @@ public class DashbuilderProcessor {
                 if (content != null) {
                     watchList.add(db);
                     dashboardsBuildItem.register(name, content);
+                    log.infov("Registered {}", db);
                 } else {
                     log.warnv("Not able to load {}", db);
                 }
@@ -202,9 +204,9 @@ public class DashbuilderProcessor {
                 .map(p -> "'" + p + "'")
                 .collect(Collectors.joining(",", "[", "]"));
         return "dashbuilder = {" +
-                "\"mode\": \"CLIENT\", " +
-                "\"path\": \"" + DASHBOARDS_WEB_CONTEXT + "\", " +
-                " \"dashboards\": " + dashboardsJsArray
+                "   \"mode\": \"CLIENT\",\n" +
+                "   \"path\": \"" + DASHBOARDS_WEB_CONTEXT + "\",\n" +
+                "   \"dashboards\": " + dashboardsJsArray + "\n"
                 + "}";
     }
 

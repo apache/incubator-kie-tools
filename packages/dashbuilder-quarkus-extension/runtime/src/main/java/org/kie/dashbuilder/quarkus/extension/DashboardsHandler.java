@@ -40,10 +40,12 @@ public class DashboardsHandler implements Handler<RoutingContext> {
 
     @Override
     public void handle(RoutingContext event) {
+
         var request = event.request();
         var response = event.response();
 
         var name = retrieveName(request.uri());
+
         var dashboard = dashboards.get(name);
 
         if (request.method() != HttpMethod.GET) {
