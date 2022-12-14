@@ -16,30 +16,31 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useMemo, useRef } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
 import {
-  DecisionTableExpressionDefinitionAnnotation,
   DecisionTableExpressionDefinitionBuiltInAggregation,
-  DecisionTableExpressionDefinitionClause,
   DmnBuiltInDataType,
   DecisionTableExpressionDefinition,
-  DecisionTableExpressionDefinitionRule,
-  executeIfExpressionDefinitionChanged,
   generateUuid,
   BeeTableOperationHandlerGroup,
   DecisionTableExpressionDefinitionHitPolicy,
-  ExpressionDefinitionLogicType,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   ROWGENERICTYPE,
 } from "../../api";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { getColumnsAtLastLevel, BeeTable } from "../BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector } from "./HitPolicySelector";
+import { RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "../RelationExpression";
+import { ResizingWidth, useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
+import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -51,16 +52,11 @@ const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
 const DECISION_NODE_DEFAULT_NAME = "output-1";
 
-interface SpreadFunction {
-  updatedDecisionTable?: Partial<DecisionTableExpressionDefinition>;
-  updatedColumns?: ReactTable.ColumnInstance<ROWGENERICTYPE>[];
-  updatedRows?: Array<object>;
-}
-
 export function DecisionTableExpression(decisionTable: PropsWithChildren<DecisionTableExpressionDefinition>) {
-  const { decisionNodeId, beeGwtService } = useBoxedExpressionEditor();
-
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { updateResizingWidth } = useResizingWidthDispatch();
 
   const getNewColumnIdPrefix = useCallback((groupType?: string) => {
     switch (groupType) {
@@ -114,70 +110,212 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     return editColumnLabel;
   }, [i18n]);
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(() => {
-    const inputColumns = _.chain(decisionTable.input ?? [{ name: "input-1", dataType: DmnBuiltInDataType.Undefined }])
-      .map((inputClause: DecisionTableExpressionDefinitionClause) => ({
+  const setInputColumnWidth = useCallback(
+    (inputIndex: number) => (newWidth: number) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const newInputs = [...(prev.input ?? [])];
+        newInputs[inputIndex].width = newWidth;
+        return { ...prev, input: newInputs };
+      });
+    },
+    [setExpression]
+  );
+
+  const setOutputColumnWidth = useCallback(
+    (outputIndex: number) => (newWidth: number) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const newOutputs = [...(prev.output ?? [])];
+        newOutputs[outputIndex].width = newWidth;
+        return { ...prev, output: newOutputs };
+      });
+    },
+    [setExpression]
+  );
+
+  const setAnnotationColumnWidth = useCallback(
+    (annotationIndex: number) => (newWidth: number) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const newAnnotations = [...(prev.annotations ?? [])];
+        newAnnotations[annotationIndex].width = newWidth;
+        return { ...prev, annotations: newAnnotations };
+      });
+    },
+    [setExpression]
+  );
+
+  const [inputsResizingWidths, setInputsResizingWidths] = useState<ResizingWidth[]>(
+    [...(decisionTable.input ?? [])].map((c) => ({
+      value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      isPivoting: false,
+    }))
+  );
+
+  const [outputsResizingWidths, setOutputsResizingWidths] = useState<ResizingWidth[]>(
+    [...(decisionTable.output ?? [])].map((c) => ({
+      value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      isPivoting: false,
+    }))
+  );
+
+  const [annotationsResizingWidths, setAnnotationsResizingWidths] = useState<ResizingWidth[]>(
+    [...(decisionTable.annotations ?? [])].map((c) => ({
+      value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      isPivoting: false,
+    }))
+  );
+
+  const setInputResizingWidth = useCallback(
+    (inputIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
+      setInputsResizingWidths((prev: ResizingWidth[]) => {
+        const newResizingWidth = getNewResizingWidth(prev[inputIndex]);
+        const n = [...prev];
+        n[inputIndex] = newResizingWidth;
+        return n;
+      });
+    },
+    []
+  );
+
+  const setOutputResizingWidth = useCallback(
+    (outputIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
+      setOutputsResizingWidths((prev: ResizingWidth[]) => {
+        const newResizingWidth = getNewResizingWidth(prev[outputIndex]);
+        const n = [...prev];
+        n[outputIndex] = newResizingWidth;
+        return n;
+      });
+    },
+    []
+  );
+
+  const setAnnotationResizingWidth = useCallback(
+    (annotationIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
+      setAnnotationsResizingWidths((prev: ResizingWidth[]) => {
+        const newResizingWidth = getNewResizingWidth(prev[annotationIndex]);
+        const n = [...prev];
+        n[annotationIndex] = newResizingWidth;
+        return n;
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    updateResizingWidth(decisionTable.id!, (prev) => {
+      const columns = [...inputsResizingWidths, ...outputsResizingWidths, ...annotationsResizingWidths];
+      return columns.reduce(
+        (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
+        {
+          value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length * 2,
+          isPivoting: false,
+        }
+      );
+    });
+  }, [annotationsResizingWidths, decisionTable.id, inputsResizingWidths, outputsResizingWidths, updateResizingWidth]);
+
+  const beeTableColumns = useMemo<ReactTable.Column<ROWGENERICTYPE>[]>(() => {
+    const inputColumns: ReactTable.Column<ROWGENERICTYPE>[] = (decisionTable.input ?? []).map(
+      (inputClause, inputIndex) => ({
         accessor: inputClause.id ?? generateUuid(),
         label: inputClause.name,
         dataType: inputClause.dataType,
         width: inputClause.width,
+        setWidth: setInputColumnWidth(inputIndex),
+        resizingWidth: inputsResizingWidths[inputIndex],
+        setResizingWidth: setInputResizingWidth(inputIndex),
+        minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
         groupType: DecisionTableColumnType.InputClause,
         cssClasses: "decision-table--input",
-      }))
-      .value();
-    const outputColumns = _.chain(
-      decisionTable.output ?? [{ name: DECISION_NODE_DEFAULT_NAME, dataType: DmnBuiltInDataType.Undefined }]
-    )
-      .map((outputClause: DecisionTableExpressionDefinitionClause) => ({
+        isRowIndexColumn: false,
+      })
+    );
+
+    const outputColumns: ReactTable.Column<ROWGENERICTYPE>[] = (decisionTable.output ?? []).map(
+      (outputClause, outputIndex) => ({
         accessor: outputClause.id ?? generateUuid(),
         label: outputClause.name,
         dataType: outputClause.dataType,
         width: outputClause.width,
+        setWidth: setOutputColumnWidth(outputIndex),
+        resizingWidth: outputsResizingWidths[outputIndex],
+        setResizingWidth: setOutputResizingWidth(outputIndex),
+        minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
         groupType: DecisionTableColumnType.OutputClause,
         cssClasses: "decision-table--output",
-      }))
-      .value();
-    const annotationColumns = _.chain(decisionTable.annotations ?? [{ name: "annotation-1" }])
-      .map(
-        (annotation: DecisionTableExpressionDefinitionAnnotation) =>
-          ({
-            accessor: annotation.id ?? generateUuid(),
-            label: annotation.name,
-            width: annotation.width,
-            inlineEditable: true,
-            groupType: DecisionTableColumnType.Annotation,
-            cssClasses: "decision-table--annotation",
-          } as ReactTable.ColumnInstance<ROWGENERICTYPE>)
-      )
-      .value();
+        isRowIndexColumn: false,
+      })
+    );
 
+    const annotationColumns: ReactTable.Column<ROWGENERICTYPE>[] = (decisionTable.annotations ?? []).map(
+      (annotation, annotationIndex) => ({
+        accessor: annotation.id ?? (generateUuid() as any),
+        label: annotation.name,
+        width: annotation.width,
+        setWidth: setAnnotationColumnWidth(annotationIndex),
+        resizingWidth: annotationsResizingWidths[annotationIndex],
+        setResizingWidth: setAnnotationResizingWidth(annotationIndex),
+        minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        inlineEditable: true,
+        groupType: DecisionTableColumnType.Annotation,
+        cssClasses: "decision-table--annotation",
+        isRowIndexColumn: false,
+        dataType: undefined as any,
+      })
+    );
+
+    const inputSectionWidth = inputsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
     const inputSection = {
       groupType: DecisionTableColumnType.InputClause,
-      accessor: "Input",
+      accessor: "Input" as any,
       label: "Input",
+      dataType: undefined as any,
       cssClasses: "decision-table--input",
+      isRowIndexColumn: false,
       columns: inputColumns,
+      width: inputSectionWidth,
+      resizingWidth: {
+        value: inputSectionWidth,
+        isPivoting: false,
+      },
     };
+
+    const outputSectionWidth = outputsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
-      accessor: decisionTable.isHeadless ? decisionTable.id : decisionNodeId,
+      accessor: decisionTable.isHeadless ? decisionTable.id : (decisionNodeId as any),
       label: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
       dataType: decisionTable.dataType ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
+      isRowIndexColumn: false,
       columns: outputColumns,
       appendColumnsOnChildren: true,
+      width: outputSectionWidth,
+      resizingWidth: {
+        value: outputSectionWidth,
+        isPivoting: false,
+      },
     };
+
+    const annotationSectionWidth = annotationsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
     const annotationSection = {
       groupType: DecisionTableColumnType.Annotation,
-      accessor: "Annotations",
+      accessor: "Annotations" as any,
       label: "Annotations",
       cssClasses: "decision-table--annotation",
       columns: annotationColumns,
       inlineEditable: true,
+      isRowIndexColumn: false,
+      dataType: undefined as any,
+      width: annotationSectionWidth,
+      resizingWidth: {
+        value: annotationSectionWidth,
+        isPivoting: false,
+      },
     };
 
-    return [inputSection, outputSection, annotationSection] as ReactTable.ColumnInstance<ROWGENERICTYPE>[];
+    return [inputSection, outputSection, annotationSection];
   }, [
+    annotationsResizingWidths,
     decisionNodeId,
     decisionTable.annotations,
     decisionTable.dataType,
@@ -186,127 +324,37 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     decisionTable.isHeadless,
     decisionTable.name,
     decisionTable.output,
+    inputsResizingWidths,
+    outputsResizingWidths,
+    setAnnotationColumnWidth,
+    setAnnotationResizingWidth,
+    setInputColumnWidth,
+    setInputResizingWidth,
+    setOutputColumnWidth,
+    setOutputResizingWidth,
   ]);
 
   const beeTableRows = useMemo(
     () =>
-      (
-        decisionTable.rules ?? [
-          {
-            id: generateUuid(),
-            inputEntries: [DASH_SYMBOL],
-            outputEntries: [EMPTY_SYMBOL],
-            annotationEntries: [EMPTY_SYMBOL],
-          },
-        ]
-      ).map((rule) => {
+      (decisionTable.rules ?? []).map((rule) => {
         const rowArray = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
-        const tableRow = _.chain(getColumnsAtLastLevel(beeTableColumns))
-          .reduce((tableRow: ROWGENERICTYPE, column, columnIndex: number) => {
+        const tableRow = getColumnsAtLastLevel(beeTableColumns).reduce(
+          (tableRow: ROWGENERICTYPE, column, columnIndex: number) => {
             tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;
             return tableRow;
-          }, {})
-          .value();
+          },
+          {}
+        );
         tableRow.id = rule.id;
         return tableRow;
       }),
     [beeTableColumns, decisionTable.rules]
   );
 
-  const spreadDecisionTableExpressionDefinition = useCallback(
-    ({ updatedColumns, updatedDecisionTable, updatedRows }: SpreadFunction) => {
-      const groupedColumns = _.groupBy(
-        getColumnsAtLastLevel(updatedColumns ?? beeTableColumns),
-        (column) => column.groupType
-      );
-      const input: DecisionTableExpressionDefinitionClause[] = _.chain(
-        groupedColumns[DecisionTableColumnType.InputClause]
-      )
-        .map((inputClause) => ({
-          id: inputClause.accessor,
-          name: inputClause.label,
-          dataType: inputClause.dataType,
-          width: inputClause.width,
-        }))
-        .value();
-      const output: DecisionTableExpressionDefinitionClause[] = _.chain(
-        groupedColumns[DecisionTableColumnType.OutputClause]
-      )
-        .map((outputClause) => ({
-          id: outputClause.accessor,
-          name: outputClause.label,
-          dataType: outputClause.dataType,
-          width: outputClause.width,
-        }))
-        .value();
-      const annotations: DecisionTableExpressionDefinitionAnnotation[] = _.chain(
-        groupedColumns[DecisionTableColumnType.Annotation]
-      )
-        .map((annotation) => ({
-          id: annotation.accessor,
-          name: annotation.label,
-          width: annotation.width,
-        }))
-        .value();
-      const rules: DecisionTableExpressionDefinitionRule[] = _.chain(updatedRows ?? beeTableRows)
-        .map((row: ROWGENERICTYPE) => ({
-          id: row.id as string,
-          inputEntries: _.chain(input)
-            .map((inputClause) => row[inputClause.id] as string)
-            .value(),
-          outputEntries: _.chain(output)
-            .map((outputClause) => row[outputClause.id] as string)
-            .value(),
-          annotationEntries: _.chain(annotations)
-            .map((annotation) => row[annotation.id] as string)
-            .value(),
-        }))
-        .value();
-
-      const updatedDefinition: DecisionTableExpressionDefinition = {
-        id: decisionTable.id,
-        logicType: ExpressionDefinitionLogicType.DecisionTable,
-        name: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
-        dataType: decisionTable.dataType ?? DmnBuiltInDataType.Undefined,
-        hitPolicy: decisionTable.hitPolicy ?? DecisionTableExpressionDefinitionHitPolicy.Unique,
-        aggregation: decisionTable.aggregation ?? DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
-        input: input ?? [{ name: "input-1", dataType: DmnBuiltInDataType.Undefined }],
-        output: output ?? [{ name: DECISION_NODE_DEFAULT_NAME, dataType: DmnBuiltInDataType.Undefined }],
-        annotations: annotations ?? [{ name: "annotation-1" }],
-        rules: rules ?? [
-          { inputEntries: [DASH_SYMBOL], outputEntries: [EMPTY_SYMBOL], annotationEntries: [EMPTY_SYMBOL] },
-        ],
-        ...updatedDecisionTable,
-      };
-
-      if (decisionTable.isHeadless) {
-        const headlessDefinition = _.omit(updatedDefinition, ["isHeadless"]);
-        executeIfExpressionDefinitionChanged(
-          decisionTable,
-          headlessDefinition,
-          () => {
-            decisionTable.onUpdatingRecursiveExpression?.(headlessDefinition);
-          },
-          ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
-        );
-      } else {
-        executeIfExpressionDefinitionChanged(
-          decisionTable,
-          updatedDefinition,
-          () => {
-            beeGwtService?.broadcastDecisionTableExpressionDefinition?.(updatedDefinition);
-          },
-          ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
-        );
-      }
-    },
-    [beeGwtService, beeTableColumns, decisionTable, beeTableRows]
-  );
-
   const singleOutputChildDataType = useRef(DmnBuiltInDataType.Undefined);
 
   const synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType = useCallback(
-    (decisionNodeColumn: ReactTable.ColumnInstance<ROWGENERICTYPE>) => {
+    (decisionNodeColumn: ReactTable.Column<ROWGENERICTYPE>) => {
       if (_.size(decisionNodeColumn.columns) === 1) {
         const updatedSingleOutputChildDataType = _.first(decisionNodeColumn.columns)!.dataType;
 
@@ -328,55 +376,21 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       if (!decisionTable.isHeadless) {
         synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType(decisionNodeColumn);
       }
-      spreadDecisionTableExpressionDefinition({
-        updatedDecisionTable: {
-          name: decisionNodeColumn.label,
-          dataType: decisionNodeColumn.dataType,
-        },
-        updatedColumns: [...columns],
-      });
-
-      // FIXME: Tiago -> Apparently this is not necessary
-      // decisionTable.onExpressionHeaderUpdated?.({
-      //   name: decisionNodeColumn.label,
-      //   dataType: decisionNodeColumn.dataType,
-      // });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [spreadDecisionTableExpressionDefinition, synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType]
-  );
-
-  const fillMissingCellValues = useCallback(
-    (updatedRows: ROWGENERICTYPE[]) =>
-      updatedRows.map((row) => {
-        const updatedRow = getColumnsAtLastLevel(beeTableColumns).reduce(
-          (filledRow: ROWGENERICTYPE, column: ReactTable.ColumnInstance<ROWGENERICTYPE>) => {
-            if (_.isNil(row[column.accessor])) {
-              filledRow[column.accessor] =
-                column.groupType === DecisionTableColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
-            } else {
-              filledRow[column.accessor] = row[column.accessor];
-            }
-            return filledRow;
-          },
-          {}
-        );
-        updatedRow.id = row.id;
-        return updatedRow;
-      }),
-    [beeTableColumns]
+    [synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType]
   );
 
   const onRowsUpdate = useCallback(
-    ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
-      spreadDecisionTableExpressionDefinition({ updatedRows: fillMissingCellValues(rows) });
-    },
-    [fillMissingCellValues, spreadDecisionTableExpressionDefinition]
+    ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {},
+    [
+      /** */
+    ]
   );
 
   const onNewRow = useCallback(() => {
     return getColumnsAtLastLevel(beeTableColumns).reduce(
-      (tableRow: ROWGENERICTYPE, column: ReactTable.ColumnInstance<ROWGENERICTYPE>) => {
+      (tableRow: ROWGENERICTYPE, column: ReactTable.Column<ROWGENERICTYPE>) => {
         tableRow[column.accessor] =
           column.groupType === DecisionTableColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
         return tableRow;
@@ -385,27 +399,13 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     );
   }, [beeTableColumns]);
 
-  const onHitPolicySelect = useCallback(
-    (itemId: DecisionTableExpressionDefinitionHitPolicy) => {
-      spreadDecisionTableExpressionDefinition({
-        updatedDecisionTable: {
-          hitPolicy: itemId,
-        },
-      });
-    },
-    [spreadDecisionTableExpressionDefinition]
-  );
+  const onHitPolicySelect = useCallback((itemId: DecisionTableExpressionDefinitionHitPolicy) => {
+    /** */
+  }, []);
 
-  const onBuiltInAggregatorSelect = useCallback(
-    (itemId) => {
-      spreadDecisionTableExpressionDefinition({
-        updatedDecisionTable: {
-          aggregation: (DecisionTableExpressionDefinitionBuiltInAggregation as never)[itemId],
-        },
-      });
-    },
-    [spreadDecisionTableExpressionDefinition]
-  );
+  const onBuiltInAggregatorSelect = useCallback((itemId) => {
+    /** */
+  }, []);
 
   const controllerCell = useMemo(
     () => (

@@ -39,6 +39,7 @@ import {
   FunctionExpressionDefinition,
   LiteralExpressionDefinition,
   RelationExpressionDefinition,
+  DecisionTableExpressionDefinition,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -76,8 +77,7 @@ type ROWTYPE = ContextExpressionDefinitionEntry;
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinitionLogicType,
-  containerResizingWidth: ResizingWidth,
-  prev: ExpressionDefinition
+  prev: Partial<ExpressionDefinition>
 ): ExpressionDefinition {
   if (logicType === ExpressionDefinitionLogicType.LiteralExpression) {
     const literalExpression: LiteralExpressionDefinition = {
@@ -93,15 +93,11 @@ export function getDefaultExpressionDefinitionByLogicType(
       functionKind: FunctionExpressionDefinitionKind.Feel,
       formalParameters: [],
       expression: {
-        ...getDefaultExpressionDefinitionByLogicType(
-          ExpressionDefinitionLogicType.LiteralExpression,
-          containerResizingWidth,
-          {
-            id: generateUuid(),
-            logicType: ExpressionDefinitionLogicType.LiteralExpression,
-            isHeadless: true,
-          }
-        ),
+        ...getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.LiteralExpression, {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          isHeadless: true,
+        }),
       },
     };
     return functionExpression;
@@ -149,7 +145,6 @@ export function getDefaultExpressionDefinitionByLogicType(
       ...prev,
       logicType,
       isHeadless: true,
-      width: containerResizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for border
       items: [
         {
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
@@ -214,8 +209,75 @@ export function getDefaultExpressionDefinitionByLogicType(
       ],
     };
     return relationExpression;
+  } else if (logicType === ExpressionDefinitionLogicType.DecisionTable) {
+    const decisionTableExpression: DecisionTableExpressionDefinition = {
+      ...prev,
+      logicType,
+      input: [
+        {
+          id: generateUuid(),
+          name: "input-1",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "input-2",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+      ],
+      output: [
+        {
+          id: generateUuid(),
+          name: "output-1",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "output-2",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "output-3",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+      ],
+      annotations: [
+        {
+          id: generateUuid(),
+          name: "annotation-1",
+          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        },
+      ],
+      rules: [
+        {
+          id: generateUuid(),
+          inputEntries: ["a", "b"],
+          outputEntries: ["c", "d", "e"],
+          annotationEntries: [""],
+        },
+        {
+          id: generateUuid(),
+          inputEntries: ["a", "b"],
+          outputEntries: ["c", "d", "e"],
+          annotationEntries: [""],
+        },
+        {
+          id: generateUuid(),
+          inputEntries: ["a", "b"],
+          outputEntries: ["c", "d", "e"],
+          annotationEntries: [""],
+        },
+      ],
+    };
+    return decisionTableExpression;
   } else {
-    return prev;
+    throw new Error(`No default expression available for ${logicType}`);
   }
 }
 
@@ -311,14 +373,21 @@ export function getExpressionResizingWidth(
         CONTEXT_ENTRY_EXTRA_WIDTH + (expression.columns?.length ?? 0)
       )
     );
+  } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
+    const columns = [...(expression.input ?? []), ...(expression.output ?? []), ...(expression.annotations ?? [])];
+    return (
+      resizingWidth ??
+      columns.reduce(
+        (acc, c) => acc + (c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH),
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length * 2
+      )
+    );
   }
 
   // TODO: Tiago -> Implement those
   else if (expression.logicType === ExpressionDefinitionLogicType.List) {
     return resizingWidth ?? expression.width ?? LIST_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
-    return resizingWidth ?? DEFAULT_MIN_WIDTH;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
@@ -356,14 +425,14 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     return entryInfoResizingWidth.isPivoting || nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting);
   }, [entryInfoResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
 
-  const entryExpressionsActualWidth = useMemo<number>(() => {
+  const nonPivotingEntryExpressionsMaxActualWidth = useMemo<number>(() => {
     return Math.max(
       nestedExpressionContainer.actualWidth -
         (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
         CONTEXT_ENTRY_EXTRA_WIDTH,
       ...nestedExpressions
-        .filter((s) => !(resizingWidths.get(s.id!)?.isPivoting ?? false))
-        .map((s) => getExpressionResizingWidth(s, new Map()))
+        .filter(({ id }) => !(resizingWidths.get(id!)?.isPivoting ?? false))
+        .map((expression) => getExpressionResizingWidth(expression, new Map()))
     );
   }, [contextExpression.entryInfoWidth, nestedExpressionContainer.actualWidth, nestedExpressions, resizingWidths]);
 
@@ -433,7 +502,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     return {
       entryExpressionsMinWidthLocal: entryExpressionsMinWidthLocal,
       entryExpressionsMinWidthGlobal: entryExpressionsMinWidthGlobal,
-      entryExpressionsActualWidth: entryExpressionsActualWidth,
+      entryExpressionsActualWidth: nonPivotingEntryExpressionsMaxActualWidth,
       entryExpressionsResizingWidth: {
         value: entryExpressionsResizingWidthValue,
         isPivoting: isContextExpressionPivoting,
@@ -442,7 +511,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   }, [
     entryExpressionsMinWidthLocal,
     entryExpressionsMinWidthGlobal,
-    entryExpressionsActualWidth,
+    nonPivotingEntryExpressionsMaxActualWidth,
     entryExpressionsResizingWidthValue,
     isContextExpressionPivoting,
   ]);
@@ -593,7 +662,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             setResizingWidth={setEntryInfoResizingWidth}
             actualWidth={contextExpression.entryInfoWidth}
           >
-            <div className="context-result">{`<result> (${contextExpression.id})`}</div>
+            <div className="context-result">{`<result>`}</div>
           </Resizer>,
           <Resizer key="context-expression">
             <ResultExpressionCell contextExpression={contextExpression} />

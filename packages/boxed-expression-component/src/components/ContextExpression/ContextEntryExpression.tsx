@@ -20,7 +20,7 @@ import { useCallback, useRef } from "react";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { getDefaultExpressionDefinitionByLogicType, useNestedExpressionContainer } from "./ContextExpression";
+import { getDefaultExpressionDefinitionByLogicType } from "./ContextExpression";
 
 export interface ContextEntryExpressionProps {
   expression: ExpressionDefinition;
@@ -30,7 +30,6 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   const logicTypeContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const nestedExpressionContainer = useNestedExpressionContainer();
 
   const getLogicTypeSelectorRef = useCallback(() => {
     return logicTypeContainerRef.current!;
@@ -39,13 +38,13 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev) => ({
-        ...getDefaultExpressionDefinitionByLogicType(logicType, nestedExpressionContainer.resizingWidth, prev),
+        ...getDefaultExpressionDefinitionByLogicType(logicType, prev),
         logicType,
         isHeadless: true,
         id: prev.id ?? generateUuid(),
       }));
     },
-    [nestedExpressionContainer.resizingWidth, setExpression]
+    [setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {

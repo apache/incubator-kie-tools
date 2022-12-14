@@ -14,54 +14,52 @@
  * limitations under the License.
  */
 
-import "./FunctionExpression.css";
+import * as _ from "lodash";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useMemo } from "react";
-import {
-  BeeTableColumnsUpdateArgs,
-  ContextExpressionDefinitionEntry,
-  DmnBuiltInDataType,
-  FunctionExpressionDefinitionKind,
-  FunctionExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  BeeTableHeaderVisibility,
-  BeeTableOperation,
-  ExpressionDefinition,
-  ContextExpressionDefinition,
-  LiteralExpressionDefinition,
-  BeeTableProps,
-  generateUuid,
-  BeeTableCellProps,
-  PmmlLiteralExpressionDefinitionKind,
-  PmmlLiteralExpressionDefinition,
-} from "../../api";
-import { BeeTable } from "../BeeTable";
+import { PropsWithChildren, useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+  BeeTableCellProps,
+  BeeTableColumnsUpdateArgs,
+  BeeTableHeaderVisibility,
+  BeeTableOperation,
+  BeeTableProps,
+  ContextExpressionDefinition,
+  ContextExpressionDefinitionEntry,
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  FunctionExpressionDefinition,
+  FunctionExpressionDefinitionKind,
+  generateUuid,
+  LiteralExpressionDefinition,
+  PmmlLiteralExpressionDefinition,
+  PmmlLiteralExpressionDefinitionKind,
+} from "../../api";
+import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
+import { BeeTable } from "../BeeTable";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
   ContextEntryExpressionCell,
   ContextExpressionContext,
   ContextExpressionContextType,
   CONTEXT_ENTRY_EXTRA_WIDTH,
   getDefaultExpressionDefinitionByLogicType,
-  getExpressionResizingWidth,
   NestedExpressionContainerContext,
   NestedExpressionContainerContextType,
   NestedExpressionDispatchContextProvider,
   useContextExpressionContext,
   useNestedExpressionContainer,
 } from "../ContextExpression";
-import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
-import { PopoverMenu } from "../PopoverMenu";
-import * as _ from "lodash";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { FunctionKindSelector } from "./FunctionKindSelector";
-import { EditParameters } from "./EditParameters";
+import { useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
 import { LITERAL_EXPRESSION_MIN_WIDTH } from "../LiteralExpression";
-import { useResizingWidthDispatch, useResizingWidths } from "../ExpressionDefinitionRoot";
+import { PopoverMenu } from "../PopoverMenu";
+import { EditParameters } from "./EditParameters";
+import "./FunctionExpression.css";
+import { FunctionKindSelector } from "./FunctionKindSelector";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
@@ -261,7 +259,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         if (kind === FunctionExpressionDefinitionKind.Feel) {
           return getDefaultExpressionDefinitionByLogicType(
             ExpressionDefinitionLogicType.Function,
-            { value: 0, isPivoting: false },
             {
               id: prev.id ?? generateUuid(),
               isHeadless: true,

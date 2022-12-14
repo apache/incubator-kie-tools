@@ -16,13 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import {
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  generateUuid,
-} from "../../api";
-import { useContextMenuHandler } from "../../hooks";
+import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../api";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getDefaultExpressionDefinitionByLogicType } from "../ContextExpression";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
@@ -43,11 +37,7 @@ export function ExpressionDefinitionRoot({ decisionNodeId, expression }: Express
       return setExpression((prev) => {
         {
           return {
-            ...getDefaultExpressionDefinitionByLogicType(
-              logicType,
-              { value: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, isPivoting: false },
-              prev
-            ),
+            ...getDefaultExpressionDefinitionByLogicType(logicType, prev),
             logicType,
             isHeadless: false,
             id: prev.id ?? generateUuid(),

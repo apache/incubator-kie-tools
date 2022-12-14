@@ -160,7 +160,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         dataType: invocation.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
         disableOperationHandlerOnHeader: true,
         isRowIndexColumn: false,
-        width: (invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) + (invocation.entryExpressionWidth ?? 0) + 2, // 2px for border
+        width: undefined,
         columns: [
           {
             headerCellElement,
@@ -169,10 +169,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             isRowIndexColumn: false,
             label: "functionDefinition",
             dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
-            width:
-              (invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
-              (invocation.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
-              2,
+            width: undefined,
             columns: [
               {
                 accessor: "entryInfo",
@@ -187,9 +184,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
               {
                 accessor: "entryExpression",
                 disableOperationHandlerOnHeader: true,
-                width: invocation.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-                setWidth: setExpressionWidth,
-                minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+                width: undefined,
                 isRowIndexColumn: false,
                 label: "entryExpression",
                 dataType: DEFAULT_PARAMETER_DATA_TYPE,
@@ -199,16 +194,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         ],
       },
     ],
-    [
-      invocation.name,
-      invocation.dataType,
-      invocation.entryInfoWidth,
-      invocation.entryExpressionWidth,
-      decisionNodeId,
-      headerCellElement,
-      setInfoWidth,
-      setExpressionWidth,
-    ]
+    [invocation.name, invocation.dataType, invocation.entryInfoWidth, decisionNodeId, headerCellElement, setInfoWidth]
   );
 
   const onColumnsUpdate = useCallback(

@@ -24,7 +24,6 @@
 
 .expression-container .decision-table-expression table thead tr:first-child {
   border-top: 2px solid #d2d2d2;
-  overflow: hidden;
 }
 .expression-container .decision-table-expression table thead tr:first-child th {
   border-top: none;
@@ -42,7 +41,7 @@
   th.decision-table--annotation
   .react-resizable {
   height: 114px !important;
-  top: -69px;
+  top: -70px;
   padding: 40px 0;
   cursor: pointer;
 }
@@ -52,7 +51,7 @@
   background-color: #def3ff;
 }
 
-.expression-container .decision-table-expression table thead th::first-child th {
+.expression-container .decision-table-expression table thead th:first-child th {
   border-right-color: #def3ff;
   border-bottom-color: #def3ff;
 }
@@ -61,11 +60,22 @@
 .expression-container .decision-table-expression table thead tr:last-child th.decision-table--annotation::after {
   content: "";
   position: absolute;
-  border-right: 2px solid #d2d2d2;
-  height: 120px;
-  top: -60px;
-  right: -2px;
+  height: 115px;
   z-index: 1;
+  top: -60px;
+  border-right: 2px solid #d2d2d2;
+  right: -2px;
+}
+
+.expression-container .decision-table-expression table thead tr:last-child th:last-child.decision-table--input::after,
+.expression-container
+  .decision-table-expression
+  table
+  thead
+  tr:last-child
+  th:last-child.decision-table--annotation::after {
+  border-right: 1px solid #d2d2d2;
+  right: -1px;
 }
 
 .expression-container .decision-table-expression table tr th.colspan-header.input .header-cell,
@@ -81,22 +91,4 @@
 .expression-container .decision-table-expression table thead th.annotation,
 .expression-container .decision-table-expression table thead th.annotation.decision-table--annotation .react-resizable {
   background-color: #ffffff;
-}
-
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  th.annotation.decision-table--annotation
-  .header-cell-info {
-  width: 95%;
-}
-
-/** Focused Cells border ------------------------------------- */
-
-.expression-container .decision-table-expression table thead tr:last-child th.annotation.focused > .react-resizable,
-.expression-container .decision-table-expression table thead tr:last-child th.annotation:focus > .react-resizable,
-.expression-container .decision-table-expression table thead tr:last-child th.input:focus > .react-resizable {
-  outline: 2px solid #438cb1;
-  z-index: 3;
 }

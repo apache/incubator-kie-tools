@@ -124,15 +124,17 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [spreadListExpressionDefinition]
   );
 
-  const beeTableColumns = useMemo<ReactTable.ColumnInstance<ROWGENERICTYPE>[]>(
+  const beeTableColumns = useMemo<ReactTable.Column<ROWGENERICTYPE>[]>(
     () => [
       {
         accessor: "list",
-        width: listExpression.width ?? LIST_EXPRESSION_MIN_WIDTH,
-        setWidth: setListWidth,
-      } as any, // FIXME: Tiago -> Remove this!!,
+        label: "",
+        dataType: undefined as any,
+        isRowIndexColumn: false,
+        width: undefined,
+      },
     ],
-    [listExpression.width, setListWidth]
+    []
   );
 
   const resetRowCustomFunction = useCallback((row: ROWGENERICTYPE) => {
