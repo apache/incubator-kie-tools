@@ -21,9 +21,7 @@ import {
   BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
-  executeIfExpressionDefinitionChanged,
   getNextAvailableContextExpressionEntryName,
   generateUuid,
   getOperationHandlerConfig,
@@ -73,55 +71,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     );
   }, [invocation.bindingEntries]);
 
-  const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
+  const { decisionNodeId } = useBoxedExpressionEditor();
 
-  const spreadInvocationExpressionDefinition = useCallback(
-    (invocationExpressionUpdated?: Partial<InvocationExpressionDefinition>) => {
-      const updatedDefinition: InvocationExpressionDefinition = {
-        id: invocation.id,
-        logicType: ExpressionDefinitionLogicType.Invocation,
-        name: invocation.name ?? DEFAULT_PARAMETER_NAME,
-        dataType: invocation.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
-        bindingEntries: beeTableRows as ROWTYPE[],
-        invokedFunction: invocation.invokedFunction ?? "",
-        entryInfoWidth: invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
-        entryExpressionWidth: invocation.entryExpressionWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-        ...invocationExpressionUpdated,
-      };
-
-      if (invocation.isHeadless) {
-        const headlessDefinition = _.omit(updatedDefinition, ["name", "dataType", "isHeadless"]);
-        executeIfExpressionDefinitionChanged(
-          invocation,
-          headlessDefinition,
-          () => {
-            invocation.onUpdatingRecursiveExpression?.(headlessDefinition);
-          },
-          ["bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
-        );
-      } else {
-        executeIfExpressionDefinitionChanged(
-          invocation,
-          updatedDefinition,
-          () => {
-            beeGwtService?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
-          },
-          ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
-        );
-      }
-    },
-    [beeGwtService, invocation, beeTableRows]
-  );
-
-  const onBlurCallback = useCallback(
-    (event) => {
-      if (invocation.invokedFunction != event.target.value) {
-        beeGwtService?.notifyUserAction();
-      }
-      spreadInvocationExpressionDefinition({ invokedFunction: event.target.value });
-    },
-    [beeGwtService, spreadInvocationExpressionDefinition, invocation.invokedFunction]
-  );
+  const onBlurCallback = useCallback((event) => {}, []);
 
   const headerCellElement = useMemo(
     () => (
@@ -138,19 +90,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [invocation.invokedFunction, onBlurCallback, i18n.enterFunction]
   );
 
-  const setInfoWidth = useCallback(
-    (newInfoWidth) => {
-      spreadInvocationExpressionDefinition({ entryInfoWidth: newInfoWidth });
-    },
-    [spreadInvocationExpressionDefinition]
-  );
+  const setInfoWidth = useCallback((newInfoWidth) => {}, []);
 
-  const setExpressionWidth = useCallback(
-    (newEntryExpressionWidth) => {
-      spreadInvocationExpressionDefinition({ entryExpressionWidth: newEntryExpressionWidth });
-    },
-    [spreadInvocationExpressionDefinition]
-  );
+  const setExpressionWidth = useCallback((newEntryExpressionWidth) => {}, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
@@ -197,14 +139,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [invocation.name, invocation.dataType, invocation.entryInfoWidth, decisionNodeId, headerCellElement, setInfoWidth]
   );
 
-  const onColumnsUpdate = useCallback(
-    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
-      // FIXME: Tiago -> Apparently this is not necessary
-      // invocation.onExpressionHeaderUpdated?.({ name: column.label, dataType: column.dataType });
-      spreadInvocationExpressionDefinition({ name: column.label, dataType: column.dataType });
-    },
-    [spreadInvocationExpressionDefinition]
-  );
+  const onColumnsUpdate = useCallback(({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {}, []);
 
   const onNewRow = useCallback<() => ROWTYPE>(() => {
     const generatedName = getNextAvailableContextExpressionEntryName(
@@ -231,12 +166,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [invocation.isHeadless]
   );
 
-  const onRowsUpdate = useCallback(
-    ({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
-      spreadInvocationExpressionDefinition({ bindingEntries: [...rows] });
-    },
-    [spreadInvocationExpressionDefinition]
-  );
+  const onRowsUpdate = useCallback(({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {}, []);
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.original.entryInfo.id;

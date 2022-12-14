@@ -17,7 +17,7 @@
 import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import { ExpressionDefinition } from "./ExpressionDefinition";
 import * as _ from "lodash";
-import { BeeTableOperationHandlerConfig, BeeTableOperation, ROWGENERICTYPE } from "./BeeTable";
+import { BeeTableOperationHandlerConfig, BeeTableOperation } from "./BeeTable";
 import { BoxedExpressionEditorI18n } from "../i18n";
 import { ExpressionDefinitionLogicType } from "./ExpressionDefinitionLogicType";
 
@@ -36,8 +36,6 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   entryExpression: T;
   /** True, for synchronizing name and dataType parameters, between entryInfo and entryExpression */
   nameAndDataTypeSynchronized?: boolean;
-  /** Callback to be invoked on expression resetting */
-  onExpressionReset?: () => void;
 }
 
 export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 150;

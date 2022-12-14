@@ -18,7 +18,7 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
 import { useRef, useState } from "react";
-import "./BoxedExpressionEditorContextProvider.css";
+import "./BoxedExpressionEditorContext.css";
 import * as _ from "lodash";
 import { CellSelectionBox } from "../SelectionBox";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";

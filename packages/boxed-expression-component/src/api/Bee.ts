@@ -61,30 +61,6 @@ declare global {
 }
 
 /**
- * First, checks if each field, specified in propertiesToCheck, is equal for prevDef and updatedDef
- * Second, if the condition specified above is true, executes functionToExecute
- * @param prevDef previous definition
- * @param updatedDef updated definition
- * @param functionToExecute function to be executed if criteria is met
- * @param propertiesToCheck properties to be checked in the input objects
- */
-export const executeIfExpressionDefinitionChanged = (
-  prevDef: ExpressionDefinition,
-  updatedDef: ExpressionDefinition,
-  functionToExecute: () => void,
-  propertiesToCheck?: string[]
-) => {
-  const customizer = propertiesToCheck
-    ? (prev: Record<string, any>, next: Record<string, any>) =>
-        _.every(propertiesToCheck, (prop) => _.isEqual(prev[prop], next[prop]))
-    : undefined;
-
-  if (!_.isEqualWith(prevDef, updatedDef, customizer)) {
-    functionToExecute();
-  }
-};
-
-/**
  * Generates an UUID with a format similar to _6EFDBCB4-F4AF-4E9A-9A66-2A9F24185674
  */
 export const generateUuid = () => {

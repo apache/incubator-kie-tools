@@ -20,7 +20,6 @@ import { useCallback, useMemo } from "react";
 import {
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  executeIfExpressionDefinitionChanged,
   generateUuid,
   ListExpressionDefinition,
   LiteralExpressionDefinition,
@@ -29,22 +28,20 @@ import {
   BeeTableOperationHandlerConfig,
   BeeTableHeaderVisibility,
   BeeTableOperation,
-  ROWGENERICTYPE,
   BeeTableProps,
 } from "../../api";
 import { ContextEntryExpressionCell } from "../ContextExpression";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export const LIST_EXPRESSION_MIN_WIDTH = 430;
+type ROWTYPE = any;
 
 export const ListExpression: React.FunctionComponent<ListExpressionDefinition> = (
   listExpression: ListExpressionDefinition
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { beeGwtService } = useBoxedExpressionEditor();
 
   const generateLiteralExpression: () => LiteralExpressionDefinition = useCallback(
     () => ({
@@ -86,45 +83,9 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     }
   }, [listExpression.items, generateLiteralExpression]);
 
-  const spreadListExpressionDefinition = useCallback(
-    (updatedListExpression?: Partial<ListExpressionDefinition>) => {
-      const updatedDefinition: ListExpressionDefinition = {
-        id: listExpression.id,
-        name: listExpression.name,
-        dataType: listExpression.dataType,
-        logicType: ExpressionDefinitionLogicType.List,
-        width: listExpression.width ?? LIST_EXPRESSION_MIN_WIDTH,
-        ...updatedListExpression,
-      };
+  const setListWidth = useCallback((newInfoWidth) => {}, []);
 
-      updatedDefinition.items = (updatedListExpression?.items ? updatedListExpression.items : beeTableRows).map(
-        (listItem: ROWGENERICTYPE) => listItem.entryExpression
-      );
-
-      executeIfExpressionDefinitionChanged(
-        listExpression,
-        updatedDefinition,
-        () => {
-          if (listExpression.isHeadless) {
-            listExpression.onUpdatingRecursiveExpression?.(updatedDefinition);
-          } else {
-            beeGwtService?.broadcastListExpressionDefinition?.(updatedDefinition);
-          }
-        },
-        ["width", "items"]
-      );
-    },
-    [beeGwtService, listExpression, beeTableRows]
-  );
-
-  const setListWidth = useCallback(
-    (newInfoWidth) => {
-      spreadListExpressionDefinition({ width: newInfoWidth });
-    },
-    [spreadListExpressionDefinition]
-  );
-
-  const beeTableColumns = useMemo<ReactTable.Column<ROWGENERICTYPE>[]>(
+  const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
         accessor: "list",
@@ -137,7 +98,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     []
   );
 
-  const resetRowCustomFunction = useCallback((row: ROWGENERICTYPE) => {
+  const resetRowCustomFunction = useCallback((row: ROWTYPE) => {
     return { entryExpression: { id: row.entryExpression.id } };
   }, []);
 
@@ -148,23 +109,17 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [generateLiteralExpression]
   );
 
-  const onRowsUpdate = useCallback(
-    ({ rows }: BeeTableRowsUpdateArgs<ROWGENERICTYPE>) => {
-      const newEntryExpressions = rows.map((row) => {
-        return { entryExpression: row.entryExpression };
-      });
-      spreadListExpressionDefinition({
-        items: newEntryExpressions as any,
-      });
-    },
-    [spreadListExpressionDefinition]
-  );
+  const onRowsUpdate = useCallback(({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
+    const newEntryExpressions = rows.map((row) => {
+      return { entryExpression: row.entryExpression };
+    });
+  }, []);
 
-  const getRowKey = useCallback((row: ReactTable.Row<ROWGENERICTYPE>) => {
+  const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return (row.original as ContextExpressionDefinitionEntry).entryExpression.id!;
   }, []);
 
-  const defaultCellByColumnId: BeeTableProps<ROWGENERICTYPE>["defaultCellByColumnId"] = useMemo(
+  const defaultCellByColumnId: BeeTableProps<ROWTYPE>["defaultCellByColumnId"] = useMemo(
     () => ({
       list: ContextEntryExpressionCell,
     }),

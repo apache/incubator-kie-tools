@@ -132,5 +132,3 @@ export interface BeeTableTdsAndThsProps {
   /** the y position of the cell */
   yPosition?: number;
 }
-
-export type ROWGENERICTYPE = any;
