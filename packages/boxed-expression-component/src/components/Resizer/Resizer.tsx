@@ -97,9 +97,9 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   );
 
   return (
-    <>
+    <div style={{ position: "relative", height: "100%" }}>
       {actualWidth && (
-        <div className="pf-c-drawer" style={{ position: "absolute", left: actualWidth }}>
+        <div className="pf-c-drawer" style={{ position: "absolute", left: actualWidth - 8 }}>
           <div className={`pf-c-drawer__splitter pf-m-vertical actual`}>
             <div className={`pf-c-drawer__splitter-handle`} />
           </div>
@@ -107,7 +107,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       )}
 
       {width && minWidth && (
-        <div className="pf-c-drawer" style={{ position: "absolute", left: minWidth }}>
+        <div className="pf-c-drawer" style={{ position: "absolute", left: minWidth - 8 }}>
           <div className={`pf-c-drawer__splitter pf-m-vertical min-basis`}>
             <div className={`pf-c-drawer__splitter-handle`} />
           </div>
@@ -143,6 +143,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           <div style={{ minWidth }}>{children}</div>
         </>
       )}
-    </>
+    </div>
   );
 };

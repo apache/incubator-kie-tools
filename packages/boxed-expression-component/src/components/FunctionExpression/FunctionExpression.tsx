@@ -420,7 +420,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     return r.original.entryInfo.id;
   }, []);
 
-  const value = useMemo<ContextExpressionContextType>(() => {
+  const contextExpressionContextValue = useMemo<ContextExpressionContextType>(() => {
     // TODO: Tiago -> Make this depend on Function type
     return {
       entryExpressionsMinWidthGlobal: nestedExpressionContainer.minWidthGlobal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
@@ -437,7 +437,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   ]);
 
   return (
-    <ContextExpressionContext.Provider value={value}>
+    <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div className={`function-expression ${functionExpression.id}`}>
         <BeeTable<ROWTYPE>
           operationHandlerConfig={operationHandlerConfig}
@@ -509,7 +509,7 @@ function ParametersCell(props: BeeTableCellProps<ROWTYPE>) {
     [i18n, setExpression]
   );
 
-  const value = useMemo<NestedExpressionContainerContextType>(() => {
+  const nestedExpressionsContainer = useMemo<NestedExpressionContainerContextType>(() => {
     return {
       minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
       minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
@@ -522,7 +522,7 @@ function ParametersCell(props: BeeTableCellProps<ROWTYPE>) {
   ]);
 
   return (
-    <NestedExpressionContainerContext.Provider value={value}>
+    <NestedExpressionContainerContext.Provider value={nestedExpressionsContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ContextEntryExpressionCell {...props} />
       </NestedExpressionDispatchContextProvider>

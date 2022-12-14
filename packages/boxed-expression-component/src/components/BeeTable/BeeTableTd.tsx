@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as PfReactTable from "@patternfly/react-table";
-import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
+import { Resizer } from "../Resizer";
 import * as ReactTable from "react-table";
 import { BeeTableTdsAndThsProps } from "../../api";
 
@@ -90,6 +90,7 @@ export function BeeTableTd<R extends object>({
             minWidth={cell.column.minWidth}
             setResizingWidth={cell.column.setResizingWidth}
             resizingWidth={cell.column.resizingWidth}
+            actualWidth={cell.column.width}
           >
             <>{tdContent}</>
           </Resizer>
