@@ -30,14 +30,6 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
-export type DashbuilderLanguageServiceArgs = {
-  fs: {};
-  lang: {
-    fileLanguage: FileLanguage.YAML;
-    fileMatch: string[];
-  };
-};
-
 export class DashbuilderLanguageService {
   constructor() {}
 
