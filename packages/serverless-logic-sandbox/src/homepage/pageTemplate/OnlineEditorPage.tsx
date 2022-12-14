@@ -34,7 +34,7 @@ import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { useHistory } from "react-router";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
-import { OpenshiftDeploymentsDropdown } from "../../openshift/OpenshiftDeploymentsDropdown";
+import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { BarsIcon } from "@patternfly/react-icons";
 import { HomePageNav } from "../uiNav/HomePageNav";
