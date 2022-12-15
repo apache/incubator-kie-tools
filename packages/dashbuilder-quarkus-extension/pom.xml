@@ -31,15 +31,33 @@
     <maven.compiler.release>11</maven.compiler.release>
 
     <version.io.quarkus>2.9.1.Final</version.io.quarkus>
+
+    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+    <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+    <quarkus.platform.version>2.14.2.Final</quarkus.platform.version>
+    
     <version.compiler.plugin>3.10.1</version.compiler.plugin>
+
+    <rest-assured.version>3.3.0</rest-assured.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${quarkus.platform.group-id}</groupId>
+        <artifactId>${quarkus.platform.artifact-id}</artifactId>
+        <version>${quarkus.platform.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <modules>
     <module>ui</module>
     <module>deployment</module>
     <module>runtime</module>
   </modules>
-
 
   <build>
     <plugins>
