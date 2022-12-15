@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.layout.OrientedEdgeImpl;
-import com.ait.lienzo.client.core.layout.ReorderedGraph;
 import com.ait.lienzo.client.core.layout.VertexPosition;
 import com.ait.lienzo.client.core.layout.sugiyama.GraphLayer;
 import com.ait.lienzo.client.core.layout.sugiyama.LayeredGraph;
@@ -66,7 +65,7 @@ public class DefaultVertexPositioningTest {
         final GraphLayer layer1 = mock(GraphLayer.class);
         final GraphLayer layer2 = mock(GraphLayer.class);
         final List<GraphLayer> layers = Arrays.asList(layer1, layer2);
-        final ReorderedGraph graph = mock(ReorderedGraph.class);
+        final LayeredGraph graph = mock(LayeredGraph.class);
         final HashMap hash = mock(HashMap.class);
         final HashMap layersStartX = mock(HashMap.class);
         final int largestWidth = 100;
@@ -74,7 +73,7 @@ public class DefaultVertexPositioningTest {
         when(layersStartX.get(any())).thenReturn(0);
         doReturn(hash).when(tested).createHashForLayersWidth();
         doReturn(largestWidth).when(tested).calculateLayersWidth(layers, hash);
-        doReturn(layersStartX).when(tested).getLayersStartX(layers.size(), hash, largestWidth);
+        doReturn(layersStartX).when(tested).getLayersStartX(graph, hash, largestWidth);
 
         final InOrder inOrder = inOrder(tested);
 
@@ -101,7 +100,7 @@ public class DefaultVertexPositioningTest {
         final GraphLayer layer1 = mock(GraphLayer.class);
         final GraphLayer layer2 = mock(GraphLayer.class);
         final List<GraphLayer> layers = Arrays.asList(layer1, layer2);
-        final ReorderedGraph graph = mock(ReorderedGraph.class);
+        final LayeredGraph graph = mock(LayeredGraph.class);
         final HashMap hash = mock(HashMap.class);
         final HashMap layersStartX = mock(HashMap.class);
         final int largestWidth = 100;
@@ -109,7 +108,7 @@ public class DefaultVertexPositioningTest {
 
         doReturn(hash).when(tested).createHashForLayersWidth();
         doReturn(largestWidth).when(tested).calculateLayersWidth(layers, hash);
-        doReturn(layersStartX).when(tested).getLayersStartX(layers.size(), hash, largestWidth);
+        doReturn(layersStartX).when(tested).getLayersStartX(graph, hash, largestWidth);
 
         doReturn(newY).when(tested).distributeVertices(layers,
                                                        layersStartX,
@@ -219,16 +218,33 @@ public class DefaultVertexPositioningTest {
     public void testGetLayersStartX() {
 
         final int largestWidth = 600;
-        final int layersCount = 3;
+
+        final GraphLayer startLayer = mock(GraphLayer.class);
+        final List<GraphLayer> layers = Arrays.asList(mock(GraphLayer.class),
+                                                      mock(GraphLayer.class),
+                                                      startLayer);
+        final LayeredGraph graph = mock(LayeredGraph.class);
         final HashMap<Integer, Integer> layersWidth = new HashMap<>();
         layersWidth.put(0, 200);
         layersWidth.put(1, 600);
         layersWidth.put(2, 300);
-        final HashMap<Integer, Integer> startX = tested.getLayersStartX(layersCount, layersWidth, largestWidth);
+
+        final VertexPosition startVertex = mock(VertexPosition.class);
+        final Integer startVertexWidth = 44;
+        when(startVertex.getWidth()).thenReturn(startVertexWidth);
+
+        final List<VertexPosition> topVertices = new ArrayList<>();
+        topVertices.add(startVertex);
+
+        when(startLayer.getVertices()).thenReturn(topVertices);
+
+        when(graph.getLayers()).thenReturn(layers);
+
+        final HashMap<Integer, Integer> startX = tested.getLayersStartX(graph, layersWidth, largestWidth);
 
         assertEquals(200 + DEFAULT_LAYER_HORIZONTAL_PADDING, (int) startX.get(0));
         assertEquals(0 + DEFAULT_LAYER_HORIZONTAL_PADDING, (int) startX.get(1));
-        assertEquals(150 + DEFAULT_LAYER_HORIZONTAL_PADDING, (int) startX.get(2));
+        assertEquals(largestWidth / 2 - startVertexWidth/2 + DEFAULT_LAYER_HORIZONTAL_PADDING, (int) startX.get(2));
     }
 
     @Test
