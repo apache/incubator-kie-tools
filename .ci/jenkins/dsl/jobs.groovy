@@ -8,7 +8,8 @@
 * https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
 */
 
-import org.kie.jenkins.jobdsl.model.Folder
+import org.kie.jenkins.jobdsl.model.JobType
+import org.kie.jenkins.jobdsl.utils.JobParamsUtils
 import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
@@ -17,17 +18,17 @@ jenkins_path = '.ci/jenkins'
 
 // PR checks
 setupPrJob()
-setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
+setupDeployJob(JobType.PULL_REQUEST, 'kogito-bdd')
 
 // Init branch
 createSetupBranchJob()
 
 // Nightly jobs
-setupDeployJob(Folder.NIGHTLY)
+setupDeployJob(JobType.NIGHTLY)
 
 // Release jobs
-setupDeployJob(Folder.RELEASE)
-setupPromoteJob(Folder.RELEASE)
+setupDeployJob(JobType.RELEASE)
+setupPromoteJob(JobType.RELEASE)
 
 if (Utils.isProductizedBranch(this)) {
     setupPrJob(true) // Prod CI job
@@ -43,7 +44,7 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], 
 /////////////////////////////////////////////////////////////////
 
 void setupPrJob(boolean isProdCI = false) {
-    def jobParams = KogitoJobUtils.getDefaultJobParams(this)
+    def jobParams = JobParamsUtils.getDefaultJobParams(this)
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
@@ -60,7 +61,7 @@ void setupPrJob(boolean isProdCI = false) {
 }
 
 void createSetupBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images', Folder.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Images Init Branch')
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Images Init Branch')
     jobParams.env.putAll([
         CI: true,
         REPO_NAME: 'kogito-images',
@@ -104,9 +105,9 @@ void createSetupBranchJob() {
     }
 }
 
-void setupDeployJob(Folder jobFolder) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
-    if (jobFolder.isPullRequest()) {
+void setupDeployJob(JobType jobType, String envName = '') {
+    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-images-deploy', jobType, envName, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
+    if (jobType == JobType.PULL_REQUEST) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
@@ -122,7 +123,7 @@ void setupDeployJob(Folder jobFolder) {
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
     ])
-    if (jobFolder.isPullRequest()) {
+    if (jobType == JobType.PULL_REQUEST) {
         jobParams.env.putAll([
             MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
         ])
@@ -144,7 +145,7 @@ void setupDeployJob(Folder jobFolder) {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            if (jobFolder.isPullRequest()) {
+            if (jobType == JobType.PULL_REQUEST) {
                 // author can be changed as param only for PR behavior, due to source branch/target, else it is considered as an env
                 stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
             }
@@ -177,8 +178,8 @@ void setupDeployJob(Folder jobFolder) {
     }
 }
 
-void setupPromoteJob(Folder jobFolder) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote')
+void setupPromoteJob(JobType jobType) {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote')
     jobParams.env.putAll([
         CI: true,
         REPO_NAME: 'kogito-images',
@@ -239,7 +240,7 @@ void setupPromoteJob(Folder jobFolder) {
 }
 
 void setupProdUpdateVersionJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images-update-prod-version', Folder.TOOLS, "${jenkins_path}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-update-prod-version', JobType.TOOLS, "${jenkins_path}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')
     jobParams.env.putAll([
         REPO_NAME: 'kogito-images',
 
