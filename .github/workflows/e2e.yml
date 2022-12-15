@@ -17,60 +17,76 @@ env:
   # https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.23.md
   # WARNING: kindest/node is not always existing with given version ...
   KUBERNETES_VERSION: v1.23.13
+  DEBUG: true
 
 jobs:
   e2e:
     concurrency:
-      group: kogito-serverless-operator-e2e-tests-${{ matrix.cluster-type }}-${{ github.head_ref }}
+      group: kogito-serverless-operator-e2e-tests-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 120
-    strategy:
-      matrix:
-        cluster-type:
-        - kind
-        - minikube
-      fail-fast: false
     runs-on: ubuntu-latest
-    name: End-to-end tests (${{ matrix.cluster-type }})
+    name: End-to-end tests (Minikube)
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-    
-    - name: Install Go
-      id: go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ${{ env.GO_VERSION }}
-        cache: true
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Setup Minikube cluster
-      if: ${{ matrix.cluster-type == 'minikube' }}
-      id: minikube
-      uses: medyagh/setup-minikube@latest
-      with:
-        addons: registry,metrics-server
-        kubernetes-version: ${{ env.KUBERNETES_VERSION }}
-        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-        cpu: max
-        memory: max
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
 
-    - name: Setup KinD cluster
-      if: ${{ matrix.cluster-type == 'kind' }}
-      id: kind
-      uses: container-tools/kind-action@v2
-      with:
-        version: v0.17.0
-        node_image: kindest/node:${{ env.KUBERNETES_VERSION }}
-        kubectl_version: ${{ env.KUBERNETES_VERSION }}
-        wait: 120s
+      - name: Setup Minikube cluster
+        # Should be set back with correct version once https://github.com/radtriste/setup-minikube/tree/issue_49 is done
+        # uses: medyagh/setup-minikube@v0.0.9
+        uses: radtriste/setup-minikube@issue_49
+        with:
+          addons: registry,metrics-server
+          kubernetes-version: ${{ env.KUBERNETES_VERSION }}
+          # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+          cpus: max
+          memory: max
+          insecure-registry: localhost:5000,192.168.0.0/16
+      
+      - name: Wait for Minikube up and running
+        run: |
+          minikube ssh cat /lib/systemd/system/docker.service
+          kubectl get pods -A
+          set -x
+          MINIKUBE_COMPONENTS=(etcd kube-apiserver kube-controller-manager kube-scheduler)
+          for component in "${MINIKUBE_COMPONENTS[@]}"
+          do
+            echo "Check component '${component}' is in 'Running' state"
+            COMPONENT_NAME=${component} timeout 60s bash -c 'kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system && while [[ "$(kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system -o jsonpath={.items[0].status.phase})" != "Running" ]] ; do sleep 2 &&  kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system -o jsonpath={.items[0].status.phase}; done'
+          done
 
-    - name: Check pods
-      run: |
-        kubectl version
-        kubectl get pods -A
+      
+      - name: Wait for Minikube registry
+        run: |
+          kubectl get pods -A
+          timeout 60s bash -c 'kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system && while [[ "$(kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase})" != "Running" ]] ; do sleep 2 && kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase}; done'
+          
 
-    - name: Run tests
-      run: |
-        make test-e2e
-      env:
-        CLUSTER_TYPE: ${{ matrix.cluster-type }}
+      - name: Retrieve Minikube regsitry
+        run: |
+          minikube_registry="$(minikube ip):5000"
+          echo "MINIKUBE_REGISTRY=${minikube_registry}" >> $GITHUB_ENV
+          echo "OPERATOR_IMAGE_NAME=${minikube_registry}/kogito-serverless-operator:0.0.1" >> $GITHUB_ENV
+      
+      - name: Build operator image
+        run: |
+          make container-build BUILDER=podman IMG=${{ env.OPERATOR_IMAGE_NAME }}
+
+      - name: Load image in Minikube
+        run: |
+          podman push --tls-verify=false ${{ env.OPERATOR_IMAGE_NAME }}
+
+      - name: Check pods
+        run: |
+          kubectl version
+          kubectl get pods -A
+
+      - name: Run tests
+        run: |
+          make test-e2e

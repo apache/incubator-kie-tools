@@ -4,25 +4,19 @@ helper = null
 
 pipeline {
     agent {
-        label 'kogito-operator-node && !built-in'
-    }
-
-    // Needed for local build
-    tools {
-        go 'golang-1.19' // TODO to setup
+        label 'kie-rhel8 && kie-mem16g && !built-in'
     }
 
     options {
-        timeout(time: 3, unit: 'HOURS') // Give the day to be executed (due to the lock)
+        timeout(time: 3, unit: 'HOURS')
+        timestamps()
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
+    tools {
+        go 'golang-1.19'
+    }
 
     environment {
-        // Static env is defined into ./dsl/jobs.groovy file
-
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
     }
 
@@ -107,7 +101,7 @@ pipeline {
 
         stage('Build Operator') {
             steps {
-                sh "make container-build BUILDER=${env.CONTAINER_ENGINE}"
+                sh "make container-build BUILDER=${env.CONTAINER_ENGINE} IMG=${getBuiltImage()}"
             }
             post {
                 unsuccessful {
@@ -118,20 +112,44 @@ pipeline {
             }
         }
 
-        stage('Push Operator Image to Openshift Registry') {
+        stage('Run e2e tests') {
+            when {
+                expression {
+                    return helper.shouldLaunchTests()
+                }
+            }
+            environment {
+                MINIKUBE_VERSION = '1.28.0'
+                KUBERNETES_VERSION = '1.23.14'
+            }
             steps {
                 script {
-                    container.loginOpenshiftRegistry()
+                    // Start minikube
+                    minikube.minikubeMemory = '12g'
+                    minikube.start()
 
-                    container.tagImage("quay.io/kiegroup/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}",
-                                            helper.buildTempOpenshiftImageFullName())
-                    container.pushImage(helper.buildTempOpenshiftImageFullName())
+                    minikube.waitForMinikubeStarted()
+                    minikube.waitForMinikubeRegistry()
+
+                    // Push image to minikube
+                    String minikubeImageName = "${minikube.getImageRegistry()}/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}"
+                    container.tagImage(getBuiltImage(), minikubeImageName)
+                    container.pushImage(minikubeImageName)
+                    sh """
+                        export OPERATOR_IMAGE_NAME=${minikubeImageName}
+                        make test-e2e
+                        kubectl get pods -A
+                    """
+                }
+            }
+            post {
+                always {
+                    script {
+                        minikube.stop()
+                    }
                 }
             }
         }
-
-        // TODO setup e2e tests here
-        // https://issues.redhat.com/browse/KOGITO-8176
 
         stage('Push to registry') {
             when {
@@ -141,19 +159,19 @@ pipeline {
                 script {
                     helper.loginRegistry()
 
-                    container.tagImage(helper.buildTempOpenshiftImageFullName(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
+                    container.tagImage(getBuiltImage(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
                     container.pushImage(helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
 
                     if (helper.isDeployLatestTag()) {
                         String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, 'latest')
-                        container.tagImage(helper.buildTempOpenshiftImageFullName(), finalFullImage)
+                        container.tagImage(getBuiltImage(), finalFullImage)
                         container.pushImage(finalFullImage)
                     }
 
                     String reducedTag = helper.getReducedTag()
                     if (reducedTag) {
                         String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, reducedTag)
-                        container.tagImage(helper.buildTempOpenshiftImageFullName(), finalFullImage)
+                        container.tagImage(getBuiltImage(), finalFullImage)
                         container.pushImage(finalFullImage)
                     }
 
@@ -219,7 +237,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${helper.getBuildBranch()}] Kogito Serverless Operator", [env.KOGITO_CI_EMAIL_TO], "You can find test error logs here: ${BUILD_URL}/artifact/test/logs/error/")
+        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${helper.getBuildBranch()}] Kogito Serverless Operator", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }
@@ -227,4 +245,8 @@ void sendNotification() {
 
 String getOperatorVersion() {
     return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
+}
+
+String getBuiltImage() {
+    return "quay.io/kiegroup/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}"
 }

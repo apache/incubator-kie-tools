@@ -78,28 +78,17 @@ var _ = Describe("kogito-serverless", func() {
 
 		It("should successfully run the Kogito Serverless Operator", func() {
 			var controllerPodName string
-			var err error
 			projectDir, _ := utils.GetProjectDir()
-
-			// operatorImage store the name of the imahe used in the example
-			const operatorImage = "quay.io/kiegroup/kogito-serverless-operator:0.0.1"
-
-			By("building the manager(Operator) image")
-			cmd := exec.Command("make", "docker-build", "IMG="+operatorImage)
-			_, err = utils.Run(cmd)
-			ExpectWithOffset(1, err).NotTo(HaveOccurred())
-
-			By("loading the the manager(Operator) image on Kind")
-			err = utils.LoadImageToClusterWithName(operatorImage)
+			operatorImageName, err := utils.GetOperatorImageName()
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
 
 			By("installing CRDs")
-			cmd = exec.Command("make", "install")
+			cmd := exec.Command("make", "install")
 			_, err = utils.Run(cmd)
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
 
 			By("deploying the controller-manager")
-			cmd = exec.Command("make", "deploy", fmt.Sprintf("IMG=%s", operatorImage))
+			cmd = exec.Command("make", "deploy", fmt.Sprintf("IMG=%s", operatorImageName))
 			outputMake, err := utils.Run(cmd)
 			fmt.Println(string(outputMake))
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
@@ -126,13 +115,21 @@ var _ = Describe("kogito-serverless", func() {
 				By("Applying seccompProfile")
 				cmd = exec.Command("kubectl", "patch", "deployment", "kogito-serverless-operator-controller-manager", "-p", `{"spec":{"template":{"spec":{"securityContext":{"seccompProfile":{"type":"RuntimeDefault"}}}}}}`, "-n", namespace)
 				_, err := utils.Run(cmd)
+				if utils.IsDebugEnabled() {
+					err = utils.OutputDeployment(namespace, "kogito-serverless-operator-controller-manager")
+				}
 				ExpectWithOffset(1, err).NotTo(HaveOccurred())
 			}
 
 			By("validating that the controller-manager pod is running as expected")
 			verifyControllerUp := func() error {
 				var podOutput []byte
-				err := utils.OutputAllPods()
+				var err error
+
+				if utils.IsDebugEnabled() {
+					err = utils.OutputAllPods()
+					err = utils.OutputAllEvents(namespace)
+				}
 
 				// Get pod name
 				cmd = exec.Command("kubectl", "get",

@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 
 	. "github.com/onsi/ginkgo" //nolint:golint,revive
@@ -31,6 +32,20 @@ func warnError(err error) {
 
 func OutputAllPods() error {
 	cmd := exec.Command("kubectl", "get", "pods", "-A")
+	podsOutput, err := Run(cmd)
+	fmt.Println(string(podsOutput))
+	return err
+}
+
+func OutputAllEvents(namespace string) error {
+	cmd := exec.Command("kubectl", "get", "events", "-n", namespace)
+	podsOutput, err := Run(cmd)
+	fmt.Println(string(podsOutput))
+	return err
+}
+
+func OutputDeployment(namespace, deployName string) error {
+	cmd := exec.Command("kubectl", "get", "deploy", deployName, "-o", "yaml", "-n", namespace)
 	podsOutput, err := Run(cmd)
 	fmt.Println(string(podsOutput))
 	return err
@@ -57,46 +72,6 @@ func Run(cmd *exec.Cmd) ([]byte, error) {
 	}
 
 	return output, nil
-}
-
-// LoadImageToClusterWithName loads a local docker image to the given cluster. Default is Kind.
-func LoadImageToClusterWithName(name string) error {
-	cluster := "kind"
-	if v, ok := os.LookupEnv("CLUSTER_TYPE"); ok {
-		cluster = v
-	}
-
-	if cluster == "kind" {
-		return LoadImageToKindClusterWithName(name)
-	} else if cluster == "minikube" {
-		return LoadImageToMinikubeClusterWithName(name)
-	} else {
-		return fmt.Errorf("Unknow cluster type %s", cluster)
-	}
-}
-
-// LoadImageToKindClusterWithName loads a local docker image to the kind cluster
-func LoadImageToKindClusterWithName(name string) error {
-	clusterName := "kind"
-	if v, ok := os.LookupEnv("KIND_CLUSTER"); ok {
-		clusterName = v
-	}
-	kindOptions := []string{"load", "docker-image", name, "--name", clusterName}
-	cmd := exec.Command("kind", kindOptions...)
-	_, err := Run(cmd)
-	return err
-}
-
-// LoadImageToMinikubeClusterWithName loads a local docker image to the minikube cluster
-func LoadImageToMinikubeClusterWithName(name string) error {
-	clusterName := "minikube"
-	if v, ok := os.LookupEnv("MINIKUBE_CLUSTER"); ok {
-		clusterName = v
-	}
-	minikubeOptions := []string{"image", "load", name, "-p", clusterName, "--overwrite", "true"}
-	cmd := exec.Command("minikube", minikubeOptions...)
-	_, err := Run(cmd)
-	return err
 }
 
 // GetNonEmptyLines converts given command output string into individual objects
@@ -131,4 +106,23 @@ func StringToLines(s string) (lines []string, err error) {
 	}
 	err = scanner.Err()
 	return
+}
+
+// GetOperatorImageName retrieves the operator image name to use
+func GetOperatorImageName() (string, error) {
+	if v, ok := os.LookupEnv("OPERATOR_IMAGE_NAME"); ok {
+		return v, nil
+	} else {
+		return "", fmt.Errorf("Cannot find `OPERATOR_IMAGE_NAME` env variable needed for the tests")
+	}
+}
+
+// IsDebugEnabled
+func IsDebugEnabled() bool {
+	if v, ok := os.LookupEnv("DEBUG"); ok {
+		if debug, err := strconv.ParseBool(v); err == nil {
+			return debug
+		}
+	}
+	return false
 }

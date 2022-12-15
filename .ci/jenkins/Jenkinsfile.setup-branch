@@ -5,15 +5,16 @@ testsFailed = false
 
 pipeline {
     agent {
-        label 'kogito-operator-node && !built-in'
+        label 'kie-rhel8 && !built-in'
     }
 
     tools {
-        go 'golang-1.19' // TODO to setup in tools
+        go 'golang-1.19'
     }
 
     options {
         timeout(time: 120, unit: 'HOURS')
+        timestamps()
     }
 
     environment {
