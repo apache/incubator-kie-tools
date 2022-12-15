@@ -178,7 +178,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
 
     private void addGridWidget(final IPrimitive<?> child,
                                final IPrimitive<?>... children) {
-        final List<IPrimitive<?>> all = new ArrayList<IPrimitive<?>>();
+        final List<IPrimitive<?>> all = new ArrayList<>();
         all.add(child);
         all.addAll(Arrays.asList(children));
         for (IPrimitive<?> c : all) {
@@ -228,7 +228,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
 
     private void removeGridWidget(final IPrimitive<?> child,
                                   final IPrimitive<?>... children) {
-        final List<IPrimitive<?>> all = new ArrayList<IPrimitive<?>>();
+        final List<IPrimitive<?>> all = new ArrayList<>();
         all.add(child);
         all.addAll(Arrays.asList(children));
         for (IPrimitive<?> c : all) {
@@ -305,12 +305,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
             return;
         }
         final GridWidgetScrollIntoViewAnimation a = new GridWidgetScrollIntoViewAnimation(gridWidget,
-                                                                                          new Command() {
-                                                                                              @Override
-                                                                                              public void execute() {
-                                                                                                  select(gridWidget);
-                                                                                              }
-                                                                                          });
+                                                                                          () -> select(gridWidget));
         a.run();
     }
 
