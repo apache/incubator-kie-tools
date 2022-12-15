@@ -660,14 +660,14 @@ importers:
       "@types/chrome": ^0.0.193
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
-      "@types/selenium-webdriver": ^4.1.7
+      "@types/selenium-webdriver": ^4.1.9
       chai: ^4.3.4
       copy-webpack-plugin: ^11.0.0
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
       rimraf: ^3.0.2
-      selenium-webdriver: ^4.5.0
+      selenium-webdriver: ^4.7.1
       start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
       typescript: ^4.4.2
@@ -695,14 +695,14 @@ importers:
       "@types/chrome": 0.0.193
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
-      "@types/selenium-webdriver": 4.1.7
+      "@types/selenium-webdriver": 4.1.9
       chai: 4.3.4
       copy-webpack-plugin: 11.0.0_webpack@5.70.0
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
       rimraf: 3.0.2
-      selenium-webdriver: 4.5.0
+      selenium-webdriver: 4.7.1
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
@@ -5515,7 +5515,7 @@ importers:
       "@rhoas/registry-instance-sdk": ^0.34.1
       "@types/chai": ^4.2.17
       "@types/mocha": ^8.2.2
-      "@types/selenium-webdriver": ^4.1.7
+      "@types/selenium-webdriver": ^4.1.9
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.30
       chai: ^4.3.4
@@ -5530,7 +5530,7 @@ importers:
       monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
       rimraf: ^3.0.2
-      selenium-webdriver: ^4.5.0
+      selenium-webdriver: ^4.7.1
       typescript: ^4.4.2
       vsce: ^2.6.5
       vscode-extension-tester: ^4.4.0
@@ -5573,7 +5573,7 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/chai": 4.2.18
       "@types/mocha": 8.2.2
-      "@types/selenium-webdriver": 4.1.7
+      "@types/selenium-webdriver": 4.1.9
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
       chai: 4.3.4
@@ -5585,7 +5585,7 @@ importers:
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
       rimraf: 3.0.2
-      selenium-webdriver: 4.5.0
+      selenium-webdriver: 4.7.1
       typescript: 4.5.4
       vsce: 2.6.5
       vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
@@ -5614,7 +5614,7 @@ importers:
       "@kie-tools/yard-editor": workspace:*
       "@types/chai": ^4.2.17
       "@types/mocha": ^8.2.2
-      "@types/selenium-webdriver": ^4.1.7
+      "@types/selenium-webdriver": ^4.1.9
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.30
       chai: ^4.3.4
@@ -5628,7 +5628,7 @@ importers:
       monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
       rimraf: ^3.0.2
-      selenium-webdriver: ^4.5.0
+      selenium-webdriver: ^4.7.1
       typescript: ^4.4.2
       vsce: ^2.6.5
       vscode-extension-tester: ^4.4.0
@@ -5665,7 +5665,7 @@ importers:
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/chai": 4.2.18
       "@types/mocha": 8.2.2
-      "@types/selenium-webdriver": 4.1.7
+      "@types/selenium-webdriver": 4.1.9
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.30
       chai: 4.3.4
@@ -5676,7 +5676,7 @@ importers:
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
       rimraf: 3.0.2
-      selenium-webdriver: 4.5.0
+      selenium-webdriver: 4.7.1
       typescript: 4.5.4
       vsce: 2.6.5
       vscode-extension-tester: 4.4.1_jvempbdbjtvhoodinnen4jiyly
@@ -10800,9 +10800,9 @@ packages:
       "@types/ws": 8.2.2
     dev: true
 
-  /@types/selenium-webdriver/4.1.7:
+  /@types/selenium-webdriver/4.1.9:
     resolution:
-      { integrity: sha512-vrhvk4ZtbuIwxIS36pMor1BTGL5CXFDQoMcx2o7TlE6sjSnMlb95CYTuvOWysNAIJKhnVXigiD4rSLTBVgVI+Q== }
+      { integrity: sha512-QNCYI3Rgjf3bZ2GZwXnUpOJUPR8p7+c9Um9MEKggLaUaF8UfjitH5aPCV1PF0DHVEiPYsXayGVS6+67DO3VILw== }
     dependencies:
       "@types/ws": 8.2.2
     dev: true
@@ -21075,6 +21075,7 @@ packages:
       { integrity: sha512-6R9fqJ5Zcmf+uYaFgdIHmLwNldn5HbK8L5ybn7Uz+ylX/rnOsSp1AHcvQSrCaFN+qNM1wpymHqD7mVasEOlHGQ== }
     engines: { node: ">= 4.4.x" }
     hasBin: true
+    requiresBuild: true
     dependencies:
       debug: 3.2.7
       iconv-lite: 0.4.24
@@ -24239,9 +24240,9 @@ packages:
       - utf-8-validate
     dev: true
 
-  /selenium-webdriver/4.5.0:
+  /selenium-webdriver/4.7.1:
     resolution:
-      { integrity: sha512-9mSFii+lRwcnT2KUAB1kqvx6+mMiiQHH60Y0VUtr3kxxi3oZ3CV3B8e2nuJ7T4SPb+Q6VA0swswe7rYpez07Bg== }
+      { integrity: sha512-IfTM9OE8HtCKjOJwyudbAVtAHQKOJK8mu2qrXXbKyj4lqgXF+2lYW4rSZXCV6SLQRWZ+DVGkomCmFzq5orD/ZA== }
     engines: { node: ">= 14.20.0" }
     dependencies:
       jszip: 3.10.1
