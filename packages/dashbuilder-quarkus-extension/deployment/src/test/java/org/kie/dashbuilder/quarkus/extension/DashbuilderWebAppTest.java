@@ -31,12 +31,14 @@ public class DashbuilderWebAppTest {
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .withApplicationRoot((jar) -> jar
                     .addAsResource(new StringAsset("quarkus.dashbuilder.path=/custom"), "application.properties")
-                    .addAsResource(new StringAsset("pages:\n - components:  - html: TESTING EXTENSION"), "my_dashboard.dash.yaml"));
+                    .addAsResource(new StringAsset("pages:\n - components:  - html: TESTING EXTENSION"), "my_dashboard.dash.yaml")
+                    .addAsResource(new StringAsset("pages:\n - components:  - html: TESTING EXTENSION"), "test/my_dashboard2.dash.yaml")
+                    );
 
     @Test
     public void shouldLoadDashboardRouter() {
         RestAssured.when().get("/custom/setup.js").then().statusCode(200)
-                .body(containsString("\"dashboards\": ['my_dashboard']"))
+                .body(containsString("\"dashboards\": ['my_dashboard2','my_dashboard']"))
                 .body(containsString("\"mode\": \"CLIENT\""));
         RestAssured.when().get("/custom/index.html").then().body(containsString("org.dashbuilder.DashbuilderRuntime"));
     }
