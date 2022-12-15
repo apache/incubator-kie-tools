@@ -36,6 +36,7 @@ modules:
     version: "1.27.0"
   - name: org.kie.kogito.dataindex.common
   - name: org.kie.kogito.security.custom.truststores
+  - name: org.kie.kogito.pkg-update
 
 packages:
   content_sets_file: content_sets.yaml
