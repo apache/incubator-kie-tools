@@ -120,7 +120,7 @@ export default class VSCodeTestHelper {
         await fileItem.click();
       }
     }
-    await sleep(3000);
+    await sleep(5000);
 
     const editorGroups = await this.workbench.getEditorView().getEditorGroups();
     // should be always two groups, one text editor and one swf editor

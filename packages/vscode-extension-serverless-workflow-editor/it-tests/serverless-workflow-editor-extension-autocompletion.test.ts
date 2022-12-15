@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
+require("./serverless-workflow-editor-extension-smoke.test");
+
 import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
 import { Key, TextEditor } from "vscode-extension-tester";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
-// KOGITO-8071 - Flaky test - serverless-workflow-editor-extension-autocompletion.test.ts
-describe.skip("Serverless workflow editor - autocompletion tests", () => {
+describe("Serverless workflow editor - autocompletion tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "autocompletion");
 
   let testHelper: VSCodeTestHelper;
@@ -217,7 +218,9 @@ end: true`);
 
   async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {
     const contentAssist = await textEditor.toggleContentAssist(true);
-    let item = await contentAssist?.getItem(value);
+    const item = await contentAssist?.getItem(value);
+    await sleep(500);
+    expect(await item?.getLabel()).contain(value);
     await item?.click();
   }
 });
