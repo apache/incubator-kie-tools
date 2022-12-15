@@ -22,7 +22,7 @@
   display: -ms-flexbox;
   display: -webkit-flex;
   min-height: 4em;
-  overflow: hidden;
+  overflow: visible;
   transition: background-color 0.1s ease;
 }
 

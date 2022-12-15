@@ -215,9 +215,9 @@
 
 /** Focused Cells border ------------------------------------- */
 .expression-container .table-component table tbody td:focus {
-  border: 2px solid #438cb1;
+  border: 1px solid #438cb1;
   outline: none !important;
-  margin: -1px;
+  margin: 0;
   z-index: 1;
 }
 
@@ -226,7 +226,7 @@
 }
 
 .expression-container .table-component table thead tr th.counter-header-cell:focus {
-  border: 2px solid #438cb1;
+  border: 1px solid #438cb1;
 }
 .expression-container .table-component table thead tr th.data-header-cell:focus:before,
 .expression-container .decision-table-expression .table-component table thead tr th.output:focus:before {
@@ -236,5 +236,28 @@
   height: 100%;
   position: absolute;
   top: 0;
-  border: 2px solid #438cb1;
+  border: 1px solid #438cb1;
+}
+
+.counter-cell .add-row-button {
+  position: absolute;
+  border: 1px solid #d2d2d2;
+  height: 18px;
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background-color: white;
+  font-size: 0.65em;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.counter-cell .add-row-button:hover {
+  background-color: rgb(236, 236, 236);
+}
+
+.counter-cell .add-row-button:active {
+  background-color: rgb(204, 204, 204);
 }

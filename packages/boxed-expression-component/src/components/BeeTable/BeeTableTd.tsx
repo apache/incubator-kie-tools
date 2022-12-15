@@ -15,11 +15,12 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { Resizer } from "../Resizer";
 import * as ReactTable from "react-table";
 import { BeeTableTdsAndThsProps } from "../../api";
+import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 
 export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProps {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -30,8 +31,17 @@ export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProp
   getTdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
 
+export type HoverInfo =
+  | {
+      isHovered: false;
+    }
+  | {
+      isHovered: true;
+      part: "upper" | "lower";
+    };
+
 export function BeeTableTd<R extends object>({
-  index,
+  columnIndex,
   row,
   column,
   rowIndex,
@@ -41,7 +51,10 @@ export function BeeTableTd<R extends object>({
   getTdProps,
   yPosition,
 }: BeeTableTdProps<R>) {
-  let cellType = index === 0 ? "counter-cell" : "data-cell";
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
+    isHovered: false,
+  });
+
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
@@ -53,14 +66,14 @@ export function BeeTableTd<R extends object>({
     };
   }, [onKeyDown, rowIndex]);
 
-  // FIXME: Tiago -> DMN Runner-specific logic
+  let cssClass = column.isRowIndexColumn ? "counter-cell" : "data-cell";
   if (column.cellDelegate) {
-    cellType += " input";
+    cssClass += " input"; // FIXME: Tiago -> DMN Runner/DecisionTable-specific logic
   }
 
   const cell = useMemo(() => {
-    return row.cells[index];
-  }, [index, row]);
+    return row.cells[columnIndex];
+  }, [columnIndex, row]);
 
   const tdContent = useMemo(() => {
     return shouldUseCellDelegate && column.cellDelegate
@@ -68,34 +81,106 @@ export function BeeTableTd<R extends object>({
       : cell.render("Cell");
   }, [cell, rowIndex, shouldUseCellDelegate, column]);
 
+  const onMouseEnter = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
+    e.stopPropagation();
+    return setHoverInfo(getHoverInfo(e, tdRef.current!));
+  }, []);
+
+  const onMouseLeave = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
+    e.stopPropagation();
+    return setHoverInfo({ isHovered: false });
+  }, []);
+
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    return setHoverInfo((prev) => {
+      if (!prev.isHovered) {
+        return prev;
+      }
+
+      e.stopPropagation();
+      return getHoverInfo(e, tdRef.current!);
+    });
+  }, []);
+
+  const onAddRowButtonClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      console.info(
+        `Adding row ${hoverInfo.isHovered && hoverInfo.part === "lower" ? "below" : "above"} line number ${
+          rowIndex + 1
+        }.`
+      );
+    },
+    [hoverInfo, rowIndex]
+  );
+
+  const inlineRowAddingCapabilities = useMemo(() => {
+    if (!column.isRowIndexColumn) {
+      return {};
+    }
+
+    return {
+      onMouseEnter,
+      onMouseLeave,
+      onMouseMove,
+    };
+  }, [column.isRowIndexColumn, onMouseEnter, onMouseLeave, onMouseMove]);
+
+  const style = useMemo(() => {
+    return {
+      flexGrow: columnIndex === row.cells.length - 1 ? "1" : "0",
+      overflow: "visible",
+    };
+  }, [columnIndex, row.cells.length]);
+
+  const tdProps = useMemo(() => {
+    return getTdProps(columnIndex, rowIndex);
+  }, [columnIndex, getTdProps, rowIndex]);
+
   return (
     <PfReactTable.Td
-      {...getTdProps(index, rowIndex)}
+      {...tdProps}
+      {...inlineRowAddingCapabilities}
+      key={`${rowIndex}-${getColumnKey(column)}-${columnIndex}`}
       ref={tdRef}
       tabIndex={-1}
-      key={`${rowIndex}-${getColumnKey(row.cells[index].column)}-${index}`}
-      data-ouia-component-id={"expression-column-" + index}
-      className={`${cellType}`}
-      data-xposition={index}
+      className={cssClass}
+      data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
+      data-xposition={columnIndex}
       data-yposition={yPosition ?? rowIndex}
-      style={{ flexGrow: index === row.cells.length - 1 ? "1" : "0" }}
+      style={style}
     >
-      {index === 0 ? (
+      {column.isRowIndexColumn ? (
         <>{rowIndex + 1}</>
       ) : (
-        <>
-          <Resizer
-            width={cell.column.width}
-            setWidth={cell.column.setWidth}
-            minWidth={cell.column.minWidth}
-            setResizingWidth={cell.column.setResizingWidth}
-            resizingWidth={cell.column.resizingWidth}
-            actualWidth={cell.column.width}
-          >
-            <>{tdContent}</>
-          </Resizer>
-        </>
+        <Resizer
+          width={cell.column.width}
+          setWidth={cell.column.setWidth}
+          minWidth={cell.column.minWidth}
+          setResizingWidth={cell.column.setResizingWidth}
+          resizingWidth={cell.column.resizingWidth}
+          actualWidth={cell.column.width}
+        >
+          <>{tdContent}</>
+        </Resizer>
+      )}
+
+      {hoverInfo.isHovered && column.isRowIndexColumn && (
+        <div
+          onClick={onAddRowButtonClick}
+          className={"add-row-button"}
+          style={{ ...(hoverInfo.part === "lower" ? { bottom: "-10px" } : { top: "-10px" }) }}
+        >
+          <PlusIcon size="sm" />
+        </div>
       )}
     </PfReactTable.Td>
   );
+}
+
+function getHoverInfo(e: React.MouseEvent, elem: HTMLElement): HoverInfo {
+  const rect = elem.getBoundingClientRect();
+  const localY = e.clientY - rect.top; // y position within the element.
+  const part = localY < rect.height / 3 ? "upper" : "lower"; // upper part is the upper third
+  return { isHovered: true, part };
 }

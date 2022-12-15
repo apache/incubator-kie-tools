@@ -166,14 +166,15 @@ export function BeeTable<R extends object>({
           columns: [
             {
               label:
-                headerVisibility === BeeTableHeaderVisibility.Full ? ROW_INDEX_SUB_COLUMN_ACCESSOR : controllerCell,
-              accessor: ROW_INDEX_SUB_COLUMN_ACCESSOR,
+                headerVisibility === BeeTableHeaderVisibility.Full
+                  ? ROW_INDEX_SUB_COLUMN_ACCESSOR
+                  : (controllerCell as any),
+              accessor: ROW_INDEX_SUB_COLUMN_ACCESSOR as any,
               minWidth: 60,
               width: 60,
-              disableResizing: true,
               isRowIndexColumn: true,
-              hideFilter: true,
-            },
+              dataType: undefined as any,
+            } as ReactTable.Column<R>,
           ],
         });
 
@@ -189,9 +190,9 @@ export function BeeTable<R extends object>({
     (currentControllerCell: string | JSX.Element, columns: ReactTable.Column<R>[]) => ReactTable.Column<R>[]
   >(
     (currentControllerCell, columns) => {
-      const rowIndexColumn: ReactTable.Column<{}> = {
+      const rowIndexColumn: ReactTable.Column<R> = {
         label: currentControllerCell as any, //FIXME: Tiago -> No bueno.
-        accessor: ROW_INDEX_COLUMN_ACCESOR,
+        accessor: ROW_INDEX_COLUMN_ACCESOR as any,
         width: 60,
         minWidth: 60,
         isRowIndexColumn: true,
@@ -201,7 +202,7 @@ export function BeeTable<R extends object>({
       addRowIndexColumnsRecursively(rowIndexColumn, headerLevelCount);
 
       // FIXME: Tiago -> This is a special case because the controller cell doesn't have a dataType, but...
-      return [rowIndexColumn as ReactTable.Column<R>, ...columns];
+      return [rowIndexColumn, ...columns];
     },
     [addRowIndexColumnsRecursively, headerLevelCount]
   );
@@ -473,6 +474,23 @@ export function BeeTable<R extends object>({
     [boxedExpressionEditor.isContextMenuOpen, enableKeyboardNavigation]
   );
 
+  const headerRowsCount = useMemo(() => {
+    const headerGroupsLength = skipLastHeaderGroup
+      ? reactTableInstance.headerGroups.length - 1
+      : reactTableInstance.headerGroups.length;
+
+    switch (headerVisibility) {
+      case BeeTableHeaderVisibility.Full:
+        return headerGroupsLength;
+      case BeeTableHeaderVisibility.LastLevel:
+        return headerGroupsLength - 1;
+      case BeeTableHeaderVisibility.SecondToLastLevel:
+        return headerGroupsLength - 1;
+      default:
+        return 0;
+    }
+  }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
+
   return (
     <div className={`table-component ${tableId} ${tableEventUUID}`}>
       <PfReactTable.TableComposable
@@ -498,9 +516,9 @@ export function BeeTable<R extends object>({
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
           onCellKeyDown={onCellKeyDown}
-          skipLastHeaderGroup={skipLastHeaderGroup}
+          headerRowsCount={headerRowsCount}
           reactTableInstance={reactTableInstance}
-          tdProps={getTdProps}
+          getTdProps={getTdProps}
           additionalRow={additionalRow}
         />
       </PfReactTable.TableComposable>

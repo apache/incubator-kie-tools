@@ -157,7 +157,7 @@ export function BeeTableThResizable<R extends object>({
       onClick={onClick}
       onKeyDown={onCellKeyDown}
       rowIndex={rowIndex}
-      index={columnIndex}
+      columnIndex={columnIndex}
       rowSpan={rowSpan}
       thProps={thProps}
       xPosition={xPosition}

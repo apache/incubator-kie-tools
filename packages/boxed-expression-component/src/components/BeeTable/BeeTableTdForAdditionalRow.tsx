@@ -27,7 +27,7 @@ export interface BeeTableTdForAdditionalRowProps extends BeeTableTdsAndThsProps 
 
 export function BeeTableTdForAdditionalRow({
   children,
-  index,
+  columnIndex: index,
   isEmptyCell,
   onKeyDown,
   rowIndex,

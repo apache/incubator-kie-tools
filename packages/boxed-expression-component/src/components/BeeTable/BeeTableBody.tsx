@@ -30,7 +30,7 @@ export interface BeeTableBodyProps<R extends object> {
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** True, for skipping the creation in the DOM of the last defined header group */
-  skipLastHeaderGroup: boolean;
+  headerRowsCount: number;
   /** Optional children element to be appended below the table content */
   additionalRow?: React.ReactElement[];
   /** Custom function for getting row key prop, and avoid using the row index */
@@ -40,102 +40,79 @@ export interface BeeTableBodyProps<R extends object> {
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
-  tdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
+  getTdProps: (columnIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
 }
 
 export function BeeTableBody<R extends object>({
   reactTableInstance,
   additionalRow,
   headerVisibility = BeeTableHeaderVisibility.Full,
-  skipLastHeaderGroup,
+  headerRowsCount,
   getRowKey,
   getColumnKey,
   onCellKeyDown,
-  tdProps,
+  getTdProps,
 }: BeeTableBodyProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
-  const headerVisibilityMemo = useMemo(() => {
-    return headerVisibility ?? BeeTableHeaderVisibility.Full;
-  }, [headerVisibility]);
-
-  const headerRowsLength = useMemo(() => {
-    const headerGroupsLength = skipLastHeaderGroup
-      ? reactTableInstance.headerGroups.length - 1
-      : reactTableInstance.headerGroups.length;
-
-    switch (headerVisibility) {
-      case BeeTableHeaderVisibility.Full:
-        return headerGroupsLength;
-      case BeeTableHeaderVisibility.LastLevel:
-        return headerGroupsLength - 1;
-      case BeeTableHeaderVisibility.SecondToLastLevel:
-        return headerGroupsLength - 1;
-      default:
-        return 0;
-    }
-  }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
-
-  const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
-    let currentPathTarget: EventTarget = event.target;
-    let currentIndex = 0;
-    while (currentPathTarget !== event.currentTarget && currentIndex < path.length) {
-      currentIndex++;
-      currentPathTarget = path[currentIndex];
-      if ((currentPathTarget as HTMLElement)?.classList?.contains(LOGIC_TYPE_SELECTOR_CLASS)) {
-        return true;
-      }
-    }
-    return false;
-  }, []);
-
-  const onRowClick = useCallback(
+  const onTrClick = useCallback(
     (rowKey: string) => (event: BaseSyntheticEvent) => {
+      function eventPathHasNestedExpression(event: React.BaseSyntheticEvent, path: EventTarget[]) {
+        let currentPathTarget: EventTarget = event.target;
+        let currentIndex = 0;
+        while (currentPathTarget !== event.currentTarget && currentIndex < path.length) {
+          currentIndex++;
+          currentPathTarget = path[currentIndex];
+          if ((currentPathTarget as HTMLElement)?.classList?.contains(LOGIC_TYPE_SELECTOR_CLASS)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
       const nativeEvent = event.nativeEvent as Event;
       const path: EventTarget[] = nativeEvent?.composedPath?.() || [];
       if (!eventPathHasNestedExpression(event, path)) {
         beeGwtService?.selectObject(rowKey);
       }
     },
-    [beeGwtService, eventPathHasNestedExpression]
+    [beeGwtService]
   );
 
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
-      const rowProps = { ...row.getRowProps(), style: {} };
-      const RowDelegate = (row.original as any).rowDelegate; // FIXME: Tiago -> Bad typing.
       const rowKey = getRowKey(row);
-      const rowClassNames = `${rowKey} table-row`;
 
       const renderTr = (args: { shouldUseCellDelegate: boolean }) => (
         <PfReactTable.Tr
-          className={rowClassNames}
-          {...rowProps}
-          ouiaId={"expression-row-" + rowIndex}
+          className={`${rowKey} table-row`}
+          {...row.getRowProps()}
+          ouiaId={"expression-row-" + rowIndex} // FIXME: Tiago -> Bad name.
           key={rowKey}
-          onClick={onRowClick(rowKey)}
+          onClick={onTrClick(rowKey)}
           style={{ display: "flex" }}
         >
-          {row.cells.map((_, cellIndex) => {
+          {row.cells.map((_, columnIndex) => {
             return (
               <BeeTableTd<R>
-                key={cellIndex}
-                index={cellIndex}
+                key={columnIndex}
+                columnIndex={columnIndex}
                 row={row}
                 rowIndex={rowIndex}
                 shouldUseCellDelegate={args.shouldUseCellDelegate}
                 onKeyDown={onCellKeyDown}
-                column={reactTableInstance.allColumns[cellIndex]}
+                column={reactTableInstance.allColumns[columnIndex]}
                 getColumnKey={getColumnKey}
-                getTdProps={tdProps}
-                yPosition={headerRowsLength + rowIndex}
+                getTdProps={getTdProps}
+                yPosition={headerRowsCount + rowIndex}
               />
             );
           })}
         </PfReactTable.Tr>
       );
 
+      const RowDelegate = (row.original as any).rowDelegate; // FIXME: Tiago -> Bad typing.
       return (
         <React.Fragment key={rowKey}>
           {RowDelegate ? (
@@ -146,7 +123,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [getColumnKey, getRowKey, headerRowsLength, onCellKeyDown, onRowClick, reactTableInstance, tdProps]
+    [getColumnKey, getRowKey, headerRowsCount, onCellKeyDown, onTrClick, reactTableInstance, getTdProps]
   );
 
   const additionalRowIndex = useMemo(() => {
@@ -155,33 +132,34 @@ export function BeeTableBody<R extends object>({
 
   return (
     <PfReactTable.Tbody
-      className={`${headerVisibilityMemo === BeeTableHeaderVisibility.None ? "missing-header" : ""}`}
+      className={`${headerVisibility === BeeTableHeaderVisibility.None ? "missing-header" : ""}`}
       {...reactTableInstance.getTableBodyProps()}
     >
       {reactTableInstance.rows.map((row, rowIndex) => {
         return renderRow(row, rowIndex);
       })}
+
       {additionalRow && (
         <PfReactTable.Tr className="table-row additive-row">
           <BeeTableTdForAdditionalRow
             isLastColumn={false}
             isEmptyCell={true}
             rowIndex={additionalRowIndex}
-            index={0}
+            columnIndex={0}
             onKeyDown={onCellKeyDown}
             xPosition={0}
-            yPosition={headerRowsLength + additionalRowIndex}
+            yPosition={headerRowsCount + additionalRowIndex}
           />
           {additionalRow.map((elem, elemIndex) => (
             <BeeTableTdForAdditionalRow
               isLastColumn={elemIndex === additionalRow.length - 1}
               key={elemIndex}
-              index={elemIndex}
+              columnIndex={elemIndex}
               isEmptyCell={false}
               rowIndex={additionalRowIndex}
               onKeyDown={onCellKeyDown}
               xPosition={elemIndex + 1}
-              yPosition={headerRowsLength + additionalRowIndex}
+              yPosition={headerRowsCount + additionalRowIndex}
             >
               {elem}
             </BeeTableTdForAdditionalRow>

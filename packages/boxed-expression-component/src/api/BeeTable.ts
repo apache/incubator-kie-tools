@@ -126,7 +126,7 @@ export interface BeeTableTdsAndThsProps {
   /** the row index */
   rowIndex: number;
   /** the cell index */
-  index: number;
+  columnIndex: number;
   /** the x position of the cell. Colspan are counted */
   xPosition?: number;
   /** the y position of the cell */

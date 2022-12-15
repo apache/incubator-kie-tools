@@ -111,7 +111,7 @@ export function BeeTableHeader<R extends object>({
       return (
         <BeeTableTh
           rowIndex={rowIndex}
-          index={0}
+          columnIndex={0}
           rowSpan={1}
           headerProps={column.getHeaderProps()}
           className={classNames}
