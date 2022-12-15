@@ -103,9 +103,9 @@ public class DashbuilderProcessor {
                 if (content != null) {
                     watchList.add(db);
                     dashboardsBuildItem.register(name, content);
-                    log.infov("Registered {}", db);
+                    log.info("Registered " + db);
                 } else {
-                    log.warnv("Not able to load {}", db);
+                    log.warn("Not able to load " + db);
                 }
 
             }

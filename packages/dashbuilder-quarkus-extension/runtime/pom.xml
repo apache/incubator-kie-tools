@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.kie.dashbuilder</groupId>
     <artifactId>dashbuilder-quarkus-extension-parent</artifactId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>dashbuilder-quarkus</artifactId>
   <name>Dashbuilder Quarkus Extension - Runtime</name>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.kie.dashbuilder</groupId>
       <artifactId>dashbuilder-quarkus-ui</artifactId>
-      <version>0.0.0</version>
+      <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -68,7 +68,7 @@
               <goal>extension-descriptor</goal>
             </goals>
             <configuration>
-              <deployment>${project.groupId}:${project.artifactId}-deployment:0.0.0</deployment>
+              <deployment>${project.groupId}:${project.artifactId}-deployment:${revision}</deployment>
             </configuration>
           </execution>
         </executions>

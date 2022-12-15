@@ -102,6 +102,8 @@ public class RouterScreen {
         clientLoader.load(this::route,
                 (a, t) -> {
                     appNavBar.setHide(true);
+                    DomGlobal.console.log("Error loading models: " + a);
+                    DomGlobal.console.debug(t);
                     placeManager.goTo(EmptyPerspective.ID);
                 });
     }

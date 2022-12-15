@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.kie.dashbuilder</groupId>
         <artifactId>dashbuilder-quarkus-extension-parent</artifactId>
-	<version>0.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>dashbuilder-quarkus-deployment</artifactId>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.kie.dashbuilder</groupId>
             <artifactId>dashbuilder-quarkus</artifactId>
-	    <version>0.0.0</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 

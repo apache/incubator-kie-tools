@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.kie.dashbuilder</groupId>
     <artifactId>dashbuilder-quarkus-extension-parent</artifactId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>dashbuilder-quarkus-ui</artifactId>
   <name>Dashbuilder Quarkus Extension - UI</name>
@@ -33,7 +33,7 @@
   <build>
     <plugins>
       <plugin>
-	<artifactId>maven-resources-plugin</artifactId>
+        <artifactId>maven-resources-plugin</artifactId>
         <version>3.3.0</version>
         <executions>
           <execution>
