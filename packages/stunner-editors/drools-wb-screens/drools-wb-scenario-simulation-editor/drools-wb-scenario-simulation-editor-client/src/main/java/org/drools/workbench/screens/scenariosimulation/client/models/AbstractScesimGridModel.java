@@ -90,10 +90,10 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactory;
     protected ScenarioExpressionCellTextAreaSingletonDOMElementFactory scenarioExpressionCellTextAreaSingletonDOMElementFactory;
 
-    public AbstractScesimGridModel() {
+    protected AbstractScesimGridModel() {
     }
 
-    public AbstractScesimGridModel(boolean isMerged) {
+    protected AbstractScesimGridModel(boolean isMerged) {
         super(isMerged);
         setHeaderRowCount(HEADER_ROW_COUNT);
     }
