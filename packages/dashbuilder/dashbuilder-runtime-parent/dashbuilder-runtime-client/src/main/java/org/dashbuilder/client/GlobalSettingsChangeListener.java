@@ -15,11 +15,14 @@
  */
 package org.dashbuilder.client;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.StyleInjector;
 import elemental2.dom.DomGlobal;
+import org.dashbuilder.client.resources.NativeLibraryResources;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.shared.event.UpdatedGlobalSettingsEvent;
 
@@ -28,6 +31,12 @@ public class GlobalSettingsChangeListener {
 
     @Inject
     GlobalDisplayerSettings globalDisplayerSettings;
+
+    @PostConstruct
+    void injectDarkModeCss() {
+        final var darkModeCss = NativeLibraryResources.INSTANCE.cssDarkMode().getText();
+        StyleInjector.inject(darkModeCss);
+    }
 
     void onNewGlobalSettings(@Observes UpdatedGlobalSettingsEvent event) {
         var settings = event.getGlobalSettings();
