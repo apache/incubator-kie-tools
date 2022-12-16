@@ -18,17 +18,18 @@ import * as React from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { useSettingsDispatch } from "./SettingsContext";
+import { Link } from "react-router-dom";
+import { useRoutes } from "../navigation/Hooks";
 
 export function SettingsButton() {
   const settingsDispatch = useSettingsDispatch();
+  const routes = useRoutes();
+
   return (
-    <Button
-      variant={ButtonVariant.plain}
-      onClick={() => settingsDispatch.open()}
-      aria-label="Settings"
-      className={"kie-tools--masthead-hoverable-dark"}
-    >
-      <CogIcon />
-    </Button>
+    <Link to={routes.settings.home.path({})}>
+      <Button variant={ButtonVariant.plain} aria-label="Settings" className={"kie-tools--masthead-hoverable-dark"}>
+        <CogIcon />
+      </Button>
+    </Link>
   );
 }

@@ -16,14 +16,16 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useRoutes } from "./Hooks";
 import { OnlineEditorPage } from "../homepage/pageTemplate/OnlineEditorPage";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { HomePageRoutes } from "../homepage/routes/HomePageRoutes";
+import { SettingsPageRoutes } from "../settings/routes/SettingsPageRoutes";
 
 export function RoutesSwitch() {
   const routes = useRoutes();
+  const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
   const buildInfo = useMemo(() => {
     return process.env["WEBPACK_REPLACE__buildInfo"];
   }, []);
@@ -44,7 +46,7 @@ export function RoutesSwitch() {
   }) => {
     return (
       <OnlineEditorPage>
-        <HomePageRoutes />
+        {!isRouteInSettingsSection ? <HomePageRoutes /> : <SettingsPageRoutes />}
         {buildInfo && (
           <div className={"kie-tools--build-info"}>
             <Label>{buildInfo}</Label>
