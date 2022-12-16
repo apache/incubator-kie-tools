@@ -257,14 +257,11 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     (kind: string) => {
       setExpression((prev) => {
         if (kind === FunctionExpressionDefinitionKind.Feel) {
-          return getDefaultExpressionDefinitionByLogicType(
-            ExpressionDefinitionLogicType.Function,
-            {
-              id: prev.id ?? generateUuid(),
-              isHeadless: true,
-              logicType: ExpressionDefinitionLogicType.Function,
-            } as any // FIXME: Tiago
-          );
+          return getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.Function, {
+            name: prev.name,
+            id: prev.id ?? generateUuid(),
+            logicType: ExpressionDefinitionLogicType.Function,
+          });
         } else if (kind === FunctionExpressionDefinitionKind.Java) {
           return {
             name: prev.name,
@@ -299,15 +296,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         name: column.label,
         dataType: column.dataType,
       }));
-    },
-    [setExpression]
-  );
-
-  const resetRowCustomFunction = useCallback(
-    (row: ROWTYPE) => {
-      // FIXME: Tiago -> STATE GAP
-      setExpression((prev) => ({ ...prev }));
-      return row;
     },
     [setExpression]
   );
@@ -443,7 +431,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           headerVisibility={headerVisibility}
           controllerCell={controllerCell}
           defaultCellByColumnId={defaultCellByColumnId}
-          resetRowCustomFunction={resetRowCustomFunction} // "Clear" option on context menu
         />
       </div>
     </ContextExpressionContext.Provider>

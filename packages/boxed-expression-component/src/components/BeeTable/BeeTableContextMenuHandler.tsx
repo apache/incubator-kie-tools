@@ -14,305 +14,134 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { DmnBuiltInDataType, generateUuid, BeeTableOperationHandlerConfig, BeeTableOperation } from "../../api";
-import * as _ from "lodash";
-import * as ReactTable from "react-table";
 import { Menu, MenuGroup, MenuItem, MenuList, Popover } from "@patternfly/react-core";
-import "./BeeTableContextMenuHandler.css";
+import * as _ from "lodash";
+import * as React from "react";
+import { useCallback, useMemo } from "react";
+import { BeeTableOperation, BeeTableOperationHandlerGroup } from "../../api";
+import { useCustomContextMenuHandler } from "../../hooks/Hooks";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { getColumnsAtLastLevel, areEqualColumns } from "./BeeTable";
-import { DEFAULT_MIN_WIDTH } from "../Resizer";
+import "./BeeTableContextMenuHandler.css";
 
 export interface BeeTableContextMenuHandlerProps<R extends object> {
-  /** Gets the prefix to be used for the next column name */
-  getNewColumnIdPrefix: (groupType?: string) => string;
-  /** Columns instance */
-  tableColumns: ReactTable.Column<R>[];
-  /** Last selected column */
-  lastSelectedColumn: ReactTable.ColumnInstance<R> | undefined;
-  /** Last selected row index */
+  lastSelectedColumnIndex: number;
   lastSelectedRowIndex: number;
-  /** Rows instance */
-  tableRows: R[];
-  /** Function to be executed when one or more rows are modified */
-  onRowsUpdate?: (rows: R[], operation?: BeeTableOperation, rowIndex?: number) => void;
-  /** Function to be executed when adding a new row to the table */
-  onNewRow: (() => R) | undefined;
-  /** Show/hide table handler */
-  showTableContextMenu: boolean;
-  /** Function to programmatically show/hide table handler */
-  setShowTableContextMenu: React.Dispatch<React.SetStateAction<boolean>>;
-  /** Target for showing the table handler  */
-  tableContextMenuTarget: HTMLElement;
-  /** Custom configuration for the table handler */
-  operationHandlerConfig: BeeTableOperationHandlerConfig;
-  /** Table handler allowed operations */
+  operationGroups: BeeTableOperationHandlerGroup[];
   allowedOperations: BeeTableOperation[];
-  /** Custom function called for manually resetting a row */
-  resetRowCustomFunction?: (row: R) => R;
-  /** Function to be executed when columns are modified */
-  onColumnsUpdate: (columns: ReactTable.Column<R>[], operation?: BeeTableOperation, columnIndex?: number) => void;
+  tableRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function BeeTableContextMenuHandler<R extends object>({
-  getNewColumnIdPrefix,
-  tableColumns,
-  lastSelectedColumn,
+  tableRef,
+  lastSelectedColumnIndex,
   lastSelectedRowIndex,
-  tableRows,
-  onRowsUpdate,
-  onNewRow,
-  showTableContextMenu: showTableOperationHandler,
-  setShowTableContextMenu: setShowTableOperationHandler,
-  tableContextMenuTarget: operationHandlerTarget,
-  operationHandlerConfig,
+  operationGroups,
   allowedOperations,
-  resetRowCustomFunction = (r) => r,
-  onColumnsUpdate,
 }: BeeTableContextMenuHandlerProps<R>) {
-  const { setContextMenuOpen, editorRef } = useBoxedExpressionEditor();
+  const { setContextMenuOpen } = useBoxedExpressionEditor();
 
-  const selectedColumn = useMemo(() => lastSelectedColumn?.placeholderOf ?? lastSelectedColumn, [lastSelectedColumn]);
-  const selectedRowIndex = useMemo(() => lastSelectedRowIndex, [lastSelectedRowIndex]);
-
-  // FIXME: Tiago -> Bad typing.
-  const withDefaultValues = <T extends unknown>(element: T) => ({
-    width: DEFAULT_MIN_WIDTH,
-    ...(element as any),
-  });
-
-  const insertBefore = <T extends unknown>(elements: T[], index: number, element: T) => [
-    ...elements.slice(0, index),
-    withDefaultValues(element),
-    ...elements.slice(index),
-  ];
-
-  const insertAfter = <T extends unknown>(elements: T[], index: number, element: T) => [
-    ...elements.slice(0, index + 1),
-    withDefaultValues(element),
-    ...elements.slice(index + 1),
-  ];
-
-  const duplicateAfter = <T extends unknown>(elements: T[], index: number) => [
-    ...elements.slice(0, index + 1),
-    _.cloneDeep(elements[index]),
-    ...elements.slice(index + 1),
-  ];
-
-  const deleteAt = <T extends unknown>(elements: T[], index: number) => [
-    ...elements.slice(0, index),
-    ...elements.slice(index + 1),
-  ];
-
-  const clearAt = <T extends unknown>(elements: T[], index: number) => [
-    ...elements.slice(0, index),
-    // FIXME: Tiago -> Bad typing.
-    resetRowCustomFunction(elements[index] as unknown as R),
-    ...elements.slice(index + 1),
-  ];
-
-  const generateNextAvailableColumnName: (lastIndex: number, groupType?: string) => string = useCallback(
-    (lastIndex, groupType) => {
-      const candidateName = `${getNewColumnIdPrefix(groupType)}${lastIndex}`;
-      const columnWithCandidateName = _.find(getColumnsAtLastLevel(tableColumns), { label: candidateName });
-      return columnWithCandidateName ? generateNextAvailableColumnName(lastIndex + 1, groupType) : candidateName;
-    },
-    [getNewColumnIdPrefix, tableColumns]
-  );
-
-  const getLengthOfColumnsByGroupType = useCallback((columns: ReactTable.Column<R>[], groupType: string) => {
-    const columnsByGroupType = _.groupBy(columns, (column) => column.groupType);
-    return columnsByGroupType[groupType]?.length;
-  }, []);
-
-  const generateNextAvailableColumn = useCallback((): ReactTable.Column<R> => {
-    const groupType = selectedColumn?.groupType;
-    const cssClasses = selectedColumn?.cssClasses;
-    const columns = getColumnsAtLastLevel(tableColumns);
-    const columnsLength = groupType ? getLengthOfColumnsByGroupType(columns, groupType) + 1 : columns.length;
-    const nextAvailableColumnName = generateNextAvailableColumnName(columnsLength, groupType);
-
-    return {
-      accessor: generateUuid() as any,
-      label: nextAvailableColumnName,
-      dataType: selectedColumn?.dataType ?? DmnBuiltInDataType.Undefined,
-      inlineEditable: selectedColumn?.inlineEditable,
-      groupType,
-      cssClasses,
-      isRowIndexColumn: false,
-    };
-  }, [generateNextAvailableColumnName, getLengthOfColumnsByGroupType, selectedColumn, tableColumns]);
-
-  /** These column operations have impact also on the collection of cells */
-  const updateColumnsThenRows = useCallback(
-    (operation?: BeeTableOperation, columnIndex?: number, updatedColumns?: ReactTable.Column<R>[]) => {
-      if (updatedColumns) {
-        onColumnsUpdate([...updatedColumns], operation, columnIndex);
-      } else {
-        onColumnsUpdate([...tableColumns], operation, columnIndex);
-      }
-      onRowsUpdate?.([...tableRows]);
-    },
-    [onColumnsUpdate, onRowsUpdate, tableColumns, tableRows]
-  );
-
-  const appendOnColumnChildren = useCallback(
-    (operation: <T extends unknown>(elements: T[], index: number, element: T) => T[]) => {
-      const children = tableColumns.find(areEqualColumns(selectedColumn))?.columns;
-      if (operation === insertBefore) {
-        children?.unshift(generateNextAvailableColumn());
-      } else if (operation === insertAfter) {
-        children?.push(generateNextAvailableColumn());
+  const operationLabel = useCallback(
+    (operation: BeeTableOperation) => {
+      switch (operation) {
+        case BeeTableOperation.ColumnInsertLeft:
+          return `Insert column left to ${lastSelectedColumnIndex + 1}`;
+        case BeeTableOperation.ColumnInsertRight:
+          return `Insert column right to ${lastSelectedColumnIndex + 1}`;
+        case BeeTableOperation.ColumnDelete:
+          return `Delete column ${lastSelectedColumnIndex + 1}`;
+        case BeeTableOperation.RowInsertAbove:
+          return `Insert row above to ${lastSelectedRowIndex + 1}`;
+        case BeeTableOperation.RowInsertBelow:
+          return `Insert column below to ${lastSelectedRowIndex + 1}`;
+        case BeeTableOperation.RowDelete:
+          return `Delete row ${lastSelectedRowIndex + 1}`;
+        case BeeTableOperation.RowClear:
+          return `Clear row ${lastSelectedRowIndex + 1}`;
+        case BeeTableOperation.RowDuplicate:
+          return `Duplicate row ${lastSelectedRowIndex + 1}`;
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [generateNextAvailableColumn, selectedColumn, tableColumns]
+    [lastSelectedColumnIndex, lastSelectedRowIndex]
   );
-
-  const updateTargetColumns = useCallback(
-    (
-      operationCallback: <T extends unknown>(elements: T[], index: number, element: T) => T[],
-      operation: BeeTableOperation
-    ) => {
-      if (selectedColumn?.parent) {
-        const parent = _.find(tableColumns, areEqualColumns(selectedColumn.parent)) as ReactTable.Column<R>;
-        parent.columns = operationCallback(
-          parent.columns!,
-          _.findIndex(parent.columns, areEqualColumns(selectedColumn)),
-          generateNextAvailableColumn()
-        );
-      } else {
-        if (selectedColumn?.appendColumnsOnChildren && _.isArray(selectedColumn.columns)) {
-          appendOnColumnChildren(operationCallback);
-        } else {
-          let columnIndex = -1;
-          for (const column of tableColumns) {
-            const foundIndex = column.columns?.findIndex(areEqualColumns(selectedColumn));
-            if (column.columns && foundIndex !== undefined && foundIndex !== -1) {
-              column.columns = operationCallback(column.columns!, foundIndex, generateNextAvailableColumn());
-              columnIndex = foundIndex;
-              break;
-            }
-          }
-          if (columnIndex !== -1) {
-            updateColumnsThenRows(operation, columnIndex, tableColumns);
-          } else {
-            const columnIndex = _.findIndex(tableColumns, areEqualColumns(selectedColumn));
-            const updatedColumns = operationCallback(tableColumns, columnIndex, generateNextAvailableColumn());
-            updateColumnsThenRows(operation, columnIndex, updatedColumns);
-          }
-          return;
-        }
-      }
-      updateColumnsThenRows();
-    },
-    [appendOnColumnChildren, generateNextAvailableColumn, selectedColumn, tableColumns, updateColumnsThenRows]
-  );
-
-  const generateRow = useCallback(() => {
-    // FIXME: Tiago -> Bad typing
-    const row: any = onNewRow?.() ?? ({} as R);
-    return row;
-  }, [onNewRow]);
 
   const handleOperation = useCallback(
     (operation: BeeTableOperation) => {
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
-          updateTargetColumns(insertBefore, BeeTableOperation.ColumnInsertLeft);
+          console.info(`Insert column left to ${lastSelectedColumnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
-          updateTargetColumns(insertAfter, BeeTableOperation.ColumnInsertRight);
+          console.info(`Insert column right to ${lastSelectedColumnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
-          updateTargetColumns(deleteAt, BeeTableOperation.ColumnDelete);
+          console.info(`Delete column ${lastSelectedColumnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
-          onRowsUpdate?.(
-            insertBefore(tableRows, selectedRowIndex, generateRow()),
-            BeeTableOperation.RowInsertAbove,
-            selectedRowIndex
-          );
+          console.info(`Insert row above to ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
-          onRowsUpdate?.(
-            insertAfter(tableRows, selectedRowIndex, generateRow()),
-            BeeTableOperation.RowInsertBelow,
-            selectedRowIndex
-          );
+          console.info(`Insert column below to ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowDelete:
-          onRowsUpdate?.(deleteAt(tableRows, selectedRowIndex), BeeTableOperation.RowDelete, selectedRowIndex);
+          console.info(`Delete row ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowClear:
-          onRowsUpdate?.(clearAt(tableRows, selectedRowIndex), BeeTableOperation.RowClear, selectedRowIndex);
+          console.info(`Clear row ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
-          onRowsUpdate?.(duplicateAfter(tableRows, selectedRowIndex), BeeTableOperation.RowDuplicate, selectedRowIndex);
+          console.info(`Duplicate row ${lastSelectedRowIndex}`);
       }
-      setShowTableOperationHandler(false);
       setContextMenuOpen(false);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableOperationHandler, tableRows]
+    [setContextMenuOpen, lastSelectedColumnIndex, lastSelectedRowIndex]
   );
 
-  const filteredOperationHandlerConfig = useMemo(() => {
-    if (_.isArray(operationHandlerConfig)) {
-      return operationHandlerConfig;
-    }
-    return operationHandlerConfig[selectedColumn?.groupType || ""];
-  }, [operationHandlerConfig, selectedColumn?.groupType]);
+  const {
+    xPos: tableContextMenuXPos,
+    yPos: tableContextMenuYPos,
+    isOpen: isTableContextMenuOpen,
+    setOpen: setTableContextMenuOpen,
+  } = useCustomContextMenuHandler(tableRef);
 
   return (
-    <Popover
-      className="table-handler"
-      hasNoPadding
-      showClose={false}
-      distance={5}
-      position={"right"}
-      isVisible={showTableOperationHandler}
-      shouldClose={() => {
-        setShowTableOperationHandler(false);
-        setContextMenuOpen(false);
-      }}
-      shouldOpen={(showFunction) => showFunction?.()}
-      reference={() => operationHandlerTarget}
-      appendTo={editorRef?.current ?? undefined}
-      bodyContent={
-        <Menu
-          ouiaId="expression-table-handler-menu"
-          className="table-handler-menu"
-          onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
+    <>
+      {isTableContextMenuOpen && (
+        <div
+          className="context-menu-container"
+          style={{ top: tableContextMenuYPos, left: tableContextMenuXPos, opacity: 1 }}
         >
-          {filteredOperationHandlerConfig.map((groupOperation) => (
-            <MenuGroup
-              key={groupOperation.group}
-              label={groupOperation.group}
-              className={
-                _.every(groupOperation.items, (operation) => !_.includes(allowedOperations, operation.type))
-                  ? "no-allowed-actions-in-group"
-                  : ""
-              }
-            >
-              <MenuList>
-                {groupOperation.items.map((operation) => (
-                  <MenuItem
-                    data-ouia-component-id={"expression-table-handler-menu-" + operation.name}
-                    key={operation.type}
-                    itemId={operation.type}
-                    isDisabled={!_.includes(allowedOperations, operation.type)}
-                  >
-                    {operation.name}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </MenuGroup>
-          ))}
-        </Menu>
-      }
-    />
+          <Menu
+            ouiaId="expression-table-handler-menu"
+            className="table-handler-menu"
+            onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
+          >
+            {operationGroups.map(({ group, items }) => (
+              <MenuGroup
+                key={group}
+                label={group}
+                // className={
+                //   _.every(items, (operation) => !_.includes(allowedOperations, operation.type))
+                //     ? "no-allowed-actions-in-group"
+                //     : ""
+                // }
+              >
+                <MenuList>
+                  {items.map((operation) => (
+                    <MenuItem
+                      data-ouia-component-id={"expression-table-handler-menu-" + operation.name}
+                      key={operation.type}
+                      itemId={operation.type}
+                      isDisabled={!_.includes(allowedOperations, operation.type)}
+                    >
+                      {operationLabel(operation.type)}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </MenuGroup>
+            ))}
+          </Menu>
+        </div>
+      )}
+    </>
   );
 }

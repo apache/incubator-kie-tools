@@ -40,6 +40,7 @@ import { NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
 type ROWTYPE = RelationExpressionDefinitionRow;
 
 export const RELATION_EXPRESSION_COLUMN_MIN_WIDTH = 100;
+export const RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH = 150;
 
 export const RelationExpression: React.FunctionComponent<RelationExpressionDefinition> = (
   relationExpression: RelationExpressionDefinition

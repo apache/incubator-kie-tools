@@ -37,7 +37,6 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { getColumnsAtLastLevel, BeeTable } from "../BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector } from "./HitPolicySelector";
-import { RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "../RelationExpression";
 import { ResizingWidth, useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
 
@@ -52,6 +51,13 @@ enum DecisionTableColumnType {
 const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
 const DECISION_NODE_DEFAULT_NAME = "output-1";
+
+export const DECISION_TABLE_INPUT_MIN_WIDTH = 100;
+export const DECISION_TABLE_INPUT_DEFAULT_WIDTH = 100;
+export const DECISION_TABLE_OUTPUT_MIN_WIDTH = 100;
+export const DECISION_TABLE_OUTPUT_DEFAULT_WIDTH = 150;
+export const DECISION_TABLE_ANNOTATION_MIN_WIDTH = 100;
+export const DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH = 250;
 
 export function DecisionTableExpression(decisionTable: PropsWithChildren<DecisionTableExpressionDefinition>) {
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -146,21 +152,21 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
 
   const [inputsResizingWidths, setInputsResizingWidths] = useState<ResizingWidth[]>(
     [...(decisionTable.input ?? [])].map((c) => ({
-      value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      value: c.width ?? DECISION_TABLE_INPUT_DEFAULT_WIDTH,
       isPivoting: false,
     }))
   );
 
   const [outputsResizingWidths, setOutputsResizingWidths] = useState<ResizingWidth[]>(
     [...(decisionTable.output ?? [])].map((c) => ({
-      value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      value: c.width ?? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
       isPivoting: false,
     }))
   );
 
   const [annotationsResizingWidths, setAnnotationsResizingWidths] = useState<ResizingWidth[]>(
     [...(decisionTable.annotations ?? [])].map((c) => ({
-      value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      value: c.width ?? DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
       isPivoting: false,
     }))
   );
@@ -223,7 +229,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       setWidth: setInputColumnWidth(inputIndex),
       resizingWidth: inputsResizingWidths[inputIndex],
       setResizingWidth: setInputResizingWidth(inputIndex),
-      minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
       groupType: DecisionTableColumnType.InputClause,
       cssClasses: "decision-table--input",
       isRowIndexColumn: false,
@@ -238,7 +244,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         setWidth: setOutputColumnWidth(outputIndex),
         resizingWidth: outputsResizingWidths[outputIndex],
         setResizingWidth: setOutputResizingWidth(outputIndex),
-        minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
         groupType: DecisionTableColumnType.OutputClause,
         cssClasses: "decision-table--output",
         isRowIndexColumn: false,
@@ -253,7 +259,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         setWidth: setAnnotationColumnWidth(annotationIndex),
         resizingWidth: annotationsResizingWidths[annotationIndex],
         setResizingWidth: setAnnotationResizingWidth(annotationIndex),
-        minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
         inlineEditable: true,
         groupType: DecisionTableColumnType.Annotation,
         cssClasses: "decision-table--annotation",
@@ -387,13 +393,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     ]
   );
 
-  const onNewRow = useCallback(() => {
-    return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: ROWTYPE, column: ReactTable.Column<ROWTYPE>) => {
-      tableRow[column.accessor] = column.groupType === DecisionTableColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
-      return tableRow;
-    }, {} as ROWTYPE);
-  }, [beeTableColumns]);
-
   const onHitPolicySelect = useCallback((itemId: DecisionTableExpressionDefinitionHitPolicy) => {
     /** */
   }, []);
@@ -428,7 +427,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         rows={beeTableRows}
         onColumnsUpdate={onColumnsUpdate}
         onRowsUpdate={onRowsUpdate}
-        onNewRow={onNewRow}
         controllerCell={controllerCell}
       />
     </div>

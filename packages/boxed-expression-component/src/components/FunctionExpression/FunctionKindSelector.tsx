@@ -15,7 +15,7 @@
  */
 
 import { PopoverMenu } from "../PopoverMenu";
-import { Menu, MenuItem, MenuList } from "@patternfly/react-core";
+import { Menu, MenuItem, MenuList, PopoverPosition } from "@patternfly/react-core";
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
@@ -61,7 +61,8 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
       title={i18n.selectFunctionKind}
       appendTo={boxedExpressionEditor.editorRef?.current ?? undefined}
       className="function-kind-popover"
-      hasAutoWidth
+      position={PopoverPosition.leftEnd}
+      hasAutoWidth={true}
       body={(hide: () => void) => (
         <Menu onSelect={functionKindSelectionCallback(hide)}>
           <MenuList>{renderFunctionKindItems()}</MenuList>

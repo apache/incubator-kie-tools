@@ -127,7 +127,16 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [getColumnKey, getRowKey, headerRowsCount, onCellKeyDown, onTrClick, reactTableInstance, getContextMenuTdProps]
+    [
+      reactTableInstance,
+      getRowKey,
+      onTrClick,
+      onCellKeyDown,
+      getColumnKey,
+      getContextMenuTdProps,
+      headerRowsCount,
+      onRowAdded,
+    ]
   );
 
   const additionalRowIndex = useMemo(() => {

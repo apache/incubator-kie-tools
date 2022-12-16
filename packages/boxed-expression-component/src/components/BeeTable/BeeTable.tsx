@@ -49,8 +49,6 @@ import { BeeTableBody } from "./BeeTableBody";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableHeader } from "./BeeTableHeader";
 
-export const NO_TABLE_CONTEXT_MENU_CLASS = "no-table-context-menu";
-
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
 
@@ -132,7 +130,6 @@ export function BeeTable<R extends object>({
   editColumnLabel,
   editableHeader = true,
   onColumnsUpdate,
-  onNewRow,
   onRowAdded,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
   defaultCellByColumnId,
@@ -144,13 +141,14 @@ export function BeeTable<R extends object>({
   skipLastHeaderGroup = false,
   getRowKey,
   getColumnKey,
-  resetRowCustomFunction,
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
-  const boxedExpressionEditor = useBoxedExpressionEditor();
+  const { isContextMenuOpen, setContextMenuOpen } = useBoxedExpressionEditor();
+
+  const tableRef = React.useRef<HTMLDivElement>(null);
 
   const onGetColumnPrefix = useCallback(
     (groupType?: string) => getNewColumnIdPrefix?.(groupType) ?? "column-",
@@ -208,14 +206,8 @@ export function BeeTable<R extends object>({
     [addRowIndexColumnsRecursively, headerLevelCount]
   );
 
-  const [showTableOperationHandler, setShowTableOperationHandler] = useState(false);
-  const [operationHandlerTarget, setOperationHandlerTarget] = useState<HTMLElement>(
-    boxedExpressionEditor.editorRef.current!
-  );
-  const [allowedOperations, setAllowedOperations] = useState(
-    _.values(BeeTableOperation).map((operation) => parseInt(operation.toString()))
-  );
-  const [lastSelectedColumn, setLastSelectedColumn] = useState<ReactTable.ColumnInstance<R>>();
+  const [allowedOperations, setAllowedOperations] = useState<BeeTableOperation[]>([]);
+  const [lastSelectedColumnIndex, setLastSelectedColumnIndex] = useState(-1);
   const [lastSelectedRowIndex, setLastSelectedRowIndex] = useState(-1);
 
   const columnsWithAddedIndexColumns = useMemo(
@@ -231,46 +223,6 @@ export function BeeTable<R extends object>({
       onColumnsUpdate?.({ columns: originalColumns, operation, columnIndex: (columnIndex ?? 1) - 1 });
     },
     [onColumnsUpdate]
-  );
-
-  const isContextMenuAvailable = useCallback((target: HTMLElement) => {
-    const targetIsContainedInCurrentTable = target.closest("table") === tableComposableRef.current;
-    const contextMenuAvailableForTarget = !target.classList.contains(NO_TABLE_CONTEXT_MENU_CLASS);
-    return targetIsContainedInCurrentTable && contextMenuAvailableForTarget;
-  }, []);
-
-  const updateOperationHandlerState = useCallback(
-    (target: HTMLElement, column: ReactTable.ColumnInstance<R>) => {
-      setOperationHandlerTarget(target);
-      boxedExpressionEditor.currentlyOpenedHandlerCallback?.(false);
-      setShowTableOperationHandler(true);
-      boxedExpressionEditor.setContextMenuOpen(true);
-      boxedExpressionEditor.setCurrentlyOpenedHandlerCallback?.(() => setShowTableOperationHandler);
-      setLastSelectedColumn(column);
-    },
-    [boxedExpressionEditor]
-  );
-
-  const getColumnOperations = useCallback(
-    (columnIndex: number) => {
-      const columnsAtLastLevel = getColumnsAtLastLevel(columnsWithAddedIndexColumns);
-      const groupTypeForCurrentColumn = columnsAtLastLevel[columnIndex]?.groupType;
-      const columnsByGroupType = _.groupBy(columnsAtLastLevel, (column) => column.groupType);
-      const atLeastTwoColumnsOfTheSameGroupType = groupTypeForCurrentColumn
-        ? columnsByGroupType[groupTypeForCurrentColumn].length > 1
-        : columnsWithAddedIndexColumns.length > 2; // The total number of columns is counting also the # of rows column
-
-      const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType;
-
-      return columnIndex === 0
-        ? []
-        : [
-            BeeTableOperation.ColumnInsertLeft,
-            BeeTableOperation.ColumnInsertRight,
-            ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
-          ];
-    },
-    [columnsWithAddedIndexColumns]
   );
 
   const defaultColumn = useMemo(
@@ -310,61 +262,73 @@ export function BeeTable<R extends object>({
       data: rows,
       defaultColumn,
     },
-    ReactTable.useBlockLayout,
-    ReactTable.useResizeColumns
+    ReactTable.useBlockLayout
+  );
+
+  const getColumnOperations = useCallback(
+    (columnIndex: number) => {
+      const groupTypeForCurrentColumn = reactTableInstance.allColumns[columnIndex]?.groupType;
+      const columnsByGroupType = _.groupBy(reactTableInstance.allColumns, (column) => column.groupType);
+      const atLeastTwoColumnsOfTheSameGroupType = groupTypeForCurrentColumn
+        ? columnsByGroupType[groupTypeForCurrentColumn].length > 1
+        : columnsWithAddedIndexColumns.length > 2; // The total number of columns is counting also the # of rows column
+
+      const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType;
+
+      return columnIndex === 0
+        ? []
+        : [
+            BeeTableOperation.ColumnInsertLeft,
+            BeeTableOperation.ColumnInsertRight,
+            ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+          ];
+    },
+    [columnsWithAddedIndexColumns.length, reactTableInstance.allColumns]
   );
 
   const getContextMenuThProps = useCallback(
-    (column: ReactTable.ColumnInstance<R>): Pick<PfReactTable.ThProps, "onContextMenu"> => ({
+    (columnIndex: number): Pick<PfReactTable.ThProps, "onContextMenu"> => ({
       onContextMenu: (e) => {
-        const columnIndex = _.findIndex(
-          getColumnsAtLastLevel(reactTableInstance.allColumns, column.depth),
-          areEqualColumns(column)
-        );
-        const isOperationHandlerAvailableOnHeader = !column.disableOperationHandlerOnHeader;
-        if (isContextMenuAvailable(e.target as HTMLElement) && isOperationHandlerAvailableOnHeader) {
-          e.preventDefault();
-          setAllowedOperations(getColumnOperations(columnIndex));
-          updateOperationHandlerState(e.target as HTMLElement, column);
+        const column = reactTableInstance.allColumns[columnIndex];
+        if (column?.disableOperationHandlerOnHeader) {
+          return;
         }
+
+        e.preventDefault();
+        setAllowedOperations([
+          //
+          ...getColumnOperations(columnIndex),
+        ]);
+
+        setContextMenuOpen(true);
+        setLastSelectedColumnIndex(columnIndex);
+        setLastSelectedRowIndex(-1);
       },
     }),
-    [getColumnOperations, updateOperationHandlerState, isContextMenuAvailable, reactTableInstance.allColumns]
+    [reactTableInstance.allColumns, getColumnOperations, setContextMenuOpen]
   );
 
   const getContextMenuTdProps = useCallback(
     (columnIndex: number, rowIndex: number): Pick<PfReactTable.TdProps, "onContextMenu"> => ({
       onContextMenu: (e) => {
-        if (isContextMenuAvailable(e.target as HTMLElement)) {
-          e.preventDefault();
+        //
+        e.preventDefault();
+        setAllowedOperations([
+          ...getColumnOperations(columnIndex),
+          BeeTableOperation.RowInsertAbove,
+          BeeTableOperation.RowInsertBelow,
+          ...(rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+          BeeTableOperation.RowClear,
+          BeeTableOperation.RowDuplicate,
+        ]);
 
-          setAllowedOperations([
-            ...getColumnOperations(columnIndex),
-            BeeTableOperation.RowInsertAbove,
-            BeeTableOperation.RowInsertBelow,
-            ...(rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
-            BeeTableOperation.RowClear,
-            BeeTableOperation.RowDuplicate,
-          ]);
-
-          updateOperationHandlerState(
-            e.target as HTMLElement,
-            getColumnsAtLastLevel(reactTableInstance.allColumns, headerLevelCount)[columnIndex]
-          );
-
-          setLastSelectedRowIndex(rowIndex);
-          focusCurrentCell(e.target as HTMLElement);
-        }
+        setContextMenuOpen(true);
+        setLastSelectedColumnIndex(columnIndex);
+        setLastSelectedRowIndex(rowIndex);
+        focusCurrentCell(e.target as HTMLElement);
       },
     }),
-    [
-      isContextMenuAvailable,
-      getColumnOperations,
-      rows.length,
-      updateOperationHandlerState,
-      reactTableInstance.allColumns,
-      headerLevelCount,
-    ]
+    [getColumnOperations, rows.length, setContextMenuOpen]
   );
 
   // FIXME: Tiago -> Pasting
@@ -441,7 +405,7 @@ export function BeeTable<R extends object>({
           return;
         }
 
-        if (boxedExpressionEditor.isContextMenuOpen) {
+        if (isContextMenuOpen) {
           e.preventDefault();
           if (NavigationKeysUtils.isEscape(key)) {
             //close Select child components if any
@@ -462,16 +426,11 @@ export function BeeTable<R extends object>({
           return focusParentCell(currentTarget);
         }
 
-        if (
-          !boxedExpressionEditor.isContextMenuOpen &&
-          isFiredFromThis &&
-          !isModKey &&
-          NavigationKeysUtils.isTypingKey(key)
-        ) {
+        if (!isContextMenuOpen && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
           return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
         }
       },
-    [boxedExpressionEditor.isContextMenuOpen, enableKeyboardNavigation]
+    [isContextMenuOpen, enableKeyboardNavigation]
   );
 
   const headerRowsCount = useMemo(() => {
@@ -491,8 +450,16 @@ export function BeeTable<R extends object>({
     }
   }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
 
+  const operationGroups = useMemo(() => {
+    if (_.isArray(operationHandlerConfig)) {
+      return operationHandlerConfig;
+    }
+    const column = reactTableInstance.allColumns[lastSelectedColumnIndex];
+    return (operationHandlerConfig ?? {})[column?.groupType || ""];
+  }, [lastSelectedColumnIndex, operationHandlerConfig, reactTableInstance.allColumns]);
+
   return (
-    <div className={`table-component ${tableId} ${tableEventUUID}`}>
+    <div className={`table-component ${tableId} ${tableEventUUID}`} ref={tableRef}>
       <PfReactTable.TableComposable
         {...reactTableInstance.getTableProps()}
         variant="compact"
@@ -523,23 +490,13 @@ export function BeeTable<R extends object>({
           onRowAdded={onRowAdded}
         />
       </PfReactTable.TableComposable>
-      {showTableOperationHandler && operationHandlerConfig && (
-        <BeeTableContextMenuHandler<R>
-          tableColumns={columnsWithAddedIndexColumns}
-          getNewColumnIdPrefix={onGetColumnPrefix}
-          operationHandlerConfig={operationHandlerConfig}
-          lastSelectedColumn={lastSelectedColumn}
-          lastSelectedRowIndex={lastSelectedRowIndex}
-          tableRows={rows}
-          onNewRow={onNewRow}
-          showTableContextMenu={showTableOperationHandler}
-          setShowTableContextMenu={setShowTableOperationHandler}
-          allowedOperations={allowedOperations}
-          tableContextMenuTarget={operationHandlerTarget}
-          resetRowCustomFunction={resetRowCustomFunction}
-          onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
-        />
-      )}
+      <BeeTableContextMenuHandler<R>
+        tableRef={tableRef}
+        operationGroups={operationGroups}
+        allowedOperations={allowedOperations}
+        lastSelectedColumnIndex={lastSelectedColumnIndex}
+        lastSelectedRowIndex={lastSelectedRowIndex}
+      />
     </div>
   );
 }

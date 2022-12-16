@@ -98,17 +98,6 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     []
   );
 
-  const resetRowCustomFunction = useCallback((row: ROWTYPE) => {
-    return { entryExpression: { id: row.entryExpression.id } };
-  }, []);
-
-  const onNewRow = useCallback(
-    () => ({
-      entryExpression: generateLiteralExpression(),
-    }),
-    [generateLiteralExpression]
-  );
-
   const onRowsUpdate = useCallback(({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
     const newEntryExpressions = rows.map((row) => {
       return { entryExpression: row.entryExpression };
@@ -135,10 +124,8 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         columns={beeTableColumns}
         rows={beeTableRows}
         onRowsUpdate={onRowsUpdate}
-        onNewRow={onNewRow}
         operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}
-        resetRowCustomFunction={resetRowCustomFunction}
       />
     </div>
   );

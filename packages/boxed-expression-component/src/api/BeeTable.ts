@@ -59,8 +59,6 @@ export interface BeeTableProps<R extends object> {
   onColumnsUpdate?: (args: BeeTableColumnsUpdateArgs<R>) => void;
   /** Function to be executed when one or more rows are modified */
   onRowsUpdate?: (args: BeeTableRowsUpdateArgs<R>) => void;
-  /** Function to be executed when adding a new row to the table */
-  onNewRow?: () => R;
   /** Custom configuration for the table handler */
   operationHandlerConfig?: BeeTableOperationHandlerConfig;
   /** The way in which the header will be rendered */
@@ -73,8 +71,6 @@ export interface BeeTableProps<R extends object> {
   getRowKey?: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey?: (column: ReactTable.ColumnInstance<R>) => string;
-  /** Custom function called for manually resetting a row */
-  resetRowCustomFunction?: (row: R) => R;
   /** Disable/Enable cell edits. Enabled by default */
   isReadOnly?: boolean;
   /** Enable keyboard navigation */

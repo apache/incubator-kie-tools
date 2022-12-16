@@ -71,15 +71,6 @@ export function ExpressionDefinitionLogicTypeSelector({
     [expression.logicType]
   );
 
-  const {
-    ref: clearContextMenuRef,
-    xPos: clearContextMenuXPos,
-    yPos: clearContextMenuYPos,
-    isOpen: isClearContextMenuOpen,
-    setOpen: setClearContextMenuOpen,
-    targetElement: clearContextMenuTargetElement,
-  } = useCustomContextMenuHandler(editorRef?.current ?? document);
-
   const renderExpression = useMemo(() => {
     const logicType = expression.logicType;
     switch (logicType) {
@@ -117,26 +108,15 @@ export function ExpressionDefinitionLogicTypeSelector({
   const selectLogicType = useCallback(
     (_: React.MouseEvent, itemId?: string | number) => {
       onLogicTypeSelected(itemId as ExpressionDefinitionLogicType);
-      setClearContextMenuOpen(false);
       setContextMenuOpen(false);
     },
-    [onLogicTypeSelected, setClearContextMenuOpen, setContextMenuOpen]
+    [onLogicTypeSelected, setContextMenuOpen]
   );
 
   const resetLogicType = useCallback(() => {
-    setClearContextMenuOpen(false);
     setContextMenuOpen(false);
     onLogicTypeReset();
-  }, [onLogicTypeReset, setClearContextMenuOpen, setContextMenuOpen]);
-
-  const shouldRenderLogicTypeSelectorContextMenu = useMemo(() => {
-    const target = clearContextMenuTargetElement as HTMLElement;
-    const notClickedOnTable = _.isNil(target?.closest("table"));
-    const clickedOnTableRemainderContent = !_.isNil(target?.closest(".row-remainder-content"));
-    const clickedOnAllowedTableSection = notClickedOnTable || clickedOnTableRemainderContent;
-
-    return !expression.noClearAction && isClearContextMenuOpen && clickedOnAllowedTableSection;
-  }, [isClearContextMenuOpen, expression.noClearAction, clearContextMenuTargetElement]);
+  }, [onLogicTypeReset, setContextMenuOpen]);
 
   const cssClass = useMemo(() => {
     if (isLogicTypeSelected) {
@@ -146,12 +126,23 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
   }, [isLogicTypeSelected]);
 
+  const clearContextMenuContainerRef = React.useRef<HTMLDivElement>(null);
+  const {
+    xPos: clearContextMenuXPos,
+    yPos: clearContextMenuYPos,
+    isOpen: isClearContextMenuOpen,
+  } = useCustomContextMenuHandler(clearContextMenuContainerRef);
+
+  const shouldRenderClearContextMenu = useMemo(() => {
+    return isClearContextMenuOpen && isLogicTypeSelected;
+  }, [isClearContextMenuOpen, isLogicTypeSelected]);
+
   return (
     <>
       <div
         className={cssClass}
-        ref={clearContextMenuRef}
-        style={{ opacity: shouldRenderLogicTypeSelectorContextMenu ? 0.5 : 1 }}
+        ref={clearContextMenuContainerRef}
+        style={{ opacity: shouldRenderClearContextMenu ? 0.5 : 1 }}
       >
         {isLogicTypeSelected ? renderExpression : i18n.selectExpression}
 
@@ -176,9 +167,9 @@ export function ExpressionDefinitionLogicTypeSelector({
           />
         )}
       </div>
-      {shouldRenderLogicTypeSelectorContextMenu && isLogicTypeSelected && (
+      {shouldRenderClearContextMenu && (
         <div
-          className="context-menu-container no-table-context-menu"
+          className="context-menu-container"
           style={{ top: clearContextMenuYPos, left: clearContextMenuXPos, opacity: 1 }}
         >
           <Menu className="table-handler-menu">

@@ -18,7 +18,7 @@ import * as React from "react";
 import { useState, useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import * as PfReactTable from "@patternfly/react-table";
-import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
+import { Resizer } from "../Resizer";
 import { BeeTableTh } from "./BeeTableTh";
 import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
 import { ExpressionDefinition } from "../../api";
@@ -35,7 +35,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onHeaderClick: (columnKey: string) => () => void;
   rowIndex: number;
   reactTableInstance: ReactTable.TableInstance<R>;
-  getContextMenuThProps: (column: ReactTable.ColumnInstance<R>) => Pick<PfReactTable.ThProps, "onContextMenu">;
+  getContextMenuThProps: (columnIndex: number) => Pick<PfReactTable.ThProps, "onContextMenu">;
   xPosition: number;
   yPosition: number;
   renderHeaderCellInfo: (
@@ -141,8 +141,8 @@ export function BeeTableThResizable<R extends object>({
   }, [cssClasses, getRowSpan]);
 
   const contextMenuThProps = useMemo(() => {
-    return getContextMenuThProps(column);
-  }, [column, getContextMenuThProps]);
+    return getContextMenuThProps(columnIndex);
+  }, [columnIndex, getContextMenuThProps]);
 
   const columnLabel = useMemo(() => {
     return getColumnLabel(column.groupType);

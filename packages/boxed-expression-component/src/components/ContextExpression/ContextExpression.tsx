@@ -28,7 +28,6 @@ import {
   generateUuid,
   getOperationHandlerConfig,
   ExpressionDefinitionLogicType,
-  resetContextExpressionEntry,
   BeeTableHeaderVisibility,
   ExpressionDefinition,
   BeeTableProps,
@@ -57,7 +56,17 @@ import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import { LIST_EXPRESSION_MIN_WIDTH } from "../ListExpression";
 import { LITERAL_EXPRESSION_MIN_WIDTH, LITERAL_EXPRESSION_EXTRA_WIDTH } from "../LiteralExpression";
 import { ResizingWidth, useResizingWidthDispatch, useResizingWidths } from "../ExpressionDefinitionRoot";
-import { RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "../RelationExpression";
+import { RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH, RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "../RelationExpression";
+import {
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+} from "../InvocationExpression";
+import {
+  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+  DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+  DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+} from "../DecisionTableExpression";
 
 const CONTEXT_ENTRY_DEFAULT_NAME = "ContextEntry-1";
 
@@ -161,6 +170,22 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       isHeadless: true,
       entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+      bindingEntries: [
+        {
+          entryInfo: {
+            id: generateUuid(),
+            name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+            dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+          },
+          entryExpression: {
+            name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+            dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+            logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
+            isHeadless: true,
+          },
+          nameAndDataTypeSynchronized: true,
+        },
+      ],
     };
     return invocationExpression;
   } else if (logicType === ExpressionDefinitionLogicType.Relation) {
@@ -172,39 +197,25 @@ export function getDefaultExpressionDefinitionByLogicType(
           id: generateUuid(),
           name: "column-1",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
         },
         {
           id: generateUuid(),
           name: "column-2",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
         },
         {
           id: generateUuid(),
           name: "column-3",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-        },
-        {
-          id: generateUuid(),
-          name: "column-4",
-          dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
         },
       ],
       rows: [
         {
           id: generateUuid(),
           cells: ["a", "b", "c", "d"],
-        },
-        {
-          id: generateUuid(),
-          cells: ["e", "f", "g", "h"],
-        },
-        {
-          id: generateUuid(),
-          cells: ["i", "j", "k", "l"],
         },
       ],
     };
@@ -218,13 +229,13 @@ export function getDefaultExpressionDefinitionByLogicType(
           id: generateUuid(),
           name: "input-1",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
         },
         {
           id: generateUuid(),
           name: "input-2",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
         },
       ],
       output: [
@@ -232,26 +243,26 @@ export function getDefaultExpressionDefinitionByLogicType(
           id: generateUuid(),
           name: "output-1",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
         },
         {
           id: generateUuid(),
           name: "output-2",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
         },
         {
           id: generateUuid(),
           name: "output-3",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
         },
       ],
       annotations: [
         {
           id: generateUuid(),
           name: "annotation-1",
-          width: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
         },
       ],
       rules: [
@@ -259,19 +270,7 @@ export function getDefaultExpressionDefinitionByLogicType(
           id: generateUuid(),
           inputEntries: ["a", "b"],
           outputEntries: ["c", "d", "e"],
-          annotationEntries: [""],
-        },
-        {
-          id: generateUuid(),
-          inputEntries: ["a", "b"],
-          outputEntries: ["c", "d", "e"],
-          annotationEntries: [""],
-        },
-        {
-          id: generateUuid(),
-          inputEntries: ["a", "b"],
-          outputEntries: ["c", "d", "e"],
-          annotationEntries: [""],
+          annotationEntries: ["// Your annotations here"],
         },
       ],
     };
@@ -580,26 +579,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [setExpression]
   );
 
-  const onNewRow = useCallback((): ROWTYPE => {
-    const generatedName = getNextAvailableContextExpressionEntryName(
-      contextExpression.contextEntries.map((row) => row.entryInfo),
-      "ContextEntry"
-    );
-    return {
-      entryInfo: {
-        id: generateUuid(),
-        name: generatedName,
-        dataType: DmnBuiltInDataType.Undefined,
-      },
-      entryExpression: {
-        name: generatedName,
-        dataType: DmnBuiltInDataType.Undefined,
-        logicType: ExpressionDefinitionLogicType.Undefined,
-      },
-      nameAndDataTypeSynchronized: true,
-    };
-  }, [contextExpression.contextEntries]);
-
   const headerVisibility = useMemo(() => {
     return contextExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
   }, [contextExpression.isHeadless]);
@@ -643,13 +622,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     return row.original.entryInfo.id;
   }, []);
 
-  const resetRowCustomFunction = useCallback((entry: ContextExpressionDefinitionEntry) => {
-    const updatedEntry = resetContextExpressionEntry(entry);
-    updatedEntry.entryExpression.name = updatedEntry.entryInfo.name ?? CONTEXT_ENTRY_DEFAULT_NAME;
-    updatedEntry.entryExpression.dataType = updatedEntry.entryInfo.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE;
-    return updatedEntry;
-  }, []);
-
   const beeTableAdditionalRow = useMemo(() => {
     return contextExpression.renderResult ?? true
       ? [
@@ -671,6 +643,35 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       : undefined;
   }, [contextExpression, setEntryInfoWidth, entryInfoResizingWidth, setEntryInfoResizingWidth]);
 
+  const onRowAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      setExpression((prev: ContextExpressionDefinition) => {
+        const newContextEntries = [...(prev.contextEntries ?? [])];
+        newContextEntries.splice(args.beforeIndex, 0, {
+          nameAndDataTypeSynchronized: true,
+          entryExpression: {
+            logicType: ExpressionDefinitionLogicType.Undefined,
+            id: generateUuid(),
+          },
+          entryInfo: {
+            dataType: DmnBuiltInDataType.Undefined,
+            id: generateUuid(),
+            name: getNextAvailableContextExpressionEntryName(
+              prev.contextEntries.map((e) => e.entryInfo),
+              "ContextEntry"
+            ),
+          },
+        });
+
+        return {
+          ...prev,
+          contextEntries: newContextEntries,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div
@@ -686,11 +687,10 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           columns={beeTableColumns}
           rows={contextExpression.contextEntries}
           onColumnsUpdate={onColumnsUpdate}
-          onNewRow={onNewRow}
           operationHandlerConfig={operationHandlerConfig}
           getRowKey={getRowKey}
-          resetRowCustomFunction={resetRowCustomFunction}
           additionalRow={beeTableAdditionalRow}
+          onRowAdded={onRowAdded}
         />
       </div>
     </ContextExpressionContext.Provider>

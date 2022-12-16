@@ -54,6 +54,7 @@ export interface PopoverMenuProps {
    * Lifecycle function invoked when the popover has fully transitioned in.
    */
   onShown?: () => void;
+  position?: PopoverPosition;
 }
 
 export interface PopoverMenuRef {
@@ -70,6 +71,7 @@ export const PopoverMenu = React.forwardRef(
       arrowPlacement,
       body,
       title,
+      position,
       appendTo,
       className,
       hasAutoWidth,
@@ -130,7 +132,7 @@ export const PopoverMenu = React.forwardRef(
         className={`popover-menu-selector${className ? " " + className : ""}`}
         hasAutoWidth={hasAutoWidth}
         minWidth={minWidth}
-        position={PopoverPosition.bottom}
+        position={position ?? PopoverPosition.bottom}
         distance={0}
         id="menu-selector"
         reference={arrowPlacement}
