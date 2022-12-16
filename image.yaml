@@ -21,7 +21,7 @@ envs:
     value: "2.0.0-SNAPSHOT"
     description: Defines the Kogito version to be used by the builder images. Not intended to be changed by end user.
   - name: "QUARKUS_VERSION"
-    value: "2.14.1.Final"
+    value: "2.15.0.Final"
     description: Defines the Quarkus version to be used by the builder images. Not intended to be changed by end user.
 
 packages:
