@@ -543,7 +543,7 @@ public class DecisionTableGridTest {
         assertTrue(header.get(0) instanceof OutputClauseColumnHeaderMetaData);
 
         final OutputClauseColumnHeaderMetaData md = (OutputClauseColumnHeaderMetaData) header.get(0);
-        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1",
+        assertEquals("<result>",
                      md.getTitle());
     }
 
