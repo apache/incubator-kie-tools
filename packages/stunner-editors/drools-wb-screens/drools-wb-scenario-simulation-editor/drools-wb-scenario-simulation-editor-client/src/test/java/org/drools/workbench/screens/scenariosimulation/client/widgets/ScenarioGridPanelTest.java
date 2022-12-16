@@ -82,7 +82,7 @@ public class ScenarioGridPanelTest extends AbstractScenarioSimulationTest {
     @Test
     public void onNodeMouseWheel() {
         scenarioGridPanelSpy.onNodeMouseWheel(nodeMouseWheelEvent);
-        verify(scenarioGridModelMock, times(1)).destroyAllTextAreaDOMElementFactoryResources();
+        verify(scenarioGridModelMock, times(1)).flushAllTextAreaDOMElementFactoryResources();
     }
 
     @Test

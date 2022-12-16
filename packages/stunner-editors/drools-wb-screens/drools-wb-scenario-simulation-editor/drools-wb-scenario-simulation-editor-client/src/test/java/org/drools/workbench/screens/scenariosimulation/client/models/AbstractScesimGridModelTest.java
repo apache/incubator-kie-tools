@@ -733,10 +733,10 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
 
     @Test
     public void destroyAllTextAreaDOMElementFactoryResources() {
-        abstractScesimGridModelSpy.destroyAllTextAreaDOMElementFactoryResources();
-        verify(scenarioCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
-        verify(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
-        verify(scenarioHeaderTextBoxSingletonDOMElementFactorySpy, times(1)).destroyResources();
+        abstractScesimGridModelSpy.flushAllTextAreaDOMElementFactoryResources();
+        verify(scenarioCellTextAreaSingletonDOMElementFactorySpy, times(1)).flush();
+        verify(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, times(1)).flush();
+        verify(scenarioHeaderTextBoxSingletonDOMElementFactorySpy, times(1)).flush();
     }
 
     @Test
