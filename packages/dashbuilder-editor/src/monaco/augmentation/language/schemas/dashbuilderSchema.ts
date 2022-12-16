@@ -56,7 +56,7 @@ export const DASHBUILDER_SCHEMA = {
           $ref: "#/definitions/ColourModes",
         },
         settings: {
-          $ref: "#/definitions/CustomProperties",
+          $ref: "#/definitions/DisplayerSettings",
         },
       },
       title: "Global Properties",
@@ -351,6 +351,7 @@ export const DASHBUILDER_SCHEMA = {
     sortEnum: {
       type: "string",
       enum: ["ASCENDING", "DESCENDING"],
+      additionalProperties: false,
       title: "sortEnum",
     },
     FilterComponent: {
@@ -447,7 +448,6 @@ export const DASHBUILDER_SCHEMA = {
           },
         },
       },
-      required: ["groupFunctions"],
       title: "DatasetlookupGroup",
     },
     ColumnGroupFunctions: {
@@ -459,6 +459,7 @@ export const DASHBUILDER_SCHEMA = {
         function: {
           type: "string",
           enum: ["SUM", "MAX", "MIN", "AVERAGE"],
+          additionalProperties: false,
         },
         column: {
           type: "string",
@@ -638,6 +639,7 @@ export const DASHBUILDER_SCHEMA = {
         renderer: {
           type: "string",
           enum: ["c3", "echarts"],
+          additionalProperties: false,
           title: "renderer",
         },
         selector: {
@@ -674,7 +676,7 @@ export const DASHBUILDER_SCHEMA = {
               title: "allowEdit",
             },
           },
-          required: ["title", "visible", "mode", "allowEdit"],
+          required: ["title"],
           title: "general",
         },
         export: {
@@ -696,9 +698,7 @@ export const DASHBUILDER_SCHEMA = {
         table: {
           $ref: "#/definitions/SettingsTable",
         },
-        html: {
-          type: "string",
-        },
+        html: {},
         javascript: {
           type: "string",
         },
@@ -760,7 +760,7 @@ export const DASHBUILDER_SCHEMA = {
                   type: "number",
                 },
               },
-              required: ["labels_show", "title", "labels_angle"],
+              required: ["title"],
               title: "x",
             },
             y: {
@@ -776,7 +776,7 @@ export const DASHBUILDER_SCHEMA = {
                   type: "string",
                 },
               },
-              required: ["labels_show", "title", "labels_angle"],
+              required: ["title"],
               title: "y",
             },
           },
@@ -895,14 +895,9 @@ export const DASHBUILDER_SCHEMA = {
         baseUrl: {
           type: "string",
         },
-        width: {
-          type: "number",
-        },
-        height: {
-          type: "number",
-        },
+        width: {},
+        height: {},
       },
-      required: ["baseUrl", "width", "height"],
       title: "SettingsExternal",
     },
     ChartType: {
@@ -919,35 +914,41 @@ export const DASHBUILDER_SCHEMA = {
         "METERCHART",
         "MAP",
       ],
+      additionalProperties: false,
       title: "ChartType",
     },
     BarChartTypes: {
       type: "string",
       enum: ["COLUMN", "BAR", "STACKED", "COLUMN_STACKED", "BAR_STACKED"],
       default: "COLUMN",
+      additionalProperties: false,
       title: "BarChartTypes",
     },
     LineChartTypes: {
       type: "string",
       enum: ["LINE", "SMOOTH"],
       default: "LINE",
+      additionalProperties: false,
       title: "LineChartTypes",
     },
     AreaChartTypes: {
       type: "string",
       enum: ["AREA", "AREA_STACKED"],
       default: "AREA",
+      additionalProperties: false,
       title: "AreaChartChartTypes",
     },
     PieChartTypes: {
       type: "string",
       enum: ["PIE", "DONUT"],
       default: "PIE",
+      additionalProperties: false,
       title: "PieChartChartTypes",
     },
     SelectorTypes: {
       type: "string",
       enum: ["SELECTOR_LABELS", "SELECTOR_DROPDOWN", "SELECTOR_SLIDER"],
+      additionalProperties: false,
       title: "SelectorTypes",
     },
     MeterTypes: {
@@ -974,10 +975,12 @@ export const DASHBUILDER_SCHEMA = {
     MapTypes: {
       type: "string",
       enum: ["MAP_MARKERS", "MAP_REGIONS"],
+      additionalProperties: false,
     },
     NavComponentTypes: {
       type: "string",
       enum: ["TILES", "CAROUSEL", "TREE", "MENU", "TABS", "DIV"],
+      additionalProperties: false,
     },
     SettingsComponent: {
       type: "string",
@@ -987,6 +990,7 @@ export const DASHBUILDER_SCHEMA = {
       type: "string",
       enum: ["dark", "light"],
       title: "ColourModes",
+      additionalProperties: false,
     },
   },
 };
