@@ -25,18 +25,17 @@ pages:
         margin-bottom: 30px
     - settings:
         type: BARCHART
-        dataSetLookup:
+        lookup:
             uuid: products
             group:
                 - columnGroup:
                     source: Product
-                  groupFunctions:
+                  functions:
                     - source: Product
                     - source: Quantity
                       function: SUM
                     - source: Quantity2
                       function: SUM
     - settings:
-        type: TABLE
-        dataSetLookup:
+        lookup:
             uuid: products`;
