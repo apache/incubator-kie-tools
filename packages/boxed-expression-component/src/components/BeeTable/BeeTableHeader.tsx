@@ -45,7 +45,7 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Th props */
-  getThProps: (column: ReactTable.ColumnInstance<R>) => Partial<PfReactTable.ThProps>;
+  getContextMenuThProps: (column: ReactTable.ColumnInstance<R>) => Pick<PfReactTable.ThProps, "onContextMenu">;
   /** Option to enable or disable header edits */
   editableHeader: boolean;
 }
@@ -59,7 +59,7 @@ export function BeeTableHeader<R extends object>({
   tableColumns,
   onColumnsUpdate,
   onCellKeyDown,
-  getThProps,
+  getContextMenuThProps,
   editableHeader,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
@@ -113,7 +113,7 @@ export function BeeTableHeader<R extends object>({
           rowIndex={rowIndex}
           columnIndex={0}
           rowSpan={1}
-          headerProps={column.getHeaderProps()}
+          thProps={column.getHeaderProps()}
           className={classNames}
           key={columnKey}
           isFocusable={true}
@@ -212,7 +212,7 @@ export function BeeTableHeader<R extends object>({
           onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
           onHeaderClick={onHeaderClick}
           renderHeaderCellInfo={renderHeaderCellInfo}
-          getThProps={getThProps}
+          getContextMenuThProps={getContextMenuThProps}
           reactTableInstance={reactTableInstance}
           column={column}
           rowIndex={rowIndex}
@@ -231,7 +231,7 @@ export function BeeTableHeader<R extends object>({
       onHeaderClick,
       renderHeaderCellInfo,
       reactTableInstance,
-      getThProps,
+      getContextMenuThProps,
     ]
   );
 

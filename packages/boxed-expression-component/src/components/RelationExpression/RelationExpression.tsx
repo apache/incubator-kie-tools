@@ -26,6 +26,7 @@ import {
   BeeTableRowsUpdateArgs,
   BeeTableOperation,
   BeeTableColumnsUpdateArgs,
+  generateUuid,
 } from "../../api";
 import { BeeTable } from "../BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -218,6 +219,24 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     // Do nothing for now
   }, []);
 
+  const onRowAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const newRows = [...(prev.rows ?? [])];
+        newRows.splice(args.beforeIndex, 0, {
+          id: generateUuid(),
+          cells: new Array(prev.columns?.length ?? 0).map(() => ""),
+        });
+
+        return {
+          ...prev,
+          rows: newRows,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div
       className={`relation-expression ${
@@ -231,6 +250,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         onColumnsUpdate={onColumnsUpdate}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
+        onRowAdded={onRowAdded}
       />
     </div>
   );

@@ -17,12 +17,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useBoxedExpressionEditor } from "../components/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
-export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document = document): {
-  contextMenuRef: React.RefObject<HTMLDivElement>;
-  contextMenuXPos: string;
-  contextMenuYPos: string;
-  isContextMenuVisible: boolean;
-  setContextMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
+export function useCustomContextMenuHandler(domEventTarget: HTMLDivElement | Document = document): {
+  ref: React.RefObject<HTMLDivElement>;
+  xPos: string;
+  yPos: string;
+  isOpen: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   targetElement?: EventTarget;
 } {
   const { setContextMenuOpen } = useBoxedExpressionEditor();
@@ -30,25 +30,32 @@ export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document 
 
   const [xPos, setXPos] = useState("0px");
   const [yPos, setYPos] = useState("0px");
-  const [isContextMenuVisible, setContextMenuVisible] = useState(false);
+  const [isOpen, setOpen] = useState(false);
+
   const eventTarget = useRef<EventTarget>();
 
-  const hideContextMenu = useCallback(() => {
-    if (!isContextMenuVisible) {
-      return;
-    }
-    setContextMenuVisible(false);
-    setContextMenuOpen(false);
-  }, [isContextMenuVisible, setContextMenuOpen]);
+  const hide = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
 
-  const showContextMenu = useCallback(
-    (event: MouseEvent) => {
-      if (containerRef.current && containerRef.current === event.target) {
-        event.preventDefault();
-        eventTarget.current = event.target;
-        setXPos(`${event.pageX}px`);
-        setYPos(`${event.pageY}px`);
-        setContextMenuVisible(true);
+      if (!isOpen) {
+        return;
+      }
+
+      setOpen(false);
+      setContextMenuOpen(false);
+    },
+    [isOpen, setContextMenuOpen]
+  );
+
+  const show = useCallback(
+    (e: MouseEvent) => {
+      if (containerRef.current && containerRef.current === e.target) {
+        e.preventDefault();
+        eventTarget.current = e.target;
+        setXPos(`${e.pageX}px`);
+        setYPos(`${e.pageY}px`);
+        setOpen(true);
         setContextMenuOpen(true);
       }
     },
@@ -56,22 +63,22 @@ export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document 
   );
 
   useEffect(() => {
-    document.addEventListener("click", hideContextMenu);
-    domEventTarget.addEventListener("contextmenu", hideContextMenu);
-    domEventTarget.addEventListener("contextmenu", showContextMenu);
+    document.addEventListener("click", hide);
+    domEventTarget.addEventListener("contextmenu", hide);
+    domEventTarget.addEventListener("contextmenu", show);
     return () => {
-      document.removeEventListener("click", hideContextMenu);
-      domEventTarget.removeEventListener("contextmenu", hideContextMenu);
-      domEventTarget.removeEventListener("contextmenu", showContextMenu);
+      document.removeEventListener("click", hide);
+      domEventTarget.removeEventListener("contextmenu", hide);
+      domEventTarget.removeEventListener("contextmenu", show);
     };
   });
 
   return {
-    contextMenuRef: containerRef,
-    contextMenuXPos: xPos,
-    contextMenuYPos: yPos,
-    isContextMenuVisible,
-    setContextMenuVisible,
+    ref: containerRef,
+    xPos,
+    yPos,
+    isOpen,
+    setOpen,
     targetElement: eventTarget.current,
   };
 }

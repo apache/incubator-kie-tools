@@ -19,13 +19,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { DmnBuiltInDataType, generateUuid, BeeTableOperationHandlerConfig, BeeTableOperation } from "../../api";
 import * as _ from "lodash";
 import * as ReactTable from "react-table";
-import { Popover } from "@patternfly/react-core";
-import { BeeTableOperationHandlerMenu } from "./BeeTableOperationHandlerMenu";
+import { Menu, MenuGroup, MenuItem, MenuList, Popover } from "@patternfly/react-core";
+import "./BeeTableContextMenuHandler.css";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getColumnsAtLastLevel, areEqualColumns } from "./BeeTable";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
-export interface BeeTableOperationHandlerProps<R extends object> {
+export interface BeeTableContextMenuHandlerProps<R extends object> {
   /** Gets the prefix to be used for the next column name */
   getNewColumnIdPrefix: (groupType?: string) => string;
   /** Columns instance */
@@ -41,11 +41,11 @@ export interface BeeTableOperationHandlerProps<R extends object> {
   /** Function to be executed when adding a new row to the table */
   onNewRow: (() => R) | undefined;
   /** Show/hide table handler */
-  showTableOperationHandler: boolean;
+  showTableContextMenu: boolean;
   /** Function to programmatically show/hide table handler */
-  setShowTableOperationHandler: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowTableContextMenu: React.Dispatch<React.SetStateAction<boolean>>;
   /** Target for showing the table handler  */
-  operationHandlerTarget: HTMLElement;
+  tableContextMenuTarget: HTMLElement;
   /** Custom configuration for the table handler */
   operationHandlerConfig: BeeTableOperationHandlerConfig;
   /** Table handler allowed operations */
@@ -56,7 +56,7 @@ export interface BeeTableOperationHandlerProps<R extends object> {
   onColumnsUpdate: (columns: ReactTable.Column<R>[], operation?: BeeTableOperation, columnIndex?: number) => void;
 }
 
-export function BeeTableOperationHandler<R extends object>({
+export function BeeTableContextMenuHandler<R extends object>({
   getNewColumnIdPrefix,
   tableColumns,
   lastSelectedColumn,
@@ -64,28 +64,18 @@ export function BeeTableOperationHandler<R extends object>({
   tableRows,
   onRowsUpdate,
   onNewRow,
-  showTableOperationHandler,
-  setShowTableOperationHandler,
-  operationHandlerTarget,
+  showTableContextMenu: showTableOperationHandler,
+  setShowTableContextMenu: setShowTableOperationHandler,
+  tableContextMenuTarget: operationHandlerTarget,
   operationHandlerConfig,
   allowedOperations,
   resetRowCustomFunction = (r) => r,
   onColumnsUpdate,
-}: BeeTableOperationHandlerProps<R>) {
-  const boxedExpressionEditor = useBoxedExpressionEditor();
+}: BeeTableContextMenuHandlerProps<R>) {
+  const { setContextMenuOpen, editorRef } = useBoxedExpressionEditor();
 
-  const [selectedColumn, setSelectedColumn] = useState<ReactTable.ColumnInstance<R> | undefined>(
-    lastSelectedColumn?.placeholderOf ?? lastSelectedColumn
-  );
-  const [selectedRowIndex, setSelectedRowIndex] = useState(lastSelectedRowIndex);
-
-  useEffect(() => {
-    setSelectedColumn(lastSelectedColumn?.placeholderOf ?? lastSelectedColumn);
-  }, [lastSelectedColumn]);
-
-  useEffect(() => {
-    setSelectedRowIndex(lastSelectedRowIndex);
-  }, [lastSelectedRowIndex]);
+  const selectedColumn = useMemo(() => lastSelectedColumn?.placeholderOf ?? lastSelectedColumn, [lastSelectedColumn]);
+  const selectedRowIndex = useMemo(() => lastSelectedRowIndex, [lastSelectedRowIndex]);
 
   // FIXME: Tiago -> Bad typing.
   const withDefaultValues = <T extends unknown>(element: T) => ({
@@ -229,7 +219,6 @@ export function BeeTableOperationHandler<R extends object>({
 
   const handleOperation = useCallback(
     (operation: BeeTableOperation) => {
-      boxedExpressionEditor.beeGwtService?.notifyUserAction();
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
           updateTargetColumns(insertBefore, BeeTableOperation.ColumnInsertLeft);
@@ -264,7 +253,7 @@ export function BeeTableOperationHandler<R extends object>({
           onRowsUpdate?.(duplicateAfter(tableRows, selectedRowIndex), BeeTableOperation.RowDuplicate, selectedRowIndex);
       }
       setShowTableOperationHandler(false);
-      boxedExpressionEditor.setContextMenuOpen(false);
+      setContextMenuOpen(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableOperationHandler, tableRows]
@@ -287,17 +276,42 @@ export function BeeTableOperationHandler<R extends object>({
       isVisible={showTableOperationHandler}
       shouldClose={() => {
         setShowTableOperationHandler(false);
-        boxedExpressionEditor.setContextMenuOpen(false);
+        setContextMenuOpen(false);
       }}
       shouldOpen={(showFunction) => showFunction?.()}
       reference={() => operationHandlerTarget}
-      appendTo={boxedExpressionEditor.editorRef?.current ?? undefined}
+      appendTo={editorRef?.current ?? undefined}
       bodyContent={
-        <BeeTableOperationHandlerMenu
-          operationHandlerConfig={filteredOperationHandlerConfig}
-          allowedOperations={allowedOperations}
-          onOperation={handleOperation}
-        />
+        <Menu
+          ouiaId="expression-table-handler-menu"
+          className="table-handler-menu"
+          onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
+        >
+          {filteredOperationHandlerConfig.map((groupOperation) => (
+            <MenuGroup
+              key={groupOperation.group}
+              label={groupOperation.group}
+              className={
+                _.every(groupOperation.items, (operation) => !_.includes(allowedOperations, operation.type))
+                  ? "no-allowed-actions-in-group"
+                  : ""
+              }
+            >
+              <MenuList>
+                {groupOperation.items.map((operation) => (
+                  <MenuItem
+                    data-ouia-component-id={"expression-table-handler-menu-" + operation.name}
+                    key={operation.type}
+                    itemId={operation.type}
+                    isDisabled={!_.includes(allowedOperations, operation.type)}
+                  >
+                    {operation.name}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </MenuGroup>
+          ))}
+        </Menu>
       }
     />
   );

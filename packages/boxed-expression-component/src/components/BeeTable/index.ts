@@ -17,6 +17,4 @@
 export * from "./BeeTableEditableCellContent";
 export * from "./BeeTable";
 export * from "./BeeTableBody";
-export * from "./BeeTableOperationHandler";
-export * from "./BeeTableOperationHandlerMenu";
 export * from "./BeeTableHeader";

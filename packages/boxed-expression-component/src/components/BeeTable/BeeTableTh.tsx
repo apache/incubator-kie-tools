@@ -22,22 +22,22 @@ import { BeeTableTdsAndThsProps } from "../../api";
 export interface BeeTableThProps extends BeeTableTdsAndThsProps {
   children?: React.ReactElement;
   className: string;
-  headerProps: Partial<PfReactTable.ThProps>;
+  thProps: Partial<PfReactTable.ThProps>;
   isFocusable: boolean;
   onClick?: React.MouseEventHandler;
   rowSpan: number;
-  thProps?: Partial<PfReactTable.ThProps>;
+  contextMenuThProps?: Pick<PfReactTable.ThProps, "onContextMenu">;
 }
 
 export function BeeTableTh({
   children,
   className,
-  headerProps,
+  thProps,
   isFocusable = true,
   onKeyDown,
   onClick,
   rowIndex,
-  thProps,
+  contextMenuThProps,
   rowSpan = 1,
   xPosition,
   yPosition,
@@ -55,8 +55,8 @@ export function BeeTableTh({
 
   return (
     <PfReactTable.Th
-      {...headerProps}
       {...thProps}
+      {...contextMenuThProps}
       ref={thRef}
       onClick={onClick}
       className={className}

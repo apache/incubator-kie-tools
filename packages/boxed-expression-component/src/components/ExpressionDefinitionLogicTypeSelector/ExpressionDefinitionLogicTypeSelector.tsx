@@ -19,7 +19,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
-import { useContextMenuHandler } from "../../hooks";
+import { useCustomContextMenuHandler } from "../../hooks";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ContextExpression } from "../ContextExpression";
@@ -63,9 +63,8 @@ export function ExpressionDefinitionLogicTypeSelector({
   getPlacementRef,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const boxedExpressionEditor = useBoxedExpressionEditor();
 
-  const { setContextMenuOpen } = useBoxedExpressionEditor();
+  const { setContextMenuOpen, editorRef } = useBoxedExpressionEditor();
 
   const isLogicTypeSelected = useMemo(
     () => expression.logicType && expression.logicType !== ExpressionDefinitionLogicType.Undefined,
@@ -73,13 +72,13 @@ export function ExpressionDefinitionLogicTypeSelector({
   );
 
   const {
-    contextMenuRef,
-    contextMenuXPos,
-    contextMenuYPos,
-    isContextMenuVisible,
-    setContextMenuVisible,
-    targetElement,
-  } = useContextMenuHandler(boxedExpressionEditor.editorRef?.current ?? document);
+    ref: clearContextMenuRef,
+    xPos: clearContextMenuXPos,
+    yPos: clearContextMenuYPos,
+    isOpen: isClearContextMenuOpen,
+    setOpen: setClearContextMenuOpen,
+    targetElement: clearContextMenuTargetElement,
+  } = useCustomContextMenuHandler(editorRef?.current ?? document);
 
   const renderExpression = useMemo(() => {
     const logicType = expression.logicType;
@@ -112,71 +111,75 @@ export function ExpressionDefinitionLogicTypeSelector({
   }, [getPlacementRef]);
 
   const getPopoverContainer = useCallback(() => {
-    return boxedExpressionEditor.editorRef?.current ?? getPopoverArrowPlacement;
-  }, [getPopoverArrowPlacement, boxedExpressionEditor.editorRef]);
+    return editorRef?.current ?? getPopoverArrowPlacement;
+  }, [getPopoverArrowPlacement, editorRef]);
 
   const selectLogicType = useCallback(
     (_: React.MouseEvent, itemId?: string | number) => {
       onLogicTypeSelected(itemId as ExpressionDefinitionLogicType);
+      setClearContextMenuOpen(false);
       setContextMenuOpen(false);
     },
-    [onLogicTypeSelected, setContextMenuOpen]
+    [onLogicTypeSelected, setClearContextMenuOpen, setContextMenuOpen]
   );
 
   const resetLogicType = useCallback(() => {
-    setContextMenuVisible(false);
+    setClearContextMenuOpen(false);
+    setContextMenuOpen(false);
     onLogicTypeReset();
-  }, [onLogicTypeReset, setContextMenuVisible]);
+  }, [onLogicTypeReset, setClearContextMenuOpen, setContextMenuOpen]);
 
-  const isContextMenuOpen = useMemo(() => {
-    const target = targetElement as HTMLElement;
+  const shouldRenderLogicTypeSelectorContextMenu = useMemo(() => {
+    const target = clearContextMenuTargetElement as HTMLElement;
     const notClickedOnTable = _.isNil(target?.closest("table"));
     const clickedOnTableRemainderContent = !_.isNil(target?.closest(".row-remainder-content"));
     const clickedOnAllowedTableSection = notClickedOnTable || clickedOnTableRemainderContent;
 
-    return !expression.noClearAction && isContextMenuVisible && clickedOnAllowedTableSection;
-  }, [isContextMenuVisible, expression.noClearAction, targetElement]);
+    return !expression.noClearAction && isClearContextMenuOpen && clickedOnAllowedTableSection;
+  }, [isClearContextMenuOpen, expression.noClearAction, clearContextMenuTargetElement]);
 
-  const cssClasses = useMemo(() => {
-    const classes = [];
-    classes.push(LOGIC_TYPE_SELECTOR_CLASS);
+  const cssClass = useMemo(() => {
     if (isLogicTypeSelected) {
-      classes.push("logic-type-selected");
+      return `${LOGIC_TYPE_SELECTOR_CLASS} logic-type-selected`;
     } else {
-      classes.push("logic-type-not-present");
+      return `${LOGIC_TYPE_SELECTOR_CLASS} logic-type-not-present`;
     }
-    return classes.join(" ");
   }, [isLogicTypeSelected]);
 
   return (
-    <div className={cssClasses} ref={contextMenuRef}>
-      {isLogicTypeSelected ? renderExpression : i18n.selectExpression}
+    <>
+      <div
+        className={cssClass}
+        ref={clearContextMenuRef}
+        style={{ opacity: shouldRenderLogicTypeSelectorContextMenu ? 0.5 : 1 }}
+      >
+        {isLogicTypeSelected ? renderExpression : i18n.selectExpression}
 
-      {!isLogicTypeSelected && (
-        <PopoverMenu
-          title={i18n.selectLogicType}
-          arrowPlacement={getPopoverArrowPlacement}
-          appendTo={getPopoverContainer()}
-          className="logic-type-popover"
-          hasAutoWidth={true}
-          body={
-            <Menu onSelect={selectLogicType}>
-              <MenuList>
-                {SELECTABLE_LOGIC_TYPES.map((key) => (
-                  <MenuItem key={key} itemId={key}>
-                    {key}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-          }
-        />
-      )}
-
-      {isContextMenuOpen && isLogicTypeSelected && (
+        {!isLogicTypeSelected && (
+          <PopoverMenu
+            title={i18n.selectExpression}
+            arrowPlacement={getPopoverArrowPlacement}
+            appendTo={getPopoverContainer()}
+            className="logic-type-popover"
+            hasAutoWidth={true}
+            body={
+              <Menu onSelect={selectLogicType}>
+                <MenuList>
+                  {SELECTABLE_LOGIC_TYPES.map((key) => (
+                    <MenuItem key={key} itemId={key}>
+                      {key}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+            }
+          />
+        )}
+      </div>
+      {shouldRenderLogicTypeSelectorContextMenu && isLogicTypeSelected && (
         <div
           className="context-menu-container no-table-context-menu"
-          style={{ top: contextMenuYPos, left: contextMenuXPos }}
+          style={{ top: clearContextMenuYPos, left: clearContextMenuXPos, opacity: 1 }}
         >
           <Menu className="table-handler-menu">
             <MenuGroup label={expression.logicType.toLocaleUpperCase()}>
@@ -187,7 +190,7 @@ export function ExpressionDefinitionLogicTypeSelector({
           </Menu>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

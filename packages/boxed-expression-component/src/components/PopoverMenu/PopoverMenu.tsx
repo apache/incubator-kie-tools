@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useState, useImperativeHandle } from "react";
-import { Popover } from "@patternfly/react-core";
+import { Popover, PopoverPosition } from "@patternfly/react-core";
 import "./PopoverMenu.css";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
@@ -74,14 +74,12 @@ export const PopoverMenu = React.forwardRef(
       className,
       hasAutoWidth,
       minWidth,
-      isVisible = null,
       onHide = () => {},
       onCancel = () => {},
       onShown = () => {},
     }: PopoverMenuProps,
     ref
   ) => {
-    const triggerManually = isVisible !== null;
     const { setContextMenuOpen } = useBoxedExpressionEditor();
     const [isPopoverVisible, setIsPopoverVisible] = useState(false);
 
@@ -132,7 +130,7 @@ export const PopoverMenu = React.forwardRef(
         className={`popover-menu-selector${className ? " " + className : ""}`}
         hasAutoWidth={hasAutoWidth}
         minWidth={minWidth}
-        position="bottom"
+        position={PopoverPosition.bottom}
         distance={0}
         id="menu-selector"
         reference={arrowPlacement}

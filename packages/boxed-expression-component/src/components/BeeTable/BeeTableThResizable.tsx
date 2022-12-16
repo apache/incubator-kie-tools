@@ -35,7 +35,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onHeaderClick: (columnKey: string) => () => void;
   rowIndex: number;
   reactTableInstance: ReactTable.TableInstance<R>;
-  getThProps: (column: ReactTable.ColumnInstance<R>) => Partial<PfReactTable.ThProps>;
+  getContextMenuThProps: (column: ReactTable.ColumnInstance<R>) => Pick<PfReactTable.ThProps, "onContextMenu">;
   xPosition: number;
   yPosition: number;
   renderHeaderCellInfo: (
@@ -57,11 +57,11 @@ export function BeeTableThResizable<R extends object>({
   renderHeaderCellInfo,
   rowIndex,
   reactTableInstance,
-  getThProps,
+  getContextMenuThProps,
   xPosition,
   yPosition,
 }: BeeTableThResizableProps<R>) {
-  const headerProps = useMemo(
+  const thProps = useMemo(
     () => ({
       ...column.getHeaderProps(),
       style: column.width ? {} : { flexGrow: 1 },
@@ -140,9 +140,9 @@ export function BeeTableThResizable<R extends object>({
     return getRowSpan(cssClasses);
   }, [cssClasses, getRowSpan]);
 
-  const thProps = useMemo(() => {
-    return getThProps(column);
-  }, [column, getThProps]);
+  const contextMenuThProps = useMemo(() => {
+    return getContextMenuThProps(column);
+  }, [column, getContextMenuThProps]);
 
   const columnLabel = useMemo(() => {
     return getColumnLabel(column.groupType);
@@ -151,7 +151,7 @@ export function BeeTableThResizable<R extends object>({
   return (
     <BeeTableTh
       className={cssClasses}
-      headerProps={headerProps}
+      thProps={thProps}
       isFocusable={isFocusable}
       key={columnKey}
       onClick={onClick}
@@ -159,7 +159,7 @@ export function BeeTableThResizable<R extends object>({
       rowIndex={rowIndex}
       columnIndex={columnIndex}
       rowSpan={rowSpan}
-      thProps={thProps}
+      contextMenuThProps={contextMenuThProps}
       xPosition={xPosition}
       yPosition={yPosition}
     >

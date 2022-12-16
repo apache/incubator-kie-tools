@@ -28,7 +28,8 @@ export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProp
   column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
-  getTdProps: (cellIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
+  getContextMenuTdProps: (cellIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onContextMenu">;
+  onRowAdded?: (args: { beforeIndex: number }) => void;
 }
 
 export type HoverInfo =
@@ -48,7 +49,8 @@ export function BeeTableTd<R extends object>({
   shouldUseCellDelegate,
   onKeyDown,
   getColumnKey,
-  getTdProps,
+  getContextMenuTdProps,
+  onRowAdded,
   yPosition,
 }: BeeTableTdProps<R>) {
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
@@ -93,10 +95,6 @@ export function BeeTableTd<R extends object>({
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
     return setHoverInfo((prev) => {
-      if (!prev.isHovered) {
-        return prev;
-      }
-
       e.stopPropagation();
       return getHoverInfo(e, tdRef.current!);
     });
@@ -104,18 +102,27 @@ export function BeeTableTd<R extends object>({
 
   const onAddRowButtonClick = useCallback(
     (e: React.MouseEvent) => {
+      if (!hoverInfo.isHovered) {
+        return;
+      }
       e.stopPropagation();
       console.info(
         `Adding row ${hoverInfo.isHovered && hoverInfo.part === "lower" ? "below" : "above"} line number ${
           rowIndex + 1
         }.`
       );
+
+      onRowAdded?.({ beforeIndex: hoverInfo.part === "upper" ? rowIndex : rowIndex + 1 });
+
+      if (hoverInfo.part === "upper") {
+        setHoverInfo({ isHovered: false });
+      }
     },
-    [hoverInfo, rowIndex]
+    [hoverInfo, onRowAdded, rowIndex]
   );
 
   const inlineRowAddingCapabilities = useMemo(() => {
-    if (!column.isRowIndexColumn) {
+    if (!column.isRowIndexColumn || !onRowAdded) {
       return {};
     }
 
@@ -124,7 +131,7 @@ export function BeeTableTd<R extends object>({
       onMouseLeave,
       onMouseMove,
     };
-  }, [column.isRowIndexColumn, onMouseEnter, onMouseLeave, onMouseMove]);
+  }, [column.isRowIndexColumn, onMouseEnter, onMouseLeave, onMouseMove, onRowAdded]);
 
   const style = useMemo(() => {
     return {
@@ -133,13 +140,13 @@ export function BeeTableTd<R extends object>({
     };
   }, [columnIndex, row.cells.length]);
 
-  const tdProps = useMemo(() => {
-    return getTdProps(columnIndex, rowIndex);
-  }, [columnIndex, getTdProps, rowIndex]);
+  const contextMenuTdProps = useMemo(() => {
+    return getContextMenuTdProps(columnIndex, rowIndex);
+  }, [columnIndex, getContextMenuTdProps, rowIndex]);
 
   return (
     <PfReactTable.Td
-      {...tdProps}
+      {...contextMenuTdProps}
       {...inlineRowAddingCapabilities}
       key={`${rowIndex}-${getColumnKey(column)}-${columnIndex}`}
       ref={tdRef}
@@ -165,7 +172,7 @@ export function BeeTableTd<R extends object>({
         </Resizer>
       )}
 
-      {hoverInfo.isHovered && column.isRowIndexColumn && (
+      {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
         <div
           onClick={onAddRowButtonClick}
           className={"add-row-button"}

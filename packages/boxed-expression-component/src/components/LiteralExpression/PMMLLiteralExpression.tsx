@@ -28,17 +28,17 @@ import {
 export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressionDefinition> = (
   pmmlLiteralExpression: PmmlLiteralExpressionDefinition
 ) => {
-  const boxedExpressionEditor = useBoxedExpressionEditor();
+  const { pmmlParams, editorRef } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const [selectOpen, setSelectOpen] = useState(false);
 
   const options = useMemo<string[]>(() => {
     if (pmmlLiteralExpression.kind === PmmlLiteralExpressionDefinitionKind.Document) {
-      return (boxedExpressionEditor.pmmlParams ?? []).map(({ document }) => document);
+      return (pmmlParams ?? []).map(({ document }) => document);
     } else if (pmmlLiteralExpression.kind === PmmlLiteralExpressionDefinitionKind.Model) {
       return (
-        (boxedExpressionEditor.pmmlParams ?? [])
+        (pmmlParams ?? [])
           // .filter((s) => s.document === selectedDocumentOnFunctionExpression) // FIXME: Tiago -> STATE GAP
           .flatMap(({ modelsFromDocument }) => modelsFromDocument ?? [])
           .map(({ model }) => model)
@@ -46,7 +46,7 @@ export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressio
     } else {
       throw new Error("Shouldn't ever reach here.");
     }
-  }, [boxedExpressionEditor.pmmlParams, pmmlLiteralExpression.kind]);
+  }, [pmmlParams, pmmlLiteralExpression.kind]);
 
   const onSelectToggle = useCallback(
     (isOpen) => {
@@ -54,9 +54,8 @@ export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressio
         return;
       }
       setSelectOpen(isOpen);
-      boxedExpressionEditor.setContextMenuOpen(isOpen);
     },
-    [boxedExpressionEditor, options]
+    [options]
   );
 
   const onSelect = useCallback(
@@ -84,15 +83,11 @@ export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressio
 
   const showingPlaceholder = useCallback(() => _.isEmpty(getSelection()), [getSelection]);
 
-  const onSelectorClick = useCallback(() => {
-    boxedExpressionEditor.beeGwtService?.selectObject(pmmlLiteralExpression.id);
-  }, [boxedExpressionEditor.beeGwtService, pmmlLiteralExpression.id]);
-
   return (
-    <div onClick={onSelectorClick} className={`${pmmlLiteralExpression.id} pmml-literal-expression`}>
+    <div className={`${pmmlLiteralExpression.id} pmml-literal-expression`}>
       <Select
         className={`pmml-selector ${showingPlaceholder() ? "showing-placeholder" : ""}`}
-        menuAppendTo={boxedExpressionEditor.editorRef?.current ?? "inline"}
+        menuAppendTo={editorRef?.current ?? "inline"}
         ouiaId="pmml-literal-expression-selector"
         placeholderText={pmmlLiteralExpression.noOptionsLabel}
         aria-placeholder={pmmlLiteralExpression.noOptionsLabel}

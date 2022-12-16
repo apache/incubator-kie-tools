@@ -40,7 +40,9 @@ export interface BeeTableBodyProps<R extends object> {
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
-  getTdProps: (columnIndex: number, rowIndex: number) => Partial<PfReactTable.TdProps>;
+  getContextMenuTdProps: (columnIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onContextMenu">;
+  /** */
+  onRowAdded?: (args: { beforeIndex: number }) => void;
 }
 
 export function BeeTableBody<R extends object>({
@@ -51,7 +53,8 @@ export function BeeTableBody<R extends object>({
   getRowKey,
   getColumnKey,
   onCellKeyDown,
-  getTdProps,
+  onRowAdded,
+  getContextMenuTdProps,
 }: BeeTableBodyProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -104,8 +107,9 @@ export function BeeTableBody<R extends object>({
                 onKeyDown={onCellKeyDown}
                 column={reactTableInstance.allColumns[columnIndex]}
                 getColumnKey={getColumnKey}
-                getTdProps={getTdProps}
+                getContextMenuTdProps={getContextMenuTdProps}
                 yPosition={headerRowsCount + rowIndex}
+                onRowAdded={onRowAdded}
               />
             );
           })}
@@ -123,7 +127,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [getColumnKey, getRowKey, headerRowsCount, onCellKeyDown, onTrClick, reactTableInstance, getTdProps]
+    [getColumnKey, getRowKey, headerRowsCount, onCellKeyDown, onTrClick, reactTableInstance, getContextMenuTdProps]
   );
 
   const additionalRowIndex = useMemo(() => {

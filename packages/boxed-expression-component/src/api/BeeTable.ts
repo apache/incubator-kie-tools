@@ -79,6 +79,8 @@ export interface BeeTableProps<R extends object> {
   isReadOnly?: boolean;
   /** Enable keyboard navigation */
   enableKeyboardNavigation?: boolean;
+  /** */
+  onRowAdded?: (args: { beforeIndex: number }) => void;
 }
 
 /** Possible status for the visibility of the Table's Header */

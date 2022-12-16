@@ -46,7 +46,7 @@ import { NavigationKeysUtils } from "../../keysUtils";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
-import { BeeTableOperationHandler } from "./BeeTableOperationHandler";
+import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableHeader } from "./BeeTableHeader";
 
 export const NO_TABLE_CONTEXT_MENU_CLASS = "no-table-context-menu";
@@ -133,6 +133,7 @@ export function BeeTable<R extends object>({
   editableHeader = true,
   onColumnsUpdate,
   onNewRow,
+  onRowAdded,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
   defaultCellByColumnId,
   rows,
@@ -313,8 +314,8 @@ export function BeeTable<R extends object>({
     ReactTable.useResizeColumns
   );
 
-  const getThProps = useCallback(
-    (column: ReactTable.ColumnInstance<R>): Partial<PfReactTable.ThProps> => ({
+  const getContextMenuThProps = useCallback(
+    (column: ReactTable.ColumnInstance<R>): Pick<PfReactTable.ThProps, "onContextMenu"> => ({
       onContextMenu: (e) => {
         const columnIndex = _.findIndex(
           getColumnsAtLastLevel(reactTableInstance.allColumns, column.depth),
@@ -331,8 +332,8 @@ export function BeeTable<R extends object>({
     [getColumnOperations, updateOperationHandlerState, isContextMenuAvailable, reactTableInstance.allColumns]
   );
 
-  const getTdProps = useCallback(
-    (columnIndex: number, rowIndex: number): Partial<PfReactTable.TdProps> => ({
+  const getContextMenuTdProps = useCallback(
+    (columnIndex: number, rowIndex: number): Pick<PfReactTable.TdProps, "onContextMenu"> => ({
       onContextMenu: (e) => {
         if (isContextMenuAvailable(e.target as HTMLElement)) {
           e.preventDefault();
@@ -399,8 +400,7 @@ export function BeeTable<R extends object>({
 
   const onGetColumnKey = useCallback<(column: ReactTable.ColumnInstance<R>) => string>(
     (column) => {
-      const columnId = column.originalId || column.id;
-      return getColumnKey ? getColumnKey(column) : columnId;
+      return getColumnKey ? getColumnKey(column) : column.originalId || column.id;
     },
     [getColumnKey]
   );
@@ -509,7 +509,7 @@ export function BeeTable<R extends object>({
           skipLastHeaderGroup={skipLastHeaderGroup}
           tableColumns={columnsWithAddedIndexColumns}
           reactTableInstance={reactTableInstance}
-          getThProps={getThProps}
+          getContextMenuThProps={getContextMenuThProps}
         />
         <BeeTableBody<R>
           getColumnKey={onGetColumnKey}
@@ -518,12 +518,13 @@ export function BeeTable<R extends object>({
           onCellKeyDown={onCellKeyDown}
           headerRowsCount={headerRowsCount}
           reactTableInstance={reactTableInstance}
-          getTdProps={getTdProps}
+          getContextMenuTdProps={getContextMenuTdProps}
           additionalRow={additionalRow}
+          onRowAdded={onRowAdded}
         />
       </PfReactTable.TableComposable>
       {showTableOperationHandler && operationHandlerConfig && (
-        <BeeTableOperationHandler<R>
+        <BeeTableContextMenuHandler<R>
           tableColumns={columnsWithAddedIndexColumns}
           getNewColumnIdPrefix={onGetColumnPrefix}
           operationHandlerConfig={operationHandlerConfig}
@@ -531,10 +532,10 @@ export function BeeTable<R extends object>({
           lastSelectedRowIndex={lastSelectedRowIndex}
           tableRows={rows}
           onNewRow={onNewRow}
-          showTableOperationHandler={showTableOperationHandler}
-          setShowTableOperationHandler={setShowTableOperationHandler}
+          showTableContextMenu={showTableOperationHandler}
+          setShowTableContextMenu={setShowTableOperationHandler}
           allowedOperations={allowedOperations}
-          operationHandlerTarget={operationHandlerTarget}
+          tableContextMenuTarget={operationHandlerTarget}
           resetRowCustomFunction={resetRowCustomFunction}
           onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
         />
