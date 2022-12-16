@@ -416,6 +416,5 @@ public class DefaultGridLayerTest {
 
         verify(column1, times(1)).flush();
         verify(column2, times(1)).flush();
-
     }
 }
