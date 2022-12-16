@@ -87,11 +87,11 @@ public class DefaultGridLayer extends Layer implements GridLayer,
         addNodeMouseMoveHandler(mouseMoveHandler);
         addNodeMouseUpHandler(mouseUpHandler);
 
-        addNodeMouseDownHandler(event -> flushAndDestroyAllSingletonDOMElements());
-        addNodeMouseWheelHandler(event -> flushAndDestroyAllSingletonDOMElements());
+        addNodeMouseDownHandler(event -> flushAllSingletonDOMElements());
+        addNodeMouseWheelHandler(event -> flushAllSingletonDOMElements());
     }
 
-    /** Destroy SingletonDOMElements on MouseEvents to ensure they're hidden:
+    /** Flush (and close) SingletonDOMElements on MouseEvents to ensure they're hidden:
      *  1) When moving columns
      *  2) When resizing columns
      *  3) When the User clicks outside of a GridWidget
@@ -99,12 +99,11 @@ public class DefaultGridLayer extends Layer implements GridLayer,
      * FocusPanel sets focus at unpredictable times which can lead to SingletonDOMElements
      * loosing focus after they've been attached to the DOM and hence disappearing.
      */
-    protected void flushAndDestroyAllSingletonDOMElements() {
+    protected void flushAllSingletonDOMElements() {
         for (GridWidget gridWidget : getGridWidgets()) {
             for (GridColumn<?> gridColumn : gridWidget.getModel().getColumns()) {
                 if (gridColumn instanceof HasSingletonDOMElementResource) {
                     ((HasSingletonDOMElementResource) gridColumn).flush();
-                    ((HasSingletonDOMElementResource) gridColumn).destroyResources();
                     batch();
                 }
             }
