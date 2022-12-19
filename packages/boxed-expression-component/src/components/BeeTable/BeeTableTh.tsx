@@ -26,7 +26,7 @@ export interface BeeTableThProps extends BeeTableTdsAndThsProps {
   isFocusable: boolean;
   onClick?: React.MouseEventHandler;
   rowSpan: number;
-  contextMenuThProps?: Pick<PfReactTable.ThProps, "onContextMenu">;
+  contextMenuThProps?: Pick<PfReactTable.ThProps, "onMouseDown">;
 }
 
 export function BeeTableTh({

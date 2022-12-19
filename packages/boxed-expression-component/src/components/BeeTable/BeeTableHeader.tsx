@@ -45,7 +45,7 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Th props */
-  getContextMenuThProps: (columnIndex: number) => Pick<PfReactTable.ThProps, "onContextMenu">;
+  getContextMenuThProps: (columnIndex: number) => Pick<PfReactTable.ThProps, "onMouseDown">;
   /** Option to enable or disable header edits */
   editableHeader: boolean;
 }
@@ -204,7 +204,7 @@ export function BeeTableHeader<R extends object>({
         renderRowIndexColumn(column, rowIndex)
       ) : (
         <BeeTableThResizable
-          key={`${rowIndex}_${columnIndex}`}
+          key={getColumnKey(column)}
           editableHeader={editableHeader}
           getColumnKey={getColumnKey}
           getColumnLabel={getColumnLabel}

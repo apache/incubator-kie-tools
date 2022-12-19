@@ -27,8 +27,7 @@ export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProp
   row: ReactTable.Row<R>;
   column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
-  getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
-  getContextMenuTdProps: (cellIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onContextMenu">;
+  getContextMenuTdProps: (cellIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onMouseDown">;
   onRowAdded?: (args: { beforeIndex: number }) => void;
 }
 
@@ -48,7 +47,6 @@ export function BeeTableTd<R extends object>({
   rowIndex,
   shouldUseCellDelegate,
   onKeyDown,
-  getColumnKey,
   getContextMenuTdProps,
   onRowAdded,
   yPosition,
@@ -148,7 +146,6 @@ export function BeeTableTd<R extends object>({
     <PfReactTable.Td
       {...contextMenuTdProps}
       {...inlineRowAddingCapabilities}
-      key={`${rowIndex}-${getColumnKey(column)}-${columnIndex}`}
       ref={tdRef}
       tabIndex={-1}
       className={cssClass}

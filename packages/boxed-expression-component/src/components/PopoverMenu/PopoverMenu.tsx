@@ -15,11 +15,12 @@
  */
 
 import * as React from "react";
-import { useCallback, useState, useImperativeHandle } from "react";
+import { useCallback, useState, useImperativeHandle, useMemo, useEffect } from "react";
 import { Popover, PopoverPosition } from "@patternfly/react-core";
 import "./PopoverMenu.css";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
+import { generateUuid } from "../../api";
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
@@ -82,18 +83,18 @@ export const PopoverMenu = React.forwardRef(
     }: PopoverMenuProps,
     ref
   ) => {
-    const { setContextMenuOpen } = useBoxedExpressionEditor();
+    const { currentlyOpenContextMenu, setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
     const [isPopoverVisible, setIsPopoverVisible] = useState(false);
+    const id = useMemo(() => generateUuid(), []);
 
-    const onHidden = useCallback(() => {
-      setContextMenuOpen(false);
-    }, [setContextMenuOpen]);
+    useEffect(() => {
+      setIsPopoverVisible(currentlyOpenContextMenu == id);
+    }, [id, currentlyOpenContextMenu]);
 
     const onPopoverShown = useCallback(() => {
-      setContextMenuOpen(true);
+      setCurrentlyOpenContextMenu(id);
       onShown();
-      setIsPopoverVisible(true);
-    }, [setContextMenuOpen, onShown]);
+    }, [setCurrentlyOpenContextMenu, id, onShown]);
 
     const shouldOpen = useCallback((showFunction?: () => void) => {
       showFunction?.();
@@ -121,7 +122,7 @@ export const PopoverMenu = React.forwardRef(
       ref,
       (): PopoverMenuRef => ({
         setIsVisible: (isVisible: boolean) => {
-          setIsPopoverVisible(isVisible);
+          setCurrentlyOpenContextMenu(isVisible ? id : undefined);
         },
       })
     );
@@ -137,7 +138,6 @@ export const PopoverMenu = React.forwardRef(
         id="menu-selector"
         reference={arrowPlacement}
         appendTo={appendTo}
-        onHidden={onHidden}
         onShown={onPopoverShown}
         headerContent={
           <div className="selector-menu-title" data-ouia-component-id="expression-popover-menu-title">

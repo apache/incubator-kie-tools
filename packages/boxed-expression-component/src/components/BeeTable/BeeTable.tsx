@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
+import * as PfReactTable from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
-import * as PfReactTable from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
-import {
-  generateUuid,
-  BeeTableHeaderVisibility,
-  BeeTableOperation,
-  BeeTableProps,
-  DmnBuiltInDataType,
-} from "../../api";
+import { BeeTableHeaderVisibility, BeeTableOperation, BeeTableProps } from "../../api";
+import { NavigationKeysUtils } from "../../keysUtils";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import "./BeeTable.css";
+import { BeeTableBody } from "./BeeTableBody";
+import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
+import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
+import { BeeTableHeader } from "./BeeTableHeader";
 import {
-  focusCurrentCell,
   focusInsideCell,
   focusLowerCell,
   focusNextCellByArrowKey,
@@ -39,15 +38,7 @@ import {
   focusPrevCellByTabKey,
   focusUpperCell,
   getParentCell,
-  pasteOnTable,
-  PASTE_OPERATION,
 } from "./common";
-import { NavigationKeysUtils } from "../../keysUtils";
-import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
-import "./BeeTable.css";
-import { BeeTableBody } from "./BeeTableBody";
-import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
-import { BeeTableHeader } from "./BeeTableHeader";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
@@ -146,7 +137,7 @@ export function BeeTable<R extends object>({
 }: BeeTableProps<R>) {
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
-  const { isContextMenuOpen, setContextMenuOpen } = useBoxedExpressionEditor();
+  const { currentlyOpenContextMenu, setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
   const tableRef = React.useRef<HTMLDivElement>(null);
 
@@ -287,8 +278,8 @@ export function BeeTable<R extends object>({
   );
 
   const getContextMenuThProps = useCallback(
-    (columnIndex: number): Pick<PfReactTable.ThProps, "onContextMenu"> => ({
-      onContextMenu: (e) => {
+    (columnIndex: number): Pick<PfReactTable.ThProps, "onMouseDown"> => ({
+      onMouseDown: (e) => {
         const column = reactTableInstance.allColumns[columnIndex];
         if (column?.disableOperationHandlerOnHeader) {
           return;
@@ -300,18 +291,16 @@ export function BeeTable<R extends object>({
           ...getColumnOperations(columnIndex),
         ]);
 
-        setContextMenuOpen(true);
         setLastSelectedColumnIndex(columnIndex);
         setLastSelectedRowIndex(-1);
       },
     }),
-    [reactTableInstance.allColumns, getColumnOperations, setContextMenuOpen]
+    [reactTableInstance.allColumns, getColumnOperations]
   );
 
   const getContextMenuTdProps = useCallback(
-    (columnIndex: number, rowIndex: number): Pick<PfReactTable.TdProps, "onContextMenu"> => ({
-      onContextMenu: (e) => {
-        //
+    (columnIndex: number, rowIndex: number): Pick<PfReactTable.TdProps, "onMouseDown"> => ({
+      onMouseDown: (e) => {
         e.preventDefault();
         setAllowedOperations([
           ...getColumnOperations(columnIndex),
@@ -322,13 +311,11 @@ export function BeeTable<R extends object>({
           BeeTableOperation.RowDuplicate,
         ]);
 
-        setContextMenuOpen(true);
         setLastSelectedColumnIndex(columnIndex);
         setLastSelectedRowIndex(rowIndex);
-        focusCurrentCell(e.target as HTMLElement);
       },
     }),
-    [getColumnOperations, rows.length, setContextMenuOpen]
+    [getColumnOperations, rows.length]
   );
 
   // FIXME: Tiago -> Pasting
@@ -405,11 +392,11 @@ export function BeeTable<R extends object>({
           return;
         }
 
-        if (isContextMenuOpen) {
+        if (currentlyOpenContextMenu) {
           e.preventDefault();
           if (NavigationKeysUtils.isEscape(key)) {
-            //close Select child components if any
-            focusCurrentCell(currentTarget);
+            e.stopPropagation();
+            setCurrentlyOpenContextMenu(undefined);
           }
           return;
         }
@@ -426,11 +413,11 @@ export function BeeTable<R extends object>({
           return focusParentCell(currentTarget);
         }
 
-        if (!isContextMenuOpen && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
+        if (!currentlyOpenContextMenu && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
           return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
         }
       },
-    [isContextMenuOpen, enableKeyboardNavigation]
+    [currentlyOpenContextMenu, enableKeyboardNavigation, setCurrentlyOpenContextMenu]
   );
 
   const headerRowsCount = useMemo(() => {

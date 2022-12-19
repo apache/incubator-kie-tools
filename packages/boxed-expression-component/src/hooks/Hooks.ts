@@ -14,63 +14,73 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { generateUuid } from "../api";
 import { useBoxedExpressionEditor } from "../components/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<HTMLDivElement | null>): {
   xPos: string;
   yPos: string;
   isOpen: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 } {
-  const { setContextMenuOpen } = useBoxedExpressionEditor();
+  const { setCurrentlyOpenContextMenu, currentlyOpenContextMenu } = useBoxedExpressionEditor();
 
-  const [xPos, setXPos] = useState("0px");
-  const [yPos, setYPos] = useState("0px");
+  const [xPos, setXPos] = useState(0);
+  const [yPos, setYPos] = useState(0);
   const [isOpen, setOpen] = useState(false);
+
+  const id = useMemo(() => generateUuid(), []);
 
   const hide = useCallback(
     (e: MouseEvent) => {
-      console.info("custom hide");
       e.preventDefault();
       if (!isOpen) {
         return;
       }
 
-      setOpen(false);
-      setContextMenuOpen(false);
+      setCurrentlyOpenContextMenu(undefined);
     },
-    [isOpen, setContextMenuOpen]
+    [isOpen, setCurrentlyOpenContextMenu]
   );
 
   const show = useCallback(
     (e: MouseEvent) => {
-      console.info(`custom show: ${e.pageX}, ${e.pageY}`);
       e.preventDefault();
-      setXPos(`${e.pageX}px`);
-      setYPos(`${e.pageY}px`);
-      setOpen(true);
-      setContextMenuOpen(true);
+      e.stopPropagation();
+      setXPos(e.pageX);
+      setYPos(e.pageY);
+      setCurrentlyOpenContextMenu(id);
     },
-    [setXPos, setYPos, setContextMenuOpen]
+    [id, setCurrentlyOpenContextMenu]
   );
 
   useEffect(() => {
-    document.addEventListener("click", hide);
-    // domEventTarget.addEventListener("contextmenu", hide);
+    setOpen(id === currentlyOpenContextMenu);
+  }, [id, currentlyOpenContextMenu]);
+
+  useEffect(() => {
     const elem = domEventTargetRef.current;
+
+    if (currentlyOpenContextMenu && isOpen) {
+      document.addEventListener("click", hide);
+      document.addEventListener("contextmenu", hide);
+      elem?.addEventListener("contextmenu", show);
+      return () => {
+        elem?.removeEventListener("contextmenu", show);
+        document.removeEventListener("contextmenu", hide);
+        document.removeEventListener("click", hide);
+      };
+    }
+
     elem?.addEventListener("contextmenu", show);
     return () => {
       elem?.removeEventListener("contextmenu", show);
-      // domEventTarget.removeEventListener("contextmenu", hide);
-      document.removeEventListener("click", hide);
     };
-  });
+  }, [domEventTargetRef, hide, currentlyOpenContextMenu, isOpen, show]);
 
   return {
-    xPos,
-    yPos,
+    xPos: `${xPos + 1}px`, // Leave some margin for clicking without moving the mouse.
+    yPos: `${yPos + 1}px`, // Leave some margin for clicking without moving the mouse.
     isOpen,
-    setOpen,
   };
 }

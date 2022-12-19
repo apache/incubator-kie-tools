@@ -34,8 +34,8 @@ export interface BoxedExpressionEditorContextType {
   dataTypes: DmnDataType[];
 
   // State
-  isContextMenuOpen: boolean;
-  setContextMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  currentlyOpenContextMenu: string | undefined;
+  setCurrentlyOpenContextMenu: React.Dispatch<React.SetStateAction<string | undefined>>;
   currentlyOpenedHandlerCallback: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentlyOpenedHandlerCallback: React.Dispatch<
     React.SetStateAction<React.Dispatch<React.SetStateAction<boolean>>>
@@ -78,7 +78,7 @@ export function BoxedExpressionEditorContextProvider({
   pmmlParams,
 }: BoxedExpressionEditorContextProviderProps) {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
-  const [isContextMenuOpen, setContextMenuOpen] = useState(false);
+  const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
   const editorRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useMemo(() => {
@@ -102,8 +102,8 @@ export function BoxedExpressionEditorContextProvider({
         pmmlParams,
 
         //state
-        isContextMenuOpen,
-        setContextMenuOpen,
+        currentlyOpenContextMenu,
+        setCurrentlyOpenContextMenu,
         currentlyOpenedHandlerCallback,
         setCurrentlyOpenedHandlerCallback,
       }}

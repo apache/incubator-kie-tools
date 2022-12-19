@@ -40,7 +40,7 @@ export interface BeeTableBodyProps<R extends object> {
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
-  getContextMenuTdProps: (columnIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onContextMenu">;
+  getContextMenuTdProps: (columnIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onMouseDown">;
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
 }
@@ -99,14 +99,13 @@ export function BeeTableBody<R extends object>({
           {row.cells.map((_, columnIndex) => {
             return (
               <BeeTableTd<R>
-                key={columnIndex}
+                key={getColumnKey(reactTableInstance.allColumns[columnIndex])}
                 columnIndex={columnIndex}
                 row={row}
                 rowIndex={rowIndex}
                 shouldUseCellDelegate={args.shouldUseCellDelegate}
                 onKeyDown={onCellKeyDown}
                 column={reactTableInstance.allColumns[columnIndex]}
-                getColumnKey={getColumnKey}
                 getContextMenuTdProps={getContextMenuTdProps}
                 yPosition={headerRowsCount + rowIndex}
                 onRowAdded={onRowAdded}

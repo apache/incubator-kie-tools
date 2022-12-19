@@ -226,7 +226,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         const newRows = [...(prev.rows ?? [])];
         newRows.splice(args.beforeIndex, 0, {
           id: generateUuid(),
-          cells: new Array(prev.columns?.length ?? 0).map(() => ""),
+          cells: Array.from(new Array(prev.columns?.length ?? 0)).map(() => ""),
         });
 
         return {

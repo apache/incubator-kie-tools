@@ -38,17 +38,17 @@ export function BeeTableContextMenuHandler<R extends object>({
   operationGroups,
   allowedOperations,
 }: BeeTableContextMenuHandlerProps<R>) {
-  const { setContextMenuOpen } = useBoxedExpressionEditor();
+  const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
   const operationLabel = useCallback(
     (operation: BeeTableOperation) => {
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
-          return `Insert column left to ${lastSelectedColumnIndex + 1}`;
+          return `Insert column left to ${lastSelectedColumnIndex}`;
         case BeeTableOperation.ColumnInsertRight:
-          return `Insert column right to ${lastSelectedColumnIndex + 1}`;
+          return `Insert column right to ${lastSelectedColumnIndex}`;
         case BeeTableOperation.ColumnDelete:
-          return `Delete column ${lastSelectedColumnIndex + 1}`;
+          return `Delete column ${lastSelectedColumnIndex}`;
         case BeeTableOperation.RowInsertAbove:
           return `Insert row above to ${lastSelectedRowIndex + 1}`;
         case BeeTableOperation.RowInsertBelow:
@@ -91,16 +91,15 @@ export function BeeTableContextMenuHandler<R extends object>({
         case BeeTableOperation.RowDuplicate:
           console.info(`Duplicate row ${lastSelectedRowIndex}`);
       }
-      setContextMenuOpen(false);
+      setCurrentlyOpenContextMenu(undefined);
     },
-    [setContextMenuOpen, lastSelectedColumnIndex, lastSelectedRowIndex]
+    [setCurrentlyOpenContextMenu, lastSelectedColumnIndex, lastSelectedRowIndex]
   );
 
   const {
     xPos: tableContextMenuXPos,
     yPos: tableContextMenuYPos,
     isOpen: isTableContextMenuOpen,
-    setOpen: setTableContextMenuOpen,
   } = useCustomContextMenuHandler(tableRef);
 
   return (
@@ -119,11 +118,11 @@ export function BeeTableContextMenuHandler<R extends object>({
               <MenuGroup
                 key={group}
                 label={group}
-                // className={
-                //   _.every(items, (operation) => !_.includes(allowedOperations, operation.type))
-                //     ? "no-allowed-actions-in-group"
-                //     : ""
-                // }
+                className={
+                  _.every(items, (operation) => !_.includes(allowedOperations, operation.type))
+                    ? "no-allowed-actions-in-group"
+                    : ""
+                }
               >
                 <MenuList>
                   {items.map((operation) => (

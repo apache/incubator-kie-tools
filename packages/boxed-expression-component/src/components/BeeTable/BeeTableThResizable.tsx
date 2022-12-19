@@ -35,7 +35,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onHeaderClick: (columnKey: string) => () => void;
   rowIndex: number;
   reactTableInstance: ReactTable.TableInstance<R>;
-  getContextMenuThProps: (columnIndex: number) => Pick<PfReactTable.ThProps, "onContextMenu">;
+  getContextMenuThProps: (columnIndex: number) => Pick<PfReactTable.ThProps, "onMouseDown">;
   xPosition: number;
   yPosition: number;
   renderHeaderCellInfo: (
@@ -153,7 +153,6 @@ export function BeeTableThResizable<R extends object>({
       className={cssClasses}
       thProps={thProps}
       isFocusable={isFocusable}
-      key={columnKey}
       onClick={onClick}
       onKeyDown={onCellKeyDown}
       rowIndex={rowIndex}
@@ -177,7 +176,6 @@ export function BeeTableThResizable<R extends object>({
               selectedExpressionName={column.label}
               selectedDataType={column.dataType}
               onExpressionHeaderUpdated={onExpressionHeaderUpdated}
-              key={columnKey}
             >
               {renderHeaderCellInfo(column, columnIndex)}
             </ExpressionDefinitionHeaderMenu>

@@ -27,7 +27,6 @@ export interface BeeTableTdForAdditionalRowProps extends BeeTableTdsAndThsProps 
 
 export function BeeTableTdForAdditionalRow({
   children,
-  columnIndex: index,
   isEmptyCell,
   onKeyDown,
   rowIndex,
@@ -62,7 +61,6 @@ export function BeeTableTdForAdditionalRow({
     <PfReactTable.Td
       ref={tdRef}
       role="cell"
-      key={index}
       className="row-remainder-content"
       tabIndex={-1}
       data-xposition={xPosition}

@@ -96,6 +96,10 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     [minWidth, setResizingWidth, setWidth]
   );
 
+  const style = useMemo(() => {
+    return { width: resizingWidth?.value ?? __resizingWidth.value, minWidth };
+  }, [__resizingWidth.value, minWidth, resizingWidth?.value]);
+
   return (
     <div style={{ position: "relative", height: "100%" }}>
       {actualWidth && (
@@ -136,7 +140,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             </div>
           }
         >
-          <div style={{ width: resizingWidth?.value ?? __resizingWidth.value, minWidth }}>{children}</div>
+          <div style={style}>{children}</div>
         </Resizable>
       )) || (
         <>

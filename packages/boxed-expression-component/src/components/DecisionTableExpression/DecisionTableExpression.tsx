@@ -415,6 +415,26 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [decisionTable.aggregation, decisionTable.hitPolicy, onBuiltInAggregatorSelect, onHitPolicySelect]
   );
 
+  const onRowAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const newRules = [...(prev.rules ?? [])];
+        newRules.splice(args.beforeIndex, 0, {
+          id: generateUuid(),
+          inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => ""),
+          outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => ""),
+          annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(() => ""),
+        });
+
+        return {
+          ...prev,
+          rules: newRules,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`decision-table-expression ${decisionTable.id}`}>
       <BeeTable
@@ -428,6 +448,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         onColumnsUpdate={onColumnsUpdate}
         onRowsUpdate={onRowsUpdate}
         controllerCell={controllerCell}
+        onRowAdded={onRowAdded}
       />
     </div>
   );
