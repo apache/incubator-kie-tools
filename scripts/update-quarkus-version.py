@@ -36,6 +36,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.bump_to:
+        common.update_quarkus_version_env_in_image(args.bump_to)
         common.update_images_env_value(common.QUARKUS_VERSION_ENV_KEY, args.bump_to, args.prod)
         common.update_modules_env_value(common.QUARKUS_VERSION_ENV_KEY, args.bump_to, args.prod)
 

@@ -325,6 +325,12 @@ def retrieve_artifacts_version():
     except TypeError:
         raise
 
+def update_quarkus_version_env_in_image(quarkus_version):
+    """
+    Update `QUARKUS_VERSION` env var in image.yaml.
+    :param quarkus_version: quarkus version used to update image.yaml which contains the `QUARKUS_VERSION` env var
+    """
+    update_env_value(IMAGE_FILENAME, QUARKUS_VERSION_ENV_KEY, quarkus_version)
 
 def update_artifacts_version_env_in_image(artifacts_version):
     """
