@@ -36,7 +36,7 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { getColumnsAtLastLevel, BeeTable } from "../../table/BeeTable";
 import "./DecisionTableExpression.css";
-import { HitPolicySelector } from "./HitPolicySelector";
+import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import { ResizingWidth, useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
 import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
@@ -394,23 +394,40 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     ]
   );
 
-  const onHitPolicySelect = useCallback((itemId: DecisionTableExpressionDefinitionHitPolicy) => {
-    /** */
-  }, []);
+  const onHitPolicySelect = useCallback(
+    (hitPolicy: DecisionTableExpressionDefinitionHitPolicy) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        return {
+          ...prev,
+          hitPolicy,
+          aggregation: HIT_POLICIES_THAT_SUPPORT_AGGREGATION.includes(hitPolicy)
+            ? prev.aggregation
+            : DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
+        };
+      });
+    },
+    [setExpression]
+  );
 
-  const onBuiltInAggregatorSelect = useCallback((itemId) => {
-    /** */
-  }, []);
+  const onBuiltInAggregatorSelect = useCallback(
+    (aggregation: DecisionTableExpressionDefinitionBuiltInAggregation) => {
+      setExpression((prev) => {
+        return {
+          ...prev,
+          aggregation,
+        };
+      });
+    },
+    [setExpression]
+  );
 
   const controllerCell = useMemo(
     () => (
       <HitPolicySelector
-        selectedHitPolicy={decisionTable.hitPolicy ?? DecisionTableExpressionDefinitionHitPolicy.Unique}
-        selectedBuiltInAggregator={
-          decisionTable.aggregation ?? DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]
-        }
-        onHitPolicySelect={onHitPolicySelect}
-        onBuiltInAggregatorSelect={onBuiltInAggregatorSelect}
+        selectedHitPolicy={decisionTable.hitPolicy}
+        selectedBuiltInAggregator={decisionTable.aggregation}
+        onHitPolicySelected={onHitPolicySelect}
+        onBuiltInAggregatorSelected={onBuiltInAggregatorSelect}
       />
     ),
     [decisionTable.aggregation, decisionTable.hitPolicy, onBuiltInAggregatorSelect, onHitPolicySelect]

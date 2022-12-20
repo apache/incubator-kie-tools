@@ -134,9 +134,9 @@ export interface DecisionTableExpressionDefinition extends ExpressionDefinitionB
   /** Logic type must be Decision Table */
   logicType: ExpressionDefinitionLogicType.DecisionTable;
   /** Hit policy for this particular decision table */
-  hitPolicy?: DecisionTableExpressionDefinitionHitPolicy;
+  hitPolicy: DecisionTableExpressionDefinitionHitPolicy;
   /** Aggregation policy, when the hit policy supports it */
-  aggregation?: DecisionTableExpressionDefinitionBuiltInAggregation;
+  aggregation: DecisionTableExpressionDefinitionBuiltInAggregation;
   /** Annotation columns names */
   annotations?: DecisionTableExpressionDefinitionAnnotation[];
   /** Input columns definition */
@@ -148,7 +148,7 @@ export interface DecisionTableExpressionDefinition extends ExpressionDefinitionB
 }
 
 export enum DecisionTableExpressionDefinitionBuiltInAggregation {
-  "<None>" = "",
+  "<None>" = "?",
   SUM = "+",
   COUNT = "#",
   MIN = "<",

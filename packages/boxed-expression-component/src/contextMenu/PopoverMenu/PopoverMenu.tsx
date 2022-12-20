@@ -56,6 +56,7 @@ export interface PopoverMenuProps {
    */
   onShown?: () => void;
   position?: PopoverPosition;
+  distance?: number;
 }
 
 export interface PopoverMenuRef {
@@ -73,6 +74,7 @@ export const PopoverMenu = React.forwardRef(
       body,
       title,
       position,
+      distance,
       appendTo,
       className,
       hasAutoWidth,
@@ -134,7 +136,7 @@ export const PopoverMenu = React.forwardRef(
         hasAutoWidth={hasAutoWidth}
         minWidth={minWidth}
         position={position ?? PopoverPosition.bottom}
-        distance={0}
+        distance={distance ?? 0}
         id="menu-selector"
         reference={arrowPlacement}
         appendTo={appendTo}

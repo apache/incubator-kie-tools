@@ -11,6 +11,8 @@ import {
   InvocationExpressionDefinition,
   RelationExpressionDefinition,
   DecisionTableExpressionDefinition,
+  DecisionTableExpressionDefinitionHitPolicy,
+  DecisionTableExpressionDefinitionBuiltInAggregation,
 } from "../api";
 import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "./ContextExpression";
 import {
@@ -166,6 +168,8 @@ export function getDefaultExpressionDefinitionByLogicType(
     const decisionTableExpression: DecisionTableExpressionDefinition = {
       ...prev,
       logicType,
+      hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
+      aggregation: DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
       input: [
         {
           id: generateUuid(),
