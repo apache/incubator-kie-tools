@@ -159,7 +159,7 @@ public class DataTypeConstraintModalViewTest {
 
         view.enableOkButton();
 
-        verify(okButton).setAttribute("disabled", false);
+        verify(okButton).removeAttribute("disabled");
         verify(okButtonClassList).remove("disabled");
     }
 

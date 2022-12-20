@@ -235,7 +235,7 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Override
     public void enableOkButton() {
-        okButton.setAttribute(DISABLED, false);
+        okButton.removeAttribute(DISABLED);
         getOkButtonClassList().remove(DISABLED);
     }
 
