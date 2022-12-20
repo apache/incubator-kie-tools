@@ -43,6 +43,7 @@ import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.deployment.webjar.WebJarBuildItem;
 import io.quarkus.vertx.http.deployment.webjar.WebJarResourcesFilter;
 import io.quarkus.vertx.http.deployment.webjar.WebJarResultsBuildItem;
+import io.quarkus.vertx.http.deployment.webjar.WebJarResourcesFilter.FilterResult;
 
 public class DashbuilderProcessor {
 
@@ -76,7 +77,6 @@ public class DashbuilderProcessor {
         var dashboards = dashbuilderConfig.dashboards;
 
         if (dashboards.isEmpty()) {
-            log.info("Scanning Dashboards...");
             applicationArchives.getRootArchive().accept(t -> {
                 t.walk(visit -> {
                     var path = visit.getPath();
@@ -129,15 +129,9 @@ public class DashbuilderProcessor {
         webJarBuildProducer.produce(
                 WebJarBuildItem.builder().artifactKey(DASHBUILDER_UI_WEBJAR_ARTIFACT_KEY)
                         .root(DASHBUILDER_STATIC_PATH)
-                        .filter(new WebJarResourcesFilter() {
-                            @Override
-                            public FilterResult apply(String fileName, InputStream file) throws IOException {
-                                if (fileName.equals(SETUP_FILE)) {
-                                    return new FilterResult(new ByteArrayInputStream(buildSetupJs), true);
-                                }
-                                return new FilterResult(file, false);
-                            }
-                        })
+                        .filter((fileName, file) -> fileName.equals(SETUP_FILE)
+                                ? new FilterResult(new ByteArrayInputStream(buildSetupJs), true)
+                                : new FilterResult(file, false))
                         .build());
     }
 
