@@ -31,7 +31,6 @@ import {
   WizardFooter,
 } from "@patternfly/react-core/dist/js/components/Wizard";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
@@ -39,7 +38,6 @@ import { useOnlineI18n } from "../i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { DEVELOPER_SANDBOX_URL } from "@kie-tools-core/openshift/dist/service/OpenShiftConstants";
 import { DependentFeature, useExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
@@ -610,12 +608,14 @@ export function KieSandboxExtendedServicesModal() {
       setModalPage(ModalPage.INITIAL);
     } else if (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED) {
       setModalPage(ModalPage.WIZARD);
+    } else if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+      extendedServices.setModalOpen(false);
     }
 
     if (extendedServices.outdated) {
       setModalPage(ModalPage.WIZARD);
     }
-  }, [extendedServices.status, extendedServices.outdated]);
+  }, [extendedServices.status, extendedServices.outdated, extendedServices]);
 
   const onClose = useCallback(() => {
     setModalPage(ModalPage.INITIAL);

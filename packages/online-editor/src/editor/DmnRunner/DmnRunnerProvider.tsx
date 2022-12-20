@@ -242,15 +242,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     if (
-      prevKieSandboxExtendedServicesStatus &&
-      prevKieSandboxExtendedServicesStatus !== KieSandboxExtendedServicesStatus.AVAILABLE &&
-      prevKieSandboxExtendedServicesStatus !== KieSandboxExtendedServicesStatus.RUNNING &&
-      extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
-    ) {
-      setExpanded(true);
-    }
-
-    if (
       extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
       extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
     ) {
