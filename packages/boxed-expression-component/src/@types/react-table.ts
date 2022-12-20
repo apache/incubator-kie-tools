@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { DmnBuiltInDataType } from "../api";
-import { ResizingWidth } from "../components/ExpressionDefinitionRoot";
+import { ResizingWidth } from "../expressions/ExpressionDefinitionRoot";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -58,7 +58,7 @@ declare module "react-table" {
     /** It tells whether column is of type counter or not */
     isRowIndexColumn: boolean;
     /** Disabling operation handler on the header of this column */
-    disableOperationHandlerOnHeader?: boolean;
+    disableContextMenuOnHeader?: boolean;
 
     //
 

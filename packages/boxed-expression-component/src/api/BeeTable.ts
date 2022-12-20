@@ -50,7 +50,7 @@ export interface BeeTableProps<R extends object> {
   /** Top-left cell custom content */
   controllerCell?: string | JSX.Element;
   /** For each column there is a default component to be used to render the related cell */
-  defaultCellByColumnId?: { [columnId: string]: React.FunctionComponent<BeeTableCellProps<R>> };
+  cellComponentByColumnId?: { [columnId: string]: React.FunctionComponent<BeeTableCellProps<R>> };
   /** Table's columns */
   columns: ReactTable.Column<R>[];
   /** Table's cells */
@@ -99,7 +99,7 @@ export enum BeeTableOperation {
   RowDuplicate,
 }
 
-export interface BeeTableOperationHandlerGroup {
+export interface BeeTableOperationGroup {
   /** Name of the group (localized) */
   group: string;
   /** Collection of operations belonging to this group */
@@ -112,8 +112,8 @@ export interface BeeTableOperationHandlerGroup {
 }
 
 export type BeeTableOperationHandlerConfig =
-  | BeeTableOperationHandlerGroup[]
-  | { [columnGroupType: string]: BeeTableOperationHandlerGroup[] };
+  | BeeTableOperationGroup[]
+  | { [columnGroupType: string]: BeeTableOperationGroup[] };
 
 /**
  * Interface to be inherited from the table cell components (td, th)

@@ -20,12 +20,11 @@ import * as ReactDOM from "react-dom";
 import "./index.css";
 // noinspection ES6PreferShortImport
 import { BeeGwtService, DmnBuiltInDataType, ExpressionDefinitionLogicType, ExpressionDefinition } from "../src/api";
-import { BoxedExpressionEditor } from "../src/components";
+import { BoxedExpressionEditor } from "../src/expressions";
 import { Button, Modal } from "@patternfly/react-core";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
-import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
+import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";
-import exp from "constants";
 
 /**
  * Constants copied from tests to fix debugger
