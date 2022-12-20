@@ -21,19 +21,18 @@ import {
   BeeTableCellProps,
   BeeTableColumnsUpdateArgs,
   BeeTableHeaderVisibility,
+  BeeTableOperation,
+  BeeTableOperationHandlerConfig,
   BeeTableProps,
   ContextExpressionDefinition,
   ContextExpressionDefinitionEntry,
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
   DmnBuiltInDataType,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   generateUuid,
-  getNextAvailableContextExpressionEntryName,
-  getOperationHandlerConfig,
+  getNextAvailablePrefixedName,
 } from "../../api";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
 import { Resizer } from "../../resizing/Resizer";
 import { getExpressionMinWidth, getExpressionResizingWidth } from "../../resizing/Widths";
 import { BeeTable } from "../../table/BeeTable";
@@ -55,6 +54,9 @@ const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 
 export const NESTED_EXPRESSION_CLEAR_MARGIN = 14;
+
+export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 150;
+export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
 
 export const CONTEXT_ENTRY_EXTRA_WIDTH =
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
@@ -323,8 +325,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           entryInfo: {
             dataType: DmnBuiltInDataType.Undefined,
             id: generateUuid(),
-            name: getNextAvailableContextExpressionEntryName(
-              prev.contextEntries.map((e) => e.entryInfo),
+            name: getNextAvailablePrefixedName(
+              prev.contextEntries.map((e) => e.entryInfo.name),
               "ContextEntry"
             ),
           },
@@ -497,3 +499,18 @@ export const NestedExpressionContainerContext = React.createContext<NestedExpres
 export function useNestedExpressionContainer() {
   return React.useContext(NestedExpressionContainerContext);
 }
+
+export const getOperationHandlerConfig = (
+  i18n: BoxedExpressionEditorI18n,
+  groupName: string
+): BeeTableOperationHandlerConfig => [
+  {
+    group: groupName,
+    items: [
+      { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
+      { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+      { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+      { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+    ],
+  },
+];

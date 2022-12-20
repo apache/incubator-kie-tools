@@ -41,8 +41,6 @@ export interface BeeTableProps<R extends object> {
   tableId?: string;
   /** Optional children element to be appended below the table content */
   additionalRow?: React.ReactElement[];
-  /** Gets the prefix to be used for the next column name */
-  getNewColumnIdPrefix?: (groupType?: string) => string;
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
   editColumnLabel?: string | { [groupType: string]: string };
   /** Option to enable or disable header edits */
@@ -77,6 +75,8 @@ export interface BeeTableProps<R extends object> {
   enableKeyboardNavigation?: boolean;
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
+  /** */
+  onColumnAdded?: (args: { beforeIndex: number }) => void;
 }
 
 /** Possible status for the visibility of the Table's Header */

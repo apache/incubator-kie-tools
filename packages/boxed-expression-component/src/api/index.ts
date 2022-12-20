@@ -16,12 +16,8 @@
 
 export * from "./Bee";
 export * from "./BeeGwtService";
-export * from "./DecisionTableExpressionDefinitionBuiltInAggregation";
-export * from "./ContextExpressionDefinitionEntry";
 export * from "./DmnBuiltInDataType";
 export * from "./DmnDataType";
-export * from "./DecisionTableExpressionDefinitionRule";
 export * from "./ExpressionDefinition";
-export * from "./DecisionTableExpressionDefinitionHitPolicy";
 export * from "./ExpressionDefinitionLogicType";
 export * from "./BeeTable";

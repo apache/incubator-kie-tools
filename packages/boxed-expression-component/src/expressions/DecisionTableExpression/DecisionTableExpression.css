@@ -14,81 +14,40 @@
  * limitations under the License.
  */
 
-.expression-container .decision-table-expression {
-  width: 100%;
+/**********************************************************************
+
+                                 NOTE                                  
+
+   All this CSS is here to simulate rowspan=2 on Input and Annotation 
+   columns, as Output columns are subject to a single DMN data type.
+
+   React Table doesn't seem to support it, so what we do is position
+   the columns of the last thead row on top of the "aggregator columns"
+
+   Please take a look at this comment for more context:
+   https://github.com/TanStack/table/discussions/2233#discussioncomment-97404
+
+ ***********************************************************************/
+
+.expression-container .decision-table-expression table thead tr:last-child th.decision-table--input,
+.expression-container .decision-table-expression table thead tr:last-child th.decision-table--annotation {
+  height: 116px !important;
+  align-items: center;
+  display: flex;
+  top: -60px;
 }
 
-.expression-container .decision-table-expression .selected-hit-policy {
-  cursor: pointer;
-}
-
-.expression-container .decision-table-expression table thead tr:first-child {
-  border-top: 2px solid #d2d2d2;
-}
-.expression-container .decision-table-expression table thead tr:first-child th {
-  border-top: none;
-}
-.expression-container .decision-table-expression table thead tr:first-child th .pf-c-drawer {
-  display: none;
-}
-
-.expression-container .decision-table-expression table thead tr:last-child th.decision-table--input .react-resizable,
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  tr:last-child
-  th.decision-table--annotation
-  .react-resizable {
-  height: 114px !important;
-  top: -70px;
-  padding: 40px 0;
-  cursor: pointer;
-}
-
-.expression-container .decision-table-expression table thead th.input,
-.expression-container .decision-table-expression table thead th.input.decision-table--input .react-resizable {
+.expression-container .decision-table-expression table thead th.decision-table--input,
+.expression-container .decision-table-expression table thead th.decision-table--input .add-column-button {
   background-color: #def3ff;
 }
 
-.expression-container .decision-table-expression table thead th:first-child th {
-  border-right-color: #def3ff;
-  border-bottom-color: #def3ff;
-}
-
-.expression-container .decision-table-expression table thead tr:last-child th.decision-table--input::after,
-.expression-container .decision-table-expression table thead tr:last-child th.decision-table--annotation::after {
-  content: "";
-  position: absolute;
-  height: 115px;
-  z-index: 1;
-  top: -60px;
-  border-right: 2px solid #d2d2d2;
-  right: -2px;
-}
-
-.expression-container .decision-table-expression table thead tr:last-child th:last-child.decision-table--input::after,
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  tr:last-child
-  th:last-child.decision-table--annotation::after {
-  border-right: 1px solid #d2d2d2;
-  right: -1px;
-}
-
-.expression-container .decision-table-expression table tr th.colspan-header.input .header-cell,
-.expression-container .decision-table-expression table tr th.colspan-header.annotation .header-cell,
-.expression-container .decision-table-expression table thead th.colspan-header::after {
-  display: none;
-}
-
-.expression-container .decision-table-expression table thead th.output {
+.expression-container .decision-table-expression table thead th.output,
+.expression-container .decision-table-expression table thead th.output .add-column-button {
   background-color: #bee1f4;
 }
 
 .expression-container .decision-table-expression table thead th.annotation,
-.expression-container .decision-table-expression table thead th.annotation.decision-table--annotation .react-resizable {
+.expression-container .decision-table-expression table thead th.annotation .add-column-button {
   background-color: #ffffff;
 }

@@ -1,14 +1,12 @@
-import {
-  ExpressionDefinitionLogicType,
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
-} from "../api";
+import { ExpressionDefinitionLogicType } from "../api";
 import { ExpressionDefinition, FunctionExpressionDefinitionKind } from "../api/ExpressionDefinition";
 import { ResizingWidth } from "../expressions";
 import {
   CONTEXT_ENTRY_EXTRA_WIDTH,
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   NESTED_EXPRESSION_CLEAR_MARGIN,
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_INFO_MIN_WIDTH,
 } from "../expressions/ContextExpression";
 import { LIST_EXPRESSION_MIN_WIDTH } from "../expressions/ListExpression";
 import { LITERAL_EXPRESSION_MIN_WIDTH, LITERAL_EXPRESSION_EXTRA_WIDTH } from "../expressions/LiteralExpression";

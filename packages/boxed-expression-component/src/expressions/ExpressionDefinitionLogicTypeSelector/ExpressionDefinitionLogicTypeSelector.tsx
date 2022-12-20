@@ -41,8 +41,6 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   onLogicTypeReset: () => void;
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
-  /** When a component is headless, it will call this function to pass its most updated expression definition */
-  onUpdatingRecursiveExpression?: (expression: ExpressionDefinition) => void;
 }
 
 export const LOGIC_TYPE_SELECTOR_CLASS = "logic-type-selector";

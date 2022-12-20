@@ -66,7 +66,7 @@ export function BeeTableTd<R extends object>({
     };
   }, [onKeyDown, rowIndex]);
 
-  let cssClass = column.isRowIndexColumn ? "counter-cell" : "data-cell";
+  let cssClass = column.isRowIndexColumn ? "row-index-column-cell" : "data-cell";
   if (column.cellDelegate) {
     cssClass += " input"; // FIXME: Tiago -> DMN Runner/DecisionTable-specific logic
   }
@@ -104,11 +104,6 @@ export function BeeTableTd<R extends object>({
         return;
       }
       e.stopPropagation();
-      console.info(
-        `Adding row ${hoverInfo.isHovered && hoverInfo.part === "lower" ? "below" : "above"} line number ${
-          rowIndex + 1
-        }.`
-      );
 
       onRowAdded?.({ beforeIndex: hoverInfo.part === "upper" ? rowIndex : rowIndex + 1 });
 
@@ -138,13 +133,13 @@ export function BeeTableTd<R extends object>({
     };
   }, [columnIndex, row.cells.length]);
 
-  const contextMenuTdProps = useMemo(() => {
+  const mouseDownTdProps = useMemo(() => {
     return getMouseDownTdProps(columnIndex, rowIndex);
   }, [columnIndex, getMouseDownTdProps, rowIndex]);
 
   return (
     <PfReactTable.Td
-      {...contextMenuTdProps}
+      {...mouseDownTdProps}
       {...inlineRowAddingCapabilities}
       ref={tdRef}
       tabIndex={-1}

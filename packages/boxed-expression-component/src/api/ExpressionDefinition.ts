@@ -16,17 +16,7 @@
 
 import { ExpressionDefinitionLogicType } from "./ExpressionDefinitionLogicType";
 import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
-import {
-  ContextExpressionDefinitionEntry,
-  ContextExpressionDefinitionEntryInfo,
-} from "./ContextExpressionDefinitionEntry";
-import { DecisionTableExpressionDefinitionHitPolicy } from "./DecisionTableExpressionDefinitionHitPolicy";
-import { DecisionTableExpressionDefinitionBuiltInAggregation } from "./DecisionTableExpressionDefinitionBuiltInAggregation";
-import {
-  DecisionTableExpressionDefinitionAnnotation,
-  DecisionTableExpressionDefinitionClause,
-  DecisionTableExpressionDefinitionRule,
-} from "./DecisionTableExpressionDefinitionRule";
+import { BoxedExpressionEditorI18n } from "../i18n";
 
 interface ExpressionDefinitionBase {
   /** Unique identifier used to identify the expression */
@@ -37,8 +27,6 @@ interface ExpressionDefinitionBase {
   dataType?: DmnBuiltInDataType;
   /** True, to have no header for this specific expression component, used in a recursive expression */
   isHeadless?: boolean;
-  /** When a component is headless, it will call this function to pass its most updated expression definition */
-  onUpdatingRecursiveExpression?: (expression: ExpressionDefinition) => void;
   /** True, to have no clear action rendered for this specific expression */
   noClearAction?: boolean;
 }
@@ -114,6 +102,34 @@ export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   noHandlerMenu?: boolean;
 }
 
+export interface ContextExpressionDefinitionEntryInfo {
+  /** Entry id */
+  id: string;
+  /** Entry name */
+  name: string;
+  /** Entry data type */
+  dataType: DmnBuiltInDataType;
+}
+
+export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition = ExpressionDefinition> {
+  entryInfo: ContextExpressionDefinitionEntryInfo;
+  /** Entry expression */
+  entryExpression: T;
+  /** True, for synchronizing name and dataType parameters, between entryInfo and entryExpression */
+  nameAndDataTypeSynchronized?: boolean;
+}
+
+// FIXME: Tiago -> Move
+export const getNextAvailablePrefixedName = (
+  names: string[],
+  namePrefix: string,
+  lastIndex: number = names.length
+): string => {
+  const candidate = `${namePrefix}-${lastIndex + 1}`;
+  const elemWithCandidateName = names.indexOf(candidate);
+  return elemWithCandidateName >= 0 ? getNextAvailablePrefixedName(names, namePrefix, lastIndex + 1) : candidate;
+};
+
 export interface DecisionTableExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Decision Table */
   logicType: ExpressionDefinitionLogicType.DecisionTable;
@@ -129,6 +145,55 @@ export interface DecisionTableExpressionDefinition extends ExpressionDefinitionB
   output?: DecisionTableExpressionDefinitionClause[];
   /** Rules represent rows values */
   rules?: DecisionTableExpressionDefinitionRule[];
+}
+
+export enum DecisionTableExpressionDefinitionBuiltInAggregation {
+  "<None>" = "",
+  SUM = "+",
+  COUNT = "#",
+  MIN = "<",
+  MAX = ">",
+}
+
+export enum DecisionTableExpressionDefinitionHitPolicy {
+  Unique = "UNIQUE",
+  First = "FIRST",
+  Priority = "PRIORITY",
+  Any = "ANY",
+  Collect = "COLLECT",
+  RuleOrder = "RULE ORDER",
+  OutputOrder = "OUTPUT ORDER",
+}
+
+export interface DecisionTableExpressionDefinitionClause {
+  /** Clause identifier */
+  id: string;
+  /** Clause name */
+  name: string;
+  /** Clause data type */
+  dataType: DmnBuiltInDataType;
+  /** Clause width */
+  width?: number;
+}
+
+export interface DecisionTableExpressionDefinitionAnnotation {
+  /** Annotation identifier */
+  id: string;
+  /** Annotation name */
+  name: string;
+  /** Annotation width */
+  width?: number;
+}
+
+export interface DecisionTableExpressionDefinitionRule {
+  /** Rule identifier */
+  id: string;
+  /** Values for the input columns */
+  inputEntries: string[];
+  /** Values for the output columns */
+  outputEntries: string[];
+  /** Values for the annotation columns */
+  annotationEntries: string[];
 }
 
 export interface ListExpressionDefinition extends ExpressionDefinitionBase {

@@ -118,11 +118,11 @@ const onCellArrowNavigation = (e: KeyboardEvent, rowSpan = 1): void => {
 export function BeeTable<R extends object>({
   tableId,
   additionalRow,
-  getNewColumnIdPrefix,
   editColumnLabel,
   editableHeader = true,
   onColumnsUpdate,
   onRowAdded,
+  onColumnAdded,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
   cellComponentByColumnId,
   rows,
@@ -385,7 +385,7 @@ export function BeeTable<R extends object>({
           return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
         }
       },
-    [currentlyOpenContextMenu, enableKeyboardNavigation, setCurrentlyOpenContextMenu]
+    [currentlyOpenContextMenu, enableKeyboardNavigation]
   );
 
   const headerRowsCount = useMemo(() => {
@@ -447,6 +447,7 @@ export function BeeTable<R extends object>({
           tableColumns={columnsWithAddedIndexColumns}
           reactTableInstance={reactTableInstance}
           getMouseDownThProps={getMouseDownThProps}
+          onColumnAdded={onColumnAdded}
         />
         <BeeTableBody<R>
           getColumnKey={onGetColumnKey}

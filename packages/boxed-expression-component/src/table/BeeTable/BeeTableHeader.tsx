@@ -48,6 +48,8 @@ export interface BeeTableHeaderProps<R extends object> {
   getMouseDownThProps: (columnIndex: number) => Pick<PfReactTable.ThProps, "onMouseDown">;
   /** Option to enable or disable header edits */
   editableHeader: boolean;
+  /** */
+  onColumnAdded?: (args: { beforeIndex: number }) => void;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -61,6 +63,7 @@ export function BeeTableHeader<R extends object>({
   onCellKeyDown,
   getMouseDownThProps,
   editableHeader,
+  onColumnAdded,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -219,19 +222,21 @@ export function BeeTableHeader<R extends object>({
           columnIndex={columnIndex}
           xPosition={xPosition ?? columnIndex}
           yPosition={rowIndex}
+          onColumnAdded={onColumnAdded}
         />
       ),
     [
       renderRowIndexColumn,
-      editableHeader,
       getColumnKey,
+      editableHeader,
       getColumnLabel,
       onCellKeyDown,
-      onColumnNameOrDataTypeUpdate,
       onHeaderClick,
       renderHeaderCellInfo,
-      reactTableInstance,
       getMouseDownThProps,
+      reactTableInstance,
+      onColumnAdded,
+      onColumnNameOrDataTypeUpdate,
     ]
   );
 

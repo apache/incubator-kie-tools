@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import * as PfReactTable from "@patternfly/react-table";
 import { Resizer } from "../../resizing/Resizer";
@@ -24,6 +24,7 @@ import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefi
 import { ExpressionDefinition } from "../../api";
 
 export interface BeeTableThResizableProps<R extends object> {
+  onColumnAdded?: (args: { beforeIndex: number }) => void;
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
@@ -60,6 +61,7 @@ export function BeeTableThResizable<R extends object>({
   getMouseDownThProps,
   xPosition,
   yPosition,
+  onColumnAdded,
 }: BeeTableThResizableProps<R>) {
   const thProps = useMemo(
     () => ({
@@ -140,7 +142,7 @@ export function BeeTableThResizable<R extends object>({
     return getRowSpan(cssClasses);
   }, [cssClasses, getRowSpan]);
 
-  const contextMenuThProps = useMemo(() => {
+  const mouseDownThProps = useMemo(() => {
     return getMouseDownThProps(columnIndex);
   }, [columnIndex, getMouseDownThProps]);
 
@@ -158,9 +160,10 @@ export function BeeTableThResizable<R extends object>({
       rowIndex={rowIndex}
       columnIndex={columnIndex}
       rowSpan={rowSpan}
-      contextMenuThProps={contextMenuThProps}
+      contextMenuThProps={mouseDownThProps}
       xPosition={xPosition}
       yPosition={yPosition}
+      onColumnAdded={onColumnAdded}
     >
       <Resizer
         width={column.width}

@@ -6,13 +6,13 @@ import {
   FunctionExpressionDefinitionKind,
   generateUuid,
   ContextExpressionDefinition,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
   DmnBuiltInDataType,
   ListExpressionDefinition,
   InvocationExpressionDefinition,
   RelationExpressionDefinition,
   DecisionTableExpressionDefinition,
 } from "../api";
+import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "./ContextExpression";
 import {
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,

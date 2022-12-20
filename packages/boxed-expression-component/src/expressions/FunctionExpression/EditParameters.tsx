@@ -24,7 +24,7 @@ import { ChangeEvent, useCallback } from "react";
 import {
   DmnBuiltInDataType,
   ContextExpressionDefinitionEntryInfo,
-  getNextAvailableContextExpressionEntryName,
+  getNextAvailablePrefixedName,
   generateUuid,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -47,7 +47,10 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
       ...parameters,
       {
         id: generateUuid(),
-        name: getNextAvailableContextExpressionEntryName(parameters, "p"),
+        name: getNextAvailablePrefixedName(
+          parameters.map((p) => p.name),
+          "p"
+        ),
         dataType: DmnBuiltInDataType.Undefined,
       },
     ]);

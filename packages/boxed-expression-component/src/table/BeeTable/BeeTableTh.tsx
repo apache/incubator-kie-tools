@@ -15,12 +15,13 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { BeeTableTdsAndThsProps } from "../../api";
+import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 
 export interface BeeTableThProps extends BeeTableTdsAndThsProps {
-  children?: React.ReactElement;
+  onColumnAdded?: (args: { beforeIndex: number }) => void;
   className: string;
   thProps: Partial<PfReactTable.ThProps>;
   isFocusable: boolean;
@@ -29,7 +30,17 @@ export interface BeeTableThProps extends BeeTableTdsAndThsProps {
   contextMenuThProps?: Pick<PfReactTable.ThProps, "onMouseDown">;
 }
 
+export type HoverInfo =
+  | {
+      isHovered: false;
+    }
+  | {
+      isHovered: true;
+      part: "left" | "right";
+    };
+
 export function BeeTableTh({
+  onColumnAdded,
   children,
   className,
   thProps,
@@ -37,11 +48,12 @@ export function BeeTableTh({
   onKeyDown,
   onClick,
   rowIndex,
+  columnIndex,
   contextMenuThProps,
   rowSpan = 1,
   xPosition,
   yPosition,
-}: BeeTableThProps) {
+}: React.PropsWithChildren<BeeTableThProps>) {
   const thRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
@@ -53,18 +65,84 @@ export function BeeTableTh({
     };
   }, [onKeyDown, rowIndex, rowSpan]);
 
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
+    isHovered: false,
+  });
+
+  const onAddColumnButtonClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (!hoverInfo.isHovered) {
+        return;
+      }
+      e.stopPropagation();
+
+      // This index doesn't take into account the row index column, so we actually need to subtract 1.
+      onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex });
+
+      if (hoverInfo.part === "left") {
+        setHoverInfo({ isHovered: false });
+      }
+    },
+    [columnIndex, hoverInfo, onColumnAdded]
+  );
+
+  const onMouseEnter = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
+    e.stopPropagation();
+    return setHoverInfo(getHoverInfo(e, thRef.current!));
+  }, []);
+
+  const onMouseLeave = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
+    e.stopPropagation();
+    return setHoverInfo({ isHovered: false });
+  }, []);
+
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    return setHoverInfo((prev) => {
+      e.stopPropagation();
+      return getHoverInfo(e, thRef.current!);
+    });
+  }, []);
+
+  const addColumButtonStyle = useMemo(() => {
+    return {
+      bottom: "5px",
+      ...(hoverInfo.isHovered && hoverInfo.part === "left"
+        ? {
+            left: "-10px",
+          }
+        : {
+            right: "-10px",
+          }),
+    };
+  }, [hoverInfo]);
+
   return (
     <PfReactTable.Th
       {...thProps}
       {...contextMenuThProps}
       ref={thRef}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
       className={className}
       tabIndex={isFocusable ? -1 : undefined}
       data-xposition={xPosition}
       data-yposition={yPosition}
     >
       {children}
+      {hoverInfo.isHovered && onColumnAdded && (
+        <div onClick={onAddColumnButtonClick} className={"add-column-button"} style={addColumButtonStyle}>
+          <PlusIcon size="sm" />
+        </div>
+      )}
     </PfReactTable.Th>
   );
+}
+
+function getHoverInfo(e: React.MouseEvent, elem: HTMLElement): HoverInfo {
+  const rect = elem.getBoundingClientRect();
+  const localX = e.clientX - rect.left; // x position within the element.
+  const part = localX < rect.width / 2 ? "left" : "right"; // upper part is the upper half
+  return { isHovered: true, part };
 }

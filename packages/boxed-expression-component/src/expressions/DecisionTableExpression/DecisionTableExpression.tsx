@@ -39,6 +39,7 @@ import "./DecisionTableExpression.css";
 import { HitPolicySelector } from "./HitPolicySelector";
 import { ResizingWidth, useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
+import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
 
 type ROWTYPE = any;
 
@@ -65,7 +66,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const { updateResizingWidth } = useResizingWidthDispatch();
 
-  const getNewColumnIdPrefix = useCallback((groupType?: string) => {
+  const getColumnNamePrefix = useCallback((groupType: DecisionTableColumnType) => {
     switch (groupType) {
       case DecisionTableColumnType.InputClause:
         return "input-";
@@ -74,7 +75,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       case DecisionTableColumnType.Annotation:
         return "annotation-";
       default:
-        return "column-";
+        assertUnreachable(groupType);
     }
   }, []);
 
@@ -435,12 +436,38 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [setExpression]
   );
 
+  const onColumnAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      // setExpression((prev: DecisionTableExpressionDefinition) => {
+      //   const newColumns = [...(prev.columns ?? [])];
+      //   newColumns.splice(args.beforeIndex, 0, {
+      //     id: generateUuid(),
+      //     name: getNextAvailablePrefixedName(prev.columns?.map((c) => c.name) ?? [], "column"),
+      //     dataType: DmnBuiltInDataType.Undefined,
+      //     width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+      //   });
+      //   return {
+      //     ...prev,
+      //     columns: newColumns,
+      //   };
+      // });
+      // setColumnResizingWidths((prev) => {
+      //   const newResizingWidths = [...(prev ?? [])];
+      //   newResizingWidths.splice(args.beforeIndex, 0, {
+      //     value: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+      //     isPivoting: false,
+      //   });
+      //   return newResizingWidths;
+      // });
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`decision-table-expression ${decisionTable.id}`}>
       <BeeTable
         headerLevelCount={1}
         headerVisibility={BeeTableHeaderVisibility.Full}
-        getNewColumnIdPrefix={getNewColumnIdPrefix}
         editColumnLabel={getEditColumnLabel}
         operationHandlerConfig={operationHandlerConfig}
         columns={beeTableColumns}
@@ -449,6 +476,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         onRowsUpdate={onRowsUpdate}
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}
+        onColumnAdded={onColumnAdded}
       />
     </div>
   );

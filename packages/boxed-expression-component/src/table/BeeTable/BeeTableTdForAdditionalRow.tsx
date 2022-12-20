@@ -61,7 +61,7 @@ export function BeeTableTdForAdditionalRow({
     <PfReactTable.Td
       ref={tdRef}
       role="cell"
-      className="row-remainder-content"
+      className="additional-row-content"
       tabIndex={-1}
       data-xposition={xPosition}
       data-yposition={yPosition}

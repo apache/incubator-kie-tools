@@ -21,20 +21,24 @@ import {
   BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
   generateUuid,
-  getOperationHandlerConfig,
   InvocationExpressionDefinition,
   ExpressionDefinitionLogicType,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableProps,
-  getNextAvailableContextExpressionEntryName,
+  getNextAvailablePrefixedName,
 } from "../../api";
 import { BeeTable } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
-import { ContextEntryExpressionCell, ContextEntryInfoCell, ContextEntryInfoCellProps } from "../ContextExpression";
+import {
+  ContextEntryExpressionCell,
+  ContextEntryInfoCell,
+  ContextEntryInfoCellProps,
+  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  getOperationHandlerConfig,
+} from "../ContextExpression";
 import * as _ from "lodash";
 import {
   useBoxedExpressionEditor,
@@ -163,8 +167,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
           entryInfo: {
             dataType: DmnBuiltInDataType.Undefined,
             id: generateUuid(),
-            name: getNextAvailableContextExpressionEntryName(
-              (prev.bindingEntries ?? []).map((e) => e.entryInfo),
+            name: getNextAvailablePrefixedName(
+              (prev.bindingEntries ?? []).map((e) => e.entryInfo.name),
               "p"
             ),
           },

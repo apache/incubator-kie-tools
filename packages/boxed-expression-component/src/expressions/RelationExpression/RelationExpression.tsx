@@ -27,6 +27,8 @@ import {
   BeeTableOperation,
   BeeTableColumnsUpdateArgs,
   generateUuid,
+  DmnBuiltInDataType,
+  getNextAvailablePrefixedName,
 } from "../../api";
 import { BeeTable } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -98,7 +100,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   useEffect(() => {
     setColumnResizingWidths((prev) => {
       return columns.map((column, columnIndex) => ({
-        value: Math.max(column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH, prev[columnIndex].value),
+        value: Math.max(column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH, prev[columnIndex]?.value),
         isPivoting: false,
       }));
     });
@@ -238,6 +240,35 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [setExpression]
   );
 
+  const onColumnAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const newColumns = [...(prev.columns ?? [])];
+        newColumns.splice(args.beforeIndex, 0, {
+          id: generateUuid(),
+          name: getNextAvailablePrefixedName(prev.columns?.map((c) => c.name) ?? [], "column"),
+          dataType: DmnBuiltInDataType.Undefined,
+          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+        });
+
+        return {
+          ...prev,
+          columns: newColumns,
+        };
+      });
+
+      setColumnResizingWidths((prev) => {
+        const newResizingWidths = [...(prev ?? [])];
+        newResizingWidths.splice(args.beforeIndex, 0, {
+          value: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+          isPivoting: false,
+        });
+        return newResizingWidths;
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div
       className={`relation-expression ${
@@ -252,6 +283,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
         onRowAdded={onRowAdded}
+        onColumnAdded={onColumnAdded}
       />
     </div>
   );
