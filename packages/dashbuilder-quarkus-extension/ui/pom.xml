@@ -19,10 +19,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.dashbuilder</groupId>
-    <artifactId>dashbuilder-quarkus-extension-parent</artifactId>
+    <artifactId>quarkus-dashbuilder-extension-parent</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>dashbuilder-quarkus-ui</artifactId>
+  <artifactId>quarkus-dashbuilder-ui</artifactId>
   <name>Dashbuilder Quarkus Extension - UI</name>
   <description>Dashbuilder extension Web Bundle</description>
 

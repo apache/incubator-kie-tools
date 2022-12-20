@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Dashbuilder Quarkus Extension - Parent</name>
-  <artifactId>dashbuilder-quarkus-extension-parent</artifactId>
+  <artifactId>quarkus-dashbuilder-extension-parent</artifactId>
   <groupId>org.kie.dashbuilder</groupId>
   <version>${revision}</version>
   <packaging>pom</packaging>
@@ -39,6 +39,9 @@
     <version.compiler.plugin>3.10.1</version.compiler.plugin>
 
     <rest-assured.version>3.3.0</rest-assured.version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <dependencyManagement>

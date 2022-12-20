@@ -19,10 +19,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.dashbuilder</groupId>
-    <artifactId>dashbuilder-quarkus-extension-parent</artifactId>
+    <artifactId>quarkus-dashbuilder-extension-parent</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>dashbuilder-quarkus</artifactId>
+  <artifactId>quarkus-dashbuilder</artifactId>
   <name>Dashbuilder Quarkus Extension - Runtime</name>
   <description>Dashbuilder extension for embeeding dashboards in a Quarkus application</description>
 
@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.dashbuilder</groupId>
-      <artifactId>dashbuilder-quarkus-ui</artifactId>
+      <artifactId>quarkus-dashbuilder-ui</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
@@ -56,7 +56,7 @@
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+        <artifactId>quarkus-extension-maven-plugin</artifactId>
         <executions>
           <execution>
             <phase>compile</phase>

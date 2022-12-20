@@ -1614,6 +1614,18 @@ importers:
       rimraf: 3.0.2
       run-script-os: 1.1.6
 
+  packages/dashbuilder-quarkus-extension:
+    specifiers:
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/maven-config-setup-helper": workspace:*
+      "@kie-tools/root-env": workspace:*
+      run-script-os: ^1.1.6
+    devDependencies:
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/maven-config-setup-helper": link:../maven-config-setup-helper
+      "@kie-tools/root-env": link:../root-env
+      run-script-os: 1.1.6
+
   packages/dashbuilder-swf-monitoring-dashboard:
     specifiers:
       "@kie-tools/dashbuilder-client": workspace:*
@@ -16826,6 +16838,17 @@ packages:
       tabbable: 5.1.5
     dev: false
 
+  /follow-redirects/1.14.9:
+    resolution:
+      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
+    engines: { node: ">=4.0" }
+    peerDependencies:
+      debug: "*"
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: true
+
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -17742,7 +17765,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug

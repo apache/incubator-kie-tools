@@ -67,7 +67,7 @@
       { "id": "@kie-tools/dashbuilder-component-dev" },
       { "id": "@kie-tools/dashbuilder-editor" },
       { "id": "@kie-tools/dashbuilder-images" },
-      { "id": "@kie-tools/dashbuilder-quarkus-extension-parent" },
+      { "id": "@kie-tools/dashbuilder-quarkus-extension" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
       { "id": "@kie-tools/dashbuilder-viewer" },
       { "id": "@kie-tools/dashbuilder-viewer-deployment-webapp" },
@@ -477,11 +477,7 @@
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-images", "target": "@kie-tools/dashbuilder", "weight": 1 },
-      {
-        "source": "@kie-tools/dashbuilder-quarkus-extension-parent",
-        "target": "@kie-tools/dashbuilder-client",
-        "weight": 1
-      },
+      { "source": "@kie-tools/dashbuilder-quarkus-extension", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
         "target": "@kie-tools/dashbuilder-client",
@@ -828,7 +824,7 @@
     ["@kie-tools/dashbuilder-component-victory-charts", "packages/dashbuilder-component-victory-charts"],
     ["@kie-tools/dashbuilder-editor", "packages/dashbuilder-editor"],
     ["@kie-tools/dashbuilder-images", "packages/dashbuilder-images"],
-    ["@kie-tools/dashbuilder-quarkus-extension-parent", "packages/dashbuilder-quarkus-extension"],
+    ["@kie-tools/dashbuilder-quarkus-extension", "packages/dashbuilder-quarkus-extension"],
     ["@kie-tools/dashbuilder-swf-monitoring-dashboard", "packages/dashbuilder-swf-monitoring-dashboard"],
     ["@kie-tools/dashbuilder-viewer", "packages/dashbuilder-viewer"],
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],

@@ -17,7 +17,6 @@ package org.kie.dashbuilder.quarkus.extension;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,7 +40,6 @@ import io.quarkus.maven.dependency.GACT;
 import io.quarkus.vertx.http.deployment.NonApplicationRootPathBuildItem;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.deployment.webjar.WebJarBuildItem;
-import io.quarkus.vertx.http.deployment.webjar.WebJarResourcesFilter;
 import io.quarkus.vertx.http.deployment.webjar.WebJarResultsBuildItem;
 import io.quarkus.vertx.http.deployment.webjar.WebJarResourcesFilter.FilterResult;
 
@@ -50,7 +48,7 @@ public class DashbuilderProcessor {
     private final static Logger log = Logger.getLogger(DashbuilderProcessor.class);
 
     private static final GACT DASHBUILDER_UI_WEBJAR_ARTIFACT_KEY = new GACT("org.kie.dashbuilder",
-            "dashbuilder-quarkus-ui", null,
+            "quarkus-dashbuilder-ui", null,
             "jar");
 
     private static final String FEATURE = "dashbuilder";
