@@ -21,11 +21,11 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
@@ -44,9 +44,10 @@ public class OutputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaD
     private final ListSelectorView.Presenter listSelector;
     private final BiFunction<Integer, Integer, List<ListSelectorItem>> listSelectorItemsSupplier;
     private final Consumer<HasListSelectorControl.ListSelectorItem> listSelectorItemConsumer;
+    private OutputClauseColumnHeaderMetaDataPlacement headerPlacement = OutputClauseColumnHeaderMetaDataPlacement.TOP;
 
     public OutputClauseColumnHeaderMetaData(final HasName hasValue,
-                                            final OutputClause hasTypeRef,
+                                            final Supplier<HasTypeRef> hasTypeRefSupplier,
                                             final Consumer<HasName> clearValueConsumer,
                                             final BiConsumer<HasName, Name> setValueConsumer,
                                             final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
@@ -57,7 +58,7 @@ public class OutputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaD
                                             final BiFunction<Integer, Integer, List<HasListSelectorControl.ListSelectorItem>> listSelectorItemsSupplier,
                                             final Consumer<HasListSelectorControl.ListSelectorItem> listSelectorItemConsumer) {
         super(Optional.of(hasValue),
-              () -> hasTypeRef,
+              hasTypeRefSupplier,
               clearValueConsumer,
               setValueConsumer,
               setTypeRefConsumer,
@@ -71,7 +72,7 @@ public class OutputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaD
 
     @Override
     public String getColumnGroup() {
-        return NAME_DATA_TYPE_COLUMN_GROUP;
+        return NAME_DATA_TYPE_COLUMN_GROUP + headerPlacement;
     }
 
     @Override
@@ -93,5 +94,14 @@ public class OutputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaD
     @Override
     public void onItemSelected(final ListSelectorItem item) {
         listSelectorItemConsumer.accept(item);
+    }
+
+    public void setHeaderPlacement(final OutputClauseColumnHeaderMetaDataPlacement headerPlacement) {
+        this.headerPlacement = headerPlacement;
+    }
+
+    enum OutputClauseColumnHeaderMetaDataPlacement {
+        TOP,
+        BOTTOM
     }
 }
