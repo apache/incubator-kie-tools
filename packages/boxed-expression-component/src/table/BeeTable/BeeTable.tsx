@@ -214,19 +214,16 @@ export function BeeTable<R extends object>({
   const defaultColumn = useMemo(
     () => ({
       Cell: (cellProps: ReactTable.CellProps<R>) => {
-        if (cellProps.column.isRowIndexColumn) {
-          return cellProps.value;
+        const CellComponentForColumn = cellComponentByColumnId?.[cellProps.column.id];
+        if (CellComponentForColumn) {
+          return (
+            <CellComponentForColumn
+              data={cellProps.data}
+              rowIndex={cellProps.row.index}
+              columnId={cellProps.column.id}
+            />
+          );
         } else {
-          const CellComponentForColumn = cellComponentByColumnId?.[cellProps.column.id];
-          if (CellComponentForColumn) {
-            return (
-              <CellComponentForColumn
-                data={cellProps.data}
-                rowIndex={cellProps.row.index}
-                columnId={cellProps.column.id}
-              />
-            );
-          }
           return (
             <BeeTableEditableCellContent
               onCellUpdate={() => {}} // FIXME: Tiago -> STATE GAP
@@ -287,7 +284,6 @@ export function BeeTable<R extends object>({
     (columnIndex: number, rowIndex: number): Pick<PfReactTable.TdProps, "onMouseDown"> => ({
       onMouseDown: (e) => {
         e.preventDefault();
-
         setLastSelectedColumnIndex(columnIndex);
         setLastSelectedRowIndex(rowIndex);
       },

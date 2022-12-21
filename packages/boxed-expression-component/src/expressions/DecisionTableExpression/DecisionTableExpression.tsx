@@ -225,6 +225,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTable.input ?? []).map((inputClause, inputIndex) => ({
       accessor: inputClause.id ?? generateUuid(),
       label: inputClause.name,
+      id: inputClause.id,
       dataType: inputClause.dataType,
       width: inputClause.width,
       setWidth: setInputColumnWidth(inputIndex),
@@ -239,6 +240,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTable.output ?? []).map(
       (outputClause, outputIndex) => ({
         accessor: outputClause.id ?? generateUuid(),
+        id: outputClause.id,
         label: outputClause.name,
         dataType: outputClause.dataType,
         width: outputClause.width,
@@ -255,6 +257,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTable.annotations ?? []).map(
       (annotation, annotationIndex) => ({
         accessor: annotation.id ?? (generateUuid() as any),
+        id: annotation.id,
         label: annotation.name,
         width: annotation.width,
         setWidth: setAnnotationColumnWidth(annotationIndex),
@@ -272,6 +275,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const inputSectionWidth = inputsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
     const inputSection = {
       groupType: DecisionTableColumnType.InputClause,
+      id: "Inputs",
       accessor: "Input" as any,
       label: "Input",
       dataType: undefined as any,
@@ -288,6 +292,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const outputSectionWidth = outputsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
+      id: "Outputs",
       accessor: decisionTable.isHeadless ? decisionTable.id : (decisionNodeId as any),
       label: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
       dataType: decisionTable.dataType ?? DmnBuiltInDataType.Undefined,
@@ -305,6 +310,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const annotationSectionWidth = annotationsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
     const annotationSection = {
       groupType: DecisionTableColumnType.Annotation,
+      id: "Annotations",
       accessor: "Annotations" as any,
       label: "Annotations",
       cssClasses: "decision-table--annotation",

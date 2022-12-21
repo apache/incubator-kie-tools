@@ -51,3 +51,16 @@
 .expression-container .decision-table-expression table thead th.annotation .add-column-button {
   background-color: #ffffff;
 }
+
+.expression-container .decision-table-expression table thead tr:last-child th.decision-table--input .react-resizable,
+.expression-container
+  .decision-table-expression
+  table
+  thead
+  tr:last-child
+  th.decision-table--annotation
+  .react-resizable {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
