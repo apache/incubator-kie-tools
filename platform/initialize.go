@@ -67,9 +67,9 @@ func (action *initializeAction) Handle(ctx context.Context, platform *v08.Kogito
 		return nil, err
 	}
 	// nolint: staticcheck
-	if platform.Status.BuildPlatform.PublishStrategy == api.PlatformBuildPublishStrategyKaniko {
+	if platform.Status.KogitoServerlessPlatformSpec.BuildPlatform.PublishStrategy == api.PlatformBuildPublishStrategyKaniko {
 		//If KanikoCache is enabled
-		if platform.Status.BuildPlatform.IsOptionEnabled(builder.KanikoBuildCacheEnabled) {
+		if platform.Status.KogitoServerlessPlatformSpec.BuildPlatform.IsOptionEnabled(builder.KanikoBuildCacheEnabled) {
 			// Create the persistent volume claim used by the Kaniko cache
 			action.Logger.Info("Create persistent volume claim")
 			err := createPersistentVolumeClaim(ctx, action.client, platform)

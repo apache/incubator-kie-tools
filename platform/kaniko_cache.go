@@ -67,6 +67,7 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 					Name:  "warm-kaniko-cache",
 					Image: warmerImage,
 					Args: []string{
+						"--force",
 						"--cache-dir=" + builder.KanikoCacheDir,
 						"--image=" + platform.Status.BuildPlatform.BaseImage,
 					},

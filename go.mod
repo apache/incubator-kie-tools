@@ -6,7 +6,7 @@ require (
 	github.com/go-logr/logr v1.2.3
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
-	github.com/onsi/gomega v1.20.1
+	github.com/onsi/gomega v1.22.1
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/stretchr/testify v1.8.0
@@ -24,7 +24,7 @@ require (
 
 require (
 	github.com/RHsyseng/operator-utils v1.4.11
-	github.com/kiegroup/container-builder v0.0.0-20221028160425-7921fe1891f1
+	github.com/kiegroup/container-builder v0.0.0-20221215132240-f70d743ccd41
 	github.com/onsi/ginkgo v1.16.5
 	github.com/openshift/api v0.0.0-20211209135129-c58d9f695577
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1

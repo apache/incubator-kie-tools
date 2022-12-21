@@ -104,7 +104,7 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 	if phase == api.BuildPhaseNone {
 		workflow, imageTag, err := r.retrieveWorkflowFromCR(build.Spec.WorkflowId, ctx, req)
 		if err == nil {
-			buildStatus, err := builder.ScheduleNewBuildWithContainerFile(build.Spec.WorkflowId, imageTag, workflow)
+			buildStatus, err := builder.ScheduleNewKanikoBuildWithContainerFile(build.Spec.WorkflowId, imageTag, workflow, pl.Spec.Build)
 			if err == nil {
 				manageStatusUpdate(ctx, buildStatus, build, r, log)
 				return ctrl.Result{RequeueAfter: 5 * time.Second}, nil

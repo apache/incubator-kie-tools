@@ -54,6 +54,21 @@ func (b *Builder) getImageBuilder(workflowID string, imageTag string, workflowDe
 	return ib
 }
 
+func (b *Builder) getImageBuilderForKaniko(workflowID string, imageTag string, workflowDefinition []byte, task *api.KanikoTask) ImageBuilder {
+	containerFile := b.commonConfig.Data[b.commonConfig.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]
+	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
+	ib.OnNamespace(b.customConfig[constants.CUSTOM_NS_KEY])
+	ib.WithPodMiddleName(workflowID)
+	ib.WithInsecureRegistry(false)
+	ib.WithImageName(workflowID + imageTag)
+	ib.WithSecret(b.customConfig[constants.CUSTOM_REG_CRED_KEY])
+	ib.WithRegistryAddress(b.customConfig[constants.CUSTOM_REG_ADDRESS_KEY])
+	ib.WithCache(task.Cache)
+	ib.WithResources(task.Resources)
+	ib.WithAdditionalFlags(task.AdditionalFlags)
+	return ib
+}
+
 func (b *Builder) ScheduleNewBuildWithTimeout(workflowName string, imageTag string, workflowDefinition []byte, timeout time.Duration) (*api.Build, error) {
 	ib := b.getImageBuilder(workflowName, imageTag, workflowDefinition)
 	ib.WithTimeout(timeout)
@@ -68,6 +83,12 @@ func (b *Builder) ScheduleNewBuild(workflowName string, imageTag string, workflo
 
 func (b *Builder) ScheduleNewBuildWithContainerFile(workflowName string, imageTag string, workflowDefinition []byte) (*api.Build, error) {
 	ib := b.getImageBuilder(workflowName, imageTag, workflowDefinition)
+	ib.WithTimeout(5 * time.Minute)
+	return b.BuildImage(ib.Build())
+}
+
+func (b *Builder) ScheduleNewKanikoBuildWithContainerFile(workflowName string, imageTag string, workflowDefinition []byte, build api.BuildSpec) (*api.Build, error) {
+	ib := b.getImageBuilderForKaniko(workflowName, imageTag, workflowDefinition, build.Tasks[0].Kaniko)
 	ib.WithTimeout(5 * time.Minute)
 	return b.BuildImage(ib.Build())
 }
@@ -100,6 +121,9 @@ func (b *Builder) BuildImage(kb KogitoBuilder) (*api.Build, error) {
 	}
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
+		WithKanikoCache(kb.Cache).
+		WithKanikoResources(kb.Resources).
+		WithKanikoAdditionalArgs(kb.AdditionalFlags).
 		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
 		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
@@ -134,6 +158,9 @@ func (b *Builder) ScheduleBuild(kb KogitoBuilder) (*api.Build, error) {
 	}
 
 	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
+		WithKanikoCache(kb.Cache).
+		WithKanikoResources(kb.Resources).
+		WithKanikoAdditionalArgs(kb.AdditionalFlags).
 		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
 		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
 		WithClient(cli).
@@ -158,6 +185,9 @@ type KogitoBuilder struct {
 	RegistryAddress      string
 	RegistryOrganization string
 	Secret               string
+	Cache                api.KanikoTaskCache
+	Resources            corev1.ResourceRequirements
+	AdditionalFlags      []string
 }
 
 type ImageBuilder struct {
@@ -200,6 +230,20 @@ func (ib *ImageBuilder) WithPodMiddleName(buildName string) *ImageBuilder {
 
 func (ib *ImageBuilder) WithImageName(imageName string) *ImageBuilder {
 	ib.KogitoBuilder.ImageName = imageName
+	return ib
+}
+
+func (ib *ImageBuilder) WithCache(cache api.KanikoTaskCache) *ImageBuilder {
+	ib.KogitoBuilder.Cache = cache
+	return ib
+}
+func (ib *ImageBuilder) WithResources(resources corev1.ResourceRequirements) *ImageBuilder {
+	ib.KogitoBuilder.Resources = resources
+	return ib
+}
+
+func (ib *ImageBuilder) WithAdditionalFlags(flags []string) *ImageBuilder {
+	ib.KogitoBuilder.AdditionalFlags = flags
 	return ib
 }
 

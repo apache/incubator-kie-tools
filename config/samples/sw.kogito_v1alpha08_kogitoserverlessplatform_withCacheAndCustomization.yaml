@@ -1,0 +1,29 @@
+apiVersion: sw.kogito.kie.org/v1alpha08
+kind: KogitoServerlessPlatform
+metadata:
+  name: kogito-workflow-platform
+spec:
+  cluster: kubernetes
+  build:
+    tasks:
+      - kaniko:
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "2"
+          additionalFlags:
+            - "--use-new-run=true"
+            - "--cache=true"
+            - "--cache-dir=/kaniko/cache"
+  platform:
+    publishStrategy: "Kaniko"
+    baseImage: quay.io/kiegroup/kogito-swf-builder-nightly:latest
+    registry:
+      address: quay.io/kiegroup
+      secret: regcred
+    PublishStrategyOptions:
+      KanikoBuildCacheEnabled: "true"
+
