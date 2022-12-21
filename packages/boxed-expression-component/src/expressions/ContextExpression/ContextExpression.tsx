@@ -19,7 +19,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
-  BeeTableColumnsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationHandlerConfig,
@@ -35,7 +34,7 @@ import {
 import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
 import { Resizer } from "../../resizing/Resizer";
 import { getExpressionMinWidth, getExpressionResizingWidth } from "../../resizing/Widths";
-import { BeeTable } from "../../table/BeeTable";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   BoxedExpressionEditorDispatchContext,
   useBoxedExpressionEditor,
@@ -236,13 +235,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     setEntryInfoWidth,
   ]);
 
-  const onColumnsUpdate = useCallback(
-    ({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
-      // FIXME: Tiago -> This is not good. We shouldn't need to rely on the table to update those values.
+  const onColumnUpdates = useCallback(
+    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
-        name: column.label,
-        dataType: column.dataType,
+        name,
+        dataType,
       }));
     },
     [setExpression]
@@ -355,7 +353,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           cellComponentByColumnId={cellComponentByColumnId}
           columns={beeTableColumns}
           rows={contextExpression.contextEntries}
-          onColumnsUpdate={onColumnsUpdate}
+          onColumnUpdates={onColumnUpdates}
           operationHandlerConfig={operationHandlerConfig}
           getRowKey={getRowKey}
           additionalRow={beeTableAdditionalRow}

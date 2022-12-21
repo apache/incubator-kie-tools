@@ -29,6 +29,7 @@ export interface BeeTableThProps extends BeeTableTdsAndThsProps {
   onClick?: React.MouseEventHandler;
   rowSpan: number;
   contextMenuThProps?: Pick<PfReactTable.ThProps, "onMouseDown">;
+  isLastLevelColumn: boolean;
 }
 
 export type HoverInfo =
@@ -55,6 +56,7 @@ export function BeeTableTh({
   xPosition,
   yPosition,
   groupType,
+  isLastLevelColumn,
 }: React.PropsWithChildren<BeeTableThProps>) {
   const thRef = useRef<HTMLTableCellElement>(null);
 
@@ -133,7 +135,7 @@ export function BeeTableTh({
       data-yposition={yPosition}
     >
       {children}
-      {hoverInfo.isHovered && onColumnAdded && (
+      {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && (
         <div onClick={onAddColumnButtonClick} className={"add-column-button"} style={addColumButtonStyle}>
           <PlusIcon size="sm" />
         </div>

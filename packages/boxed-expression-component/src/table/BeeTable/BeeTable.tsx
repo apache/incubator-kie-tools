@@ -120,7 +120,7 @@ export function BeeTable<R extends object>({
   additionalRow,
   editColumnLabel,
   editableHeader = true,
-  onColumnsUpdate,
+  onColumnUpdates,
   onRowAdded,
   onColumnAdded,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
@@ -199,16 +199,6 @@ export function BeeTable<R extends object>({
   const columnsWithAddedIndexColumns = useMemo(
     () => addRowIndexColumns(controllerCell, columns),
     [addRowIndexColumns, columns, controllerCell]
-  );
-
-  const callOnColumnsUpdateWithoutRowIndexColumn = useCallback<
-    (columns: ReactTable.Column<R>[], operation?: BeeTableOperation, columnIndex?: number) => void
-  >(
-    (columns, operation, columnIndex) => {
-      const originalColumns = columns.slice(1); //Removing row index column
-      onColumnsUpdate?.({ columns: originalColumns, operation, columnIndex: (columnIndex ?? 1) - 1 });
-    },
-    [onColumnsUpdate]
   );
 
   const defaultColumn = useMemo(
@@ -438,7 +428,7 @@ export function BeeTable<R extends object>({
           getColumnKey={onGetColumnKey}
           headerVisibility={headerVisibility}
           onCellKeyDown={onCellKeyDown}
-          onColumnsUpdate={callOnColumnsUpdateWithoutRowIndexColumn}
+          onColumnUpdates={onColumnUpdates}
           skipLastHeaderGroup={skipLastHeaderGroup}
           tableColumns={columnsWithAddedIndexColumns}
           reactTableInstance={reactTableInstance}

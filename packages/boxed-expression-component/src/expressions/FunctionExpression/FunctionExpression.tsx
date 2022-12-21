@@ -20,7 +20,6 @@ import { PropsWithChildren, useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
-  BeeTableColumnsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableProps,
@@ -37,7 +36,7 @@ import {
   PmmlLiteralExpressionDefinitionKind,
 } from "../../api";
 import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
-import { BeeTable } from "../../table/BeeTable";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
@@ -288,13 +287,12 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [setExpression]
   );
 
-  const onColumnsUpdate = useCallback(
-    ({ columns: [column], operation }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
-      // FIXME: Tiago -> This is not good. We shouldn't need to rely on the table to update those values.
+  const onColumnUpdates = useCallback(
+    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
-        name: column.label,
-        dataType: column.dataType,
+        name,
+        dataType,
       }));
     },
     [setExpression]
@@ -423,7 +421,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
       <div className={`function-expression ${functionExpression.id}`}>
         <BeeTable<ROWTYPE>
           operationHandlerConfig={operationHandlerConfig}
-          onColumnsUpdate={onColumnsUpdate}
+          onColumnUpdates={onColumnUpdates}
           getRowKey={getRowKey}
           columns={beeTableColumns}
           rows={beeTableRows}

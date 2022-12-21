@@ -25,12 +25,11 @@ import {
   RelationExpressionDefinitionRow,
   BeeTableRowsUpdateArgs,
   BeeTableOperation,
-  BeeTableColumnsUpdateArgs,
   generateUuid,
   DmnBuiltInDataType,
   getNextAvailablePrefixedName,
 } from "../../api";
-import { BeeTable } from "../../table/BeeTable";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -43,6 +42,7 @@ type ROWTYPE = RelationExpressionDefinitionRow;
 
 export const RELATION_EXPRESSION_COLUMN_MIN_WIDTH = 100;
 export const RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH = 150;
+export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
 export const RelationExpression: React.FunctionComponent<RelationExpressionDefinition> = (
   relationExpression: RelationExpressionDefinition
@@ -98,9 +98,9 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   );
 
   useEffect(() => {
-    setColumnResizingWidths((prev) => {
-      return columns.map((column, columnIndex) => ({
-        value: Math.max(column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH, prev[columnIndex]?.value),
+    setColumnResizingWidths(() => {
+      return columns.map((column) => ({
+        value: column.width ?? RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
         isPivoting: false,
       }));
     });
@@ -218,9 +218,27 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     // Do nothing for now
   }, []);
 
-  const onColumnsUpdate = useCallback((args: BeeTableColumnsUpdateArgs<ROWTYPE>) => {
-    // Do nothing for now
-  }, []);
+  const onColumnUpdates = useCallback(
+    (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const newColumns = [...(prev.columns ?? [])];
+
+        columnUpdates.forEach((u) => {
+          newColumns[u.columnIndex] = {
+            ...newColumns[u.columnIndex],
+            name: u.name,
+            dataType: u.dataType,
+          };
+        });
+
+        return {
+          ...prev,
+          columns: newColumns,
+        };
+      });
+    },
+    [setExpression]
+  );
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
@@ -251,9 +269,19 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
           width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
         });
 
+        const newRows = [...(prev.rows ?? [])].map((row) => {
+          const newCells = [...row.cells];
+          newCells.splice(args.beforeIndex, 0, RELATION_EXPRESSION_DEFAULT_VALUE);
+          return {
+            ...row,
+            cells: newCells,
+          };
+        });
+
         return {
           ...prev,
           columns: newColumns,
+          rows: newRows,
         };
       });
 
@@ -279,7 +307,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         editColumnLabel={i18n.editRelation}
         columns={beeTableColumns}
         rows={beeTableRows}
-        onColumnsUpdate={onColumnsUpdate}
+        onColumnUpdates={onColumnUpdates}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
         onRowAdded={onRowAdded}

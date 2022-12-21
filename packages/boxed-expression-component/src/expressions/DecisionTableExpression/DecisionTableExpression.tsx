@@ -35,7 +35,7 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { getColumnsAtLastLevel, BeeTable } from "../../table/BeeTable";
+import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import { ResizingWidth, useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
@@ -199,6 +199,33 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   );
 
   useEffect(() => {
+    setInputsResizingWidths(() => {
+      return (decisionTable.input ?? []).map((input) => ({
+        value: input.width ?? DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+        isPivoting: false,
+      }));
+    });
+  }, [decisionTable.input]);
+
+  useEffect(() => {
+    setOutputsResizingWidths(() => {
+      return (decisionTable.output ?? []).map((output) => ({
+        value: output.width ?? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+        isPivoting: false,
+      }));
+    });
+  }, [decisionTable.output]);
+
+  useEffect(() => {
+    setAnnotationsResizingWidths(() => {
+      return (decisionTable.annotations ?? []).map((annotations) => ({
+        value: annotations.width ?? DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+        isPivoting: false,
+      }));
+    });
+  }, [decisionTable.annotations]);
+
+  useEffect(() => {
     updateResizingWidth(decisionTable.id!, (prev) => {
       const columns = [...inputsResizingWidths, ...outputsResizingWidths, ...annotationsResizingWidths];
       return columns.reduce(
@@ -352,34 +379,57 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [beeTableColumns, decisionTable.rules]
   );
 
-  const singleOutputChildDataType = useRef(DmnBuiltInDataType.Undefined);
+  const onColumnUpdates = useCallback(
+    (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const n = { ...prev };
+        for (const u of columnUpdates) {
+          // This is the Output column aggregator column, which represents the entire expression name and dataType
+          if (u.column.depth === 0) {
+            n.name = u.name;
+            n.dataType = u.dataType;
+            continue;
+          }
 
-  const synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType = useCallback(
-    (decisionNodeColumn: ReactTable.Column<ROWTYPE>) => {
-      if (_.size(decisionNodeColumn.columns) === 1) {
-        const updatedSingleOutputChildDataType = _.first(decisionNodeColumn.columns)!.dataType;
+          // These are the other columns.
+          const groupType = u.column.groupType as DecisionTableColumnType;
+          switch (groupType) {
+            case DecisionTableColumnType.InputClause:
+              const newInputs = [...(n.input ?? [])];
+              newInputs[u.columnIndex] = {
+                ...newInputs[u.columnIndex],
+                dataType: u.dataType,
+                name: u.name,
+              };
+              n.input = newInputs;
+              break;
+            case DecisionTableColumnType.OutputClause:
+              const newOutputs = [...(n.output ?? [])];
+              newOutputs[u.columnIndex - (prev.input?.length ?? 0)] = {
+                ...newOutputs[u.columnIndex - (prev.input?.length ?? 0)],
+                dataType: u.dataType,
+                name: u.name,
+              };
 
-        if (updatedSingleOutputChildDataType !== singleOutputChildDataType.current) {
-          singleOutputChildDataType.current = updatedSingleOutputChildDataType;
-          decisionNodeColumn.dataType = updatedSingleOutputChildDataType;
-        } else if (decisionNodeColumn.dataType !== decisionTable.dataType ?? DmnBuiltInDataType.Undefined) {
-          singleOutputChildDataType.current = decisionNodeColumn.dataType;
-          _.first(decisionNodeColumn.columns)!.dataType = decisionNodeColumn.dataType;
+              n.output = newOutputs;
+              break;
+            case DecisionTableColumnType.Annotation:
+              const newAnnotations = [...(n.annotations ?? [])];
+              newAnnotations[u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0)] = {
+                ...newAnnotations[u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0)],
+                name: u.name,
+              };
+              n.annotations = newAnnotations;
+              break;
+            default:
+              assertUnreachable(groupType);
+          }
         }
-      }
-    },
-    [decisionTable.dataType]
-  );
 
-  const onColumnsUpdate = useCallback(
-    ({ columns }) => {
-      const decisionNodeColumn = _.find(columns, { groupType: DecisionTableColumnType.OutputClause });
-      if (!decisionTable.isHeadless) {
-        synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType(decisionNodeColumn);
-      }
+        return n;
+      });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType]
+    [setExpression]
   );
 
   const onRowsUpdate = useCallback(
@@ -562,7 +612,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         operationHandlerConfig={operationHandlerConfig}
         columns={beeTableColumns}
         rows={beeTableRows}
-        onColumnsUpdate={onColumnsUpdate}
+        onColumnUpdates={onColumnUpdates}
         onRowsUpdate={onRowsUpdate}
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}

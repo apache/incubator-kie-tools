@@ -18,7 +18,6 @@ import "./InvocationExpression.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import {
-  BeeTableColumnsUpdateArgs,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
   generateUuid,
@@ -29,7 +28,7 @@ import {
   BeeTableProps,
   getNextAvailablePrefixedName,
 } from "../../api";
-import { BeeTable } from "../../table/BeeTable";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
 import {
@@ -126,7 +125,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [invocation.name, invocation.dataType, invocation.entryInfoWidth, decisionNodeId, headerCellElement, setInfoWidth]
   );
 
-  const onColumnsUpdate = useCallback(({ columns: [column] }: BeeTableColumnsUpdateArgs<ROWTYPE>) => {}, []);
+  const onColumnUpdates = useCallback((columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
+    /** */
+  }, []);
 
   const headerVisibility = useMemo(
     () => (invocation.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.Full),
@@ -193,7 +194,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         cellComponentByColumnId={cellComponentByColumnId}
         columns={beeTableColumns}
         rows={beeTableRows}
-        onColumnsUpdate={onColumnsUpdate}
+        onColumnUpdates={onColumnUpdates}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}

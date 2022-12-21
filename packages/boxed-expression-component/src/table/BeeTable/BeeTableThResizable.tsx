@@ -165,6 +165,7 @@ export function BeeTableThResizable<R extends object>({
       yPosition={yPosition}
       onColumnAdded={onColumnAdded}
       groupType={column.groupType}
+      isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
     >
       <Resizer
         width={column.width}

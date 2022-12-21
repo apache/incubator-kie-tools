@@ -27,6 +27,13 @@ import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { NavigationKeysUtils } from "../../keysUtils";
 
+export interface BeeTableColumnUpdate<R extends object> {
+  dataType: DmnBuiltInDataType;
+  name: string;
+  columnIndex: number;
+  column: ReactTable.ColumnInstance<R>;
+}
+
 export interface BeeTableHeaderProps<R extends object> {
   /** Table instance */
   reactTableInstance: ReactTable.TableInstance<R>;
@@ -41,7 +48,7 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Columns instance */
   tableColumns: ReactTable.Column<R>[];
   /** Function to be executed when columns are modified */
-  onColumnsUpdate: (columns: ReactTable.Column<R>[]) => void;
+  onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Th props */
@@ -58,8 +65,7 @@ export function BeeTableHeader<R extends object>({
   headerVisibility = BeeTableHeaderVisibility.Full,
   skipLastHeaderGroup,
   getColumnKey,
-  tableColumns,
-  onColumnsUpdate,
+  onColumnUpdates,
   onCellKeyDown,
   getMouseDownThProps,
   editableHeader,
@@ -90,20 +96,18 @@ export function BeeTableHeader<R extends object>({
   >(
     (column, columnIndex) => {
       return ({ name = "", dataType = DmnBuiltInDataType.Undefined }) => {
-        let columnToUpdate: ReactTable.Column<R> | undefined = tableColumns[columnIndex];
-        if (column.depth > 0) {
-          const columnsBelongingToParent = tableColumns.find((c) => c.accessor === column.parent?.id)?.columns;
-          columnToUpdate = (columnsBelongingToParent ?? []).find((c) => c.accessor === column.id);
-        }
-
-        if (columnToUpdate) {
-          columnToUpdate.label = name;
-          columnToUpdate.dataType = dataType;
-        }
-        onColumnsUpdate([...tableColumns]);
+        onColumnUpdates?.([
+          {
+            // Subtract one because of the row index column.
+            columnIndex: columnIndex - 1,
+            dataType,
+            name,
+            column,
+          },
+        ]);
       };
     },
-    [onColumnsUpdate, tableColumns]
+    [onColumnUpdates]
   );
 
   const renderRowIndexColumn = useCallback<(column: ReactTable.ColumnInstance<R>, rowIndex: number) => JSX.Element>(
@@ -124,6 +128,7 @@ export function BeeTableHeader<R extends object>({
           xPosition={0}
           yPosition={rowIndex}
           groupType={column.groupType}
+          isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
