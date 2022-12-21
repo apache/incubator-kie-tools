@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
@@ -209,6 +210,8 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         simpleItemDefinition.setTypeRef(simpleItemDefinitionTypeRef);
         definitions.getItemDefinition().add(simpleItemDefinition);
 
+        mockItemDefinitionConstraint(simpleItemDefinition, "", ConstraintType.NONE);
+
         final QName inputData1TypeRef = new QName(QName.NULL_NS_URI, simpleItemDefinitionName);
         inputData1.getVariable().setTypeRef(inputData1TypeRef);
 
@@ -247,14 +250,18 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final QName complexItemDefinitionPart2TypeRef = new QName(QName.NULL_NS_URI, BuiltInType.BOOLEAN.getName());
         final ItemDefinition complexItemDefinition = new ItemDefinition();
         complexItemDefinition.setName(new Name(complexItemDefinitionName));
-        complexItemDefinition.getItemComponent().add(new ItemDefinition() {{
+        final ItemDefinition part1ItemDefinition = new ItemDefinition() {{
             setName(new Name(complexItemDefinitionPart1Name));
             setTypeRef(complexItemDefinitionPart1TypeRef);
-        }});
-        complexItemDefinition.getItemComponent().add(new ItemDefinition() {{
+        }};
+        final ItemDefinition part2ItemDefinition = new ItemDefinition() {{
             setName(new Name(complexItemDefinitionPart2Name));
             setTypeRef(complexItemDefinitionPart2TypeRef);
-        }});
+        }};
+        mockItemDefinitionConstraint(part1ItemDefinition, "", ConstraintType.NONE);
+        mockItemDefinitionConstraint(part2ItemDefinition, "", ConstraintType.NONE);
+        complexItemDefinition.getItemComponent().add(part1ItemDefinition);
+        complexItemDefinition.getItemComponent().add(part2ItemDefinition);
 
         definitions.getItemDefinition().add(complexItemDefinition);
 
@@ -301,18 +308,24 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final QName parentCustomType = new QName(QName.NULL_NS_URI, tSmurfName);
         final ItemDefinition tSmurfCustomDataType = new ItemDefinition();
         tSmurfCustomDataType.setName(new Name(tSmurfName));
-        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+        final ItemDefinition birthDateItemDefinition = new ItemDefinition() {{
             setName(new Name(tDateOfBirthName));
             setTypeRef(dateBuiltInType);
-        }});
-        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+        }};
+        final ItemDefinition isBlueItemDefinition = new ItemDefinition() {{
             setName(new Name(tIsBlueName));
             setTypeRef(booleanBuiltInType);
-        }});
-        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+        }};
+        final ItemDefinition parentItemDefinition = new ItemDefinition() {{
             setName(new Name(tParentName));
             setTypeRef(parentCustomType);
-        }});
+        }};
+        mockItemDefinitionConstraint(birthDateItemDefinition, "", ConstraintType.NONE);
+        mockItemDefinitionConstraint(isBlueItemDefinition, "", ConstraintType.NONE);
+        mockItemDefinitionConstraint(parentItemDefinition, "", ConstraintType.NONE);
+        tSmurfCustomDataType.getItemComponent().add(birthDateItemDefinition);
+        tSmurfCustomDataType.getItemComponent().add(isBlueItemDefinition);
+        tSmurfCustomDataType.getItemComponent().add(parentItemDefinition);
 
         definitions.getItemDefinition().add(tSmurfCustomDataType);
 
@@ -360,25 +373,33 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final ItemDefinition tSmurfAddressCustomDataType = new ItemDefinition();
         tSmurfAddressCustomDataType.setName(new Name(tSmurfAddress));
-        tSmurfAddressCustomDataType.getItemComponent().add(new ItemDefinition() {{
+        final ItemDefinition line1ItemDefinition = new ItemDefinition() {{
             setName(new Name("line1"));
             setTypeRef(stringBuiltInType);
-        }});
-        tSmurfAddressCustomDataType.getItemComponent().add(new ItemDefinition() {{
+        }};
+        final ItemDefinition line2ItemDefinition = new ItemDefinition() {{
             setName(new Name("line2"));
             setTypeRef(stringBuiltInType);
-        }});
+        }};
+        mockItemDefinitionConstraint(line1ItemDefinition, "", ConstraintType.NONE);
+        mockItemDefinitionConstraint(line2ItemDefinition, "", ConstraintType.NONE);
+        tSmurfAddressCustomDataType.getItemComponent().add(line1ItemDefinition);
+        tSmurfAddressCustomDataType.getItemComponent().add(line2ItemDefinition);
 
         final ItemDefinition tSmurfCustomDataType = new ItemDefinition();
         tSmurfCustomDataType.setName(new Name(tSmurf));
-        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+        final ItemDefinition dobItemDefinition = new ItemDefinition() {{
             setName(new Name("dob"));
             setTypeRef(dateBuiltInType);
-        }});
-        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+        }};
+        final ItemDefinition addressItemDefinition = new ItemDefinition() {{
             setName(new Name("address"));
             getItemComponent().add(tSmurfAddressCustomDataType);
-        }});
+        }};
+        mockItemDefinitionConstraint(dobItemDefinition, "", ConstraintType.NONE);
+        mockItemDefinitionConstraint(addressItemDefinition, "", ConstraintType.NONE);
+        tSmurfCustomDataType.getItemComponent().add(dobItemDefinition);
+        tSmurfCustomDataType.getItemComponent().add(addressItemDefinition);
 
         definitions.getItemDefinition().add(tSmurfCustomDataType);
 
@@ -756,6 +777,9 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         when(tCompany.getName()).thenReturn(new Name(TYPE_COMPANY));
         when(tCompany.getTypeRef()).thenReturn(null);
         when(tCompany.getItemComponent()).thenReturn(asList(name, tAddress));
+
+        mockItemDefinitionConstraint(name, "", ConstraintType.NONE);
+
         return tCompany;
     }
 
@@ -839,7 +863,16 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         when(tPerson.getName()).thenReturn(new Name(TYPE_PERSON));
         when(tPerson.getTypeRef()).thenReturn(null);
         when(tPerson.getItemComponent()).thenReturn(asList(name, age));
+
+        mockItemDefinitionConstraint(name, "", ConstraintType.NONE);
+        mockItemDefinitionConstraint(age, "", ConstraintType.NONE);
+
         return tPerson;
+    }
+
+    private void mockItemDefinitionConstraint(final ItemDefinition itemDefinition, final String constraint, final ConstraintType constraintType) {
+        when(itemDefinitionUtils.getConstraintText(itemDefinition)).thenReturn(constraint);
+        when(itemDefinitionUtils.getConstraintType(itemDefinition)).thenReturn(constraintType);
     }
 
     @Test
