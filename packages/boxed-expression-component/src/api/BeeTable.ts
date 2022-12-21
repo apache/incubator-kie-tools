@@ -76,7 +76,7 @@ export interface BeeTableProps<R extends object> {
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
   /** */
-  onColumnAdded?: (args: { beforeIndex: number }) => void;
+  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
 }
 
 /** Possible status for the visibility of the Table's Header */

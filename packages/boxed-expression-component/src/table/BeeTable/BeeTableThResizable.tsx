@@ -24,7 +24,7 @@ import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefi
 import { ExpressionDefinition } from "../../api";
 
 export interface BeeTableThResizableProps<R extends object> {
-  onColumnAdded?: (args: { beforeIndex: number }) => void;
+  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
@@ -164,6 +164,7 @@ export function BeeTableThResizable<R extends object>({
       xPosition={xPosition}
       yPosition={yPosition}
       onColumnAdded={onColumnAdded}
+      groupType={column.groupType}
     >
       <Resizer
         width={column.width}

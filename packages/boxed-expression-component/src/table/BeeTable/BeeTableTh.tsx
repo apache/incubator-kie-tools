@@ -21,7 +21,8 @@ import { BeeTableTdsAndThsProps } from "../../api";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 
 export interface BeeTableThProps extends BeeTableTdsAndThsProps {
-  onColumnAdded?: (args: { beforeIndex: number }) => void;
+  groupType: string | undefined;
+  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   className: string;
   thProps: Partial<PfReactTable.ThProps>;
   isFocusable: boolean;
@@ -53,6 +54,7 @@ export function BeeTableTh({
   rowSpan = 1,
   xPosition,
   yPosition,
+  groupType,
 }: React.PropsWithChildren<BeeTableThProps>) {
   const thRef = useRef<HTMLTableCellElement>(null);
 
@@ -77,13 +79,13 @@ export function BeeTableTh({
       e.stopPropagation();
 
       // This index doesn't take into account the row index column, so we actually need to subtract 1.
-      onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex });
+      onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex, groupType: groupType });
 
       if (hoverInfo.part === "left") {
         setHoverInfo({ isHovered: false });
       }
     },
-    [columnIndex, hoverInfo, onColumnAdded]
+    [columnIndex, groupType, hoverInfo, onColumnAdded]
   );
 
   const onMouseEnter = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {

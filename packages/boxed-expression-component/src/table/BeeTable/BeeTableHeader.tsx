@@ -49,7 +49,7 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Option to enable or disable header edits */
   editableHeader: boolean;
   /** */
-  onColumnAdded?: (args: { beforeIndex: number }) => void;
+  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -123,6 +123,7 @@ export function BeeTableHeader<R extends object>({
           onKeyDown={onCellKeyDown}
           xPosition={0}
           yPosition={rowIndex}
+          groupType={column.groupType}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
