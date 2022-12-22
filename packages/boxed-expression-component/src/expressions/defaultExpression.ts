@@ -13,6 +13,7 @@ import {
   DecisionTableExpressionDefinition,
   DecisionTableExpressionDefinitionHitPolicy,
   DecisionTableExpressionDefinitionBuiltInAggregation,
+  ExpressionDefinitionBase,
 } from "../api";
 import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "./ContextExpression";
 import {
@@ -32,7 +33,7 @@ import { RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH, RELATION_EXPRESSION_DEFAULT_V
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinitionLogicType,
-  prev: Partial<ExpressionDefinition>
+  prev: ExpressionDefinitionBase
 ): ExpressionDefinition {
   if (logicType === ExpressionDefinitionLogicType.LiteralExpression) {
     const literalExpression: LiteralExpressionDefinition = {
@@ -50,7 +51,6 @@ export function getDefaultExpressionDefinitionByLogicType(
       expression: {
         ...getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.LiteralExpression, {
           id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.LiteralExpression,
           isHeadless: true,
         }),
       },
@@ -73,6 +73,7 @@ export function getDefaultExpressionDefinitionByLogicType(
             dataType: DmnBuiltInDataType.Undefined,
           },
           entryExpression: {
+            id: generateUuid(),
             name: "ContextEntry-1",
             dataType: DmnBuiltInDataType.Undefined,
             logicType: ExpressionDefinitionLogicType.Undefined,
@@ -86,6 +87,7 @@ export function getDefaultExpressionDefinitionByLogicType(
             dataType: DmnBuiltInDataType.Undefined,
           },
           entryExpression: {
+            id: generateUuid(),
             name: "ContextEntry-2",
             dataType: DmnBuiltInDataType.Undefined,
             logicType: ExpressionDefinitionLogicType.Undefined,
@@ -125,6 +127,7 @@ export function getDefaultExpressionDefinitionByLogicType(
             dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
           },
           entryExpression: {
+            id: generateUuid(),
             name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
             dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
             logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,

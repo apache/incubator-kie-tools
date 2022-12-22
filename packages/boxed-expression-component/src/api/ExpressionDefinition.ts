@@ -17,9 +17,9 @@
 import { ExpressionDefinitionLogicType } from "./ExpressionDefinitionLogicType";
 import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 
-interface ExpressionDefinitionBase {
+export interface ExpressionDefinitionBase {
   /** Unique identifier used to identify the expression */
-  id?: string;
+  id: string;
   /** Expression name (which, in DMN world, is equal to the Decision node's name) */
   name?: string;
   /** Expression data type */

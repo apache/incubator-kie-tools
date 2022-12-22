@@ -18,8 +18,13 @@ import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
 import "./index.css";
-// noinspection ES6PreferShortImport
-import { BeeGwtService, DmnBuiltInDataType, ExpressionDefinitionLogicType, ExpressionDefinition } from "../src/api";
+import {
+  BeeGwtService,
+  DmnBuiltInDataType,
+  ExpressionDefinitionLogicType,
+  ExpressionDefinition,
+  generateUuid,
+} from "../src/api";
 import { BoxedExpressionEditor } from "../src/expressions";
 import { Button, Modal } from "@patternfly/react-core";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
@@ -79,6 +84,7 @@ export const pmmlParams = [
 ];
 
 const INITIAL_EXPRESSION: ExpressionDefinition = {
+  id: generateUuid(),
   name: "Expression Name",
   logicType: ExpressionDefinitionLogicType.Undefined,
 };
