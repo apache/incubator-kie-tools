@@ -25,6 +25,7 @@ import {
   BeeTableProps,
   ContextExpressionDefinition,
   ContextExpressionDefinitionEntry,
+  ContextExpressionDefinitionEntryInfo,
   DmnBuiltInDataType,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
@@ -55,7 +56,7 @@ import {
 import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { LITERAL_EXPRESSION_MIN_WIDTH } from "../LiteralExpression";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
-import { EditParameters } from "./EditParameters";
+import { ParametersPopover } from "./ParametersPopover";
 import "./FunctionExpression.css";
 import { FunctionKindSelector } from "./FunctionKindSelector";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
@@ -190,13 +191,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     return () => editorRef.current!;
   }, [editorRef]);
 
-  const setParameters = useCallback(
-    (newParameters) => {
-      setExpression((prev) => ({ ...prev, formalParameters: newParameters }));
-    },
-    [setExpression]
-  );
-
   const parametersColumnHeader = useMemo(
     () => (
       <PopoverMenu
@@ -204,7 +198,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         appendTo={editParametersPopoverAppendTo()}
         className="parameters-editor-popover"
         minWidth="400px"
-        body={<EditParameters parameters={functionExpression.formalParameters} setParameters={setParameters} />}
+        body={<ParametersPopover parameters={functionExpression.formalParameters} />}
       >
         <div className={`parameters-list ${_.isEmpty(functionExpression.formalParameters) ? "empty-parameters" : ""}`}>
           <p className="pf-u-text-truncate">
@@ -215,7 +209,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         </div>
       </PopoverMenu>
     ),
-    [editParametersPopoverAppendTo, i18n, functionExpression.formalParameters, setParameters]
+    [editParametersPopoverAppendTo, i18n, functionExpression.formalParameters]
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {

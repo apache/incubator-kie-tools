@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./EditParameters";
+export * from "./ParametersPopover";
 export * from "./FunctionExpression";
 export * from "./FunctionKindSelector";
