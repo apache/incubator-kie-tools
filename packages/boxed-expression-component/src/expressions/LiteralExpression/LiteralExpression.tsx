@@ -154,10 +154,9 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       )}
       <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>
         <Resizer
-          width={literalExpression.width}
           minWidth={minWidthGlobal}
+          width={literalExpression.width}
           setWidth={setWidth}
-          actualWidth={literalExpression.width}
           resizingWidth={resizingWidth}
           setResizingWidth={setResizingWidth}
         >

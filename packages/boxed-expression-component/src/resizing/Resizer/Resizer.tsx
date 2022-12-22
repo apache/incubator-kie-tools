@@ -24,25 +24,20 @@ import "./Resizer.css";
 export const DEFAULT_MIN_WIDTH = 100;
 
 export interface ResizerProps {
-  actualWidth?: number;
-  width?: number;
-  setWidth?: (width: number | undefined) => void;
-  resizingWidth?: ResizingWidth;
-  setResizingWidth?: (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void;
-  height?: number | "100%";
-  minWidth?: number;
-  children?: React.ReactElement;
+  minWidth: number | undefined;
+  width: number | undefined;
+  setWidth: ((width: number | undefined) => void) | undefined;
+  resizingWidth: ResizingWidth | undefined;
+  setResizingWidth: ((getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void) | undefined;
 }
 
-export const Resizer: React.FunctionComponent<ResizerProps> = ({
-  children,
-  height = "100%",
+export const Resizer: React.FunctionComponent<React.PropsWithChildren<ResizerProps>> = ({
   minWidth,
   width,
   setWidth,
   resizingWidth,
   setResizingWidth,
-  actualWidth,
+  children,
 }) => {
   const id = useMemo(() => {
     return `uuid-${uuid()}`;
@@ -52,19 +47,9 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     return [minWidth ?? DEFAULT_MIN_WIDTH, 0];
   }, [minWidth]);
 
-  const resizerClassName = useMemo(() => {
-    const heightClass = height === "100%" ? "height-based-on-content" : "";
-    return `${heightClass} ${id}`;
-  }, [height, id]);
-
-  const [__resizingWidth, __setResizingWidth] = useState<ResizingWidth>({
-    value: width ?? DEFAULT_MIN_WIDTH,
-    isPivoting: false,
-  }); // internal
-
   const onResizeStop = useCallback(
     (_, data) => {
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: Math.floor(data.size.width), isPivoting: false }));
+      setResizingWidth?.((prev) => ({ value: Math.floor(data.size.width), isPivoting: false }));
       setWidth?.(resizingWidth?.value);
     },
     [resizingWidth, setResizingWidth, setWidth]
@@ -72,14 +57,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onResize = useCallback(
     (_, data) => {
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: Math.floor(data.size.width), isPivoting: true }));
+      setResizingWidth?.(() => ({ value: Math.floor(data.size.width), isPivoting: true }));
     },
     [setResizingWidth]
   );
 
   const onResizeStart = useCallback(
     (_, data) => {
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({ value: Math.floor(data.size.width), isPivoting: true }));
+      setResizingWidth?.(() => ({ value: Math.floor(data.size.width), isPivoting: true }));
     },
     [setResizingWidth]
   );
@@ -87,32 +72,24 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      (setResizingWidth ?? __setResizingWidth)((prev) => ({
-        value: minWidth ?? DEFAULT_MIN_WIDTH,
-        isPivoting: false,
-      }));
       setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
     },
-    [minWidth, setResizingWidth, setWidth]
+    [minWidth, setWidth]
   );
 
   const style = useMemo(() => {
-    return { width: resizingWidth?.value ?? __resizingWidth.value, minWidth };
-  }, [__resizingWidth.value, minWidth, resizingWidth?.value]);
-
-  const containerStyle = useMemo(() => {
-    return { position: "relative" as const, height: "100%" };
-  }, []);
+    return { width: resizingWidth?.value, minWidth };
+  }, [minWidth, resizingWidth?.value]);
 
   const debuggingHandleClassNames = `
-    ${minWidth === (resizingWidth?.value ?? __resizingWidth.value) ? "min" : ""} 
-    ${(resizingWidth?.value ?? __resizingWidth.value ?? 0) < (minWidth ?? 0) ? "error" : ""}
+    ${minWidth === resizingWidth?.value ? "min" : ""} 
+    ${(resizingWidth?.value ?? 0) < (minWidth ?? 0) ? "error" : ""}
   `;
 
   return (
-    <div style={containerStyle}>
-      {actualWidth && (
-        <div className="pf-c-drawer" style={{ position: "absolute", left: actualWidth - 8 }}>
+    <div className={"resizable-div"}>
+      {width && (
+        <div className="pf-c-drawer" style={{ position: "absolute", left: width - 8 }}>
           <div className={`pf-c-drawer__splitter pf-m-vertical actual`}>
             <div className={`pf-c-drawer__splitter-handle`} />
           </div>
@@ -127,15 +104,15 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
         </div>
       )}
 
-      {(width && (
+      {(resizingWidth && (
         <Resizable
-          width={resizingWidth?.value ?? __resizingWidth.value}
+          width={resizingWidth?.value}
           height={0}
           onResize={onResize}
           onResizeStop={onResizeStop}
           onResizeStart={onResizeStart}
           minConstraints={minConstraints}
-          className={resizerClassName}
+          className={"resizable-div"}
           axis={"x"}
           handle={
             <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>

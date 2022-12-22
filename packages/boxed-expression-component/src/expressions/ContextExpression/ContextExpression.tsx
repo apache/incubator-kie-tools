@@ -299,13 +299,10 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             setWidth={setEntryInfoWidth}
             resizingWidth={entryInfoResizingWidth}
             setResizingWidth={setEntryInfoResizingWidth}
-            actualWidth={contextExpression.entryInfoWidth}
           >
             <div className="context-result">{`<result>`}</div>
           </Resizer>,
-          <Resizer key="context-expression">
-            <ResultExpressionCell contextExpression={contextExpression} />
-          </Resizer>,
+          <ResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
         ]
       : undefined;
   }, [contextExpression, setEntryInfoWidth, entryInfoResizingWidth, setEntryInfoResizingWidth]);

@@ -168,9 +168,9 @@ export function BeeTableThResizable<R extends object>({
       isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
     >
       <Resizer
+        minWidth={column.minWidth}
         width={column.width}
         setWidth={column.setWidth}
-        minWidth={column.minWidth}
         resizingWidth={column.resizingWidth}
         setResizingWidth={column.setResizingWidth}
       >

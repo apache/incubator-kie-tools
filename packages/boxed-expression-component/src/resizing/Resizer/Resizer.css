@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-.expression-container .react-resizable.height-based-on-content {
-  /**
-    It seems that react-resizable is always expecting an height, even if we are interested in having 100% for it.
-    Since react-resizable specifies inline style, the only way to overwrite it, was to assign a specific class (height-based-on-content)
-    with the !important card
-    */
-  height: 100% !important;
+.expression-container .resizable-div {
+  height: 100%;
   position: relative;
-}
-
-.expression-container .react-resizable.cell--selected {
-  background-color: var(--selected-cell);
 }
 
 .expression-container .pf-c-drawer__splitter::after {
