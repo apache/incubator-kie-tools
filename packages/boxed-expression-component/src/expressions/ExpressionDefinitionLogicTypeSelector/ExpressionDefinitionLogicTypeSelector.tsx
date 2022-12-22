@@ -41,6 +41,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   onLogicTypeReset: () => void;
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
+  isClearSupported?: boolean;
 }
 
 export const LOGIC_TYPE_SELECTOR_CLASS = "logic-type-selector";
@@ -59,6 +60,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   onLogicTypeSelected,
   onLogicTypeReset,
   getPlacementRef,
+  isClearSupported = true,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -132,8 +134,8 @@ export function ExpressionDefinitionLogicTypeSelector({
   } = useCustomContextMenuHandler(clearContextMenuContainerRef);
 
   const shouldRenderClearContextMenu = useMemo(() => {
-    return isClearContextMenuOpen && isLogicTypeSelected;
-  }, [isClearContextMenuOpen, isLogicTypeSelected]);
+    return isClearContextMenuOpen && isLogicTypeSelected && isClearSupported;
+  }, [isClearContextMenuOpen, isClearSupported, isLogicTypeSelected]);
 
   return (
     <>

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import * as ReactTable from "react-table";
-import { BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
+import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
 
 export interface BeeTableRowsUpdateArgs<R extends object> {
   rows: R[];
@@ -48,6 +48,8 @@ export interface BeeTableProps<R extends object> {
   columns: ReactTable.Column<R>[];
   /** Table's cells */
   rows: R[];
+  /** Function to be executed when cells are modified */
+  onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
   /** Function to be executed when columns are modified */
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
   /** Function to be executed when one or more rows are modified */

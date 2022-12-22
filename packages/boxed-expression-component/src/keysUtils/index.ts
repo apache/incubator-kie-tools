@@ -19,6 +19,14 @@
  * All methods are case insensitive.
  */
 export class NavigationKeysUtils {
+  static isBackspace(key: string) {
+    return /^backspace$/i.test(key);
+  }
+
+  static isDelete(key: string) {
+    return /^delete$/i.test(key);
+  }
+
   static isEscape(key: string) {
     return /^escape$/i.test(key);
   }

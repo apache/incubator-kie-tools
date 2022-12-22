@@ -120,6 +120,7 @@ export function BeeTable<R extends object>({
   additionalRow,
   editColumnLabel,
   editableHeader = true,
+  onCellUpdates,
   onColumnUpdates,
   onRowAdded,
   onColumnAdded,
@@ -138,7 +139,7 @@ export function BeeTable<R extends object>({
 }: BeeTableProps<R>) {
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
-  const { currentlyOpenContextMenu, setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
+  const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
 
   const tableRef = React.useRef<HTMLDivElement>(null);
 
@@ -201,6 +202,22 @@ export function BeeTable<R extends object>({
     [addRowIndexColumns, columns, controllerCell]
   );
 
+  const onCellChanged = useCallback(
+    (cellProps: ReactTable.CellProps<R>) => (value: string) => {
+      const columnIndex = cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);
+      onCellUpdates?.([
+        {
+          value,
+          row: cellProps.row.original,
+          rowIndex: cellProps.row.index,
+          column: cellProps.column,
+          columnIndex: columnIndex - 1, // Subtract one because of the row index column.
+        },
+      ]);
+    },
+    [onCellUpdates]
+  );
+
   const defaultColumn = useMemo(
     () => ({
       Cell: (cellProps: ReactTable.CellProps<R>) => {
@@ -216,17 +233,15 @@ export function BeeTable<R extends object>({
         } else {
           return (
             <BeeTableEditableCellContent
-              onCellUpdate={() => {}} // FIXME: Tiago -> STATE GAP
+              onChange={onCellChanged(cellProps)}
               value={cellProps.value}
-              rowIndex={cellProps.row.index}
-              columnId={cellProps.column.id}
               isReadOnly={isReadOnly}
             />
           );
         }
       },
     }),
-    [cellComponentByColumnId, isReadOnly]
+    [cellComponentByColumnId, isReadOnly, onCellChanged]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(

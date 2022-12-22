@@ -19,6 +19,8 @@ import {
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+  DECISION_TABLE_INPUT_DEFAULT_VALUE,
+  DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
 } from "./DecisionTableExpression";
 import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
@@ -26,7 +28,7 @@ import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
 } from "./InvocationExpression";
 import { LITERAL_EXPRESSION_MIN_WIDTH } from "./LiteralExpression";
-import { RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH } from "./RelationExpression";
+import { RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH, RELATION_EXPRESSION_DEFAULT_VALUE } from "./RelationExpression";
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinitionLogicType,
@@ -159,7 +161,12 @@ export function getDefaultExpressionDefinitionByLogicType(
       rows: [
         {
           id: generateUuid(),
-          cells: ["a", "b", "c", "d"],
+          cells: [
+            RELATION_EXPRESSION_DEFAULT_VALUE,
+            RELATION_EXPRESSION_DEFAULT_VALUE,
+            RELATION_EXPRESSION_DEFAULT_VALUE,
+            RELATION_EXPRESSION_DEFAULT_VALUE,
+          ],
         },
       ],
     };
@@ -214,8 +221,12 @@ export function getDefaultExpressionDefinitionByLogicType(
       rules: [
         {
           id: generateUuid(),
-          inputEntries: ["a", "b"],
-          outputEntries: ["c", "d", "e"],
+          inputEntries: [DECISION_TABLE_INPUT_DEFAULT_VALUE, DECISION_TABLE_INPUT_DEFAULT_VALUE],
+          outputEntries: [
+            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+          ],
           annotationEntries: ["// Your annotations here"],
         },
       ],

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { DmnBuiltInDataType } from "../api";
-import { ResizingWidth } from "../expressions/ExpressionDefinitionRoot";
+import { ResizingWidth } from "../resizing/ResizingWidthsContext";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {

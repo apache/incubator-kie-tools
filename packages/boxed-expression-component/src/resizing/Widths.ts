@@ -1,6 +1,6 @@
 import { ExpressionDefinitionLogicType } from "../api";
 import { ExpressionDefinition, FunctionExpressionDefinitionKind } from "../api/ExpressionDefinition";
-import { ResizingWidth } from "../expressions";
+import { ResizingWidth } from "../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXTRA_WIDTH,
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,

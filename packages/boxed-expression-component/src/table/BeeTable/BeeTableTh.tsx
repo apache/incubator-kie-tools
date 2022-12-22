@@ -30,6 +30,7 @@ export interface BeeTableThProps extends BeeTableTdsAndThsProps {
   rowSpan: number;
   contextMenuThProps?: Pick<PfReactTable.ThProps, "onMouseDown">;
   isLastLevelColumn: boolean;
+  isActive: boolean;
 }
 
 export type HoverInfo =
@@ -57,6 +58,7 @@ export function BeeTableTh({
   yPosition,
   groupType,
   isLastLevelColumn,
+  isActive,
 }: React.PropsWithChildren<BeeTableThProps>) {
   const thRef = useRef<HTMLTableCellElement>(null);
 

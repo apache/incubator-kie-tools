@@ -35,14 +35,14 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
+import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate, BeeTableCellUpdate } from "../../table/BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
-import { ResizingWidth, useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
+import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
 import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
 
-type ROWTYPE = any;
+type ROWTYPE = any; // FIXME: Tiago
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -52,9 +52,9 @@ enum DecisionTableColumnType {
 
 const DECISION_NODE_DEFAULT_NAME = "output-1";
 
-const INPUT_DEFAULT_VALUE = "-";
-const OUTPUT_DEFAULT_VALUE = "";
-const ANNOTATION_DEFAULT_VALUE = "";
+export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
+export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
+export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
 export const DECISION_TABLE_INPUT_MIN_WIDTH = 100;
 export const DECISION_TABLE_INPUT_DEFAULT_WIDTH = 100;
@@ -67,7 +67,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { updateResizingWidth } = useResizingWidthDispatch();
+  const { updateResizingWidth } = useResizingWidthsDispatch();
 
   const generateOperationHandlerConfig = useCallback(
     (groupName: string) => [
@@ -379,6 +379,44 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [beeTableColumns, decisionTable.rules]
   );
 
+  const onCellUpdates = useCallback(
+    (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const n = { ...prev };
+
+        cellUpdates.forEach((u) => {
+          const newRules = [...(n.rules ?? [])];
+          const groupType = u.column.groupType as DecisionTableColumnType;
+          switch (groupType) {
+            case DecisionTableColumnType.InputClause:
+              const newInputEntries = [...newRules[u.rowIndex].inputEntries];
+              newInputEntries[u.columnIndex] = u.value;
+              newRules[u.rowIndex].inputEntries = newInputEntries;
+              n.rules = newRules;
+              break;
+            case DecisionTableColumnType.OutputClause:
+              const newOutputEntries = [...newRules[u.rowIndex].outputEntries];
+              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)] = u.value;
+              newRules[u.rowIndex].outputEntries = newOutputEntries;
+              n.rules = newRules;
+              break;
+            case DecisionTableColumnType.Annotation:
+              const newAnnotationEntries = [...newRules[u.rowIndex].annotationEntries];
+              newAnnotationEntries[u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0)] = u.value;
+              newRules[u.rowIndex].annotationEntries = newAnnotationEntries;
+              n.rules = newRules;
+              break;
+            default:
+              assertUnreachable(groupType);
+          }
+        });
+
+        return n;
+      });
+    },
+    [setExpression]
+  );
+
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
@@ -484,9 +522,11 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         const newRules = [...(prev.rules ?? [])];
         newRules.splice(args.beforeIndex, 0, {
           id: generateUuid(),
-          inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => INPUT_DEFAULT_VALUE),
-          outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => OUTPUT_DEFAULT_VALUE),
-          annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(() => ANNOTATION_DEFAULT_VALUE),
+          inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => DECISION_TABLE_INPUT_DEFAULT_VALUE),
+          outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => DECISION_TABLE_OUTPUT_DEFAULT_VALUE),
+          annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(
+            () => DECISION_TABLE_ANNOTATION_DEFAULT_VALUE
+          ),
         });
 
         return {
@@ -557,7 +597,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
               width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
             });
 
-            newRules.forEach((r) => r.inputEntries.splice(sectionIndex, 0, INPUT_DEFAULT_VALUE));
+            newRules.forEach((r) => r.inputEntries.splice(sectionIndex, 0, DECISION_TABLE_INPUT_DEFAULT_VALUE));
 
             return {
               ...prev,
@@ -573,7 +613,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
               width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
             });
 
-            newRules.forEach((r) => r.outputEntries.splice(sectionIndex, 0, OUTPUT_DEFAULT_VALUE));
+            newRules.forEach((r) => r.outputEntries.splice(sectionIndex, 0, DECISION_TABLE_OUTPUT_DEFAULT_VALUE));
 
             return {
               ...prev,
@@ -588,7 +628,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
               width: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
             });
 
-            newRules.forEach((r) => r.annotationEntries.splice(sectionIndex, 0, ANNOTATION_DEFAULT_VALUE));
+            newRules.forEach((r) =>
+              r.annotationEntries.splice(sectionIndex, 0, DECISION_TABLE_ANNOTATION_DEFAULT_VALUE)
+            );
 
             return {
               ...prev,
@@ -613,6 +655,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}
+        onCellUpdates={onCellUpdates}
         onRowsUpdate={onRowsUpdate}
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}

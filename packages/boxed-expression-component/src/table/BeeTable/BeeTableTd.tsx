@@ -29,6 +29,7 @@ export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProp
   shouldUseCellDelegate: boolean;
   getMouseDownTdProps: (cellIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onMouseDown">;
   onRowAdded?: (args: { beforeIndex: number }) => void;
+  isActive: boolean;
 }
 
 export type HoverInfo =
@@ -50,6 +51,7 @@ export function BeeTableTd<R extends object>({
   getMouseDownTdProps,
   onRowAdded,
   yPosition,
+  isActive,
 }: BeeTableTdProps<R>) {
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
     isHovered: false,

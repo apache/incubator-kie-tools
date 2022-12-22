@@ -40,7 +40,7 @@ import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ResizingWidth, useResizingWidthDispatch, useResizingWidths } from "../ExpressionDefinitionRoot";
+import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
@@ -80,7 +80,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   //// RESIZING WIDTHS
 
-  const { updateResizingWidth } = useResizingWidthDispatch();
+  const { updateResizingWidth } = useResizingWidthsDispatch();
   const { resizingWidths } = useResizingWidths();
 
   const [entryInfoResizingWidth, setEntryInfoResizingWidth] = useState<ResizingWidth>({
@@ -338,11 +338,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
 
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
-      <div
-        className={`context-expression ${contextExpression.id} ${
-          isContextExpressionPivoting ? "pivoting" : "not-pivoting"
-        }`}
-      >
+      <div className={`context-expression ${contextExpression.id}`}>
         <BeeTable
           tableId={contextExpression.id}
           headerLevelCount={1}

@@ -15,18 +15,17 @@
  */
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
 } from "../../i18n";
-import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
 import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
-import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import "./base-no-reset-wrapped.css";
+import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
 
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT Layer */
@@ -36,19 +35,15 @@ export interface BoxedExpressionEditorProps {
   /** All expression properties used to define it */
   expressionDefinition: ExpressionDefinition;
   setExpressionDefinition: React.Dispatch<React.SetStateAction<ExpressionDefinition>>;
-  /**
-   * A boolean used for making (or not) the clear button available on the root expression
-   * Note that this parameter will be used only for the root expression.
-   *
-   * Each expression (internally) has a `noClearAction` property (ExpressionProps interface).
-   * You can set directly it for enabling or not the clear button for such expression.
-   * */
+  /** A boolean used for making (or not) the clear button available on the root expression */
   isClearSupportedOnRootExpression?: boolean;
   /** The data type elements that can be used in the editor */
   dataTypes: DmnDataType[];
   /** PMML parameters */
   pmmlParams?: PmmlParam[];
 }
+
+const isRunnerTable = false;
 
 export function BoxedExpressionEditor({
   dataTypes,
@@ -59,17 +54,6 @@ export function BoxedExpressionEditor({
   isClearSupportedOnRootExpression,
   pmmlParams,
 }: BoxedExpressionEditorProps) {
-  const noClearAction = useMemo(() => {
-    return isClearSupportedOnRootExpression === false;
-  }, [isClearSupportedOnRootExpression]);
-
-  useEffect(() => {
-    setExpressionDefinition((prev) => ({
-      ...prev,
-      noClearAction,
-    }));
-  }, [noClearAction, setExpressionDefinition]);
-
   return (
     <I18nDictionariesProvider
       defaults={boxedExpressionEditorI18nDefaults}
@@ -84,9 +68,12 @@ export function BoxedExpressionEditor({
         setExpressionDefinition={setExpressionDefinition}
         dataTypes={dataTypes}
         pmmlParams={pmmlParams}
-        isRunnerTable={false}
       >
-        <ExpressionDefinitionRoot decisionNodeId={decisionNodeId} expression={expressionDefinition} />
+        <ExpressionDefinitionRoot
+          decisionNodeId={decisionNodeId}
+          expression={expressionDefinition}
+          isClearSupported={isClearSupportedOnRootExpression}
+        />
       </BoxedExpressionEditorContextProvider>
     </I18nDictionariesProvider>
   );

@@ -52,7 +52,7 @@ import {
   useContextExpressionContext,
   useNestedExpressionContainer,
 } from "../ContextExpression";
-import { useResizingWidthDispatch } from "../ExpressionDefinitionRoot";
+import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { LITERAL_EXPRESSION_MIN_WIDTH } from "../LiteralExpression";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { EditParameters } from "./EditParameters";
@@ -78,7 +78,6 @@ const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
   return {
     id: id,
     logicType: ExpressionDefinitionLogicType.Context,
-    noClearAction: true,
     renderResult: false,
     result: {
       id: `${id}-result`,
@@ -94,7 +93,6 @@ const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
         },
         entryExpression: {
           id: prev.classFieldId ?? `${id}-classFieldId`,
-          noClearAction: true,
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
           width: LITERAL_EXPRESSION_MIN_WIDTH,
           content: prev.className ?? "",
@@ -109,7 +107,6 @@ const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
         },
         entryExpression: {
           id: prev.methodFieldId ?? `${id}-methodFieldId`,
-          noClearAction: true,
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
           content: prev.methodName ?? "",
           width: LITERAL_EXPRESSION_MIN_WIDTH,
@@ -136,7 +133,6 @@ const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
   return {
     id,
     logicType: ExpressionDefinitionLogicType.Context,
-    noClearAction: true,
     renderResult: false,
     noHandlerMenu: true,
     result: {
@@ -152,7 +148,6 @@ const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
         },
         entryExpression: {
           id: prev.documentFieldId ?? `${id}-document`,
-          noClearAction: true,
           logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
           testId: "pmml-selector-document",
           noOptionsLabel: i18n.pmml.firstSelection,
@@ -169,7 +164,6 @@ const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
         },
         entryExpression: {
           id: prev.modelFieldId ?? `${id}-model`,
-          noClearAction: true,
           logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
           noOptionsLabel: i18n.pmml.secondSelection,
           testId: "pmml-selector-model",
@@ -265,7 +259,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           return {
             name: prev.name,
             id: prev.id ?? generateUuid(),
-            noClearAction: prev.noClearAction,
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Java,
             formalParameters: [],
@@ -274,7 +267,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           return {
             name: prev.name,
             id: prev.id ?? generateUuid(),
-            noClearAction: prev.noClearAction,
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Pmml,
             formalParameters: [],
@@ -312,7 +304,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     ];
   }, [i18n]);
 
-  const { updateResizingWidth } = useResizingWidthDispatch();
+  const { updateResizingWidth } = useResizingWidthsDispatch();
 
   // FIXME: Tiago -> Fix this.
   // useEffect(() => {

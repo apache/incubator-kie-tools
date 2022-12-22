@@ -26,7 +26,7 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useNestedExpressionContainer } from "../ContextExpression";
-import { ResizingWidth, useResizingWidthDispatch, useResizingWidths } from "../ExpressionDefinitionRoot";
+import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
 
 export const LITERAL_EXPRESSION_MIN_WIDTH = 250;
 
@@ -53,7 +53,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   );
 
   const updateContent = useCallback(
-    (_number, _columnId, value) => {
+    (value: string) => {
       setExpression((prev) => ({ ...prev, content: value }));
     },
     [setExpression]
@@ -76,7 +76,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     );
   }, [nestedExpressionContainer]);
 
-  const resizingWidthsDispatch = useResizingWidthDispatch();
+  const resizingWidthsDispatch = useResizingWidthsDispatch();
   const { resizingWidths } = useResizingWidths();
 
   const setResizingWidth = useCallback(
@@ -135,7 +135,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   //
 
   return (
-    <div className={`literal-expression ${resizingWidth.isPivoting ? "pivoting" : "not-pivoting"}`}>
+    <div className={`literal-expression`}>
       {!literalExpression.isHeadless && (
         <div className="literal-expression-header" onClick={selectDecisionNode}>
           <ExpressionDefinitionHeaderMenu
@@ -160,12 +160,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           resizingWidth={resizingWidth}
           setResizingWidth={setResizingWidth}
         >
-          <BeeTableEditableCellContent
-            value={literalExpression.content ?? ""}
-            rowIndex={0}
-            columnId={literalExpression.id ?? "-"}
-            onCellUpdate={updateContent}
-          />
+          <BeeTableEditableCellContent value={literalExpression.content ?? ""} onChange={updateContent} />
         </Resizer>
       </div>
     </div>

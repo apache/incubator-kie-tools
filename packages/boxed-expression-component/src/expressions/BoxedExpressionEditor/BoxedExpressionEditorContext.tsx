@@ -36,10 +36,6 @@ export interface BoxedExpressionEditorContextType {
   // State
   currentlyOpenContextMenu: string | undefined;
   setCurrentlyOpenContextMenu: React.Dispatch<React.SetStateAction<string | undefined>>;
-  currentlyOpenedHandlerCallback: React.Dispatch<React.SetStateAction<boolean>>;
-  setCurrentlyOpenedHandlerCallback: React.Dispatch<
-    React.SetStateAction<React.Dispatch<React.SetStateAction<boolean>>>
-  >;
 }
 
 export interface BoxedExpressionEditorDispatchContextType {
@@ -62,38 +58,30 @@ export function useBoxedExpressionEditorDispatch() {
   return useContext(BoxedExpressionEditorDispatchContext);
 }
 
-export interface BoxedExpressionEditorContextProviderProps extends React.PropsWithChildren<BoxedExpressionEditorProps> {
-  /** Flag that changes how the resize works when being used by the DMN Runner **/
-  isRunnerTable: boolean;
-}
-
 export function BoxedExpressionEditorContextProvider({
   setExpressionDefinition,
   dataTypes,
   decisionNodeId,
-  isRunnerTable,
   beeGwtService,
   children,
-  isClearSupportedOnRootExpression, // FIXME: Bring it back
   pmmlParams,
-}: BoxedExpressionEditorContextProviderProps) {
-  const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
+}: React.PropsWithChildren<BoxedExpressionEditorProps>) {
   const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
+
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const dispatch = useMemo(() => {
-    return {
-      setExpression: (a: ExpressionDefinition) => {
-        return setExpressionDefinition(a);
-      },
-    };
-  }, [setExpressionDefinition]);
+  const dispatch = useMemo(
+    () => ({
+      setExpression: setExpressionDefinition,
+    }),
+    [setExpressionDefinition]
+  );
 
   return (
     <BoxedExpressionEditorContext.Provider
       value={{
         //plumbing
-        beeGwtService,
+        beeGwtService, // FIXME: Tiago -> Move to a separate context
         editorRef,
 
         // props
@@ -101,18 +89,16 @@ export function BoxedExpressionEditorContextProvider({
         dataTypes,
         pmmlParams,
 
-        //state
+        //state // FIXME: Tiago -> Move to a separate context
         currentlyOpenContextMenu,
         setCurrentlyOpenContextMenu,
-        currentlyOpenedHandlerCallback,
-        setCurrentlyOpenedHandlerCallback,
       }}
     >
       <BoxedExpressionEditorDispatchContext.Provider value={dispatch}>
         <div className="boxed-expression-provider" ref={editorRef}>
           {children}
         </div>
-        {isRunnerTable === false && <CellSelectionBox />}
+        <CellSelectionBox />
       </BoxedExpressionEditorDispatchContext.Provider>
     </BoxedExpressionEditorContext.Provider>
   );

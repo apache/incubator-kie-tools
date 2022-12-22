@@ -16,7 +16,6 @@
 
 import { ExpressionDefinitionLogicType } from "./ExpressionDefinitionLogicType";
 import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
-import { BoxedExpressionEditorI18n } from "../i18n";
 
 interface ExpressionDefinitionBase {
   /** Unique identifier used to identify the expression */
@@ -27,8 +26,6 @@ interface ExpressionDefinitionBase {
   dataType?: DmnBuiltInDataType;
   /** True, to have no header for this specific expression component, used in a recursive expression */
   isHeadless?: boolean;
-  /** True, to have no clear action rendered for this specific expression */
-  noClearAction?: boolean;
 }
 
 export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {

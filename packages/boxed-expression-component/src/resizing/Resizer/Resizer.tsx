@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { Resizable } from "react-resizable";
 import { v4 as uuid } from "uuid";
-import { ResizingWidth } from "../../expressions/ExpressionDefinitionRoot";
+import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import "./Resizer.css";
 
 export const DEFAULT_MIN_WIDTH = 100;

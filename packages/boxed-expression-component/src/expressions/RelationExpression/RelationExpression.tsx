@@ -29,13 +29,13 @@ import {
   DmnBuiltInDataType,
   getNextAvailablePrefixedName,
 } from "../../api";
-import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
+import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, useNestedExpressionContainer } from "../ContextExpression";
 import { useEffect } from "react";
-import { ResizingWidth, useResizingWidthDispatch, useResizingWidths } from "../ExpressionDefinitionRoot";
+import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
 import { NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
@@ -78,7 +78,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
 
   // RESIZING WIDTHS
 
-  const { updateResizingWidth } = useResizingWidthDispatch();
+  const { updateResizingWidth } = useResizingWidthsDispatch();
 
   const nestedExpressionContainer = useNestedExpressionContainer();
 
@@ -218,6 +218,30 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     // Do nothing for now
   }, []);
 
+  const onCellUpdates = useCallback(
+    (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const n = { ...prev };
+        cellUpdates.forEach((u) => {
+          const newRows = [...(n.rows ?? [])];
+
+          const newCells = [...newRows[u.rowIndex].cells];
+          newCells[u.columnIndex] = u.value;
+
+          newRows[u.rowIndex] = {
+            ...newRows[u.rowIndex],
+            cells: newCells,
+          };
+
+          n.rows = newRows;
+        });
+
+        return n;
+      });
+    },
+    [setExpression]
+  );
+
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev: RelationExpressionDefinition) => {
@@ -298,15 +322,12 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   );
 
   return (
-    <div
-      className={`relation-expression ${
-        useResizingWidths().resizingWidths.get(relationExpression.id!)?.isPivoting ? "pivoting" : "not-pivoting"
-      }`}
-    >
+    <div className={`relation-expression`}>
       <BeeTable<ROWTYPE>
         editColumnLabel={i18n.editRelation}
         columns={beeTableColumns}
         rows={beeTableRows}
+        onCellUpdates={onCellUpdates}
         onColumnUpdates={onColumnUpdates}
         onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}

@@ -109,6 +109,7 @@ export function BeeTableBody<R extends object>({
                 getMouseDownTdProps={getMouseDownTdProps}
                 yPosition={headerRowsCount + rowIndex}
                 onRowAdded={onRowAdded}
+                isActive={false}
               />
             );
           })}

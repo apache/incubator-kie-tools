@@ -30,8 +30,16 @@ import { NavigationKeysUtils } from "../../keysUtils";
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;
   name: string;
-  columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
+  columnIndex: number;
+}
+
+export interface BeeTableCellUpdate<R extends object> {
+  value: string;
+  column: ReactTable.ColumnInstance<R>;
+  columnIndex: number;
+  row: R;
+  rowIndex: number;
 }
 
 export interface BeeTableHeaderProps<R extends object> {
@@ -129,6 +137,7 @@ export function BeeTableHeader<R extends object>({
           yPosition={rowIndex}
           groupType={column.groupType}
           isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
+          isActive={false}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}

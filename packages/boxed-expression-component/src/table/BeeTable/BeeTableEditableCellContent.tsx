@@ -44,24 +44,17 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
 export const READ_MODE = "editable-cell--read-mode";
 export const EDIT_MODE = "editable-cell--edit-mode";
 
-export interface BeeTableEditableCellContentProps {
-  /** Cell's value */
+export interface BeeTableEditableCellContentProps<R extends object> {
   value: string;
-  /** Function executed each time a cell gets updated */
-  onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
-  /** Enable/Disable readonly cells */
+  onChange: (value: string) => void;
   isReadOnly?: boolean;
-  rowIndex: number;
-  columnId: string;
 }
 
-export function BeeTableEditableCellContent({
+export function BeeTableEditableCellContent<R extends object>({
   value,
-  rowIndex,
-  columnId,
-  onCellUpdate,
+  onChange,
   isReadOnly,
-}: BeeTableEditableCellContentProps) {
+}: BeeTableEditableCellContentProps<R>) {
   const [isSelected, setSelected] = useState(false);
   const [mode, setMode] = useState(READ_MODE);
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
@@ -87,12 +80,12 @@ export function BeeTableEditableCellContent({
       }
 
       if (value !== newValue) {
-        onCellUpdate(rowIndex, columnId, newValue ?? value);
+        onChange(newValue ?? value);
       }
 
       focusTextInput(textarea.current);
     },
-    [mode, columnId, onCellUpdate, rowIndex, value]
+    [mode, value, onChange]
   );
 
   const triggerEditMode = useCallback(() => {
@@ -139,23 +132,33 @@ export function BeeTableEditableCellContent({
       }
 
       triggerEditMode();
-      onCellUpdate(rowIndex, columnId, newValue ?? value);
+      onChange(newValue ?? value);
     },
-    [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpressionEditor.editorRef]
+    [triggerEditMode, onChange, value, boxedExpressionEditor.editorRef, triggerReadMode]
   );
 
-  const onTextAreaKeyDown = useCallback((e: React.KeyboardEvent<HTMLElement>) => {
-    const key = e.key;
-    const isFiredFromThis = e.currentTarget === e.target;
+  const onTextAreaKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLElement>) => {
+      const key = e.key;
 
-    if (!isFiredFromThis) {
-      return;
-    }
+      const isDelete = NavigationKeysUtils.isDelete(key);
+      const isBackspace = NavigationKeysUtils.isBackspace(key);
+      if (isDelete || isBackspace) {
+        onChange("");
+      }
 
-    if (!NavigationKeysUtils.isEnter(key)) {
-      (e.target as HTMLTextAreaElement).value = "";
-    }
-  }, []);
+      const isFiredFromThis = e.currentTarget === e.target;
+
+      if (!isFiredFromThis) {
+        return;
+      }
+
+      if (!NavigationKeysUtils.isEnter(key)) {
+        (e.target as HTMLTextAreaElement).value = "";
+      }
+    },
+    [onChange]
+  );
 
   // Feel Handlers ===========================================================
 
@@ -179,12 +182,26 @@ export function BeeTableEditableCellContent({
       }
 
       if (isTab) {
-        triggerReadMode(newValue);
-        setMode(READ_MODE);
+        // FIXME: Tiago
+        // This is a hack. Ideally, this would be treated inside FeelInput.
+        // Tab shouldn't move out from the cell if the autocompletion widget is open.
+        if (document.querySelector(".suggest-widget.visible")) {
+          // Do nothing.
+        } else {
+          triggerReadMode(newValue);
+          setMode(READ_MODE);
+          if (!event.shiftKey) {
+            //this setTimeout fixes the focus outside of the table when the suggestions opens
+            setTimeout(() => focusNextCellByTabKey(textarea.current, 1), 0);
+          } else {
+            //this setTimeout fixes the focus outside of the table when the suggestions opens
+            setTimeout(() => focusPrevCellByTabKey(textarea.current, 1), 0);
+          }
+        }
       }
 
       if (isEnter) {
-        if (event.ctrlKey) {
+        if (event.ctrlKey || event.shiftKey) {
           feelInputRef.current?.insertNewLineToMonaco();
         } else if (!FeelEditorService.isSuggestWidgetOpen()) {
           triggerReadMode(newValue);
@@ -194,37 +211,34 @@ export function BeeTableEditableCellContent({
       }
 
       if (isEsc) {
-        feelInputRef.current?.setMonacoValue(previousValue);
-        triggerReadMode(previousValue);
-        setMode(READ_MODE);
-        focusCurrentCell(textarea.current);
-      }
-
-      if (isTab) {
-        if (!event.shiftKey) {
-          //this setTimeout fixes the focus outside of the table when the suggestions opens
-          setTimeout(() => focusNextCellByTabKey(textarea.current, 1), 0);
+        // FIXME: Tiago
+        // This is a hack. Ideally, this would be treated inside FeelInput.
+        // Esc shouldn't move out from the cell if the autocompletion widget is open.
+        if (document.querySelector(".suggest-widget.visible")) {
+          // Do nothing.
         } else {
-          //this setTimeout fixes the focus outside of the table when the suggestions opens
-          setTimeout(() => focusPrevCellByTabKey(textarea.current, 1), 0);
+          feelInputRef.current?.setMonacoValue(previousValue);
+          triggerReadMode(previousValue);
+          setMode(READ_MODE);
+          focusCurrentCell(textarea.current);
         }
       }
 
       if (event.shiftKey && event.ctrlKey && key === "keyz") {
         const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
         if (commandStack.length > 0 && monacoValue.length - previousValue.length <= 0) {
-          onCellUpdate(rowIndex, columnId, commandStack[commandStack.length - 1]);
+          onChange(commandStack[commandStack.length - 1]);
           setCommand([...commandStack.slice(0, -1)]);
         }
       } else if (event.ctrlKey && key === "keyz") {
         const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
         if (monacoValue.length - previousValue.length >= 0) {
-          onCellUpdate(rowIndex, columnId, previousValue !== monacoValue ? previousValue : "");
+          onChange(previousValue !== monacoValue ? previousValue : "");
           setCommand([...commandStack, monacoValue]);
         }
       }
     },
-    [triggerReadMode, previousValue, rowIndex, commandStack, onCellUpdate, columnId]
+    [triggerReadMode, previousValue, commandStack, onChange]
   );
 
   const onFeelChange = useCallback((_e, newValue, newPreview) => {
@@ -237,16 +251,6 @@ export function BeeTableEditableCellContent({
   const onFeelLoad = useCallback((newPreview) => {
     setPreview(newPreview);
   }, []);
-
-  const textValue = useMemo(() => {
-    if (!value) {
-      return "";
-    }
-    if (typeof value === "object") {
-      return value[columnId];
-    }
-    return `${value}`;
-  }, [value, columnId]);
 
   return (
     <>
@@ -262,7 +266,7 @@ export function BeeTableEditableCellContent({
           className="editable-cell-textarea"
           ref={textarea}
           tabIndex={-1}
-          value={textValue}
+          value={value}
           onChange={onTextAreaChange}
           onBlur={onTextAreaBlur}
           readOnly={isReadOnly}
@@ -271,7 +275,7 @@ export function BeeTableEditableCellContent({
         <FeelInput
           ref={feelInputRef}
           enabled={mode === EDIT_MODE}
-          value={textValue}
+          value={value}
           onKeyDown={onFeelKeyDown}
           onChange={onFeelChange}
           onLoad={onFeelLoad}
