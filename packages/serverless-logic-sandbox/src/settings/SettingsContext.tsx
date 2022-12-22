@@ -297,6 +297,7 @@ export function SettingsContextProvider(props: any) {
   const value = useMemo(() => {
     return {
       isOpen,
+      // TODO: remove this
       activeTab,
       openshift: {
         status: openshiftStatus,
@@ -342,14 +343,7 @@ export function SettingsContextProvider(props: any) {
 
   return (
     <SettingsContext.Provider value={value}>
-      <SettingsDispatchContext.Provider value={dispatch}>
-        {githubAuthStatus !== AuthStatus.LOADING && <>{props.children}</>}
-        <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
-          <div style={{ height: "calc(100vh * 0.5)" }} className={"kie-tools--settings-modal-content"}>
-            <SettingsModalBody />
-          </div>
-        </Modal>
-      </SettingsDispatchContext.Provider>
+      <SettingsDispatchContext.Provider value={dispatch}>{props.children}</SettingsDispatchContext.Provider>
     </SettingsContext.Provider>
   );
 }

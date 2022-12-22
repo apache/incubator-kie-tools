@@ -19,6 +19,12 @@ import { Redirect, Switch } from "react-router";
 import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { GitHubSettingsTab } from "../../settings/github/GitHubSettingsTab";
+import { KieSandboxExtendedServicesSettingsTab } from "../extendedServices/KieSandboxExtendedServicesSettingsTab";
+import { FeaturePreviewSettingsTab } from "../featurePreview/FeaturePreviewSettingsTab";
+import { ApacheKafkaSettingsTab } from "../kafka/ApacheKafkaSettingsTab";
+import { OpenShiftSettingsTab } from "../openshift/OpenShiftSettingsTab";
+import { ServiceAccountSettingsTab } from "../serviceAccount/ServiceAccountSettingsTab";
+import { ServiceRegistrySettingsTab } from "../serviceRegistry/ServiceRegistrySettingsTab";
 
 export function SettingsPageRoutes() {
   const routes = useRoutes();
@@ -27,23 +33,23 @@ export function SettingsPageRoutes() {
       <Route path={routes.settings.github.path({})}>
         <GitHubSettingsTab />
       </Route>
-      <Route path={routes.settings.openshift.path({})}>
-        <GitHubSettingsTab />
-      </Route>
       <Route path={routes.settings.kie_sandbox_extended_services.path({})}>
-        <GitHubSettingsTab />
+        <KieSandboxExtendedServicesSettingsTab />
+      </Route>
+      <Route path={routes.settings.openshift.path({})}>
+        <OpenShiftSettingsTab />
       </Route>
       <Route path={routes.settings.service_account.path({})}>
-        <GitHubSettingsTab />
+        <ServiceAccountSettingsTab />
       </Route>
       <Route path={routes.settings.service_registry.path({})}>
-        <GitHubSettingsTab />
+        <ServiceRegistrySettingsTab />
       </Route>
       <Route path={routes.settings.kafka.path({})}>
-        <GitHubSettingsTab />
+        <ApacheKafkaSettingsTab />
       </Route>
       <Route path={routes.settings.feature_preview.path({})}>
-        <GitHubSettingsTab />
+        <FeaturePreviewSettingsTab />
       </Route>
       <Route>
         <Redirect to={routes.settings.github.path({})} />

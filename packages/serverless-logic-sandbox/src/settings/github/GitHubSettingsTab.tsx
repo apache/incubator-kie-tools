@@ -25,11 +25,13 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../SettingsContext";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { makeCookieName } from "../../cookies";
+import { ActionGroup, Modal, ModalVariant, PageGroup } from "@patternfly/react-core";
+import { AddCircleOIcon } from "@patternfly/react-icons";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
@@ -53,6 +55,9 @@ export function GitHubSettingsTab() {
 
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
   const [isGitHubTokenValid, setIsGitHubTokenValid] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [githubTokenInputValue, setGitHubTokenInputValue] = useState<string>();
+  const tokenInput = useRef<HTMLInputElement>(null);
 
   const githubTokenValidated = useMemo(() => {
     return isGitHubTokenValid ? "default" : "error";
@@ -66,16 +71,34 @@ export function GitHubSettingsTab() {
     return obfuscate(potentialGitHubToken ?? settings.github.token);
   }, [settings.github, potentialGitHubToken]);
 
-  const onPasteGitHubToken = useCallback(
+  useEffect(() => {
+    isModalOpen && tokenInput.current?.focus();
+  }, [isModalOpen, settings.github.authStatus]);
+
+  const handleModalToggle = useCallback(() => {
+    setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
+  }, []);
+
+  const onAddGitHubToken = useCallback(
     (e) => {
-      const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
+      e.preventDefault();
+
+      if (!githubTokenInputValue) {
+        return setIsGitHubTokenValid(false);
+      }
+
+      const token = githubTokenInputValue.slice(0, GITHUB_OAUTH_TOKEN_SIZE);
       setPotentialGitHubToken(token);
       settingsDispatch.github.authService
         .authenticate(token)
-        .then(() => setIsGitHubTokenValid(true))
-        .catch((e) => setIsGitHubTokenValid(false));
+        .then(() => {
+          setIsGitHubTokenValid(false);
+          handleModalToggle();
+        })
+        .catch(() => setIsGitHubTokenValid(false))
+        .finally(() => setGitHubTokenInputValue(undefined));
     },
-    [settingsDispatch.github.authService]
+    [settingsDispatch.github.authService, githubTokenInputValue]
   );
 
   const onSignOutFromGitHub = useCallback(() => {
@@ -85,118 +108,147 @@ export function GitHubSettingsTab() {
 
   return (
     <Page>
-      {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
-        <PageSection>
-          <EmptyState>
-            <EmptyStateIcon icon={ExclamationTriangleIcon} />
-            <TextContent>
-              <Text component={"h2"}>GitHub Token expired</Text>
-            </TextContent>
+      <PageSection variant={"light"} isWidthLimited>
+        <TextContent>
+          <Text component={TextVariants.h1}>GitHub</Text>
+          <Text component={TextVariants.p}>
+            Data you provide here is necessary for creating repositories containing models you design, and syncing
+            changes with GitHub.
             <br />
-            <EmptyStateBody>
-              <TextContent>Reset your token to sign in with GitHub again.</TextContent>
+            All information is locally stored in your browser and never shared with anyone.
+          </Text>
+        </TextContent>
+      </PageSection>
+
+      <PageSection isFilled isWidthLimited>
+        <PageSection isFilled variant={"light"}>
+          {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
+            <EmptyState>
+              <EmptyStateIcon icon={ExclamationTriangleIcon} />
+              <TextContent>
+                <Text component={"h2"}>GitHub Token expired</Text>
+              </TextContent>
+              <EmptyStateBody>
+                <TextContent>Reset your token to sign in with GitHub again.</TextContent>
+              </EmptyStateBody>
               <br />
-              <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
+              <Button variant={ButtonVariant.secondary} onClick={onSignOutFromGitHub}>
                 Reset
               </Button>
-            </EmptyStateBody>
-          </EmptyState>
-        </PageSection>
-      )}
-      {settings.github.authStatus === AuthStatus.LOADING && (
-        <PageSection>
-          <EmptyState>
-            <EmptyStateIcon icon={GithubIcon} />
-            <TextContent>
-              <Text component={"h2"}>Signing in with GitHub</Text>
-            </TextContent>
-            <br />
-            <br />
-            <Spinner />
-          </EmptyState>
-        </PageSection>
-      )}
-      {settings.github.authStatus === AuthStatus.SIGNED_IN && (
-        <PageSection>
-          <EmptyState>
-            <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
-            <TextContent>
-              <Text component={"h2"}>{"You're signed in with GitHub."}</Text>
-            </TextContent>
-            <EmptyStateBody>
+            </EmptyState>
+          )}
+          {settings.github.authStatus === AuthStatus.LOADING && (
+            <EmptyState>
+              <EmptyStateIcon icon={GithubIcon} />
               <TextContent>
-                Gists are <b>{settings.github.scopes?.includes(GitHubTokenScope.GIST) ? "enabled" : "disabled"}.</b>
+                <Text component={"h2"}>Signing in with GitHub</Text>
               </TextContent>
+              <br />
+              <br />
+              <Spinner />
+            </EmptyState>
+          )}
+          {settings.github.authStatus === AuthStatus.SIGNED_IN && (
+            <EmptyState>
+              <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
               <TextContent>
+                <Text component={"h2"}>{"You're signed in with GitHub."}</Text>
+              </TextContent>
+              <EmptyStateBody>
+                Gists are <b>{settings.github.scopes?.includes(GitHubTokenScope.GIST) ? "enabled" : "disabled"}.</b>
+                <br />
                 Private repositories are{" "}
                 <b>{settings.github.scopes?.includes(GitHubTokenScope.REPO) ? "enabled" : "disabled"}.</b>
-              </TextContent>
-              <br />
-              <TextContent>
+                <br />
                 <b>Token: </b>
                 <i>{obfuscate(settings.github.token)}</i>
-              </TextContent>
-              <TextContent>
+                <br />
                 <b>User: </b>
                 <i>{settings.github.user?.login}</i>
-              </TextContent>
-              <TextContent>
+                <br />
                 <b>Scope: </b>
                 <i>{settings.github.scopes?.join(", ") || "(none)"}</i>
-              </TextContent>
+              </EmptyStateBody>
               <br />
-              <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
+              <Button variant={ButtonVariant.secondary} onClick={onSignOutFromGitHub}>
                 Sign out
               </Button>
-            </EmptyStateBody>
-          </EmptyState>
+            </EmptyState>
+          )}
+          {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
+            <EmptyState>
+              <EmptyStateIcon icon={AddCircleOIcon} />
+              <TextContent>
+                <Text component={"h2"}>{"No access token"}</Text>
+              </TextContent>
+              <EmptyStateBody>
+                You currently have no tokens to display. Access tokens allow you for creating repositories containing
+                models you design, and syncing changes with GitHub.
+              </EmptyStateBody>
+              <Button variant={ButtonVariant.primary} onClick={handleModalToggle}>
+                Add access token
+              </Button>
+            </EmptyState>
+          )}
         </PageSection>
-      )}
-      {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
-        <PageSection>
-          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-            <Form>
-              <TextContent>
-                <Text component={TextVariants.h3}>GitHub</Text>
-              </TextContent>
-              <TextContent>
-                <Text component={TextVariants.small}>
-                  Data you provide here is necessary for creating repositories containing models you design, and syncing
-                  changes with GitHub. All information is locally stored in your browser and never shared with anyone.
-                </Text>
-              </TextContent>
-              <h3>
-                <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
-                  Create a new token&nbsp;&nbsp;
-                  <ExternalLinkAltIcon />
-                </a>
-              </h3>
-              <FormGroup
-                isRequired={true}
-                helperTextInvalid={githubTokenHelperText}
+      </PageSection>
+
+      <Modal
+        title="Settings"
+        isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
+        onClose={handleModalToggle}
+        variant={ModalVariant.large}
+        actions={[
+          <Button key="apply" variant="primary" type="submit" tabIndex={0} isDisabled={!tokenInput.current?.value}>
+            Apply
+          </Button>,
+          <Button key="confirm" variant="link" onClick={handleModalToggle} tabIndex={0}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        <Form onSubmit={onAddGitHubToken}>
+          <h3>
+            <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
+              Create a new token&nbsp;&nbsp;
+              <ExternalLinkAltIcon />
+            </a>
+          </h3>
+          <FormGroup
+            isRequired={true}
+            helperTextInvalid={githubTokenHelperText}
+            validated={githubTokenValidated}
+            label={"Token"}
+            fieldId={"github-pat"}
+            helperText={"Your token must include the 'repo' scope."}
+          >
+            <InputGroup>
+              <TextInput
+                ref={tokenInput}
+                autoComplete={"off"}
+                id="token-input"
+                name="tokenInput"
+                aria-describedby="token-text-input-helper"
+                placeholder={"Paste your GitHub token here"}
+                maxLength={GITHUB_OAUTH_TOKEN_SIZE}
                 validated={githubTokenValidated}
-                label={"Token"}
-                fieldId={"github-pat"}
-                helperText={"Your token must include the 'repo' scope."}
-              >
-                <InputGroup>
-                  <TextInput
-                    autoComplete={"off"}
-                    id="token-input"
-                    name="tokenInput"
-                    aria-describedby="token-text-input-helper"
-                    placeholder={"Paste your GitHub token here"}
-                    maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-                    validated={githubTokenValidated}
-                    value={githubTokenToDisplay}
-                    onPaste={onPasteGitHubToken}
-                  />
-                </InputGroup>
-              </FormGroup>
-            </Form>
-          </PageSection>
-        </PageSection>
-      )}
+                onChange={(value) => setGitHubTokenInputValue(value)}
+                tabIndex={0}
+              />
+            </InputGroup>
+          </FormGroup>
+          <Button
+            isInline={true}
+            key="quickstart"
+            variant="link"
+            onClick={() => {
+              /* TODO implement quickstart guide */
+            }}
+          >
+            Need help getting started? Follow our quickstart guide.
+          </Button>
+        </Form>
+      </Modal>
     </Page>
   );
 }
