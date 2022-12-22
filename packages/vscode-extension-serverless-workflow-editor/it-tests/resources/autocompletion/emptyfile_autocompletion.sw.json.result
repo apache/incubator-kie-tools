@@ -1,7 +1,7 @@
 {
   "id": "Workflow unique identifier",
   "version": "0.1",
-  "specVersion": "0.1",
+  "specVersion": "0.8",
   "name": "Workflow name",
   "description": "Workflow description",
   "start": "StartState",
