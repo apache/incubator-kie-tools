@@ -8,10 +8,14 @@ import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
 } from "../expressions/ContextExpression";
-import { LIST_EXPRESSION_MIN_WIDTH } from "../expressions/ListExpression";
 import { LITERAL_EXPRESSION_MIN_WIDTH, LITERAL_EXPRESSION_EXTRA_WIDTH } from "../expressions/LiteralExpression";
 import { RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "../expressions/RelationExpression";
 import { DEFAULT_MIN_WIDTH } from "./Resizer";
+import {
+  DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+  DECISION_TABLE_INPUT_MIN_WIDTH,
+  DECISION_TABLE_OUTPUT_MIN_WIDTH,
+} from "../expressions/DecisionTableExpression";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
   if (!expression) {
@@ -40,24 +44,41 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     }
   } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
     return (
-      (expression.columns?.length ?? 0) * RELATION_EXPRESSION_COLUMN_MIN_WIDTH +
+      (expression.columns?.length ?? 0) * (RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 2) +
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-      NESTED_EXPRESSION_CLEAR_MARGIN +
-      (expression.columns?.length ?? 0) * 2 // 2px for border of each column
+      NESTED_EXPRESSION_CLEAR_MARGIN
     );
-  }
-
-  // TODO: Tiago -> Implement those
-  else if (expression.logicType === ExpressionDefinitionLogicType.List) {
-    return LIST_EXPRESSION_MIN_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+    return (
+      Math.max(
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        ...(expression.items ?? []).map((expression) => getExpressionMinWidth(expression))
+      ) +
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+      NESTED_EXPRESSION_CLEAR_MARGIN
+    );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
-    return CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH;
+    return (
+      CONTEXT_ENTRY_INFO_MIN_WIDTH +
+      Math.max(
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        ...(expression.bindingEntries ?? []).map(({ entryExpression }) => getExpressionMinWidth(entryExpression))
+      ) +
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+      NESTED_EXPRESSION_CLEAR_MARGIN
+    );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
-    return 0;
+    return (
+      (expression.input?.length ?? 0) * (DECISION_TABLE_INPUT_MIN_WIDTH + 2) +
+      (expression.output?.length ?? 0) * (DECISION_TABLE_OUTPUT_MIN_WIDTH + 2) +
+      (expression.annotations?.length ?? 0) * (DECISION_TABLE_ANNOTATION_MIN_WIDTH + 2) +
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+      NESTED_EXPRESSION_CLEAR_MARGIN
+    );
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
-    return 0;
+    return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
-    return 0;
+    return DEFAULT_MIN_WIDTH;
   } else {
     throw new Error("Shouldn't ever reach this point");
   }
@@ -78,10 +99,10 @@ export function getExpressionResizingWidth(
       resizingWidth ??
       (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
         Math.max(
+          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
           ...[...expression.contextEntries.map((e) => e.entryExpression), expression.result].map((e) =>
             getExpressionResizingWidth(e, resizingWidths)
-          ),
-          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
+          )
         ) +
         CONTEXT_ENTRY_EXTRA_WIDTH
     );
@@ -102,7 +123,7 @@ export function getExpressionResizingWidth(
       resizingWidth ??
       (expression.columns ?? []).reduce(
         (acc, { width }) => acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH),
-        CONTEXT_ENTRY_EXTRA_WIDTH + (expression.columns?.length ?? 0)
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + (expression.columns?.length ?? 0) * 2
       )
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
@@ -114,15 +135,28 @@ export function getExpressionResizingWidth(
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length * 2
       )
     );
-  }
-
-  // TODO: Tiago -> Implement those
-  else if (expression.logicType === ExpressionDefinitionLogicType.List) {
-    return resizingWidth ?? expression.width ?? LIST_EXPRESSION_MIN_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+    return (
+      resizingWidth ??
+      Math.max(
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        ...(expression.items ?? []).map((expression) => getExpressionResizingWidth(expression, resizingWidths))
+      ) +
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+        NESTED_EXPRESSION_CLEAR_MARGIN
+    );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
-    return resizingWidth ?? DEFAULT_MIN_WIDTH;
+    return (
+      resizingWidth ??
+      Math.max(
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        ...(expression.bindingEntries ?? []).map((e) => getExpressionResizingWidth(e.entryExpression, resizingWidths))
+      ) +
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+        NESTED_EXPRESSION_CLEAR_MARGIN
+    );
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
-    return resizingWidth ?? DEFAULT_MIN_WIDTH;
+    return resizingWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else {

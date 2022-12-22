@@ -106,17 +106,17 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     });
   }, [columns]);
 
-  const isRelationExpressionPivoting = useMemo(() => {
-    return columnResizingWidths.some(({ isPivoting }) => isPivoting);
-  }, [columnResizingWidths]);
+  // const isRelationExpressionPivoting = useMemo(() => {
+  //   return columnResizingWidths.some(({ isPivoting }) => isPivoting);
+  // }, [columnResizingWidths]);
 
-  const [pivotAwareNestedExpressionContainer, setPivotAwareNestedExpressionContainer] =
-    useState(nestedExpressionContainer);
-  useEffect(() => {
-    setPivotAwareNestedExpressionContainer((prev) => {
-      return isRelationExpressionPivoting ? prev : nestedExpressionContainer;
-    });
-  }, [isRelationExpressionPivoting, nestedExpressionContainer]);
+  // const [pivotAwareNestedExpressionContainer, setPivotAwareNestedExpressionContainer] =
+  //   useState(nestedExpressionContainer);
+  // useEffect(() => {
+  //   setPivotAwareNestedExpressionContainer((prev) => {
+  //     return isRelationExpressionPivoting ? prev : nestedExpressionContainer;
+  //   });
+  // }, [isRelationExpressionPivoting, nestedExpressionContainer]);
 
   const setColumnResizingWidth = useCallback(
     (columnIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {

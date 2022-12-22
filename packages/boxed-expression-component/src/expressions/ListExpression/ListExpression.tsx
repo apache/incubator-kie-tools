@@ -35,7 +35,6 @@ import { BeeTable } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
 
-export const LIST_EXPRESSION_MIN_WIDTH = 430;
 type ROWTYPE = any;
 
 export const ListExpression: React.FunctionComponent<ListExpressionDefinition> = (
