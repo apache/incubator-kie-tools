@@ -14,22 +14,4 @@
  * limitations under the License.
  */
 
-import { setDiagnosticsOptions } from "monaco-yaml";
-import { DASHBUILDER_SCHEMA } from "../schemas";
-import { JSONSchema7 } from "json-schema";
-
-export function initYamlSchemaDiagnostics() {
-  setDiagnosticsOptions({
-    hover: true,
-    completion: true,
-    validate: true,
-    format: true,
-    schemas: [
-      {
-        uri: "https://dashbuilder.org/schemas/0.1/dashbuilder.json",
-        fileMatch: ["*"],
-        schema: DASHBUILDER_SCHEMA as JSONSchema7,
-      },
-    ],
-  });
-}
+export { DASHBUILDER_SCHEMA } from "./dashbuilderSchema";

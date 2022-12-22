@@ -1525,7 +1525,9 @@ importers:
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
+      "@types/json-schema": ^7.0.11
       "@types/react": ^17.0.6
+      "@types/react-dom": ^17.0.5
       "@types/testing-library__jest-dom": ^5.9.1
       copy-webpack-plugin: ^11.0.0
       copyfiles: ^2.4.1
@@ -1537,6 +1539,7 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
+      json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -1561,6 +1564,7 @@ importers:
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      json-schema: 0.4.0
       monaco-editor: 0.33.0
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
@@ -1576,7 +1580,9 @@ importers:
       "@testing-library/jest-dom": 5.16.1
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
+      "@types/json-schema": 7.0.11
       "@types/react": 17.0.21
+      "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
       copy-webpack-plugin: 11.0.0_webpack@5.70.0
       copyfiles: 2.4.1
