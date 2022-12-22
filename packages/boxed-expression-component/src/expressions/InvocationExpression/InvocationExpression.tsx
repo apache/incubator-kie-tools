@@ -163,6 +163,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
           nameAndDataTypeSynchronized: true,
           entryExpression: {
             logicType: ExpressionDefinitionLogicType.Undefined,
+            dataType: DmnBuiltInDataType.Undefined,
             id: generateUuid(),
           },
           entryInfo: {

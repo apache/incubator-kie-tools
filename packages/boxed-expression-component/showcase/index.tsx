@@ -87,6 +87,7 @@ const INITIAL_EXPRESSION: ExpressionDefinition = {
   id: generateUuid(),
   name: "Expression Name",
   logicType: ExpressionDefinitionLogicType.Undefined,
+  dataType: DmnBuiltInDataType.Undefined,
 };
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component

@@ -73,16 +73,18 @@ const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
       prev.functionKind === FunctionExpressionDefinitionKind.Java
     )
   ) {
-    return { logicType: ExpressionDefinitionLogicType.Undefined, id };
+    return { logicType: ExpressionDefinitionLogicType.Undefined, id, dataType: DmnBuiltInDataType.Undefined };
   }
 
   return {
     id: id,
     logicType: ExpressionDefinitionLogicType.Context,
+    dataType: DmnBuiltInDataType.Undefined,
     renderResult: false,
     result: {
       id: `${id}-result`,
       logicType: ExpressionDefinitionLogicType.Undefined,
+      dataType: DmnBuiltInDataType.Undefined,
     },
     noHandlerMenu: true,
     contextEntries: [
@@ -95,6 +97,7 @@ const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
         entryExpression: {
           id: prev.classFieldId ?? `${id}-classFieldId`,
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          dataType: DmnBuiltInDataType.Undefined,
           width: LITERAL_EXPRESSION_MIN_WIDTH,
           content: prev.className ?? "",
           isHeadless: true,
@@ -109,6 +112,7 @@ const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
         entryExpression: {
           id: prev.methodFieldId ?? `${id}-methodFieldId`,
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          dataType: DmnBuiltInDataType.Undefined,
           content: prev.methodName ?? "",
           width: LITERAL_EXPRESSION_MIN_WIDTH,
           isHeadless: true,
@@ -128,17 +132,23 @@ const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
       prev.functionKind === FunctionExpressionDefinitionKind.Pmml
     )
   ) {
-    return { logicType: ExpressionDefinitionLogicType.Undefined, id };
+    return {
+      logicType: ExpressionDefinitionLogicType.Undefined,
+      id,
+      dataType: DmnBuiltInDataType.Undefined,
+    };
   }
 
   return {
     id,
     logicType: ExpressionDefinitionLogicType.Context,
+    dataType: DmnBuiltInDataType.Undefined,
     renderResult: false,
     noHandlerMenu: true,
     result: {
       id: `${id}-result`,
       logicType: ExpressionDefinitionLogicType.Undefined,
+      dataType: DmnBuiltInDataType.Undefined,
     },
     contextEntries: [
       {
@@ -148,6 +158,7 @@ const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
           dataType: DmnBuiltInDataType.String,
         },
         entryExpression: {
+          dataType: DmnBuiltInDataType.Undefined,
           id: prev.documentFieldId ?? `${id}-document`,
           logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
           testId: "pmml-selector-document",
@@ -166,6 +177,7 @@ const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
         entryExpression: {
           id: prev.modelFieldId ?? `${id}-model`,
           logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
+          dataType: DmnBuiltInDataType.Undefined,
           noOptionsLabel: i18n.pmml.secondSelection,
           testId: "pmml-selector-model",
           kind: PmmlLiteralExpressionDefinitionKind.Model,
@@ -247,6 +259,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           return getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.Function, {
             id: prev.id ?? generateUuid(),
             name: prev.name,
+            dataType: DmnBuiltInDataType.Undefined,
           });
         } else if (kind === FunctionExpressionDefinitionKind.Java) {
           return {
@@ -254,6 +267,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
             id: prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Java,
+            dataType: DmnBuiltInDataType.Undefined,
             formalParameters: [],
           };
         } else if (kind === FunctionExpressionDefinitionKind.Pmml) {
@@ -262,6 +276,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
             id: prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Pmml,
+            dataType: DmnBuiltInDataType.Undefined,
             formalParameters: [],
           };
         } else {

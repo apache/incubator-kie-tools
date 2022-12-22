@@ -24,6 +24,7 @@ import {
   BeeTableOperationHandlerConfig,
   BeeTableProps,
   ContextExpressionDefinitionEntry,
+  DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
   generateUuid,
   ListExpressionDefinition,
@@ -100,6 +101,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         const newLiteralExpression: LiteralExpressionDefinition = {
           id: generateUuid(),
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          dataType: DmnBuiltInDataType.Undefined,
           isHeadless: true,
           content: "",
           width: LITERAL_EXPRESSION_MIN_WIDTH,

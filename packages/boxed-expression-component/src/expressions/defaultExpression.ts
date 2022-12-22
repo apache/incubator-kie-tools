@@ -50,6 +50,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       formalParameters: [],
       expression: {
         ...getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.LiteralExpression, {
+          dataType: DmnBuiltInDataType.Undefined,
           id: generateUuid(),
           isHeadless: true,
         }),
@@ -63,6 +64,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
       result: {
         logicType: ExpressionDefinitionLogicType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
         id: generateUuid(),
       },
       contextEntries: [
@@ -103,13 +105,11 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       isHeadless: true,
       items: [
-        {
+        getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.LiteralExpression, {
           id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          dataType: DmnBuiltInDataType.Undefined,
           isHeadless: true,
-          content: "",
-          width: LITERAL_EXPRESSION_MIN_WIDTH,
-        },
+        }),
       ],
     };
     return listExpression;

@@ -23,7 +23,7 @@ export interface ExpressionDefinitionBase {
   /** Expression name (which, in DMN world, is equal to the Decision node's name) */
   name?: string;
   /** Expression data type */
-  dataType?: DmnBuiltInDataType;
+  dataType: DmnBuiltInDataType;
   /** True, to have no header for this specific expression component, used in a recursive expression */
   isHeadless?: boolean;
 }

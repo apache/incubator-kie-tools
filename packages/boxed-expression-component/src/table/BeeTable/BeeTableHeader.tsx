@@ -164,7 +164,7 @@ export function BeeTableHeader<R extends object>({
               if (column.label != value) {
                 beeGwtService?.notifyUserAction();
               }
-              onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value });
+              onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
             }}
             onKeyDown={(event) => {
               const parentCell = getParentCell(event.target as HTMLElement);
