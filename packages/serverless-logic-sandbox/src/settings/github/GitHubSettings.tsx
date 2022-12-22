@@ -30,7 +30,7 @@ import { AuthStatus, useSettings, useSettingsDispatch } from "../SettingsContext
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { makeCookieName } from "../../cookies";
-import { ActionGroup, Modal, ModalVariant, PageGroup } from "@patternfly/react-core";
+import { Modal, ModalVariant } from "@patternfly/react-core";
 import { AddCircleOIcon } from "@patternfly/react-icons";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -56,7 +56,6 @@ export function GitHubSettings() {
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
   const [isGitHubTokenValid, setIsGitHubTokenValid] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [githubTokenInputValue, setGitHubTokenInputValue] = useState<string>();
   const tokenInput = useRef<HTMLInputElement>(null);
 
   const githubTokenValidated = useMemo(() => {
@@ -68,26 +67,22 @@ export function GitHubSettings() {
   }, [isGitHubTokenValid]);
 
   const githubTokenToDisplay = useMemo(() => {
-    return obfuscate(potentialGitHubToken ?? settings.github.token);
+    return obfuscate(potentialGitHubToken ?? settings.github.token) ?? "";
   }, [settings.github, potentialGitHubToken]);
 
   useEffect(() => {
-    isModalOpen && tokenInput.current?.focus();
+    tokenInput.current?.focus();
   }, [isModalOpen, settings.github.authStatus]);
 
   const handleModalToggle = useCallback(() => {
+    setPotentialGitHubToken(undefined);
+    setIsGitHubTokenValid(true);
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
   }, []);
 
-  const onAddGitHubToken = useCallback(
+  const onPasteGitHubToken = useCallback(
     (e) => {
-      e.preventDefault();
-
-      if (!githubTokenInputValue) {
-        return setIsGitHubTokenValid(false);
-      }
-
-      const token = githubTokenInputValue.slice(0, GITHUB_OAUTH_TOKEN_SIZE);
+      const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
       setPotentialGitHubToken(token);
       settingsDispatch.github.authService
         .authenticate(token)
@@ -95,10 +90,9 @@ export function GitHubSettings() {
           setIsGitHubTokenValid(false);
           handleModalToggle();
         })
-        .catch(() => setIsGitHubTokenValid(false))
-        .finally(() => setGitHubTokenInputValue(undefined));
+        .catch(() => setIsGitHubTokenValid(false));
     },
-    [settingsDispatch.github.authService, githubTokenInputValue, handleModalToggle]
+    [settingsDispatch.github.authService, handleModalToggle]
   );
 
   const onSignOutFromGitHub = useCallback(() => {
@@ -198,16 +192,8 @@ export function GitHubSettings() {
         isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
         onClose={handleModalToggle}
         variant={ModalVariant.large}
-        actions={[
-          <Button key="apply" variant="primary" type="submit" tabIndex={0} isDisabled={!tokenInput.current?.value}>
-            Apply
-          </Button>,
-          <Button key="confirm" variant="link" onClick={handleModalToggle} tabIndex={0}>
-            Cancel
-          </Button>,
-        ]}
       >
-        <Form onSubmit={onAddGitHubToken}>
+        <Form onSubmit={(e) => e.preventDefault()}>
           <h3>
             <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
               Create a new token&nbsp;&nbsp;
@@ -232,7 +218,8 @@ export function GitHubSettings() {
                 placeholder={"Paste your GitHub token here"}
                 maxLength={GITHUB_OAUTH_TOKEN_SIZE}
                 validated={githubTokenValidated}
-                onChange={(value) => setGitHubTokenInputValue(value)}
+                value={githubTokenToDisplay}
+                onPaste={onPasteGitHubToken}
                 tabIndex={0}
               />
             </InputGroup>
