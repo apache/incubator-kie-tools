@@ -102,6 +102,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       isHeadless: true,
       items: [
         {
+          id: generateUuid(),
           logicType: ExpressionDefinitionLogicType.LiteralExpression,
           isHeadless: true,
           content: "",

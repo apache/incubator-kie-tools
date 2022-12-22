@@ -197,7 +197,7 @@ export interface ListExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be List */
   logicType: ExpressionDefinitionLogicType.List;
   /** List items */
-  items?: ExpressionDefinition[];
+  items: ExpressionDefinition[];
   /** Optional width for this list expression */
   width?: number;
 }

@@ -14,44 +14,41 @@
  * limitations under the License.
  */
 
-import "./ListExpression.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
+import * as ReactTable from "react-table";
 import {
+  BeeTableCellProps,
+  BeeTableHeaderVisibility,
+  BeeTableOperation,
+  BeeTableOperationHandlerConfig,
+  BeeTableProps,
   ContextExpressionDefinitionEntry,
-  DmnBuiltInDataType,
+  ExpressionDefinitionLogicType,
   generateUuid,
   ListExpressionDefinition,
   LiteralExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  BeeTableRowsUpdateArgs,
-  BeeTableOperationHandlerConfig,
-  BeeTableHeaderVisibility,
-  BeeTableOperation,
-  BeeTableProps,
 } from "../../api";
-import { ContextEntryExpressionCell } from "../ContextExpression";
-import { BeeTable } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import * as ReactTable from "react-table";
+import { BeeTable } from "../../table/BeeTable";
+import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  ContextEntryExpressionCell,
+  NestedExpressionContainerContext,
+  NestedExpressionContainerContextType,
+  NestedExpressionDispatchContextProvider,
+  useContextExpressionContext,
+} from "../ContextExpression";
+import { LITERAL_EXPRESSION_MIN_WIDTH } from "../LiteralExpression";
+import "./ListExpression.css";
 
-type ROWTYPE = any;
+type ROWTYPE = ContextExpressionDefinitionEntry;
 
 export const ListExpression: React.FunctionComponent<ListExpressionDefinition> = (
   listExpression: ListExpressionDefinition
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-
-  const generateLiteralExpression: () => LiteralExpressionDefinition = useCallback(
-    () => ({
-      id: generateUuid(),
-      name: "",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.LiteralExpression,
-      content: "",
-    }),
-    []
-  );
+  const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const operationHandlerConfig: BeeTableOperationHandlerConfig = useMemo(
     () => [
@@ -65,29 +62,20 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         ],
       },
     ],
-    [
-      i18n.rowOperations.clear,
-      i18n.rowOperations.delete,
-      i18n.rowOperations.insertAbove,
-      i18n.rowOperations.insertBelow,
-      i18n.rows,
-    ]
+    [i18n]
   );
 
   const beeTableRows = useMemo(() => {
-    if (listExpression.items === undefined || listExpression.items?.length === 0) {
-      return [{ entryExpression: generateLiteralExpression() }];
-    } else {
-      return listExpression.items.map((item) => ({ entryExpression: item }));
-    }
-  }, [listExpression.items, generateLiteralExpression]);
-
-  const setListWidth = useCallback((newInfoWidth) => {}, []);
+    return listExpression.items.map((item) => ({
+      entryInfo: undefined as any, // FIXME: Tiago -> Not ideal.
+      entryExpression: item,
+    }));
+  }, [listExpression.items]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: "list",
+        accessor: "list" as any,
         label: "",
         dataType: undefined as any,
         isRowIndexColumn: false,
@@ -97,35 +85,80 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     []
   );
 
-  const onRowsUpdate = useCallback(({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
-    const newEntryExpressions = rows.map((row) => {
-      return { entryExpression: row.entryExpression };
-    });
-  }, []);
-
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
-    return (row.original as ContextExpressionDefinitionEntry).entryExpression.id!;
+    return row.original.entryExpression.id!;
   }, []);
 
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
-    () => ({
-      list: ContextEntryExpressionCell,
-    }),
+    () => ({ list: ListEntryCell }),
     []
+  );
+
+  const onRowAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      setExpression((prev: ListExpressionDefinition) => {
+        const newLiteralExpression: LiteralExpressionDefinition = {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          isHeadless: true,
+          content: "",
+          width: LITERAL_EXPRESSION_MIN_WIDTH,
+        };
+        const newItems = [...prev.items];
+        newItems.splice(args.beforeIndex, 0, newLiteralExpression);
+        return { ...prev, items: newItems };
+      });
+    },
+    [setExpression]
   );
 
   return (
     <div className={`${listExpression.id} list-expression`}>
-      <BeeTable
+      <BeeTable<ROWTYPE>
         tableId={listExpression.id}
         headerVisibility={BeeTableHeaderVisibility.None}
         cellComponentByColumnId={cellComponentByColumnId}
         columns={beeTableColumns}
         rows={beeTableRows}
-        onRowsUpdate={onRowsUpdate}
         operationHandlerConfig={operationHandlerConfig}
         getRowKey={getRowKey}
+        onRowAdded={onRowAdded}
       />
     </div>
   );
 };
+
+export function ListEntryCell(props: BeeTableCellProps<ROWTYPE>) {
+  const { setExpression } = useBoxedExpressionEditorDispatch();
+
+  const onSetExpression = useCallback(
+    ({ getNewExpression }) => {
+      setExpression((prev: ListExpressionDefinition) => {
+        const newItems = [...(prev.items ?? [])];
+        newItems[props.rowIndex] = getNewExpression(
+          newItems[props.rowIndex] ?? { logicType: ExpressionDefinitionLogicType.Undefined }
+        );
+        return { ...prev, items: newItems };
+      });
+    },
+    [props.rowIndex, setExpression]
+  );
+
+  const contextExpression = useContextExpressionContext();
+  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
+    return {
+      minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
+      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
+      actualWidth: contextExpression.entryExpressionsActualWidth,
+      resizingWidth: contextExpression.entryExpressionsResizingWidth,
+    };
+  }, [contextExpression]);
+
+  return (
+    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
+      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+        <ContextEntryExpressionCell {...props} />
+      </NestedExpressionDispatchContextProvider>
+    </NestedExpressionContainerContext.Provider>
+  );
+}
