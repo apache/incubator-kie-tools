@@ -18,7 +18,7 @@ import React from "react";
 import { Redirect, Switch } from "react-router";
 import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
-import { GitHubSettingsTab } from "../../settings/github/GitHubSettingsTab";
+import { GitHubSettings } from "../../settings/github/GitHubSettings";
 import { KieSandboxExtendedServicesSettingsTab } from "../extendedServices/KieSandboxExtendedServicesSettingsTab";
 import { FeaturePreviewSettingsTab } from "../featurePreview/FeaturePreviewSettingsTab";
 import { ApacheKafkaSettingsTab } from "../kafka/ApacheKafkaSettingsTab";
@@ -31,7 +31,7 @@ export function SettingsPageRoutes() {
   return (
     <Switch>
       <Route path={routes.settings.github.path({})}>
-        <GitHubSettingsTab />
+        <GitHubSettings />
       </Route>
       <Route path={routes.settings.kie_sandbox_extended_services.path({})}>
         <KieSandboxExtendedServicesSettingsTab />

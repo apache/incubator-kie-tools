@@ -49,7 +49,7 @@ enum GitHubTokenScope {
   REPO = "repo",
 }
 
-export function GitHubSettingsTab() {
+export function GitHubSettings() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 
@@ -98,7 +98,7 @@ export function GitHubSettingsTab() {
         .catch(() => setIsGitHubTokenValid(false))
         .finally(() => setGitHubTokenInputValue(undefined));
     },
-    [settingsDispatch.github.authService, githubTokenInputValue]
+    [settingsDispatch.github.authService, githubTokenInputValue, handleModalToggle]
   );
 
   const onSignOutFromGitHub = useCallback(() => {

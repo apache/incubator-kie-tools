@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import { GitHubSettingsTab } from "./github/GitHubSettingsTab";
+import { GitHubSettings } from "./github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
 import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
@@ -51,7 +51,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.GITHUB}
         title={<TabTitleText>GitHub</TabTitleText>}
       >
-        <GitHubSettingsTab />
+        <GitHubSettings />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
