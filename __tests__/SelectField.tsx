@@ -252,6 +252,20 @@ test('<SelectField> - renders a label', () => {
   );
 });
 
+test('<SelectField> - renders a number label', () => {
+  const element = <SelectField required={true} name="x" label={1} />;
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Number, allowedValues: [1, 2] } }),
+  );
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('1 *');
+  expect(wrapper.find('label').prop('htmlFor')).toBe(
+    wrapper.find(Select).prop('id'),
+  );
+});
+
 test('<SelectField> - renders a wrapper with unknown props', () => {
   const element = <SelectField name="x" data-x="x" data-y="y" data-z="z" />;
   const wrapper = mount(

@@ -59,6 +59,11 @@ const schema = {
         },
         room: {
           type: 'string'
+        },
+        numberOfBeds: {
+          placeholder: "Select...",
+          enum: [1, 2, 3],
+          type: 'number'
         }
       },
     }

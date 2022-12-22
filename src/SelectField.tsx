@@ -62,7 +62,9 @@ type SelectInputProps = FieldProps<
 function isSelectOptionObject(
   toBeDetermined: string | SelectOptionObject
 ): toBeDetermined is SelectOptionObject {
-  return toBeDetermined.toString !== undefined;
+  return typeof toBeDetermined === 'object' &&
+    !Array.isArray(toBeDetermined) &&
+    toBeDetermined !== null
 }
 
 export type SelectFieldProps = CheckboxesProps | SelectInputProps;
