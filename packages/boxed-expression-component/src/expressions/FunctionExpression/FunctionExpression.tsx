@@ -22,10 +22,10 @@ import {
   BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableOperation,
+  BeeTableOperationConfig,
   BeeTableProps,
   ContextExpressionDefinition,
   ContextExpressionDefinitionEntry,
-  ContextExpressionDefinitionEntryInfo,
   DmnBuiltInDataType,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
@@ -86,7 +86,6 @@ const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
       logicType: ExpressionDefinitionLogicType.Undefined,
       dataType: DmnBuiltInDataType.Undefined,
     },
-    noHandlerMenu: true,
     contextEntries: [
       {
         entryInfo: {
@@ -144,7 +143,6 @@ const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpression
     logicType: ExpressionDefinitionLogicType.Context,
     dataType: DmnBuiltInDataType.Undefined,
     renderResult: false,
-    noHandlerMenu: true,
     result: {
       id: `${id}-result`,
       logicType: ExpressionDefinitionLogicType.Undefined,
@@ -298,7 +296,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     [setExpression]
   );
 
-  const operationHandlerConfig = useMemo(() => {
+  const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     return [
       {
         group: _.upperCase(i18n.function),
@@ -420,7 +418,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div className={`function-expression ${functionExpression.id}`}>
         <BeeTable<ROWTYPE>
-          operationHandlerConfig={operationHandlerConfig}
+          operationConfig={beeTableOperationConfig}
           onColumnUpdates={onColumnUpdates}
           getRowKey={getRowKey}
           columns={beeTableColumns}

@@ -198,9 +198,9 @@
   box-sizing: border-box;
 }
 
-/** Hiding popover arrow for the Table Handler */
+/** Hiding popover arrow for the Table context menu */
 
-.boxed-expression-provider .table-handler .pf-c-popover__arrow {
+.boxed-expression-provider .table-context-menu .pf-c-popover__arrow {
   display: none;
 }
 

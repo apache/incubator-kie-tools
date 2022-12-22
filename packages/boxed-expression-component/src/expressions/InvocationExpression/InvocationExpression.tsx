@@ -27,6 +27,8 @@ import {
   BeeTableHeaderVisibility,
   BeeTableProps,
   getNextAvailablePrefixedName,
+  BeeTableOperation,
+  BeeTableOperationConfig,
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -36,7 +38,6 @@ import {
   ContextEntryInfoCell,
   ContextEntryInfoCellProps,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
-  getOperationHandlerConfig,
 } from "../ContextExpression";
 import * as _ from "lodash";
 import {
@@ -134,7 +135,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [invocation.isHeadless]
   );
 
-  const onRowsUpdate = useCallback(({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {}, []);
+  const onRowUpdates = useCallback(({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
+    //
+  }, []);
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.original.entryInfo.id;
@@ -149,8 +152,18 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [i18n]
   );
 
-  const operationHandlerConfig = useMemo(() => {
-    return getOperationHandlerConfig(i18n, i18n.parameters);
+  const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
+    return [
+      {
+        group: i18n.parameters,
+        items: [
+          { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
+          { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+        ],
+      },
+    ];
   }, [i18n]);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -196,8 +209,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}
-        onRowsUpdate={onRowsUpdate}
-        operationHandlerConfig={operationHandlerConfig}
+        onRowUpdates={onRowUpdates}
+        operationConfig={beeTableOperationConfig}
         getRowKey={getRowKey}
         onRowAdded={onRowAdded}
       />

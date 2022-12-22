@@ -123,12 +123,15 @@ export function BeeTable<R extends object>({
   onCellUpdates,
   onColumnUpdates,
   onRowAdded,
+  onRowDuplicated,
+  onRowDeleted,
   onColumnAdded,
+  onColumnDeleted,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
   cellComponentByColumnId,
   rows,
   columns,
-  operationHandlerConfig,
+  operationConfig,
   headerVisibility,
   headerLevelCount = 0,
   skipLastHeaderGroup = false,
@@ -195,6 +198,7 @@ export function BeeTable<R extends object>({
   );
 
   const [lastSelectedColumnIndex, setLastSelectedColumnIndex] = useState(-1);
+  const [lastSelectedColumnGroupType, setLastSelectedColumnGroupType] = useState("");
   const [lastSelectedRowIndex, setLastSelectedRowIndex] = useState(-1);
 
   const columnsWithAddedIndexColumns = useMemo(
@@ -275,10 +279,11 @@ export function BeeTable<R extends object>({
   );
 
   const getMouseDownThProps = useCallback(
-    (columnIndex: number): Pick<PfReactTable.ThProps, "onMouseDown"> => ({
+    (columnIndex: number, columnGroupType: string): Pick<PfReactTable.ThProps, "onMouseDown"> => ({
       onMouseDown: (e) => {
         e.preventDefault();
         setLastSelectedColumnIndex(columnIndex);
+        setLastSelectedColumnGroupType(columnGroupType);
         setLastSelectedRowIndex(-1);
       },
     }),
@@ -286,10 +291,11 @@ export function BeeTable<R extends object>({
   );
 
   const getMouseDownTdProps = useCallback(
-    (columnIndex: number, rowIndex: number): Pick<PfReactTable.TdProps, "onMouseDown"> => ({
+    (columnIndex: number, columnGroupType: string, rowIndex: number): Pick<PfReactTable.TdProps, "onMouseDown"> => ({
       onMouseDown: (e) => {
         e.preventDefault();
         setLastSelectedColumnIndex(columnIndex);
+        setLastSelectedColumnGroupType(columnGroupType);
         setLastSelectedRowIndex(rowIndex);
       },
     }),
@@ -317,7 +323,7 @@ export function BeeTable<R extends object>({
   //     if (!isLockedTable) {
   //       const pastedRows = pasteOnTable(pasteValue, tableRowsRef.current, rowFactory, x, y);
   //       tableRowsRef.current = pastedRows;
-  //       onRowsUpdate?.({ rows: pastedRows, columns });
+  //       onRowUpdates?.({ rows: pastedRows, columns });
   //     }
   //   }
 
@@ -325,7 +331,7 @@ export function BeeTable<R extends object>({
   //   return () => {
   //     boxedExpressionEditor.editorRef.current?.removeEventListener(tableEventUUID, listener);
   //   };
-  // }, [tableEventUUID, tableRowsRef, onRowsUpdate, onColumnsUpdate, onNewRow, boxedExpressionEditor.editorRef, columns]);
+  // }, [tableEventUUID, tableRowsRef, onRowUpdates, onColumnsUpdate, onNewRow, boxedExpressionEditor.editorRef, columns]);
 
   const onGetColumnKey = useCallback<(column: ReactTable.ColumnInstance<R>) => string>(
     (column) => {
@@ -407,12 +413,12 @@ export function BeeTable<R extends object>({
   }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
 
   const operationGroups = useMemo(() => {
-    if (_.isArray(operationHandlerConfig)) {
-      return operationHandlerConfig;
+    if (_.isArray(operationConfig)) {
+      return operationConfig;
     }
     const column = reactTableInstance.allColumns[lastSelectedColumnIndex];
-    return (operationHandlerConfig ?? {})[column?.groupType || ""];
-  }, [lastSelectedColumnIndex, operationHandlerConfig, reactTableInstance.allColumns]);
+    return (operationConfig ?? {})[column?.groupType || ""];
+  }, [lastSelectedColumnIndex, operationConfig, reactTableInstance.allColumns]);
 
   const allowedOperations = useMemo(() => {
     return [
@@ -467,7 +473,13 @@ export function BeeTable<R extends object>({
         operationGroups={operationGroups}
         allowedOperations={allowedOperations}
         lastSelectedColumnIndex={lastSelectedColumnIndex}
+        lastSelectedColumnGroupType={lastSelectedColumnGroupType}
         lastSelectedRowIndex={lastSelectedRowIndex}
+        onRowAdded={onRowAdded}
+        onRowDuplicated={onRowDuplicated}
+        onRowDeleted={onRowDeleted}
+        onColumnAdded={onColumnAdded}
+        onColumnDeleted={onColumnDeleted}
       />
     </div>
   );

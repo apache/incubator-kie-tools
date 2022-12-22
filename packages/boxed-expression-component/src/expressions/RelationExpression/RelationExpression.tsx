@@ -28,6 +28,7 @@ import {
   generateUuid,
   DmnBuiltInDataType,
   getNextAvailablePrefixedName,
+  BeeTableOperationConfig,
 } from "../../api";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -50,24 +51,27 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const operationHandlerConfig = [
-    {
-      group: i18n.columns,
-      items: [
-        { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
-        { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
-        { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
-      ],
-    },
-    {
-      group: i18n.rows,
-      items: [
-        { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
-        { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
-        { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-      ],
-    },
-  ];
+  const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
+    () => [
+      {
+        group: i18n.columns,
+        items: [
+          { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
+          { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
+          { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
+        ],
+      },
+      {
+        group: i18n.rows,
+        items: [
+          { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
+          { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+        ],
+      },
+    ],
+    [i18n]
+  );
   const columns = useMemo<RelationExpressionDefinitionColumn[]>(() => {
     return relationExpression.columns ?? [];
   }, [relationExpression.columns]);
@@ -214,7 +218,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [rows, columns]
   );
 
-  const onRowsUpdate = useCallback(({ rows, columns }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
+  const onRowUpdates = useCallback(({ rows, columns }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
     // Do nothing for now
   }, []);
 
@@ -329,8 +333,8 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         rows={beeTableRows}
         onCellUpdates={onCellUpdates}
         onColumnUpdates={onColumnUpdates}
-        onRowsUpdate={onRowsUpdate}
-        operationHandlerConfig={operationHandlerConfig}
+        onRowUpdates={onRowUpdates}
+        operationConfig={beeTableOperationConfig}
         onRowAdded={onRowAdded}
         onColumnAdded={onColumnAdded}
       />

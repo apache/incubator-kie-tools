@@ -40,7 +40,11 @@ export interface BeeTableBodyProps<R extends object> {
   /** Function to be executed when a key has been pressed on a cell */
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
-  getMouseDownTdProps: (columnIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onMouseDown">;
+  getMouseDownTdProps: (
+    columnIndex: number,
+    columnGroupType: string,
+    rowIndex: number
+  ) => Pick<PfReactTable.TdProps, "onMouseDown">;
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
 }

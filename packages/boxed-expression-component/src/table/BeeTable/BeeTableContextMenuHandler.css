@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-.table-handler-menu * {
+.table-context-menu * {
   font-size: small;
 }
 
-.table-handler-menu .no-allowed-actions-in-group {
+.table-context-menu .no-allowed-actions-in-group {
   display: none;
 }

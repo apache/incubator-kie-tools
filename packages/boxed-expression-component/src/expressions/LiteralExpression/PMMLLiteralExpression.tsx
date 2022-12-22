@@ -18,7 +18,7 @@ import "./PmmlLiteralExpression.css";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { PmmlLiteralExpressionDefinition, PmmlLiteralExpressionDefinitionKind } from "../../api";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as _ from "lodash";
 import {
   useBoxedExpressionEditor,

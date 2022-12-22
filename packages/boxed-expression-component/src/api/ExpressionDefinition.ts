@@ -90,13 +90,11 @@ export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   /** Context result */
   result: ExpressionDefinition;
   /** False, to avoid the rendering of the result section */
-  renderResult?: boolean;
+  renderResult?: boolean; // FIXME: Tiago -> This has to go. Not functional. UI.
   /** Entry info width */
   entryInfoWidth?: number;
   /** Entry expression width */
   entryExpressionWidth?: number;
-  /** True, to avoid the presence of table menu handler */
-  noHandlerMenu?: boolean;
 }
 
 export interface ContextExpressionDefinitionEntryInfo {

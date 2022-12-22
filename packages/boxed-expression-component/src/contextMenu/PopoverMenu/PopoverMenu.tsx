@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useState, useImperativeHandle, useMemo, useEffect } from "react";
-import { Popover, PopoverPosition } from "@patternfly/react-core";
+import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import "./PopoverMenu.css";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";

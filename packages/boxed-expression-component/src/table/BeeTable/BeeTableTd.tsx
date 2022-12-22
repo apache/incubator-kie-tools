@@ -27,7 +27,11 @@ export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProp
   row: ReactTable.Row<R>;
   column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
-  getMouseDownTdProps: (cellIndex: number, rowIndex: number) => Pick<PfReactTable.TdProps, "onMouseDown">;
+  getMouseDownTdProps: (
+    cellIndex: number,
+    columnGroupType: string,
+    rowIndex: number
+  ) => Pick<PfReactTable.TdProps, "onMouseDown">;
   onRowAdded?: (args: { beforeIndex: number }) => void;
   isActive: boolean;
 }
@@ -136,8 +140,8 @@ export function BeeTableTd<R extends object>({
   }, [columnIndex, row.cells.length]);
 
   const mouseDownTdProps = useMemo(() => {
-    return getMouseDownTdProps(columnIndex, rowIndex);
-  }, [columnIndex, getMouseDownTdProps, rowIndex]);
+    return getMouseDownTdProps(columnIndex, column.groupType ?? "", rowIndex);
+  }, [column.groupType, columnIndex, getMouseDownTdProps, rowIndex]);
 
   return (
     <PfReactTable.Td

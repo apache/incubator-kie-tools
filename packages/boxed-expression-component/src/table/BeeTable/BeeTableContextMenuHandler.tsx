@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
+import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { BeeTableOperation, BeeTableOperationGroup } from "../../api";
@@ -25,72 +25,89 @@ import "./BeeTableContextMenuHandler.css";
 
 export interface BeeTableContextMenuHandlerProps {
   lastSelectedColumnIndex: number;
+  lastSelectedColumnGroupType: string;
   lastSelectedRowIndex: number;
   operationGroups: BeeTableOperationGroup[];
   allowedOperations: BeeTableOperation[];
   tableRef: React.RefObject<HTMLDivElement | null>;
+  //
+  onRowAdded?: (args: { beforeIndex: number }) => void;
+  onRowDuplicated?: (args: { rowIndex: number }) => void;
+  onRowDeleted?: (args: { rowIndex: number }) => void;
+  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
 }
 
 export function BeeTableContextMenuHandler({
   tableRef,
   lastSelectedColumnIndex,
+  lastSelectedColumnGroupType,
   lastSelectedRowIndex,
   operationGroups,
   allowedOperations,
+  onRowAdded,
+  onRowDuplicated,
+  onRowDeleted,
+  onColumnAdded,
+  onColumnDeleted,
 }: BeeTableContextMenuHandlerProps) {
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
-  const operationLabel = useCallback(
-    (operation: BeeTableOperation) => {
-      switch (operation) {
-        case BeeTableOperation.ColumnInsertLeft:
-          return `Insert column left to ${lastSelectedColumnIndex}`;
-        case BeeTableOperation.ColumnInsertRight:
-          return `Insert column right to ${lastSelectedColumnIndex}`;
-        case BeeTableOperation.ColumnDelete:
-          return `Delete column ${lastSelectedColumnIndex}`;
-        case BeeTableOperation.RowInsertAbove:
-          return `Insert row above to ${lastSelectedRowIndex + 1}`;
-        case BeeTableOperation.RowInsertBelow:
-          return `Insert row below to ${lastSelectedRowIndex + 1}`;
-        case BeeTableOperation.RowDelete:
-          return `Delete row ${lastSelectedRowIndex + 1}`;
-        case BeeTableOperation.RowClear:
-          return `Clear row ${lastSelectedRowIndex + 1}`;
-        case BeeTableOperation.RowDuplicate:
-          return `Duplicate row ${lastSelectedRowIndex + 1}`;
-        default:
-          assertUnreachable(operation);
-      }
-    },
-    [lastSelectedColumnIndex, lastSelectedRowIndex]
-  );
+  const operationLabel = useCallback((operation: BeeTableOperation) => {
+    switch (operation) {
+      case BeeTableOperation.ColumnInsertLeft:
+        return `Insert left`;
+      case BeeTableOperation.ColumnInsertRight:
+        return `Insert right`;
+      case BeeTableOperation.ColumnDelete:
+        return `Delete`;
+      case BeeTableOperation.RowInsertAbove:
+        return `Insert above`;
+      case BeeTableOperation.RowInsertBelow:
+        return `Insert below`;
+      case BeeTableOperation.RowDelete:
+        return `Delete`;
+      case BeeTableOperation.RowClear:
+        return `Clear`;
+      case BeeTableOperation.RowDuplicate:
+        return `Duplicate`;
+      default:
+        assertUnreachable(operation);
+    }
+  }, []);
 
   const handleOperation = useCallback(
     (operation: BeeTableOperation) => {
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
+          onColumnAdded?.({ beforeIndex: lastSelectedColumnIndex - 1, groupType: lastSelectedColumnGroupType });
           console.info(`Insert column left to ${lastSelectedColumnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
+          onColumnAdded?.({ beforeIndex: lastSelectedColumnIndex, groupType: lastSelectedColumnGroupType });
           console.info(`Insert column right to ${lastSelectedColumnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
+          onColumnDeleted?.({ columnIndex: lastSelectedColumnIndex - 1, groupType: lastSelectedColumnGroupType });
           console.info(`Delete column ${lastSelectedColumnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
+          onRowAdded?.({ beforeIndex: lastSelectedRowIndex });
           console.info(`Insert row above to ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
+          onRowAdded?.({ beforeIndex: lastSelectedRowIndex + 1 });
           console.info(`Insert row below to ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowDelete:
+          onRowDeleted?.({ rowIndex: lastSelectedRowIndex });
           console.info(`Delete row ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowClear:
           console.info(`Clear row ${lastSelectedRowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
+          onRowDuplicated?.({ rowIndex: lastSelectedRowIndex });
           console.info(`Duplicate row ${lastSelectedRowIndex}`);
           break;
         default:
@@ -98,7 +115,17 @@ export function BeeTableContextMenuHandler({
       }
       setCurrentlyOpenContextMenu(undefined);
     },
-    [setCurrentlyOpenContextMenu, lastSelectedColumnIndex, lastSelectedRowIndex]
+    [
+      setCurrentlyOpenContextMenu,
+      onColumnAdded,
+      lastSelectedColumnIndex,
+      lastSelectedColumnGroupType,
+      onColumnDeleted,
+      onRowAdded,
+      lastSelectedRowIndex,
+      onRowDeleted,
+      onRowDuplicated,
+    ]
   );
 
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);
@@ -115,8 +142,8 @@ export function BeeTableContextMenuHandler({
       {isOpen && (
         <div className="context-menu-container" style={style}>
           <Menu
-            ouiaId="expression-table-handler-menu"
-            className="table-handler-menu"
+            ouiaId="expression-table-context-menu"
+            className="table-context-menu"
             onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
           >
             {operationGroups.map(({ group, items }) => (
@@ -132,7 +159,7 @@ export function BeeTableContextMenuHandler({
                 <MenuList>
                   {items.map((operation) => (
                     <MenuItem
-                      data-ouia-component-id={"expression-table-handler-menu-" + operation.name}
+                      data-ouia-component-id={"expression-table-context-menu-" + operation.name}
                       key={operation.type}
                       itemId={operation.type}
                       isDisabled={!allowedOperations.includes(operation.type)}

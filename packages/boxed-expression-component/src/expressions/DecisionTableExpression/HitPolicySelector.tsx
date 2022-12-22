@@ -22,7 +22,8 @@ import {
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
-import { PopoverPosition, Select, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";

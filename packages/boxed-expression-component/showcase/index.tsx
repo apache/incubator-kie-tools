@@ -26,7 +26,8 @@ import {
   generateUuid,
 } from "../src/api";
 import { BoxedExpressionEditor } from "../src/expressions";
-import { Button, Modal } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
 import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";

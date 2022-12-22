@@ -52,10 +52,10 @@ export interface BeeTableProps<R extends object> {
   onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
   /** Function to be executed when columns are modified */
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
-  /** Function to be executed when one or more rows are modified */
-  onRowsUpdate?: (args: BeeTableRowsUpdateArgs<R>) => void;
-  /** Custom configuration for the table handler */
-  operationHandlerConfig?: BeeTableOperationHandlerConfig;
+  /** Function to be executed when rows are modified */
+  onRowUpdates?: (args: BeeTableRowsUpdateArgs<R>) => void;
+  /** Custom configuration for the table context menu */
+  operationConfig?: BeeTableOperationConfig;
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** Number of levels in the header, 0-based */
@@ -72,8 +72,10 @@ export interface BeeTableProps<R extends object> {
   enableKeyboardNavigation?: boolean;
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
-  /** */
+  onRowDuplicated?: (args: { rowIndex: number }) => void;
+  onRowDeleted?: (args: { rowIndex: number }) => void;
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
 }
 
 /** Possible status for the visibility of the Table's Header */
@@ -108,7 +110,7 @@ export interface BeeTableOperationGroup {
   }[];
 }
 
-export type BeeTableOperationHandlerConfig =
+export type BeeTableOperationConfig =
   | BeeTableOperationGroup[]
   | { [columnGroupType: string]: BeeTableOperationGroup[] };
 

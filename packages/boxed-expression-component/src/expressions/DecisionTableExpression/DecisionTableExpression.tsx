@@ -23,12 +23,12 @@ import {
   DmnBuiltInDataType,
   DecisionTableExpressionDefinition,
   generateUuid,
-  BeeTableOperationGroup,
   DecisionTableExpressionDefinitionHitPolicy,
   BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   getNextAvailablePrefixedName,
+  BeeTableOperationConfig,
 } from "../../api";
 import {
   useBoxedExpressionEditor,
@@ -69,7 +69,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const { updateResizingWidth } = useResizingWidthsDispatch();
 
-  const generateOperationHandlerConfig = useCallback(
+  const generateOperationConfig = useCallback(
     (groupName: string) => [
       {
         group: groupName,
@@ -92,14 +92,14 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [i18n]
   );
 
-  const operationHandlerConfig = useMemo(() => {
-    const configuration: { [columnGroupType: string]: BeeTableOperationGroup[] } = {};
-    configuration[""] = generateOperationHandlerConfig(i18n.ruleAnnotation);
-    configuration[DecisionTableColumnType.InputClause] = generateOperationHandlerConfig(i18n.inputClause);
-    configuration[DecisionTableColumnType.OutputClause] = generateOperationHandlerConfig(i18n.outputClause);
-    configuration[DecisionTableColumnType.Annotation] = generateOperationHandlerConfig(i18n.ruleAnnotation);
-    return configuration;
-  }, [generateOperationHandlerConfig, i18n.inputClause, i18n.outputClause, i18n.ruleAnnotation]);
+  const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
+    const config: BeeTableOperationConfig = {};
+    config[""] = generateOperationConfig(i18n.inputClause);
+    config[DecisionTableColumnType.InputClause] = generateOperationConfig(i18n.inputClause);
+    config[DecisionTableColumnType.OutputClause] = generateOperationConfig(i18n.outputClause);
+    config[DecisionTableColumnType.Annotation] = generateOperationConfig(i18n.ruleAnnotation);
+    return config;
+  }, [generateOperationConfig, i18n.inputClause, i18n.outputClause, i18n.ruleAnnotation]);
 
   const getEditColumnLabel = useMemo(() => {
     const editColumnLabel: { [columnGroupType: string]: string } = {};
@@ -470,7 +470,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [setExpression]
   );
 
-  const onRowsUpdate = useCallback(
+  const onRowUpdates = useCallback(
     ({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {},
     [
       /** */
@@ -651,12 +651,12 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         headerLevelCount={1}
         headerVisibility={BeeTableHeaderVisibility.Full}
         editColumnLabel={getEditColumnLabel}
-        operationHandlerConfig={operationHandlerConfig}
+        operationConfig={beeTableOperationConfig}
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}
         onCellUpdates={onCellUpdates}
-        onRowsUpdate={onRowsUpdate}
+        onRowUpdates={onRowUpdates}
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}
         onColumnAdded={onColumnAdded}

@@ -17,7 +17,7 @@
 import "./ParametersPopover.css";
 import * as _ from "lodash";
 import { DataTypeSelector } from "../ExpressionDefinitionHeaderMenu";
-import { Button } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";

@@ -21,7 +21,7 @@ import {
   BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableOperation,
-  BeeTableOperationHandlerConfig,
+  BeeTableOperationConfig,
   BeeTableProps,
   ContextExpressionDefinition,
   ContextExpressionDefinitionEntry,
@@ -280,10 +280,19 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     };
   }, [i18n.editContextEntry, updateEntry]);
 
-  const operationHandlerConfig = useMemo(
-    () => (contextExpression.noHandlerMenu ? undefined : getOperationHandlerConfig(i18n, i18n.contextEntry)),
-    [i18n, contextExpression.noHandlerMenu]
-  );
+  const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
+    return [
+      {
+        group: i18n.contextEntry,
+        items: [
+          { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
+          { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+        ],
+      },
+    ];
+  }, [i18n]);
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.original.entryInfo.id;
@@ -348,7 +357,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           columns={beeTableColumns}
           rows={contextExpression.contextEntries}
           onColumnUpdates={onColumnUpdates}
-          operationHandlerConfig={operationHandlerConfig}
+          operationConfig={beeTableOperationConfig}
           getRowKey={getRowKey}
           additionalRow={beeTableAdditionalRow}
           onRowAdded={onRowAdded}
@@ -491,18 +500,3 @@ export const NestedExpressionContainerContext = React.createContext<NestedExpres
 export function useNestedExpressionContainer() {
   return React.useContext(NestedExpressionContainerContext);
 }
-
-export const getOperationHandlerConfig = (
-  i18n: BoxedExpressionEditorI18n,
-  groupName: string
-): BeeTableOperationHandlerConfig => [
-  {
-    group: groupName,
-    items: [
-      { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
-      { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
-      { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-      { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
-    ],
-  },
-];

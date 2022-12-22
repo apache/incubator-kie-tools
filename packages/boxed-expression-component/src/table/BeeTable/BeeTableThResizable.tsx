@@ -36,7 +36,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onHeaderClick: (columnKey: string) => () => void;
   rowIndex: number;
   reactTableInstance: ReactTable.TableInstance<R>;
-  getMouseDownThProps: (columnIndex: number) => Pick<PfReactTable.ThProps, "onMouseDown">;
+  getMouseDownThProps: (columnIndex: number, columnGroupType: string) => Pick<PfReactTable.ThProps, "onMouseDown">;
   xPosition: number;
   yPosition: number;
   renderHeaderCellInfo: (
@@ -143,8 +143,8 @@ export function BeeTableThResizable<R extends object>({
   }, [cssClasses, getRowSpan]);
 
   const mouseDownThProps = useMemo(() => {
-    return getMouseDownThProps(columnIndex);
-  }, [columnIndex, getMouseDownThProps]);
+    return getMouseDownThProps(columnIndex, column.groupType ?? "");
+  }, [column.groupType, columnIndex, getMouseDownThProps]);
 
   const columnLabel = useMemo(() => {
     return getColumnLabel(column.groupType);

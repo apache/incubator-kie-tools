@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
+import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
@@ -172,7 +172,7 @@ export function ExpressionDefinitionLogicTypeSelector({
           className="context-menu-container"
           style={{ top: clearContextMenuYPos, left: clearContextMenuXPos, opacity: 1 }}
         >
-          <Menu className="table-handler-menu">
+          <Menu className="table-context-menu">
             <MenuGroup label={expression.logicType.toLocaleUpperCase()}>
               <MenuList>
                 <MenuItem onClick={resetLogicType}>{i18n.clear}</MenuItem>

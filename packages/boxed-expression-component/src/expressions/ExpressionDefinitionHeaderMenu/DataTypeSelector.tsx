@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { Divider, Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef } from "react";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as _ from "lodash";
 import { DmnBuiltInDataType, DmnDataType } from "../../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export interface DataTypeSelectorProps {
   /** The pre-selected data type */
