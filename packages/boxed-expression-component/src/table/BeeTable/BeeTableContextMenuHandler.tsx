@@ -15,6 +15,10 @@
  */
 
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
+import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
+import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { BeeTableOperation, BeeTableOperationGroup } from "../../api";
@@ -68,6 +72,29 @@ export function BeeTableContextMenuHandler({
         return `Clear`;
       case BeeTableOperation.RowDuplicate:
         return `Duplicate`;
+      default:
+        assertUnreachable(operation);
+    }
+  }, []);
+
+  const operationIcon = useCallback((operation: BeeTableOperation) => {
+    switch (operation) {
+      case BeeTableOperation.ColumnInsertLeft:
+        return <PlusIcon />;
+      case BeeTableOperation.ColumnInsertRight:
+        return <PlusIcon />;
+      case BeeTableOperation.ColumnDelete:
+        return <TrashIcon />;
+      case BeeTableOperation.RowInsertAbove:
+        return <PlusIcon />;
+      case BeeTableOperation.RowInsertBelow:
+        return <PlusIcon />;
+      case BeeTableOperation.RowDelete:
+        return <TrashIcon />;
+      case BeeTableOperation.RowClear:
+        return <CompressIcon />;
+      case BeeTableOperation.RowDuplicate:
+        return <BlueprintIcon />;
       default:
         assertUnreachable(operation);
     }
@@ -146,6 +173,7 @@ export function BeeTableContextMenuHandler({
                 <MenuList>
                   {items.map((operation) => (
                     <MenuItem
+                      icon={operationIcon(operation.type)}
                       data-ouia-component-id={"expression-table-context-menu-" + operation.name}
                       key={operation.type}
                       itemId={operation.type}

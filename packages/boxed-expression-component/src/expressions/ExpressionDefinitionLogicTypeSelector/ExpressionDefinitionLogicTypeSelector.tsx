@@ -31,6 +31,8 @@ import { LiteralExpression, PmmlLiteralExpression } from "../LiteralExpression";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { RelationExpression } from "../RelationExpression";
 import "./ExpressionDefinitionLogicTypeSelector.css";
+import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
+import { ListIcon, TableIcon } from "@patternfly/react-icons";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -137,6 +139,62 @@ export function ExpressionDefinitionLogicTypeSelector({
     return isClearContextMenuOpen && isLogicTypeSelected && isClearSupported;
   }, [isClearContextMenuOpen, isClearSupported, isLogicTypeSelected]);
 
+  const logicTypeIcon = useCallback((logicType: ExpressionDefinitionLogicType) => {
+    switch (logicType) {
+      case ExpressionDefinitionLogicType.Undefined:
+        return ``;
+      case ExpressionDefinitionLogicType.LiteralExpression:
+        return (
+          <div
+            style={{
+              fontSize: "0.8em",
+              fontWeight: "bold",
+              transform: "scaleX(0.7)",
+              position: "absolute",
+              top: "-8px",
+              left: "-5px",
+            }}
+          >
+            FEEL
+          </div>
+        );
+      case ExpressionDefinitionLogicType.PmmlLiteralExpression:
+        return ``;
+      case ExpressionDefinitionLogicType.Context:
+        return (
+          <div>
+            <b>
+              <i>{`{}`}</i>
+            </b>
+          </div>
+        );
+      case ExpressionDefinitionLogicType.DecisionTable:
+        return <TableIcon />;
+      case ExpressionDefinitionLogicType.Relation:
+        return <TableIcon />;
+      case ExpressionDefinitionLogicType.Function:
+        return (
+          <div>
+            <b>
+              <i>{"f"}</i>
+            </b>
+          </div>
+        );
+      case ExpressionDefinitionLogicType.Invocation:
+        return (
+          <div>
+            <b>
+              <i>{"f()"}</i>
+            </b>
+          </div>
+        );
+      case ExpressionDefinitionLogicType.List:
+        return <ListIcon />;
+      default:
+        assertUnreachable(logicType);
+    }
+  }, []);
+
   return (
     <>
       <div
@@ -157,7 +215,15 @@ export function ExpressionDefinitionLogicTypeSelector({
               <Menu onSelect={selectLogicType}>
                 <MenuList>
                   {SELECTABLE_LOGIC_TYPES.map((key) => (
-                    <MenuItem key={key} itemId={key}>
+                    <MenuItem
+                      key={key}
+                      itemId={key}
+                      icon={
+                        <div style={{ width: "30px", userSelect: "none", position: "relative" }}>
+                          <>{logicTypeIcon(key)}</>
+                        </div>
+                      }
+                    >
                       {key}
                     </MenuItem>
                   ))}
@@ -175,7 +241,9 @@ export function ExpressionDefinitionLogicTypeSelector({
           <Menu className="table-context-menu">
             <MenuGroup label={expression.logicType.toLocaleUpperCase()}>
               <MenuList>
-                <MenuItem onClick={resetLogicType}>{i18n.clear}</MenuItem>
+                <MenuItem onClick={resetLogicType} icon={<CompressIcon />}>
+                  {i18n.clear}
+                </MenuItem>
               </MenuList>
             </MenuGroup>
           </Menu>
