@@ -18,7 +18,7 @@ import { env } from "../../env";
 const buildEnv = env;
 
 describe("PopoverMenu Tests", () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
 
     // Entry point for each new expression
@@ -26,9 +26,7 @@ describe("PopoverMenu Tests", () => {
 
     // Define new expression as Context
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
-  });
 
-  beforeEach(() => {
     // Define ExpressionNameCell
     cy.contains("th", "Expression Name").as("ExpressionNameCell");
 

@@ -134,16 +134,13 @@ describe("Relation Expression Tests", () => {
     // go to first cell and open contextMenu
     cy.contains("td", "row 0 column 0").rightclick();
 
-    // memorize the row 1 column 2 cell
-    cy.contains("td", "row 1 column 2").as("row1col2");
-
     // go to 2nd row 2nd cell then navigate to around and stop at 2nd row 4rd cell. Then write text
     cy.contains("td", "row 1 column 1").type(
       "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{uparrow}{downarrow}{enter}Newtext"
     );
 
     // exit edit mode and check 2nd row 4rd cell has the new text
-    cy.get("@row1col2").click({ force: true }).should("contain.text", "Newtext");
+    cy.get("[data-yposition='2'][data-xposition='3']").click({ force: true }).should("contain.text", "Newtext");
   });
 
   it("Regression tests: focus on the first data cell", () => {
