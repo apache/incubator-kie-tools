@@ -213,8 +213,12 @@ Feature: Deploy Kogito Runtime
       | runtime-env | QUARKUS_DATASOURCE_USERNAME                  | myuser                                          |
       | runtime-env | QUARKUS_DATASOURCE_PASSWORD                  | mypass                                          |
       | runtime-env | QUARKUS_DATASOURCE_REACTIVE_URL              | postgresql://postgresql:5432/mydb               |
+      | runtime-env | QUARKUS_DATASOURCE_JDBC_URL                  | jdbc:postgresql://postgresql:5432/mydb          |
       # For Spring Boot
       | runtime-env | KOGITO_PERSISTENCE_POSTGRESQL_CONNECTION_URI | postgresql://myuser:mypass@postgresql:5432/mydb |
+      | runtime-env | SPRING_DATASOURCE_URL                        | jdbc:postgresql://postgresql:5432/mydb          |
+      | runtime-env | SPRING_DATASOURCE_USERNAME                   | myuser                                          |
+      | runtime-env | SPRING_DATASOURCE_PASSWORD                   | mypass                                          |
     And Kogito Runtime "process-postgres" has 1 pods running within 10 minutes
     And Start "deals" process on service "process-postgres" within 3 minutes with body:
       """json
@@ -508,8 +512,12 @@ Feature: Deploy Kogito Runtime
       | runtime-env | QUARKUS_DATASOURCE_USERNAME                  | myuser                                          |
       | runtime-env | QUARKUS_DATASOURCE_PASSWORD                  | mypass                                          |
       | runtime-env | QUARKUS_DATASOURCE_REACTIVE_URL              | postgresql://postgresql:5432/mydb               |
+      | runtime-env | QUARKUS_DATASOURCE_JDBC_URL                  | jdbc:postgresql://postgresql:5432/mydb          |
       # For Spring Boot
       | runtime-env | KOGITO_PERSISTENCE_POSTGRESQL_CONNECTION_URI | postgresql://myuser:mypass@postgresql:5432/mydb |
+      | runtime-env | SPRING_DATASOURCE_URL                        | jdbc:postgresql://postgresql:5432/mydb          |
+      | runtime-env | SPRING_DATASOURCE_USERNAME                   | myuser                                          |
+      | runtime-env | SPRING_DATASOURCE_PASSWORD                   | mypass                                          |
     And Kogito Runtime "process-postgres" has 1 pods running within 10 minutes
     And Start "deals" process on service "process-postgres" within 3 minutes with body:
       """json
