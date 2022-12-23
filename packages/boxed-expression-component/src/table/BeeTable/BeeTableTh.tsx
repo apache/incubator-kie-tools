@@ -17,20 +17,18 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
-import { BeeTableTdsAndThsProps } from "../../api";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { useBeeTableSelection, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
+import { BeeTableThProps } from "../../api";
 
-export interface BeeTableThProps extends BeeTableTdsAndThsProps {
+export interface BeeTableThProps2<R extends object> extends BeeTableThProps<R> {
   groupType: string | undefined;
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   className: string;
   thProps: Partial<PfReactTable.ThProps>;
   isFocusable: boolean;
   onClick?: React.MouseEventHandler;
-  rowSpan: number;
-  contextMenuThProps?: Pick<PfReactTable.ThProps, "onMouseDown">;
   isLastLevelColumn: boolean;
-  isActive: boolean;
 }
 
 export type HoverInfo =
@@ -42,34 +40,22 @@ export type HoverInfo =
       part: "left" | "right";
     };
 
-export function BeeTableTh({
+export function BeeTableTh<R extends object>({
   onColumnAdded,
   children,
   className,
   thProps,
   isFocusable = true,
-  onKeyDown,
   onClick,
-  rowIndex,
   columnIndex,
-  contextMenuThProps,
-  rowSpan = 1,
+  column,
   xPosition,
-  yPosition,
   groupType,
   isLastLevelColumn,
-  isActive,
-}: React.PropsWithChildren<BeeTableThProps>) {
+}: React.PropsWithChildren<BeeTableThProps2<R>>) {
+  const { setActiveCell } = useBeeTableSelectionDispatch();
+  const { activeCell } = useBeeTableSelection();
   const thRef = useRef<HTMLTableCellElement>(null);
-
-  useEffect(() => {
-    const onKeyDownForIndex = onKeyDown(rowSpan);
-    const th = thRef.current;
-    th?.addEventListener("keydown", onKeyDownForIndex);
-    return () => {
-      th?.removeEventListener("keydown", onKeyDownForIndex);
-    };
-  }, [onKeyDown, rowIndex, rowSpan]);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
     isHovered: false,
@@ -109,32 +95,59 @@ export function BeeTableTh({
     });
   }, []);
 
-  const addColumButtonStyle = useMemo(() => {
-    return {
-      bottom: "5px",
-      ...(hoverInfo.isHovered && hoverInfo.part === "left"
+  const addColumButtonStyle = useMemo(
+    () =>
+      hoverInfo.isHovered && hoverInfo.part === "left"
         ? {
             left: "-10px",
           }
         : {
             right: "-10px",
-          }),
-    };
-  }, [hoverInfo]);
+          },
+    [hoverInfo]
+  );
+
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      setActiveCell({
+        columnIndex,
+        column,
+        rowIndex: -1,
+        row: undefined,
+        isEditing: false,
+      });
+    },
+    [column, columnIndex, setActiveCell]
+  );
+
+  const isActive = useMemo(() => {
+    return (
+      activeCell?.columnIndex === columnIndex && activeCell.rowIndex === -1 && column.depth === activeCell.column?.depth
+    );
+  }, [activeCell, column.depth, columnIndex]);
+
+  const isEditing = useMemo(() => {
+    return isActive && activeCell?.isEditing;
+  }, [activeCell, isActive]);
+
+  useEffect(() => {
+    if (isActive && !isEditing) {
+      thRef.current?.focus();
+    }
+  }, [isActive, isEditing]);
 
   return (
     <PfReactTable.Th
       {...thProps}
-      {...contextMenuThProps}
+      onMouseDown={onMouseDown}
       ref={thRef}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={className}
+      className={`${className} ${isActive ? "active" : ""} ${isEditing ? "editing" : ""}`}
       tabIndex={isFocusable ? -1 : undefined}
       data-xposition={xPosition}
-      data-yposition={yPosition}
     >
       {children}
       {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && (

@@ -21,11 +21,11 @@ import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import { DmnBuiltInDataType, BeeTableHeaderVisibility, ExpressionDefinition } from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { focusCurrentCell, getParentCell } from "./common";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { NavigationKeysUtils } from "../../keysUtils";
+import { BeeTableSelectionActiveCell } from "./BeeTableSelectionContext";
 
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;
@@ -57,10 +57,6 @@ export interface BeeTableHeaderProps<R extends object> {
   tableColumns: ReactTable.Column<R>[];
   /** Function to be executed when columns are modified */
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
-  /** Function to be executed when a key has been pressed on a cell */
-  onCellKeyDown: () => (e: KeyboardEvent) => void;
-  /** Th props */
-  getMouseDownThProps: (columnIndex: number, columnGroupType: string) => Pick<PfReactTable.ThProps, "onMouseDown">;
   /** Option to enable or disable header edits */
   editableHeader: boolean;
   /** */
@@ -74,8 +70,6 @@ export function BeeTableHeader<R extends object>({
   skipLastHeaderGroup,
   getColumnKey,
   onColumnUpdates,
-  onCellKeyDown,
-  getMouseDownThProps,
   editableHeader,
   onColumnAdded,
 }: BeeTableHeaderProps<R>) {
@@ -118,26 +112,22 @@ export function BeeTableHeader<R extends object>({
     [onColumnUpdates]
   );
 
-  const renderRowIndexColumn = useCallback<(column: ReactTable.ColumnInstance<R>, rowIndex: number) => JSX.Element>(
-    (column, rowIndex) => {
+  const renderRowIndexColumn = useCallback<(column: ReactTable.ColumnInstance<R>) => JSX.Element>(
+    (column) => {
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell counter-header-cell`;
 
       return (
         <BeeTableTh
-          rowIndex={rowIndex}
+          column={column}
           columnIndex={0}
-          rowSpan={1}
           thProps={column.getHeaderProps()}
           className={classNames}
           key={columnKey}
           isFocusable={true}
-          onKeyDown={onCellKeyDown}
           xPosition={0}
-          yPosition={rowIndex}
           groupType={column.groupType}
           isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
-          isActive={false}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
@@ -145,7 +135,7 @@ export function BeeTableHeader<R extends object>({
         </BeeTableTh>
       );
     },
-    [getColumnKey, onCellKeyDown]
+    [getColumnKey]
   );
 
   const renderCellInfoLabel = useCallback<
@@ -161,26 +151,7 @@ export function BeeTableHeader<R extends object>({
           <InlineEditableTextInput
             value={column.label}
             onTextChange={(value) => {
-              if (column.label != value) {
-                beeGwtService?.notifyUserAction();
-              }
               onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
-            }}
-            onKeyDown={(event) => {
-              const parentCell = getParentCell(event.target as HTMLElement);
-              //this timeout prevent the cell focus to call the input's blur and the onValueBlur
-              setTimeout(() => {
-                if (NavigationKeysUtils.isEnter(event.key)) {
-                  focusCurrentCell(parentCell);
-                }
-              }, 0);
-            }}
-            onCancel={(event) => {
-              const parentCell = getParentCell(event.target as HTMLElement);
-              //this timeout prevent the cell focus to call the input's blur and the onValueBlur
-              setTimeout(() => {
-                focusCurrentCell(parentCell);
-              }, 0);
             }}
             onToggle={onAnnotationCellToggle}
           />
@@ -188,7 +159,7 @@ export function BeeTableHeader<R extends object>({
       }
       return <p className="pf-u-text-truncate label">{column.label}</p>;
     },
-    [beeGwtService, onColumnNameOrDataTypeUpdate]
+    [onColumnNameOrDataTypeUpdate]
   );
 
   const renderHeaderCellInfo = useCallback(
@@ -215,28 +186,24 @@ export function BeeTableHeader<R extends object>({
   );
 
   const renderColumn = useCallback<
-    (column: ReactTable.ColumnInstance<R>, rowIndex: number, columnIndex: number, xPosition?: number) => JSX.Element
+    (column: ReactTable.ColumnInstance<R>, columnIndex: number, xPosition?: number) => JSX.Element
   >(
-    (column, rowIndex, columnIndex, xPosition) =>
+    (column, columnIndex, xPosition) =>
       column.isRowIndexColumn ? (
-        renderRowIndexColumn(column, rowIndex)
+        renderRowIndexColumn(column)
       ) : (
         <BeeTableThResizable
           key={getColumnKey(column)}
           editableHeader={editableHeader}
           getColumnKey={getColumnKey}
           getColumnLabel={getColumnLabel}
-          onCellKeyDown={onCellKeyDown}
           onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
           onHeaderClick={onHeaderClick}
           renderHeaderCellInfo={renderHeaderCellInfo}
-          getMouseDownThProps={getMouseDownThProps}
           reactTableInstance={reactTableInstance}
           column={column}
-          rowIndex={rowIndex}
           columnIndex={columnIndex}
           xPosition={xPosition ?? columnIndex}
-          yPosition={rowIndex}
           onColumnAdded={onColumnAdded}
         />
       ),
@@ -245,10 +212,8 @@ export function BeeTableHeader<R extends object>({
       getColumnKey,
       editableHeader,
       getColumnLabel,
-      onCellKeyDown,
       onHeaderClick,
       renderHeaderCellInfo,
-      getMouseDownThProps,
       reactTableInstance,
       onColumnAdded,
       onColumnNameOrDataTypeUpdate,
@@ -266,7 +231,7 @@ export function BeeTableHeader<R extends object>({
               {headerGroup.headers.map((column, columnIndex) => {
                 const currentXPosition = xPosition;
                 xPosition += column.columns?.length ?? 1;
-                return renderColumn(column, rowIndex, columnIndex, currentXPosition);
+                return renderColumn(column, columnIndex, currentXPosition);
               })}
             </PfReactTable.Tr>
           );

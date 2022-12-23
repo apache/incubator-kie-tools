@@ -23,6 +23,7 @@ import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEdito
 import { LOGIC_TYPE_SELECTOR_CLASS } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
+import { BeeTableSelectionActiveCell } from "./BeeTableSelectionContext";
 
 export interface BeeTableBodyProps<R extends object> {
   /** Table instance */
@@ -37,14 +38,6 @@ export interface BeeTableBodyProps<R extends object> {
   getRowKey: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
-  /** Function to be executed when a key has been pressed on a cell */
-  onCellKeyDown: () => (e: KeyboardEvent) => void;
-  /** Td props */
-  getMouseDownTdProps: (
-    columnIndex: number,
-    columnGroupType: string,
-    rowIndex: number
-  ) => Pick<PfReactTable.TdProps, "onMouseDown">;
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
 }
@@ -56,9 +49,7 @@ export function BeeTableBody<R extends object>({
   headerRowsCount,
   getRowKey,
   getColumnKey,
-  onCellKeyDown,
   onRowAdded,
-  getMouseDownTdProps,
 }: BeeTableBodyProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -108,9 +99,7 @@ export function BeeTableBody<R extends object>({
                 row={row}
                 rowIndex={rowIndex}
                 shouldUseCellDelegate={args.shouldUseCellDelegate}
-                onKeyDown={onCellKeyDown}
                 column={reactTableInstance.allColumns[columnIndex]}
-                getMouseDownTdProps={getMouseDownTdProps}
                 yPosition={headerRowsCount + rowIndex}
                 onRowAdded={onRowAdded}
                 isActive={false}
@@ -131,16 +120,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [
-      reactTableInstance,
-      getRowKey,
-      onTrClick,
-      onCellKeyDown,
-      getColumnKey,
-      getMouseDownTdProps,
-      headerRowsCount,
-      onRowAdded,
-    ]
+    [reactTableInstance, getRowKey, onTrClick, getColumnKey, headerRowsCount, onRowAdded]
   );
 
   const additionalRowIndex = useMemo(() => {
@@ -159,22 +139,24 @@ export function BeeTableBody<R extends object>({
       {additionalRow && (
         <PfReactTable.Tr className="table-row additive-row">
           <BeeTableTdForAdditionalRow
+            row={undefined as any}
+            column={reactTableInstance.allColumns[0]}
             isLastColumn={false}
             isEmptyCell={true}
             rowIndex={additionalRowIndex}
             columnIndex={0}
-            onKeyDown={onCellKeyDown}
             xPosition={0}
             yPosition={headerRowsCount + additionalRowIndex}
           />
           {additionalRow.map((elem, elemIndex) => (
             <BeeTableTdForAdditionalRow
+              row={undefined as any}
+              column={reactTableInstance.allColumns[0]}
               isLastColumn={elemIndex === additionalRow.length - 1}
               key={elemIndex}
               columnIndex={elemIndex}
               isEmptyCell={false}
               rowIndex={additionalRowIndex}
-              onKeyDown={onCellKeyDown}
               xPosition={elemIndex + 1}
               yPosition={headerRowsCount + additionalRowIndex}
             >

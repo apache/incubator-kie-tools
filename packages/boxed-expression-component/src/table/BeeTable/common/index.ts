@@ -15,5 +15,4 @@
  */
 
 export * from "./CopyAndPasteUtils";
-export * from "./FocusUtils";
 export * from "./TableUtils";

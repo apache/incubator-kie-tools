@@ -98,7 +98,6 @@ export function BoxedExpressionEditorContextProvider({
         <div className="boxed-expression-provider" ref={editorRef}>
           {children}
         </div>
-        <CellSelectionBox />
       </BoxedExpressionEditorDispatchContext.Provider>
     </BoxedExpressionEditorContext.Provider>
   );

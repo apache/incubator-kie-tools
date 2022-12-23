@@ -14,36 +14,26 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useEffect, useRef } from "react";
 import * as PfReactTable from "@patternfly/react-table";
-import { BeeTableTdsAndThsProps } from "../../api";
+import * as React from "react";
+import { useRef } from "react";
+import { BeeTableTdProps } from "../../api";
 
-export interface BeeTableTdForAdditionalRowProps extends BeeTableTdsAndThsProps {
+export interface BeeTableTdForAdditionalRowProps<R extends object> extends BeeTableTdProps<R> {
   children?: React.ReactElement;
   isEmptyCell: boolean;
   isLastColumn: boolean;
 }
 
-export function BeeTableTdForAdditionalRow({
+export function BeeTableTdForAdditionalRow<R extends object>({
   children,
   isEmptyCell,
-  onKeyDown,
   rowIndex,
   xPosition,
   yPosition,
   isLastColumn,
-}: BeeTableTdForAdditionalRowProps) {
+}: BeeTableTdForAdditionalRowProps<R>) {
   const tdRef = useRef<HTMLTableCellElement>(null);
-
-  useEffect(() => {
-    const onKeyDownForIndex = onKeyDown();
-    const td = tdRef.current;
-    td?.addEventListener("keydown", onKeyDownForIndex);
-    return () => {
-      td?.removeEventListener("keydown", onKeyDownForIndex);
-    };
-  }, [onKeyDown, rowIndex]);
 
   return isEmptyCell ? (
     <PfReactTable.Td

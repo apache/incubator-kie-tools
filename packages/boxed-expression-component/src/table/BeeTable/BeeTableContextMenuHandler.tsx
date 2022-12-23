@@ -22,11 +22,9 @@ import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import "./BeeTableContextMenuHandler.css";
+import { useBeeTableSelection } from "./BeeTableSelectionContext";
 
 export interface BeeTableContextMenuHandlerProps {
-  lastSelectedColumnIndex: number;
-  lastSelectedColumnGroupType: string;
-  lastSelectedRowIndex: number;
   operationGroups: BeeTableOperationGroup[];
   allowedOperations: BeeTableOperation[];
   tableRef: React.RefObject<HTMLDivElement | null>;
@@ -40,9 +38,6 @@ export interface BeeTableContextMenuHandlerProps {
 
 export function BeeTableContextMenuHandler({
   tableRef,
-  lastSelectedColumnIndex,
-  lastSelectedColumnGroupType,
-  lastSelectedRowIndex,
   operationGroups,
   allowedOperations,
   onRowAdded,
@@ -52,6 +47,8 @@ export function BeeTableContextMenuHandler({
   onColumnDeleted,
 }: BeeTableContextMenuHandlerProps) {
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
+
+  const { activeCell } = useBeeTableSelection();
 
   const operationLabel = useCallback((operation: BeeTableOperation) => {
     switch (operation) {
@@ -80,52 +77,42 @@ export function BeeTableContextMenuHandler({
     (operation: BeeTableOperation) => {
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
-          onColumnAdded?.({ beforeIndex: lastSelectedColumnIndex - 1, groupType: lastSelectedColumnGroupType });
-          console.info(`Insert column left to ${lastSelectedColumnIndex}`);
+          onColumnAdded?.({ beforeIndex: activeCell!.columnIndex - 1, groupType: activeCell!.column!.groupType });
+          console.info(`Insert column left to ${activeCell!.columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
-          onColumnAdded?.({ beforeIndex: lastSelectedColumnIndex, groupType: lastSelectedColumnGroupType });
-          console.info(`Insert column right to ${lastSelectedColumnIndex}`);
+          onColumnAdded?.({ beforeIndex: activeCell!.columnIndex, groupType: activeCell!.column!.groupType });
+          console.info(`Insert column right to ${activeCell!.columnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
-          onColumnDeleted?.({ columnIndex: lastSelectedColumnIndex - 1, groupType: lastSelectedColumnGroupType });
-          console.info(`Delete column ${lastSelectedColumnIndex}`);
+          onColumnDeleted?.({ columnIndex: activeCell!.columnIndex - 1, groupType: activeCell!.column!.groupType });
+          console.info(`Delete column ${activeCell!.columnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
-          onRowAdded?.({ beforeIndex: lastSelectedRowIndex });
-          console.info(`Insert row above to ${lastSelectedRowIndex}`);
+          onRowAdded?.({ beforeIndex: activeCell!.rowIndex });
+          console.info(`Insert row above to ${activeCell!.rowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
-          onRowAdded?.({ beforeIndex: lastSelectedRowIndex + 1 });
-          console.info(`Insert row below to ${lastSelectedRowIndex}`);
+          onRowAdded?.({ beforeIndex: activeCell!.rowIndex + 1 });
+          console.info(`Insert row below to ${activeCell!.rowIndex}`);
           break;
         case BeeTableOperation.RowDelete:
-          onRowDeleted?.({ rowIndex: lastSelectedRowIndex });
-          console.info(`Delete row ${lastSelectedRowIndex}`);
+          onRowDeleted?.({ rowIndex: activeCell!.rowIndex });
+          console.info(`Delete row ${activeCell!.rowIndex}`);
           break;
         case BeeTableOperation.RowClear:
-          console.info(`Clear row ${lastSelectedRowIndex}`);
+          console.info(`Clear row ${activeCell!.rowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
-          onRowDuplicated?.({ rowIndex: lastSelectedRowIndex });
-          console.info(`Duplicate row ${lastSelectedRowIndex}`);
+          onRowDuplicated?.({ rowIndex: activeCell!.rowIndex });
+          console.info(`Duplicate row ${activeCell!.rowIndex}`);
           break;
         default:
           assertUnreachable(operation);
       }
       setCurrentlyOpenContextMenu(undefined);
     },
-    [
-      setCurrentlyOpenContextMenu,
-      onColumnAdded,
-      lastSelectedColumnIndex,
-      lastSelectedColumnGroupType,
-      onColumnDeleted,
-      onRowAdded,
-      lastSelectedRowIndex,
-      onRowDeleted,
-      onRowDuplicated,
-    ]
+    [setCurrentlyOpenContextMenu, onColumnAdded, activeCell, onColumnDeleted, onRowAdded, onRowDeleted, onRowDuplicated]
   );
 
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);

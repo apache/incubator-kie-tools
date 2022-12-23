@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-import { FeelInput, FeelInputRef, FeelEditorService } from "@kie-tools/feel-input-component";
 import * as Monaco from "@kie-tools-core/monaco-editor";
+import { FeelEditorService, FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  blurActiveElement,
-  focusCurrentCell,
-  focusLowerCell,
-  focusNextCellByTabKey,
-  focusPrevCellByTabKey,
-  focusTextInput,
-  paste,
-} from "./common";
-import "./BeeTableEditableCellContent.css";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
+import "./BeeTableEditableCellContent.css";
 
 const CELL_LINE_HEIGHT = 20;
 const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -44,120 +34,47 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
 export const READ_MODE = "editable-cell--read-mode";
 export const EDIT_MODE = "editable-cell--edit-mode";
 
-export interface BeeTableEditableCellContentProps<R extends object> {
+export interface BeeTableEditableCellContentProps {
   value: string;
   onChange: (value: string) => void;
-  isReadOnly?: boolean;
+  isReadOnly: boolean;
+  isEditing: boolean;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function BeeTableEditableCellContent<R extends object>({
+export function BeeTableEditableCellContent({
   value,
   onChange,
   isReadOnly,
-}: BeeTableEditableCellContentProps<R>) {
-  const [isSelected, setSelected] = useState(false);
-  const [mode, setMode] = useState(READ_MODE);
+  isEditing,
+  setEditing,
+}: BeeTableEditableCellContentProps) {
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
-  const [preview, setPreview] = useState<string>("");
-  const textarea = useRef<HTMLTextAreaElement>(null);
+  const [preview, setPreview] = useState<string>(value);
   const [previousValue, setPreviousValue] = useState("");
-  const feelInputRef = useRef<FeelInputRef>(null);
-  const boxedExpressionEditor = useBoxedExpressionEditor();
   const [commandStack, setCommand] = useState<Array<string>>([]);
 
-  // Common Handlers =========================================================
+  const feelInputRef = useRef<FeelInputRef>(null);
+
+  const mode = useMemo(() => {
+    return isEditing ? EDIT_MODE : READ_MODE;
+  }, [isEditing]);
 
   useEffect(() => {
-    if (value === "") {
-      setPreview("");
-    }
-  }, [value]);
+    setPreviousValue((prev) => (isEditing ? prev : value));
+  }, [isEditing, value]);
 
   const triggerReadMode = useCallback(
-    (newValue?: string) => {
+    (newValue: string) => {
       if (mode !== EDIT_MODE) {
         return;
       }
 
       if (value !== newValue) {
-        onChange(newValue ?? value);
+        onChange(newValue);
       }
-
-      focusTextInput(textarea.current);
     },
     [mode, value, onChange]
-  );
-
-  const triggerEditMode = useCallback(() => {
-    boxedExpressionEditor.beeGwtService?.notifyUserAction();
-    setPreviousValue(value);
-    blurActiveElement();
-    setMode(EDIT_MODE);
-  }, [boxedExpressionEditor.beeGwtService, value]);
-
-  const cssClass = useCallback(() => {
-    const selectedClass = isSelected ? "editable-cell--selected" : "";
-    return `editable-cell ${selectedClass} ${mode}`;
-  }, [isSelected, mode]);
-
-  const onFocus = useCallback(() => {
-    if (mode === EDIT_MODE) {
-      return;
-    }
-    setSelected(true);
-    focusTextInput(textarea.current);
-  }, [mode]);
-
-  const onClick = useCallback(() => {
-    if (document.activeElement !== textarea.current) {
-      onFocus();
-    }
-  }, [onFocus]);
-
-  // TextArea Handlers =======================================================
-
-  const onTextAreaBlur = useCallback(() => setSelected(false), []);
-
-  const onTextAreaChange = useCallback(
-    (event) => {
-      const newValue: string = event.target.value.trim("") ?? "";
-      const isPastedValue = newValue.includes("\t") || newValue.includes("\n");
-
-      // event.nativeEvent.inputType==="insertFromPaste" ensure that this block is not executed on cells with newlines inside
-      if (textarea.current && isPastedValue && event.nativeEvent.inputType === "insertFromPaste") {
-        const pasteValue = newValue.slice(value.length);
-        paste(pasteValue, textarea.current, boxedExpressionEditor.editorRef.current!);
-        triggerReadMode();
-        return;
-      }
-
-      triggerEditMode();
-      onChange(newValue ?? value);
-    },
-    [triggerEditMode, onChange, value, boxedExpressionEditor.editorRef, triggerReadMode]
-  );
-
-  const onTextAreaKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLElement>) => {
-      const key = e.key;
-
-      const isDelete = NavigationKeysUtils.isDelete(key);
-      const isBackspace = NavigationKeysUtils.isBackspace(key);
-      if (isDelete || isBackspace) {
-        onChange("");
-      }
-
-      const isFiredFromThis = e.currentTarget === e.target;
-
-      if (!isFiredFromThis) {
-        return;
-      }
-
-      if (!NavigationKeysUtils.isEnter(key)) {
-        (e.target as HTMLTextAreaElement).value = "";
-      }
-    },
-    [onChange]
   );
 
   // Feel Handlers ===========================================================
@@ -165,9 +82,9 @@ export function BeeTableEditableCellContent<R extends object>({
   const onFeelBlur = useCallback(
     (valueOnBlur: string) => {
       triggerReadMode(valueOnBlur);
-      setMode(READ_MODE);
+      setEditing(false);
     },
-    [triggerReadMode]
+    [setEditing, triggerReadMode]
   );
 
   const onFeelKeyDown = useCallback(
@@ -189,14 +106,7 @@ export function BeeTableEditableCellContent<R extends object>({
           // Do nothing.
         } else {
           triggerReadMode(newValue);
-          setMode(READ_MODE);
-          if (!event.shiftKey) {
-            //this setTimeout fixes the focus outside of the table when the suggestions opens
-            setTimeout(() => focusNextCellByTabKey(textarea.current, 1), 0);
-          } else {
-            //this setTimeout fixes the focus outside of the table when the suggestions opens
-            setTimeout(() => focusPrevCellByTabKey(textarea.current, 1), 0);
-          }
+          setEditing(false);
         }
       }
 
@@ -205,8 +115,8 @@ export function BeeTableEditableCellContent<R extends object>({
           feelInputRef.current?.insertNewLineToMonaco();
         } else if (!FeelEditorService.isSuggestWidgetOpen()) {
           triggerReadMode(newValue);
-          setMode(READ_MODE);
-          focusLowerCell(textarea.current);
+          setEditing(false);
+          // focusLowerCell(textarea.current);
         }
       }
 
@@ -219,8 +129,8 @@ export function BeeTableEditableCellContent<R extends object>({
         } else {
           feelInputRef.current?.setMonacoValue(previousValue);
           triggerReadMode(previousValue);
-          setMode(READ_MODE);
-          focusCurrentCell(textarea.current);
+          setEditing(false);
+          // focusCurrentCell(textarea.current);
         }
       }
 
@@ -238,7 +148,7 @@ export function BeeTableEditableCellContent<R extends object>({
         }
       }
     },
-    [triggerReadMode, previousValue, commandStack, onChange]
+    [triggerReadMode, setEditing, previousValue, commandStack, onChange]
   );
 
   const onFeelChange = useCallback((_e, newValue, newPreview) => {
@@ -254,24 +164,8 @@ export function BeeTableEditableCellContent<R extends object>({
 
   return (
     <>
-      <div
-        onDoubleClick={triggerEditMode}
-        onClick={onClick}
-        style={{ height: `${cellHeight}px` }}
-        className={cssClass()}
-      >
+      <div style={{ height: `${cellHeight}px` }} className={`editable-cell ${mode}`}>
         <span className="editable-cell-value" dangerouslySetInnerHTML={{ __html: preview }} />
-        <textarea
-          data-testid={"editable-cell-textarea"}
-          className="editable-cell-textarea"
-          ref={textarea}
-          tabIndex={-1}
-          value={value}
-          onChange={onTextAreaChange}
-          onBlur={onTextAreaBlur}
-          readOnly={isReadOnly}
-          onKeyDown={onTextAreaKeyDown}
-        />
         <FeelInput
           ref={feelInputRef}
           enabled={mode === EDIT_MODE}

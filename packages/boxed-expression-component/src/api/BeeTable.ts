@@ -17,6 +17,7 @@
 import * as React from "react";
 import * as ReactTable from "react-table";
 import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
+import { BeeTableSelectionActiveCell } from "../table/BeeTable/BeeTableSelectionContext";
 
 export interface BeeTableRowsUpdateArgs<R extends object> {
   rows: R[];
@@ -117,15 +118,20 @@ export type BeeTableOperationConfig =
 /**
  * Interface to be inherited from the table cell components (td, th)
  */
-export interface BeeTableTdsAndThsProps {
-  /** event fired when the user press a key */
-  onKeyDown: (rowSpan?: number) => (e: KeyboardEvent) => void;
-  /** the row index */
-  rowIndex: number;
-  /** the cell index */
+export interface BeeTableThProps<R extends object> {
+  /** the x position of the cell. Colspan are counted */
+  xPosition?: number;
   columnIndex: number;
+  column: ReactTable.ColumnInstance<R>;
+}
+
+export interface BeeTableTdProps<R extends object> {
   /** the x position of the cell. Colspan are counted */
   xPosition?: number;
   /** the y position of the cell */
   yPosition?: number;
+  rowIndex: number;
+  row: ReactTable.Row<R>;
+  columnIndex: number;
+  column: ReactTable.ColumnInstance<R>;
 }

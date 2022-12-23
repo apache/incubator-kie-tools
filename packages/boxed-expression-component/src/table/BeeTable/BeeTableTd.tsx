@@ -19,19 +19,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { Resizer } from "../../resizing/Resizer";
 import * as ReactTable from "react-table";
-import { BeeTableTdsAndThsProps } from "../../api";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { useBeeTableSelection, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
+import { BeeTableTdProps } from "../../api";
 
-export interface BeeTableTdProps<R extends object> extends BeeTableTdsAndThsProps {
+export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
   row: ReactTable.Row<R>;
   column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
-  getMouseDownTdProps: (
-    cellIndex: number,
-    columnGroupType: string,
-    rowIndex: number
-  ) => Pick<PfReactTable.TdProps, "onMouseDown">;
   onRowAdded?: (args: { beforeIndex: number }) => void;
   isActive: boolean;
 }
@@ -51,26 +47,17 @@ export function BeeTableTd<R extends object>({
   column,
   rowIndex,
   shouldUseCellDelegate,
-  onKeyDown,
-  getMouseDownTdProps,
   onRowAdded,
   yPosition,
-  isActive,
-}: BeeTableTdProps<R>) {
+}: BeeTableTdProps2<R>) {
+  const { setActiveCell } = useBeeTableSelectionDispatch();
+  const { activeCell } = useBeeTableSelection();
+
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
     isHovered: false,
   });
 
   const tdRef = useRef<HTMLTableCellElement>(null);
-
-  useEffect(() => {
-    const handler = onKeyDown();
-    const td = tdRef.current;
-    td?.addEventListener("keydown", handler);
-    return () => {
-      td?.removeEventListener("keydown", handler);
-    };
-  }, [onKeyDown, rowIndex]);
 
   let cssClass = column.isRowIndexColumn ? "row-index-column-cell" : "data-cell";
   if (column.cellDelegate) {
@@ -132,6 +119,40 @@ export function BeeTableTd<R extends object>({
     };
   }, [column.isRowIndexColumn, onMouseEnter, onMouseLeave, onMouseMove, onRowAdded]);
 
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      setActiveCell({
+        columnIndex,
+        column,
+        rowIndex,
+        row,
+        isEditing: false,
+      });
+    },
+    [column, columnIndex, row, rowIndex, setActiveCell]
+  );
+
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      setActiveCell({
+        columnIndex,
+        column,
+        rowIndex,
+        row,
+        isEditing: true,
+      });
+    },
+    [column, columnIndex, row, rowIndex, setActiveCell]
+  );
+
+  const isActive = useMemo(() => {
+    return activeCell?.columnIndex === columnIndex && activeCell.rowIndex === rowIndex;
+  }, [activeCell, columnIndex, rowIndex]);
+
+  const isEditing = useMemo(() => {
+    return isActive && activeCell?.isEditing;
+  }, [activeCell, isActive]);
+
   const style = useMemo(() => {
     return {
       flexGrow: columnIndex === row.cells.length - 1 ? "1" : "0",
@@ -139,17 +160,32 @@ export function BeeTableTd<R extends object>({
     };
   }, [columnIndex, row.cells.length]);
 
-  const mouseDownTdProps = useMemo(() => {
-    return getMouseDownTdProps(columnIndex, column.groupType ?? "", rowIndex);
-  }, [column.groupType, columnIndex, getMouseDownTdProps, rowIndex]);
+  const addRowButtonStyle = useMemo(
+    () =>
+      hoverInfo.isHovered && hoverInfo.part === "lower"
+        ? {
+            bottom: "-10px",
+          }
+        : {
+            top: "-10px",
+          },
+    [hoverInfo]
+  );
+
+  useEffect(() => {
+    if (isActive && !isEditing) {
+      tdRef.current?.focus();
+    }
+  }, [isActive, isEditing]);
 
   return (
     <PfReactTable.Td
-      {...mouseDownTdProps}
+      onMouseDown={onMouseDown}
+      onDoubleClick={onDoubleClick}
       {...inlineRowAddingCapabilities}
       ref={tdRef}
       tabIndex={-1}
-      className={cssClass}
+      className={`${cssClass} ${isActive ? "active" : ""} ${isEditing ? "editing" : ""}`}
       data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
       data-xposition={columnIndex}
       data-yposition={yPosition ?? rowIndex}
@@ -170,11 +206,7 @@ export function BeeTableTd<R extends object>({
       )}
 
       {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
-        <div
-          onClick={onAddRowButtonClick}
-          className={"add-row-button"}
-          style={{ ...(hoverInfo.part === "lower" ? { bottom: "-10px" } : { top: "-10px" }) }}
-        >
+        <div onClick={onAddRowButtonClick} className={"add-row-button"} style={addRowButtonStyle}>
           <PlusIcon size="sm" />
         </div>
       )}

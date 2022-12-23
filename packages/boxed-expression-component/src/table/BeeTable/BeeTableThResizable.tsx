@@ -15,13 +15,12 @@
  */
 
 import * as React from "react";
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
-import * as PfReactTable from "@patternfly/react-table";
+import { ExpressionDefinition } from "../../api";
+import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
 import { BeeTableTh } from "./BeeTableTh";
-import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
-import { ExpressionDefinition } from "../../api";
 
 export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
@@ -31,14 +30,10 @@ export interface BeeTableThResizableProps<R extends object> {
   editableHeader: boolean;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
-  onCellKeyDown: () => (e: KeyboardEvent) => void;
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   onHeaderClick: (columnKey: string) => () => void;
-  rowIndex: number;
   reactTableInstance: ReactTable.TableInstance<R>;
-  getMouseDownThProps: (columnIndex: number, columnGroupType: string) => Pick<PfReactTable.ThProps, "onMouseDown">;
   xPosition: number;
-  yPosition: number;
   renderHeaderCellInfo: (
     column: ReactTable.ColumnInstance<R>,
     columnIndex: number,
@@ -52,15 +47,10 @@ export function BeeTableThResizable<R extends object>({
   editableHeader,
   getColumnKey,
   getColumnLabel,
-  onCellKeyDown,
   onExpressionHeaderUpdated,
   onHeaderClick,
   renderHeaderCellInfo,
-  rowIndex,
-  reactTableInstance,
-  getMouseDownThProps,
   xPosition,
-  yPosition,
   onColumnAdded,
 }: BeeTableThResizableProps<R>) {
   const thProps = useMemo(
@@ -103,28 +93,6 @@ export function BeeTableThResizable<R extends object>({
   }, [column, columnKey, isAnnotationCellEditMode]);
 
   /**
-   * Get the rowspan value.
-   *
-   * @param cssClasses the classes of the cell
-   * @returns the value, default is 1
-   */
-  const getRowSpan = useCallback(
-    (cssClasses: string): number => {
-      if (
-        // FIXME: Tiago -> CSS class names should not be used for logic.
-        // FIXME: Tiago -> DecisionTable-specific logic
-        rowIndex === reactTableInstance.headerGroups.length - 1 &&
-        (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
-      ) {
-        return 2;
-      }
-
-      return 1;
-    },
-    [reactTableInstance, rowIndex]
-  );
-
-  /**
    * Callback called when the annotation cell toggle edit/read mode.
    *
    * @param isReadMode true if is read mode, false otherwise
@@ -138,35 +106,22 @@ export function BeeTableThResizable<R extends object>({
     return onHeaderClick(columnKey);
   }, [columnKey, onHeaderClick]);
 
-  const rowSpan = useMemo(() => {
-    return getRowSpan(cssClasses);
-  }, [cssClasses, getRowSpan]);
-
-  const mouseDownThProps = useMemo(() => {
-    return getMouseDownThProps(columnIndex, column.groupType ?? "");
-  }, [column.groupType, columnIndex, getMouseDownThProps]);
-
   const columnLabel = useMemo(() => {
     return getColumnLabel(column.groupType);
   }, [column.groupType, getColumnLabel]);
 
   return (
-    <BeeTableTh
+    <BeeTableTh<R>
       className={cssClasses}
       thProps={thProps}
       isFocusable={isFocusable}
       onClick={onClick}
-      onKeyDown={onCellKeyDown}
-      rowIndex={rowIndex}
       columnIndex={columnIndex}
-      rowSpan={rowSpan}
-      contextMenuThProps={mouseDownThProps}
       xPosition={xPosition}
-      yPosition={yPosition}
       onColumnAdded={onColumnAdded}
       groupType={column.groupType}
       isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
-      isActive={false}
+      column={column}
     >
       <Resizer
         minWidth={column.minWidth}

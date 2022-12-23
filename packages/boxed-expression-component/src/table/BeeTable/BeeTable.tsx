@@ -17,7 +17,7 @@
 import * as PfReactTable from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import { v4 as uuid } from "uuid";
 import { BeeTableHeaderVisibility, BeeTableOperation, BeeTableProps } from "../../api";
@@ -27,19 +27,15 @@ import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
-import { BeeTableHeader } from "./BeeTableHeader";
-import {
-  focusInsideCell,
-  focusLowerCell,
-  focusNextCellByArrowKey,
-  focusNextCellByTabKey,
-  focusParentCell,
-  focusPrevCellByArrowKey,
-  focusPrevCellByTabKey,
-  focusUpperCell,
-  getParentCell,
-} from "./common";
+import { BeeTableCellUpdate, BeeTableHeader } from "./BeeTableHeader";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../expressions/ContextExpression";
+import {
+  BeeTableSelectionActiveCell,
+  BeeTableSelectionContextProvider,
+  BeeTableSelectionDispatchContext,
+  useBeeTableSelection,
+  useBeeTableSelectionDispatch,
+} from "./BeeTableSelectionContext";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
@@ -68,54 +64,7 @@ export function areEqualColumns<R extends object>(
   };
 }
 
-/**
- * Callback fired during arrow navigation.
- *
- * @param e the event object
- * @param rowSpan the cell rowSpan, default is 1
- * @returns
- */
-const onCellTabNavigation = (e: KeyboardEvent, rowSpan = 1) => {
-  const currentTarget = e.currentTarget as HTMLElement;
-  e.preventDefault();
-
-  if (e.shiftKey) {
-    return focusPrevCellByTabKey(currentTarget, rowSpan);
-  } else {
-    return focusNextCellByTabKey(currentTarget, rowSpan);
-  }
-};
-
-/**
- * Callback fired during arrow navigation.
- *
- * @param e the event object
- * @param rowSpan the cell rowSpan, default is 1
- * @returns
- */
-const onCellArrowNavigation = (e: KeyboardEvent, rowSpan = 1): void => {
-  const key = e.key;
-  const currentTarget = e.currentTarget as HTMLElement;
-
-  if (NavigationKeysUtils.isArrowLeft(key)) {
-    e.preventDefault();
-    return focusPrevCellByArrowKey(currentTarget, rowSpan);
-  }
-  if (NavigationKeysUtils.isArrowRight(key)) {
-    e.preventDefault();
-    return focusNextCellByArrowKey(currentTarget, rowSpan);
-  }
-  if (NavigationKeysUtils.isArrowUp(key)) {
-    e.preventDefault();
-    return focusUpperCell(currentTarget);
-  }
-  if (NavigationKeysUtils.isArrowDown(key)) {
-    e.preventDefault();
-    return focusLowerCell(currentTarget);
-  }
-};
-
-export function BeeTable<R extends object>({
+export function BeeTable2<R extends object>({
   tableId,
   additionalRow,
   editColumnLabel,
@@ -140,6 +89,8 @@ export function BeeTable<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
+  const { activeCell } = useBeeTableSelection();
+  const { setActiveCell } = useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -158,7 +109,7 @@ export function BeeTable<R extends object>({
               label:
                 headerVisibility === BeeTableHeaderVisibility.Full
                   ? ROW_INDEX_SUB_COLUMN_ACCESSOR
-                  : (controllerCell as any),
+                  : (controllerCell as any), // FIXME: Tiago -> Not good.
               accessor: ROW_INDEX_SUB_COLUMN_ACCESSOR as any,
               minWidth: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
               width: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -191,35 +142,14 @@ export function BeeTable<R extends object>({
 
       addRowIndexColumnsRecursively(rowIndexColumn, headerLevelCount);
 
-      // FIXME: Tiago -> This is a special case because the controller cell doesn't have a dataType, but...
       return [rowIndexColumn, ...columns];
     },
     [addRowIndexColumnsRecursively, headerLevelCount]
   );
 
-  const [lastSelectedColumnIndex, setLastSelectedColumnIndex] = useState(-1);
-  const [lastSelectedColumnGroupType, setLastSelectedColumnGroupType] = useState("");
-  const [lastSelectedRowIndex, setLastSelectedRowIndex] = useState(-1);
-
   const columnsWithAddedIndexColumns = useMemo(
     () => addRowIndexColumns(controllerCell, columns),
     [addRowIndexColumns, columns, controllerCell]
-  );
-
-  const onCellChanged = useCallback(
-    (cellProps: ReactTable.CellProps<R>) => (value: string) => {
-      const columnIndex = cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);
-      onCellUpdates?.([
-        {
-          value,
-          row: cellProps.row.original,
-          rowIndex: cellProps.row.index,
-          column: cellProps.column,
-          columnIndex: columnIndex - 1, // Subtract one because of the row index column.
-        },
-      ]);
-    },
-    [onCellUpdates]
   );
 
   const defaultColumn = useMemo(
@@ -235,17 +165,11 @@ export function BeeTable<R extends object>({
             />
           );
         } else {
-          return (
-            <BeeTableEditableCellContent
-              onChange={onCellChanged(cellProps)}
-              value={cellProps.value}
-              isReadOnly={isReadOnly}
-            />
-          );
+          return <BeeTableDefaultCell cellProps={cellProps} onCellUpdates={onCellUpdates} isReadOnly={isReadOnly} />;
         }
       },
     }),
-    [cellComponentByColumnId, isReadOnly, onCellChanged]
+    [cellComponentByColumnId, isReadOnly, onCellUpdates]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(
@@ -276,30 +200,6 @@ export function BeeTable<R extends object>({
           ];
     },
     [columnsWithAddedIndexColumns.length, reactTableInstance.allColumns]
-  );
-
-  const getMouseDownThProps = useCallback(
-    (columnIndex: number, columnGroupType: string): Pick<PfReactTable.ThProps, "onMouseDown"> => ({
-      onMouseDown: (e) => {
-        e.preventDefault();
-        setLastSelectedColumnIndex(columnIndex);
-        setLastSelectedColumnGroupType(columnGroupType);
-        setLastSelectedRowIndex(-1);
-      },
-    }),
-    []
-  );
-
-  const getMouseDownTdProps = useCallback(
-    (columnIndex: number, columnGroupType: string, rowIndex: number): Pick<PfReactTable.TdProps, "onMouseDown"> => ({
-      onMouseDown: (e) => {
-        e.preventDefault();
-        setLastSelectedColumnIndex(columnIndex);
-        setLastSelectedColumnGroupType(columnGroupType);
-        setLastSelectedRowIndex(rowIndex);
-      },
-    }),
-    []
   );
 
   // FIXME: Tiago -> Pasting
@@ -355,44 +255,169 @@ export function BeeTable<R extends object>({
     [getRowKey]
   );
 
-  /**
-   * Function to be executed when a key has been pressed on a cell
-   * @param rowIndex the index of the row
-   */
-  const onCellKeyDown = useCallback(
-    (rowSpan = 1) =>
-      (e: KeyboardEvent) => {
-        const key = e.key;
-        const isModKey = e.altKey || e.ctrlKey || e.shiftKey || NavigationKeysUtils.isAltGraph(key);
-        const currentTarget = e.currentTarget as HTMLElement;
-        const isFiredFromThis = e.currentTarget === e.target;
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const key = e.key;
+      const isModKey = e.altKey || e.ctrlKey || e.shiftKey || NavigationKeysUtils.isAltGraph(key);
+      const isFiredFromThis = e.currentTarget === e.target;
 
-        if (!enableKeyboardNavigation) {
-          return;
-        }
+      if (!enableKeyboardNavigation) {
+        return;
+      }
 
-        //prevent the parent cell catch this event if there is a nested table
-        if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
-          return;
+      // DELETE / BACKSPACE
+      if (NavigationKeysUtils.isDelete(key) || NavigationKeysUtils.isBackspace(key)) {
+        e.preventDefault();
+        if (activeCell) {
+          onCellUpdates?.([
+            {
+              columnIndex: activeCell.columnIndex - 1,
+              rowIndex: activeCell.rowIndex,
+              row: activeCell.row?.original,
+              column: activeCell.column!,
+              value: "",
+            },
+          ]);
         }
+      }
 
-        if (NavigationKeysUtils.isTab(key)) {
-          return onCellTabNavigation(e, rowSpan);
-        }
+      // ENTER
+      if (NavigationKeysUtils.isEnter(key)) {
+        e.preventDefault();
+        setActiveCell((prev) => {
+          if (!prev) {
+            return prev;
+          }
+          return {
+            ...prev,
+            isEditing: true,
+          };
+        });
+      }
 
-        if (NavigationKeysUtils.isAnyArrow(key)) {
-          return onCellArrowNavigation(e, rowSpan);
+      // TAB
+      if (NavigationKeysUtils.isTab(key)) {
+        e.preventDefault();
+        if (e.shiftKey) {
+          setActiveCell((prev) => {
+            if (!prev) {
+              return prev;
+            }
+            const newColumnIndex = Math.max(prev.columnIndex - 1, 0);
+            return {
+              column: reactTableInstance.allColumns[newColumnIndex],
+              columnIndex: newColumnIndex,
+              row: prev?.row,
+              rowIndex: prev?.rowIndex ?? -1,
+              isEditing: false,
+            };
+          });
+        } else {
+          setActiveCell((prev) => {
+            if (!prev) {
+              return prev;
+            }
+            const newColumnIndex = Math.min(prev.columnIndex + 1, reactTableInstance.allColumns.length - 1);
+            return {
+              column: reactTableInstance.allColumns[newColumnIndex],
+              columnIndex: newColumnIndex,
+              row: prev?.row,
+              rowIndex: prev?.rowIndex ?? -1,
+              isEditing: false,
+            };
+          });
         }
+      }
 
-        if (NavigationKeysUtils.isEscape(key)) {
-          return focusParentCell(currentTarget);
-        }
+      // ARROWS
 
-        if (!currentlyOpenContextMenu && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
-          return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
-        }
-      },
-    [currentlyOpenContextMenu, enableKeyboardNavigation]
+      if (NavigationKeysUtils.isArrowLeft(key)) {
+        e.preventDefault();
+        setActiveCell((prev) => {
+          if (!prev) {
+            return prev;
+          }
+          const newColumnIndex = Math.max(prev.columnIndex - 1, 0);
+          return {
+            column: reactTableInstance.allColumns[newColumnIndex],
+            columnIndex: newColumnIndex,
+            row: prev?.row,
+            rowIndex: prev?.rowIndex ?? -1,
+            isEditing: false,
+          };
+        });
+      }
+      if (NavigationKeysUtils.isArrowRight(key)) {
+        e.preventDefault();
+        setActiveCell((prev) => {
+          if (!prev) {
+            return prev;
+          }
+          const newColumnIndex = Math.min(prev.columnIndex + 1, reactTableInstance.allColumns.length - 1);
+          return {
+            column: reactTableInstance.allColumns[newColumnIndex],
+            columnIndex: newColumnIndex,
+            row: prev?.row,
+            rowIndex: prev?.rowIndex ?? -1,
+            isEditing: false,
+          };
+        });
+      }
+      if (NavigationKeysUtils.isArrowUp(key)) {
+        e.preventDefault();
+        setActiveCell((prev) => {
+          if (!prev) {
+            return prev;
+          }
+          const newRowIndex = Math.max(prev.rowIndex - 1, -1);
+          return {
+            column: prev!.column,
+            columnIndex: prev!.columnIndex,
+            row: newRowIndex >= 0 ? reactTableInstance.rows[newRowIndex] : undefined,
+            rowIndex: newRowIndex,
+            isEditing: false,
+          };
+        });
+      }
+      if (NavigationKeysUtils.isArrowDown(key)) {
+        e.preventDefault();
+        setActiveCell((prev) => {
+          if (!prev) {
+            return prev;
+          }
+          const newRowIndex = Math.min(prev.rowIndex + 1, reactTableInstance.rows.length - 1);
+          return {
+            column: prev!.column,
+            columnIndex: prev!.columnIndex,
+            row: reactTableInstance.rows[newRowIndex],
+            rowIndex: newRowIndex,
+            isEditing: false,
+          };
+        });
+      }
+
+      // ESC
+
+      if (NavigationKeysUtils.isEscape(key)) {
+        setActiveCell(undefined);
+        // FIXME: Tiago: Do it.
+        // return focusParentCell(currentTarget);
+      }
+
+      if (!currentlyOpenContextMenu && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
+        // FIXME: Tiago: Do it.
+        // return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
+      }
+    },
+    [
+      activeCell,
+      currentlyOpenContextMenu,
+      enableKeyboardNavigation,
+      onCellUpdates,
+      reactTableInstance.allColumns,
+      reactTableInstance.rows,
+      setActiveCell,
+    ]
   );
 
   const headerRowsCount = useMemo(() => {
@@ -413,17 +438,24 @@ export function BeeTable<R extends object>({
   }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
 
   const operationGroups = useMemo(() => {
+    if (!activeCell) {
+      return [];
+    }
     if (_.isArray(operationConfig)) {
       return operationConfig;
     }
-    const column = reactTableInstance.allColumns[lastSelectedColumnIndex];
+    const column = reactTableInstance.allColumns[activeCell.columnIndex];
     return (operationConfig ?? {})[column?.groupType || ""];
-  }, [lastSelectedColumnIndex, operationConfig, reactTableInstance.allColumns]);
+  }, [activeCell, operationConfig, reactTableInstance.allColumns]);
 
   const allowedOperations = useMemo(() => {
+    if (!activeCell) {
+      return [];
+    }
+
     return [
-      ...getColumnOperations(lastSelectedColumnIndex),
-      ...(lastSelectedRowIndex >= 0
+      ...getColumnOperations(activeCell.columnIndex),
+      ...(activeCell.rowIndex >= 0
         ? [
             BeeTableOperation.RowInsertAbove,
             BeeTableOperation.RowInsertBelow,
@@ -433,10 +465,10 @@ export function BeeTable<R extends object>({
           ]
         : []),
     ];
-  }, [getColumnOperations, lastSelectedColumnIndex, lastSelectedRowIndex, rows.length]);
+  }, [activeCell, getColumnOperations, rows.length]);
 
   return (
-    <div className={`table-component ${tableId} ${tableEventUUID}`} ref={tableRef}>
+    <div className={`table-component ${tableId} ${tableEventUUID}`} ref={tableRef} onKeyDown={onKeyDown}>
       <PfReactTable.TableComposable
         {...reactTableInstance.getTableProps()}
         variant="compact"
@@ -448,22 +480,18 @@ export function BeeTable<R extends object>({
           editableHeader={editableHeader}
           getColumnKey={onGetColumnKey}
           headerVisibility={headerVisibility}
-          onCellKeyDown={onCellKeyDown}
           onColumnUpdates={onColumnUpdates}
           skipLastHeaderGroup={skipLastHeaderGroup}
           tableColumns={columnsWithAddedIndexColumns}
           reactTableInstance={reactTableInstance}
-          getMouseDownThProps={getMouseDownThProps}
           onColumnAdded={onColumnAdded}
         />
         <BeeTableBody<R>
           getColumnKey={onGetColumnKey}
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
-          onCellKeyDown={onCellKeyDown}
           headerRowsCount={headerRowsCount}
           reactTableInstance={reactTableInstance}
-          getMouseDownTdProps={getMouseDownTdProps}
           additionalRow={additionalRow}
           onRowAdded={onRowAdded}
         />
@@ -472,9 +500,6 @@ export function BeeTable<R extends object>({
         tableRef={tableRef}
         operationGroups={operationGroups}
         allowedOperations={allowedOperations}
-        lastSelectedColumnIndex={lastSelectedColumnIndex}
-        lastSelectedColumnGroupType={lastSelectedColumnGroupType}
-        lastSelectedRowIndex={lastSelectedRowIndex}
         onRowAdded={onRowAdded}
         onRowDuplicated={onRowDuplicated}
         onRowDeleted={onRowDeleted}
@@ -482,5 +507,73 @@ export function BeeTable<R extends object>({
         onColumnDeleted={onColumnDeleted}
       />
     </div>
+  );
+}
+
+export function BeeTable<R extends object>(props: BeeTableProps<R>) {
+  return (
+    <BeeTableSelectionContextProvider>
+      <BeeTable2 {...props} />
+    </BeeTableSelectionContextProvider>
+  );
+}
+
+function BeeTableDefaultCell<R extends object>({
+  cellProps,
+  onCellUpdates,
+  isReadOnly,
+}: {
+  isReadOnly: boolean;
+  cellProps: ReactTable.CellProps<R>;
+  onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
+}) {
+  const { activeCell } = useBeeTableSelection();
+  const { setActiveCell } = useBeeTableSelectionDispatch();
+
+  const columnIndex = useMemo(() => {
+    return cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);
+  }, [cellProps.allColumns, cellProps.column.id]);
+
+  const onCellChanged = useCallback(
+    (value: string) => {
+      onCellUpdates?.([
+        {
+          value,
+          row: cellProps.row.original,
+          rowIndex: cellProps.row.index,
+          column: cellProps.column,
+          columnIndex: columnIndex - 1, // Subtract one because of the row index column.
+        },
+      ]);
+    },
+    [cellProps, columnIndex, onCellUpdates]
+  );
+
+  const setEditing = useCallback(
+    (isEditing: boolean) => {
+      setActiveCell((prev) => {
+        if (!prev) {
+          return;
+        }
+        return { ...prev, isEditing };
+      });
+    },
+    [setActiveCell]
+  );
+
+  const isEditing = useMemo(() => {
+    return (
+      activeCell?.columnIndex === columnIndex && activeCell.rowIndex === cellProps.row.index && activeCell.isEditing
+    );
+  }, [activeCell, cellProps.row.index, columnIndex]);
+
+  return (
+    <BeeTableEditableCellContent
+      isEditing={isEditing}
+      setEditing={setEditing}
+      onChange={onCellChanged}
+      value={cellProps.value}
+      isReadOnly={isReadOnly}
+    />
   );
 }

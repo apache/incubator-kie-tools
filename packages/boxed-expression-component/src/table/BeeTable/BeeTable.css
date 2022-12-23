@@ -90,6 +90,25 @@
 .expression-container .table-component table thead th,
 .expression-container .table-component table tbody td {
   border: 1px solid var(--pf-global--palette--black-300);
+  outline: none;
+}
+
+.expression-container .table-component table thead th.active:after,
+.expression-container .table-component table tbody td.active:after {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  content: "";
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  z-index: 5;
+  border: 2px solid #438cb1;
+  border-radius: 2px;
+}
+
+.expression-container .table-component table thead th.editing,
+.expression-container .table-component table tbody td.editing {
+  box-shadow: 0px 0px 20px -5px darkgrey;
 }
 
 /** Table Body rules */
@@ -156,6 +175,7 @@
 }
 
 .expression-container .pf-c-drawer .pf-c-drawer__splitter {
+  z-index: 10;
   background-color: #00000010;
 }
 
@@ -173,15 +193,6 @@
 
 .expression-container .pf-c-drawer .pf-c-drawer__splitter.error {
   background-color: red;
-}
-
-.expression-container
-  .table-component
-  table
-  .pf-c-drawer.drawer-on-body
-  > .pf-c-drawer__splitter
-  > .pf-c-drawer__splitter-handle {
-  z-index: 1;
 }
 
 /** Text-area used as a cell */
@@ -215,7 +226,7 @@
   border-radius: 18px;
   background-color: white;
   font-size: 0.65em;
-  z-index: 10;
+  z-index: 20;
   cursor: pointer;
 }
 
@@ -230,6 +241,7 @@
 .add-column-button {
   position: absolute;
   border: 1px solid #d2d2d2;
+  bottom: 5px;
   height: 18px;
   width: 18px;
   display: flex;
@@ -238,7 +250,7 @@
   border-radius: 18px;
   background-color: #def3ff;
   font-size: 0.65em;
-  z-index: 10;
+  z-index: 20;
   cursor: pointer;
 }
 

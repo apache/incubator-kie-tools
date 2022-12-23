@@ -160,7 +160,15 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           resizingWidth={resizingWidth}
           setResizingWidth={setResizingWidth}
         >
-          <BeeTableEditableCellContent value={literalExpression.content ?? ""} onChange={updateContent} />
+          <BeeTableEditableCellContent
+            isReadOnly={false}
+            value={literalExpression.content ?? ""}
+            onChange={updateContent}
+            isEditing={false}
+            setEditing={() => {
+              /**/
+            }}
+          />
         </Resizer>
       </div>
     </div>
