@@ -56,7 +56,10 @@ export function BeeTableThResizable<R extends object>({
   const thProps = useMemo(
     () => ({
       ...column.getHeaderProps(),
-      style: column.width ? {} : { flexGrow: 1 },
+      style: {
+        position: "relative" as const,
+        ...(column.width ? {} : { flexGrow: 1 }),
+      },
     }),
     [column]
   );
@@ -123,28 +126,31 @@ export function BeeTableThResizable<R extends object>({
       isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
       column={column}
     >
+      <div
+        className="header-cell"
+        data-ouia-component-type="expression-column-header"
+        style={{ width: column.resizingWidth?.value }}
+      >
+        {column.dataType && editableHeader ? (
+          <ExpressionDefinitionHeaderMenu
+            title={columnLabel}
+            selectedExpressionName={column.label}
+            selectedDataType={column.dataType}
+            onExpressionHeaderUpdated={onExpressionHeaderUpdated}
+          >
+            {renderHeaderCellInfo(column, columnIndex)}
+          </ExpressionDefinitionHeaderMenu>
+        ) : (
+          renderHeaderCellInfo(column, columnIndex, onAnnotationCellToggle)
+        )}
+      </div>
       <Resizer
         minWidth={column.minWidth}
         width={column.width}
         setWidth={column.setWidth}
         resizingWidth={column.resizingWidth}
         setResizingWidth={column.setResizingWidth}
-      >
-        <div className="header-cell" data-ouia-component-type="expression-column-header">
-          {column.dataType && editableHeader ? (
-            <ExpressionDefinitionHeaderMenu
-              title={columnLabel}
-              selectedExpressionName={column.label}
-              selectedDataType={column.dataType}
-              onExpressionHeaderUpdated={onExpressionHeaderUpdated}
-            >
-              {renderHeaderCellInfo(column, columnIndex)}
-            </ExpressionDefinitionHeaderMenu>
-          ) : (
-            renderHeaderCellInfo(column, columnIndex, onAnnotationCellToggle)
-          )}
-        </div>
-      </Resizer>
+      />
     </BeeTableTh>
   );
 }

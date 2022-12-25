@@ -16,7 +16,7 @@
 
 import "./LiteralExpression.css";
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DmnBuiltInDataType, LiteralExpressionDefinition, ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
@@ -134,6 +134,13 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   //
 
+  const [isEditing, setEditing] = useState(false);
+
+  const onDoubleClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditing(true);
+  }, []);
+
   return (
     <div className={`literal-expression`}>
       {!literalExpression.isHeadless && (
@@ -152,24 +159,26 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           </ExpressionDefinitionHeaderMenu>
         </div>
       )}
-      <div className={`${literalExpression.id} literal-expression-body`} onClick={selectLiteralExpression}>
+      <div
+        className={`${literalExpression.id} literal-expression-body`}
+        onClick={selectLiteralExpression}
+        onDoubleClick={onDoubleClick}
+        style={{ width: resizingWidth.value, minWidth: minWidthGlobal }}
+      >
+        <BeeTableEditableCellContent
+          isReadOnly={false}
+          value={literalExpression.content ?? ""}
+          onChange={updateContent}
+          isEditing={isEditing}
+          setEditing={setEditing}
+        />
         <Resizer
           minWidth={minWidthGlobal}
           width={literalExpression.width}
           setWidth={setWidth}
           resizingWidth={resizingWidth}
           setResizingWidth={setResizingWidth}
-        >
-          <BeeTableEditableCellContent
-            isReadOnly={false}
-            value={literalExpression.content ?? ""}
-            onChange={updateContent}
-            isEditing={false}
-            setEditing={() => {
-              /**/
-            }}
-          />
-        </Resizer>
+        />
       </div>
     </div>
   );

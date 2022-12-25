@@ -16,7 +16,9 @@
 
 .expression-container .resizable-div {
   height: 100%;
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .expression-container .pf-c-drawer__splitter::after {

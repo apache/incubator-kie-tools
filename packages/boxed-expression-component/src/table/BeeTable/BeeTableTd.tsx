@@ -74,22 +74,42 @@ export function BeeTableTd<R extends object>({
       : cell.render("Cell");
   }, [cell, rowIndex, shouldUseCellDelegate, column]);
 
-  const onMouseEnter = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
-    e.stopPropagation();
-    return setHoverInfo(getHoverInfo(e, tdRef.current!));
-  }, []);
+  useEffect(() => {
+    function onEnter(e: MouseEvent) {
+      setHoverInfo((prev) => getHoverInfo(e, td!));
+    }
 
-  const onMouseLeave = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
-    e.stopPropagation();
-    return setHoverInfo({ isHovered: false });
-  }, []);
+    function onMove(e: MouseEvent) {
+      setHoverInfo((prev) => getHoverInfo(e, td!));
+    }
 
-  const onMouseMove = useCallback((e: React.MouseEvent) => {
-    return setHoverInfo((prev) => {
-      e.stopPropagation();
-      return getHoverInfo(e, tdRef.current!);
-    });
-  }, []);
+    function onLeave() {
+      setHoverInfo((prev) => ({ isHovered: false }));
+    }
+
+    function onDown() {
+      setActiveCell({
+        columnIndex,
+        column,
+        rowIndex,
+        row,
+        isEditing: false,
+      });
+    }
+
+    console.info("binding...");
+    const td = tdRef.current;
+    td?.addEventListener("mouseenter", onEnter);
+    td?.addEventListener("mousemove", onMove);
+    td?.addEventListener("mouseleave", onLeave);
+    td?.addEventListener("mousedown", onDown);
+    return () => {
+      td?.removeEventListener("mousedown", onDown);
+      td?.removeEventListener("mouseleave", onLeave);
+      td?.removeEventListener("mousemove", onMove);
+      td?.removeEventListener("mouseenter", onEnter);
+    };
+  }, [column, columnIndex, row, rowIndex, setActiveCell]);
 
   const onAddRowButtonClick = useCallback(
     (e: React.MouseEvent) => {
@@ -105,31 +125,6 @@ export function BeeTableTd<R extends object>({
       }
     },
     [hoverInfo, onRowAdded, rowIndex]
-  );
-
-  const inlineRowAddingCapabilities = useMemo(() => {
-    if (!column.isRowIndexColumn || !onRowAdded) {
-      return {};
-    }
-
-    return {
-      onMouseEnter,
-      onMouseLeave,
-      onMouseMove,
-    };
-  }, [column.isRowIndexColumn, onMouseEnter, onMouseLeave, onMouseMove, onRowAdded]);
-
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      setActiveCell({
-        columnIndex,
-        column,
-        rowIndex,
-        row,
-        isEditing: false,
-      });
-    },
-    [column, columnIndex, row, rowIndex, setActiveCell]
   );
 
   const onDoubleClick = useCallback(
@@ -157,6 +152,7 @@ export function BeeTableTd<R extends object>({
     return {
       flexGrow: columnIndex === row.cells.length - 1 ? "1" : "0",
       overflow: "visible",
+      position: "relative" as const,
     };
   }, [columnIndex, row.cells.length]);
 
@@ -180,9 +176,7 @@ export function BeeTableTd<R extends object>({
 
   return (
     <PfReactTable.Td
-      onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
-      {...inlineRowAddingCapabilities}
       ref={tdRef}
       tabIndex={-1}
       className={`${cssClass} ${isActive ? "active" : ""} ${isEditing ? "editing" : ""}`}
@@ -194,15 +188,25 @@ export function BeeTableTd<R extends object>({
       {column.isRowIndexColumn ? (
         <>{rowIndex + 1}</>
       ) : (
-        <Resizer
-          minWidth={cell.column.minWidth}
-          width={cell.column.width}
-          setWidth={cell.column.setWidth}
-          resizingWidth={cell.column.resizingWidth}
-          setResizingWidth={cell.column.setResizingWidth}
-        >
-          <>{tdContent}</>
-        </Resizer>
+        <>
+          <div
+            style={{
+              width: column.resizingWidth?.value,
+              minWidth: cell.column.minWidth,
+            }}
+          >
+            {tdContent}
+          </div>
+          {(hoverInfo.isHovered || cell.column.resizingWidth?.isPivoting) && (
+            <Resizer
+              minWidth={cell.column.minWidth}
+              width={cell.column.width}
+              setWidth={cell.column.setWidth}
+              resizingWidth={cell.column.resizingWidth}
+              setResizingWidth={cell.column.setResizingWidth}
+            />
+          )}
+        </>
       )}
 
       {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
@@ -214,7 +218,7 @@ export function BeeTableTd<R extends object>({
   );
 }
 
-function getHoverInfo(e: React.MouseEvent, elem: HTMLElement): HoverInfo {
+function getHoverInfo(e: MouseEvent, elem: HTMLElement): HoverInfo {
   const rect = elem.getBoundingClientRect();
   const localY = e.clientY - rect.top; // y position within the element.
   const part = localY < rect.height / 3 ? "upper" : "lower"; // upper part is the upper third

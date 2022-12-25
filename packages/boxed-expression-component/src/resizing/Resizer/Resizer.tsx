@@ -104,7 +104,7 @@ export const Resizer: React.FunctionComponent<React.PropsWithChildren<ResizerPro
         </div>
       )}
 
-      {(resizingWidth && (
+      {resizingWidth && (
         <Resizable
           width={resizingWidth?.value}
           height={0}
@@ -122,12 +122,8 @@ export const Resizer: React.FunctionComponent<React.PropsWithChildren<ResizerPro
             </div>
           }
         >
-          <div style={style}>{children}</div>
+          <div style={style} />
         </Resizable>
-      )) || (
-        <>
-          <div style={{ minWidth }}>{children}</div>
-        </>
       )}
     </div>
   );
