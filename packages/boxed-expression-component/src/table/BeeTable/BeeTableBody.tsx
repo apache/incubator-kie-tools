@@ -93,6 +93,12 @@ export function BeeTableBody<R extends object>({
         >
           {row.cells.map((_, columnIndex) => {
             return (
+              // <div
+              //   key={getColumnKey(reactTableInstance.allColumns[columnIndex])}
+              //   style={{ width: _.column.resizingWidth?.value ?? "60px" }}
+              // >
+              //   oi
+              // </div>
               <BeeTableTd<R>
                 key={getColumnKey(reactTableInstance.allColumns[columnIndex])}
                 columnIndex={columnIndex}

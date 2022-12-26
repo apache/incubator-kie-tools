@@ -261,3 +261,7 @@
 .add-column-button:active {
   filter: brightness(0.8);
 }
+
+.logic-type-popover .pf-c-menu {
+  box-shadow: none;
+}

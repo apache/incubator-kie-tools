@@ -21,7 +21,10 @@ import { useCallback, useMemo } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ContextExpression } from "../ContextExpression";
 import { DecisionTableExpression } from "../DecisionTableExpression";
 import { FunctionExpression } from "../FunctionExpression";
@@ -32,7 +35,8 @@ import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { RelationExpression } from "../RelationExpression";
 import "./ExpressionDefinitionLogicTypeSelector.css";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
-import { ListIcon, TableIcon } from "@patternfly/react-icons";
+import { CopyIcon, CutIcon, ListIcon, PasteIcon, TableIcon } from "@patternfly/react-icons";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -195,6 +199,33 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
   }, []);
 
+  const copyExpression = useCallback(() => {
+    //FIXME: Tiago -> Don't use text
+    navigator.clipboard.writeText(JSON.stringify(expression));
+  }, [expression]);
+
+  const cutExpression = useCallback(() => {
+    //FIXME: Tiago -> Don't use text
+    navigator.clipboard.writeText(JSON.stringify(expression));
+    onLogicTypeReset();
+  }, [expression, onLogicTypeReset]);
+
+  const { setExpression } = useBoxedExpressionEditorDispatch();
+
+  const pasteExpression = useCallback(async () => {
+    //FIXME: Tiago -> Don't use text
+    const expression: ExpressionDefinition = JSON.parse(await navigator.clipboard.readText());
+    setExpression(expression);
+  }, [setExpression]);
+
+  const menuIconContainerStyle = useMemo(() => {
+    return {
+      width: "30px",
+      userSelect: "none" as const,
+      position: "relative" as const,
+    };
+  }, []);
+
   return (
     <>
       <div
@@ -212,23 +243,40 @@ export function ExpressionDefinitionLogicTypeSelector({
             className="logic-type-popover"
             hasAutoWidth={true}
             body={
-              <Menu onSelect={selectLogicType}>
-                <MenuList>
-                  {SELECTABLE_LOGIC_TYPES.map((key) => (
+              <>
+                <Menu onSelect={selectLogicType}>
+                  <MenuList>
+                    {SELECTABLE_LOGIC_TYPES.map((key) => (
+                      <MenuItem
+                        key={key}
+                        itemId={key}
+                        icon={
+                          <div style={menuIconContainerStyle}>
+                            <>{logicTypeIcon(key)}</>
+                          </div>
+                        }
+                      >
+                        {key}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                  <Divider style={{ padding: "16px" }} />
+                </Menu>
+                <Menu>
+                  <MenuList>
                     <MenuItem
-                      key={key}
-                      itemId={key}
+                      onClick={pasteExpression}
                       icon={
-                        <div style={{ width: "30px", userSelect: "none", position: "relative" }}>
-                          <>{logicTypeIcon(key)}</>
+                        <div style={menuIconContainerStyle}>
+                          <PasteIcon />
                         </div>
                       }
                     >
-                      {key}
+                      {"Paste"}
                     </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
+                  </MenuList>
+                </Menu>
+              </>
             }
           />
         )}
@@ -236,16 +284,56 @@ export function ExpressionDefinitionLogicTypeSelector({
       {shouldRenderClearContextMenu && (
         <div
           className="context-menu-container"
-          style={{ top: clearContextMenuYPos, left: clearContextMenuXPos, opacity: 1 }}
+          style={{ top: clearContextMenuYPos, left: clearContextMenuXPos, opacity: 1, minWidth: "150px" }}
         >
           <Menu className="table-context-menu">
             <MenuGroup label={expression.logicType.toLocaleUpperCase()}>
               <MenuList>
-                <MenuItem onClick={resetLogicType} icon={<CompressIcon />}>
+                <MenuItem
+                  onClick={resetLogicType}
+                  icon={
+                    <div style={menuIconContainerStyle}>
+                      <CompressIcon />
+                    </div>
+                  }
+                >
                   {i18n.clear}
                 </MenuItem>
               </MenuList>
             </MenuGroup>
+            <Divider style={{ padding: "16px" }} />
+            <MenuList>
+              <MenuItem
+                onClick={copyExpression}
+                icon={
+                  <div style={menuIconContainerStyle}>
+                    <CopyIcon />
+                  </div>
+                }
+              >
+                {"Copy"}
+              </MenuItem>
+              <MenuItem
+                onClick={cutExpression}
+                icon={
+                  <div style={menuIconContainerStyle}>
+                    <CutIcon />
+                  </div>
+                }
+              >
+                {"Cut"}
+              </MenuItem>
+              <MenuItem
+                onClick={pasteExpression}
+                icon={
+                  <div style={menuIconContainerStyle}>
+                    <PasteIcon />
+                  </div>
+                }
+              >
+                {"Paste"}
+              </MenuItem>
+            </MenuList>
           </Menu>
         </div>
       )}
