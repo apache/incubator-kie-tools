@@ -2252,7 +2252,7 @@ importers:
       typescript: ^4.4.2
       uniforms: ^3.5.5
       uniforms-bridge-json-schema: ^3.5.5
-      uniforms-patternfly: ^4.7.5
+      uniforms-patternfly: ^4.7.8
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/notifications": link:../notifications
@@ -2267,7 +2267,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       uniforms: 3.6.2_react@17.0.2
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
-      uniforms-patternfly: 4.7.5_d63oygdhkx7uuppcefuuphla7u
+      uniforms-patternfly: 4.7.8_d63oygdhkx7uuppcefuuphla7u
     devDependencies:
       "@babel/core": 7.16.12
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
@@ -26106,25 +26106,6 @@ packages:
       uniforms: 3.6.2_react@17.0.2
     transitivePeerDependencies:
       - react
-    dev: false
-
-  /uniforms-patternfly/4.7.5_d63oygdhkx7uuppcefuuphla7u:
-    resolution:
-      { integrity: sha512-ntK+Yv9ZeORm3uvcX9xga/9SdXoNH3p26YSmBIcnapfDy2D6IyDXDBphCcpD4FvodL5UOlx13rC5nUk4GPtMvA== }
-    engines: { npm: ">=5.0.0" }
-    peerDependencies:
-      "@patternfly/react-core": ^4.135.0
-      "@patternfly/react-icons": ^4.11.0
-      react: ^17.0.0 || ^16.8.0
-    dependencies:
-      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
-      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      classnames: 2.3.1
-      invariant: 2.2.4
-      lodash: 4.17.21
-      react: 17.0.2
-      tslib: 2.3.1
-      uniforms: 3.6.2_react@17.0.2
     dev: false
 
   /uniforms-patternfly/4.7.8_d63oygdhkx7uuppcefuuphla7u:
