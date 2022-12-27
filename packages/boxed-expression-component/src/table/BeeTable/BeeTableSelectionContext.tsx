@@ -35,8 +35,8 @@ export type BeeTableCellStatus = {
 
 export interface BeeTableCellRef {
   setStatus(args: BeeTableCellStatus): void;
-  setValue(value: string): void;
-  getValue(): string;
+  setValue?(value: string): void;
+  getValue?(): string;
 }
 
 export interface BeeTableSelection<R extends object> {
@@ -93,7 +93,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
           for (let c = startColumn; c <= endColumn; c++) {
             clipboardMatrix[r - startRow] ??= [];
             clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
-              ?.map((ref) => ref.getValue())
+              ?.flatMap((ref) => (ref.getValue ? [ref.getValue()] : []))
               .join(""); // FIXME: Tiago -> What to do? Only one ref should be yielding the content
           }
         }
@@ -116,9 +116,9 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
           for (let c = startColumn; c <= endColumn; c++) {
             clipboardMatrix[r - startRow] ??= [];
             clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
-              ?.map((ref) => {
-                ref.setValue(CELL_EMPTY_VALUE);
-                return ref.getValue();
+              ?.flatMap((ref) => {
+                ref.setValue?.(CELL_EMPTY_VALUE);
+                return ref.getValue ? [ref.getValue()] : [];
               })
               .join(""); // FIXME: Tiago -> What to do? Only one ref should be yielding the content
           }
@@ -153,7 +153,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                 ?.get(r)
                 ?.get(c)
                 ?.forEach((e) => {
-                  e.setValue(clipboardMatrix[r - startRow]?.[c - startColumn]);
+                  e.setValue?.(clipboardMatrix[r - startRow]?.[c - startColumn]);
                 });
             }
           }
@@ -185,7 +185,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               ?.get(r)
               ?.get(c)
               ?.forEach((ref) => {
-                ref.setValue(CELL_EMPTY_VALUE);
+                ref.setValue?.(CELL_EMPTY_VALUE);
               });
           }
         }
@@ -365,8 +365,8 @@ export function useBeeTableCell(
   useEffect(() => {
     const ref = subscribeToCellStatus(rowIndex, columnIndex, {
       setStatus,
-      setValue: setValue ?? (() => {}),
-      getValue: getValue ?? (() => CELL_EMPTY_VALUE),
+      setValue,
+      getValue,
     });
     return () => {
       unsubscribeToCellStatus(rowIndex, columnIndex, ref);
