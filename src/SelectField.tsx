@@ -48,23 +48,29 @@ type SelectInputProps = FieldProps<
     required?: boolean;
     id: string;
     fieldType?: typeof Array | any;
-    onChange: (value?: string | string[]) => void;
+    onChange: (value?: string | string[] | number | number[]) => void;
     placeholder: string;
-    allowedValues?: string[];
+    allowedValues?: (string | number)[];
     disabled?: boolean;
     error?: boolean;
-    transform?: (value?: string) => string;
+    transform?: (value?: string | number) => string | number;
     direction: SelectDirection;
     menuAppendTo: HTMLElement;
   }
 >;
 
 function isSelectOptionObject(
-  toBeDetermined: string | SelectOptionObject
+  toBeDetermined: string | number | SelectOptionObject
 ): toBeDetermined is SelectOptionObject {
   return typeof toBeDetermined === 'object' &&
     !Array.isArray(toBeDetermined) &&
     toBeDetermined !== null
+}
+
+function isSelectOptionString(
+  toBeDetermined: string[] | number[]
+): toBeDetermined is string[] {
+  return (toBeDetermined.length > 0 && typeof toBeDetermined[0] === 'string') || toBeDetermined.length === 0;
 }
 
 export type SelectFieldProps = CheckboxesProps | SelectInputProps;
@@ -112,26 +118,13 @@ function SelectField(props: SelectFieldProps) {
   }
 
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string | string[]>([]);
-
-  useEffect(() => {
-    if (!props.value) {
-      setSelected([]);
-      setExpanded(false);
-    } else if (Array.isArray(props.value)) {
-      setSelected([...props.value]);
-      setExpanded(false);
-    } else {
-      setSelected(props.value);
-      setExpanded(false);
-    }
-  }, [props.value]);
+  const [selected, setSelected] = useState<string | string[] | number | number[] | undefined>([]);
 
   const parseInput = useCallback(
     (
-      selection: string | SelectOptionObject,
+      selection: string | number | SelectOptionObject,
       fieldType: typeof Array | any
-    ): string | string[] => {
+    ): string | string[] | number | number[] => {
       const parsedSelection = isSelectOptionObject(selection)
         ? selection.toString()
         : selection;
@@ -141,12 +134,19 @@ function SelectField(props: SelectFieldProps) {
       }
 
       if (Array.isArray(selected)) {
-        if (selected.includes(parsedSelection)) {
-          return selected.filter((s) => s !== parsedSelection);
+        if (isSelectOptionString(selected) && typeof parsedSelection === "string") {
+          if (selected.includes(parsedSelection)) {
+            return selected.filter((s) => s !== parsedSelection);
+          }
+          return [parsedSelection, ...selected];
+        } else if (!isSelectOptionString(selected) && typeof parsedSelection === "number") {
+          if (selected.includes(parsedSelection)) {
+            return selected.filter((s) => s !== parsedSelection);
+          }
+          return [parsedSelection, ...selected];
         }
-        return [parsedSelection, ...selected];
       }
-      return [parsedSelection, selected];
+      return [];
     },
     [selected]
   );
@@ -158,17 +158,21 @@ function SelectField(props: SelectFieldProps) {
     ) => {
       if (selection === props.placeholder) {
         props.onChange(undefined);
+        setSelected(undefined);
       } else {
         const items = parseInput(selection, props.fieldType);
         props.onChange(items);
+        setSelected(items);
       }
+      setExpanded(false);
+
     },
     [parseInput, props]
   );
 
-  const selectedOptions = useMemo(
+  const selectOptions = useMemo(
     () =>
-      props.allowedValues!.map((value) => (
+      props.allowedValues?.map((value) => (
         <SelectOption key={value} value={value}>
           {props.transform ? props.transform(value) : value}
         </SelectOption>
@@ -178,14 +182,14 @@ function SelectField(props: SelectFieldProps) {
 
   useEffect(() => {
     if (props.placeholder)
-      selectedOptions.unshift(
+      selectOptions?.unshift(
         <SelectOption
           key={props.allowedValues!.length}
           isPlaceholder
           value={props.placeholder}
         />
       );
-  }, [props.placeholder, selectedOptions])
+  }, [props.placeholder, selectOptions])
 
   return wrapField(
     props,
@@ -201,13 +205,13 @@ function SelectField(props: SelectFieldProps) {
       placeholderText={props.placeholder}
       isOpen={expanded}
       selections={selected}
-      onToggle={() => setExpanded(!expanded)}
+      onToggle={(isExpanded) => setExpanded(isExpanded)}
       onSelect={handleSelect}
       value={props.value || (props.fieldType === Array ? [] : undefined)}
       menuAppendTo={props.menuAppendTo}
       direction={props.direction}
     >
-      {selectedOptions}
+      {selectOptions}
     </Select>
   );
 }
