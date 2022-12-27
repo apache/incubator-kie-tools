@@ -96,7 +96,7 @@ export function BeeTableTh<R extends object>({
     () =>
       hoverInfo.isHovered && hoverInfo.part === "left"
         ? {
-            left: "-10px",
+            left: "-9px",
           }
         : {
             right: "-10px",

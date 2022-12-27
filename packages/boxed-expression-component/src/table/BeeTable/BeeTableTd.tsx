@@ -167,7 +167,7 @@ export function BeeTableTd<R extends object>({
     () =>
       hoverInfo.isHovered && hoverInfo.part === "lower"
         ? {
-            bottom: "-10px",
+            bottom: "-9px",
           }
         : {
             top: "-10px",
