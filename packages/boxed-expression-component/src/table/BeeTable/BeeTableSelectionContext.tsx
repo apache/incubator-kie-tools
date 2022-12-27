@@ -11,6 +11,10 @@ export interface BeeTableSelectionContextType<R extends object> {
 }
 
 export interface BeeTableSelectionDispatchContextType<R extends object> {
+  erase(): void;
+  copy(): void;
+  cut(): void;
+  paste(): void;
   setActiveCell: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell<R> | undefined>>;
   setSelectionEnd: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell<R> | undefined>>;
   subscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): BeeTableCellRef;
@@ -31,6 +35,8 @@ export type BeeTableCellStatus = {
 
 export interface BeeTableCellRef {
   setStatus(args: BeeTableCellStatus): void;
+  setValue(value: string): void;
+  getValue(): string;
 }
 
 export interface BeeTableSelection<R extends object> {
@@ -47,6 +53,11 @@ export enum BeeTableSelectionPosition {
 
 const neutralCellStatus = { isActive: false, isEditing: false, isSelected: false };
 
+const CLIPBOARD_ROW_SEPARATOR = "\n";
+const CLIPBOARD_COLUMN_SEPARATOR = "\t";
+
+const CELL_EMPTY_VALUE = ""; // FIXME: Tiago -> This value needs to be parameterized, perhaps. Not all values are strings.
+
 export function BeeTableSelectionContextProvider<R extends object>({ children }: React.PropsWithChildren<{}>) {
   const [selection, setSelection] = useState<BeeTableSelection<R>>({
     active: undefined,
@@ -54,6 +65,12 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
   });
 
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
+
+  const selectionRef = React.useRef<BeeTableSelection<R>>(selection);
+
+  useEffect(() => {
+    selectionRef.current = selection;
+  }, [selection]);
 
   const value = useMemo(() => {
     return {
@@ -63,6 +80,116 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
   const dispatch = useMemo<BeeTableSelectionDispatchContextType<R>>(() => {
     return {
+      copy: () => {
+        if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+          return;
+        }
+
+        const clipboardMatrix: string[][] = [];
+
+        const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
+        for (let r = startRow; r <= endRow; r++) {
+          clipboardMatrix[r - startRow] ??= [];
+          for (let c = startColumn; c <= endColumn; c++) {
+            clipboardMatrix[r - startRow] ??= [];
+            clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
+              ?.map((ref) => ref.getValue())
+              .join(""); // FIXME: Tiago -> What to do? Only one ref should be yielding the content
+          }
+        }
+
+        const clipboardValue = clipboardMatrix
+          .map((r) => r.join(CLIPBOARD_COLUMN_SEPARATOR))
+          .join(CLIPBOARD_ROW_SEPARATOR);
+        navigator.clipboard.writeText(clipboardValue);
+      },
+      cut: () => {
+        if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+          return;
+        }
+
+        const clipboardMatrix: string[][] = [];
+
+        const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
+        for (let r = startRow; r <= endRow; r++) {
+          clipboardMatrix[r - startRow] ??= [];
+          for (let c = startColumn; c <= endColumn; c++) {
+            clipboardMatrix[r - startRow] ??= [];
+            clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
+              ?.map((ref) => {
+                ref.setValue(CELL_EMPTY_VALUE);
+                return ref.getValue();
+              })
+              .join(""); // FIXME: Tiago -> What to do? Only one ref should be yielding the content
+          }
+        }
+
+        const clipboardValue = clipboardMatrix
+          .map((row) => row.join(CLIPBOARD_COLUMN_SEPARATOR))
+          .join(CLIPBOARD_ROW_SEPARATOR);
+
+        navigator.clipboard.writeText(clipboardValue);
+      },
+      paste: () => {
+        // FIXME: Tiago -> Add new columns and rows, based on the clipboard's size.
+
+        navigator.clipboard.readText().then((clipboardValue) => {
+          if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+            return;
+          }
+
+          const clipboardMatrix = clipboardValue
+            .split(CLIPBOARD_ROW_SEPARATOR)
+            .map((r) => r.split(CLIPBOARD_COLUMN_SEPARATOR));
+
+          const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
+
+          const pasteEndRow = Math.max(endRow, startRow + clipboardMatrix.length - 1);
+          const pasteEndColumn = Math.max(endColumn, startColumn + clipboardMatrix[0].length - 1);
+
+          for (let r = startRow; r <= pasteEndRow; r++) {
+            for (let c = startColumn; c <= pasteEndColumn; c++) {
+              refs.current
+                ?.get(r)
+                ?.get(c)
+                ?.forEach((e) => {
+                  e.setValue(clipboardMatrix[r - startRow]?.[c - startColumn]);
+                });
+            }
+          }
+
+          setSelection({
+            active: {
+              rowIndex: startRow,
+              columnIndex: startColumn,
+              isEditing: false,
+            },
+            selectionEnd: {
+              rowIndex: pasteEndRow,
+              columnIndex: pasteEndColumn,
+              isEditing: false,
+            },
+          });
+        });
+      },
+      erase: () => {
+        // FIXME: Tiago -> This is not good. We shouldn't be setting a state just to read it.
+        if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+          return;
+        }
+
+        const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
+        for (let r = startRow; r <= endRow; r++) {
+          for (let c = startColumn; c <= endColumn; c++) {
+            refs.current
+              ?.get(r)
+              ?.get(c)
+              ?.forEach((ref) => {
+                ref.setValue(CELL_EMPTY_VALUE);
+              });
+          }
+        }
+      },
       setActiveCell: (activeCell) => {
         setSelection((prev) => {
           const newActiveCell = typeof activeCell === "function" ? activeCell(prev.active) : activeCell;
@@ -148,53 +275,48 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
     const currentRefs = refs.current;
 
-    // Let's always go smaller to bigger, no matter the direction of the selection.
-    const cStart = Math.min(selection.active.columnIndex, selection.selectionEnd.columnIndex);
-    const cEnd = Math.max(selection.active.columnIndex, selection.selectionEnd.columnIndex);
-    const rStart = Math.min(selection.active.rowIndex, selection.selectionEnd.rowIndex);
-    const rEnd = Math.max(selection.active.rowIndex, selection.selectionEnd.rowIndex);
-
-    for (let r = rStart; r <= rEnd; r++) {
+    const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selection);
+    for (let r = startRow; r <= endRow; r++) {
       // Select rowIndex cells
       currentRefs
         .get(r)
         ?.get(0)
         ?.forEach((e) => e.setStatus({ isActive: false, isEditing: false, isSelected: true }));
 
-      for (let c = cStart; c <= cEnd; c++) {
-        const selectedPositions = [
-          ...(r === rStart ? [BeeTableSelectionPosition.Top] : []),
-          ...(r === rEnd ? [BeeTableSelectionPosition.Bottom] : []),
-          ...(c === cStart ? [BeeTableSelectionPosition.Left] : []),
-          ...(c === cEnd ? [BeeTableSelectionPosition.Right] : []),
-        ];
-
+      for (let c = startColumn; c <= endColumn; c++) {
         // Select header cells
         currentRefs
           .get(-1)
           ?.get(c)
           ?.forEach((e) => e.setStatus({ isActive: false, isEditing: false, isSelected: true }));
 
+        // Select normal cells
         const refs = currentRefs.get(r)?.get(c);
         refs?.forEach((ref) => {
           ref.setStatus({
             isActive: c === selection.active?.columnIndex && r === selection.active?.rowIndex,
             isEditing: selection.active?.isEditing ?? false,
             isSelected: selection.active !== selection.selectionEnd,
-            selectedPositions,
+            selectedPositions: [
+              ...(r === startRow ? [BeeTableSelectionPosition.Top] : []),
+              ...(r === endRow ? [BeeTableSelectionPosition.Bottom] : []),
+              ...(c === startColumn ? [BeeTableSelectionPosition.Left] : []),
+              ...(c === endColumn ? [BeeTableSelectionPosition.Right] : []),
+            ],
           });
         });
       }
     }
 
+    // Cleanup
     return () => {
-      for (let r = rStart; r <= rEnd; r++) {
+      for (let r = startRow; r <= endRow; r++) {
         currentRefs
           .get(r)
           ?.get(0)
           ?.forEach((e) => e.setStatus(neutralCellStatus));
 
-        for (let c = cStart; c <= cEnd; c++) {
+        for (let c = startColumn; c <= endColumn; c++) {
           currentRefs
             .get(-1)
             ?.get(c)
@@ -230,17 +352,36 @@ export function useBeeTableSelectionDispatch() {
  * This is done like this because if when we have every Th/Td observing { activeCell } from BeeTableSelectionContext,
  * performance suffers. Every component can subscribe to changes on the activeCell, and set their own state with a "copy" from the status.
  */
-export function useBeeTableCellStatus(rowIndex: number, columnIndex: number) {
+export function useBeeTableCell(
+  rowIndex: number,
+  columnIndex: number,
+  setValue?: BeeTableCellRef["setValue"],
+  getValue?: BeeTableCellRef["getValue"]
+) {
   const { subscribeToCellStatus, unsubscribeToCellStatus } = useBeeTableSelectionDispatch();
 
   const [status, setStatus] = useState<BeeTableCellStatus>(neutralCellStatus);
 
   useEffect(() => {
-    const ref = subscribeToCellStatus(rowIndex, columnIndex, { setStatus });
+    const ref = subscribeToCellStatus(rowIndex, columnIndex, {
+      setStatus,
+      setValue: setValue ?? (() => {}),
+      getValue: getValue ?? (() => CELL_EMPTY_VALUE),
+    });
     return () => {
       unsubscribeToCellStatus(rowIndex, columnIndex, ref);
     };
-  }, [columnIndex, rowIndex, subscribeToCellStatus, unsubscribeToCellStatus]);
+  }, [columnIndex, getValue, rowIndex, setValue, subscribeToCellStatus, unsubscribeToCellStatus]);
 
   return status;
+}
+
+function getSelectionIterationBoundaries(selection: BeeTableSelection<any>) {
+  // Let's always go smaller to bigger, no matter the direction of the selection.
+  return {
+    startColumn: Math.min(selection.active?.columnIndex ?? 0, selection.selectionEnd?.columnIndex ?? 0),
+    endColumn: Math.max(selection.active?.columnIndex ?? 0, selection.selectionEnd?.columnIndex ?? 0),
+    startRow: Math.min(selection.active?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
+    endRow: Math.max(selection.active?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
+  };
 }

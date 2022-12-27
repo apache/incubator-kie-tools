@@ -20,9 +20,8 @@ import * as PfReactTable from "@patternfly/react-table";
 import { Resizer } from "../../resizing/Resizer";
 import * as ReactTable from "react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { useBeeTableCellStatus, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
+import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import { BeeTableTdProps } from "../../api";
-import { NavigationKeysUtils } from "../../keysUtils";
 import { BeeTableCellUpdate } from ".";
 
 export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
@@ -56,7 +55,7 @@ export function BeeTableTd<R extends object>({
 }: BeeTableTdProps2<R>) {
   const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
 
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCellStatus(rowIndex, columnIndex);
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
@@ -180,26 +179,6 @@ export function BeeTableTd<R extends object>({
     }
   }, [isActive, isEditing]);
 
-  const onKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key)) {
-        e.preventDefault();
-        if (isActive) {
-          onCellUpdates?.([
-            {
-              columnIndex: columnIndex - 1,
-              rowIndex: rowIndex,
-              row: row.original,
-              column: column,
-              value: "", //FIXME: Tiago -> Need to parameterize this? e.g. Context expressions.
-            },
-          ]);
-        }
-      }
-    },
-    [column, columnIndex, isActive, onCellUpdates, row.original, rowIndex]
-  );
-
   return (
     <PfReactTable.Td
       ref={tdRef}
@@ -209,7 +188,6 @@ export function BeeTableTd<R extends object>({
       data-xposition={columnIndex}
       data-yposition={yPosition ?? rowIndex}
       style={style}
-      onKeyDown={onKeyDown}
     >
       {column.isRowIndexColumn ? (
         <>{rowIndex + 1}</>

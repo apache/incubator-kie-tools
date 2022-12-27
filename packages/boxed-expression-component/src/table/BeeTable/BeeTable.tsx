@@ -31,7 +31,7 @@ import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { BeeTableCellUpdate, BeeTableHeader } from "./BeeTableHeader";
 import {
   BeeTableSelectionContextProvider,
-  useBeeTableCellStatus,
+  useBeeTableCell,
   useBeeTableSelectionDispatch,
 } from "./BeeTableSelectionContext";
 
@@ -87,7 +87,7 @@ export function BeeTable2<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
-  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
+  const { setActiveCell, setSelectionEnd, erase, copy, cut, paste } = useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -382,12 +382,33 @@ export function BeeTable2<R extends object>({
         });
       }
 
+      // DELETE
+
+      if (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key)) {
+        e.stopPropagation();
+        erase();
+      }
+
       // ESC
 
       if (NavigationKeysUtils.isEscape(key)) {
         setActiveCell(undefined);
         // FIXME: Tiago: Do it.
         // return focusParentCell(currentTarget);
+      }
+
+      // COPY/CUT/PASTE
+      if (e.metaKey && e.key === "c") {
+        e.stopPropagation();
+        copy();
+      }
+      if (e.metaKey && e.key === "x") {
+        e.stopPropagation();
+        cut();
+      }
+      if (e.metaKey && e.key === "v") {
+        e.stopPropagation();
+        paste();
       }
 
       if (!currentlyOpenContextMenu && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
@@ -400,6 +421,10 @@ export function BeeTable2<R extends object>({
       enableKeyboardNavigation,
       reactTableInstance.allColumns.length,
       reactTableInstance.rows.length,
+      erase,
+      copy,
+      cut,
+      paste,
       setActiveCell,
       setSelectionEnd,
     ]
@@ -516,7 +541,11 @@ function BeeTableDefaultCell<R extends object>({
     [setActiveCell]
   );
 
-  const { isEditing } = useBeeTableCellStatus(cellProps.row.index, columnIndex);
+  const getValue = useCallback(() => {
+    return cellProps.value;
+  }, [cellProps.value]);
+
+  const { isEditing } = useBeeTableCell(cellProps.row.index, columnIndex, onCellChanged, getValue);
 
   return (
     <BeeTableEditableCellContent

@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { useBeeTableCellStatus, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
+import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import { BeeTableThProps } from "../../api";
 
 export interface BeeTableThProps2<R extends object> extends BeeTableThProps<R> {
@@ -121,7 +121,7 @@ export function BeeTableTh<R extends object>({
     };
   }, [column, columnIndex, isFocusable, setActiveCell, setSelectionEnd]);
 
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCellStatus(
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(
     isLastLevelColumn ? -1 : -2,
     columnIndex
   );
