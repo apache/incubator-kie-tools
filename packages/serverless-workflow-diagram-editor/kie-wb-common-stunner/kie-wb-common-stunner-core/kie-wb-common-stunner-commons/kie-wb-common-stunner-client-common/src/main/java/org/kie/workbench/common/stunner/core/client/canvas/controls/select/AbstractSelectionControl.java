@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,9 +40,16 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_DOWN;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_LEFT;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_RIGHT;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_UP;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ESC;
 
 public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
@@ -51,6 +60,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     protected final Event<CanvasSelectionEvent> canvasSelectionEvent;
     protected Event<CanvasClearSelectionEvent> canvasClearSelectionEvent;
     private final MapSelectionControl<H> selectionControl;
+
+    private List<Node> selectedSiblings;
 
     @Inject
     public AbstractSelectionControl(final Event<CanvasSelectionEvent> canvasSelectionEvent,
@@ -72,6 +83,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     @Override
     public final void init(final H canvasHandler) {
         selectionControl.init(canvasHandler);
+        selectedSiblings = new ArrayList<>();
         onEnable(canvasHandler);
     }
 
@@ -156,6 +168,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     public void destroy() {
         onDestroy();
         selectionControl.destroy();
+        selectedSiblings.clear();
     }
 
     protected void onDestroy() {
@@ -182,6 +195,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
 
     protected void handleShapeRemovedEvent(final CanvasShapeRemovedEvent shapeRemovedEvent) {
         selectionControl.onShapeRemoved(shapeRemovedEvent);
+        selectedSiblings.remove(shapeRemovedEvent.getShape().getUUID());
     }
 
     protected void handleCanvasElementSelectedEvent(final CanvasSelectionEvent event) {
@@ -197,7 +211,19 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         if (session instanceof EditorSession) {
             ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
             ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ESC}, "Edit | Unselect", this::clearSelection));
+            ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_DOWN}, "Selection | Select Source", this::selectTarget));
+            ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_LEFT}, "Selection | Select Next", this::selectPrevious));
+            ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_RIGHT}, "Selection | Select Previous", this::selectNext));
+            ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_UP}, "Selection | Select Target", this::selectSource));
             selectionControl.setReadonly(false);
+        }
+
+        if (session instanceof ViewerSession) {
+            ((ViewerSession) session).getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+            ((ViewerSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_DOWN}, "Selection | Select Source", this::selectTarget));
+            ((ViewerSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_LEFT}, "Selection | Select Next", this::selectPrevious));
+            ((ViewerSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_RIGHT}, "Selection | Select Previous", this::selectNext));
+            ((ViewerSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ARROW_UP}, "Selection | Select Target", this::selectSource));
         }
     }
 
@@ -206,9 +232,108 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     private void onKeyDownEvent(final KeyboardEvent.Key... keys) {
-        if (KeysMatcher.doKeysMatch(keys, ESC)) {
-            clearSelection();
+        if (!selectionControl.isReadonly()) {
+            if (KeysMatcher.doKeysMatch(keys, ESC)) {
+                clearSelection();
+            }
         }
+
+        if (KeysMatcher.doKeysMatch(keys, ARROW_DOWN)) {
+            selectTarget();
+        }
+        if (KeysMatcher.doKeysMatch(keys, ARROW_LEFT)) {
+            selectPrevious();
+        }
+        if (KeysMatcher.doKeysMatch(keys, ARROW_RIGHT)) {
+            selectNext();
+        }
+        if (KeysMatcher.doKeysMatch(keys, ARROW_UP)) {
+            selectSource();
+        }
+    }
+
+    private int compareSiblings(Node s1, Node s2) {
+        double s1X = GraphUtils.getComputedPosition(s1).getX();
+        double s2X = GraphUtils.getComputedPosition(s2).getX();
+        return Double.compare(s1X, s2X);
+    }
+
+    public void selectSource() {
+        Optional<Object> selectedItem = getSelectedItemDefinition();
+        selectedItem.ifPresent(definition -> {
+            Node node = (Node) definition;
+            List<Node> sourceNodes = GraphUtils.getSourceNodes(node);
+            Node source = findSelection(sourceNodes);
+            if (source != null) {
+                clearSelection();
+                select(source.getUUID());
+            }
+        });
+    }
+
+    public void selectNext() {
+        selectSibling(true);
+    }
+
+    public void selectPrevious() {
+        selectSibling(false);
+    }
+
+    public void selectTarget() {
+        Optional<Object> selectedItem = getSelectedItemDefinition();
+        selectedItem.ifPresent(definition -> {
+            Node node = (Node) definition;
+            List<Node> targetNodes = GraphUtils.getTargetNodes(node);
+            Node target = findSelection(targetNodes);
+            if (target != null) {
+                clearSelection();
+                select(target.getUUID());
+            }
+        });
+    }
+
+    private void selectSibling(boolean next) {
+        Optional<Object> selectedItem = getSelectedItemDefinition();
+        selectedItem.ifPresent(definition -> {
+            Node node = (Node) definition;
+            List<Node> siblingNodes = GraphUtils.getSiblingNodes(node);
+
+            if (!siblingNodes.isEmpty()) {
+                List<Node> orderedSiblingNodes = siblingNodes.stream()
+                        .sorted(this::compareSiblings)
+                        .collect(Collectors.toList());
+
+                Node siblingNode;
+                int index = orderedSiblingNodes.indexOf(node);
+                if (next) {
+                    siblingNode = orderedSiblingNodes.get(0);
+                    if (index < orderedSiblingNodes.size() - 1) {
+                        siblingNode = orderedSiblingNodes.get(index + 1);
+                    }
+                } else {
+                    siblingNode = orderedSiblingNodes.get(orderedSiblingNodes.size() - 1);
+                    if (index > 0) {
+                        siblingNode = orderedSiblingNodes.get(index - 1);
+                    }
+                }
+
+                if (siblingNode != null) {
+                    selectedSiblings.removeAll(siblingNodes);
+                    selectedSiblings.add(siblingNode);
+                    clearSelection();
+                    select(siblingNode.getUUID());
+                }
+            }
+        });
+    }
+
+    private Node findSelection(List<Node> siblingNodes) {
+        return siblingNodes.stream()
+                .filter(selectedSiblings::contains)
+                .findFirst()
+                .orElseGet(() -> siblingNodes.stream()
+                        .min(this::compareSiblings)
+                        .orElse(null));
     }
 
     private void fireSelectionEvent(final CanvasSelectionEvent e) {

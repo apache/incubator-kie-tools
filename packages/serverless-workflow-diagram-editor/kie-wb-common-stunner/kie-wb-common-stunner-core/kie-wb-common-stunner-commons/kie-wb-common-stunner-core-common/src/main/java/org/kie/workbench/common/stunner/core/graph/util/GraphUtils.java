@@ -327,6 +327,37 @@ public class GraphUtils {
                 .collect(Collectors.toList());
     }
 
+    private static List<Node> getNodesFromInEdges(final Node<?, ? extends Edge> element, Predicate<Edge> filter) {
+        Objects.requireNonNull(element.getInEdges());
+        return element.getInEdges()
+                .stream()
+                .filter(filter::test)
+                .map(Edge::getSourceNode)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Node> getSourceNodes(final Node<?, ? extends Edge> element) {
+        Objects.requireNonNull(element);
+        return getTargetConnections(element).stream()
+                .map(nodeEdge -> nodeEdge.getSourceNode())
+                .collect(Collectors.toList());
+    }
+
+    public static List<Node> getTargetNodes(final Node<?, ? extends Edge> element) {
+        Objects.requireNonNull(element);
+        return getSourceConnections(element).stream()
+                .map(nodeEdge -> nodeEdge.getTargetNode())
+                .collect(Collectors.toList());
+    }
+
+    public static List<Node> getSiblingNodes(final Node<?, ? extends Edge> element) {
+        Objects.requireNonNull(element);
+        return getSourceNodes(element).stream()
+                .findFirst()
+                .map(parent -> getTargetNodes(parent))
+                .orElse(Collections.emptyList());
+    }
+
     public static List<Edge<? extends ViewConnector<?>, Node>> getSourceConnections(
             final Node<?, ? extends Edge> element) {
         Objects.requireNonNull(element.getOutEdges());

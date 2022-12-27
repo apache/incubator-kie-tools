@@ -20,6 +20,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 public abstract class ViewerSession
         extends AbstractSession<AbstractCanvas, AbstractCanvasHandler> {
@@ -31,4 +33,6 @@ public abstract class ViewerSession
     public abstract MediatorsControl<AbstractCanvas> getMediatorsControl();
 
     public abstract AlertsControl<AbstractCanvas> getAlertsControl();
+
+    public abstract KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl();
 }

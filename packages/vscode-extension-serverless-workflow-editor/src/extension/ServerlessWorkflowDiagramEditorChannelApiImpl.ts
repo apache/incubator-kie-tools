@@ -203,7 +203,7 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
 
     await vscode.commands.executeCommand("vscode.open", resourceUri, {
       viewColumn: textEditor.viewColumn,
-      preserveFocus: false,
+      preserveFocus: true,
     } as vscode.TextDocumentShowOptions);
 
     const targetRange = new vscode.Range(targetPosition, targetPosition);

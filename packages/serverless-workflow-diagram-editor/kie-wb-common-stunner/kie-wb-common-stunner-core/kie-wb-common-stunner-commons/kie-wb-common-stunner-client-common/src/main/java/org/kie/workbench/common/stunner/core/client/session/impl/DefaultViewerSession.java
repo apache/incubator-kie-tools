@@ -27,8 +27,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.uberfire.mvp.Command;
@@ -60,6 +62,7 @@ public class DefaultViewerSession
                      final Command callback) {
         init(s -> s.registerCanvasControl(MediatorsControl.class)
                      .registerCanvasControl(AlertsControl.class)
+                     .registerCanvasControl(KeyboardControl.class)
                      .registerCanvasHandlerControl(SelectionControl.class,
                                                    SingleSelection.class),
              metadata,
@@ -126,5 +129,10 @@ public class DefaultViewerSession
     @Override
     public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
         return (SelectionControl<AbstractCanvasHandler, Element>) session.getCanvasHandlerControl(SelectionControl.class);
+    }
+
+    @Override
+    public KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl() {
+        return (KeyboardControl<AbstractCanvas, ClientSession>) session.getCanvasControl(KeyboardControl.class);
     }
 }
