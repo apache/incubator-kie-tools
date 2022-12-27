@@ -19,6 +19,7 @@ import { useCallback, useRef } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../api";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { NestedExpressionDispatchContextProvider } from "../ContextExpression";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import "./ExpressionDefinitionRoot.css";
@@ -65,6 +66,20 @@ export function ExpressionDefinitionRoot({
 
   const getLogicTypeSelectorRef = useCallback(() => expressionContainerRef.current!, []);
 
+  const onSetExpression = useCallback(
+    ({ getNewExpression }) => {
+      setExpression((prev) => {
+        const n = getNewExpression(prev);
+        return {
+          ...n,
+          name: n.name ?? "Expression Name",
+          isHeadless: false,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <ResizingWidthsContextProvider>
       <div className="expression-container">
@@ -79,13 +94,15 @@ export function ExpressionDefinitionRoot({
           ref={expressionContainerRef}
           data-ouia-component-id="expression-container"
         >
-          <ExpressionDefinitionLogicTypeSelector
-            isClearSupported={isClearSupported}
-            expression={expression}
-            onLogicTypeSelected={onLogicTypeSelected}
-            onLogicTypeReset={onLogicTypeReset}
-            getPlacementRef={getLogicTypeSelectorRef}
-          />
+          <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+            <ExpressionDefinitionLogicTypeSelector
+              isClearSupported={isClearSupported}
+              expression={expression}
+              onLogicTypeSelected={onLogicTypeSelected}
+              onLogicTypeReset={onLogicTypeReset}
+              getPlacementRef={getLogicTypeSelectorRef}
+            />
+          </NestedExpressionDispatchContextProvider>
         </div>
       </div>
     </ResizingWidthsContextProvider>
