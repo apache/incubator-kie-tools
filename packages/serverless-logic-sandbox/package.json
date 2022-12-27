@@ -17,12 +17,12 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
-    "cy:open": "cypress open --project it-tests --config baseUrl=$(build-env serverlessLogicSandbox.dev.cypressUrl)",
-    "cy:run": "cypress run --headed -b chrome --project it-tests --config baseUrl=$(build-env serverlessLogicSandbox.dev.cypressUrl)",
+    "cy:open": "cypress open --project it-tests --config baseUrl=$(build-env serverlessLogicWebTools.dev.cypressUrl)",
+    "cy:run": "cypress run --headed -b chrome --project it-tests --config baseUrl=$(build-env serverlessLogicWebTools.dev.cypressUrl)",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start https-get://0.0.0.0:$(build-env serverlessLogicSandbox.dev.port) cy:run\""
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start https-get://0.0.0.0:$(build-env serverlessLogicWebTools.dev.port) cy:run\""
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
