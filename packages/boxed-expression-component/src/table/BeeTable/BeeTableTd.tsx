@@ -20,8 +20,10 @@ import * as PfReactTable from "@patternfly/react-table";
 import { Resizer } from "../../resizing/Resizer";
 import * as ReactTable from "react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { useBeeTableSelection, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
+import { useBeeTableCellStatus, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import { BeeTableTdProps } from "../../api";
+import { NavigationKeysUtils } from "../../keysUtils";
+import { BeeTableCellUpdate } from ".";
 
 export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -29,6 +31,7 @@ export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
   onRowAdded?: (args: { beforeIndex: number }) => void;
+  onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
   isActive: boolean;
 }
 
@@ -49,13 +52,11 @@ export function BeeTableTd<R extends object>({
   shouldUseCellDelegate,
   onRowAdded,
   yPosition,
+  onCellUpdates,
 }: BeeTableTdProps2<R>) {
   const { setActiveCell } = useBeeTableSelectionDispatch();
-  const { activeCell } = useBeeTableSelection();
 
-  const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
-    isHovered: false,
-  });
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
   const tdRef = useRef<HTMLTableCellElement>(null);
 
@@ -87,6 +88,18 @@ export function BeeTableTd<R extends object>({
       setHoverInfo((prev) => ({ isHovered: false }));
     }
 
+    const td = tdRef.current;
+    td?.addEventListener("mouseenter", onEnter);
+    td?.addEventListener("mousemove", onMove);
+    td?.addEventListener("mouseleave", onLeave);
+    return () => {
+      td?.removeEventListener("mouseleave", onLeave);
+      td?.removeEventListener("mousemove", onMove);
+      td?.removeEventListener("mouseenter", onEnter);
+    };
+  }, [column, columnIndex, row, rowIndex, setActiveCell]);
+
+  useEffect(() => {
     function onDown() {
       setActiveCell({
         columnIndex,
@@ -97,17 +110,22 @@ export function BeeTableTd<R extends object>({
       });
     }
 
-    console.info("binding...");
+    function onDoubleClick() {
+      setActiveCell({
+        columnIndex,
+        column,
+        rowIndex,
+        row,
+        isEditing: true,
+      });
+    }
+
     const td = tdRef.current;
-    td?.addEventListener("mouseenter", onEnter);
-    td?.addEventListener("mousemove", onMove);
-    td?.addEventListener("mouseleave", onLeave);
     td?.addEventListener("mousedown", onDown);
+    td?.addEventListener("dblclick", onDoubleClick);
     return () => {
+      td?.removeEventListener("dblclick", onDoubleClick);
       td?.removeEventListener("mousedown", onDown);
-      td?.removeEventListener("mouseleave", onLeave);
-      td?.removeEventListener("mousemove", onMove);
-      td?.removeEventListener("mouseenter", onEnter);
     };
   }, [column, columnIndex, row, rowIndex, setActiveCell]);
 
@@ -126,27 +144,6 @@ export function BeeTableTd<R extends object>({
     },
     [hoverInfo, onRowAdded, rowIndex]
   );
-
-  const onDoubleClick = useCallback(
-    (e: React.MouseEvent) => {
-      setActiveCell({
-        columnIndex,
-        column,
-        rowIndex,
-        row,
-        isEditing: true,
-      });
-    },
-    [column, columnIndex, row, rowIndex, setActiveCell]
-  );
-
-  const isActive = useMemo(() => {
-    return activeCell?.columnIndex === columnIndex && activeCell.rowIndex === rowIndex;
-  }, [activeCell, columnIndex, rowIndex]);
-
-  const isEditing = useMemo(() => {
-    return isActive && activeCell?.isEditing;
-  }, [activeCell, isActive]);
 
   const style = useMemo(() => {
     return {
@@ -168,15 +165,36 @@ export function BeeTableTd<R extends object>({
     [hoverInfo]
   );
 
+  const { isActive, isEditing } = useBeeTableCellStatus(rowIndex, columnIndex);
+
   useEffect(() => {
     if (isActive && !isEditing) {
       tdRef.current?.focus();
     }
   }, [isActive, isEditing]);
 
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key)) {
+        e.preventDefault();
+        if (isActive) {
+          onCellUpdates?.([
+            {
+              columnIndex: columnIndex - 1,
+              rowIndex: rowIndex,
+              row: row.original,
+              column: column,
+              value: "", //FIXME: Tiago -> Need to parameterize this? e.g. Context expressions.
+            },
+          ]);
+        }
+      }
+    },
+    [column, columnIndex, isActive, onCellUpdates, row.original, rowIndex]
+  );
+
   return (
     <PfReactTable.Td
-      onDoubleClick={onDoubleClick}
       ref={tdRef}
       tabIndex={-1}
       className={`${cssClass} ${isActive ? "active" : ""} ${isEditing ? "editing" : ""}`}
@@ -184,6 +202,7 @@ export function BeeTableTd<R extends object>({
       data-xposition={columnIndex}
       data-yposition={yPosition ?? rowIndex}
       style={style}
+      onKeyDown={onKeyDown}
     >
       {column.isRowIndexColumn ? (
         <>{rowIndex + 1}</>

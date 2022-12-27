@@ -21,17 +21,19 @@ import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon"
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BeeTableOperation, BeeTableOperationGroup } from "../../api";
+import { BeeTableOperation, BeeTableOperationConfig, BeeTableOperationGroup } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import "./BeeTableContextMenuHandler.css";
 import { useBeeTableSelection } from "./BeeTableSelectionContext";
+import * as ReactTable from "react-table";
+import * as _ from "lodash";
 
 export interface BeeTableContextMenuHandlerProps {
-  operationGroups: BeeTableOperationGroup[];
-  allowedOperations: BeeTableOperation[];
   tableRef: React.RefObject<HTMLDivElement | null>;
+  operationConfig: BeeTableOperationConfig | undefined;
+  reactTableInstance: ReactTable.TableInstance<any>;
   //
   onRowAdded?: (args: { beforeIndex: number }) => void;
   onRowDuplicated?: (args: { rowIndex: number }) => void;
@@ -42,8 +44,8 @@ export interface BeeTableContextMenuHandlerProps {
 
 export function BeeTableContextMenuHandler({
   tableRef,
-  operationGroups,
-  allowedOperations,
+  operationConfig,
+  reactTableInstance,
   onRowAdded,
   onRowDuplicated,
   onRowDeleted,
@@ -53,6 +55,58 @@ export function BeeTableContextMenuHandler({
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
   const { activeCell } = useBeeTableSelection();
+
+  const getColumnOperations = useCallback(
+    (columnIndex: number) => {
+      const groupTypeForCurrentColumn = reactTableInstance.allColumns[columnIndex]?.groupType;
+      const columnsByGroupType = _.groupBy(reactTableInstance.allColumns, (column) => column.groupType);
+      const atLeastTwoColumnsOfTheSameGroupType = groupTypeForCurrentColumn
+        ? columnsByGroupType[groupTypeForCurrentColumn].length > 1
+        : // FIXME: Tiago -> : colmnsWidthAddedRowIndex.length > 2; // The total number of columns is counting also the # of rows column
+          reactTableInstance.allColumns.length > 2; // The total number of columns is counting also the # of rows column
+
+      const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType;
+
+      return columnIndex === 0 // This is the "row index" column
+        ? []
+        : [
+            BeeTableOperation.ColumnInsertLeft,
+            BeeTableOperation.ColumnInsertRight,
+            ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+          ];
+    },
+    [reactTableInstance.allColumns]
+  );
+
+  const operationGroups = useMemo(() => {
+    if (!activeCell) {
+      return [];
+    }
+    if (_.isArray(operationConfig)) {
+      return operationConfig;
+    }
+    const column = reactTableInstance.allColumns[activeCell.columnIndex];
+    return (operationConfig ?? {})[column?.groupType || ""];
+  }, [activeCell, operationConfig, reactTableInstance.allColumns]);
+
+  const allowedOperations = useMemo(() => {
+    if (!activeCell) {
+      return [];
+    }
+
+    return [
+      ...getColumnOperations(activeCell.columnIndex),
+      ...(activeCell.rowIndex >= 0
+        ? [
+            BeeTableOperation.RowInsertAbove,
+            BeeTableOperation.RowInsertBelow,
+            ...(reactTableInstance.rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+            BeeTableOperation.RowClear,
+            BeeTableOperation.RowDuplicate,
+          ]
+        : []),
+    ];
+  }, [activeCell, getColumnOperations, reactTableInstance.rows.length]);
 
   const operationLabel = useCallback((operation: BeeTableOperation) => {
     switch (operation) {

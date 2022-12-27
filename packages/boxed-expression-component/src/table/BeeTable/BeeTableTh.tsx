@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { useBeeTableSelection, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
+import { useBeeTableCellStatus, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import { BeeTableThProps } from "../../api";
 
 export interface BeeTableThProps2<R extends object> extends BeeTableThProps<R> {
@@ -54,12 +54,9 @@ export function BeeTableTh<R extends object>({
   isLastLevelColumn,
 }: React.PropsWithChildren<BeeTableThProps2<R>>) {
   const { setActiveCell } = useBeeTableSelectionDispatch();
-  const { activeCell } = useBeeTableSelection();
   const thRef = useRef<HTMLTableCellElement>(null);
 
-  const [hoverInfo, setHoverInfo] = useState<HoverInfo>({
-    isHovered: false,
-  });
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
   const onAddColumnButtonClick = useCallback(
     (e: React.MouseEvent) => {
@@ -112,23 +109,15 @@ export function BeeTableTh<R extends object>({
       setActiveCell({
         columnIndex,
         column,
-        rowIndex: -1,
+        rowIndex: isFocusable ? -1 : -2,
         row: undefined,
         isEditing: false,
       });
     },
-    [column, columnIndex, setActiveCell]
+    [column, columnIndex, isFocusable, setActiveCell]
   );
 
-  const isActive = useMemo(() => {
-    return (
-      activeCell?.columnIndex === columnIndex && activeCell.rowIndex === -1 && column.depth === activeCell.column?.depth
-    );
-  }, [activeCell, column.depth, columnIndex]);
-
-  const isEditing = useMemo(() => {
-    return isActive && activeCell?.isEditing;
-  }, [activeCell, isActive]);
+  const { isActive, isEditing } = useBeeTableCellStatus(isLastLevelColumn ? -1 : -2, columnIndex);
 
   useEffect(() => {
     if (isActive && !isEditing) {

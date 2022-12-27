@@ -200,12 +200,10 @@ export function ExpressionDefinitionLogicTypeSelector({
   }, []);
 
   const copyExpression = useCallback(() => {
-    //FIXME: Tiago -> Don't use text
     navigator.clipboard.writeText(JSON.stringify(expression));
   }, [expression]);
 
   const cutExpression = useCallback(() => {
-    //FIXME: Tiago -> Don't use text
     navigator.clipboard.writeText(JSON.stringify(expression));
     onLogicTypeReset();
   }, [expression, onLogicTypeReset]);
@@ -213,7 +211,6 @@ export function ExpressionDefinitionLogicTypeSelector({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const pasteExpression = useCallback(async () => {
-    //FIXME: Tiago -> Don't use text
     const expression: ExpressionDefinition = JSON.parse(await navigator.clipboard.readText());
     setExpression(expression);
   }, [setExpression]);

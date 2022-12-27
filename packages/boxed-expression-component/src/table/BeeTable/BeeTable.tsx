@@ -20,20 +20,18 @@ import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import { v4 as uuid } from "uuid";
-import { BeeTableHeaderVisibility, BeeTableOperation, BeeTableProps } from "../../api";
-import { NavigationKeysUtils } from "../../keysUtils";
+import { BeeTableHeaderVisibility, BeeTableProps } from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../expressions/ContextExpression";
+import { NavigationKeysUtils } from "../../keysUtils";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { BeeTableCellUpdate, BeeTableHeader } from "./BeeTableHeader";
-import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../expressions/ContextExpression";
 import {
-  BeeTableSelectionActiveCell,
   BeeTableSelectionContextProvider,
-  BeeTableSelectionDispatchContext,
-  useBeeTableSelection,
+  useBeeTableCellStatus,
   useBeeTableSelectionDispatch,
 } from "./BeeTableSelectionContext";
 
@@ -89,7 +87,6 @@ export function BeeTable2<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
-  const { activeCell } = useBeeTableSelection();
   const { setActiveCell } = useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
@@ -181,27 +178,6 @@ export function BeeTable2<R extends object>({
     ReactTable.useBlockLayout
   );
 
-  const getColumnOperations = useCallback(
-    (columnIndex: number) => {
-      const groupTypeForCurrentColumn = reactTableInstance.allColumns[columnIndex]?.groupType;
-      const columnsByGroupType = _.groupBy(reactTableInstance.allColumns, (column) => column.groupType);
-      const atLeastTwoColumnsOfTheSameGroupType = groupTypeForCurrentColumn
-        ? columnsByGroupType[groupTypeForCurrentColumn].length > 1
-        : columnsWithAddedIndexColumns.length > 2; // The total number of columns is counting also the # of rows column
-
-      const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType;
-
-      return columnIndex === 0 // This is the "row index" column
-        ? []
-        : [
-            BeeTableOperation.ColumnInsertLeft,
-            BeeTableOperation.ColumnInsertRight,
-            ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
-          ];
-    },
-    [columnsWithAddedIndexColumns.length, reactTableInstance.allColumns]
-  );
-
   // FIXME: Tiago -> Pasting
   //
   // useEffect(() => {
@@ -263,22 +239,6 @@ export function BeeTable2<R extends object>({
 
       if (!enableKeyboardNavigation) {
         return;
-      }
-
-      // DELETE / BACKSPACE
-      if (NavigationKeysUtils.isDelete(key) || NavigationKeysUtils.isBackspace(key)) {
-        e.preventDefault();
-        if (activeCell) {
-          onCellUpdates?.([
-            {
-              columnIndex: activeCell.columnIndex - 1,
-              rowIndex: activeCell.rowIndex,
-              row: activeCell.row?.original,
-              column: activeCell.column!,
-              value: "",
-            },
-          ]);
-        }
       }
 
       // ENTER
@@ -410,10 +370,8 @@ export function BeeTable2<R extends object>({
       }
     },
     [
-      activeCell,
       currentlyOpenContextMenu,
       enableKeyboardNavigation,
-      onCellUpdates,
       reactTableInstance.allColumns,
       reactTableInstance.rows,
       setActiveCell,
@@ -436,36 +394,6 @@ export function BeeTable2<R extends object>({
         return 0;
     }
   }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
-
-  const operationGroups = useMemo(() => {
-    if (!activeCell) {
-      return [];
-    }
-    if (_.isArray(operationConfig)) {
-      return operationConfig;
-    }
-    const column = reactTableInstance.allColumns[activeCell.columnIndex];
-    return (operationConfig ?? {})[column?.groupType || ""];
-  }, [activeCell, operationConfig, reactTableInstance.allColumns]);
-
-  const allowedOperations = useMemo(() => {
-    if (!activeCell) {
-      return [];
-    }
-
-    return [
-      ...getColumnOperations(activeCell.columnIndex),
-      ...(activeCell.rowIndex >= 0
-        ? [
-            BeeTableOperation.RowInsertAbove,
-            BeeTableOperation.RowInsertBelow,
-            ...(rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
-            BeeTableOperation.RowClear,
-            BeeTableOperation.RowDuplicate,
-          ]
-        : []),
-    ];
-  }, [activeCell, getColumnOperations, rows.length]);
 
   return (
     <div className={`table-component ${tableId} ${tableEventUUID}`} ref={tableRef} onKeyDown={onKeyDown}>
@@ -494,12 +422,13 @@ export function BeeTable2<R extends object>({
           reactTableInstance={reactTableInstance}
           additionalRow={additionalRow}
           onRowAdded={onRowAdded}
+          onCellUpdates={onCellUpdates}
         />
       </PfReactTable.TableComposable>
       <BeeTableContextMenuHandler
         tableRef={tableRef}
-        operationGroups={operationGroups}
-        allowedOperations={allowedOperations}
+        operationConfig={operationConfig}
+        reactTableInstance={reactTableInstance}
         onRowAdded={onRowAdded}
         onRowDuplicated={onRowDuplicated}
         onRowDeleted={onRowDeleted}
@@ -527,7 +456,6 @@ function BeeTableDefaultCell<R extends object>({
   cellProps: ReactTable.CellProps<R>;
   onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
 }) {
-  const { activeCell } = useBeeTableSelection();
   const { setActiveCell } = useBeeTableSelectionDispatch();
 
   const columnIndex = useMemo(() => {
@@ -561,11 +489,7 @@ function BeeTableDefaultCell<R extends object>({
     [setActiveCell]
   );
 
-  const isEditing = useMemo(() => {
-    return (
-      activeCell?.columnIndex === columnIndex && activeCell.rowIndex === cellProps.row.index && activeCell.isEditing
-    );
-  }, [activeCell, cellProps.row.index, columnIndex]);
+  const { isEditing } = useBeeTableCellStatus(cellProps.row.index, columnIndex);
 
   return (
     <BeeTableEditableCellContent

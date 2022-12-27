@@ -31,13 +31,12 @@ export interface ResizerProps {
   setResizingWidth: ((getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void) | undefined;
 }
 
-export const Resizer: React.FunctionComponent<React.PropsWithChildren<ResizerProps>> = ({
+export const Resizer: React.FunctionComponent<ResizerProps> = ({
   minWidth,
   width,
   setWidth,
   resizingWidth,
   setResizingWidth,
-  children,
 }) => {
   const id = useMemo(() => {
     return `uuid-${uuid()}`;
@@ -78,7 +77,7 @@ export const Resizer: React.FunctionComponent<React.PropsWithChildren<ResizerPro
   );
 
   const style = useMemo(() => {
-    return { width: resizingWidth?.value, minWidth };
+    return { width: resizingWidth?.value, minWidth, pointerEvents: "visible" as const };
   }, [minWidth, resizingWidth?.value]);
 
   const debuggingHandleClassNames = `
