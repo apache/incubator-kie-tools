@@ -28,7 +28,7 @@
     "copy-jitexecutor": "run-script-os",
     "copy-jitexecutor:darwin": "cp $(build-env extendedServices.jitexecutor.nativeBinaryPath.macOS) jitexecutor && chmod +x jitexecutor",
     "copy-jitexecutor:linux": "cp $(build-env extendedServices.jitexecutor.nativeBinaryPath.linux) jitexecutor && chmod +x jitexecutor",
-    "copy-jitexecutor:win32": "for /F %i in ('build-env extendedServices.jitexecutor.nativeBinaryPath.win32') do COPY /B /Y %i jitexecutor",
+    "copy-jitexecutor:win32": "pnpm powershell \"Copy-Item $(build-env extendedServices.jitexecutor.nativeBinaryPath.win32) jitexecutor\"",
     "install": "go mod tidy",
     "pack-app": "run-script-os",
     "pack-app:darwin": "cd ./scripts/macos && ./build.sh",
