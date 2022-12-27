@@ -27,27 +27,27 @@ module.exports = composeEnv(
   ],
   {
     vars: varsWithName({
-      SERVERLESS_LOGIC_SANDBOX__buildInfo: {
+      SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: {
         default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__gtmId: {
+      SERVERLESS_LOGIC_WEB_TOOLS__gtmId: {
         default: undefined,
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: {
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: {
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: {
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: {
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: {
         default: version,
         description: "",
       },
@@ -63,22 +63,22 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: {
+      SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: {
         default: "https://cors.isomorphic-git.org",
         description: "",
       },
-      SERVERLESS_LOGIC_SANDBOX__cypressUrl: {
+      SERVERLESS_LOGIC_WEB_TOOLS__cypressUrl: {
         default: "https://localhost:9020/",
         description: "",
       },
     }),
     get env() {
       return {
-        serverlessLogicSandbox: {
-          buildInfo: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__buildInfo),
-          gtmId: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__gtmId),
+        serverlessLogicWebTools: {
+          buildInfo: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__buildInfo),
+          gtmId: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gtmId),
           dev: {
-            cypressUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__cypressUrl),
+            cypressUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__cypressUrl),
             port: 9020,
           },
           swfBuilderImage: {
@@ -92,15 +92,15 @@ module.exports = composeEnv(
           },
           kieSandboxExtendedServices: {
             compatibleVersion: getOrDefault(
-              this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion
+              this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion
             ),
             downloadUrl: {
-              linux: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux),
-              macOs: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs),
-              windows: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
+              linux: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux),
+              macOs: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs),
+              windows: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows),
             },
           },
-          gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl),
+          gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl),
         },
       };
     },

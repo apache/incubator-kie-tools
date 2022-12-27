@@ -59,7 +59,7 @@ module.exports = async (env) => {
           Buffer: ["buffer", "Buffer"],
         }),
         new EnvironmentPlugin({
-          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicSandbox.gitCorsProxyUrl,
+          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -107,7 +107,7 @@ module.exports = async (env) => {
           WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicSandbox.gitCorsProxyUrl,
+          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -194,7 +194,7 @@ module.exports = async (env) => {
         historyApiFallback: false,
         static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
         compress: true,
-        port: buildEnv.serverlessLogicSandbox.dev.port,
+        port: buildEnv.serverlessLogicWebTools.dev.port,
       },
     }),
   ];
@@ -204,7 +204,7 @@ function getSwfBuilderImageArgs() {
   const swfBuilderImageRegistry = buildEnv.swfBuilderImageEnv.registry;
   const swfBuilderImageAccount = buildEnv.swfBuilderImageEnv.account;
   const swfBuilderImageName = buildEnv.swfBuilderImageEnv.name;
-  const swfBuilderImageTag = buildEnv.serverlessLogicSandbox.swfBuilderImage.tag;
+  const swfBuilderImageTag = buildEnv.serverlessLogicWebTools.swfBuilderImage.tag;
 
   console.info("Serverless Logic Web Tools :: SWF Builder Image Registry: " + swfBuilderImageRegistry);
   console.info("Serverless Logic Web Tools :: SWF Builder Image Account: " + swfBuilderImageAccount);
@@ -218,7 +218,7 @@ function getBaseBuilderImageArgs() {
   const baseBuilderImageRegistry = buildEnv.baseBuilderImageEnv.registry;
   const baseBuilderImageAccount = buildEnv.baseBuilderImageEnv.account;
   const baseBuilderImageName = buildEnv.baseBuilderImageEnv.name;
-  const baseBuilderImageTag = buildEnv.serverlessLogicSandbox.baseBuilderImage.tag;
+  const baseBuilderImageTag = buildEnv.serverlessLogicWebTools.baseBuilderImage.tag;
 
   console.info("Serverless Logic Web Tools :: Base Builder Image Registry: " + baseBuilderImageRegistry);
   console.info("Serverless Logic Web Tools :: Base Builder Image Account: " + baseBuilderImageAccount);
@@ -232,7 +232,7 @@ function getDashbuilderViewerImageArgs() {
   const dashbuilderViewerImageRegistry = buildEnv.dashbuilderViewerImageEnv.registry;
   const dashbuilderViewerImageAccount = buildEnv.dashbuilderViewerImageEnv.account;
   const dashbuilderViewerImageName = buildEnv.dashbuilderViewerImageEnv.name;
-  const dashbuilderViewerImageTag = buildEnv.serverlessLogicSandbox.dashbuilderViewerImage.tag;
+  const dashbuilderViewerImageTag = buildEnv.serverlessLogicWebTools.dashbuilderViewerImage.tag;
 
   console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Registry: " + dashbuilderViewerImageRegistry);
   console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Account: " + dashbuilderViewerImageAccount);
@@ -248,7 +248,7 @@ function getDashbuilderViewerImageArgs() {
 }
 
 function getGtmResource() {
-  const gtmId = buildEnv.serverlessLogicSandbox.gtmId;
+  const gtmId = buildEnv.serverlessLogicWebTools.gtmId;
   console.info(`Google Tag Manager :: ID: ${gtmId}`);
 
   if (!gtmId) {
@@ -281,16 +281,16 @@ function getGtmResource() {
 }
 
 function getBuildInfo() {
-  const buildInfo = buildEnv.serverlessLogicSandbox.buildInfo;
-  console.info(`Serverless Logic Sandbox :: Build info: ${buildInfo}`);
+  const buildInfo = buildEnv.serverlessLogicWebTools.buildInfo;
+  console.info(`Serverless Logic Web Tools :: Build info: ${buildInfo}`);
   return buildInfo;
 }
 
 function getKieSandboxExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.serverlessLogicSandbox.kieSandboxExtendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.serverlessLogicSandbox.kieSandboxExtendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.serverlessLogicSandbox.kieSandboxExtendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.serverlessLogicSandbox.kieSandboxExtendedServices.compatibleVersion;
+  const linuxDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.compatibleVersion;
 
   console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
   console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);

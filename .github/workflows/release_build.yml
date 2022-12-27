@@ -20,7 +20,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_deployment_base_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false"}'
+        default: '{"dmn_dev_deployment_base_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -71,7 +71,7 @@ jobs:
       extended_services: ${{ steps.set_runners.outputs.extended_services }}
       dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}
       dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}
-      serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}
+      serverless_logic_web_tools: ${{ steps.set_runners.outputs.serverless_logic_web_tools }}
       serverless_logic_web_tools_swf_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_swf_builder_image }}
       serverless_logic_web_tools_base_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_base_builder_image }}
       dashbuilder_viewer_image: ${{ steps.set_runners.outputs.dashbuilder_viewer_image }}
@@ -95,7 +95,7 @@ jobs:
           echo "extended_services=${{ fromJSON(inputs.runners).extended_services }}" >> $GITHUB_OUTPUT
           echo "dashbuilder=${{ fromJSON(inputs.runners).dashbuilder }}" >> $GITHUB_OUTPUT
           echo "dashbuilder_images=${{ fromJSON(inputs.runners).dashbuilder_images }}" >> $GITHUB_OUTPUT
-          echo "serverless_logic_sandbox=${{ fromJSON(inputs.runners).serverless_logic_sandbox }}" >> $GITHUB_OUTPUT
+          echo "serverless_logic_web_tools=${{ fromJSON(inputs.runners).serverless_logic_web_tools }}" >> $GITHUB_OUTPUT
           echo "serverless_logic_web_tools_swf_builder_image=${{ fromJSON(inputs.runners).serverless_logic_web_tools_swf_builder_image }}" >> $GITHUB_OUTPUT
           echo "serverless_logic_web_tools_base_builder_image=${{ fromJSON(inputs.runners).serverless_logic_web_tools_base_builder_image }}" >> $GITHUB_OUTPUT
           echo "dashbuilder_viewer_image=${{ fromJSON(inputs.runners).dashbuilder_viewer_image }}" >> $GITHUB_OUTPUT
@@ -117,7 +117,7 @@ jobs:
           echo "extended_services: ${{ steps.set_runners.outputs.extended_services }}"
           echo "dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}"
           echo "dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}"
-          echo "serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}"
+          echo "serverless_logic_web_tools: ${{ steps.set_runners.outputs.serverless_logic_web_tools }}"
           echo "serverless_logic_web_tools_swf_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_swf_builder_image }}"
           echo "serverless_logic_web_tools_base_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_base_builder_image }}"
           echo "dashbuilder_viewer_image: ${{ steps.set_runners.outputs.dashbuilder_viewer_image }}"
@@ -1314,14 +1314,14 @@ jobs:
           username: "${{ env.DASHBUILDER__viewerImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-  serverless_logic_sandbox:
+  serverless_logic_web_tools:
     env:
-      SERVERLESS_LOGIC_SANDBOX__buildInfo: ""
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
-      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
-      SERVERLESS_LOGIC_SANDBOX__gtmId: "GTM-5W2QP3C"
+      SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: ""
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_WEB_TOOLS__gtmId: "GTM-5W2QP3C"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"
@@ -1334,9 +1334,9 @@ jobs:
       DASHBUILDER__viewerImageAccount: "kie-tools"
       DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
       SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: "${{ inputs.tag }}"
-      SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+      SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
-    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_web_tools_swf_builder_image.result == 'success' || needs.serverless_logic_web_tools_swf_builder_image.result == 'skipped') && (needs.serverless_logic_web_tools_base_builder_image.result == 'success' || needs.serverless_logic_web_tools_base_builder_image.result == 'skipped') && (needs.dashbuilder_viewer_image.result == 'success' || needs.dashbuilder_viewer_image.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_web_tools == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_web_tools_swf_builder_image.result == 'success' || needs.serverless_logic_web_tools_swf_builder_image.result == 'skipped') && (needs.serverless_logic_web_tools_base_builder_image.result == 'success' || needs.serverless_logic_web_tools_base_builder_image.result == 'skipped') && (needs.dashbuilder_viewer_image.result == 'success' || needs.dashbuilder_viewer_image.result == 'skipped') }}
     runs-on: ubuntu-latest
     needs:
       [
@@ -1372,8 +1372,8 @@ jobs:
         uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-serverless-logic-sandbox-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-serverless-logic-sandbox-m2
+          key: ${{ runner.os }}-serverless-logic-web-tools-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-serverless-logic-web-tools-m2
 
       - name: "Setup environment"
         id: setup_env

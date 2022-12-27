@@ -29,7 +29,7 @@ importScripts("fsMain.js");
 async function gitCorsProxyUrl(): Promise<string> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvVars;
-  return env.SERVERLESS_LOGIC_SANDBOX_GIT_CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__gitCorsProxyUrl ?? "";
+  return env.SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__gitCorsProxyUrl ?? "";
 }
 
 const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
