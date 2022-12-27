@@ -19,16 +19,25 @@ import * as React from "react";
 import { ContextExpressionDefinitionEntry } from "../../api";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import * as _ from "lodash";
+import { useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
 
 export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnId".
   data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
+  columnIndex: number;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
   data: contextEntries,
   rowIndex,
+  columnIndex,
 }) => {
-  return <ContextEntryExpression expression={contextEntries[rowIndex].entryExpression} />;
+  const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
+  return (
+    <ContextEntryExpression
+      expression={contextEntries[rowIndex].entryExpression}
+      isActiveOrEditing={isActive || isEditing}
+    />
+  );
 };

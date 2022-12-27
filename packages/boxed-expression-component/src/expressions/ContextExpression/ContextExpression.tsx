@@ -60,8 +60,8 @@ export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
 export const CONTEXT_ENTRY_EXTRA_WIDTH =
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
   NESTED_EXPRESSION_CLEAR_MARGIN +
-  // 2 + 2 = info and expression column borders
-  (2 + 2);
+  (1 + 1) + // 1 + 1 = info and expression column borders
+  1; // last-child border-right
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 

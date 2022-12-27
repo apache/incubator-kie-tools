@@ -179,7 +179,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
       columnResizingWidths.reduce(
         (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
         {
-          value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columnResizingWidths.length * 2, // 2px for border of each column
+          value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columnResizingWidths.length + 1, // 1px for border-right of last column
           isPivoting: false,
         }
       )

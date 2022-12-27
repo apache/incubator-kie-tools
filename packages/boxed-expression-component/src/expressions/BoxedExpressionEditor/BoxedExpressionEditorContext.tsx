@@ -20,7 +20,6 @@ import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../
 import { useRef, useState } from "react";
 import "./BoxedExpressionEditorContext.css";
 import * as _ from "lodash";
-import { CellSelectionBox } from "../../selection/SelectionBox";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
 
 export interface BoxedExpressionEditorContextType {

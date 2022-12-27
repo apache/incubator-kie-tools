@@ -17,7 +17,6 @@
 import * as React from "react";
 import * as ReactTable from "react-table";
 import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
-import { BeeTableSelectionActiveCell } from "../table/BeeTable/BeeTableSelectionContext";
 
 export interface BeeTableRowsUpdateArgs<R extends object> {
   rows: R[];
@@ -29,6 +28,7 @@ export interface BeeTableRowsUpdateArgs<R extends object> {
 export interface BeeTableCellProps<R extends object> {
   data: readonly R[];
   rowIndex: number;
+  columnIndex: number;
   columnId: string;
 }
 

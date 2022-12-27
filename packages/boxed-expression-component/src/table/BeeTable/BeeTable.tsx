@@ -158,6 +158,7 @@ export function BeeTable2<R extends object>({
             <CellComponentForColumn
               data={cellProps.data}
               rowIndex={cellProps.row.index}
+              columnIndex={cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id)}
               columnId={cellProps.column.id}
             />
           );
@@ -243,6 +244,7 @@ export function BeeTable2<R extends object>({
 
       // ENTER
       if (NavigationKeysUtils.isEnter(key)) {
+        e.stopPropagation();
         e.preventDefault();
         setActiveCell((prev) => {
           if (!prev) {
@@ -257,6 +259,7 @@ export function BeeTable2<R extends object>({
 
       // TAB
       if (NavigationKeysUtils.isTab(key)) {
+        e.stopPropagation();
         e.preventDefault();
         if (e.shiftKey) {
           setActiveCell((prev) => {
@@ -299,11 +302,12 @@ export function BeeTable2<R extends object>({
 
       // ARROWS
 
-      const set = e.shiftKey ? setSelectionEnd : setActiveCell;
+      const setActiveOrSelectionEndCell = e.shiftKey ? setSelectionEnd : setActiveCell;
 
       if (NavigationKeysUtils.isArrowLeft(key)) {
+        e.stopPropagation();
         e.preventDefault();
-        set((prev) => {
+        setActiveOrSelectionEndCell((prev) => {
           if (!prev) {
             return prev;
           }
@@ -322,8 +326,9 @@ export function BeeTable2<R extends object>({
         });
       }
       if (NavigationKeysUtils.isArrowRight(key)) {
+        e.stopPropagation();
         e.preventDefault();
-        set((prev) => {
+        setActiveOrSelectionEndCell((prev) => {
           if (!prev) {
             return prev;
           }
@@ -342,8 +347,9 @@ export function BeeTable2<R extends object>({
         });
       }
       if (NavigationKeysUtils.isArrowUp(key)) {
+        e.stopPropagation();
         e.preventDefault();
-        set((prev) => {
+        setActiveOrSelectionEndCell((prev) => {
           if (!prev) {
             return prev;
           }
@@ -362,8 +368,9 @@ export function BeeTable2<R extends object>({
         });
       }
       if (NavigationKeysUtils.isArrowDown(key)) {
+        e.stopPropagation();
         e.preventDefault();
-        set((prev) => {
+        setActiveOrSelectionEndCell((prev) => {
           if (!prev) {
             return prev;
           }
@@ -386,29 +393,53 @@ export function BeeTable2<R extends object>({
 
       if (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key)) {
         e.stopPropagation();
+        e.preventDefault();
         erase();
       }
 
       // ESC
 
       if (NavigationKeysUtils.isEscape(key)) {
+        e.stopPropagation();
+        e.preventDefault();
         setActiveCell(undefined);
         // FIXME: Tiago: Do it.
         // return focusParentCell(currentTarget);
       }
 
+      // FIXME: Tiago -> This won't work well on non-macOS
       // COPY/CUT/PASTE
-      if (e.metaKey && e.key === "c") {
+      if (!e.shiftKey && e.metaKey && e.key === "c") {
         e.stopPropagation();
+        e.preventDefault();
         copy();
       }
-      if (e.metaKey && e.key === "x") {
+      if (!e.shiftKey && e.metaKey && e.key === "x") {
         e.stopPropagation();
+        e.preventDefault();
         cut();
       }
-      if (e.metaKey && e.key === "v") {
+      if (!e.shiftKey && e.metaKey && e.key === "v") {
         e.stopPropagation();
+        e.preventDefault();
         paste();
+      }
+
+      // FIXME: Tiago -> This won't work well on non-macOS
+      // SELECT ALL
+      if (!e.shiftKey && e.metaKey && e.key === "a") {
+        e.stopPropagation();
+        e.preventDefault();
+        setActiveCell({
+          rowIndex: 0,
+          columnIndex: 1,
+          isEditing: false,
+        });
+        setSelectionEnd({
+          rowIndex: reactTableInstance.rows.length - 1,
+          columnIndex: reactTableInstance.allColumns.length - 1,
+          isEditing: false,
+        });
       }
 
       if (!currentlyOpenContextMenu && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
@@ -533,7 +564,7 @@ function BeeTableDefaultCell<R extends object>({
     (isEditing: boolean) => {
       setActiveCell((prev) => {
         if (!prev) {
-          return;
+          return prev;
         }
         return { ...prev, isEditing };
       });

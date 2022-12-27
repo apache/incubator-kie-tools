@@ -96,45 +96,100 @@
 
 .expression-container .table-component table thead th,
 .expression-container .table-component table tbody td {
-  border: 1px solid var(--pf-global--palette--black-300);
+  border-top: 1px solid var(--pf-global--palette--black-300);
+  border-left: 1px solid var(--pf-global--palette--black-300);
+  border-right: 0;
+  border-bottom: 0;
   outline: none;
 }
 
-.expression-container .table-component table thead th.active:after,
-.expression-container .table-component table tbody td.active:after {
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  content: "";
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  z-index: 5;
-  border: 3px solid #438cb1;
-  border-radius: 3px;
+.expression-container .table-component table thead th:last-child,
+.expression-container .table-component table tbody td:last-child {
+  border-right: 1px solid var(--pf-global--palette--black-300);
 }
 
+.expression-container .table-component table thead tr:last-child th,
+.expression-container .table-component table tbody tr:last-child td {
+  border-bottom: 1px solid var(--pf-global--palette--black-300);
+}
+
+/* SELECTION */
 .expression-container .table-component table tbody td.editing {
   box-shadow: 0px 0px 20px -5px darkgrey;
+}
+
+.expression-container .table-component table thead tr th:first-child {
+  border-right: 1px solid var(--pf-global--palette--black-400);
+}
+.expression-container .table-component table thead th {
+  border-top: 1px solid var(--pf-global--palette--black-400);
+  border-left: 1px solid var(--pf-global--palette--black-400);
+}
+.expression-container .table-component table thead th:last-child {
+  border-right: 1px solid var(--pf-global--palette--black-400);
+}
+.expression-container .table-component table thead tr:last-child th {
+  border-bottom: 1px solid var(--pf-global--palette--black-400);
+}
+.expression-container .table-component table tbody td:first-child {
+  border-top: 1px solid var(--pf-global--palette--black-400);
+  border-left: 1px solid var(--pf-global--palette--black-400);
+  border-right: 1px solid var(--pf-global--palette--black-400);
+}
+.expression-container .table-component table tbody tr:last-child td:first-child {
+  border-bottom: 1px solid var(--pf-global--palette--black-400);
 }
 
 .expression-container .table-component table tbody td.selected {
   background-color: #f0f6ff;
 }
-.expression-container .table-component table thead th.selected.top,
-.expression-container .table-component table tbody td.selected.top {
-  border-top: 1px solid #438cb1;
+
+.expression-container .table-component table tbody td.selected.top:after,
+.expression-container .table-component table tbody td.selected.bottom:after,
+.expression-container .table-component table tbody td.selected.left:after,
+.expression-container .table-component table tbody td.selected.right:after {
+  position: absolute;
+  content: "";
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  z-index: 5;
 }
-.expression-container .table-component table thead th.selected.bottom,
-.expression-container .table-component table tbody td.selected.bottom {
-  border-bottom: 1px solid #438cb1;
-}
-.expression-container .table-component table thead th.selected.left,
-.expression-container .table-component table tbody td.selected.left {
+.expression-container .table-component table thead th.selected.left:after,
+.expression-container .table-component table tbody td.selected.left:after {
+  top: -1px;
+  left: -1px;
   border-left: 1px solid #438cb1;
 }
-.expression-container .table-component table thead th.selected.right,
-.expression-container .table-component table tbody td.selected.right {
+.expression-container .table-component table thead th.selected.top:after,
+.expression-container .table-component table tbody td.selected.top:after {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid #438cb1;
+}
+.expression-container .table-component table thead th.selected.bottom:after,
+.expression-container .table-component table tbody td.selected.bottom:after {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1px solid #438cb1;
+}
+.expression-container .table-component table thead th.selected.right:after,
+.expression-container .table-component table tbody td.selected.right:after {
+  top: -1px;
+  left: -1px;
   border-right: 1px solid #438cb1;
+}
+
+.expression-container .table-component table thead th.active:after,
+.expression-container .table-component table tbody td.active:after {
+  position: absolute;
+  top: -2px !important;
+  left: -2px !important;
+  content: "";
+  width: calc(100% + 4px) !important;
+  height: calc(100% + 4px) !important;
+  z-index: 5;
+  border: 3px solid #438cb1 !important;
+  border-radius: 3px !important;
 }
 
 /** Table Body rules */
@@ -228,7 +283,7 @@
   border: none;
 }
 
-/** Row-remainder section */
+/** Additional row section */
 
 .expression-container .table-component table tbody .table-row .additional-row-content {
   display: inline-block;
@@ -240,6 +295,8 @@
 .boxed-expression-provider .table-context-menu .pf-c-popover__arrow {
   display: none;
 }
+
+/** Inline adding rows and columns */
 
 .add-row-button {
   position: absolute;

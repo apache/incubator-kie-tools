@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
+import { useBeeTableCell } from "./BeeTableSelectionContext";
 import { BeeTableTh } from "./BeeTableTh";
 
 export interface BeeTableThResizableProps<R extends object> {
@@ -113,6 +115,8 @@ export function BeeTableThResizable<R extends object>({
     return getColumnLabel(column.groupType);
   }, [column.groupType, getColumnLabel]);
 
+  const { isActive, isEditing } = useBeeTableCell(column.depth === 0 ? -2 : -1, columnIndex);
+
   return (
     <BeeTableTh<R>
       className={cssClasses}
@@ -133,6 +137,8 @@ export function BeeTableThResizable<R extends object>({
       >
         {column.dataType && editableHeader ? (
           <ExpressionDefinitionHeaderMenu
+            isPopoverOpen={isActive || isEditing}
+            position={PopoverPosition.bottom}
             title={columnLabel}
             selectedExpressionName={column.label}
             selectedDataType={column.dataType}

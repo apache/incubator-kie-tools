@@ -112,6 +112,7 @@ export function BeeTableTd<R extends object>({
 
   useEffect(() => {
     function onDown(e: KeyboardEvent) {
+      e.stopPropagation();
       const set = e.shiftKey ? setSelectionEnd : setActiveCell;
       set({
         columnIndex,
@@ -120,7 +121,8 @@ export function BeeTableTd<R extends object>({
       });
     }
 
-    function onDoubleClick() {
+    function onDoubleClick(e: KeyboardEvent) {
+      e.stopPropagation();
       setActiveCell({
         columnIndex,
         rowIndex,

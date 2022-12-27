@@ -25,6 +25,7 @@ import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { NavigationKeysUtils } from "../../keysUtils";
+import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 
 export interface ExpressionDefinitionHeaderMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -45,6 +46,8 @@ export interface ExpressionDefinitionHeaderMenuProps {
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
+  isPopoverOpen?: boolean;
+  position?: PopoverPosition;
 }
 
 export const EXPRESSION_NAME = "Expression Name";
@@ -59,6 +62,8 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
   selectedDataType = DmnBuiltInDataType.Undefined,
   selectedExpressionName,
   onExpressionHeaderUpdated,
+  isPopoverOpen,
+  position,
 }: ExpressionDefinitionHeaderMenuProps) => {
   const boxedExpressionEditor = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -70,7 +75,6 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
 
   const [dataType, setDataType] = useState(selectedDataType);
   const [expressionName, setExpressionName] = useState(selectedExpressionName);
-  const [isDataTypeSelectorOpen, setDataTypeSelectorOpen] = useState(false);
 
   const expressionNameRef = useRef<HTMLInputElement>(null);
   const popoverMenuRef = useRef<PopoverMenuRef>();
@@ -122,41 +126,29 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
 
   const onShown = useCallback(() => {
     expressionNameRef.current?.focus();
-    popoverMenuRef?.current?.setIsVisible(true);
   }, []);
 
-  const onExpressionNameKeyPress = useCallback(
+  const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();
         popoverMenuRef?.current?.setIsVisible(false);
-      }
-    },
-    [saveExpression]
-  );
-
-  const onExpressionNameKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (NavigationKeysUtils.isEscape(e.key) && !isDataTypeSelectorOpen) {
+        e.stopPropagation();
+      } else if (NavigationKeysUtils.isEscape(e.key)) {
         resetFormData();
-        popoverMenuRef?.current?.setIsVisible(false);
+      } else {
+        e.stopPropagation();
       }
     },
-    [resetFormData, isDataTypeSelectorOpen]
+    [resetFormData, saveExpression]
   );
 
-  const onDataTypeKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (NavigationKeysUtils.isEscape(e.key) && !isDataTypeSelectorOpen) {
-        popoverMenuRef?.current?.setIsVisible(false);
-      }
-    },
-    [isDataTypeSelectorOpen]
-  );
-
-  const onDataTypeToggle = useCallback((isOpen: boolean) => {
-    setDataTypeSelectorOpen(isOpen);
-  }, []);
+  React.useEffect(() => {
+    // Doesn't work without this timeout. Probably a bug on the Popover itself.
+    setTimeout(() => {
+      popoverMenuRef.current?.setIsVisible(isPopoverOpen ?? false);
+    }, 100);
+  }, [isPopoverOpen]);
 
   return (
     <PopoverMenu
@@ -167,8 +159,10 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
       onCancel={onCancel}
       onHide={onHide}
       onShown={onShown}
+      position={position}
+      distance={30}
       body={
-        <div className="edit-expression-menu" onKeyDown={onExpressionNameKeyDown}>
+        <div className="edit-expression-menu" onKeyDown={onKeyDown}>
           <div className="expression-name">
             <label>{nameField}</label>
             <input
@@ -181,7 +175,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
               onBlur={onExpressionNameChange}
               className="form-control pf-c-form-control"
               placeholder={EXPRESSION_NAME}
-              onKeyPress={onExpressionNameKeyPress}
+              onKeyDown={onKeyDown}
             />
           </div>
           <div className="expression-data-type">
@@ -196,12 +190,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
             >
               {i18n.manage}
             </Button>
-            <DataTypeSelector
-              value={dataType}
-              onChange={onDataTypeChange}
-              onToggle={onDataTypeToggle}
-              onKeyDown={onDataTypeKeyDown}
-            />
+            <DataTypeSelector value={dataType} onChange={onDataTypeChange} onKeyDown={onKeyDown} />
           </div>
         </div>
       }

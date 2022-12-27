@@ -31,7 +31,7 @@ import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../
 export const LITERAL_EXPRESSION_MIN_WIDTH = 250;
 
 // 14px for padding, 2px for border
-export const LITERAL_EXPRESSION_EXTRA_WIDTH = 14 + 2; // 14px for margin, 2px for border
+export const LITERAL_EXPRESSION_EXTRA_WIDTH = 14; // 14px for margin, 2px for border
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
   const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();

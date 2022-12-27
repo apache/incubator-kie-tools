@@ -19,6 +19,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { ContextEntryInfo } from "./ContextEntryInfo";
 import * as _ from "lodash";
+import { useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
 
 export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnId".
@@ -26,12 +27,14 @@ export interface ContextEntryInfoCellProps {
   onEntryUpdate: (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => void;
   editInfoPopoverLabel?: string;
   rowIndex: number;
+  columnIndex: number;
   columnId: string;
 }
 
 export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellProps> = ({
   data: contextEntries,
   rowIndex,
+  columnIndex,
   onEntryUpdate,
   editInfoPopoverLabel,
 }) => {
@@ -55,9 +58,12 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     [entryExpression, contextEntry, rowIndex, onEntryUpdate, entryInfo.id]
   );
 
+  const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
+
   return (
     <div className="context-entry-info-cell">
       <ContextEntryInfo
+        isPopoverOpen={isActive || isEditing}
         id={entryInfo.id}
         name={entryInfo.name}
         dataType={entryInfo.dataType}

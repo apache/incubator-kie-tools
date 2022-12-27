@@ -145,9 +145,10 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
 
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
     () => ({
-      entryInfo: (props: ContextEntryInfoCellProps) =>
-        ContextEntryInfoCell({ ...props, editInfoPopoverLabel: i18n.editParameter }),
-      entryExpression: ContextEntryExpressionCell,
+      entryInfo: (props) => (
+        <ContextEntryInfoCell {...props} editInfoPopoverLabel={i18n.editParameter} onEntryUpdate={() => {}} />
+      ),
+      entryExpression: (props) => <ContextEntryExpressionCell {...props} />,
     }),
     [i18n]
   );

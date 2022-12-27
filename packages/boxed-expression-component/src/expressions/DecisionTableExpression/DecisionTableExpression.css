@@ -31,10 +31,10 @@
 
 .expression-container .decision-table-expression table thead tr:last-child th.decision-table--input,
 .expression-container .decision-table-expression table thead tr:last-child th.decision-table--annotation {
-  height: 116px !important;
+  height: 115px !important;
   align-items: center;
   display: flex;
-  top: -60px;
+  top: -59px;
 }
 
 .expression-container .decision-table-expression table thead th.decision-table--input,

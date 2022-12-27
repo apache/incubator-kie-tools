@@ -231,7 +231,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       return columns.reduce(
         (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
         {
-          value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length * 2,
+          value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length + 1,
           isPivoting: false,
         }
       );
@@ -289,7 +289,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       })
     );
 
-    const inputSectionWidth = inputsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
+    const inputSectionWidth = inputsResizingWidths.reduce((acc, { value }) => acc + value + 1, 0) - 1; // 2px for left/right borders of 1px
     const inputSection = {
       groupType: DecisionTableColumnType.InputClause,
       id: "Inputs",
@@ -306,7 +306,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       },
     };
 
-    const outputSectionWidth = outputsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
+    const outputSectionWidth = outputsResizingWidths.reduce((acc, { value }) => acc + value + 1, 0) - 1; // 2px for left/right borders of 1px
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
@@ -324,7 +324,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       },
     };
 
-    const annotationSectionWidth = annotationsResizingWidths.reduce((acc, { value }) => acc + value + 2, 0) - 2; // 2px for left/right borders of 1px
+    const annotationSectionWidth = annotationsResizingWidths.reduce((acc, { value }) => acc + value + 1, 0) - 1; // 2px for left/right borders of 1px
     const annotationSection = {
       groupType: DecisionTableColumnType.Annotation,
       id: "Annotations",
