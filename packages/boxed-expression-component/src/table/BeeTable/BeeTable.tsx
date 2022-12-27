@@ -87,7 +87,7 @@ export function BeeTable2<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
-  const { setActiveCell } = useBeeTableSelectionDispatch();
+  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -263,11 +263,15 @@ export function BeeTable2<R extends object>({
             if (!prev) {
               return prev;
             }
-            const newColumnIndex = Math.max(prev.columnIndex - 1, 0);
+
+            const isRowIndexColumn = prev.columnIndex === 0;
+            if (isRowIndexColumn) {
+              return prev;
+            }
+
+            const newColumnIndex = Math.max(prev.columnIndex - 1, 1);
             return {
-              column: reactTableInstance.allColumns[newColumnIndex],
               columnIndex: newColumnIndex,
-              row: prev?.row,
               rowIndex: prev?.rowIndex ?? -1,
               isEditing: false,
             };
@@ -277,11 +281,15 @@ export function BeeTable2<R extends object>({
             if (!prev) {
               return prev;
             }
+
+            const isRowIndexColumn = prev.columnIndex === 0;
+            if (isRowIndexColumn) {
+              return prev;
+            }
+
             const newColumnIndex = Math.min(prev.columnIndex + 1, reactTableInstance.allColumns.length - 1);
             return {
-              column: reactTableInstance.allColumns[newColumnIndex],
               columnIndex: newColumnIndex,
-              row: prev?.row,
               rowIndex: prev?.rowIndex ?? -1,
               isEditing: false,
             };
@@ -291,17 +299,23 @@ export function BeeTable2<R extends object>({
 
       // ARROWS
 
+      const set = e.shiftKey ? setSelectionEnd : setActiveCell;
+
       if (NavigationKeysUtils.isArrowLeft(key)) {
         e.preventDefault();
-        setActiveCell((prev) => {
+        set((prev) => {
           if (!prev) {
             return prev;
           }
-          const newColumnIndex = Math.max(prev.columnIndex - 1, 0);
+
+          const isRowIndexColumn = prev.columnIndex === 0;
+          if (isRowIndexColumn) {
+            return prev;
+          }
+
+          const newColumnIndex = Math.max(prev.columnIndex - 1, 1);
           return {
-            column: reactTableInstance.allColumns[newColumnIndex],
             columnIndex: newColumnIndex,
-            row: prev?.row,
             rowIndex: prev?.rowIndex ?? -1,
             isEditing: false,
           };
@@ -309,15 +323,19 @@ export function BeeTable2<R extends object>({
       }
       if (NavigationKeysUtils.isArrowRight(key)) {
         e.preventDefault();
-        setActiveCell((prev) => {
+        set((prev) => {
           if (!prev) {
             return prev;
           }
+
+          const isRowIndexColumn = prev.columnIndex === 0;
+          if (isRowIndexColumn) {
+            return prev;
+          }
+
           const newColumnIndex = Math.min(prev.columnIndex + 1, reactTableInstance.allColumns.length - 1);
           return {
-            column: reactTableInstance.allColumns[newColumnIndex],
             columnIndex: newColumnIndex,
-            row: prev?.row,
             rowIndex: prev?.rowIndex ?? -1,
             isEditing: false,
           };
@@ -325,15 +343,19 @@ export function BeeTable2<R extends object>({
       }
       if (NavigationKeysUtils.isArrowUp(key)) {
         e.preventDefault();
-        setActiveCell((prev) => {
+        set((prev) => {
           if (!prev) {
             return prev;
           }
-          const newRowIndex = Math.max(prev.rowIndex - 1, -1);
+
+          const isHeaderCell = prev.rowIndex < 0;
+          if (isHeaderCell) {
+            return prev;
+          }
+
+          const newRowIndex = Math.max(prev.rowIndex - 1, 0);
           return {
-            column: prev!.column,
             columnIndex: prev!.columnIndex,
-            row: newRowIndex >= 0 ? reactTableInstance.rows[newRowIndex] : undefined,
             rowIndex: newRowIndex,
             isEditing: false,
           };
@@ -341,15 +363,19 @@ export function BeeTable2<R extends object>({
       }
       if (NavigationKeysUtils.isArrowDown(key)) {
         e.preventDefault();
-        setActiveCell((prev) => {
+        set((prev) => {
           if (!prev) {
             return prev;
           }
+
+          const isHeaderCell = prev.rowIndex < 0;
+          if (isHeaderCell) {
+            return prev;
+          }
+
           const newRowIndex = Math.min(prev.rowIndex + 1, reactTableInstance.rows.length - 1);
           return {
-            column: prev!.column,
             columnIndex: prev!.columnIndex,
-            row: reactTableInstance.rows[newRowIndex],
             rowIndex: newRowIndex,
             isEditing: false,
           };
@@ -372,9 +398,10 @@ export function BeeTable2<R extends object>({
     [
       currentlyOpenContextMenu,
       enableKeyboardNavigation,
-      reactTableInstance.allColumns,
-      reactTableInstance.rows,
+      reactTableInstance.allColumns.length,
+      reactTableInstance.rows.length,
       setActiveCell,
+      setSelectionEnd,
     ]
   );
 

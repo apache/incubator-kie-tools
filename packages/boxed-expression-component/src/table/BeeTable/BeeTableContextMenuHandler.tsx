@@ -158,15 +158,24 @@ export function BeeTableContextMenuHandler({
     (operation: BeeTableOperation) => {
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
-          onColumnAdded?.({ beforeIndex: activeCell!.columnIndex - 1, groupType: activeCell!.column!.groupType });
+          onColumnAdded?.({
+            beforeIndex: activeCell!.columnIndex - 1,
+            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+          });
           console.info(`Insert column left to ${activeCell!.columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
-          onColumnAdded?.({ beforeIndex: activeCell!.columnIndex, groupType: activeCell!.column!.groupType });
+          onColumnAdded?.({
+            beforeIndex: activeCell!.columnIndex,
+            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+          });
           console.info(`Insert column right to ${activeCell!.columnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
-          onColumnDeleted?.({ columnIndex: activeCell!.columnIndex - 1, groupType: activeCell!.column!.groupType });
+          onColumnDeleted?.({
+            columnIndex: activeCell!.columnIndex - 1,
+            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+          });
           console.info(`Delete column ${activeCell!.columnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
@@ -193,7 +202,16 @@ export function BeeTableContextMenuHandler({
       }
       setCurrentlyOpenContextMenu(undefined);
     },
-    [setCurrentlyOpenContextMenu, onColumnAdded, activeCell, onColumnDeleted, onRowAdded, onRowDeleted, onRowDuplicated]
+    [
+      setCurrentlyOpenContextMenu,
+      onColumnAdded,
+      activeCell,
+      reactTableInstance.allColumns,
+      onColumnDeleted,
+      onRowAdded,
+      onRowDeleted,
+      onRowDuplicated,
+    ]
   );
 
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);

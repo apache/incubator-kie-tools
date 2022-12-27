@@ -54,7 +54,9 @@ export function BeeTableTd<R extends object>({
   yPosition,
   onCellUpdates,
 }: BeeTableTdProps2<R>) {
-  const { setActiveCell } = useBeeTableSelectionDispatch();
+  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
+
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCellStatus(rowIndex, columnIndex);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
@@ -64,6 +66,16 @@ export function BeeTableTd<R extends object>({
   if (column.cellDelegate) {
     cssClass += " input"; // FIXME: Tiago -> DMN Runner/DecisionTable-specific logic
   }
+
+  const cssClasses = useMemo(() => {
+    return `
+      ${cssClass} 
+      ${isActive ? "active" : ""}
+      ${isEditing ? "editing" : ""} 
+      ${isSelected ? "selected" : ""} 
+      ${selectedPositions?.join(" ")}
+    `;
+  }, [cssClass, isActive, isEditing, isSelected, selectedPositions]);
 
   const cell = useMemo(() => {
     return row.cells[columnIndex];
@@ -100,12 +112,11 @@ export function BeeTableTd<R extends object>({
   }, [column, columnIndex, row, rowIndex, setActiveCell]);
 
   useEffect(() => {
-    function onDown() {
-      setActiveCell({
+    function onDown(e: KeyboardEvent) {
+      const set = e.shiftKey ? setSelectionEnd : setActiveCell;
+      set({
         columnIndex,
-        column,
         rowIndex,
-        row,
         isEditing: false,
       });
     }
@@ -113,9 +124,7 @@ export function BeeTableTd<R extends object>({
     function onDoubleClick() {
       setActiveCell({
         columnIndex,
-        column,
         rowIndex,
-        row,
         isEditing: true,
       });
     }
@@ -127,7 +136,7 @@ export function BeeTableTd<R extends object>({
       td?.removeEventListener("dblclick", onDoubleClick);
       td?.removeEventListener("mousedown", onDown);
     };
-  }, [column, columnIndex, row, rowIndex, setActiveCell]);
+  }, [column, columnIndex, row, rowIndex, setActiveCell, setSelectionEnd]);
 
   const onAddRowButtonClick = useCallback(
     (e: React.MouseEvent) => {
@@ -165,8 +174,6 @@ export function BeeTableTd<R extends object>({
     [hoverInfo]
   );
 
-  const { isActive, isEditing } = useBeeTableCellStatus(rowIndex, columnIndex);
-
   useEffect(() => {
     if (isActive && !isEditing) {
       tdRef.current?.focus();
@@ -197,7 +204,7 @@ export function BeeTableTd<R extends object>({
     <PfReactTable.Td
       ref={tdRef}
       tabIndex={-1}
-      className={`${cssClass} ${isActive ? "active" : ""} ${isEditing ? "editing" : ""}`}
+      className={cssClasses}
       data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
       data-xposition={columnIndex}
       data-yposition={yPosition ?? rowIndex}

@@ -53,7 +53,7 @@ export function BeeTableTh<R extends object>({
   groupType,
   isLastLevelColumn,
 }: React.PropsWithChildren<BeeTableThProps2<R>>) {
-  const { setActiveCell } = useBeeTableSelectionDispatch();
+  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
   const thRef = useRef<HTMLTableCellElement>(null);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -104,20 +104,27 @@ export function BeeTableTh<R extends object>({
     [hoverInfo]
   );
 
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      setActiveCell({
+  useEffect(() => {
+    function onDown(e: KeyboardEvent) {
+      const set = e.shiftKey ? setSelectionEnd : setActiveCell;
+      set({
         columnIndex,
-        column,
         rowIndex: isFocusable ? -1 : -2,
-        row: undefined,
         isEditing: false,
       });
-    },
-    [column, columnIndex, isFocusable, setActiveCell]
-  );
+    }
 
-  const { isActive, isEditing } = useBeeTableCellStatus(isLastLevelColumn ? -1 : -2, columnIndex);
+    const th = thRef.current;
+    th?.addEventListener("mousedown", onDown);
+    return () => {
+      th?.removeEventListener("mousedown", onDown);
+    };
+  }, [column, columnIndex, isFocusable, setActiveCell, setSelectionEnd]);
+
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCellStatus(
+    isLastLevelColumn ? -1 : -2,
+    columnIndex
+  );
 
   useEffect(() => {
     if (isActive && !isEditing) {
@@ -125,16 +132,25 @@ export function BeeTableTh<R extends object>({
     }
   }, [isActive, isEditing]);
 
+  const cssClasses = useMemo(() => {
+    return `
+        ${className}
+        ${isActive ? "active" : ""}
+        ${isEditing ? "editing" : ""}
+        ${isSelected ? "selected" : ""}
+        ${selectedPositions?.join(" ")}
+      `;
+  }, [className, isActive, isEditing, isSelected, selectedPositions]);
+
   return (
     <PfReactTable.Th
       {...thProps}
-      onMouseDown={onMouseDown}
       ref={thRef}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`${className} ${isActive ? "active" : ""} ${isEditing ? "editing" : ""}`}
+      className={cssClasses}
       tabIndex={isFocusable ? -1 : undefined}
       data-xposition={xPosition}
     >
