@@ -150,7 +150,10 @@
 .expression-container .table-component table tbody td.selected {
   background-color: #f0f6ff;
 }
-
+.expression-container .table-component table thead th.selected.top:after,
+.expression-container .table-component table thead th.selected.bottom:after,
+.expression-container .table-component table thead th.selected.left:after,
+.expression-container .table-component table thead th.selected.right:after,
 .expression-container .table-component table tbody td.selected.top:after,
 .expression-container .table-component table tbody td.selected.bottom:after,
 .expression-container .table-component table tbody td.selected.left:after,

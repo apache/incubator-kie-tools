@@ -13,7 +13,7 @@ export type BeeTableColumnResizingWidthsContextType<R extends object> = {
 export interface BeeTableColumnResizingWidthsDispatchContextType<R extends object> {
   updateResizingWidths(
     columnIndex: number,
-    getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth
+    getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth | undefined
   ): void;
   subscribeToColumnResizingWidth(
     columnIndex: number,
@@ -30,7 +30,7 @@ export const BeeTableColumnResizingWidthsDispatchContext = React.createContext<
 >({} as any);
 
 export interface BeeTableColumnResizingWidthRef {
-  setResizingWidth?: React.Dispatch<React.SetStateAction<ResizingWidth>>;
+  setResizingWidth?: React.Dispatch<React.SetStateAction<ResizingWidth | undefined>>;
 }
 
 // PROVIDER
@@ -57,7 +57,7 @@ export function BeeTableColumnResizingWidthsContextProvider<R extends object>({
         return ref;
       },
       unsubscribeToColumnResizingWidth: (columnIndex, ref) => {
-        ref.setResizingWidth?.({ value: PLACEHOLDER_WIDTH_FOR_DETECTING_ERRORS, isPivoting: false });
+        // ref.setResizingWidth?.({ value: PLACEHOLDER_WIDTH_FOR_DETECTING_ERRORS, isPivoting: false });
         refs.current?.get(columnIndex)?.delete(ref);
       },
     };
@@ -86,16 +86,24 @@ export function useBeeTableColumnWidth(columnIndex: number, initialResizingWidth
   const { subscribeToColumnResizingWidth, unsubscribeToColumnResizingWidth, updateResizingWidths } =
     useBeeTableColumnResizingWidthsDispatch();
 
-  const [resizingWidth, setResizingWidth] = useState<ResizingWidth>({
-    value: initialResizingWidth ?? PLACEHOLDER_WIDTH_FOR_DETECTING_ERRORS,
-    isPivoting: false,
-  });
+  const [resizingWidth, setResizingWidth] = useState<ResizingWidth | undefined>(
+    initialResizingWidth
+      ? {
+          value: initialResizingWidth,
+          isPivoting: false,
+        }
+      : undefined
+  );
 
   useEffect(() => {
-    updateResizingWidths(columnIndex, (prev) => ({
-      value: initialResizingWidth ?? PLACEHOLDER_WIDTH_FOR_DETECTING_ERRORS,
-      isPivoting: false,
-    }));
+    updateResizingWidths(columnIndex, (prev) =>
+      initialResizingWidth
+        ? {
+            value: initialResizingWidth,
+            isPivoting: false,
+          }
+        : undefined
+    );
   }, [columnIndex, initialResizingWidth, updateResizingWidths]);
 
   const updateResizingWidth = useCallback(

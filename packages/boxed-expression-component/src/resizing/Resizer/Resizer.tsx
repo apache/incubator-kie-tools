@@ -71,10 +71,9 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setResizingWidth?.((prev) => ({ value: minWidth ?? DEFAULT_MIN_WIDTH, isPivoting: false }));
       setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
     },
-    [minWidth, setResizingWidth, setWidth]
+    [minWidth, setWidth]
   );
 
   const style = useMemo(() => {

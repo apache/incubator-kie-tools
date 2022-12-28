@@ -51,6 +51,7 @@ export function BeeTableTd<R extends object>({
   onRowAdded,
   yPosition,
 }: BeeTableTdProps2<R>) {
+  const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
   const tdRef = useRef<HTMLTableCellElement>(null);
@@ -119,7 +120,7 @@ export function BeeTableTd<R extends object>({
       td?.removeEventListener("mousemove", onMove);
       td?.removeEventListener("mouseenter", onEnter);
     };
-  }, [column, columnIndex, row, rowIndex, setActiveCell, setSelectionEnd]);
+  }, [column, columnIndex, isResizing, row, rowIndex, setActiveCell, setSelectionEnd]);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -200,8 +201,6 @@ export function BeeTableTd<R extends object>({
       tdRef.current?.focus();
     }
   }, [isActive, isEditing]);
-
-  const [isResizing, setResizing] = useState(false);
 
   return (
     <PfReactTable.Td

@@ -220,10 +220,10 @@ export function BeeTableHeader<R extends object>({
     ]
   );
 
-  const renderHeaderGroups = useMemo(
+  const renderHeaderGroups = useCallback(
     () =>
       (skipLastHeaderGroup ? _.dropRight(reactTableInstance.headerGroups) : reactTableInstance.headerGroups).map(
-        (headerGroup, rowIndex) => {
+        (headerGroup) => {
           const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
           let xPosition = 0;
           return (
@@ -244,7 +244,7 @@ export function BeeTableHeader<R extends object>({
     (level: number) => (
       <PfReactTable.Tr style={{ display: "flex" }}>
         {_.nth(reactTableInstance.headerGroups, level)!.headers.map((column, columnIndex) =>
-          renderColumn(column, 0, columnIndex)
+          renderColumn(column, columnIndex, columnIndex)
         )}
       </PfReactTable.Tr>
     ),
@@ -254,7 +254,7 @@ export function BeeTableHeader<R extends object>({
   const header = useMemo(() => {
     switch (headerVisibility) {
       case BeeTableHeaderVisibility.Full:
-        return <PfReactTable.Thead noWrap>{renderHeaderGroups}</PfReactTable.Thead>;
+        return <PfReactTable.Thead noWrap>{renderHeaderGroups()}</PfReactTable.Thead>;
       case BeeTableHeaderVisibility.LastLevel:
         return <PfReactTable.Thead noWrap>{renderAtLevelInHeaderGroups(-1)}</PfReactTable.Thead>;
       case BeeTableHeaderVisibility.SecondToLastLevel:
