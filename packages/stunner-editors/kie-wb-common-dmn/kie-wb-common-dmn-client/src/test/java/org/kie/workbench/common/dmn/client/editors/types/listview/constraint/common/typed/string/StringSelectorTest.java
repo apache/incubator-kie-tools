@@ -65,6 +65,12 @@ public class StringSelectorTest {
     }
 
     @Test
+    public void testSetValueWithMultipleDoubleQuote() {
+        stringSelector.setValue("\"\"value\"\"");
+        verify(view).setValue("\"value\"");
+    }
+
+    @Test
     public void testGetValueWithRawValue() {
 
         when(view.getValue()).thenReturn("value");
