@@ -87,7 +87,7 @@ export function BeeTable2<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
-  const { setActiveCell, setSelectionEnd, erase, copy, cut, paste } = useBeeTableSelectionDispatch();
+  const { setActiveCell, setSelectionEnd, erase, copy, cut, paste, adaptSelection } = useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -478,6 +478,83 @@ export function BeeTable2<R extends object>({
     }
   }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
 
+  const onRowAdded2 = useCallback(
+    (args: { beforeIndex: number }) => {
+      if (onRowAdded) {
+        onRowAdded(args);
+        adaptSelection({
+          atRowIndex: args.beforeIndex,
+          rowCountDelta: 1,
+          atColumnIndex: -1,
+          columnCountDelta: 0,
+        });
+      }
+    },
+    [adaptSelection, onRowAdded]
+  );
+
+  const onColumnAdded2 = useCallback(
+    (args: { beforeIndex: number; groupType: string }) => {
+      if (onColumnAdded) {
+        onColumnAdded(args);
+        adaptSelection({
+          atRowIndex: -1,
+          rowCountDelta: 0,
+          // The columnIndex here does not count the rowIndex columns, but the selection does. So + 1.
+          atColumnIndex: args.beforeIndex + 1,
+          columnCountDelta: 1,
+        });
+      }
+    },
+    [adaptSelection, onColumnAdded]
+  );
+
+  const onRowDuplicated2 = useCallback(
+    (args: { rowIndex: number }) => {
+      if (onRowDuplicated) {
+        onRowDuplicated(args);
+        adaptSelection({
+          atRowIndex: args.rowIndex,
+          rowCountDelta: 1,
+          atColumnIndex: -1,
+          columnCountDelta: 0,
+        });
+      }
+    },
+    [adaptSelection, onRowDuplicated]
+  );
+
+  const onRowDeleted2 = useCallback(
+    (args: { rowIndex: number }) => {
+      if (onRowDeleted) {
+        onRowDeleted(args);
+        adaptSelection({
+          atRowIndex: args.rowIndex,
+          rowCountDelta: -1,
+          atColumnIndex: -1,
+          columnCountDelta: 0,
+        });
+      }
+    },
+    [adaptSelection, onRowDeleted]
+  );
+
+  const onColumnDeleted2 = useCallback(
+    (args: { columnIndex: number; groupType: string }) => {
+      if (onColumnDeleted) {
+        onColumnDeleted(args);
+        adaptSelection({
+          atRowIndex: -1,
+          rowCountDelta: 0,
+          // The columnIndex here does not count the rowIndex columns, but the selection does. So + 1.
+          atColumnIndex: args.columnIndex + 1,
+          columnCountDelta: -1,
+        });
+      }
+    },
+    [adaptSelection, onColumnDeleted]
+  );
+
   return (
     <div className={`table-component ${tableId} ${tableEventUUID}`} ref={tableRef} onKeyDown={onKeyDown}>
       <PfReactTable.TableComposable
@@ -495,7 +572,7 @@ export function BeeTable2<R extends object>({
           skipLastHeaderGroup={skipLastHeaderGroup}
           tableColumns={columnsWithAddedIndexColumns}
           reactTableInstance={reactTableInstance}
-          onColumnAdded={onColumnAdded}
+          onColumnAdded={onColumnAdded2}
         />
         <BeeTableBody<R>
           getColumnKey={onGetColumnKey}
@@ -504,19 +581,18 @@ export function BeeTable2<R extends object>({
           headerRowsCount={headerRowsCount}
           reactTableInstance={reactTableInstance}
           additionalRow={additionalRow}
-          onRowAdded={onRowAdded}
-          onCellUpdates={onCellUpdates}
+          onRowAdded={onRowAdded2}
         />
       </PfReactTable.TableComposable>
       <BeeTableContextMenuHandler
         tableRef={tableRef}
         operationConfig={operationConfig}
         reactTableInstance={reactTableInstance}
-        onRowAdded={onRowAdded}
-        onRowDuplicated={onRowDuplicated}
-        onRowDeleted={onRowDeleted}
-        onColumnAdded={onColumnAdded}
-        onColumnDeleted={onColumnDeleted}
+        onRowAdded={onRowAdded2}
+        onRowDuplicated={onRowDuplicated2}
+        onRowDeleted={onRowDeleted2}
+        onColumnAdded={onColumnAdded2}
+        onColumnDeleted={onColumnDeleted2}
       />
     </div>
   );

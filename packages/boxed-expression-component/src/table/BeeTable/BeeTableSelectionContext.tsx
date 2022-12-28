@@ -8,6 +8,8 @@ export interface BeeTableSelectionActiveCell<R extends object> {
 }
 export interface BeeTableSelectionContextType<R extends object> {
   activeCell: BeeTableSelectionActiveCell<R> | undefined;
+  selectionEnd: BeeTableSelectionActiveCell<R> | undefined;
+  selectionStart: BeeTableSelectionActiveCell<R> | undefined;
 }
 
 export interface BeeTableSelectionDispatchContextType<R extends object> {
@@ -15,7 +17,15 @@ export interface BeeTableSelectionDispatchContextType<R extends object> {
   copy(): void;
   cut(): void;
   paste(): void;
-  setActiveCell: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell<R> | undefined>>;
+  adaptSelection(args: {
+    atRowIndex: number;
+    rowCountDelta: number;
+    atColumnIndex: number;
+    columnCountDelta: number;
+  }): void;
+  setActiveCell: React.Dispatch<
+    React.SetStateAction<(BeeTableSelectionActiveCell<R> & { keepSelection?: boolean }) | undefined>
+  >;
   setSelectionEnd: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell<R> | undefined>>;
   subscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): BeeTableCellRef;
   unsubscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): void;
@@ -42,6 +52,7 @@ export interface BeeTableCellRef {
 export interface BeeTableSelection<R extends object> {
   active: BeeTableSelectionActiveCell<R> | undefined;
   selectionEnd: BeeTableSelectionActiveCell<R> | undefined;
+  selectionStart: BeeTableSelectionActiveCell<R> | undefined;
 }
 
 export enum BeeTableSelectionPosition {
@@ -62,6 +73,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
   const [selection, setSelection] = useState<BeeTableSelection<R>>({
     active: undefined,
     selectionEnd: undefined,
+    selectionStart: undefined,
   });
 
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
@@ -75,13 +87,82 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
   const value = useMemo(() => {
     return {
       activeCell: selection.active,
+      selectionStart: selection.selectionStart,
+      selectionEnd: selection.selectionEnd,
     };
   }, [selection]);
 
   const dispatch = useMemo<BeeTableSelectionDispatchContextType<R>>(() => {
     return {
+      adaptSelection: ({
+        atRowIndex,
+        rowCountDelta,
+        atColumnIndex,
+        columnCountDelta,
+      }: {
+        atRowIndex: number;
+        rowCountDelta: number;
+        atColumnIndex: number;
+        columnCountDelta: number;
+      }) => {
+        setSelection((prev) => {
+          if (!prev || !prev.active || !prev.selectionStart || !prev.selectionEnd) {
+            return prev;
+          }
+
+          let moveRows = 0;
+          let growRows = 0;
+          let activeMoveRows = 0;
+
+          if (atRowIndex >= 0) {
+            if (atRowIndex <= prev.selectionStart.rowIndex) {
+              moveRows = rowCountDelta;
+            } else if (atRowIndex <= prev.selectionEnd.rowIndex) {
+              growRows = rowCountDelta;
+            }
+
+            if (atRowIndex <= prev.active.rowIndex) {
+              activeMoveRows = rowCountDelta;
+            }
+          }
+
+          let moveColumns = 0;
+          let growColumns = 0;
+          let activeMoveColumns = 0;
+
+          if (atColumnIndex >= 0) {
+            if (atColumnIndex <= prev.selectionStart.columnIndex) {
+              moveColumns = columnCountDelta;
+            } else if (atColumnIndex <= prev.selectionEnd.columnIndex) {
+              growColumns = columnCountDelta;
+            }
+
+            if (atColumnIndex <= prev.active.columnIndex) {
+              activeMoveColumns = columnCountDelta;
+            }
+          }
+
+          return {
+            active: {
+              rowIndex: prev.active.rowIndex + activeMoveRows,
+              columnIndex: prev.active.columnIndex + activeMoveColumns,
+              isEditing: prev.active.isEditing,
+            },
+            selectionStart: {
+              rowIndex: prev.selectionStart.rowIndex + moveRows,
+              columnIndex: prev.selectionStart.columnIndex + moveColumns,
+              isEditing: prev.selectionStart.isEditing,
+            },
+            selectionEnd: {
+              rowIndex: prev.selectionEnd.rowIndex + moveRows + growRows,
+              columnIndex: prev.selectionEnd.columnIndex + moveColumns + growColumns,
+              isEditing: prev.selectionEnd.isEditing,
+            },
+          };
+        });
+      },
       copy: () => {
-        if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+        if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
           return;
         }
 
@@ -104,7 +185,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         navigator.clipboard.writeText(clipboardValue);
       },
       cut: () => {
-        if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+        if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
           return;
         }
 
@@ -134,7 +215,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         // FIXME: Tiago -> Add new columns and rows, based on the clipboard's size.
 
         navigator.clipboard.readText().then((clipboardValue) => {
-          if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+          if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
             return;
           }
 
@@ -164,6 +245,11 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               columnIndex: startColumn,
               isEditing: false,
             },
+            selectionStart: {
+              rowIndex: startRow,
+              columnIndex: startColumn,
+              isEditing: false,
+            },
             selectionEnd: {
               rowIndex: pasteEndRow,
               columnIndex: pasteEndColumn,
@@ -174,7 +260,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       },
       erase: () => {
         // FIXME: Tiago -> This is not good. We shouldn't be setting a state just to read it.
-        if (!selectionRef.current?.active || !selectionRef.current?.selectionEnd) {
+        if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
           return;
         }
 
@@ -193,8 +279,11 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       setActiveCell: (activeCell) => {
         setSelection((prev) => {
           const newActiveCell = typeof activeCell === "function" ? activeCell(prev.active) : activeCell;
-          const newSelectionEnd = newActiveCell;
-          return { active: newActiveCell, selectionEnd: newSelectionEnd };
+          return {
+            active: newActiveCell,
+            selectionStart: newActiveCell?.keepSelection ? prev.selectionStart : newActiveCell,
+            selectionEnd: newActiveCell?.keepSelection ? prev.selectionEnd : newActiveCell,
+          };
         });
       },
       setSelectionEnd: (selectionEnd) => {
@@ -203,10 +292,10 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
           // Selecting the activeCell
           if (
-            newSelectionEnd?.columnIndex === prev.active?.columnIndex &&
-            newSelectionEnd?.rowIndex === prev.active?.rowIndex
+            newSelectionEnd?.columnIndex === prev.selectionStart?.columnIndex &&
+            newSelectionEnd?.rowIndex === prev.selectionStart?.rowIndex
           ) {
-            return { ...prev, selectionEnd: prev.active };
+            return { ...prev, selectionEnd: prev.selectionStart };
           }
           // Selecting a normall cell from a rowIndex cell
           else if (prev.selectionEnd?.columnIndex === 0) {
@@ -269,7 +358,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
   }, []);
 
   useEffect(() => {
-    if (!selection.active || !selection.selectionEnd) {
+    if (!selection.selectionStart || !selection.selectionEnd) {
       return;
     }
 
@@ -293,10 +382,11 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         // Select normal cells
         const refs = currentRefs.get(r)?.get(c);
         refs?.forEach((ref) => {
+          const isActive = c === selection.active?.columnIndex && r === selection.active?.rowIndex;
           ref.setStatus({
-            isActive: c === selection.active?.columnIndex && r === selection.active?.rowIndex,
-            isEditing: selection.active?.isEditing ?? false,
-            isSelected: selection.active !== selection.selectionEnd,
+            isActive,
+            isEditing: isActive ? selection.active?.isEditing ?? false : false,
+            isSelected: selection.selectionStart !== selection.selectionEnd,
             selectedPositions: [
               ...(r === startRow ? [BeeTableSelectionPosition.Top] : []),
               ...(r === endRow ? [BeeTableSelectionPosition.Bottom] : []),
@@ -379,9 +469,9 @@ export function useBeeTableCell(
 function getSelectionIterationBoundaries(selection: BeeTableSelection<any>) {
   // Let's always go smaller to bigger, no matter the direction of the selection.
   return {
-    startColumn: Math.min(selection.active?.columnIndex ?? 0, selection.selectionEnd?.columnIndex ?? 0),
-    endColumn: Math.max(selection.active?.columnIndex ?? 0, selection.selectionEnd?.columnIndex ?? 0),
-    startRow: Math.min(selection.active?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
-    endRow: Math.max(selection.active?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
+    startColumn: Math.min(selection.selectionStart?.columnIndex ?? 0, selection.selectionEnd?.columnIndex ?? 0),
+    endColumn: Math.max(selection.selectionStart?.columnIndex ?? 0, selection.selectionEnd?.columnIndex ?? 0),
+    startRow: Math.min(selection.selectionStart?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
+    endRow: Math.max(selection.selectionStart?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
   };
 }

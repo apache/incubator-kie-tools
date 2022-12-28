@@ -60,6 +60,8 @@ export function BeeTableTh<R extends object>({
 
   const onAddColumnButtonClick = useCallback(
     (e: React.MouseEvent) => {
+      e.stopPropagation();
+
       if (!hoverInfo.isHovered) {
         return;
       }
@@ -104,22 +106,18 @@ export function BeeTableTh<R extends object>({
     [hoverInfo]
   );
 
-  useEffect(() => {
-    function onDown(e: KeyboardEvent) {
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
       const set = e.shiftKey ? setSelectionEnd : setActiveCell;
       set({
         columnIndex,
         rowIndex: isFocusable ? -1 : -2,
         isEditing: false,
       });
-    }
-
-    const th = thRef.current;
-    th?.addEventListener("mousedown", onDown);
-    return () => {
-      th?.removeEventListener("mousedown", onDown);
-    };
-  }, [column, columnIndex, isFocusable, setActiveCell, setSelectionEnd]);
+    },
+    [columnIndex, isFocusable, setActiveCell, setSelectionEnd]
+  );
 
   const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(
     isLastLevelColumn ? -1 : -2,
@@ -146,6 +144,7 @@ export function BeeTableTh<R extends object>({
     <PfReactTable.Th
       {...thProps}
       ref={thRef}
+      onMouseDown={onMouseDown}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
@@ -156,7 +155,12 @@ export function BeeTableTh<R extends object>({
     >
       {children}
       {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && (
-        <div onClick={onAddColumnButtonClick} className={"add-column-button"} style={addColumButtonStyle}>
+        <div
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={onAddColumnButtonClick}
+          className={"add-column-button"}
+          style={addColumButtonStyle}
+        >
           <PlusIcon size="sm" />
         </div>
       )}

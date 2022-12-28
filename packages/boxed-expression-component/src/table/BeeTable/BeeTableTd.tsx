@@ -30,7 +30,6 @@ export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
   onRowAdded?: (args: { beforeIndex: number }) => void;
-  onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
   isActive: boolean;
 }
 
@@ -51,7 +50,6 @@ export function BeeTableTd<R extends object>({
   shouldUseCellDelegate,
   onRowAdded,
   yPosition,
-  onCellUpdates,
 }: BeeTableTdProps2<R>) {
   const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
 
@@ -110,17 +108,31 @@ export function BeeTableTd<R extends object>({
     };
   }, [column, columnIndex, row, rowIndex, setActiveCell]);
 
-  useEffect(() => {
-    function onDown(e: KeyboardEvent) {
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
       e.stopPropagation();
+
+      if (e.button !== 0 && isSelected) {
+        setActiveCell({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+          keepSelection: true,
+        });
+        return;
+      }
+
       const set = e.shiftKey ? setSelectionEnd : setActiveCell;
       set({
         columnIndex,
         rowIndex,
         isEditing: false,
       });
-    }
+    },
+    [columnIndex, isSelected, rowIndex, setActiveCell, setSelectionEnd]
+  );
 
+  useEffect(() => {
     function onDoubleClick(e: KeyboardEvent) {
       e.stopPropagation();
       setActiveCell({
@@ -131,16 +143,16 @@ export function BeeTableTd<R extends object>({
     }
 
     const td = tdRef.current;
-    td?.addEventListener("mousedown", onDown);
     td?.addEventListener("dblclick", onDoubleClick);
     return () => {
       td?.removeEventListener("dblclick", onDoubleClick);
-      td?.removeEventListener("mousedown", onDown);
     };
   }, [column, columnIndex, row, rowIndex, setActiveCell, setSelectionEnd]);
 
   const onAddRowButtonClick = useCallback(
     (e: React.MouseEvent) => {
+      e.stopPropagation();
+
       if (!hoverInfo.isHovered) {
         return;
       }
@@ -183,6 +195,7 @@ export function BeeTableTd<R extends object>({
 
   return (
     <PfReactTable.Td
+      onMouseDown={onMouseDown}
       ref={tdRef}
       tabIndex={-1}
       className={cssClasses}
@@ -216,7 +229,12 @@ export function BeeTableTd<R extends object>({
       )}
 
       {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
-        <div onClick={onAddRowButtonClick} className={"add-row-button"} style={addRowButtonStyle}>
+        <div
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={onAddRowButtonClick}
+          className={"add-row-button"}
+          style={addRowButtonStyle}
+        >
           <PlusIcon size="sm" />
         </div>
       )}

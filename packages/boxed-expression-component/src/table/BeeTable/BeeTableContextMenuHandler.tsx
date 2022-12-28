@@ -26,9 +26,13 @@ import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import "./BeeTableContextMenuHandler.css";
-import { useBeeTableSelection } from "./BeeTableSelectionContext";
+import { useBeeTableSelection, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import * as ReactTable from "react-table";
 import * as _ from "lodash";
+import CutIcon from "@patternfly/react-icons/dist/js/icons/cut-icon";
+import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export interface BeeTableContextMenuHandlerProps {
   tableRef: React.RefObject<HTMLDivElement | null>;
@@ -54,7 +58,8 @@ export function BeeTableContextMenuHandler({
 }: BeeTableContextMenuHandlerProps) {
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
-  const { activeCell } = useBeeTableSelection();
+  const { activeCell, selectionStart, selectionEnd } = useBeeTableSelection();
+  const { copy, cut, paste, erase } = useBeeTableSelectionDispatch();
 
   const getColumnOperations = useCallback(
     (columnIndex: number) => {
@@ -108,28 +113,38 @@ export function BeeTableContextMenuHandler({
     ];
   }, [activeCell, getColumnOperations, reactTableInstance.rows.length]);
 
-  const operationLabel = useCallback((operation: BeeTableOperation) => {
-    switch (operation) {
-      case BeeTableOperation.ColumnInsertLeft:
-        return `Insert left`;
-      case BeeTableOperation.ColumnInsertRight:
-        return `Insert right`;
-      case BeeTableOperation.ColumnDelete:
-        return `Delete`;
-      case BeeTableOperation.RowInsertAbove:
-        return `Insert above`;
-      case BeeTableOperation.RowInsertBelow:
-        return `Insert below`;
-      case BeeTableOperation.RowDelete:
-        return `Delete`;
-      case BeeTableOperation.RowClear:
-        return `Clear`;
-      case BeeTableOperation.RowDuplicate:
-        return `Duplicate`;
-      default:
-        assertUnreachable(operation);
-    }
-  }, []);
+  const quantities = useMemo(() => {
+    return {
+      newRows: 1 + Math.abs((selectionEnd?.rowIndex ?? 0) - (selectionStart?.rowIndex ?? 0)),
+      newColumns: 1 + Math.abs((selectionEnd?.columnIndex ?? 0) - (selectionStart?.columnIndex ?? 0)),
+    };
+  }, [selectionStart?.columnIndex, selectionStart?.rowIndex, selectionEnd?.columnIndex, selectionEnd?.rowIndex]);
+
+  const operationLabel = useCallback(
+    (operation: BeeTableOperation) => {
+      switch (operation) {
+        case BeeTableOperation.ColumnInsertLeft:
+          return `Insert ${quantities.newColumns} left`;
+        case BeeTableOperation.ColumnInsertRight:
+          return `Insert ${quantities.newColumns} right`;
+        case BeeTableOperation.ColumnDelete:
+          return `Delete ${quantities.newColumns}`;
+        case BeeTableOperation.RowInsertAbove:
+          return `Insert ${quantities.newRows} above`;
+        case BeeTableOperation.RowInsertBelow:
+          return `Insert ${quantities.newRows} below`;
+        case BeeTableOperation.RowDelete:
+          return `Delete ${quantities.newRows}`;
+        case BeeTableOperation.RowClear:
+          return `Clear`;
+        case BeeTableOperation.RowDuplicate:
+          return `Duplicate`;
+        default:
+          assertUnreachable(operation);
+      }
+    },
+    [quantities.newColumns, quantities.newRows]
+  );
 
   const operationIcon = useCallback((operation: BeeTableOperation) => {
     switch (operation) {
@@ -155,57 +170,62 @@ export function BeeTableContextMenuHandler({
   }, []);
 
   const handleOperation = useCallback(
-    (operation: BeeTableOperation) => {
+    (operation: BeeTableOperation | undefined | null) => {
+      if (operation === undefined || operation === null) {
+        return;
+      }
+
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
           onColumnAdded?.({
-            beforeIndex: activeCell!.columnIndex - 1,
-            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+            beforeIndex: selectionStart!.columnIndex - 1,
+            groupType: reactTableInstance.allColumns[selectionStart!.columnIndex].groupType,
           });
-          console.info(`Insert column left to ${activeCell!.columnIndex}`);
+          console.info(`Insert column left to ${selectionStart!.columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
           onColumnAdded?.({
-            beforeIndex: activeCell!.columnIndex,
-            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+            beforeIndex: selectionStart!.columnIndex,
+            groupType: reactTableInstance.allColumns[selectionStart!.columnIndex].groupType,
           });
-          console.info(`Insert column right to ${activeCell!.columnIndex}`);
+          console.info(`Insert column right to ${selectionStart!.columnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
           onColumnDeleted?.({
-            columnIndex: activeCell!.columnIndex - 1,
-            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+            columnIndex: selectionStart!.columnIndex - 1,
+            groupType: reactTableInstance.allColumns[selectionStart!.columnIndex].groupType,
           });
-          console.info(`Delete column ${activeCell!.columnIndex}`);
+          console.info(`Delete column ${selectionStart!.columnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
-          onRowAdded?.({ beforeIndex: activeCell!.rowIndex });
-          console.info(`Insert row above to ${activeCell!.rowIndex}`);
+          onRowAdded?.({ beforeIndex: selectionStart!.rowIndex });
+          console.info(`Insert row above to ${selectionStart!.rowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
-          onRowAdded?.({ beforeIndex: activeCell!.rowIndex + 1 });
-          console.info(`Insert row below to ${activeCell!.rowIndex}`);
+          onRowAdded?.({ beforeIndex: selectionStart!.rowIndex + 1 });
+          console.info(`Insert row below to ${selectionStart!.rowIndex}`);
           break;
         case BeeTableOperation.RowDelete:
-          onRowDeleted?.({ rowIndex: activeCell!.rowIndex });
-          console.info(`Delete row ${activeCell!.rowIndex}`);
+          onRowDeleted?.({ rowIndex: selectionStart!.rowIndex });
+          console.info(`Delete row ${selectionStart!.rowIndex}`);
           break;
         case BeeTableOperation.RowClear:
-          console.info(`Clear row ${activeCell!.rowIndex}`);
+          console.info(`Clear row ${selectionStart!.rowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
-          onRowDuplicated?.({ rowIndex: activeCell!.rowIndex });
-          console.info(`Duplicate row ${activeCell!.rowIndex}`);
+          onRowDuplicated?.({ rowIndex: selectionStart!.rowIndex });
+          console.info(`Duplicate row ${selectionStart!.rowIndex}`);
           break;
         default:
           assertUnreachable(operation);
       }
+
       setCurrentlyOpenContextMenu(undefined);
     },
     [
       setCurrentlyOpenContextMenu,
       onColumnAdded,
-      activeCell,
+      selectionStart,
       reactTableInstance.allColumns,
       onColumnDeleted,
       onRowAdded,
@@ -257,6 +277,24 @@ export function BeeTableContextMenuHandler({
                 </MenuList>
               </MenuGroup>
             ))}
+
+            <Divider style={{ padding: "16px" }} />
+            <MenuGroup>
+              <MenuList>
+                <MenuItem onClick={erase} icon={<CompressIcon />}>
+                  {"Reset"}
+                </MenuItem>
+                <MenuItem onClick={copy} icon={<CopyIcon />}>
+                  {"Copy"}
+                </MenuItem>
+                <MenuItem onClick={cut} icon={<CutIcon />}>
+                  {"Cut"}
+                </MenuItem>
+                <MenuItem onClick={paste} icon={<PasteIcon />}>
+                  {"Paste"}
+                </MenuItem>
+              </MenuList>
+            </MenuGroup>
           </Menu>
         </div>
       )}

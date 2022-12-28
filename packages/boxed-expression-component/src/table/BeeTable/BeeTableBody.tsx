@@ -40,8 +40,6 @@ export interface BeeTableBodyProps<R extends object> {
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
-  //
-  onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
 }
 
 export function BeeTableBody<R extends object>({
@@ -52,7 +50,6 @@ export function BeeTableBody<R extends object>({
   getRowKey,
   getColumnKey,
   onRowAdded,
-  onCellUpdates,
 }: BeeTableBodyProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -111,7 +108,6 @@ export function BeeTableBody<R extends object>({
                 column={reactTableInstance.allColumns[columnIndex]}
                 yPosition={headerRowsCount + rowIndex}
                 onRowAdded={onRowAdded}
-                onCellUpdates={onCellUpdates}
                 isActive={false}
               />
             );
@@ -130,7 +126,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [reactTableInstance, getRowKey, onTrClick, getColumnKey, headerRowsCount, onRowAdded, onCellUpdates]
+    [reactTableInstance, getRowKey, onTrClick, getColumnKey, headerRowsCount, onRowAdded]
   );
 
   const additionalRowIndex = useMemo(() => {
