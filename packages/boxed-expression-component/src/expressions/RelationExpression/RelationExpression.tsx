@@ -36,7 +36,7 @@ import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, useNestedExpressionContainer } from "../ContextExpression";
 import { useEffect } from "react";
-import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
+import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
@@ -86,10 +86,6 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
 
   const nestedExpressionContainer = useNestedExpressionContainer();
 
-  const [columnResizingWidths, setColumnResizingWidths] = useState<ResizingWidth[]>(
-    columns.map((c) => ({ value: c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH, isPivoting: false }))
-  );
-
   const setColumnWidth = useCallback(
     (columnIndex: number) => (newWidth: number) => {
       setExpression((prev: RelationExpressionDefinition) => {
@@ -100,15 +96,6 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     },
     [setExpression]
   );
-
-  useEffect(() => {
-    setColumnResizingWidths(() => {
-      return columns.map((column) => ({
-        value: column.width ?? RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
-        isPivoting: false,
-      }));
-    });
-  }, [columns]);
 
   // const isRelationExpressionPivoting = useMemo(() => {
   //   return columnResizingWidths.some(({ isPivoting }) => isPivoting);
@@ -121,18 +108,6 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   //     return isRelationExpressionPivoting ? prev : nestedExpressionContainer;
   //   });
   // }, [isRelationExpressionPivoting, nestedExpressionContainer]);
-
-  const setColumnResizingWidth = useCallback(
-    (columnIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      setColumnResizingWidths((prev: ResizingWidth[]) => {
-        const newResizingWidth = getNewResizingWidth(prev[columnIndex]).value;
-        const n = [...prev];
-        n[columnIndex] = { value: newResizingWidth, isPivoting: true };
-        return n;
-      });
-    },
-    []
-  );
 
   // useEffect(() => {
   //   setColumnResizingWidths((prev) => {
@@ -174,17 +149,22 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   //   });
   // }, [columns, pivotAwareNestedExpressionContainer]);
 
-  useEffect(() => {
-    updateResizingWidth(relationExpression.id!, (prev) =>
-      columnResizingWidths.reduce(
-        (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
-        {
-          value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columnResizingWidths.length + 1, // 1px for border-right of last column
-          isPivoting: false,
-        }
-      )
-    );
-  }, [columnResizingWidths, relationExpression.id, updateResizingWidth]);
+  // FIXME: Tiago -> OMG
+  // ***************************************************************************************
+  // THIS STATE IS AMBIGUOUS. WE SHOULD RELY ON THE RESIZING WIDTHS TO GET THE COLUMN WIDTHS
+  // ***************************************************************************************
+  //
+  // useEffect(() => {
+  //   updateResizingWidth(relationExpression.id!, (prev) =>
+  //     columnResizingWidths.reduce(
+  //       (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
+  //       {
+  //         value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columnResizingWidths.length + 1, // 1px for border-right of last column
+  //         isPivoting: false,
+  //       }
+  //     )
+  //   );
+  // }, [columnResizingWidths, relationExpression.id, updateResizingWidth]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return columns.map((column, columnIndex) => ({
@@ -194,14 +174,9 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
       isRowIndexColumn: false,
       minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
       setWidth: setColumnWidth(columnIndex),
-      setResizingWidth: setColumnResizingWidth(columnIndex),
-      resizingWidth: {
-        value: columnResizingWidths[columnIndex]?.value ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-        isPivoting: columnResizingWidths[columnIndex]?.isPivoting ?? false,
-      },
       width: column.width,
     }));
-  }, [columnResizingWidths, columns, setColumnResizingWidth, setColumnWidth]);
+  }, [columns, setColumnWidth]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(
     () =>
@@ -251,13 +226,13 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
       setExpression((prev: RelationExpressionDefinition) => {
         const newColumns = [...(prev.columns ?? [])];
 
-        columnUpdates.forEach((u) => {
+        for (const u of columnUpdates) {
           newColumns[u.columnIndex] = {
             ...newColumns[u.columnIndex],
             name: u.name,
             dataType: u.dataType,
           };
-        });
+        }
 
         return {
           ...prev,
@@ -311,15 +286,6 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
           columns: newColumns,
           rows: newRows,
         };
-      });
-
-      setColumnResizingWidths((prev) => {
-        const newResizingWidths = [...(prev ?? [])];
-        newResizingWidths.splice(args.beforeIndex, 0, {
-          value: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
-          isPivoting: false,
-        });
-        return newResizingWidths;
       });
     },
     [setExpression]

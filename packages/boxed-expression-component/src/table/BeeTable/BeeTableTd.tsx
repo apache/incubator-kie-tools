@@ -22,7 +22,7 @@ import * as ReactTable from "react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import { BeeTableTdProps } from "../../api";
-import { BeeTableCellUpdate } from ".";
+import { useBeeTableColumnWidth } from "./BeeTableColumnResizingWidthsContextProvider";
 
 export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -51,10 +51,6 @@ export function BeeTableTd<R extends object>({
   onRowAdded,
   yPosition,
 }: BeeTableTdProps2<R>) {
-  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
-
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
-
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
   const tdRef = useRef<HTMLTableCellElement>(null);
@@ -63,6 +59,13 @@ export function BeeTableTd<R extends object>({
   if (column.cellDelegate) {
     cssClass += " input"; // FIXME: Tiago -> DMN Runner/DecisionTable-specific logic
   }
+  const cell = useMemo(() => {
+    return row.cells[columnIndex];
+  }, [columnIndex, row]);
+
+  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
+  const { resizingWidth, setResizingWidth } = useBeeTableColumnWidth(columnIndex, column.width);
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
 
   const cssClasses = useMemo(() => {
     return `
@@ -73,10 +76,6 @@ export function BeeTableTd<R extends object>({
       ${selectedPositions?.join(" ")}
     `;
   }, [cssClass, isActive, isEditing, isSelected, selectedPositions]);
-
-  const cell = useMemo(() => {
-    return row.cells[columnIndex];
-  }, [columnIndex, row]);
 
   const tdContent = useMemo(() => {
     return shouldUseCellDelegate && column.cellDelegate
@@ -202,6 +201,8 @@ export function BeeTableTd<R extends object>({
     }
   }, [isActive, isEditing]);
 
+  const [isResizing, setResizing] = useState(false);
+
   return (
     <PfReactTable.Td
       onMouseDown={onMouseDown}
@@ -220,19 +221,20 @@ export function BeeTableTd<R extends object>({
         <>
           <div
             style={{
-              width: column.resizingWidth?.value,
+              width: resizingWidth?.value,
               minWidth: cell.column.minWidth,
             }}
           >
             {tdContent}
           </div>
-          {(hoverInfo.isHovered || cell.column.resizingWidth?.isPivoting) && (
+          {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
             <Resizer
               minWidth={cell.column.minWidth}
               width={cell.column.width}
               setWidth={cell.column.setWidth}
-              resizingWidth={cell.column.resizingWidth}
-              setResizingWidth={cell.column.setResizingWidth}
+              resizingWidth={resizingWidth}
+              setResizingWidth={setResizingWidth}
+              setResizing={setResizing}
             />
           )}
         </>

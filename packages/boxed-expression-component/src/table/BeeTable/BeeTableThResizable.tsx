@@ -21,6 +21,7 @@ import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
+import { useBeeTableColumnWidth } from "./BeeTableColumnResizingWidthsContextProvider";
 import { useBeeTableCell } from "./BeeTableSelectionContext";
 import { BeeTableTh } from "./BeeTableTh";
 
@@ -115,7 +116,12 @@ export function BeeTableThResizable<R extends object>({
     return getColumnLabel(column.groupType);
   }, [column.groupType, getColumnLabel]);
 
-  const { isActive, isEditing } = useBeeTableCell(column.depth === 0 ? -2 : -1, columnIndex);
+  const rowIndex = useMemo(() => {
+    return column.depth === 0 ? -2 : -1;
+  }, [column.depth]);
+
+  const { resizingWidth, setResizingWidth } = useBeeTableColumnWidth(columnIndex, column.width);
+  const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
 
   return (
     <BeeTableTh<R>
@@ -133,7 +139,7 @@ export function BeeTableThResizable<R extends object>({
       <div
         className="header-cell"
         data-ouia-component-type="expression-column-header"
-        style={{ width: column.resizingWidth?.value }}
+        style={{ width: resizingWidth?.value }}
       >
         {column.dataType && editableHeader ? (
           <ExpressionDefinitionHeaderMenu
@@ -154,8 +160,8 @@ export function BeeTableThResizable<R extends object>({
         minWidth={column.minWidth}
         width={column.width}
         setWidth={column.setWidth}
-        resizingWidth={column.resizingWidth}
-        setResizingWidth={column.setResizingWidth}
+        resizingWidth={resizingWidth}
+        setResizingWidth={setResizingWidth}
       />
     </BeeTableTh>
   );

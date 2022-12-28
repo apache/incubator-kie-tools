@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableSelectionActiveCell<R extends object> {
   columnIndex: number;
@@ -17,6 +18,10 @@ export interface BeeTableSelectionDispatchContextType<R extends object> {
   copy(): void;
   cut(): void;
   paste(): void;
+  updateResizingWidths(
+    columnIndex: number,
+    getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth
+  ): void;
   adaptSelection(args: {
     atRowIndex: number;
     rowCountDelta: number;
@@ -44,9 +49,10 @@ export type BeeTableCellStatus = {
 };
 
 export interface BeeTableCellRef {
-  setStatus(args: BeeTableCellStatus): void;
+  setStatus?(args: BeeTableCellStatus): void;
   setValue?(value: string): void;
   getValue?(): string;
+  setResizingWidth?: React.Dispatch<React.SetStateAction<ResizingWidth>>;
 }
 
 export interface BeeTableSelection<R extends object> {
@@ -98,6 +104,16 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
   const dispatch = useMemo<BeeTableSelectionDispatchContextType<R>>(() => {
     return {
+      updateResizingWidths: (
+        columnIndex: number,
+        getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth
+      ) => {
+        for (const c of refs.current?.values()) {
+          for (const ref of c.get(columnIndex) ?? []) {
+            ref.setResizingWidth?.(getNewResizingWidth(undefined));
+          }
+        }
+      },
       adaptSelection: ({
         atRowIndex,
         rowCountDelta,
@@ -349,7 +365,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         return ref;
       },
       unsubscribeToCellStatus: (rowIndex, columnIndex, ref) => {
-        ref.setStatus(NEUTRAL_CELL_STATUS);
+        ref.setStatus?.(NEUTRAL_CELL_STATUS);
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
     };
@@ -369,19 +385,19 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       currentRefs
         .get(r)
         ?.get(0)
-        ?.forEach((e) => e.setStatus({ isActive: false, isEditing: false, isSelected: true }));
+        ?.forEach((e) => e.setStatus?.({ isActive: false, isEditing: false, isSelected: true }));
 
       for (let c = startColumn; c <= endColumn; c++) {
         // Select header cells
         currentRefs
           .get(-1)
           ?.get(c)
-          ?.forEach((e) => e.setStatus({ isActive: false, isEditing: false, isSelected: true }));
+          ?.forEach((e) => e.setStatus?.({ isActive: false, isEditing: false, isSelected: true }));
 
         // Select normal cells
         const refs = currentRefs.get(r)?.get(c);
         refs?.forEach((ref) =>
-          ref.setStatus({
+          ref.setStatus?.({
             isActive: false,
             isEditing: false,
             isSelected: true,
@@ -401,7 +417,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       .get(active.rowIndex)
       ?.get(active.columnIndex)
       ?.forEach((r) =>
-        r.setStatus({
+        r.setStatus?.({
           isActive: true,
           isEditing: active?.isEditing ?? false,
           isSelected: !(
@@ -417,23 +433,23 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         currentRefs
           .get(r)
           ?.get(0)
-          ?.forEach((e) => e.setStatus(NEUTRAL_CELL_STATUS));
+          ?.forEach((e) => e.setStatus?.(NEUTRAL_CELL_STATUS));
 
         for (let c = startColumn; c <= endColumn; c++) {
           currentRefs
             .get(-1)
             ?.get(c)
-            ?.forEach((e) => e.setStatus(NEUTRAL_CELL_STATUS));
+            ?.forEach((e) => e.setStatus?.(NEUTRAL_CELL_STATUS));
 
           const refs = currentRefs.get(r)?.get(c);
-          refs?.forEach((ref) => ref.setStatus(NEUTRAL_CELL_STATUS));
+          refs?.forEach((ref) => ref.setStatus?.(NEUTRAL_CELL_STATUS));
         }
       }
 
       currentRefs
         .get(active.rowIndex)
         ?.get(active.columnIndex)
-        ?.forEach((r) => r.setStatus(NEUTRAL_CELL_STATUS));
+        ?.forEach((r) => r.setStatus?.(NEUTRAL_CELL_STATUS));
     };
   }, [selection]);
 
@@ -477,7 +493,7 @@ export function useBeeTableCell(
     return () => {
       unsubscribeToCellStatus(rowIndex, columnIndex, ref);
     };
-  }, [columnIndex, getValue, rowIndex, setValue, subscribeToCellStatus, unsubscribeToCellStatus]);
+  }, [columnIndex, rowIndex, getValue, setValue, subscribeToCellStatus, unsubscribeToCellStatus]);
 
   return status;
 }

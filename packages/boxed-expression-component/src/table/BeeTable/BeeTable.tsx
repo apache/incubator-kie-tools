@@ -26,6 +26,7 @@ import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../expressions/ContextExpre
 import { NavigationKeysUtils } from "../../keysUtils";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
+import { BeeTableColumnResizingWidthsContextProvider } from "./BeeTableColumnResizingWidthsContextProvider";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { BeeTableCellUpdate, BeeTableHeader } from "./BeeTableHeader";
@@ -608,7 +609,9 @@ export function BeeTable2<R extends object>({
 export function BeeTable<R extends object>(props: BeeTableProps<R>) {
   return (
     <BeeTableSelectionContextProvider>
-      <BeeTable2 {...props} />
+      <BeeTableColumnResizingWidthsContextProvider>
+        <BeeTable2 {...props} />
+      </BeeTableColumnResizingWidthsContextProvider>
     </BeeTableSelectionContextProvider>
   );
 }

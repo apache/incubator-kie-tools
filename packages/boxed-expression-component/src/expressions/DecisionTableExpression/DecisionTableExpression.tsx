@@ -38,8 +38,7 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate, BeeTableCellUpdate } from "../../table/BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
-import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
-import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, NESTED_EXPRESSION_CLEAR_MARGIN } from "../ContextExpression";
+import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
 
 type ROWTYPE = any; // FIXME: Tiago
@@ -141,102 +140,23 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [setExpression]
   );
 
-  const [inputsResizingWidths, setInputsResizingWidths] = useState<ResizingWidth[]>(
-    [...(decisionTable.input ?? [])].map((c) => ({
-      value: c.width ?? DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-      isPivoting: false,
-    }))
-  );
-
-  const [outputsResizingWidths, setOutputsResizingWidths] = useState<ResizingWidth[]>(
-    [...(decisionTable.output ?? [])].map((c) => ({
-      value: c.width ?? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-      isPivoting: false,
-    }))
-  );
-
-  const [annotationsResizingWidths, setAnnotationsResizingWidths] = useState<ResizingWidth[]>(
-    [...(decisionTable.annotations ?? [])].map((c) => ({
-      value: c.width ?? DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-      isPivoting: false,
-    }))
-  );
-
-  const setInputResizingWidth = useCallback(
-    (inputIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      setInputsResizingWidths((prev: ResizingWidth[]) => {
-        const newResizingWidth = getNewResizingWidth(prev[inputIndex]);
-        const n = [...prev];
-        n[inputIndex] = newResizingWidth;
-        return n;
-      });
-    },
-    []
-  );
-
-  const setOutputResizingWidth = useCallback(
-    (outputIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      setOutputsResizingWidths((prev: ResizingWidth[]) => {
-        const newResizingWidth = getNewResizingWidth(prev[outputIndex]);
-        const n = [...prev];
-        n[outputIndex] = newResizingWidth;
-        return n;
-      });
-    },
-    []
-  );
-
-  const setAnnotationResizingWidth = useCallback(
-    (annotationIndex: number) => (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      setAnnotationsResizingWidths((prev: ResizingWidth[]) => {
-        const newResizingWidth = getNewResizingWidth(prev[annotationIndex]);
-        const n = [...prev];
-        n[annotationIndex] = newResizingWidth;
-        return n;
-      });
-    },
-    []
-  );
-
-  useEffect(() => {
-    setInputsResizingWidths(() => {
-      return (decisionTable.input ?? []).map((input) => ({
-        value: input.width ?? DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-        isPivoting: false,
-      }));
-    });
-  }, [decisionTable.input]);
-
-  useEffect(() => {
-    setOutputsResizingWidths(() => {
-      return (decisionTable.output ?? []).map((output) => ({
-        value: output.width ?? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-        isPivoting: false,
-      }));
-    });
-  }, [decisionTable.output]);
-
-  useEffect(() => {
-    setAnnotationsResizingWidths(() => {
-      return (decisionTable.annotations ?? []).map((annotations) => ({
-        value: annotations.width ?? DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-        isPivoting: false,
-      }));
-    });
-  }, [decisionTable.annotations]);
-
-  useEffect(() => {
-    updateResizingWidth(decisionTable.id!, (prev) => {
-      const columns = [...inputsResizingWidths, ...outputsResizingWidths, ...annotationsResizingWidths];
-      return columns.reduce(
-        (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
-        {
-          value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length + 1,
-          isPivoting: false,
-        }
-      );
-    });
-  }, [annotationsResizingWidths, decisionTable.id, inputsResizingWidths, outputsResizingWidths, updateResizingWidth]);
+  // FIXME: Tiago -> OMG
+  // ***************************************************************************************
+  // THIS STATE IS AMBIGUOUS. WE SHOULD RELY ON THE RESIZING WIDTHS TO GET THE COLUMN WIDTHS
+  // ***************************************************************************************
+  //
+  // useEffect(() => {
+  //   updateResizingWidth(decisionTable.id!, (prev) => {
+  //     const columns = [...inputsResizingWidths, ...outputsResizingWidths, ...annotationsResizingWidths];
+  //     return columns.reduce(
+  //       (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
+  //       {
+  //         value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length + 1,
+  //         isPivoting: false,
+  //       }
+  //     );
+  //   });
+  // }, [annotationsResizingWidths, decisionTable.id, inputsResizingWidths, outputsResizingWidths, updateResizingWidth]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTable.input ?? []).map((inputClause, inputIndex) => ({
@@ -246,8 +166,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       dataType: inputClause.dataType,
       width: inputClause.width,
       setWidth: setInputColumnWidth(inputIndex),
-      resizingWidth: inputsResizingWidths[inputIndex],
-      setResizingWidth: setInputResizingWidth(inputIndex),
       minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
       groupType: DecisionTableColumnType.InputClause,
       cssClasses: "decision-table--input",
@@ -262,8 +180,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         dataType: outputClause.dataType,
         width: outputClause.width,
         setWidth: setOutputColumnWidth(outputIndex),
-        resizingWidth: outputsResizingWidths[outputIndex],
-        setResizingWidth: setOutputResizingWidth(outputIndex),
         minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
         groupType: DecisionTableColumnType.OutputClause,
         cssClasses: "decision-table--output",
@@ -278,8 +194,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         label: annotation.name,
         width: annotation.width,
         setWidth: setAnnotationColumnWidth(annotationIndex),
-        resizingWidth: annotationsResizingWidths[annotationIndex],
-        setResizingWidth: setAnnotationResizingWidth(annotationIndex),
         minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
         inlineEditable: true,
         groupType: DecisionTableColumnType.Annotation,
@@ -289,7 +203,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       })
     );
 
-    const inputSectionWidth = inputsResizingWidths.reduce((acc, { value }) => acc + value + 1, 0) - 1; // 2px for left/right borders of 1px
+    const inputSectionWidth = 200; //FIXME: Tiago -> Actually calcualte this.
     const inputSection = {
       groupType: DecisionTableColumnType.InputClause,
       id: "Inputs",
@@ -300,13 +214,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       isRowIndexColumn: false,
       columns: inputColumns,
       width: inputSectionWidth,
-      resizingWidth: {
-        value: inputSectionWidth,
-        isPivoting: false,
-      },
     };
 
-    const outputSectionWidth = outputsResizingWidths.reduce((acc, { value }) => acc + value + 1, 0) - 1; // 2px for left/right borders of 1px
+    const outputSectionWidth = 200; //FIXME: Tiago -> Actually calcualte this.
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
@@ -318,13 +228,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       columns: outputColumns,
       appendColumnsOnChildren: true,
       width: outputSectionWidth,
-      resizingWidth: {
-        value: outputSectionWidth,
-        isPivoting: false,
-      },
     };
 
-    const annotationSectionWidth = annotationsResizingWidths.reduce((acc, { value }) => acc + value + 1, 0) - 1; // 2px for left/right borders of 1px
+    const annotationSectionWidth = 200; //FIXME: Tiago -> Actually calcualte this.
     const annotationSection = {
       groupType: DecisionTableColumnType.Annotation,
       id: "Annotations",
@@ -336,15 +242,10 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       isRowIndexColumn: false,
       dataType: undefined as any,
       width: annotationSectionWidth,
-      resizingWidth: {
-        value: annotationSectionWidth,
-        isPivoting: false,
-      },
     };
 
     return [inputSection, outputSection, annotationSection];
   }, [
-    annotationsResizingWidths,
     decisionNodeId,
     decisionTable.annotations,
     decisionTable.dataType,
@@ -353,14 +254,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     decisionTable.isHeadless,
     decisionTable.name,
     decisionTable.output,
-    inputsResizingWidths,
-    outputsResizingWidths,
     setAnnotationColumnWidth,
-    setAnnotationResizingWidth,
     setInputColumnWidth,
-    setInputResizingWidth,
     setOutputColumnWidth,
-    setOutputResizingWidth,
   ]);
 
   const beeTableRows = useMemo(
@@ -551,36 +447,12 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       switch (groupType) {
         case DecisionTableColumnType.InputClause:
           sectionIndex = args.beforeIndex;
-          setInputsResizingWidths((prev) => {
-            const newResizingWidths = [...(prev ?? [])];
-            newResizingWidths.splice(args.beforeIndex, 0, {
-              value: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-              isPivoting: false,
-            });
-            return newResizingWidths;
-          });
           break;
         case DecisionTableColumnType.OutputClause:
           sectionIndex = args.beforeIndex - (decisionTable.input?.length ?? 0);
-          setOutputsResizingWidths((prev) => {
-            const newResizingWidths = [...(prev ?? [])];
-            newResizingWidths.splice(sectionIndex, 0, {
-              value: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-              isPivoting: false,
-            });
-            return newResizingWidths;
-          });
           break;
         case DecisionTableColumnType.Annotation:
           sectionIndex = args.beforeIndex - (decisionTable.input?.length ?? 0) - (decisionTable.output?.length ?? 0);
-          setAnnotationsResizingWidths((prev) => {
-            const newResizingWidths = [...(prev ?? [])];
-            newResizingWidths.splice(sectionIndex, 0, {
-              value: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-              isPivoting: false,
-            });
-            return newResizingWidths;
-          });
           break;
       }
 

@@ -29,6 +29,7 @@ export interface ResizerProps {
   setWidth: ((width: number | undefined) => void) | undefined;
   resizingWidth: ResizingWidth | undefined;
   setResizingWidth: ((getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void) | undefined;
+  setResizing?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Resizer: React.FunctionComponent<ResizerProps> = ({
@@ -37,21 +38,19 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   setWidth,
   resizingWidth,
   setResizingWidth,
+  setResizing,
 }) => {
-  const id = useMemo(() => {
-    return `uuid-${uuid()}`;
-  }, []);
-
   const minConstraints = useMemo<[number, number]>(() => {
     return [minWidth ?? DEFAULT_MIN_WIDTH, 0];
   }, [minWidth]);
 
   const onResizeStop = useCallback(
     (_, data) => {
+      setResizing?.(false);
       setResizingWidth?.((prev) => ({ value: Math.floor(data.size.width), isPivoting: false }));
       setWidth?.(resizingWidth?.value);
     },
-    [resizingWidth, setResizingWidth, setWidth]
+    [resizingWidth?.value, setResizing, setResizingWidth, setWidth]
   );
 
   const onResize = useCallback(
@@ -64,16 +63,18 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onResizeStart = useCallback(
     (_, data) => {
       setResizingWidth?.(() => ({ value: Math.floor(data.size.width), isPivoting: true }));
+      setResizing?.(true);
     },
-    [setResizingWidth]
+    [setResizing, setResizingWidth]
   );
 
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
+      setResizingWidth?.((prev) => ({ value: minWidth ?? DEFAULT_MIN_WIDTH, isPivoting: false }));
       setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
     },
-    [minWidth, setWidth]
+    [minWidth, setResizingWidth, setWidth]
   );
 
   const style = useMemo(() => {
