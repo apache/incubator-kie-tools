@@ -350,7 +350,7 @@ jobs:
           rm -rf $DEPLOYMENT_DIR
 
           echo "Copy Serverless Logic Web Tools resources to the deployment dir"
-          cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist $DEPLOYMENT_DIR
+          cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools/dist $DEPLOYMENT_DIR
 
           echo "Commit changes and push"
           git add $DEPLOYMENT_DIR
@@ -365,7 +365,7 @@ jobs:
 
       - name: "STAGING: Compress Serverless Logic Web Tools (Ubuntu only)"
         if: runner.os == 'Linux'
-        working-directory: ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox
+        working-directory: ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools
         run: |
           zip -r dist.zip dist/*
 
@@ -387,7 +387,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist.zip
+          asset_path: ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools/dist.zip
           asset_name: STAGING__serverless_logic_web_tools_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 

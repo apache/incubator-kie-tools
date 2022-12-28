@@ -325,7 +325,7 @@ jobs:
           cd serverless-logic-sandbox-deployment
           rm -rf dev
           mkdir dev
-          cp -r ../kie-tools/packages/serverless-logic-sandbox/dist/* dev/
+          cp -r ../kie-tools/packages/serverless-logic-web-tools/dist/* dev/
           git config --global user.email "kietoolsbot@gmail.com"
           git config --global user.name "KIE Tools Bot (kiegroup)"
           today=$(date -I)

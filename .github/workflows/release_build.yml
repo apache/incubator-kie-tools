@@ -1386,7 +1386,7 @@ jobs:
         uses: ./kie-tools/.github/actions/bootstrap
         with:
           working_dir: kie-tools
-          pnpm_filter_string: -F @kie-tools/serverless-logic-sandbox...
+          pnpm_filter_string: -F @kie-tools/serverless-logic-web-tools...
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
@@ -1402,7 +1402,7 @@ jobs:
           shopt -s extglob
           rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0")
           echo "Copy resources"
-          cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist/* .
+          cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools/dist/* .
           echo "Commit changes and push"
           git add .
           git commit -m "Deploy ${{ inputs.tag }}"
