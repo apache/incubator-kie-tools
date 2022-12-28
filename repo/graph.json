@@ -97,7 +97,7 @@
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/unitables" },
-      { "id": "@kie-tools/serverless-logic-sandbox" },
+      { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
@@ -605,28 +605,28 @@
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/openshift", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/openshift", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/text-editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/dashbuilder-viewer-image-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
@@ -864,7 +864,7 @@
     ["@kie-tools/pmml-editor-marshaller", "packages/pmml-editor-marshaller"],
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
-    ["@kie-tools/serverless-logic-sandbox", "packages/serverless-logic-sandbox"],
+    ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
     [
       "@kie-tools/serverless-logic-web-tools-base-builder-image",
       "packages/serverless-logic-web-tools-base-builder-image"

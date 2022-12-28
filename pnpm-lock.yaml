@@ -3613,7 +3613,7 @@ importers:
   packages/root-env:
     specifiers: {}
 
-  packages/serverless-logic-sandbox:
+  packages/serverless-logic-web-tools:
     specifiers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
@@ -3732,7 +3732,7 @@ importers:
       buffer: 6.0.3
       dexie: 3.2.2
       history: 4.10.1
-      jszip: 3.7.1
+      jszip: 3.10.1
       moment: 2.29.4
       monaco-editor: 0.33.0
       openapi-types: 7.2.3
@@ -3741,7 +3741,7 @@ importers:
       react-dropzone: 11.4.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
-      vscode-languageserver-types: 3.16.0
+      vscode-languageserver-types: 3.17.2
       yaml: 2.0.1
     devDependencies:
       "@babel/core": 7.16.12
@@ -3779,8 +3779,8 @@ importers:
       monaco-editor-webpack-plugin: 7.0.1_eodoae2vto4nf5xogfjxixxxnq
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
-      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
-      typescript: 4.5.4
+      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
+      typescript: 4.8.4
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm

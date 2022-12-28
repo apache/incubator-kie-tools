@@ -11,7 +11,7 @@ export default defineConfig({
   reporter: "junit",
   reporterOptions: {
     mochaFile: "../dist-it-tests/junit-report-[hash].xml",
-    testsuitesTitle: "Serverless Logic Sandbox",
+    testsuitesTitle: "Serverless Logic Web Tools",
     testCaseSwitchClassnameAndName: true,
     suiteTitleSeparatedBy: ".",
     useFullSuiteTitle: true,
