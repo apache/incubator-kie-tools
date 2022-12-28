@@ -23,7 +23,6 @@ export const en: BoxedExpressionEditorI18n = {
   builtInAggregator: "Builtin Aggregator",
   choose: "Choose...",
   class: "class",
-  clear: "Clear",
   columnOperations: {
     delete: "Delete",
     insertLeft: "Insert left",

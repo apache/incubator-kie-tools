@@ -23,6 +23,9 @@
 .popover-menu-selector .pf-c-popover__content > .pf-c-button + * {
   padding: 0;
 }
+.popover-menu-selector .pf-c-popover__content {
+  padding-bottom: 16px;
+}
 
 .popover-menu-selector .pf-c-title .selector-menu-title {
   border-bottom: none;
@@ -30,7 +33,8 @@
   color: #4d5258;
   font-weight: 700;
   margin: 0;
-  padding: 8px 14px;
+  padding: 14px 4px 7px 4px;
+  text-align: center;
 }
 
 .popover-menu-selector .pf-c-title .selector-menu-title,

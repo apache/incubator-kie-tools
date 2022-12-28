@@ -106,22 +106,34 @@ export function BeeTableTh<R extends object>({
     [hoverInfo]
   );
 
+  const rowIndex = useMemo(() => {
+    return isLastLevelColumn ? -1 : -2;
+  }, [isLastLevelColumn]);
+
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
+
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
+
+      if (e.button !== 0 && isSelected) {
+        setActiveCell({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+          keepSelection: true,
+        });
+        return;
+      }
+
       const set = e.shiftKey ? setSelectionEnd : setActiveCell;
       set({
         columnIndex,
-        rowIndex: isFocusable ? -1 : -2,
+        rowIndex,
         isEditing: false,
       });
     },
-    [columnIndex, isFocusable, setActiveCell, setSelectionEnd]
-  );
-
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(
-    isLastLevelColumn ? -1 : -2,
-    columnIndex
+    [columnIndex, isSelected, rowIndex, setActiveCell, setSelectionEnd]
   );
 
   useEffect(() => {
@@ -157,6 +169,7 @@ export function BeeTableTh<R extends object>({
       {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && (
         <div
           onMouseDown={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => e.stopPropagation()}
           onClick={onAddColumnButtonClick}
           className={"add-column-button"}
           style={addColumButtonStyle}

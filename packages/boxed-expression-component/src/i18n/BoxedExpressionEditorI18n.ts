@@ -28,7 +28,6 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
     insertRight: string;
   };
   class: string;
-  clear: string;
   context: string;
   contextEntry: string;
   dataType: string;

@@ -242,6 +242,10 @@ export function BeeTable2<R extends object>({
         return;
       }
 
+      if (currentlyOpenContextMenu) {
+        return;
+      }
+
       // ENTER
       if (NavigationKeysUtils.isEnter(key)) {
         e.stopPropagation();
@@ -253,6 +257,7 @@ export function BeeTable2<R extends object>({
           return {
             ...prev,
             isEditing: true,
+            keepSelection: true,
           };
         });
       }

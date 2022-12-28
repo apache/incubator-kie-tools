@@ -132,22 +132,17 @@ export function BeeTableTd<R extends object>({
     [columnIndex, isSelected, rowIndex, setActiveCell, setSelectionEnd]
   );
 
-  useEffect(() => {
-    function onDoubleClick(e: KeyboardEvent) {
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
       e.stopPropagation();
       setActiveCell({
         columnIndex,
         rowIndex,
-        isEditing: true,
+        isEditing: columnIndex > 0, // Not rowIndex column
       });
-    }
-
-    const td = tdRef.current;
-    td?.addEventListener("dblclick", onDoubleClick);
-    return () => {
-      td?.removeEventListener("dblclick", onDoubleClick);
-    };
-  }, [column, columnIndex, row, rowIndex, setActiveCell, setSelectionEnd]);
+    },
+    [columnIndex, rowIndex, setActiveCell]
+  );
 
   const onAddRowButtonClick = useCallback(
     (e: React.MouseEvent) => {
@@ -196,6 +191,7 @@ export function BeeTableTd<R extends object>({
   return (
     <PfReactTable.Td
       onMouseDown={onMouseDown}
+      onDoubleClick={onDoubleClick}
       ref={tdRef}
       tabIndex={-1}
       className={cssClasses}
@@ -231,6 +227,7 @@ export function BeeTableTd<R extends object>({
       {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
         <div
           onMouseDown={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => e.stopPropagation()}
           onClick={onAddRowButtonClick}
           className={"add-row-button"}
           style={addRowButtonStyle}

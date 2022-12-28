@@ -281,7 +281,7 @@ export function ExpressionDefinitionLogicTypeSelector({
                         </div>
                       }
                     >
-                      {"Paste"}
+                      {i18n.terms.paste}
                     </MenuItem>
                   </MenuList>
                 </Menu>
@@ -306,43 +306,40 @@ export function ExpressionDefinitionLogicTypeSelector({
                     </div>
                   }
                 >
-                  {i18n.clear}
+                  {i18n.terms.reset}
+                </MenuItem>
+                <MenuItem
+                  onClick={copyExpression}
+                  icon={
+                    <div style={menuIconContainerStyle}>
+                      <CopyIcon />
+                    </div>
+                  }
+                >
+                  {i18n.terms.copy}
+                </MenuItem>
+                <MenuItem
+                  onClick={cutExpression}
+                  icon={
+                    <div style={menuIconContainerStyle}>
+                      <CutIcon />
+                    </div>
+                  }
+                >
+                  {i18n.terms.cut}
+                </MenuItem>
+                <MenuItem
+                  onClick={pasteExpression}
+                  icon={
+                    <div style={menuIconContainerStyle}>
+                      <PasteIcon />
+                    </div>
+                  }
+                >
+                  {i18n.terms.paste}
                 </MenuItem>
               </MenuList>
             </MenuGroup>
-            <Divider style={{ padding: "16px" }} />
-            <MenuList>
-              <MenuItem
-                onClick={copyExpression}
-                icon={
-                  <div style={menuIconContainerStyle}>
-                    <CopyIcon />
-                  </div>
-                }
-              >
-                {"Copy"}
-              </MenuItem>
-              <MenuItem
-                onClick={cutExpression}
-                icon={
-                  <div style={menuIconContainerStyle}>
-                    <CutIcon />
-                  </div>
-                }
-              >
-                {"Cut"}
-              </MenuItem>
-              <MenuItem
-                onClick={pasteExpression}
-                icon={
-                  <div style={menuIconContainerStyle}>
-                    <PasteIcon />
-                  </div>
-                }
-              >
-                {"Paste"}
-              </MenuItem>
-            </MenuList>
           </Menu>
         </div>
       )}

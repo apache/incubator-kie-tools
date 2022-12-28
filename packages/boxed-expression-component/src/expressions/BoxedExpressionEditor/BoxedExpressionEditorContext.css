@@ -46,17 +46,6 @@
   outline: none;
 }
 
-.boxed-expression-provider .pf-c-menu__group-title {
-  padding: var(--pf-c-menu__group-title--PaddingTop) var(--pf-c-menu__group-title--PaddingRight)
-    var(--pf-c-menu__group-title--PaddingTop) var(--pf-c-menu__group-title--PaddingLeft);
-  font-weight: var(--pf-c-menu__group-title--FontWeight);
-  color: var(--pf-c-menu__group-title--Color);
-}
-
-.boxed-expression-provider .pf-c-menu__item {
-  color: var(--pf-c-menu__item--Color);
-}
-
 .boxed-expression-provider button,
 .boxed-expression-provider input,
 .boxed-expression-provider optgroup,

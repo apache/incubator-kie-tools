@@ -62,10 +62,14 @@ export enum BeeTableSelectionPosition {
   Right = "right",
 }
 
-const neutralCellStatus = { isActive: false, isEditing: false, isSelected: false };
-
 const CLIPBOARD_ROW_SEPARATOR = "\n";
 const CLIPBOARD_COLUMN_SEPARATOR = "\t";
+
+const NEUTRAL_CELL_STATUS = {
+  isActive: false,
+  isEditing: false,
+  isSelected: false,
+};
 
 const CELL_EMPTY_VALUE = ""; // FIXME: Tiago -> This value needs to be parameterized, perhaps. Not all values are strings.
 
@@ -212,6 +216,10 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         navigator.clipboard.writeText(clipboardValue);
       },
       paste: () => {
+        // FIXME: Tiago -> This is currenty very slow, as React 17 state updates are not,
+        //                 batched, causing every pasted cell to trigger an isolated setState.
+        //                 Upgrading to React 18 should fix this slowness.
+
         // FIXME: Tiago -> Add new columns and rows, based on the clipboard's size.
 
         navigator.clipboard.readText().then((clipboardValue) => {
@@ -233,9 +241,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               refs.current
                 ?.get(r)
                 ?.get(c)
-                ?.forEach((e) => {
-                  e.setValue?.(clipboardMatrix[r - startRow]?.[c - startColumn]);
-                });
+                ?.forEach((e) => e.setValue?.(clipboardMatrix[r - startRow]?.[c - startColumn]));
             }
           }
 
@@ -289,16 +295,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       setSelectionEnd: (selectionEnd) => {
         setSelection((prev) => {
           const newSelectionEnd = typeof selectionEnd === "function" ? selectionEnd(prev.selectionEnd) : selectionEnd;
-
-          // Selecting the activeCell
-          if (
-            newSelectionEnd?.columnIndex === prev.selectionStart?.columnIndex &&
-            newSelectionEnd?.rowIndex === prev.selectionStart?.rowIndex
-          ) {
-            return { ...prev, selectionEnd: prev.selectionStart };
-          }
           // Selecting a normall cell from a rowIndex cell
-          else if (prev.selectionEnd?.columnIndex === 0) {
+          if (prev.selectionEnd?.columnIndex === 0) {
             return {
               ...prev,
               selectionEnd: {
@@ -351,18 +349,19 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         return ref;
       },
       unsubscribeToCellStatus: (rowIndex, columnIndex, ref) => {
-        ref.setStatus(neutralCellStatus);
+        ref.setStatus(NEUTRAL_CELL_STATUS);
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
     };
   }, []);
 
   useEffect(() => {
-    if (!selection.selectionStart || !selection.selectionEnd) {
+    if (!selection.active || !selection.selectionStart || !selection.selectionEnd) {
       return;
     }
 
     const currentRefs = refs.current;
+    const active = selection.active;
 
     const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selection);
     for (let r = startRow; r <= endRow; r++) {
@@ -381,22 +380,36 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
         // Select normal cells
         const refs = currentRefs.get(r)?.get(c);
-        refs?.forEach((ref) => {
-          const isActive = c === selection.active?.columnIndex && r === selection.active?.rowIndex;
+        refs?.forEach((ref) =>
           ref.setStatus({
-            isActive,
-            isEditing: isActive ? selection.active?.isEditing ?? false : false,
-            isSelected: selection.selectionStart !== selection.selectionEnd,
+            isActive: false,
+            isEditing: false,
+            isSelected: true,
             selectedPositions: [
               ...(r === startRow ? [BeeTableSelectionPosition.Top] : []),
               ...(r === endRow ? [BeeTableSelectionPosition.Bottom] : []),
               ...(c === startColumn ? [BeeTableSelectionPosition.Left] : []),
               ...(c === endColumn ? [BeeTableSelectionPosition.Right] : []),
             ],
-          });
-        });
+          })
+        );
       }
     }
+
+    // Active cell. Sometimes it is not inside the selection.
+    currentRefs
+      .get(active.rowIndex)
+      ?.get(active.columnIndex)
+      ?.forEach((r) =>
+        r.setStatus({
+          isActive: true,
+          isEditing: active?.isEditing ?? false,
+          isSelected: !(
+            selection.selectionStart?.rowIndex === selection.selectionEnd?.rowIndex &&
+            selection.selectionStart?.columnIndex === selection.selectionEnd?.columnIndex
+          ),
+        })
+      );
 
     // Cleanup
     return () => {
@@ -404,20 +417,23 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         currentRefs
           .get(r)
           ?.get(0)
-          ?.forEach((e) => e.setStatus(neutralCellStatus));
+          ?.forEach((e) => e.setStatus(NEUTRAL_CELL_STATUS));
 
         for (let c = startColumn; c <= endColumn; c++) {
           currentRefs
             .get(-1)
             ?.get(c)
-            ?.forEach((e) => e.setStatus(neutralCellStatus));
+            ?.forEach((e) => e.setStatus(NEUTRAL_CELL_STATUS));
 
           const refs = currentRefs.get(r)?.get(c);
-          refs?.forEach((ref) => {
-            ref.setStatus(neutralCellStatus);
-          });
+          refs?.forEach((ref) => ref.setStatus(NEUTRAL_CELL_STATUS));
         }
       }
+
+      currentRefs
+        .get(active.rowIndex)
+        ?.get(active.columnIndex)
+        ?.forEach((r) => r.setStatus(NEUTRAL_CELL_STATUS));
     };
   }, [selection]);
 
@@ -450,7 +466,7 @@ export function useBeeTableCell(
 ) {
   const { subscribeToCellStatus, unsubscribeToCellStatus } = useBeeTableSelectionDispatch();
 
-  const [status, setStatus] = useState<BeeTableCellStatus>(neutralCellStatus);
+  const [status, setStatus] = useState<BeeTableCellStatus>(NEUTRAL_CELL_STATUS);
 
   useEffect(() => {
     const ref = subscribeToCellStatus(rowIndex, columnIndex, {
