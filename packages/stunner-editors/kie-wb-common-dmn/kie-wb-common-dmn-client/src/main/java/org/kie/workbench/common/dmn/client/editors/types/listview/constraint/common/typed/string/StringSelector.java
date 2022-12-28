@@ -33,7 +33,7 @@ public class StringSelector extends BaseSelector {
 
     @Override
     public void setValue(final String value) {
-        super.setValue(removingDoubleQuote(value));
+        super.setValue(removeDoubleQuotesWrapper(value));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class StringSelector extends BaseSelector {
         return prefix + value + suffix;
     }
 
-    private String removingDoubleQuote(final String value) {
+    private String removeDoubleQuotesWrapper(final String value) {
         if (isEmpty(value)) {
             return "";
         }
