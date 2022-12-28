@@ -30,5 +30,10 @@ public class ErrorPage extends Composite {
 
     @Inject
     @DataField
-    private HTMLDivElement content;
+    private HTMLDivElement errorContent;
+
+    public void setContent(final String message) {
+        errorContent.textContent = message;
+    }
+
 }

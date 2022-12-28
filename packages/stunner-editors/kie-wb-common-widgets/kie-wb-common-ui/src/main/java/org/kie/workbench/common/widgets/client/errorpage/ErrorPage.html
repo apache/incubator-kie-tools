@@ -14,12 +14,11 @@
   ~ limitations under the License.
   -->
 
-<div data-field="content">
-  <div class="blank-slate-pf">
-    <div class="blank-slate-pf-icon">
-      <span class="pficon pficon pficon-warning-triangle-o"></span>
-    </div>
-    <h1>Editor content has not been set.</h1>
-    <p>Something went wrong. An attempt has been made to view the editor before content is set.</p>
+<div class="pf-c-empty-state">
+  <div class="pf-c-empty-state__content">
+    <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+    <h1 class="pf-c-title pf-m-lg">Something went wrong!</h1>
+    <div class="pf-c-empty-state__body">Unfortunately there was an expected error processing your asset.</div>
+    <div class="pf-c-empty-state__body" data-field="errorContent"></div>
   </div>
 </div>

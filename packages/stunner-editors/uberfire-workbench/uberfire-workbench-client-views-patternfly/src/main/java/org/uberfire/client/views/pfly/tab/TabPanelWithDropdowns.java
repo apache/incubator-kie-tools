@@ -183,7 +183,16 @@ public class TabPanelWithDropdowns extends Composite {
 
         registerTabHandlers(tab);
         insertTabAndContent(tab, index);
+        shouldShowTabBar(index);
         resizeTabContent();
+    }
+
+    void shouldShowTabBar(final int index) {
+        if (index > 1) {
+            tabBar.setVisible(true);
+        } else {
+            tabBar.setVisible(false);
+        }
     }
 
     void insertTabAndContent(final TabPanelEntry tab,
