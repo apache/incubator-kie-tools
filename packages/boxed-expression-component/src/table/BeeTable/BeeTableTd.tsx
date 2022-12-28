@@ -86,6 +86,20 @@ export function BeeTableTd<R extends object>({
 
   useEffect(() => {
     function onEnter(e: MouseEvent) {
+      e.stopPropagation();
+
+      // User is pressing the left mouse button. Meaning user is dragging.
+      // Not a final solution, as user can start dragging from anywhere.
+      // Ideally, we want users to change selection only when the dragging originates
+      // some other cell within the table.
+      if (e.buttons === 1 && e.button === 0) {
+        setSelectionEnd({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+        });
+      }
+
       setHoverInfo((prev) => getHoverInfo(e, td!));
     }
 
@@ -106,7 +120,7 @@ export function BeeTableTd<R extends object>({
       td?.removeEventListener("mousemove", onMove);
       td?.removeEventListener("mouseenter", onEnter);
     };
-  }, [column, columnIndex, row, rowIndex, setActiveCell]);
+  }, [column, columnIndex, row, rowIndex, setActiveCell, setSelectionEnd]);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {

@@ -51,6 +51,7 @@
 .literal-expression .literal-expression-body {
   width: 100%;
   border: 1px solid var(--pf-global--palette--black-300);
+  position: relative;
 }
 
 .literal-expression .literal-expression-body textarea {

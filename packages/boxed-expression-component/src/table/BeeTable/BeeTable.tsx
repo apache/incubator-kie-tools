@@ -435,6 +435,8 @@ export function BeeTable2<R extends object>({
       if (!e.shiftKey && e.metaKey && e.key === "a") {
         e.stopPropagation();
         e.preventDefault();
+
+        // Maybe keep activeCell where it is?
         setActiveCell({
           rowIndex: 0,
           columnIndex: 1,

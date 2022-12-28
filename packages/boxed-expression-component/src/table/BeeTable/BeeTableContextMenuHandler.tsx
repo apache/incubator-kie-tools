@@ -246,9 +246,8 @@ export function BeeTableContextMenuHandler({
             onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
           >
             {operationGroups.map(({ group, items }) => (
-              <>
+              <React.Fragment key={group}>
                 <MenuGroup
-                  key={group}
                   label={group}
                   className={
                     items.every((operation) => !allowedOperations.includes(operation.type))
@@ -261,7 +260,7 @@ export function BeeTableContextMenuHandler({
                       <MenuItem
                         icon={operationIcon(operation.type)}
                         data-ouia-component-id={"expression-table-context-menu-" + operation.name}
-                        key={operation.type}
+                        key={operation.type + group}
                         itemId={operation.type}
                         isDisabled={!allowedOperations.includes(operation.type)}
                       >
@@ -271,9 +270,9 @@ export function BeeTableContextMenuHandler({
                   </MenuList>
                 </MenuGroup>
                 {items.some((operation) => allowedOperations.includes(operation.type)) && (
-                  <Divider style={{ padding: "16px" }} />
+                  <Divider key={"divider-" + group} style={{ padding: "16px" }} />
                 )}
-              </>
+              </React.Fragment>
             ))}
 
             <MenuGroup label={"SELECTION"}>

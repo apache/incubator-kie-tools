@@ -58,6 +58,10 @@ export function BeeTableTh<R extends object>({
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
+  const rowIndex = useMemo(() => {
+    return isLastLevelColumn ? -1 : -2;
+  }, [isLastLevelColumn]);
+
   const onAddColumnButtonClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -65,7 +69,6 @@ export function BeeTableTh<R extends object>({
       if (!hoverInfo.isHovered) {
         return;
       }
-      e.stopPropagation();
 
       // This index doesn't take into account the row index column, so we actually need to subtract 1.
       onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex, groupType: groupType });
@@ -77,10 +80,26 @@ export function BeeTableTh<R extends object>({
     [columnIndex, groupType, hoverInfo, onColumnAdded]
   );
 
-  const onMouseEnter = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
-    e.stopPropagation();
-    return setHoverInfo(getHoverInfo(e, thRef.current!));
-  }, []);
+  const onMouseEnter = useCallback(
+    (e: React.MouseEvent<HTMLTableCellElement>) => {
+      e.stopPropagation();
+
+      // User is pressing the left mouse button. Meaning user is dragging.
+      // Not a final solution, as user can start dragging from anywhere.
+      // Ideally, we want users to change selection only when the dragging originates
+      // some other cell within the table.
+      if (e.buttons === 1 && e.button === 0) {
+        setSelectionEnd({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+        });
+      }
+
+      return setHoverInfo(getHoverInfo(e, thRef.current!));
+    },
+    [columnIndex, rowIndex, setSelectionEnd]
+  );
 
   const onMouseLeave = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
     e.stopPropagation();
@@ -105,10 +124,6 @@ export function BeeTableTh<R extends object>({
           },
     [hoverInfo]
   );
-
-  const rowIndex = useMemo(() => {
-    return isLastLevelColumn ? -1 : -2;
-  }, [isLastLevelColumn]);
 
   const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
 
