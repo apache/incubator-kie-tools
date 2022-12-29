@@ -119,13 +119,11 @@ export function BeeTableHeader<R extends object>({
 
       return (
         <BeeTableTh
+          key={columnKey}
           column={column}
           columnIndex={0}
           thProps={column.getHeaderProps()}
           className={classNames}
-          key={columnKey}
-          isFocusable={true}
-          xPosition={0}
           groupType={column.groupType}
           isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
         >
@@ -138,14 +136,8 @@ export function BeeTableHeader<R extends object>({
     [getColumnKey]
   );
 
-  const renderCellInfoLabel = useCallback<
-    (
-      column: ReactTable.ColumnInstance<R>,
-      columnIndex: number,
-      onAnnotationCellToggle?: (isReadMode: boolean) => void
-    ) => JSX.Element
-  >(
-    (column, columnIndex, onAnnotationCellToggle) => {
+  const renderCellInfoLabel = useCallback<(column: ReactTable.ColumnInstance<R>, columnIndex: number) => JSX.Element>(
+    (column, columnIndex) => {
       if (column.inlineEditable) {
         return (
           <InlineEditableTextInput
@@ -153,7 +145,6 @@ export function BeeTableHeader<R extends object>({
             onTextChange={(value) => {
               onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
             }}
-            onToggle={onAnnotationCellToggle}
           />
         );
       }
@@ -163,15 +154,9 @@ export function BeeTableHeader<R extends object>({
   );
 
   const renderHeaderCellInfo = useCallback(
-    (
-      column: ReactTable.ColumnInstance<R>,
-      columnIndex: number,
-      onAnnotationCellToggle?: (isReadMode: boolean) => void
-    ) => (
+    (column: ReactTable.ColumnInstance<R>, columnIndex: number) => (
       <div className="header-cell-info" data-ouia-component-type="expression-column-header-cell-info">
-        {column.headerCellElement
-          ? column.headerCellElement
-          : renderCellInfoLabel(column, columnIndex, onAnnotationCellToggle)}
+        {column.headerCellElement ? column.headerCellElement : renderCellInfoLabel(column, columnIndex)}
         {column.dataType ? <p className="pf-u-text-truncate data-type">({column.dataType})</p> : null}
       </div>
     ),
@@ -185,10 +170,8 @@ export function BeeTableHeader<R extends object>({
     [beeGwtService]
   );
 
-  const renderColumn = useCallback<
-    (column: ReactTable.ColumnInstance<R>, columnIndex: number, xPosition?: number) => JSX.Element
-  >(
-    (column, columnIndex, xPosition) =>
+  const renderColumn = useCallback<(column: ReactTable.ColumnInstance<R>, columnIndex: number) => JSX.Element>(
+    (column, columnIndex) =>
       column.isRowIndexColumn ? (
         renderRowIndexColumn(column)
       ) : (
@@ -203,7 +186,6 @@ export function BeeTableHeader<R extends object>({
           reactTableInstance={reactTableInstance}
           column={column}
           columnIndex={columnIndex}
-          xPosition={xPosition ?? columnIndex}
           onColumnAdded={onColumnAdded}
         />
       ),
@@ -225,13 +207,10 @@ export function BeeTableHeader<R extends object>({
       (skipLastHeaderGroup ? _.dropRight(reactTableInstance.headerGroups) : reactTableInstance.headerGroups).map(
         (headerGroup) => {
           const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
-          let xPosition = 0;
           return (
             <PfReactTable.Tr key={key} {...props}>
               {headerGroup.headers.map((column, columnIndex) => {
-                const currentXPosition = xPosition;
-                xPosition += column.columns?.length ?? 1;
-                return renderColumn(column, columnIndex, currentXPosition);
+                return renderColumn(column, columnIndex);
               })}
             </PfReactTable.Tr>
           );
@@ -242,9 +221,9 @@ export function BeeTableHeader<R extends object>({
 
   const renderAtLevelInHeaderGroups = useCallback(
     (level: number) => (
-      <PfReactTable.Tr style={{ display: "flex" }}>
+      <PfReactTable.Tr>
         {_.nth(reactTableInstance.headerGroups, level)!.headers.map((column, columnIndex) =>
-          renderColumn(column, columnIndex, columnIndex)
+          renderColumn(column, columnIndex)
         )}
       </PfReactTable.Tr>
     ),

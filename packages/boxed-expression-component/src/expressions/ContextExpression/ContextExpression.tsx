@@ -301,21 +301,13 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const beeTableAdditionalRow = useMemo(() => {
     return contextExpression.renderResult ?? true
       ? [
-          <div key={"context-result"} style={{ width: entryInfoResizingWidth.value }} className="context-result">
+          <div key={"context-result"} className="context-result">
             {`<result>`}
-            <Resizer
-              minWidth={CONTEXT_ENTRY_INFO_MIN_WIDTH}
-              width={contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH}
-              setWidth={setEntryInfoWidth}
-              resizingWidth={entryInfoResizingWidth}
-              setResizingWidth={setEntryInfoResizingWidth}
-            ></Resizer>
           </div>,
-
           <ResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
         ]
       : undefined;
-  }, [contextExpression, entryInfoResizingWidth, setEntryInfoWidth]);
+  }, [contextExpression]);
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {

@@ -205,7 +205,6 @@
 /** Table Body rules */
 
 .expression-container .table-component table tr {
-  display: flex;
   border: 0;
 }
 
@@ -228,7 +227,7 @@
   min-width: 60px;
 }
 
-.expression-container .table-component table tbody .table-row .empty-cell {
+.expression-container .table-component table tbody tr .empty-cell {
   display: inline-block;
   box-sizing: border-box;
   min-width: 60px;
@@ -295,7 +294,11 @@
 
 /** Additional row section */
 
-.expression-container .table-component table tbody .table-row .additional-row-content {
+.expression-container .table-component table tbody .additional-row {
+  display: flex;
+}
+
+.expression-container .table-component table tbody tr .additional-row-content {
   display: inline-block;
   box-sizing: border-box;
 }

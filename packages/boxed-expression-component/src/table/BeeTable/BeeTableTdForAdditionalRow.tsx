@@ -18,6 +18,8 @@ import * as PfReactTable from "@patternfly/react-table";
 import * as React from "react";
 import { useRef } from "react";
 import { BeeTableTdProps } from "../../api";
+import { Resizer } from "../../resizing/Resizer";
+import { useBeeTableColumnWidth } from "./BeeTableColumnResizingWidthsContextProvider";
 
 export interface BeeTableTdForAdditionalRowProps<R extends object> extends BeeTableTdProps<R> {
   children?: React.ReactElement;
@@ -28,23 +30,16 @@ export interface BeeTableTdForAdditionalRowProps<R extends object> extends BeeTa
 export function BeeTableTdForAdditionalRow<R extends object>({
   children,
   isEmptyCell,
-  rowIndex,
-  xPosition,
-  yPosition,
+  columnIndex,
+  column,
   isLastColumn,
 }: BeeTableTdForAdditionalRowProps<R>) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
+  const { resizingWidth, setResizingWidth } = useBeeTableColumnWidth(columnIndex, column.width);
+
   return isEmptyCell ? (
-    <PfReactTable.Td
-      ref={tdRef}
-      role="cell"
-      className="empty-cell"
-      tabIndex={-1}
-      data-xposition={xPosition}
-      data-yposition={yPosition}
-      style={{ flexGrow: isLastColumn ? "1" : "0" }}
-    >
+    <PfReactTable.Td ref={tdRef} role="cell" className="empty-cell">
       <br />
     </PfReactTable.Td>
   ) : (
@@ -53,11 +48,17 @@ export function BeeTableTdForAdditionalRow<R extends object>({
       role="cell"
       className="additional-row-content"
       tabIndex={-1}
-      data-xposition={xPosition}
-      data-yposition={yPosition}
       style={{ flexGrow: isLastColumn ? "1" : "0" }}
     >
-      {children}
+      <div style={{ width: resizingWidth?.value }}>{children}</div>
+
+      <Resizer
+        minWidth={column.minWidth}
+        width={column.width}
+        setWidth={column.setWidth}
+        resizingWidth={resizingWidth}
+        setResizingWidth={setResizingWidth}
+      />
     </PfReactTable.Td>
   );
 }

@@ -119,17 +119,11 @@ export type BeeTableOperationConfig =
  * Interface to be inherited from the table cell components (td, th)
  */
 export interface BeeTableThProps<R extends object> {
-  /** the x position of the cell. Colspan are counted */
-  xPosition?: number;
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
 }
 
 export interface BeeTableTdProps<R extends object> {
-  /** the x position of the cell. Colspan are counted */
-  xPosition?: number;
-  /** the y position of the cell */
-  yPosition?: number;
   rowIndex: number;
   row: ReactTable.Row<R>;
   columnIndex: number;

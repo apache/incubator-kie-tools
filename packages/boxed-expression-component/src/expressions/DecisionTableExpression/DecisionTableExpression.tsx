@@ -203,7 +203,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       })
     );
 
-    const inputSectionWidth = 200; //FIXME: Tiago -> Actually calcualte this.
     const inputSection = {
       groupType: DecisionTableColumnType.InputClause,
       id: "Inputs",
@@ -213,10 +212,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       cssClasses: "decision-table--input",
       isRowIndexColumn: false,
       columns: inputColumns,
-      width: inputSectionWidth,
+      width: undefined,
     };
 
-    const outputSectionWidth = 200; //FIXME: Tiago -> Actually calcualte this.
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
@@ -227,10 +225,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       isRowIndexColumn: false,
       columns: outputColumns,
       appendColumnsOnChildren: true,
-      width: outputSectionWidth,
+      width: undefined,
     };
 
-    const annotationSectionWidth = 200; //FIXME: Tiago -> Actually calcualte this.
     const annotationSection = {
       groupType: DecisionTableColumnType.Annotation,
       id: "Annotations",
@@ -241,7 +238,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       inlineEditable: true,
       isRowIndexColumn: false,
       dataType: undefined as any,
-      width: annotationSectionWidth,
+      width: undefined,
     };
 
     return [inputSection, outputSection, annotationSection];

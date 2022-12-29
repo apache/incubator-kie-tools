@@ -45,7 +45,7 @@ declare module "react-table" {
     groupType?: string;
     /** Used to indicate that column operation should be performed directly on column's children */
     appendColumnsOnChildren?: boolean;
-    /** Column additive css classes - appended as passed */
+    /** Column css classes - appended as passed */
     cssClasses?: string;
     /** Column label */
     label: string;

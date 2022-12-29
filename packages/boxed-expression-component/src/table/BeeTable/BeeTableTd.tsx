@@ -49,7 +49,6 @@ export function BeeTableTd<R extends object>({
   rowIndex,
   shouldUseCellDelegate,
   onRowAdded,
-  yPosition,
 }: BeeTableTdProps2<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -210,8 +209,6 @@ export function BeeTableTd<R extends object>({
       tabIndex={-1}
       className={cssClasses}
       data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
-      data-xposition={columnIndex}
-      data-yposition={yPosition ?? rowIndex}
       style={style}
     >
       {column.isRowIndexColumn ? (

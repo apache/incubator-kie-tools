@@ -26,7 +26,6 @@ export interface BeeTableThProps2<R extends object> extends BeeTableThProps<R> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   className: string;
   thProps: Partial<PfReactTable.ThProps>;
-  isFocusable: boolean;
   onClick?: React.MouseEventHandler;
   isLastLevelColumn: boolean;
 }
@@ -45,11 +44,8 @@ export function BeeTableTh<R extends object>({
   children,
   className,
   thProps,
-  isFocusable = true,
   onClick,
   columnIndex,
-  column,
-  xPosition,
   groupType,
   isLastLevelColumn,
 }: React.PropsWithChildren<BeeTableThProps2<R>>) {
@@ -163,13 +159,14 @@ export function BeeTableTh<R extends object>({
         ${isActive ? "active" : ""}
         ${isEditing ? "editing" : ""}
         ${isSelected ? "selected" : ""}
-        ${selectedPositions?.join(" ")}
+        ${selectedPositions?.join(" ") ?? ""}
       `;
   }, [className, isActive, isEditing, isSelected, selectedPositions]);
 
   return (
     <PfReactTable.Th
       {...thProps}
+      style={{ ...thProps.style, display: "table-cell" }}
       ref={thRef}
       onMouseDown={onMouseDown}
       onClick={onClick}
@@ -177,8 +174,7 @@ export function BeeTableTh<R extends object>({
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       className={cssClasses}
-      tabIndex={isFocusable ? -1 : undefined}
-      data-xposition={xPosition}
+      tabIndex={-1}
     >
       {children}
       {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && (

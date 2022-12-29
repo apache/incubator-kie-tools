@@ -103,7 +103,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
         </div>
       )}
 
-      {resizingWidth && (
+      {width && resizingWidth && (
         <Resizable
           width={resizingWidth?.value}
           height={0}

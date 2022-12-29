@@ -36,12 +36,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   onHeaderClick: (columnKey: string) => () => void;
   reactTableInstance: ReactTable.TableInstance<R>;
-  xPosition: number;
-  renderHeaderCellInfo: (
-    column: ReactTable.ColumnInstance<R>,
-    columnIndex: number,
-    onAnnotationCellToggle?: (isReadMode: boolean) => void
-  ) => React.ReactElement;
+  renderHeaderCellInfo: (column: ReactTable.ColumnInstance<R>, columnIndex: number) => React.ReactElement;
 }
 
 export function BeeTableThResizable<R extends object>({
@@ -53,60 +48,20 @@ export function BeeTableThResizable<R extends object>({
   onExpressionHeaderUpdated,
   onHeaderClick,
   renderHeaderCellInfo,
-  xPosition,
   onColumnAdded,
 }: BeeTableThResizableProps<R>) {
-  const thProps = useMemo(
-    () => ({
-      ...column.getHeaderProps(),
-      style: {
-        position: "relative" as const,
-        ...(column.width ? {} : { flexGrow: 1 }),
-      },
-    }),
-    [column]
-  );
-
   const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
-
-  // FIXME: Tiago -> Specific logic
-  const isFocusable = useMemo(
-    () => /^(_\w{8}-(\w{4}-){3}\w{12}|parameters|functionDefinition)$/.test(columnKey),
-    [columnKey]
-  );
-
-  // FIXME: Tiago -> Specific logic
-  const [isAnnotationCellEditMode, setIsAnnotationCellEditMode] = useState(false);
 
   const cssClasses = useMemo(() => {
     const cssClasses = [columnKey, "data-header-cell"];
     if (!column.dataType) {
       cssClasses.push("no-clickable-cell");
     }
-    const isColspan = (column.columns?.length ?? 0) > 0 || false;
-    if (isColspan) {
-      cssClasses.push("colspan-header");
-    }
-    if (column.placeholderOf?.cssClasses && column.placeholderOf?.groupType) {
-      cssClasses.push("colspan-header");
-      cssClasses.push(column.placeholderOf.cssClasses);
-      cssClasses.push(column.placeholderOf.groupType);
-    }
-    cssClasses.push(column.groupType || "");
-    cssClasses.push(column.cssClasses || "");
-    cssClasses.push(isAnnotationCellEditMode ? "focused" : "");
-    return cssClasses.join(" ");
-  }, [column, columnKey, isAnnotationCellEditMode]);
 
-  /**
-   * Callback called when the annotation cell toggle edit/read mode.
-   *
-   * @param isReadMode true if is read mode, false otherwise
-   */
-  // FIXME: Tiago -> DecisionTable-specific logic
-  const onAnnotationCellToggle = useCallback((isReadMode: boolean) => {
-    setIsAnnotationCellEditMode(!isReadMode);
-  }, []);
+    cssClasses.push(column.groupType ?? "");
+    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Tiago -> Breaking decision tables because of positioning of rowSpan=2 column headers
+    return cssClasses.join(" ");
+  }, [column, columnKey]);
 
   const onClick = useMemo(() => {
     return onHeaderClick(columnKey);
@@ -126,11 +81,9 @@ export function BeeTableThResizable<R extends object>({
   return (
     <BeeTableTh<R>
       className={cssClasses}
-      thProps={thProps}
-      isFocusable={isFocusable}
+      thProps={{ ...column.getHeaderProps(), style: { position: "relative" } }}
       onClick={onClick}
       columnIndex={columnIndex}
-      xPosition={xPosition}
       onColumnAdded={onColumnAdded}
       groupType={column.groupType}
       isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
@@ -139,7 +92,7 @@ export function BeeTableThResizable<R extends object>({
       <div
         className="header-cell"
         data-ouia-component-type="expression-column-header"
-        style={{ width: resizingWidth?.value }}
+        style={{ width: column.width ? resizingWidth?.value : undefined }}
       >
         {column.dataType && editableHeader ? (
           <ExpressionDefinitionHeaderMenu
@@ -153,7 +106,7 @@ export function BeeTableThResizable<R extends object>({
             {renderHeaderCellInfo(column, columnIndex)}
           </ExpressionDefinitionHeaderMenu>
         ) : (
-          renderHeaderCellInfo(column, columnIndex, onAnnotationCellToggle)
+          renderHeaderCellInfo(column, columnIndex)
         )}
       </div>
       <Resizer

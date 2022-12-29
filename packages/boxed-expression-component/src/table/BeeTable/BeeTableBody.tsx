@@ -84,7 +84,7 @@ export function BeeTableBody<R extends object>({
 
       const renderTr = (args: { shouldUseCellDelegate: boolean }) => (
         <PfReactTable.Tr
-          className={`${rowKey} table-row`}
+          className={rowKey}
           {...row.getRowProps()}
           ouiaId={"expression-row-" + rowIndex} // FIXME: Tiago -> Bad name.
           key={rowKey}
@@ -106,7 +106,6 @@ export function BeeTableBody<R extends object>({
                 rowIndex={rowIndex}
                 shouldUseCellDelegate={args.shouldUseCellDelegate}
                 column={reactTableInstance.allColumns[columnIndex]}
-                yPosition={headerRowsCount + rowIndex}
                 onRowAdded={onRowAdded}
                 isActive={false}
               />
@@ -119,14 +118,14 @@ export function BeeTableBody<R extends object>({
       return (
         <React.Fragment key={rowKey}>
           {RowDelegate ? (
-            <RowDelegate>{renderTr({ shouldUseCellDelegate: true })}</RowDelegate> //
+            <RowDelegate>{renderTr({ shouldUseCellDelegate: true })}</RowDelegate>
           ) : (
             renderTr({ shouldUseCellDelegate: false })
           )}
         </React.Fragment>
       );
     },
-    [reactTableInstance, getRowKey, onTrClick, getColumnKey, headerRowsCount, onRowAdded]
+    [reactTableInstance, getRowKey, onTrClick, getColumnKey, onRowAdded]
   );
 
   const additionalRowIndex = useMemo(() => {
@@ -143,32 +142,31 @@ export function BeeTableBody<R extends object>({
       })}
 
       {additionalRow && (
-        <PfReactTable.Tr className="table-row additive-row">
+        <PfReactTable.Tr className={"additional-row"}>
           <BeeTableTdForAdditionalRow
             row={undefined as any}
+            rowIndex={additionalRowIndex}
+            columnIndex={0}
             column={reactTableInstance.allColumns[0]}
             isLastColumn={false}
             isEmptyCell={true}
-            rowIndex={additionalRowIndex}
-            columnIndex={0}
-            xPosition={0}
-            yPosition={headerRowsCount + additionalRowIndex}
           />
-          {additionalRow.map((elem, elemIndex) => (
-            <BeeTableTdForAdditionalRow
-              row={undefined as any}
-              column={reactTableInstance.allColumns[0]}
-              isLastColumn={elemIndex === additionalRow.length - 1}
-              key={elemIndex}
-              columnIndex={elemIndex}
-              isEmptyCell={false}
-              rowIndex={additionalRowIndex}
-              xPosition={elemIndex + 1}
-              yPosition={headerRowsCount + additionalRowIndex}
-            >
-              {elem}
-            </BeeTableTdForAdditionalRow>
-          ))}
+          {additionalRow.map((elem, elemIndex) => {
+            const columnIndex = elemIndex + 1;
+            return (
+              <BeeTableTdForAdditionalRow
+                key={columnIndex}
+                row={undefined as any}
+                rowIndex={additionalRowIndex}
+                column={reactTableInstance.allColumns[columnIndex]}
+                columnIndex={columnIndex}
+                isLastColumn={elemIndex === additionalRow.length - 1}
+                isEmptyCell={false}
+              >
+                {elem}
+              </BeeTableTdForAdditionalRow>
+            );
+          })}
         </PfReactTable.Tr>
       )}
     </PfReactTable.Tbody>
