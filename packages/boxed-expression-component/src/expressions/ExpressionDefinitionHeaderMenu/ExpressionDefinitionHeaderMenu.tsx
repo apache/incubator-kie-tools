@@ -162,7 +162,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
       position={position}
       distance={25}
       body={
-        <div className="edit-expression-menu" onKeyDown={onKeyDown}>
+        <div className="edit-expression-menu" onKeyDown={onKeyDown} onMouseDown={(e) => e.stopPropagation()}>
           <div className="expression-name">
             <label>{nameField}</label>
             <input

@@ -159,6 +159,17 @@
   z-index: 5;
 }
 
+/* FIXME: Tiago -> Possible workaround. */
+/* .expression-container .table-component table thead th:after,
+.expression-container .table-component table tbody td:after {
+  pointer-events: none;
+}
+
+.expression-container .table-component table thead th *,
+.expression-container .table-component table tbody td * {
+  pointer-events: auto;
+} */
+
 .expression-container .table-component table tbody td.selected:not(.editing):not(:first-child):after {
   background-color: rgba(182, 210, 251, 0.312);
 }
