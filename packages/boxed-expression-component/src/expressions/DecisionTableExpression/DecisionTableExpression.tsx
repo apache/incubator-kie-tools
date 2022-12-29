@@ -363,13 +363,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [setExpression]
   );
 
-  const onRowUpdates = useCallback(
-    ({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {},
-    [
-      /** */
-    ]
-  );
-
   const onHitPolicySelect = useCallback(
     (hitPolicy: DecisionTableExpressionDefinitionHitPolicy) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
@@ -525,7 +518,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}
         onCellUpdates={onCellUpdates}
-        onRowUpdates={onRowUpdates}
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}
         onColumnAdded={onColumnAdded}

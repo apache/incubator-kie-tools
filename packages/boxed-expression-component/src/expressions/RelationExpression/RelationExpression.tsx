@@ -193,10 +193,6 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [rows, columns]
   );
 
-  const onRowUpdates = useCallback(({ rows, columns }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
-    // Do nothing for now
-  }, []);
-
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       setExpression((prev: RelationExpressionDefinition) => {
@@ -299,7 +295,6 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         rows={beeTableRows}
         onCellUpdates={onCellUpdates}
         onColumnUpdates={onColumnUpdates}
-        onRowUpdates={onRowUpdates}
         operationConfig={beeTableOperationConfig}
         onRowAdded={onRowAdded}
         onColumnAdded={onColumnAdded}

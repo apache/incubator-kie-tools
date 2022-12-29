@@ -53,8 +53,6 @@ export interface BeeTableProps<R extends object> {
   onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
   /** Function to be executed when columns are modified */
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
-  /** Function to be executed when rows are modified */
-  onRowUpdates?: (args: BeeTableRowsUpdateArgs<R>) => void;
   /** Custom configuration for the table context menu */
   operationConfig?: BeeTableOperationConfig;
   /** The way in which the header will be rendered */

@@ -121,6 +121,9 @@
 }
 
 /* SELECTION */
+.expression-container .table-component table thead th.editing {
+  box-shadow: inset 0px 0px 20px -5px darkgrey;
+}
 .expression-container .table-component table tbody td.editing {
   box-shadow: 0px 0px 20px -5px darkgrey;
 }
@@ -147,22 +150,23 @@
   border-bottom: 1px solid var(--pf-global--palette--black-400);
 }
 
-.expression-container .table-component table tbody td.selected {
-  background-color: #f0f6ff;
-}
-.expression-container .table-component table thead th.selected.top:after,
-.expression-container .table-component table thead th.selected.bottom:after,
-.expression-container .table-component table thead th.selected.left:after,
-.expression-container .table-component table thead th.selected.right:after,
-.expression-container .table-component table tbody td.selected.top:after,
-.expression-container .table-component table tbody td.selected.bottom:after,
-.expression-container .table-component table tbody td.selected.left:after,
-.expression-container .table-component table tbody td.selected.right:after {
+.expression-container .table-component table thead th.selected:not(.editing):after,
+.expression-container .table-component table tbody td.selected:not(.editing):after {
   position: absolute;
   content: "";
   width: calc(100% + 2px);
   height: calc(100% + 2px);
   z-index: 5;
+}
+
+.expression-container .table-component table tbody td.selected:not(.editing):not(:first-child):after {
+  background-color: rgba(182, 210, 251, 0.312);
+}
+
+.expression-container .table-component table thead th.selected.middle:after,
+.expression-container .table-component table tbody td.selected.middle:after {
+  top: -1px;
+  left: -1px;
 }
 .expression-container .table-component table thead th.selected.left:after,
 .expression-container .table-component table tbody td.selected.left:after {
@@ -197,7 +201,7 @@
   content: "";
   width: calc(100% + 4px) !important;
   height: calc(100% + 4px) !important;
-  z-index: 5;
+  z-index: 6 !important;
   border: 3px solid #438cb1 !important;
   border-radius: 3px !important;
 }

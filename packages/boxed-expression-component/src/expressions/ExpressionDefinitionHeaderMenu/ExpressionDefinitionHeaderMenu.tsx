@@ -160,7 +160,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
       onHide={onHide}
       onShown={onShown}
       position={position}
-      distance={30}
+      distance={25}
       body={
         <div className="edit-expression-menu" onKeyDown={onKeyDown}>
           <div className="expression-name">

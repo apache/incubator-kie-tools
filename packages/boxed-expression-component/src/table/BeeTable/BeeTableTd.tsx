@@ -73,7 +73,7 @@ export function BeeTableTd<R extends object>({
       ${isActive ? "active" : ""}
       ${isEditing ? "editing" : ""} 
       ${isSelected ? "selected" : ""} 
-      ${selectedPositions?.join(" ")}
+      ${(selectedPositions?.length ?? 0) <= 0 ? "middle" : selectedPositions?.join(" ")}
     `;
   }, [cssClass, isActive, isEditing, isSelected, selectedPositions]);
 

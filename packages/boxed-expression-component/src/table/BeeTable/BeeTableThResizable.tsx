@@ -96,7 +96,7 @@ export function BeeTableThResizable<R extends object>({
       >
         {column.dataType && isEditableHeader ? (
           <ExpressionDefinitionHeaderMenu
-            isPopoverOpen={isActive || isEditing}
+            isPopoverOpen={isEditing}
             position={PopoverPosition.bottom}
             title={columnLabel}
             selectedExpressionName={column.label}

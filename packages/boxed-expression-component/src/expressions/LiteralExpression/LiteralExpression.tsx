@@ -30,8 +30,7 @@ import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../
 
 export const LITERAL_EXPRESSION_MIN_WIDTH = 250;
 
-// 14px for padding, 2px for border
-export const LITERAL_EXPRESSION_EXTRA_WIDTH = 14; // 14px for margin, 2px for border
+export const LITERAL_EXPRESSION_EXTRA_WIDTH = 14; // 14px for clear margin
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
   const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
@@ -76,15 +75,15 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     );
   }, [nestedExpressionContainer]);
 
-  const resizingWidthsDispatch = useResizingWidthsDispatch();
+  const { updateResizingWidth } = useResizingWidthsDispatch();
   const { resizingWidths } = useResizingWidths();
 
   const setResizingWidth = useCallback(
     (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
       // FIXME: Tiago -> id optional
-      resizingWidthsDispatch.updateResizingWidth(literalExpression.id!, getNewResizingWidth);
+      updateResizingWidth(literalExpression.id!, getNewResizingWidth);
     },
-    [literalExpression.id, resizingWidthsDispatch]
+    [literalExpression.id, updateResizingWidth]
   );
 
   const resizingWidth = useMemo<ResizingWidth>(() => {

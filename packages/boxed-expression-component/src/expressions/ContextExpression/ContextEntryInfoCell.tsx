@@ -63,7 +63,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   return (
     <div className="context-entry-info-cell">
       <ContextEntryInfo
-        isPopoverOpen={isActive || isEditing}
+        isPopoverOpen={isEditing}
         id={entryInfo.id}
         name={entryInfo.name}
         dataType={entryInfo.dataType}

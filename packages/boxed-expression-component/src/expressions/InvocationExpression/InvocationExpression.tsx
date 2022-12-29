@@ -135,10 +135,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [invocation.isHeadless]
   );
 
-  const onRowUpdates = useCallback(({ rows }: BeeTableRowsUpdateArgs<ROWTYPE>) => {
-    //
-  }, []);
-
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.original.entryInfo.id;
   }, []);
@@ -210,7 +206,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}
-        onRowUpdates={onRowUpdates}
         operationConfig={beeTableOperationConfig}
         getRowKey={getRowKey}
         onRowAdded={onRowAdded}

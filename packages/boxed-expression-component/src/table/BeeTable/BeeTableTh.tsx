@@ -147,6 +147,18 @@ export function BeeTableTh<R extends object>({
     [columnIndex, isSelected, rowIndex, setActiveCell, setSelectionEnd]
   );
 
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setActiveCell({
+        columnIndex,
+        rowIndex,
+        isEditing: columnIndex > 0, // Not rowIndex column
+      });
+    },
+    [columnIndex, rowIndex, setActiveCell]
+  );
+
   useEffect(() => {
     if (isActive && !isEditing) {
       thRef.current?.focus();
@@ -169,6 +181,7 @@ export function BeeTableTh<R extends object>({
       style={{ ...thProps.style, display: "table-cell" }}
       ref={thRef}
       onMouseDown={onMouseDown}
+      onDoubleClick={onDoubleClick}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}

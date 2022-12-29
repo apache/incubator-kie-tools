@@ -34,10 +34,5 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
   columnIndex,
 }) => {
   const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
-  return (
-    <ContextEntryExpression
-      expression={contextEntries[rowIndex].entryExpression}
-      isActiveOrEditing={isActive || isEditing}
-    />
-  );
+  return <ContextEntryExpression expression={contextEntries[rowIndex].entryExpression} isEditing={isEditing} />;
 };

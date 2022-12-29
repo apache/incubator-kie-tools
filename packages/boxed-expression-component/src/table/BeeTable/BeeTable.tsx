@@ -180,37 +180,6 @@ export function BeeTable2<R extends object>({
     ReactTable.useBlockLayout
   );
 
-  // FIXME: Tiago -> Pasting
-  //
-  // useEffect(() => {
-  //   function listener(event: CustomEvent) {
-  //     if (event.detail.type !== PASTE_OPERATION || !tableRowsRef.current || tableRowsRef.current.length === 0) {
-  //       return;
-  //     }
-
-  //     const { pasteValue, x, y } = event.detail;
-
-  //     // FIXME: Tiago: Not good, as {} doesn't conform to R.
-  //     const rowFactory = onNewRow ?? ((() => ({})) as any);
-
-  //     const isLockedTable = _.some(tableRowsRef.current[0], (row) => {
-  //       // FIXME: Tiago -> Logic specific to ExpressionDefinition.
-  //       return (row as any)?.noClearAction;
-  //     });
-
-  //     if (!isLockedTable) {
-  //       const pastedRows = pasteOnTable(pasteValue, tableRowsRef.current, rowFactory, x, y);
-  //       tableRowsRef.current = pastedRows;
-  //       onRowUpdates?.({ rows: pastedRows, columns });
-  //     }
-  //   }
-
-  //   boxedExpressionEditor.editorRef.current?.addEventListener(tableEventUUID, listener);
-  //   return () => {
-  //     boxedExpressionEditor.editorRef.current?.removeEventListener(tableEventUUID, listener);
-  //   };
-  // }, [tableEventUUID, tableRowsRef, onRowUpdates, onColumnsUpdate, onNewRow, boxedExpressionEditor.editorRef, columns]);
-
   const onGetColumnKey = useCallback<(column: ReactTable.ColumnInstance<R>) => string>(
     (column) => {
       return getColumnKey ? getColumnKey(column) : column.originalId || column.id;
@@ -257,7 +226,7 @@ export function BeeTable2<R extends object>({
           }
           return {
             ...prev,
-            isEditing: true,
+            isEditing: !prev.isEditing,
             keepSelection: true,
           };
         });
