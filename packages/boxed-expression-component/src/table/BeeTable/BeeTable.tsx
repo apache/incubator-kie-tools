@@ -67,7 +67,7 @@ export function BeeTable2<R extends object>({
   tableId,
   additionalRow,
   editColumnLabel,
-  editableHeader = true,
+  isEditableHeader = true,
   onCellUpdates,
   onColumnUpdates,
   onRowAdded,
@@ -573,7 +573,7 @@ export function BeeTable2<R extends object>({
       >
         <BeeTableHeader<R>
           editColumnLabel={editColumnLabel}
-          editableHeader={editableHeader}
+          isEditableHeader={isEditableHeader}
           getColumnKey={onGetColumnKey}
           headerVisibility={headerVisibility}
           onColumnUpdates={onColumnUpdates}

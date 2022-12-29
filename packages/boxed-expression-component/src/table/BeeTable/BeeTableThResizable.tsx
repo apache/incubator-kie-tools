@@ -21,7 +21,7 @@ import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnWidth } from "./BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
 import { useBeeTableCell } from "./BeeTableSelectionContext";
 import { BeeTableTh } from "./BeeTableTh";
 
@@ -30,24 +30,24 @@ export interface BeeTableThResizableProps<R extends object> {
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
-  editableHeader: boolean;
+  isEditableHeader: boolean;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
   onHeaderClick: (columnKey: string) => () => void;
   reactTableInstance: ReactTable.TableInstance<R>;
-  renderHeaderCellInfo: (column: ReactTable.ColumnInstance<R>, columnIndex: number) => React.ReactElement;
+  headerCellInfo: React.ReactElement;
 }
 
 export function BeeTableThResizable<R extends object>({
   column,
   columnIndex,
-  editableHeader,
+  isEditableHeader,
   getColumnKey,
   getColumnLabel,
   onExpressionHeaderUpdated,
   onHeaderClick,
-  renderHeaderCellInfo,
+  headerCellInfo,
   onColumnAdded,
 }: BeeTableThResizableProps<R>) {
   const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
@@ -75,7 +75,7 @@ export function BeeTableThResizable<R extends object>({
     return column.depth === 0 ? -2 : -1;
   }, [column.depth]);
 
-  const { resizingWidth, setResizingWidth } = useBeeTableColumnWidth(columnIndex, column.width);
+  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
   const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
 
   return (
@@ -94,7 +94,7 @@ export function BeeTableThResizable<R extends object>({
         data-ouia-component-type="expression-column-header"
         style={{ width: column.width ? resizingWidth?.value : undefined }}
       >
-        {column.dataType && editableHeader ? (
+        {column.dataType && isEditableHeader ? (
           <ExpressionDefinitionHeaderMenu
             isPopoverOpen={isActive || isEditing}
             position={PopoverPosition.bottom}
@@ -103,10 +103,10 @@ export function BeeTableThResizable<R extends object>({
             selectedDataType={column.dataType}
             onExpressionHeaderUpdated={onExpressionHeaderUpdated}
           >
-            {renderHeaderCellInfo(column, columnIndex)}
+            {headerCellInfo}
           </ExpressionDefinitionHeaderMenu>
         ) : (
-          renderHeaderCellInfo(column, columnIndex)
+          headerCellInfo
         )}
       </div>
       <Resizer

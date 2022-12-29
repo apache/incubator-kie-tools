@@ -22,7 +22,7 @@ import * as ReactTable from "react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import { BeeTableTdProps } from "../../api";
-import { useBeeTableColumnWidth } from "./BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
 
 export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -64,7 +64,7 @@ export function BeeTableTd<R extends object>({
   }, [columnIndex, row]);
 
   const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
-  const { resizingWidth, setResizingWidth } = useBeeTableColumnWidth(columnIndex, column.width);
+  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
   const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
 
   const cssClasses = useMemo(() => {

@@ -24,8 +24,6 @@ import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEdito
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
-import { NavigationKeysUtils } from "../../keysUtils";
-import { BeeTableSelectionActiveCell } from "./BeeTableSelectionContext";
 
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;
@@ -58,7 +56,7 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Function to be executed when columns are modified */
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
   /** Option to enable or disable header edits */
-  editableHeader: boolean;
+  isEditableHeader: boolean;
   /** */
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
 }
@@ -70,7 +68,7 @@ export function BeeTableHeader<R extends object>({
   skipLastHeaderGroup,
   getColumnKey,
   onColumnUpdates,
-  editableHeader,
+  isEditableHeader,
   onColumnAdded,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
@@ -136,33 +134,6 @@ export function BeeTableHeader<R extends object>({
     [getColumnKey]
   );
 
-  const renderCellInfoLabel = useCallback<(column: ReactTable.ColumnInstance<R>, columnIndex: number) => JSX.Element>(
-    (column, columnIndex) => {
-      if (column.inlineEditable) {
-        return (
-          <InlineEditableTextInput
-            value={column.label}
-            onTextChange={(value) => {
-              onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
-            }}
-          />
-        );
-      }
-      return <p className="pf-u-text-truncate label">{column.label}</p>;
-    },
-    [onColumnNameOrDataTypeUpdate]
-  );
-
-  const renderHeaderCellInfo = useCallback(
-    (column: ReactTable.ColumnInstance<R>, columnIndex: number) => (
-      <div className="header-cell-info" data-ouia-component-type="expression-column-header-cell-info">
-        {column.headerCellElement ? column.headerCellElement : renderCellInfoLabel(column, columnIndex)}
-        {column.dataType ? <p className="pf-u-text-truncate data-type">({column.dataType})</p> : null}
-      </div>
-    ),
-    [renderCellInfoLabel]
-  );
-
   const onHeaderClick = useCallback(
     (columnKey: string) => () => {
       beeGwtService?.selectObject(columnKey);
@@ -177,25 +148,42 @@ export function BeeTableHeader<R extends object>({
       ) : (
         <BeeTableThResizable
           key={getColumnKey(column)}
-          editableHeader={editableHeader}
+          isEditableHeader={isEditableHeader}
           getColumnKey={getColumnKey}
           getColumnLabel={getColumnLabel}
-          onExpressionHeaderUpdated={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
           onHeaderClick={onHeaderClick}
-          renderHeaderCellInfo={renderHeaderCellInfo}
           reactTableInstance={reactTableInstance}
           column={column}
           columnIndex={columnIndex}
           onColumnAdded={onColumnAdded}
+          onExpressionHeaderUpdated={({ name, dataType }) =>
+            onColumnNameOrDataTypeUpdate(column, columnIndex)({ name, dataType })
+          }
+          headerCellInfo={
+            <div className="header-cell-info" data-ouia-component-type="expression-column-header-cell-info">
+              {column.headerCellElement ? (
+                column.headerCellElement
+              ) : column.inlineEditable ? (
+                <InlineEditableTextInput
+                  value={column.label}
+                  onTextChange={(value) => {
+                    onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
+                  }}
+                />
+              ) : (
+                <p className="pf-u-text-truncate label">{column.label}</p>
+              )}
+              {column.dataType ? <p className="pf-u-text-truncate data-type">({column.dataType})</p> : null}
+            </div>
+          }
         />
       ),
     [
       renderRowIndexColumn,
       getColumnKey,
-      editableHeader,
+      isEditableHeader,
       getColumnLabel,
       onHeaderClick,
-      renderHeaderCellInfo,
       reactTableInstance,
       onColumnAdded,
       onColumnNameOrDataTypeUpdate,

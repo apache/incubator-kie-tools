@@ -91,26 +91,18 @@ export function BeeTableBody<R extends object>({
           onClick={onTrClick(rowKey)}
           style={{ display: "flex" }}
         >
-          {row.cells.map((_, columnIndex) => {
-            return (
-              // <div
-              //   key={getColumnKey(reactTableInstance.allColumns[columnIndex])}
-              //   style={{ width: _.column.resizingWidth?.value ?? "60px" }}
-              // >
-              //   oi
-              // </div>
-              <BeeTableTd<R>
-                key={getColumnKey(reactTableInstance.allColumns[columnIndex])}
-                columnIndex={columnIndex}
-                row={row}
-                rowIndex={rowIndex}
-                shouldUseCellDelegate={args.shouldUseCellDelegate}
-                column={reactTableInstance.allColumns[columnIndex]}
-                onRowAdded={onRowAdded}
-                isActive={false}
-              />
-            );
-          })}
+          {row.cells.map((_, columnIndex) => (
+            <BeeTableTd<R>
+              key={getColumnKey(reactTableInstance.allColumns[columnIndex])}
+              columnIndex={columnIndex}
+              row={row}
+              rowIndex={rowIndex}
+              shouldUseCellDelegate={args.shouldUseCellDelegate}
+              column={reactTableInstance.allColumns[columnIndex]}
+              onRowAdded={onRowAdded}
+              isActive={false}
+            />
+          ))}
         </PfReactTable.Tr>
       );
 

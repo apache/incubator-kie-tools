@@ -40,7 +40,7 @@ export interface BeeTableProps<R extends object> {
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
   editColumnLabel?: string | { [groupType: string]: string };
   /** Option to enable or disable header edits */
-  editableHeader?: boolean;
+  isEditableHeader?: boolean;
   /** Top-left cell custom content */
   controllerCell?: string | JSX.Element;
   /** For each column there is a default component to be used to render the related cell */

@@ -19,7 +19,7 @@ import * as React from "react";
 import { useRef } from "react";
 import { BeeTableTdProps } from "../../api";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnWidth } from "./BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
 
 export interface BeeTableTdForAdditionalRowProps<R extends object> extends BeeTableTdProps<R> {
   children?: React.ReactElement;
@@ -36,7 +36,7 @@ export function BeeTableTdForAdditionalRow<R extends object>({
 }: BeeTableTdForAdditionalRowProps<R>) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
-  const { resizingWidth, setResizingWidth } = useBeeTableColumnWidth(columnIndex, column.width);
+  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
 
   return isEmptyCell ? (
     <PfReactTable.Td ref={tdRef} role="cell" className="empty-cell">

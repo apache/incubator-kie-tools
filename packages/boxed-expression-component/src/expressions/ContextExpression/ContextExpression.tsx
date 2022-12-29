@@ -83,6 +83,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const { updateResizingWidth } = useResizingWidthsDispatch();
   const { resizingWidths } = useResizingWidths();
 
+  // That's BeeTable's column 0 width.
   const [entryInfoResizingWidth, setEntryInfoResizingWidth] = useState<ResizingWidth>({
     value: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
     isPivoting: false,
@@ -209,8 +210,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
             width: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
             setWidth: setEntryInfoWidth,
-            resizingWidth: entryInfoResizingWidth,
-            setResizingWidth: setEntryInfoResizingWidth,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
           },
@@ -231,7 +230,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     contextExpression.dataType,
     contextExpression.entryInfoWidth,
     decisionNodeId,
-    entryInfoResizingWidth,
     setEntryInfoWidth,
   ]);
 

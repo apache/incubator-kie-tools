@@ -82,7 +82,7 @@ export function useBeeTableColumnResizingWidthsDispatch() {
 
 // HOOKS
 
-export function useBeeTableColumnWidth(columnIndex: number, initialResizingWidth?: number) {
+export function useBeeTableColumnResizingWidth(columnIndex: number, initialResizingWidth?: number) {
   const { subscribeToColumnResizingWidth, unsubscribeToColumnResizingWidth, updateResizingWidths } =
     useBeeTableColumnResizingWidthsDispatch();
 

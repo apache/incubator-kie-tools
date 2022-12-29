@@ -80,12 +80,6 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     return relationExpression.rows ?? [];
   }, [relationExpression]);
 
-  // RESIZING WIDTHS
-
-  const { updateResizingWidth } = useResizingWidthsDispatch();
-
-  const nestedExpressionContainer = useNestedExpressionContainer();
-
   const setColumnWidth = useCallback(
     (columnIndex: number) => (newWidth: number) => {
       setExpression((prev: RelationExpressionDefinition) => {
@@ -96,6 +90,12 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     },
     [setExpression]
   );
+
+  // RESIZING WIDTHS
+
+  const { updateResizingWidth } = useResizingWidthsDispatch();
+
+  const nestedExpressionContainer = useNestedExpressionContainer();
 
   // const isRelationExpressionPivoting = useMemo(() => {
   //   return columnResizingWidths.some(({ isPivoting }) => isPivoting);

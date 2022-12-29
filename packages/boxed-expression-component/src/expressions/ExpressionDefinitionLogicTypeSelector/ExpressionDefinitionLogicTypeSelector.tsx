@@ -293,7 +293,12 @@ export function ExpressionDefinitionLogicTypeSelector({
       {shouldRenderClearContextMenu && (
         <div
           className="context-menu-container"
-          style={{ top: clearContextMenuYPos, left: clearContextMenuXPos, opacity: 1, minWidth: "150px" }}
+          style={{
+            top: clearContextMenuYPos,
+            left: clearContextMenuXPos,
+            opacity: 1,
+            minWidth: "150px",
+          }}
         >
           <Menu className="table-context-menu">
             <MenuGroup label={expression.logicType.toLocaleUpperCase()}>
