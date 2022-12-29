@@ -64,7 +64,7 @@ export interface BeeTableHeaderProps<R extends object> {
 export function BeeTableHeader<R extends object>({
   reactTableInstance,
   editColumnLabel,
-  headerVisibility = BeeTableHeaderVisibility.Full,
+  headerVisibility = BeeTableHeaderVisibility.AllLevels,
   skipLastHeaderGroup,
   getColumnKey,
   onColumnUpdates,
@@ -110,8 +110,8 @@ export function BeeTableHeader<R extends object>({
     [onColumnUpdates]
   );
 
-  const renderRowIndexColumn = useCallback<(column: ReactTable.ColumnInstance<R>) => JSX.Element>(
-    (column) => {
+  const renderRowIndexColumn = useCallback<(column: ReactTable.ColumnInstance<R>, rowIndex: number) => JSX.Element>(
+    (column, rowIndex) => {
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell counter-header-cell`;
 
@@ -120,6 +120,7 @@ export function BeeTableHeader<R extends object>({
           key={columnKey}
           column={column}
           columnIndex={0}
+          rowIndex={rowIndex}
           thProps={column.getHeaderProps()}
           className={classNames}
           groupType={column.groupType}
@@ -141,10 +142,12 @@ export function BeeTableHeader<R extends object>({
     [beeGwtService]
   );
 
-  const renderColumn = useCallback<(column: ReactTable.ColumnInstance<R>, columnIndex: number) => JSX.Element>(
-    (column, columnIndex) =>
+  const renderColumn = useCallback<
+    (rowIndex: number, column: ReactTable.ColumnInstance<R>, columnIndex: number) => JSX.Element
+  >(
+    (rowIndex, column, columnIndex) =>
       column.isRowIndexColumn ? (
-        renderRowIndexColumn(column)
+        renderRowIndexColumn(column, rowIndex)
       ) : (
         <BeeTableThResizable
           key={getColumnKey(column)}
@@ -155,6 +158,7 @@ export function BeeTableHeader<R extends object>({
           reactTableInstance={reactTableInstance}
           column={column}
           columnIndex={columnIndex}
+          rowIndex={rowIndex}
           onColumnAdded={onColumnAdded}
           onExpressionHeaderUpdated={({ name, dataType }) =>
             onColumnNameOrDataTypeUpdate(column, columnIndex)({ name, dataType })
@@ -190,28 +194,31 @@ export function BeeTableHeader<R extends object>({
     ]
   );
 
-  const renderHeaderGroups = useCallback(
-    () =>
-      (skipLastHeaderGroup ? _.dropRight(reactTableInstance.headerGroups) : reactTableInstance.headerGroups).map(
-        (headerGroup) => {
-          const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
-          return (
-            <PfReactTable.Tr key={key} {...props}>
-              {headerGroup.headers.map((column, columnIndex) => {
-                return renderColumn(column, columnIndex);
-              })}
-            </PfReactTable.Tr>
-          );
-        }
-      ),
-    [skipLastHeaderGroup, reactTableInstance.headerGroups, renderColumn]
-  );
+  const renderHeaderGroups = useCallback(() => {
+    const headerGroupsToRender = skipLastHeaderGroup
+      ? _.dropRight(reactTableInstance.headerGroups)
+      : reactTableInstance.headerGroups;
+
+    return headerGroupsToRender.map((headerGroup, headerGroupLevel) => {
+      // rowIndex === -1 --> Last headerGroup
+      // rowIndex === -2 --> Second to last headerGroup
+      // ... and so on
+      const rowIndex = -(headerGroupsToRender.length - 1 - headerGroupLevel + 1);
+
+      const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
+      return (
+        <PfReactTable.Tr key={key} {...props}>
+          {headerGroup.headers.map((column, columnIndex) => renderColumn(rowIndex, column, columnIndex))}
+        </PfReactTable.Tr>
+      );
+    });
+  }, [skipLastHeaderGroup, reactTableInstance.headerGroups, renderColumn]);
 
   const renderAtLevelInHeaderGroups = useCallback(
-    (level: number) => (
+    (headerGroupLevel: number) => (
       <PfReactTable.Tr>
-        {_.nth(reactTableInstance.headerGroups, level)!.headers.map((column, columnIndex) =>
-          renderColumn(column, columnIndex)
+        {_.nth(reactTableInstance.headerGroups, headerGroupLevel)?.headers.map((column, columnIndex) =>
+          renderColumn(headerGroupLevel, column, columnIndex)
         )}
       </PfReactTable.Tr>
     ),
@@ -220,7 +227,7 @@ export function BeeTableHeader<R extends object>({
 
   const header = useMemo(() => {
     switch (headerVisibility) {
-      case BeeTableHeaderVisibility.Full:
+      case BeeTableHeaderVisibility.AllLevels:
         return <PfReactTable.Thead noWrap>{renderHeaderGroups()}</PfReactTable.Thead>;
       case BeeTableHeaderVisibility.LastLevel:
         return <PfReactTable.Thead noWrap>{renderAtLevelInHeaderGroups(-1)}</PfReactTable.Thead>;

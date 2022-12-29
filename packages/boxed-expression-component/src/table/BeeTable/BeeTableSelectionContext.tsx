@@ -311,8 +311,19 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       setSelectionEnd: (selectionEnd) => {
         setSelection((prev) => {
           const newSelectionEnd = typeof selectionEnd === "function" ? selectionEnd(prev.selectionEnd) : selectionEnd;
-          // Selecting a normall cell from a rowIndex cell
-          if (prev.selectionEnd?.columnIndex === 0) {
+
+          // Selecting a header cell from another header cell
+          // Do not allow selecting multi-line header cells
+          if (
+            (prev.selectionEnd?.rowIndex ?? 0) < 0 &&
+            (newSelectionEnd?.rowIndex ?? 0) < 0 &&
+            prev.selectionEnd?.rowIndex !== newSelectionEnd?.rowIndex
+          ) {
+            return prev;
+          }
+          // Selecting a normal cell from a rowIndex cell
+          // Do not allow leaving the rowIndex cells
+          else if (prev.selectionEnd?.columnIndex === 0) {
             return {
               ...prev,
               selectionEnd: {
@@ -322,7 +333,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               },
             };
           }
-          // Selecting a normall cell from a header cell
+          // Selecting a normal cell from a header cell
+          // Do not allow selecting header and normal cells simultaneously
           else if ((prev.selectionEnd?.rowIndex ?? 0) < 0) {
             return {
               ...prev,
@@ -332,7 +344,9 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                 isEditing: false,
               },
             };
-          } // Selecting a rowIndex cell from a normal cell
+          }
+          // Selecting a rowIndex cell from a normal cell
+          // Do not allow selecting rowIndex and normal cells simultaneously
           else if (newSelectionEnd?.columnIndex === 0) {
             return {
               ...prev,
@@ -344,6 +358,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
             };
           }
           // Selecting a header cell from a normal cell
+          // Do not allow selecting rowIndex and normal cells simultaneously
           else if ((newSelectionEnd?.rowIndex ?? 0) < 0) {
             return {
               ...prev,
@@ -353,7 +368,9 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                 isEditing: false,
               },
             };
-          } else {
+          }
+          // Selecting a normal cell from another normal cell
+          else {
             return { ...prev, selectionEnd: newSelectionEnd };
           }
         });

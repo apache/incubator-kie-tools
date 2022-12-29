@@ -28,6 +28,7 @@ export interface BeeTableThProps2<R extends object> extends BeeTableThProps<R> {
   thProps: Partial<PfReactTable.ThProps>;
   onClick?: React.MouseEventHandler;
   isLastLevelColumn: boolean;
+  rowIndex: number;
 }
 
 export type HoverInfo =
@@ -46,6 +47,7 @@ export function BeeTableTh<R extends object>({
   thProps,
   onClick,
   columnIndex,
+  rowIndex,
   groupType,
   isLastLevelColumn,
 }: React.PropsWithChildren<BeeTableThProps2<R>>) {
@@ -53,10 +55,6 @@ export function BeeTableTh<R extends object>({
   const thRef = useRef<HTMLTableCellElement>(null);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
-
-  const rowIndex = useMemo(() => {
-    return isLastLevelColumn ? -1 : -2;
-  }, [isLastLevelColumn]);
 
   const onAddColumnButtonClick = useCallback(
     (e: React.MouseEvent) => {
@@ -76,8 +74,8 @@ export function BeeTableTh<R extends object>({
     [columnIndex, groupType, hoverInfo, onColumnAdded]
   );
 
-  const onMouseEnter = useCallback(
-    (e: React.MouseEvent<HTMLTableCellElement>) => {
+  useEffect(() => {
+    function onEnter(e: MouseEvent) {
       e.stopPropagation();
 
       // User is pressing the left mouse button. Meaning user is dragging.
@@ -92,22 +90,27 @@ export function BeeTableTh<R extends object>({
         });
       }
 
-      return setHoverInfo(getHoverInfo(e, thRef.current!));
-    },
-    [columnIndex, rowIndex, setSelectionEnd]
-  );
+      setHoverInfo((prev) => getHoverInfo(e, th!));
+    }
 
-  const onMouseLeave = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
-    e.stopPropagation();
-    return setHoverInfo({ isHovered: false });
-  }, []);
+    function onMove(e: MouseEvent) {
+      setHoverInfo((prev) => getHoverInfo(e, th!));
+    }
 
-  const onMouseMove = useCallback((e: React.MouseEvent) => {
-    return setHoverInfo((prev) => {
-      e.stopPropagation();
-      return getHoverInfo(e, thRef.current!);
-    });
-  }, []);
+    function onLeave() {
+      setHoverInfo((prev) => ({ isHovered: false }));
+    }
+
+    const th = thRef.current;
+    th?.addEventListener("mouseenter", onEnter);
+    th?.addEventListener("mousemove", onMove);
+    th?.addEventListener("mouseleave", onLeave);
+    return () => {
+      th?.removeEventListener("mouseleave", onLeave);
+      th?.removeEventListener("mousemove", onMove);
+      th?.removeEventListener("mouseenter", onEnter);
+    };
+  }, [columnIndex, rowIndex, setActiveCell, setSelectionEnd]);
 
   const addColumButtonStyle = useMemo(
     () =>
@@ -183,9 +186,6 @@ export function BeeTableTh<R extends object>({
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
       onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
       className={cssClasses}
       tabIndex={-1}
     >
@@ -205,7 +205,7 @@ export function BeeTableTh<R extends object>({
   );
 }
 
-function getHoverInfo(e: React.MouseEvent, elem: HTMLElement): HoverInfo {
+function getHoverInfo(e: MouseEvent, elem: HTMLElement): HoverInfo {
   const rect = elem.getBoundingClientRect();
   const localX = e.clientX - rect.left; // x position within the element.
   const part = localX < rect.width / 2 ? "left" : "right"; // upper part is the upper half

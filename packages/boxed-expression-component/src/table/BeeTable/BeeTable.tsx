@@ -105,7 +105,7 @@ export function BeeTable2<R extends object>({
           columns: [
             {
               label:
-                headerVisibility === BeeTableHeaderVisibility.Full
+                headerVisibility === BeeTableHeaderVisibility.AllLevels
                   ? ROW_INDEX_SUB_COLUMN_ACCESSOR
                   : (controllerCell as any), // FIXME: Tiago -> Not good.
               accessor: ROW_INDEX_SUB_COLUMN_ACCESSOR as any,
@@ -444,7 +444,7 @@ export function BeeTable2<R extends object>({
       : reactTableInstance.headerGroups.length;
 
     switch (headerVisibility) {
-      case BeeTableHeaderVisibility.Full:
+      case BeeTableHeaderVisibility.AllLevels:
         return headerGroupsLength;
       case BeeTableHeaderVisibility.LastLevel:
         return headerGroupsLength - 1;

@@ -247,7 +247,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
 
   const headerVisibility = useMemo(() => {
-    return functionExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.Full;
+    return functionExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [functionExpression.isHeadless]);
 
   const onFunctionKindSelect = useCallback(

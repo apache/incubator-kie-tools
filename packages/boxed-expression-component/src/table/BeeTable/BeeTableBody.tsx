@@ -45,7 +45,7 @@ export interface BeeTableBodyProps<R extends object> {
 export function BeeTableBody<R extends object>({
   reactTableInstance,
   additionalRow,
-  headerVisibility = BeeTableHeaderVisibility.Full,
+  headerVisibility = BeeTableHeaderVisibility.AllLevels,
   headerRowsCount,
   getRowKey,
   getColumnKey,

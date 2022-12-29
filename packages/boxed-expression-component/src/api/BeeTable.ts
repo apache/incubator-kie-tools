@@ -79,7 +79,7 @@ export interface BeeTableProps<R extends object> {
 
 /** Possible status for the visibility of the Table's Header */
 export enum BeeTableHeaderVisibility {
-  Full,
+  AllLevels,
   LastLevel,
   SecondToLastLevel,
   None,

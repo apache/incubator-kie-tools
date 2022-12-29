@@ -131,7 +131,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   }, []);
 
   const headerVisibility = useMemo(
-    () => (invocation.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.Full),
+    () => (invocation.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels),
     [invocation.isHeadless]
   );
 

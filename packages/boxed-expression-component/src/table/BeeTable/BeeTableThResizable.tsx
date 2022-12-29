@@ -29,6 +29,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
+  rowIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
   isEditableHeader: boolean;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
@@ -42,6 +43,7 @@ export interface BeeTableThResizableProps<R extends object> {
 export function BeeTableThResizable<R extends object>({
   column,
   columnIndex,
+  rowIndex,
   isEditableHeader,
   getColumnKey,
   getColumnLabel,
@@ -71,12 +73,8 @@ export function BeeTableThResizable<R extends object>({
     return getColumnLabel(column.groupType);
   }, [column.groupType, getColumnLabel]);
 
-  const rowIndex = useMemo(() => {
-    return column.depth === 0 ? -2 : -1;
-  }, [column.depth]);
-
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
-  const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
+  const { isEditing } = useBeeTableCell(rowIndex, columnIndex);
 
   return (
     <BeeTableTh<R>
@@ -84,6 +82,7 @@ export function BeeTableThResizable<R extends object>({
       thProps={{ ...column.getHeaderProps(), style: { position: "relative" } }}
       onClick={onClick}
       columnIndex={columnIndex}
+      rowIndex={rowIndex}
       onColumnAdded={onColumnAdded}
       groupType={column.groupType}
       isLastLevelColumn={(column.columns?.length ?? 0) <= 0}

@@ -119,7 +119,7 @@ export function BeeTableTd<R extends object>({
       td?.removeEventListener("mousemove", onMove);
       td?.removeEventListener("mouseenter", onEnter);
     };
-  }, [column, columnIndex, isResizing, row, rowIndex, setActiveCell, setSelectionEnd]);
+  }, [columnIndex, rowIndex, setActiveCell, setSelectionEnd]);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
