@@ -46,7 +46,7 @@ export interface CreateKafkaSourceArgs {
   };
 }
 
-export interface CreateKNativeServiceArgs {
+export interface CreateKnativeServiceArgs {
   uri: string;
   workspaceName: string;
 }

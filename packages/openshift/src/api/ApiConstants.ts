@@ -25,12 +25,12 @@ export enum KubernetesApiVersions {
   SECRET = "v1",
 }
 
-export enum KNativeApiVersions {
+export enum KnativeApiVersions {
   KAFKA_SOURCE = "sources.knative.dev/v1beta1",
   SERVICE = "serving.knative.dev/v1",
 }
 
-export type ApiVersions = `${KubernetesApiVersions}` | `${KNativeApiVersions}`;
+export type ApiVersions = `${KubernetesApiVersions}` | `${KnativeApiVersions}`;
 
 export const baseEndpoint = (apiVersion: ApiVersions) => {
   if (apiVersion === KubernetesApiVersions.SECRET) {
@@ -53,6 +53,6 @@ export const OpenShiftLabelNames = {
   TRIGGERS: "image.openshift.io/triggers",
 };
 
-export const KNativeLabelNames = {
+export const KnativeLabelNames = {
   SERVICE: "serving.knative.dev/service",
 };

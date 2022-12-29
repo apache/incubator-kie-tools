@@ -15,7 +15,7 @@
  */
 
 import { CreateKafkaSource, DeleteKafkaSource } from "@kie-tools-core/openshift/dist/api/knative/KafkaSource";
-import { CreateKNativeService, DeleteKNativeService } from "@kie-tools-core/openshift/dist/api/knative/KNativeService";
+import { CreateKnativeService, DeleteKnativeService } from "@kie-tools-core/openshift/dist/api/knative/KnativeService";
 import {
   CreateBuildConfig,
   DeleteBuildConfig,
@@ -35,7 +35,7 @@ import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { KafkaSourceArgs } from "../deploy/types";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 
-interface KNativeBuilderPipelineArgs {
+interface KnativeBuilderPipelineArgs {
   resourceName: string;
   targetUri: string;
   workspaceName: string;
@@ -43,8 +43,8 @@ interface KNativeBuilderPipelineArgs {
   kafkaSourceArgs?: KafkaSourceArgs;
 }
 
-export class KNativeBuilderPipeline extends OpenShiftPipeline {
-  constructor(protected readonly args: OpenShiftPipelineArgs & KNativeBuilderPipelineArgs) {
+export class KnativeBuilderPipeline extends OpenShiftPipeline {
+  constructor(protected readonly args: OpenShiftPipelineArgs & KnativeBuilderPipelineArgs) {
     super(args);
   }
 
@@ -58,7 +58,7 @@ export class KNativeBuilderPipeline extends OpenShiftPipeline {
     const rollbacks: ResourceFetch[] = [
       new DeleteKafkaSource(resourceArgs),
       new DeleteSecret(resourceArgs),
-      new DeleteKNativeService(resourceArgs),
+      new DeleteKnativeService(resourceArgs),
       new DeleteBuildConfig(resourceArgs),
       new DeleteImageStream(resourceArgs),
     ];
@@ -79,7 +79,7 @@ export class KNativeBuilderPipeline extends OpenShiftPipeline {
     );
     await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
-        target: new CreateKNativeService({
+        target: new CreateKnativeService({
           ...resourceArgs,
           uri: this.args.targetUri,
           workspaceName: this.args.workspaceName,

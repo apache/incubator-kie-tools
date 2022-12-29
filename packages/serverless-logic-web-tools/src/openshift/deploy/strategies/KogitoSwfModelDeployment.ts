@@ -18,7 +18,7 @@ import { buildProjectPaths } from "../../../project";
 import { SwfBuilder } from "../BaseContainerImages";
 import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
-import { KNativeBuilderPipeline } from "../../pipelines/KNativeBuilderPipeline";
+import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { GLOB_PATTERN } from "../../../extension";
 
 export class KogitoSwfModelDeployment extends DeploymentStrategy {
@@ -35,7 +35,7 @@ export class KogitoSwfModelDeployment extends DeploymentStrategy {
 
     const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
 
-    return new KNativeBuilderPipeline({
+    return new KnativeBuilderPipeline({
       workspaceName: this.resolveWorkspaceName(filesToBeDeployed),
       workspaceZipBlob: workspaceZipBlob,
       resourceName: this.args.resourceName,

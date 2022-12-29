@@ -16,7 +16,7 @@
 
 import { GLOB_PATTERN, isDashbuilder } from "../../../extension";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
-import { KNativeBuilderPipeline } from "../../pipelines/KNativeBuilderPipeline";
+import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { DashbuilderViewer } from "../BaseContainerImages";
 import { createDashbuilderViewerAppDataFile } from "../DashbuilderViewerAppData";
 import { DeploymentStrategy } from "../DeploymentStrategy";
@@ -45,7 +45,7 @@ export class DashboardWorkspaceDeployment extends DeploymentStrategy {
 
     const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
 
-    return new KNativeBuilderPipeline({
+    return new KnativeBuilderPipeline({
       workspaceName: this.resolveWorkspaceName(filesToBeDeployed),
       workspaceZipBlob: workspaceZipBlob,
       resourceName: this.args.resourceName,
