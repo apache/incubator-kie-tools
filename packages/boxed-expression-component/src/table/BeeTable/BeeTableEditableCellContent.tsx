@@ -99,7 +99,6 @@ export function BeeTableEditableCellContent({
       }
 
       if (isTab) {
-        e.stopPropagation();
         // FIXME: Tiago
         // This is a hack. Ideally, this would be treated inside FeelInput.
         // Tab shouldn't move out from the cell if the autocompletion widget is open.
@@ -112,7 +111,6 @@ export function BeeTableEditableCellContent({
       }
 
       if (isEnter) {
-        e.stopPropagation();
         if (e.ctrlKey || e.shiftKey) {
           feelInputRef.current?.insertNewLineToMonaco();
         } else if (!FeelEditorService.isSuggestWidgetOpen()) {
@@ -122,7 +120,6 @@ export function BeeTableEditableCellContent({
       }
 
       if (isEsc) {
-        e.stopPropagation();
         // FIXME: Tiago
         // This is a hack. Ideally, this would be treated inside FeelInput.
         // Esc shouldn't move out from the cell if the autocompletion widget is open.
@@ -176,7 +173,11 @@ export function BeeTableEditableCellContent({
 
   return (
     <>
-      <div style={{ height: `${cellHeight}px` }} className={`editable-cell ${mode}`}>
+      <div
+        style={{ height: `${cellHeight}px` }}
+        className={`editable-cell ${mode}`}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
         <span className="editable-cell-value" dangerouslySetInnerHTML={{ __html: preview }} />
         <FeelInput
           ref={feelInputRef}
