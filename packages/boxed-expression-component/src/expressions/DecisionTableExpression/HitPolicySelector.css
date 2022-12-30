@@ -29,3 +29,7 @@
 .boxed-expression-provider .hit-policy-container .builtin-aggregator-section {
   padding-top: 10px;
 }
+
+.boxed-expression-provider .selected-hit-policy {
+  cursor: pointer;
+}

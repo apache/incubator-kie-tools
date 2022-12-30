@@ -123,8 +123,6 @@ export function BeeTableTd<R extends object>({
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      e.stopPropagation();
-
       if (e.button !== 0 && isSelected) {
         setActiveCell({
           columnIndex,
@@ -135,14 +133,16 @@ export function BeeTableTd<R extends object>({
         return;
       }
 
-      const set = e.shiftKey ? setSelectionEnd : setActiveCell;
-      set({
-        columnIndex,
-        rowIndex,
-        isEditing: false,
-      });
+      if (!isActive && !isEditing) {
+        const set = e.shiftKey ? setSelectionEnd : setActiveCell;
+        set({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+        });
+      }
     },
-    [columnIndex, isSelected, rowIndex, setActiveCell, setSelectionEnd]
+    [columnIndex, isActive, isEditing, isSelected, rowIndex, setActiveCell, setSelectionEnd]
   );
 
   const onDoubleClick = useCallback(

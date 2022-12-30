@@ -77,7 +77,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   );
 
   const style = useMemo(() => {
-    return { width: resizingWidth?.value, minWidth, pointerEvents: "visible" as const };
+    return { width: resizingWidth?.value, minWidth };
   }, [minWidth, resizingWidth?.value]);
 
   const debuggingHandleClassNames = `
@@ -86,7 +86,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   `;
 
   return (
-    <div className={"resizable-div"}>
+    <div>
       {width && (
         <div className="pf-c-drawer" style={{ position: "absolute", left: width - 8 }}>
           <div className={`pf-c-drawer__splitter pf-m-vertical actual`}>

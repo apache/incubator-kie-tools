@@ -25,14 +25,11 @@ export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnId".
   data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
-  columnIndex: number;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
   data: contextEntries,
   rowIndex,
-  columnIndex,
 }) => {
-  const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
-  return <ContextEntryExpression expression={contextEntries[rowIndex].entryExpression} isEditing={isEditing} />;
+  return <ContextEntryExpression expression={contextEntries[rowIndex].entryExpression} />;
 };

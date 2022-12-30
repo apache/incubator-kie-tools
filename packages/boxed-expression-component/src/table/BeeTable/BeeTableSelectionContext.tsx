@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableSelectionActiveCell<R extends object> {
@@ -232,7 +232,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         navigator.clipboard.writeText(clipboardValue);
       },
       paste: () => {
-        // FIXME: Tiago -> This is currenty very slow, as React 17 state updates are not,
+        // FIXME: Tiago -> This is currenty very slow, as React 17 state updates are not
         //                 batched, causing every pasted cell to trigger an isolated setState.
         //                 Upgrading to React 18 should fix this slowness.
 
@@ -321,6 +321,11 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
           ) {
             return prev;
           }
+          // Selecting a rowIndex cell from a header cell.
+          // Do not allow selecting rowIndex cells from header cells
+          else if ((prev.selectionEnd?.rowIndex ?? 0) < 0 && newSelectionEnd?.columnIndex === 0) {
+            return prev;
+          }
           // Selecting a normal cell from a rowIndex cell
           // Do not allow leaving the rowIndex cells
           else if (prev.selectionEnd?.columnIndex === 0) {
@@ -352,7 +357,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               ...prev,
               selectionEnd: {
                 columnIndex: 1,
-                rowIndex: newSelectionEnd?.rowIndex ?? 0,
+                rowIndex: Math.max(0, newSelectionEnd?.rowIndex ?? 0),
                 isEditing: false,
               },
             };

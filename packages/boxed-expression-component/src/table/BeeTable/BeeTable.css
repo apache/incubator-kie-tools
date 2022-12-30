@@ -57,10 +57,6 @@
   font-size: smaller;
 }
 
-.expression-container .table-component table th:first-child {
-  padding-left: 1.7em;
-}
-
 .expression-container .table-component table th:not(:first-child) {
   text-align: center;
   background-color: #def3ff;
@@ -72,6 +68,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
 }
 
 .expression-container .table-component table th:not(.no-clickable-cell) .header-cell-info {
@@ -159,16 +157,10 @@
   z-index: 5;
 }
 
-/* FIXME: Tiago -> Possible workaround. */
-/* .expression-container .table-component table thead th:after,
+.expression-container .table-component table thead th:after,
 .expression-container .table-component table tbody td:after {
   pointer-events: none;
 }
-
-.expression-container .table-component table thead th *,
-.expression-container .table-component table tbody td * {
-  pointer-events: auto;
-} */
 
 .expression-container .table-component table tbody td.selected:not(.editing):not(:first-child):after {
   background-color: rgba(182, 210, 251, 0.312);

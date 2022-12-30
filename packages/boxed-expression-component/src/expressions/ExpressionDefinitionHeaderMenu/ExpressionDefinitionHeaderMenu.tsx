@@ -100,28 +100,24 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
     [boxedExpressionEditor.beeGwtService]
   );
 
-  /**
-   * save the expression data from the PopoverMenu
-   */
   const saveExpression = useCallback(() => {
     boxedExpressionEditor.beeGwtService?.notifyUserAction();
     onExpressionHeaderUpdated({ name: expressionName, dataType: dataType });
   }, [boxedExpressionEditor.beeGwtService, expressionName, onExpressionHeaderUpdated, dataType]);
 
-  const onHide = useCallback(() => {
-    saveExpression();
-  }, [saveExpression]);
-
-  /**
-   * reset the inputs of the popover to the original state
-   */
   const resetFormData = useCallback(() => {
     setExpressionName(selectedExpressionName);
     setDataType(selectedDataType);
   }, [selectedExpressionName, selectedDataType]);
 
+  const onHide = useCallback(() => {
+    saveExpression();
+    popoverMenuRef?.current?.setIsVisible(false);
+  }, [saveExpression]);
+
   const onCancel = useCallback(() => {
     resetFormData();
+    popoverMenuRef?.current?.setIsVisible(false);
   }, [resetFormData]);
 
   const onShown = useCallback(() => {
@@ -130,25 +126,18 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      e.stopPropagation();
+
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();
         popoverMenuRef?.current?.setIsVisible(false);
-        e.stopPropagation();
       } else if (NavigationKeysUtils.isEscape(e.key)) {
         resetFormData();
-      } else {
-        e.stopPropagation();
+        popoverMenuRef?.current?.setIsVisible(false);
       }
     },
     [resetFormData, saveExpression]
   );
-
-  React.useEffect(() => {
-    // Doesn't work without this timeout. Probably a bug on the Popover itself.
-    setTimeout(() => {
-      popoverMenuRef.current?.setIsVisible(isPopoverOpen ?? false);
-    }, 100);
-  }, [isPopoverOpen]);
 
   return (
     <PopoverMenu

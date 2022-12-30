@@ -31,7 +31,7 @@ import { FunctionExpression } from "../FunctionExpression";
 import { InvocationExpression } from "../InvocationExpression";
 import { ListExpression } from "../ListExpression";
 import { LiteralExpression, PmmlLiteralExpression } from "../LiteralExpression";
-import { PopoverMenu, PopoverMenuRef } from "../../contextMenu/PopoverMenu";
+import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { RelationExpression } from "../RelationExpression";
 import "./ExpressionDefinitionLogicTypeSelector.css";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
@@ -48,7 +48,6 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
   isClearSupported?: boolean;
-  isVisible?: boolean;
 }
 
 export const LOGIC_TYPE_SELECTOR_CLASS = "logic-type-selector";
@@ -68,7 +67,6 @@ export function ExpressionDefinitionLogicTypeSelector({
   onLogicTypeReset,
   getPlacementRef,
   isClearSupported = true,
-  isVisible = false,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -225,15 +223,6 @@ export function ExpressionDefinitionLogicTypeSelector({
     };
   }, []);
 
-  const popoverRef = React.useRef<PopoverMenuRef>();
-
-  React.useEffect(() => {
-    // Doesn't work without this timeout. Probably a bug on the Popover itself.
-    setTimeout(() => {
-      popoverRef.current?.setIsVisible(isVisible);
-    }, 100);
-  }, [isVisible]);
-
   return (
     <>
       <div
@@ -245,7 +234,6 @@ export function ExpressionDefinitionLogicTypeSelector({
 
         {!isLogicTypeSelected && (
           <PopoverMenu
-            ref={popoverRef}
             title={i18n.selectExpression}
             arrowPlacement={getPopoverArrowPlacement}
             appendTo={getPopoverContainer()}

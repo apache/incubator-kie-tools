@@ -53,8 +53,6 @@
 .expression-container .editable-cell.editable-cell--edit-mode .editable-cell-value,
 .expression-container .editable-cell.editable-cell--read-mode .feel-input {
   position: absolute;
-  top: -100%;
-  left: -100%;
 }
 
 .expression-container .editable-cell .editable-cell-value {

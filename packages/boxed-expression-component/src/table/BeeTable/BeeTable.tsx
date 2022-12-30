@@ -313,6 +313,7 @@ export function BeeTable2<R extends object>({
             return prev;
           }
 
+          // FIXME: Tiago -> Max should be actually take headerGroups into account.
           const newColumnIndex = Math.min(prev.columnIndex + 1, reactTableInstance.allColumns.length - 1);
           return {
             columnIndex: newColumnIndex,

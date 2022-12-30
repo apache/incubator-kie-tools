@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useState, useImperativeHandle, useMemo, useEffect } from "react";
-import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
+import { Popover, PopoverPosition, PopoverProps } from "@patternfly/react-core/dist/js/components/Popover";
 import "./PopoverMenu.css";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
@@ -98,18 +98,13 @@ export const PopoverMenu = React.forwardRef(
       onShown();
     }, [setCurrentlyOpenContextMenu, id, onShown]);
 
-    const shouldOpen = useCallback((showFunction?: () => void) => {
+    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((showFunction) => {
       showFunction?.();
     }, []);
 
-    const shouldClose = useCallback(
-      (_tip, hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
-        // if the esc key has been pressed with a Select component open
-        if ((event?.target as Element).closest(".pf-c-select__menu")) {
-          return;
-        }
-
-        if (event instanceof KeyboardEvent && NavigationKeysUtils.isEscape(event?.key)) {
+    const shouldClose: PopoverProps["shouldClose"] = useCallback(
+      (tip, hideFunction, event): void => {
+        if (event instanceof KeyboardEvent && NavigationKeysUtils.isEscape(event.key)) {
           onCancel(event);
         } else {
           onHide();
@@ -131,16 +126,15 @@ export const PopoverMenu = React.forwardRef(
 
     return (
       <Popover
-        data-ouia-component-id="expression-popover-menu"
-        className={`popover-menu-selector${className ? " " + className : ""}`}
+        id={"menu-selector"}
+        data-ouia-component-id={"expression-popover-menu"}
+        className={`popover-menu-selector ${className ?? ""}`}
         hasAutoWidth={hasAutoWidth}
         minWidth={minWidth}
         position={position ?? PopoverPosition.bottom}
         distance={distance ?? 0}
-        id="menu-selector"
         reference={arrowPlacement}
         appendTo={appendTo}
-        onShown={onPopoverShown}
         headerContent={
           <div className="selector-menu-title" data-ouia-component-id="expression-popover-menu-title">
             {title}
@@ -148,6 +142,7 @@ export const PopoverMenu = React.forwardRef(
         }
         bodyContent={body}
         isVisible={isPopoverVisible}
+        onShown={onPopoverShown}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
       >

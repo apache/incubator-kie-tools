@@ -91,7 +91,7 @@ export function HitPolicySelector({
       className="hit-policy-popover"
       hasAutoWidth={true}
       position={PopoverPosition.left}
-      distance={40}
+      distance={25}
       body={
         <div className="hit-policy-container">
           <div className="hit-policy-section">

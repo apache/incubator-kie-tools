@@ -24,13 +24,9 @@ import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression"
 
 export interface ContextEntryExpressionProps {
   expression: ExpressionDefinition;
-  isEditing?: boolean;
 }
 
-export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpressionProps> = ({
-  expression,
-  isEditing,
-}) => {
+export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpressionProps> = ({ expression }) => {
   const logicTypeContainerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -61,9 +57,8 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
   }, [setExpression]);
 
   return (
-    <div className="entry-expression" ref={logicTypeContainerRef} onMouseDown={(e) => e.stopPropagation()}>
+    <div className="entry-expression" ref={logicTypeContainerRef}>
       <ExpressionDefinitionLogicTypeSelector
-        isVisible={isEditing}
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}
         onLogicTypeReset={onLogicTypeReset}

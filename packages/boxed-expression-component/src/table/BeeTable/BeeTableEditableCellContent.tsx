@@ -15,7 +15,7 @@
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
-import { FeelEditorService, FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
+import { FeelEditorService, FeelInput, FeelInputProps, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils";
@@ -57,8 +57,8 @@ export function BeeTableEditableCellContent({
   const feelInputRef = useRef<FeelInputRef>(null);
 
   const mode = useMemo(() => {
-    return isEditing ? EDIT_MODE : READ_MODE;
-  }, [isEditing]);
+    return isEditing && !isReadOnly ? EDIT_MODE : READ_MODE;
+  }, [isEditing, isReadOnly]);
 
   useEffect(() => {
     setPreviousValue((prev) => (isEditing ? prev : value));
@@ -87,18 +87,19 @@ export function BeeTableEditableCellContent({
     [setEditing, triggerReadMode]
   );
 
-  const onFeelKeyDown = useCallback(
-    (event: Monaco.IKeyboardEvent, newValue: string) => {
-      const key = event?.code ?? "";
+  const onFeelKeyDown: FeelInputProps["onKeyDown"] = useCallback(
+    (e, newValue) => {
+      const key = e?.code ?? "";
       const isEnter = NavigationKeysUtils.isEnter(key);
       const isTab = NavigationKeysUtils.isTab(key);
       const isEsc = NavigationKeysUtils.isEscape(key);
 
       if (isEnter || isTab || isEsc) {
-        event.preventDefault();
+        e.preventDefault();
       }
 
       if (isTab) {
+        e.stopPropagation();
         // FIXME: Tiago
         // This is a hack. Ideally, this would be treated inside FeelInput.
         // Tab shouldn't move out from the cell if the autocompletion widget is open.
@@ -111,16 +112,17 @@ export function BeeTableEditableCellContent({
       }
 
       if (isEnter) {
-        if (event.ctrlKey || event.shiftKey) {
+        e.stopPropagation();
+        if (e.ctrlKey || e.shiftKey) {
           feelInputRef.current?.insertNewLineToMonaco();
         } else if (!FeelEditorService.isSuggestWidgetOpen()) {
           triggerReadMode(newValue);
           setEditing(false);
-          // focusLowerCell(textarea.current);
         }
       }
 
       if (isEsc) {
+        e.stopPropagation();
         // FIXME: Tiago
         // This is a hack. Ideally, this would be treated inside FeelInput.
         // Esc shouldn't move out from the cell if the autocompletion widget is open.
@@ -130,17 +132,16 @@ export function BeeTableEditableCellContent({
           feelInputRef.current?.setMonacoValue(previousValue);
           triggerReadMode(previousValue);
           setEditing(false);
-          // focusCurrentCell(textarea.current);
         }
       }
 
-      if (event.shiftKey && event.ctrlKey && key === "keyz") {
+      if (e.shiftKey && e.ctrlKey && key === "keyz") {
         const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
         if (commandStack.length > 0 && monacoValue.length - previousValue.length <= 0) {
           onChange(commandStack[commandStack.length - 1]);
           setCommand([...commandStack.slice(0, -1)]);
         }
-      } else if (event.ctrlKey && key === "keyz") {
+      } else if (e.ctrlKey && key === "keyz") {
         const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
         if (monacoValue.length - previousValue.length >= 0) {
           onChange(previousValue !== monacoValue ? previousValue : "");
@@ -151,15 +152,26 @@ export function BeeTableEditableCellContent({
     [triggerReadMode, setEditing, previousValue, commandStack, onChange]
   );
 
-  const onFeelChange = useCallback((_e, newValue, newPreview) => {
-    const numberOfValueLines = `${newValue}`.split("\n").length + 1;
+  const calculateCellHeight = useCallback((value: string) => {
+    const numberOfValueLines = `${value}`.split("\n").length + 1;
     const numberOfLines = numberOfValueLines < 3 ? 3 : numberOfValueLines;
-    setCellHeight(numberOfLines * CELL_LINE_HEIGHT);
-    setPreview(newPreview);
+    return numberOfLines * CELL_LINE_HEIGHT;
   }, []);
 
-  const onFeelLoad = useCallback((newPreview) => {
-    setPreview(newPreview);
+  useEffect(() => {
+    setCellHeight(calculateCellHeight(value));
+  }, [calculateCellHeight, value]);
+
+  const onFeelChange: FeelInputProps["onChange"] = useCallback(
+    (_e, newValue, newPreview) => {
+      setCellHeight(calculateCellHeight(newValue));
+      setPreview(newPreview);
+    },
+    [calculateCellHeight]
+  );
+
+  const onFeelLoad = useCallback((preview: string) => {
+    setPreview(preview);
   }, []);
 
   return (

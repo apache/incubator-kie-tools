@@ -19,6 +19,11 @@
   position: absolute;
   left: 0;
   top: 0;
+  pointer-events: none;
+}
+
+.expression-container .resizable-div * {
+  pointer-events: auto;
 }
 
 .expression-container .pf-c-drawer__splitter::after {
