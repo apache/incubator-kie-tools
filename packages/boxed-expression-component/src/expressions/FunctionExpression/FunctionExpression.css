@@ -14,26 +14,9 @@
  * limitations under the License.
  */
 
-.expression-container .function-expression {
-  width: 100%;
-}
-
 .expression-container .function-expression .selected-function-kind {
   cursor: pointer;
   padding: 1em;
-}
-
-/** Styling .parameters-list container */
-.expression-container
-  .function-expression
-  > .table-component
-  > table
-  > thead
-  > tr:last-of-type
-  > th:last-of-type
-  > .header-cell
-  > .header-cell-info {
-  width: 100%;
 }
 
 .expression-container .function-expression .parameters-list {

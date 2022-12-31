@@ -14,33 +14,6 @@
  * limitations under the License.
  */
 
-.expression-container .invocation-expression {
-  width: 100%;
-}
-
-.expression-container .invocation-expression .function-definition-container,
-.expression-container .invocation-expression .function-definition-container .function-definition,
-/** Increasing width and height for the .header-cell-info which contains .function-definition-container */
-.expression-container .invocation-expression > .table-component > table > thead > tr > th:last-of-type > .header-cell > .header-cell-info {
-  width: 100%;
-  height: 100%;
-}
-
-.expression-container
-  .invocation-expression
-  > .table-component
-  > table
-  > thead
-  > tr
-  > th.no-clickable-cell
-  .header-cell-info {
-  width: 90%;
-}
-
-.expression-container .invocation-expression .function-definition-container {
-  padding-right: 0.75em;
-}
-
 .expression-container .invocation-expression .function-definition-container .function-definition {
   border: none;
   background-color: #def3ff;

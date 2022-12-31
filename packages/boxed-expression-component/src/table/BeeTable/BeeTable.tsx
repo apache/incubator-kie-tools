@@ -24,6 +24,7 @@ import { BeeTableHeaderVisibility, BeeTableProps } from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../expressions/ContextExpression";
 import { NavigationKeysUtils } from "../../keysUtils";
+import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import { BeeTableColumnResizingWidthsContextProvider } from "./BeeTableColumnResizingWidthsContextProvider";
@@ -576,10 +577,14 @@ export function BeeTable2<R extends object>({
   );
 }
 
-export function BeeTable<R extends object>(props: BeeTableProps<R>) {
+export function BeeTable<R extends object>(
+  props: BeeTableProps<R> & {
+    onColumnResizingWidthChange?: (args: { columnIndex: number; newResizingWidth: ResizingWidth }) => void;
+  }
+) {
   return (
     <BeeTableSelectionContextProvider>
-      <BeeTableColumnResizingWidthsContextProvider>
+      <BeeTableColumnResizingWidthsContextProvider onChange={props.onColumnResizingWidthChange}>
         <BeeTable2 {...props} />
       </BeeTableColumnResizingWidthsContextProvider>
     </BeeTableSelectionContextProvider>

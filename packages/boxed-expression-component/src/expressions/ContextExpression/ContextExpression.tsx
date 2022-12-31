@@ -196,31 +196,28 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        label: contextExpression.name ?? CONTEXT_ENTRY_DEFAULT_NAME,
         accessor: decisionNodeId as any,
-        dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
-        disableContextMenuOnHeader: true,
+        label: contextExpression.name ?? CONTEXT_ENTRY_DEFAULT_NAME,
         isRowIndexColumn: false,
+        dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
         width: undefined,
         columns: [
           {
             accessor: "entryInfo",
             label: "entryInfo",
-            disableContextMenuOnHeader: true,
+            isRowIndexColumn: false,
+            dataType: DmnBuiltInDataType.Undefined,
             minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
             width: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
             setWidth: setEntryInfoWidth,
-            isRowIndexColumn: false,
-            dataType: DmnBuiltInDataType.Undefined,
           },
           {
             accessor: "entryExpression",
             label: "entryExpression",
-            disableContextMenuOnHeader: true,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
-            width: undefined,
             minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+            width: undefined,
           },
         ],
       },

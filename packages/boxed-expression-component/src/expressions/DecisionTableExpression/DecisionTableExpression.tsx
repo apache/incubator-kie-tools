@@ -38,8 +38,8 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate, BeeTableCellUpdate } from "../../table/BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
-import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
+import { useBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
 
 type ROWTYPE = any; // FIXME: Tiago
 
@@ -66,7 +66,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { updateResizingWidth } = useResizingWidthsDispatch();
 
   const generateOperationConfig = useCallback(
     (groupName: string) => [
@@ -139,6 +138,8 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     },
     [setExpression]
   );
+
+  const { onColumnResizingWidthChange } = useBeeTableColumnResizingWidths(decisionTable.id);
 
   // FIXME: Tiago -> OMG
   // ***************************************************************************************
@@ -224,7 +225,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
       columns: outputColumns,
-      appendColumnsOnChildren: true,
       width: undefined,
     };
 
@@ -521,6 +521,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}
         onColumnAdded={onColumnAdded}
+        onColumnResizingWidthChange={onColumnResizingWidthChange}
       />
     </div>
   );

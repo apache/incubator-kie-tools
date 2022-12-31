@@ -228,14 +228,12 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         label: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
         accessor: decisionNodeId as any, // FIXME: Tiago -> No bueno.
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
-        disableContextMenuOnHeader: true,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
           {
             headerCellElement: parametersColumnHeader,
             accessor: "parameters" as any, // FIXME: Tiago -> No bueno.
-            disableContextMenuOnHeader: true,
             label: "",
             isRowIndexColumn: false,
             dataType: undefined as any, // FIXME: Tiago -> No bueno.

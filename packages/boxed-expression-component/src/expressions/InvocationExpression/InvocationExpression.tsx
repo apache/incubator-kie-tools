@@ -87,14 +87,12 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         label: invocation.name ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
         accessor: decisionNodeId as keyof ROWTYPE,
         dataType: invocation.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-        disableContextMenuOnHeader: true,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
           {
             headerCellElement,
             accessor: "functionDefinition" as keyof ROWTYPE,
-            disableContextMenuOnHeader: true,
             isRowIndexColumn: false,
             label: "functionDefinition",
             dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
@@ -102,7 +100,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             columns: [
               {
                 accessor: "entryInfo",
-                disableContextMenuOnHeader: true,
                 width: invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
                 setWidth: setInfoWidth,
                 minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
@@ -112,7 +109,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
               },
               {
                 accessor: "entryExpression",
-                disableContextMenuOnHeader: true,
                 width: undefined,
                 isRowIndexColumn: false,
                 label: "entryExpression",
