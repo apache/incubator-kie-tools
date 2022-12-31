@@ -253,12 +253,14 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
       setExpression((prev) => {
         if (kind === FunctionExpressionDefinitionKind.Feel) {
           return getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.Function, {
+            isHeadless: prev.isHeadless,
             id: prev.id ?? generateUuid(),
             name: prev.name,
             dataType: DmnBuiltInDataType.Undefined,
           });
         } else if (kind === FunctionExpressionDefinitionKind.Java) {
           return {
+            isHeadless: prev.isHeadless,
             name: prev.name,
             id: prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
@@ -268,6 +270,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           };
         } else if (kind === FunctionExpressionDefinitionKind.Pmml) {
           return {
+            isHeadless: prev.isHeadless,
             name: prev.name,
             id: prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,

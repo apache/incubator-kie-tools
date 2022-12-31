@@ -19,6 +19,7 @@
   color: var(--pf-global--Color--100);
   background-color: var(--pf-global--BackgroundColor--100);
   font-style: normal;
+  text-align: center;
 }
 .expression-container .cell--selected .literal-expression {
   background-color: var(--selected-cell);
