@@ -39,7 +39,7 @@ import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate, BeeTableCellUpda
 import "./DecisionTableExpression.css";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
-import { useBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
+import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
 
 type ROWTYPE = any; // FIXME: Tiago
 
@@ -139,7 +139,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [setExpression]
   );
 
-  const { onColumnResizingWidthChange } = useBeeTableColumnResizingWidths(decisionTable.id);
+  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(decisionTable.id);
 
   // FIXME: Tiago -> OMG
   // ***************************************************************************************

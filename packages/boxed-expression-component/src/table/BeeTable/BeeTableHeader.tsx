@@ -164,7 +164,10 @@ export function BeeTableHeader<R extends object>({
             onColumnNameOrDataTypeUpdate(column, columnIndex)({ name, dataType })
           }
           headerCellInfo={
-            <div className="header-cell-info" data-ouia-component-type="expression-column-header-cell-info">
+            <div
+              className="expression-info header-cell-info"
+              data-ouia-component-type="expression-column-header-cell-info"
+            >
               {column.headerCellElement ? (
                 column.headerCellElement
               ) : column.inlineEditable ? (
@@ -175,9 +178,11 @@ export function BeeTableHeader<R extends object>({
                   }}
                 />
               ) : (
-                <p className="pf-u-text-truncate label">{column.label}</p>
+                <p className="expression-info-name pf-u-text-truncate label">{column.label}</p>
               )}
-              {column.dataType ? <p className="pf-u-text-truncate data-type">({column.dataType})</p> : null}
+              {column.dataType ? (
+                <p className="expression-info-data-type pf-u-text-truncate data-type">({column.dataType})</p>
+              ) : null}
             </div>
           }
         />

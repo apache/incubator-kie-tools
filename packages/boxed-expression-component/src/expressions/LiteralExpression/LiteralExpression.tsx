@@ -149,11 +149,9 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
             selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
             onExpressionHeaderUpdated={onExpressionHeaderUpdated}
           >
-            <div className="expression-info">
-              <p className="expression-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>
-              <p className="expression-data-type pf-u-text-truncate">
-                ({literalExpression.dataType ?? DmnBuiltInDataType.Undefined})
-              </p>
+            <div className={"expression-info"}>
+              <p className="expression-info-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>
+              <p className="expression-info-data-type pf-u-text-truncate">({literalExpression.dataType})</p>
             </div>
           </ExpressionDefinitionHeaderMenu>
         </div>

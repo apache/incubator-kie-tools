@@ -16,22 +16,9 @@
 
 .expression-container .entry-info {
   width: 100%;
-}
-
-.expression-container .entry-info .entry-definition {
   padding: 0.25em;
 }
 
-.expression-container .entry-info .entry-definition.with-popover-menu {
+.expression-container .entry-info .with-popover-menu {
   cursor: pointer;
-}
-
-.expression-container .entry-info .entry-definition .entry-name {
-  white-space: nowrap;
-}
-
-.expression-container .entry-info .entry-definition .entry-data-type {
-  white-space: nowrap;
-  font-style: italic;
-  font-size: smaller;
 }

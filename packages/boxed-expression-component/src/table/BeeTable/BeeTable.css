@@ -52,11 +52,6 @@
   min-width: 60px;
 }
 
-.expression-container .table-component table th .data-type {
-  font-style: italic;
-  font-size: smaller;
-}
-
 .expression-container .table-component table th:not(:first-child) {
   text-align: center;
   background-color: #def3ff;
@@ -291,14 +286,6 @@
 .expression-container .pf-c-drawer .pf-c-drawer__splitter.error {
   background-color: red;
 }
-
-/** Text-area used as a cell */
-
-.expression-container .table-component table tbody td textarea {
-  resize: none;
-  border: none;
-}
-
 /** Additional row section */
 
 .expression-container .table-component table tbody .additional-row {

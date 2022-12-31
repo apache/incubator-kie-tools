@@ -30,7 +30,7 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
+import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useNestedExpressionContainer } from "../ContextExpression";
 import "./RelationExpression.css";
@@ -143,7 +143,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   //   });
   // }, [columns, pivotAwareNestedExpressionContainer]);
 
-  const { onColumnResizingWidthChange } = useBeeTableColumnResizingWidths(relationExpression.id);
+  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(relationExpression.id);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return columns.map((column, columnIndex) => ({

@@ -51,11 +51,11 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
 
   const renderEntryDefinition = useCallback(
     (args: { additionalCssClass?: string }) => (
-      <div className={`entry-definition ${args.additionalCssClass}`}>
-        <p className="entry-name pf-u-text-truncate" title={name}>
+      <div className={`expression-info ${args.additionalCssClass}`}>
+        <p className="expression-info-name pf-u-text-truncate" title={name}>
           {name}
         </p>
-        <p className="entry-data-type pf-u-text-truncate" title={dataType}>
+        <p className="expression-info-data-type pf-u-text-truncate" title={dataType}>
           ({dataType})
         </p>
       </div>

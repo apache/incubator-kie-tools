@@ -81,3 +81,13 @@
   padding: 0;
   margin: 0;
 }
+
+.expression-container .expression-info .expression-info-name {
+  white-space: nowrap;
+}
+
+.expression-container .expression-info .expression-info-data-type {
+  white-space: nowrap;
+  font-style: italic;
+  font-size: smaller;
+}

@@ -124,7 +124,7 @@ export function useBeeTableColumnResizingWidth(columnIndex: number, initialResiz
   return { resizingWidth, setResizingWidth: updateResizingWidth };
 }
 
-export function useBeeTableColumnResizingWidths(resizingWidthId: string) {
+export function usePublishedBeeTableColumnResizingWidths(resizingWidthId: string) {
   const [columnResizingWidths, setColumnResizingWidths] = useState<Map<number, ResizingWidth>>(new Map());
   const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
     setColumnResizingWidths((prev) => {
