@@ -105,11 +105,12 @@ export function BeeTableEditableCellContent({
           triggerReadMode(newValue);
           setEditing(false);
           onFeelTabKeyDown?.({ isShiftPressed: e.shiftKey });
+          e.preventDefault();
         }
       }
 
       if (NavigationKeysUtils.isEnter(eventKey)) {
-        if (e.ctrlKey || e.shiftKey) {
+        if (e.ctrlKey || e.altKey || e.metaKey) {
           // Let FeelInput handle this keypress, but prevent this event from bubbling up.
           // This is used for inserting new lines.
           e.stopPropagation();

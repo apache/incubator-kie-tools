@@ -52,7 +52,7 @@ export function BeeTableTh<R extends object>({
   column,
   isLastLevelColumn,
 }: React.PropsWithChildren<BeeTableThProps2<R>>) {
-  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
+  const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
   const thRef = useRef<HTMLTableCellElement>(null);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -65,7 +65,7 @@ export function BeeTableTh<R extends object>({
         return;
       }
 
-      // This index doesn't take into account the row index column, so we actually need to subtract 1.
+      // This index doesn't take into account the rowIndex column, so we actually need to subtract 1.
       onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex, groupType: groupType });
 
       if (hoverInfo.part === "left") {
@@ -111,7 +111,7 @@ export function BeeTableTh<R extends object>({
       th?.removeEventListener("mousemove", onMove);
       th?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, setActiveCell, setSelectionEnd]);
+  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd]);
 
   const addColumButtonStyle = useMemo(
     () =>
@@ -140,8 +140,9 @@ export function BeeTableTh<R extends object>({
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
+      // That's the right-click case to open the Context Menu at the right place.
       if (e.button !== 0 && isSelected) {
-        setActiveCell({
+        resetSelectionAt({
           columnIndex,
           rowIndex,
           isEditing: false,
@@ -150,7 +151,7 @@ export function BeeTableTh<R extends object>({
         return;
       }
       if (!isActive && !isEditing) {
-        const set = e.shiftKey ? setSelectionEnd : setActiveCell;
+        const set = e.shiftKey ? setSelectionEnd : resetSelectionAt;
         set({
           columnIndex,
           rowIndex,
@@ -158,19 +159,19 @@ export function BeeTableTh<R extends object>({
         });
       }
     },
-    [columnIndex, isActive, isEditing, isSelected, rowIndex, setActiveCell, setSelectionEnd]
+    [columnIndex, isActive, isEditing, isSelected, rowIndex, resetSelectionAt, setSelectionEnd]
   );
 
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setActiveCell({
+      resetSelectionAt({
         columnIndex,
         rowIndex,
         isEditing: columnIndex > 0, // Not rowIndex column
       });
     },
-    [columnIndex, rowIndex, setActiveCell]
+    [columnIndex, rowIndex, resetSelectionAt]
   );
 
   useLayoutEffect(() => {

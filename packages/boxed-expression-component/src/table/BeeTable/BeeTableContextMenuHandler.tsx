@@ -73,7 +73,7 @@ export function BeeTableContextMenuHandler({
 
       const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType;
 
-      return columnIndex === 0 // This is the "row index" column
+      return columnIndex === 0 // This is the rowIndex column
         ? []
         : [
             BeeTableOperation.ColumnInsertLeft,

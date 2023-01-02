@@ -63,7 +63,7 @@ export function BeeTableTd<R extends object>({
     return row.cells[columnIndex];
   }, [columnIndex, row]);
 
-  const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
+  const { resetSelectionAt, setSelectionEnd, mutateSelection } = useBeeTableSelectionDispatch();
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
   const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
 
@@ -119,12 +119,13 @@ export function BeeTableTd<R extends object>({
       td?.removeEventListener("mousemove", onMove);
       td?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, setActiveCell, setSelectionEnd]);
+  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd]);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
+      // That's the right-click case to open the Context Menu at the right place.
       if (e.button !== 0 && isSelected) {
-        setActiveCell({
+        resetSelectionAt({
           columnIndex,
           rowIndex,
           isEditing: false,
@@ -134,7 +135,7 @@ export function BeeTableTd<R extends object>({
       }
 
       if (!isActive && !isEditing) {
-        const set = e.shiftKey ? setSelectionEnd : setActiveCell;
+        const set = e.shiftKey ? setSelectionEnd : resetSelectionAt;
         set({
           columnIndex,
           rowIndex,
@@ -142,19 +143,19 @@ export function BeeTableTd<R extends object>({
         });
       }
     },
-    [columnIndex, isActive, isEditing, isSelected, rowIndex, setActiveCell, setSelectionEnd]
+    [columnIndex, isActive, isEditing, isSelected, rowIndex, resetSelectionAt, setSelectionEnd]
   );
 
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setActiveCell({
+      resetSelectionAt({
         columnIndex,
         rowIndex,
         isEditing: columnIndex > 0, // Not rowIndex column
       });
     },
-    [columnIndex, rowIndex, setActiveCell]
+    [columnIndex, rowIndex, resetSelectionAt]
   );
 
   const onAddRowButtonClick = useCallback(

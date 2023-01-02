@@ -33,6 +33,7 @@ import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { BeeTableCellUpdate, BeeTableHeader } from "./BeeTableHeader";
 import {
   BeeTableSelectionContextProvider,
+  SelectionPart,
   useBeeTableCell,
   useBeeTableSelectionDispatch,
 } from "./BeeTableSelectionContext";
@@ -89,7 +90,7 @@ export function BeeTable2<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
-  const { setActiveCell, setSelectionEnd, erase, copy, cut, paste, adaptSelection } = useBeeTableSelectionDispatch();
+  const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection } = useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -221,15 +222,14 @@ export function BeeTable2<R extends object>({
       if (NavigationKeysUtils.isEnter(key)) {
         e.stopPropagation();
         e.preventDefault();
-        setActiveCell((prev) => {
-          if (!prev) {
-            return prev;
-          }
-          return {
-            ...prev,
-            isEditing: !prev.isEditing,
-            keepSelection: true,
-          };
+        mutateSelection({
+          part: SelectionPart.ActiveCell,
+          columnCount: reactTableInstance.allColumns.length,
+          rowCount: reactTableInstance.rows.length,
+          deltaColumns: 0,
+          deltaRows: 0,
+          isEditingActiveCell: true,
+          keepInsideSelection: true,
         });
       }
 
@@ -238,131 +238,82 @@ export function BeeTable2<R extends object>({
         e.stopPropagation();
         e.preventDefault();
         if (e.shiftKey) {
-          setActiveCell((prev) => {
-            if (!prev) {
-              return prev;
-            }
-
-            const isRowIndexColumn = prev.columnIndex === 0;
-            if (isRowIndexColumn) {
-              return prev;
-            }
-
-            const newColumnIndex = Math.max(prev.columnIndex - 1, 1);
-            return {
-              columnIndex: newColumnIndex,
-              rowIndex: prev?.rowIndex ?? -1,
-              isEditing: false,
-            };
+          mutateSelection({
+            part: SelectionPart.ActiveCell,
+            columnCount: reactTableInstance.allColumns.length,
+            rowCount: reactTableInstance.rows.length,
+            deltaColumns: -1,
+            deltaRows: 0,
+            isEditingActiveCell: false,
+            keepInsideSelection: true,
           });
         } else {
-          setActiveCell((prev) => {
-            if (!prev) {
-              return prev;
-            }
-
-            const isRowIndexColumn = prev.columnIndex === 0;
-            if (isRowIndexColumn) {
-              return prev;
-            }
-
-            const newColumnIndex = Math.min(prev.columnIndex + 1, reactTableInstance.allColumns.length - 1);
-            return {
-              columnIndex: newColumnIndex,
-              rowIndex: prev?.rowIndex ?? -1,
-              isEditing: false,
-            };
+          mutateSelection({
+            part: SelectionPart.ActiveCell,
+            columnCount: reactTableInstance.allColumns.length,
+            rowCount: reactTableInstance.rows.length,
+            deltaColumns: 1,
+            deltaRows: 0,
+            isEditingActiveCell: false,
+            keepInsideSelection: true,
           });
         }
       }
 
       // ARROWS
 
-      const setActiveOrSelectionEndCell = e.shiftKey ? setSelectionEnd : setActiveCell;
+      const selectionPart = e.shiftKey ? SelectionPart.SelectionEnd : SelectionPart.ActiveCell;
 
       if (NavigationKeysUtils.isArrowLeft(key)) {
         e.stopPropagation();
         e.preventDefault();
-        setActiveOrSelectionEndCell((prev) => {
-          if (!prev) {
-            return prev;
-          }
-
-          const isRowIndexColumn = prev.columnIndex === 0;
-          if (isRowIndexColumn) {
-            return prev;
-          }
-
-          const newColumnIndex = Math.max(prev.columnIndex - 1, 1);
-          return {
-            columnIndex: newColumnIndex,
-            rowIndex: prev?.rowIndex ?? -1,
-            isEditing: false,
-          };
+        mutateSelection({
+          part: selectionPart,
+          columnCount: reactTableInstance.allColumns.length,
+          rowCount: reactTableInstance.rows.length,
+          deltaColumns: -1,
+          deltaRows: 0,
+          isEditingActiveCell: false,
+          keepInsideSelection: false,
         });
       }
       if (NavigationKeysUtils.isArrowRight(key)) {
         e.stopPropagation();
         e.preventDefault();
-        setActiveOrSelectionEndCell((prev) => {
-          if (!prev) {
-            return prev;
-          }
-
-          const isRowIndexColumn = prev.columnIndex === 0;
-          if (isRowIndexColumn) {
-            return prev;
-          }
-
-          // FIXME: Tiago -> Max should be actually take headerGroups into account.
-          const newColumnIndex = Math.min(prev.columnIndex + 1, reactTableInstance.allColumns.length - 1);
-          return {
-            columnIndex: newColumnIndex,
-            rowIndex: prev?.rowIndex ?? -1,
-            isEditing: false,
-          };
+        mutateSelection({
+          part: selectionPart,
+          columnCount: reactTableInstance.allColumns.length,
+          rowCount: reactTableInstance.rows.length,
+          deltaColumns: 1,
+          deltaRows: 0,
+          isEditingActiveCell: false,
+          keepInsideSelection: false,
         });
       }
       if (NavigationKeysUtils.isArrowUp(key)) {
         e.stopPropagation();
         e.preventDefault();
-        setActiveOrSelectionEndCell((prev) => {
-          if (!prev) {
-            return prev;
-          }
-
-          const isHeaderCell = prev.rowIndex < 0;
-          if (isHeaderCell) {
-            return prev;
-          }
-
-          const newRowIndex = Math.max(prev.rowIndex - 1, 0);
-          return {
-            columnIndex: prev!.columnIndex,
-            rowIndex: newRowIndex,
-            isEditing: false,
-          };
+        mutateSelection({
+          part: selectionPart,
+          columnCount: reactTableInstance.allColumns.length,
+          rowCount: reactTableInstance.rows.length,
+          deltaColumns: 0,
+          deltaRows: -1,
+          isEditingActiveCell: false,
+          keepInsideSelection: false,
         });
       }
       if (NavigationKeysUtils.isArrowDown(key)) {
         e.stopPropagation();
         e.preventDefault();
-        setActiveOrSelectionEndCell((prev) => {
-          if (!prev) {
-            return prev;
-          }
-
-          const isHeaderCell = prev.rowIndex < 0;
-          if (isHeaderCell) {
-            return prev;
-          }
-
-          const newRowIndex = Math.min(prev.rowIndex + 1, reactTableInstance.rows.length - 1);
-          return {
-            columnIndex: prev!.columnIndex,
-            rowIndex: newRowIndex,
-            isEditing: false,
-          };
+        mutateSelection({
+          part: selectionPart,
+          columnCount: reactTableInstance.allColumns.length,
+          rowCount: reactTableInstance.rows.length,
+          deltaColumns: 0,
+          deltaRows: 1,
+          isEditingActiveCell: false,
+          keepInsideSelection: false,
         });
       }
 
@@ -379,7 +330,7 @@ export function BeeTable2<R extends object>({
       if (NavigationKeysUtils.isEsc(key)) {
         e.stopPropagation();
         e.preventDefault();
-        setActiveCell(undefined);
+        resetSelectionAt(undefined);
         // FIXME: Tiago: Do it.
         // return focusParentCell(currentTarget);
       }
@@ -408,16 +359,23 @@ export function BeeTable2<R extends object>({
         e.stopPropagation();
         e.preventDefault();
 
-        // Maybe keep activeCell where it is?
-        setActiveCell({
-          rowIndex: 0,
-          columnIndex: 1,
-          isEditing: false,
+        mutateSelection({
+          part: SelectionPart.SelectionStart,
+          columnCount: reactTableInstance.allColumns.length,
+          rowCount: reactTableInstance.rows.length,
+          deltaColumns: -(reactTableInstance.allColumns.length - 1),
+          deltaRows: -(reactTableInstance.rows.length - 1),
+          isEditingActiveCell: false,
+          keepInsideSelection: false,
         });
-        setSelectionEnd({
-          rowIndex: reactTableInstance.rows.length - 1,
-          columnIndex: reactTableInstance.allColumns.length - 1,
-          isEditing: false,
+        mutateSelection({
+          part: SelectionPart.SelectionEnd,
+          columnCount: reactTableInstance.allColumns.length,
+          rowCount: reactTableInstance.rows.length,
+          deltaColumns: +(reactTableInstance.allColumns.length - 1),
+          deltaRows: +(reactTableInstance.rows.length - 1),
+          isEditingActiveCell: false,
+          keepInsideSelection: false,
         });
       }
 
@@ -427,16 +385,16 @@ export function BeeTable2<R extends object>({
       }
     },
     [
-      currentlyOpenContextMenu,
       enableKeyboardNavigation,
+      currentlyOpenContextMenu,
+      resetSelectionAt,
+      mutateSelection,
       reactTableInstance.allColumns.length,
       reactTableInstance.rows.length,
       erase,
       copy,
       cut,
       paste,
-      setActiveCell,
-      setSelectionEnd,
     ]
   );
 
@@ -600,7 +558,7 @@ function BeeTableDefaultCell<R extends object>({
   cellProps: ReactTable.CellProps<R>;
   onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
 }) {
-  const { setActiveCell } = useBeeTableSelectionDispatch();
+  const { resetSelectionAt, mutateSelection } = useBeeTableSelectionDispatch();
 
   const columnIndex = useMemo(() => {
     return cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);
@@ -614,7 +572,7 @@ function BeeTableDefaultCell<R extends object>({
           row: cellProps.row.original,
           rowIndex: cellProps.row.index,
           column: cellProps.column,
-          columnIndex: columnIndex - 1, // Subtract one because of the row index column.
+          columnIndex: columnIndex - 1, // Subtract one because of the rowIndex column.
         },
       ]);
     },
@@ -623,14 +581,17 @@ function BeeTableDefaultCell<R extends object>({
 
   const setEditing = useCallback(
     (isEditing: boolean) => {
-      setActiveCell((prev) => {
-        if (!prev) {
-          return prev;
-        }
-        return { ...prev, isEditing };
+      mutateSelection({
+        part: SelectionPart.ActiveCell,
+        columnCount: cellProps.allColumns.length,
+        rowCount: cellProps.rows.length,
+        deltaColumns: 0,
+        deltaRows: 0,
+        isEditingActiveCell: isEditing,
+        keepInsideSelection: true,
       });
     },
-    [setActiveCell]
+    [cellProps.allColumns.length, cellProps.rows.length, mutateSelection]
   );
 
   const getValue = useCallback(() => {
@@ -638,6 +599,36 @@ function BeeTableDefaultCell<R extends object>({
   }, [cellProps.value]);
 
   const { isActive, isEditing } = useBeeTableCell(cellProps.row.index, columnIndex, onCellChanged, getValue);
+
+  const navigateVertically = useCallback(
+    (args: { isShiftPressed: boolean }) => {
+      mutateSelection({
+        part: SelectionPart.ActiveCell,
+        columnCount: cellProps.allColumns.length,
+        rowCount: cellProps.rows.length,
+        deltaColumns: 0,
+        deltaRows: args.isShiftPressed ? -1 : 1,
+        isEditingActiveCell: false,
+        keepInsideSelection: true,
+      });
+    },
+    [cellProps.allColumns.length, cellProps.rows.length, mutateSelection]
+  );
+
+  const navigateHorizontally = useCallback(
+    (args: { isShiftPressed: boolean }) => {
+      mutateSelection({
+        part: SelectionPart.ActiveCell,
+        columnCount: cellProps.allColumns.length,
+        rowCount: cellProps.rows.length,
+        deltaColumns: args.isShiftPressed ? -1 : 1,
+        deltaRows: 0,
+        isEditingActiveCell: false,
+        keepInsideSelection: true,
+      });
+    },
+    [cellProps.allColumns.length, cellProps.rows.length, mutateSelection]
+  );
 
   return (
     <BeeTableEditableCellContent
@@ -647,6 +638,8 @@ function BeeTableDefaultCell<R extends object>({
       onChange={onCellChanged}
       value={cellProps.value}
       isReadOnly={isReadOnly}
+      onFeelEnterKeyDown={navigateVertically}
+      onFeelTabKeyDown={navigateHorizontally}
     />
   );
 }

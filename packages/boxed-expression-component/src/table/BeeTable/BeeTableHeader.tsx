@@ -98,7 +98,7 @@ export function BeeTableHeader<R extends object>({
       return ({ name = "", dataType = DmnBuiltInDataType.Undefined }) => {
         onColumnUpdates?.([
           {
-            // Subtract one because of the row index column.
+            // Subtract one because of the rowIndex column.
             columnIndex: columnIndex - 1,
             dataType,
             name,

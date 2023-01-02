@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
+import { assertUnreachable } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableSelectionActiveCell<R extends object> {
@@ -11,6 +12,12 @@ export interface BeeTableSelectionContextType<R extends object> {
   activeCell: BeeTableSelectionActiveCell<R> | undefined;
   selectionEnd: BeeTableSelectionActiveCell<R> | undefined;
   selectionStart: BeeTableSelectionActiveCell<R> | undefined;
+}
+
+export enum SelectionPart {
+  ActiveCell,
+  SelectionEnd,
+  SelectionStart,
 }
 
 export interface BeeTableSelectionDispatchContextType<R extends object> {
@@ -28,7 +35,16 @@ export interface BeeTableSelectionDispatchContextType<R extends object> {
     atColumnIndex: number;
     columnCountDelta: number;
   }): void;
-  setActiveCell: React.Dispatch<
+  mutateSelection: (args: {
+    part: SelectionPart;
+    columnCount: number;
+    rowCount: number;
+    deltaColumns: number;
+    deltaRows: number;
+    isEditingActiveCell: boolean;
+    keepInsideSelection: boolean;
+  }) => void;
+  resetSelectionAt: React.Dispatch<
     React.SetStateAction<(BeeTableSelectionActiveCell<R> & { keepSelection?: boolean }) | undefined>
   >;
   setSelectionEnd: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell<R> | undefined>>;
@@ -104,6 +120,166 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
   const dispatch = useMemo<BeeTableSelectionDispatchContextType<R>>(() => {
     return {
+      mutateSelection: ({
+        part,
+        columnCount,
+        rowCount,
+        deltaColumns,
+        deltaRows,
+        isEditingActiveCell,
+        keepInsideSelection,
+      }) => {
+        setSelection((prev) => {
+          if (!prev.active) {
+            return prev;
+          }
+
+          const isExpanded = isSelectionExpanded(prev);
+          const { startColumn, startRow, endColumn, endRow } = getSelectionIterationBoundaries(prev);
+          const boundaries =
+            isExpanded && keepInsideSelection
+              ? {
+                  rows: { min: startRow, max: endRow },
+                  columns: { min: startColumn, max: endColumn },
+                }
+              : {
+                  rows: { min: 0, max: rowCount - 1 },
+                  columns: { min: 1, max: columnCount - 1 },
+                };
+
+          const prevCoords =
+            part === SelectionPart.ActiveCell
+              ? { columnIndex: prev.active.columnIndex, rowIndex: prev.active.rowIndex }
+              : part === SelectionPart.SelectionEnd
+              ? { columnIndex: prev.selectionEnd?.columnIndex, rowIndex: prev.selectionEnd?.rowIndex }
+              : part === SelectionPart.SelectionStart
+              ? { columnIndex: prev.selectionStart?.columnIndex, rowIndex: prev.selectionStart?.rowIndex }
+              : (() => {
+                  throw new Error("Impossible case for SelectionPart");
+                })();
+
+          const newColumnIndex =
+            prevCoords.columnIndex === 0
+              ? prevCoords.columnIndex // Don't move away from rowIndex cells
+              : Math.min(
+                  boundaries.columns.max,
+                  Math.max(boundaries.columns.min, (prevCoords.columnIndex ?? 0) + deltaColumns)
+                );
+
+          const newRowIndex =
+            (prevCoords.rowIndex ?? 0) < 0
+              ? prevCoords.rowIndex ?? 0 // Don't move away from header cells
+              : Math.min(boundaries.rows.max, Math.max(boundaries.rows.min, (prevCoords.rowIndex ?? 0) + deltaRows));
+
+          switch (part) {
+            case SelectionPart.SelectionEnd:
+              return {
+                ...prev,
+                selectionEnd: {
+                  columnIndex: newColumnIndex,
+                  rowIndex: newRowIndex,
+                  isEditing: prev.selectionEnd?.isEditing ?? false,
+                },
+              };
+            case SelectionPart.SelectionStart:
+              return {
+                ...prev,
+                selectionStart: {
+                  columnIndex: newColumnIndex,
+                  rowIndex: newRowIndex,
+                  isEditing: prev.selectionStart?.isEditing ?? false,
+                },
+              };
+            case SelectionPart.ActiveCell:
+              if (!isExpanded || !keepInsideSelection) {
+                return {
+                  active: {
+                    columnIndex: newColumnIndex,
+                    rowIndex: newRowIndex,
+                    isEditing: isEditingActiveCell,
+                  },
+                  selectionEnd: {
+                    columnIndex: newColumnIndex,
+                    rowIndex: newRowIndex,
+                    isEditing: false,
+                  },
+                  selectionStart: {
+                    columnIndex: newColumnIndex,
+                    rowIndex: newRowIndex,
+                    isEditing: false,
+                  },
+                };
+              }
+
+              // Wrap-around inside selection
+              //
+              // Direction: left-to-right, top-to-bottom
+              //
+              // ===============================================
+              // Enter         --> Bottom-Up, RTL
+              // Shift + Enter --> Top-Down, LTR
+              // Tab           --> LTR, Top-Down
+              // Shift + Tab   --> RTL, Bottom-Up
+              // ===============================================
+
+              const targetColumn = prev.active.columnIndex + deltaColumns;
+              const targetRow = prev.active.rowIndex + deltaRows;
+
+              if (targetRow > boundaries.rows.max) {
+                const nextColumn = prev.active.columnIndex + 1;
+                return {
+                  ...prev,
+                  active: {
+                    columnIndex: nextColumn > boundaries.columns.max ? boundaries.columns.min : nextColumn,
+                    rowIndex: boundaries.rows.min,
+                    isEditing: isEditingActiveCell,
+                  },
+                };
+              } else if (targetColumn < boundaries.columns.min) {
+                const previousRow = prev.active.rowIndex - 1;
+                return {
+                  ...prev,
+                  active: {
+                    columnIndex: boundaries.columns.max,
+                    rowIndex: previousRow < boundaries.rows.min ? boundaries.rows.max : previousRow,
+                    isEditing: isEditingActiveCell,
+                  },
+                };
+              } else if (targetColumn > boundaries.columns.max) {
+                const nextRow = prev.active.rowIndex + 1;
+                return {
+                  ...prev,
+                  active: {
+                    columnIndex: boundaries.columns.min,
+                    rowIndex: nextRow > boundaries.rows.max ? boundaries.rows.min : nextRow,
+                    isEditing: isEditingActiveCell,
+                  },
+                };
+              } else if (targetRow < boundaries.rows.min) {
+                const previousColumn = prev.active.columnIndex - 1;
+                return {
+                  ...prev,
+                  active: {
+                    columnIndex: previousColumn < boundaries.columns.min ? boundaries.columns.max : previousColumn,
+                    rowIndex: boundaries.rows.max,
+                    isEditing: isEditingActiveCell,
+                  },
+                };
+              } else {
+                return {
+                  ...prev,
+                  active: {
+                    columnIndex: newColumnIndex,
+                    rowIndex: newRowIndex,
+                    isEditing: isEditingActiveCell,
+                  },
+                };
+              }
+            default:
+              assertUnreachable(part);
+          }
+        });
+      },
       updateResizingWidths: (
         columnIndex: number,
         getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth
@@ -298,7 +474,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
           }
         }
       },
-      setActiveCell: (activeCell) => {
+      resetSelectionAt: (activeCell) => {
         setSelection((prev) => {
           const newActiveCell = typeof activeCell === "function" ? activeCell(prev.active) : activeCell;
           return {
@@ -528,4 +704,12 @@ function getSelectionIterationBoundaries(selection: BeeTableSelection<any>) {
     startRow: Math.min(selection.selectionStart?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
     endRow: Math.max(selection.selectionStart?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
   };
+}
+
+function coincides(a: BeeTableSelectionActiveCell<any> | undefined, b: BeeTableSelectionActiveCell<any> | undefined) {
+  return a?.columnIndex === b?.columnIndex && a?.rowIndex === b?.rowIndex;
+}
+
+function isSelectionExpanded(selection: BeeTableSelection<any>) {
+  return !coincides(selection.active, selection.selectionEnd) || !coincides(selection.active, selection.selectionStart);
 }
