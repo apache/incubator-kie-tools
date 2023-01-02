@@ -215,7 +215,11 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     }
 
     private List<ClauseRequirement> generateOutputClauseRequirementsForFirstLevel(final ItemDefinition itemDefinition) {
-        return itemDefinition.getItemComponent()
+        final List<ItemDefinition> outputItemDefinitions =
+                itemDefinition.getItemComponent().isEmpty() ?
+                        Collections.singletonList(itemDefinition) : // it is a custom type, but not a structure
+                        itemDefinition.getItemComponent();          // it is a custom type, a structure
+        return outputItemDefinitions
                 .stream()
                 .map(this::definitionToClauseRequirementMapper)
                 .collect(Collectors.toList());
@@ -231,8 +235,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         return new ClauseRequirement(
                 name,
                 typeRef,
-                Optional.of(itemDefinitionUtils.getConstraintText(itemDefinition)),
-                Optional.of(itemDefinitionUtils.getConstraintType(itemDefinition)));
+                Optional.ofNullable(itemDefinitionUtils.getConstraintText(itemDefinition)),
+                Optional.ofNullable(itemDefinitionUtils.getConstraintType(itemDefinition)));
     }
 
     private boolean typeRefDoesNotMatchAnyDefinition(final QName typeRef) {
@@ -368,8 +372,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                     new ClauseRequirement(
                             text,
                             getQName(itemDefinition),
-                            Optional.of(itemDefinitionUtils.getConstraintText(itemDefinition)),
-                            Optional.of(itemDefinitionUtils.getConstraintType(itemDefinition))
+                            Optional.ofNullable(itemDefinitionUtils.getConstraintText(itemDefinition)),
+                            Optional.ofNullable(itemDefinitionUtils.getConstraintType(itemDefinition))
                     )
             );
         } else {
@@ -393,7 +397,19 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     }
 
     private Predicate<ItemDefinition> typeRefIsCustom(final QName typeRef) {
-        return itemDef -> Objects.equals(itemDef.getName().getValue(), typeRef.getLocalPart());
+        final Predicate<ItemDefinition> isTypeRefCustomType = itemDefinition -> {
+            if (!Objects.equals(itemDefinition.getName().getValue(), typeRef.getLocalPart())) {
+                if (itemDefinition.getNameHolder() != null) {
+                    return Objects.equals(itemDefinition.getNameHolder().getValue().getValue(), typeRef.getLocalPart());
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        };
+
+        return isTypeRefCustomType;
     }
 
     private QName getQName(final ItemDefinition itemDefinition) {

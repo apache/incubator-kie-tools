@@ -814,7 +814,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final OutputClause outputClause = outputClauses.get(0);
 
-        assertEquals(DEFAULT_OUTPUT_NAME, outputClause.getName());
+        assertEquals(TYPE_PERSON, outputClause.getName());
         assertEquals(tPersonTypeRef, outputClause.getTypeRef());
     }
 
