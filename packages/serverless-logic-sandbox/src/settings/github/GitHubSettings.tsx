@@ -224,16 +224,7 @@ export function GitHubSettings() {
               />
             </InputGroup>
           </FormGroup>
-          <Button
-            isInline={true}
-            key="quickstart"
-            variant="link"
-            onClick={() => {
-              /* TODO implement quickstart guide */
-            }}
-          >
-            Need help getting started? Follow our quickstart guide.
-          </Button>
+          <br />
         </Form>
       </Modal>
     </Page>
