@@ -42,10 +42,6 @@
   border-collapse: collapse;
 }
 
-.boxed-expression-provider textarea {
-  outline: none;
-}
-
 .boxed-expression-provider button,
 .boxed-expression-provider input,
 .boxed-expression-provider optgroup,

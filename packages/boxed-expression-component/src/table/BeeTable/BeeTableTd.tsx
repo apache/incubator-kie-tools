@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { Resizer } from "../../resizing/Resizer";
 import * as ReactTable from "react-table";
@@ -164,7 +164,6 @@ export function BeeTableTd<R extends object>({
       if (!hoverInfo.isHovered) {
         return;
       }
-      e.stopPropagation();
 
       onRowAdded?.({ beforeIndex: hoverInfo.part === "upper" ? rowIndex : rowIndex + 1 });
 
@@ -195,7 +194,7 @@ export function BeeTableTd<R extends object>({
     [hoverInfo]
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isActive && !isEditing) {
       tdRef.current?.focus();
     }

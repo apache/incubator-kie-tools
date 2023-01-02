@@ -117,6 +117,7 @@
 .expression-container .table-component table thead th.editing {
   box-shadow: inset 0px 0px 20px -5px darkgrey;
 }
+.expression-container .literal-expression-body.editing,
 .expression-container .table-component table tbody td.editing {
   box-shadow: 0px 0px 20px -5px darkgrey;
 }

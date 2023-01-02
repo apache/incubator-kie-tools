@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
@@ -49,6 +49,7 @@ export function BeeTableTh<R extends object>({
   columnIndex,
   rowIndex,
   groupType,
+  column,
   isLastLevelColumn,
 }: React.PropsWithChildren<BeeTableThProps2<R>>) {
   const { setActiveCell, setSelectionEnd } = useBeeTableSelectionDispatch();
@@ -124,7 +125,18 @@ export function BeeTableTh<R extends object>({
     [hoverInfo]
   );
 
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(
+    rowIndex,
+    columnIndex,
+    undefined,
+    useCallback(() => {
+      if (column.dataType) {
+        return `${column.label} (${column.dataType})`;
+      } else {
+        return column.label;
+      }
+    }, [column.dataType, column.label])
+  );
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -161,7 +173,7 @@ export function BeeTableTh<R extends object>({
     [columnIndex, rowIndex, setActiveCell]
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isActive && !isEditing) {
       thRef.current?.focus();
     }

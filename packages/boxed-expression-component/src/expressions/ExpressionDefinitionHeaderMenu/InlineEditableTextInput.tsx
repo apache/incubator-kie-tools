@@ -18,13 +18,14 @@ import * as React from "react";
 import { ChangeEvent, useCallback, useMemo, useState, FocusEvent, useEffect, useRef } from "react";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { NavigationKeysUtils } from "../../keysUtils";
 
 export interface InlineEditableTextInputProps {
   /** Text value */
   value: string;
   /** Callback executed when text changes */
   onTextChange: (updatedValue: string, event?: ChangeEvent<HTMLInputElement>) => void;
-  /** Callback executed when user cancel by pressing escape */
+  /** Callback executed when user cancel by pressing esc */
   onCancel?: (event: KeyboardEvent) => void;
   /** Callback executed when user toggle the state to edit/read mode */
   onToggle?: (isReadMode: boolean) => void;
@@ -56,15 +57,12 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
 
   const onInputKeyDown = useMemo(
     () => (event: KeyboardEvent) => {
-      const pressedEnter = _.lowerCase(event.key) === "enter";
-      const pressedEscape = _.lowerCase(event.key) === "escape";
-
       onKeyDown(event);
 
-      if (pressedEnter) {
+      if (NavigationKeysUtils.isEnter(event.key)) {
         (event.currentTarget as HTMLElement)?.blur();
       }
-      if (pressedEscape) {
+      if (NavigationKeysUtils.isEsc(event.key)) {
         onCancel(event);
         setToggle(true);
         onToggle(true);

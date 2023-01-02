@@ -61,7 +61,7 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
 
   useEffect(() => {
     function handleEscPressed(e: KeyboardEvent) {
-      if (NavigationKeysUtils.isEscape(e.key)) {
+      if (NavigationKeysUtils.isEsc(e.key)) {
         setCurrentlyOpenContextMenu(undefined);
       }
     }

@@ -58,12 +58,16 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     [entryExpression, contextEntry, rowIndex, onEntryUpdate, entryInfo.id]
   );
 
-  const { isActive, isEditing } = useBeeTableCell(rowIndex, columnIndex);
+  useBeeTableCell(
+    rowIndex,
+    columnIndex,
+    undefined,
+    useCallback(() => `${entryInfo.name} (${entryInfo.dataType})`, [entryInfo.dataType, entryInfo.name])
+  );
 
   return (
     <div className="context-entry-info-cell">
       <ContextEntryInfo
-        isPopoverOpen={isEditing}
         id={entryInfo.id}
         name={entryInfo.name}
         dataType={entryInfo.dataType}

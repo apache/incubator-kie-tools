@@ -27,7 +27,7 @@ export class NavigationKeysUtils {
     return /^delete$/i.test(key);
   }
 
-  static isEscape(key: string) {
+  static isEsc(key: string) {
     return /^escape$/i.test(key);
   }
 

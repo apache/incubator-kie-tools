@@ -131,7 +131,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();
         popoverMenuRef?.current?.setIsVisible(false);
-      } else if (NavigationKeysUtils.isEscape(e.key)) {
+      } else if (NavigationKeysUtils.isEsc(e.key)) {
         resetFormData();
         popoverMenuRef?.current?.setIsVisible(false);
       }

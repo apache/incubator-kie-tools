@@ -207,8 +207,8 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const inputSection = {
       groupType: DecisionTableColumnType.InputClause,
       id: "Inputs",
-      accessor: "Input" as any,
-      label: "Input",
+      accessor: "Inputs" as any,
+      label: "Inputs",
       dataType: undefined as any,
       cssClasses: "decision-table--input",
       isRowIndexColumn: false,
@@ -235,7 +235,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       label: "Annotations",
       cssClasses: "decision-table--annotation",
       columns: annotationColumns,
-      inlineEditable: true,
+      inlineEditable: false,
       isRowIndexColumn: false,
       dataType: undefined as any,
       width: undefined,
@@ -316,7 +316,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         const n = { ...prev };
         for (const u of columnUpdates) {
           // This is the Output column aggregator column, which represents the entire expression name and dataType
-          if (u.column.depth === 0) {
+          if (u.column.depth === 0 && u.column.groupType === DecisionTableColumnType.OutputClause) {
             n.name = u.name;
             n.dataType = u.dataType;
             continue;

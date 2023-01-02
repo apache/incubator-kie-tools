@@ -376,7 +376,7 @@ export function BeeTable2<R extends object>({
 
       // ESC
 
-      if (NavigationKeysUtils.isEscape(key)) {
+      if (NavigationKeysUtils.isEsc(key)) {
         e.stopPropagation();
         e.preventDefault();
         setActiveCell(undefined);
@@ -637,11 +637,12 @@ function BeeTableDefaultCell<R extends object>({
     return cellProps.value;
   }, [cellProps.value]);
 
-  const { isEditing } = useBeeTableCell(cellProps.row.index, columnIndex, onCellChanged, getValue);
+  const { isActive, isEditing } = useBeeTableCell(cellProps.row.index, columnIndex, onCellChanged, getValue);
 
   return (
     <BeeTableEditableCellContent
       isEditing={isEditing}
+      isActive={isActive}
       setEditing={setEditing}
       onChange={onCellChanged}
       value={cellProps.value}

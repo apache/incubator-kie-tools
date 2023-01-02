@@ -15,13 +15,14 @@
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
-import { FeelEditorService, FeelInput, FeelInputProps, FeelInputRef } from "@kie-tools/feel-input-component";
+import { FeelEditorService, FeelInput } from "@kie-tools/feel-input-component";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils";
 import "./BeeTableEditableCellContent.css";
 
 const CELL_LINE_HEIGHT = 20;
+
 const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
   fixedOverflowWidgets: true,
   lineNumbers: "off",
@@ -31,15 +32,20 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
   automaticLayout: true,
 };
 
-export const READ_MODE = "editable-cell--read-mode";
-export const EDIT_MODE = "editable-cell--edit-mode";
+enum Mode {
+  Read,
+  Edit,
+}
 
 export interface BeeTableEditableCellContentProps {
   value: string;
   onChange: (value: string) => void;
   isReadOnly: boolean;
   isEditing: boolean;
+  isActive: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  onFeelTabKeyDown?: (args: { isShiftPressed: boolean }) => void;
+  onFeelEnterKeyDown?: (args: { isShiftPressed: boolean }) => void;
 }
 
 export function BeeTableEditableCellContent({
@@ -47,26 +53,28 @@ export function BeeTableEditableCellContent({
   onChange,
   isReadOnly,
   isEditing,
+  isActive,
   setEditing,
+  onFeelTabKeyDown,
+  onFeelEnterKeyDown,
 }: BeeTableEditableCellContentProps) {
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
   const [preview, setPreview] = useState<string>(value);
-  const [previousValue, setPreviousValue] = useState("");
-  const [commandStack, setCommand] = useState<Array<string>>([]);
-
-  const feelInputRef = useRef<FeelInputRef>(null);
+  const [previousValue, setPreviousValue] = useState(value);
+  const [editingValue, setEditingValue] = useState(value);
 
   const mode = useMemo(() => {
-    return isEditing && !isReadOnly ? EDIT_MODE : READ_MODE;
+    return isEditing && !isReadOnly ? Mode.Edit : Mode.Read;
   }, [isEditing, isReadOnly]);
 
   useEffect(() => {
     setPreviousValue((prev) => (isEditing ? prev : value));
+    setEditingValue((prev) => (isEditing ? prev : value));
   }, [isEditing, value]);
 
   const triggerReadMode = useCallback(
     (newValue: string) => {
-      if (mode !== EDIT_MODE) {
+      if (mode !== Mode.Edit) {
         return;
       }
 
@@ -77,8 +85,6 @@ export function BeeTableEditableCellContent({
     [mode, value, onChange]
   );
 
-  // Feel Handlers ===========================================================
-
   const onFeelBlur = useCallback(
     (valueOnBlur: string) => {
       triggerReadMode(valueOnBlur);
@@ -86,67 +92,46 @@ export function BeeTableEditableCellContent({
     },
     [setEditing, triggerReadMode]
   );
+  (window as any).a = FeelEditorService.getStandaloneEditor();
 
-  const onFeelKeyDown: FeelInputProps["onKeyDown"] = useCallback(
-    (e, newValue) => {
-      const key = e?.code ?? "";
-      const isEnter = NavigationKeysUtils.isEnter(key);
-      const isTab = NavigationKeysUtils.isTab(key);
-      const isEsc = NavigationKeysUtils.isEscape(key);
+  const onFeelKeyDown = useCallback(
+    (e: Monaco.IKeyboardEvent, newValue: string) => {
+      const eventKey = e?.code ?? "";
 
-      if (isEnter || isTab || isEsc) {
-        e.preventDefault();
-      }
-
-      if (isTab) {
-        // FIXME: Tiago
-        // This is a hack. Ideally, this would be treated inside FeelInput.
-        // Tab shouldn't move out from the cell if the autocompletion widget is open.
-        if (document.querySelector(".suggest-widget.visible")) {
+      if (NavigationKeysUtils.isTab(eventKey)) {
+        if (FeelEditorService.isSuggestWidgetOpen()) {
           // Do nothing.
         } else {
           triggerReadMode(newValue);
           setEditing(false);
+          onFeelTabKeyDown?.({ isShiftPressed: e.shiftKey });
         }
       }
 
-      if (isEnter) {
+      if (NavigationKeysUtils.isEnter(eventKey)) {
         if (e.ctrlKey || e.shiftKey) {
-          feelInputRef.current?.insertNewLineToMonaco();
-        } else if (!FeelEditorService.isSuggestWidgetOpen()) {
+          // Let FeelInput handle this keypress, but prevent this event from bubbling up.
+          // This is used for inserting new lines.
+          e.stopPropagation();
+        } else if (FeelEditorService.isSuggestWidgetOpen()) {
+          // Do nothing
+        } else {
           triggerReadMode(newValue);
           setEditing(false);
+          onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
         }
       }
 
-      if (isEsc) {
-        // FIXME: Tiago
-        // This is a hack. Ideally, this would be treated inside FeelInput.
-        // Esc shouldn't move out from the cell if the autocompletion widget is open.
-        if (document.querySelector(".suggest-widget.visible")) {
+      if (NavigationKeysUtils.isEsc(eventKey)) {
+        if (FeelEditorService.isSuggestWidgetOpen()) {
           // Do nothing.
         } else {
-          feelInputRef.current?.setMonacoValue(previousValue);
           triggerReadMode(previousValue);
           setEditing(false);
         }
       }
-
-      if (e.shiftKey && e.ctrlKey && key === "keyz") {
-        const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
-        if (commandStack.length > 0 && monacoValue.length - previousValue.length <= 0) {
-          onChange(commandStack[commandStack.length - 1]);
-          setCommand([...commandStack.slice(0, -1)]);
-        }
-      } else if (e.ctrlKey && key === "keyz") {
-        const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
-        if (monacoValue.length - previousValue.length >= 0) {
-          onChange(previousValue !== monacoValue ? previousValue : "");
-          setCommand([...commandStack, monacoValue]);
-        }
-      }
     },
-    [triggerReadMode, setEditing, previousValue, commandStack, onChange]
+    [triggerReadMode, setEditing, onFeelTabKeyDown, onFeelEnterKeyDown, previousValue]
   );
 
   const calculateCellHeight = useCallback((value: string) => {
@@ -159,8 +144,8 @@ export function BeeTableEditableCellContent({
     setCellHeight(calculateCellHeight(value));
   }, [calculateCellHeight, value]);
 
-  const onFeelChange: FeelInputProps["onChange"] = useCallback(
-    (_e, newValue, newPreview) => {
+  const onFeelChange = useCallback(
+    (_e: Monaco.editor.IModelContentChangedEvent, newValue: string, newPreview: string) => {
       setCellHeight(calculateCellHeight(newValue));
       setPreview(newPreview);
     },
@@ -171,18 +156,38 @@ export function BeeTableEditableCellContent({
     setPreview(preview);
   }, []);
 
+  const editableCellRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isActive && !isEditing) {
+      editableCellRef.current?.focus();
+    }
+  }, [isActive, isEditing]);
+
+  const cssClass = useMemo(() => {
+    return `editable-cell ${mode === Mode.Edit ? "editable-cell--edit-mode" : "editable-cell--read-mode"}`;
+  }, [mode]);
+
   return (
     <>
       <div
-        style={{ height: `${cellHeight}px` }}
-        className={`editable-cell ${mode}`}
-        onKeyDown={(e) => e.stopPropagation()}
+        ref={editableCellRef}
+        tabIndex={-1}
+        style={{ height: `${cellHeight}px`, outline: "none" }}
+        className={cssClass}
+        // FIXME: Tiago -> Extracting this to a useCallback breaks it.
+        // This is used to start editing a cell without being in edit mode.
+        onKeyDown={(e) => {
+          if (isActive && !isEditing && isEditModeTriggeringKey(e)) {
+            setEditingValue("");
+            setEditing(true);
+          }
+        }}
       >
         <span className="editable-cell-value" dangerouslySetInnerHTML={{ __html: preview }} />
         <FeelInput
-          ref={feelInputRef}
-          enabled={mode === EDIT_MODE}
-          value={value}
+          enabled={mode === Mode.Edit}
+          value={isEditing ? editingValue : value}
           onKeyDown={onFeelKeyDown}
           onChange={onFeelChange}
           onLoad={onFeelLoad}
@@ -192,4 +197,12 @@ export function BeeTableEditableCellContent({
       </div>
     </>
   );
+}
+
+function isEditModeTriggeringKey(e: React.KeyboardEvent) {
+  if (e.altKey || e.ctrlKey || e.metaKey) {
+    return false;
+  }
+
+  return /^[\d\w ()[\]{},.\-_'"/?<>+\\|]$/.test(e.key);
 }

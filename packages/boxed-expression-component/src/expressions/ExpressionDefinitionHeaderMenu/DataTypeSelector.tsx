@@ -123,7 +123,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   );
 
   return (
-    <div ref={selectContainerRef} tabIndex={-1} onKeyDown={onKeyDown}>
+    <div ref={selectContainerRef} onKeyDown={onKeyDown}>
       <Select
         menuAppendTo={menuAppendTo}
         ouiaId="edit-expression-data-type"

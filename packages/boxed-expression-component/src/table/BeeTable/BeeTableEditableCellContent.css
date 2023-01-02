@@ -31,6 +31,11 @@
 .expression-container .editable-cell .feel-input {
   width: 100%;
 }
+.expression-container .editable-cell .feel-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 .expression-container .editable-cell .feel-input,
 .expression-container .editable-cell .feel-input > div {
@@ -43,16 +48,6 @@
   font-size: 13px;
   font-family: Menlo, Monaco, "Courier New", monospace;
   white-space: pre-line;
-}
-
-.expression-container .editable-cell .editable-cell-textarea {
-  opacity: 0;
-}
-
-.expression-container .editable-cell .editable-cell-textarea,
-.expression-container .editable-cell.editable-cell--edit-mode .editable-cell-value,
-.expression-container .editable-cell.editable-cell--read-mode .feel-input {
-  position: absolute;
 }
 
 .expression-container .editable-cell .editable-cell-value {

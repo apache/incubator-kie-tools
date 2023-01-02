@@ -157,7 +157,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         </div>
       )}
       <div
-        className={`${literalExpression.id} literal-expression-body`}
+        className={`${literalExpression.id} literal-expression-body ${isEditing ? "editing" : ""}`}
         onClick={selectLiteralExpression}
         onDoubleClick={onDoubleClick}
         style={{ width: resizingWidth.value, minWidth: minWidthGlobal }}
@@ -166,6 +166,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           isReadOnly={false}
           value={literalExpression.content ?? ""}
           onChange={updateContent}
+          isActive={isEditing}
           isEditing={isEditing}
           setEditing={setEditing}
         />
