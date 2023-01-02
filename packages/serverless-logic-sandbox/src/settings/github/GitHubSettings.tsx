@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { QuickStartContext } from "@patternfly/quickstarts";
+import { Modal, ModalVariant } from "@patternfly/react-core";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useCallback, useMemo, useState, useRef, useEffect } from "react";
-import { AuthStatus, useSettings, useSettingsDispatch } from "../SettingsContext";
+import { AddCircleOIcon } from "@patternfly/react-icons";
+import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import * as React from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
-import { Modal, ModalVariant } from "@patternfly/react-core";
-import { AddCircleOIcon } from "@patternfly/react-icons";
+import { AuthStatus, useSettings, useSettingsDispatch } from "../SettingsContext";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
@@ -52,6 +53,7 @@ enum GitHubTokenScope {
 export function GitHubSettings() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
+  const qsContext = useContext(QuickStartContext);
 
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
   const [isGitHubTokenValid, setIsGitHubTokenValid] = useState(true);
@@ -229,7 +231,7 @@ export function GitHubSettings() {
             key="quickstart"
             variant="link"
             onClick={() => {
-              /* TODO implement quickstart guide */
+              qsContext.setActiveQuickStartID?.("github");
             }}
           >
             Need help getting started? Follow our quickstart guide.
