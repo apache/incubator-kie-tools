@@ -375,7 +375,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             inputClauseRequirements.add(
                     new ClauseRequirement(
                             text,
-                            getQName(itemDefinition),
+                            getQNameFromItemDefinitionName(itemDefinition),
                             itemDefinitionUtils.getConstraintText(itemDefinition),
                             itemDefinitionUtils.getConstraintType(itemDefinition)
                     )
@@ -414,12 +414,6 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         };
 
         return isTypeRefCustomType;
-    }
-
-    private QName getQName(final ItemDefinition itemDefinition) {
-        return Optional
-                .ofNullable(itemDefinition.getTypeRef())
-                .orElse(getQNameFromItemDefinitionName(itemDefinition));
     }
 
     private QName getQNameFromItemDefinitionName(final ItemDefinition itemDefinition) {
