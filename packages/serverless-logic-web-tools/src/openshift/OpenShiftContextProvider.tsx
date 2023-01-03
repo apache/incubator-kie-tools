@@ -26,7 +26,7 @@ import { useOpenApi } from "./hooks/useOpenApi";
 import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { KNativeDeploymentLoaderPipeline } from "./pipelines/KNativeDeploymentLoaderPipeline";
+import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
 
 interface Props {
   children: React.ReactNode;
@@ -50,7 +50,7 @@ export function OpenShiftContextProvider(props: Props) {
 
   const deploymentLoaderPipeline = useMemo(
     () =>
-      new KNativeDeploymentLoaderPipeline({
+      new KnativeDeploymentLoaderPipeline({
         namespace: settings.openshift.config.namespace,
         openShiftService: settingsDispatch.openshift.service,
       }),

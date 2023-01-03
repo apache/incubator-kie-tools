@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { KNativeApiVersions, KubernetesApiVersions, OpenShiftLabelNames } from "../api/ApiConstants";
+import { KnativeApiVersions, KubernetesApiVersions, OpenShiftLabelNames } from "../api/ApiConstants";
 import {
   BuildConfigDescriptor,
   DeploymentDescriptor,
   ImageStreamDescriptor,
   KafkaSourceDescriptor,
-  KNativeServiceDescriptor,
+  KnativeServiceDescriptor,
   RouteDescriptor,
   SecretDescriptor,
   ServiceDescriptor,
@@ -37,7 +37,7 @@ import {
   CommonTemplateArgs,
   CreateDeploymentArgs,
   CreateKafkaSourceArgs,
-  CreateKNativeServiceArgs,
+  CreateKnativeServiceArgs,
   CreateSecretArgs,
 } from "./types";
 
@@ -219,7 +219,7 @@ export const SECRET_TEMPLATE = (args: CommonTemplateArgs & CreateSecretArgs): Se
 };
 
 export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSourceArgs): KafkaSourceDescriptor => ({
-  apiVersion: KNativeApiVersions.KAFKA_SOURCE,
+  apiVersion: KnativeApiVersions.KAFKA_SOURCE,
   kind: "KafkaSource",
   metadata: {
     name: args.resourceName,
@@ -258,7 +258,7 @@ export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSour
     },
     sink: {
       ref: {
-        apiVersion: KNativeApiVersions.SERVICE,
+        apiVersion: KnativeApiVersions.SERVICE,
         kind: "Service",
         name: args.sinkService,
       },
@@ -268,8 +268,8 @@ export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSour
 });
 
 export const KNATIVE_SERVICE_TEMPLATE = (
-  args: CommonTemplateArgs & CreateKNativeServiceArgs
-): KNativeServiceDescriptor => {
+  args: CommonTemplateArgs & CreateKnativeServiceArgs
+): KnativeServiceDescriptor => {
   const imageStreamTrigger: Trigger = {
     from: {
       name: `${args.resourceName}:${BUILD_IMAGE_TAG_VERSION}`,
@@ -287,7 +287,7 @@ export const KNATIVE_SERVICE_TEMPLATE = (
   };
 
   return {
-    apiVersion: KNativeApiVersions.SERVICE,
+    apiVersion: KnativeApiVersions.SERVICE,
     kind: "Service",
     metadata: {
       name: args.resourceName,

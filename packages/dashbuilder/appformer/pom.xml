@@ -93,7 +93,7 @@
     <!-- database testing -->
     <version.org.mariadb.jdbc>1.3.6</version.org.mariadb.jdbc>
     <version.org.mysql-driver>8.0.28</version.org.mysql-driver>
-    <version.org.postgres-driver>42.4.1</version.org.postgres-driver>
+    <version.org.postgres-driver>42.4.3</version.org.postgres-driver>
 
     <version.org.arquillian.cube>1.15.3</version.org.arquillian.cube>
 

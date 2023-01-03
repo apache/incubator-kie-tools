@@ -20,7 +20,7 @@ import { BaseBuilder } from "../BaseContainerImages";
 import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { DeploymentStrategyArgs } from "../types";
-import { KNativeBuilderPipeline } from "../../pipelines/KNativeBuilderPipeline";
+import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 
 interface CreateKogitoProjectDeploymentArgs {
@@ -45,7 +45,7 @@ export class KogitoProjectDeployment extends DeploymentStrategy {
 
     const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
 
-    return new KNativeBuilderPipeline({
+    return new KnativeBuilderPipeline({
       workspaceName: this.resolveWorkspaceName(filesToBeDeployed),
       workspaceZipBlob: workspaceZipBlob,
       resourceName: this.args.resourceName,

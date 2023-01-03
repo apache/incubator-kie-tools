@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { KNativeLabelNames, KubernetesLabelNames } from "@kie-tools-core/openshift/dist/api/ApiConstants";
-import { ListKNativeServices } from "@kie-tools-core/openshift/dist/api/knative/KNativeService";
+import { KnativeLabelNames, KubernetesLabelNames } from "@kie-tools-core/openshift/dist/api/ApiConstants";
+import { ListKnativeServices } from "@kie-tools-core/openshift/dist/api/knative/KnativeService";
 import { ListBuilds } from "@kie-tools-core/openshift/dist/api/kubernetes/Build";
 import { ListDeployments } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
 import {
@@ -23,8 +23,8 @@ import {
   BuildGroupDescriptor,
   DeploymentDescriptor,
   DeploymentGroupDescriptor,
-  KNativeServiceDescriptor,
-  KNativeServiceGroupDescriptor,
+  KnativeServiceDescriptor,
+  KnativeServiceGroupDescriptor,
 } from "@kie-tools-core/openshift/dist/api/types";
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
@@ -32,12 +32,12 @@ import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { OpenShiftPipeline } from "../OpenShiftPipeline";
 
-export class KNativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsOpenShiftDeployedModel[]> {
+export class KnativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsOpenShiftDeployedModel[]> {
   public async execute(): Promise<WebToolsOpenShiftDeployedModel[]> {
     try {
       const knServices = await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-        fetcher.execute<KNativeServiceGroupDescriptor>({
-          target: new ListKNativeServices({
+        fetcher.execute<KnativeServiceGroupDescriptor>({
+          target: new ListKnativeServices({
             namespace: this.args.namespace,
             labelSelector: ResourceLabelNames.CREATED_BY,
           }),
@@ -70,13 +70,13 @@ export class KNativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
 
       return knServices.items
         .filter(
-          (kns: KNativeServiceDescriptor) =>
+          (kns: KnativeServiceDescriptor) =>
             kns.status &&
             kns.metadata.annotations &&
             kns.metadata.labels &&
             kns.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
         )
-        .map((kns: KNativeServiceDescriptor) => {
+        .map((kns: KnativeServiceDescriptor) => {
           const build = allBuilds.items.find(
             (b: BuildDescriptor) =>
               b.metadata.labels &&
@@ -86,7 +86,7 @@ export class KNativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
           const resourceDeployments = allDeployments.items
             .filter(
               (d: DeploymentDescriptor) =>
-                d.metadata.labels && d.metadata.labels[KNativeLabelNames.SERVICE] === kns.metadata.name
+                d.metadata.labels && d.metadata.labels[KnativeLabelNames.SERVICE] === kns.metadata.name
             )
             .sort(sortDeploymentsByCreationTimeFn);
           const deployment = resourceDeployments.length > 0 ? resourceDeployments[0] : undefined;

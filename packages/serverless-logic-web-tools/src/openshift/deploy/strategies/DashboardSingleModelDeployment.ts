@@ -14,39 +14,29 @@
  * limitations under the License.
  */
 
-import { GLOB_PATTERN, isDashbuilder } from "../../../extension";
+import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
-import { KNativeBuilderPipeline } from "../../pipelines/KNativeBuilderPipeline";
+import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { DashbuilderViewer } from "../BaseContainerImages";
 import { createDashbuilderViewerAppDataFile } from "../DashbuilderViewerAppData";
-import { DeploymentStrategy } from "../DeploymentStrategy";
 
-export class DashboardWorkspaceDeployment extends DeploymentStrategy {
+export class DashboardSingleModelDeployment extends DeploymentStrategy {
   public async buildPipeline(): Promise<OpenShiftPipeline> {
-    const filesToBeDeployed = await this.args.getFiles({
-      workspaceId: this.args.workspace.workspaceId,
-      globPattern: GLOB_PATTERN.allExceptDockerfiles,
-    });
-
     const dockerfileFile = await this.createDockerfileFile();
     const dockerIgnoreFile = await this.createDockerignoreFile();
-
-    const otherDashFiles = filesToBeDeployed.filter(
-      (f) => isDashbuilder(f.name) && f.relativePath !== this.args.targetFile.relativePath
-    );
 
     const appDataFile = createDashbuilderViewerAppDataFile({
       workspaceId: this.args.workspace.workspaceId,
       primary: this.args.targetFile,
-      secondary: otherDashFiles,
+      secondary: [],
     });
 
-    filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile, this.args.targetFile, appDataFile);
+    const filesToBeDeployed = [this.args.targetFile, dockerfileFile, dockerIgnoreFile, appDataFile];
 
     const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
 
-    return new KNativeBuilderPipeline({
-      workspaceName: this.resolveWorkspaceName(filesToBeDeployed),
+    return new KnativeBuilderPipeline({
+      workspaceName: this.args.targetFile.name,
       workspaceZipBlob: workspaceZipBlob,
       resourceName: this.args.resourceName,
       targetUri: this.args.targetFile.relativePath,

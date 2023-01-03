@@ -108,7 +108,7 @@ The KIE Tools project contains several applications. To develop each one of them
 
 #### Serverless Logic Web Tools
 
-1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-sandbox`.
+1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-web-tools`.
 1. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
 1. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
 
