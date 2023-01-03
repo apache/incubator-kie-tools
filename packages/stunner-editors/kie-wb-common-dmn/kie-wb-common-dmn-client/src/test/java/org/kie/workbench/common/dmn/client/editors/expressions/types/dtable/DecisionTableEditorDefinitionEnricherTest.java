@@ -293,6 +293,66 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testModelEnrichmentWhenInputDataHasConstraints() {
+        setupGraphWithDiagram();
+        setupGraphWithInputData();
+
+        final Definitions definitions = diagram.getDefinitions();
+
+        final String complexItemDefinitionName = "tSmurf";
+        final String complexItemDefinitionPart1Name = "tDateOfBirth";
+        final String complexItemDefinitionPart2Name = "tIsBlue";
+        final QName complexItemDefinitionPart1TypeRef = new QName(QName.NULL_NS_URI, BuiltInType.DATE.getName());
+        final QName complexItemDefinitionPart2TypeRef = new QName(QName.NULL_NS_URI, BuiltInType.BOOLEAN.getName());
+        final ItemDefinition complexItemDefinition = new ItemDefinition();
+        complexItemDefinition.setName(new Name(complexItemDefinitionName));
+        final ItemDefinition part1ItemDefinition = new ItemDefinition() {{
+            setName(new Name(complexItemDefinitionPart1Name));
+            setTypeRef(complexItemDefinitionPart1TypeRef);
+        }};
+        final ItemDefinition part2ItemDefinition = new ItemDefinition() {{
+            setName(new Name(complexItemDefinitionPart2Name));
+            setTypeRef(complexItemDefinitionPart2TypeRef);
+        }};
+        mockItemDefinitionConstraint(part1ItemDefinition, "date(\"2023-01-01\")", ConstraintType.EXPRESSION);
+        mockItemDefinitionConstraint(part2ItemDefinition, "", ConstraintType.NONE);
+        complexItemDefinition.getItemComponent().add(part1ItemDefinition);
+        complexItemDefinition.getItemComponent().add(part2ItemDefinition);
+
+        definitions.getItemDefinition().add(complexItemDefinition);
+
+        final QName inputData1TypeRef = new QName(QName.NULL_NS_URI, complexItemDefinitionName);
+        inputData1.getVariable().setTypeRef(inputData1TypeRef);
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        definition.enrich(Optional.of(NODE_UUID), decision, oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+
+        final List<InputClause> input = model.getInput();
+        assertThat(input.size()).isEqualTo(3);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
+        assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
+        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + complexItemDefinitionPart1Name);
+        assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(complexItemDefinitionPart1TypeRef);
+        assertThat(input.get(1).getInputValues().getText().getValue()).isEqualTo("date(\"2023-01-01\")");
+        assertThat(input.get(1).getInputValues().getConstraintType()).isEqualTo(ConstraintType.EXPRESSION);
+        assertThat(input.get(2).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
+        assertThat(input.get(2).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + complexItemDefinitionPart2Name);
+        assertThat(input.get(2).getInputExpression().getTypeRef()).isEqualTo(complexItemDefinitionPart2TypeRef);
+        assertThat(input.get(2).getInputValues().getText().getValue()).isEqualTo("");
+        assertThat(input.get(2).getInputValues().getConstraintType()).isEqualTo(ConstraintType.NONE);
+
+        assertStandardOutputClauseEnrichment(model);
+        assertStandardDecisionRuleEnrichment(model);
+        assertParentHierarchyEnrichment(model);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testModelEnrichmentWhenTopLevelDecisionTableWithInputDataAndRecursiveCustomType() {
         setupGraphWithDiagram();
         setupGraphWithInputData();
