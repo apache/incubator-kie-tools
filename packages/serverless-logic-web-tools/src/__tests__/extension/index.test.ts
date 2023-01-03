@@ -14,10 +14,65 @@
  * limitations under the License.
  */
 
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Minimatch } from "minimatch";
-import { GLOB_PATTERN } from "../../extension";
+import { GLOB_PATTERN, splitFiles } from "../../extension";
+
+const createWorkspaceFileMock = (args: Partial<ConstructorParameters<typeof WorkspaceFile>[0]>): WorkspaceFile =>
+  new WorkspaceFile({
+    workspaceId: args.workspaceId ?? "1",
+    relativePath: args.relativePath ?? "model.sw.json",
+    getFileContents: args.getFileContents ?? (async () => new Uint8Array(255)),
+  });
 
 describe("extension", () => {
+  describe("splitFiles", () => {
+    it("should split files into 0 editable and 0 readonly files ", () => {
+      const { editableFiles, readonlyFiles } = splitFiles([]);
+      expect(editableFiles).toHaveLength(0);
+      expect(readonlyFiles).toHaveLength(0);
+    });
+    it("should split files into 1 editable and 0 readonly files ", () => {
+      const files = [createWorkspaceFileMock({ relativePath: "some/path/model.sw.json" })];
+      const { editableFiles, readonlyFiles } = splitFiles(files);
+      expect(editableFiles).toHaveLength(1);
+      expect(readonlyFiles).toHaveLength(0);
+    });
+    it("should split files into 2 editable and 0 readonly files ", () => {
+      const files = [
+        createWorkspaceFileMock({ relativePath: "some/path/model.sw.json" }),
+        createWorkspaceFileMock({ relativePath: "some/path/model.dash.yaml" }),
+      ];
+      const { editableFiles, readonlyFiles } = splitFiles(files);
+      expect(editableFiles).toHaveLength(2);
+      expect(readonlyFiles).toHaveLength(0);
+    });
+    it("should split files into 0 editable and 1 readonly files ", () => {
+      const files = [createWorkspaceFileMock({ relativePath: "some/path/file.txt" })];
+      const { editableFiles, readonlyFiles } = splitFiles(files);
+      expect(editableFiles).toHaveLength(0);
+      expect(readonlyFiles).toHaveLength(1);
+    });
+    it("should split files into 0 editable and 2 readonly files ", () => {
+      const files = [
+        createWorkspaceFileMock({ relativePath: "some/path/file.txt" }),
+        createWorkspaceFileMock({ relativePath: "some/path/file.java" }),
+      ];
+      const { editableFiles, readonlyFiles } = splitFiles(files);
+      expect(editableFiles).toHaveLength(0);
+      expect(readonlyFiles).toHaveLength(2);
+    });
+    it("should split files into 1 editable and 1 readonly files ", () => {
+      const files = [
+        createWorkspaceFileMock({ relativePath: "some/path/model.sw.json" }),
+        createWorkspaceFileMock({ relativePath: "some/path/file.java" }),
+      ];
+      const { editableFiles, readonlyFiles } = splitFiles(files);
+      expect(editableFiles).toHaveLength(1);
+      expect(readonlyFiles).toHaveLength(1);
+    });
+  });
+
   describe("GLOB_PATTERN", () => {
     describe("all", () => {
       it.each([[true, "anything", "foo.txt"]])("should be %s when path is %s", (result, _desc, path) => {
