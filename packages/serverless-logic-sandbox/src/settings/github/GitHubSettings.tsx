@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ export function GitHubSettings() {
 
   return (
     <Page>
-      <PageSection variant={"light"} isWidthLimited>
+      <PageSection variant={"light"}>
         <TextContent>
           <Text component={TextVariants.h1}>GitHub</Text>
           <Text component={TextVariants.p}>
@@ -114,8 +114,8 @@ export function GitHubSettings() {
         </TextContent>
       </PageSection>
 
-      <PageSection isFilled isWidthLimited>
-        <PageSection isFilled variant={"light"}>
+      <PageSection isFilled>
+        <PageSection variant={"light"}>
           {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
             <EmptyState>
               <EmptyStateIcon icon={ExclamationTriangleIcon} />
@@ -188,7 +188,7 @@ export function GitHubSettings() {
       </PageSection>
 
       <Modal
-        title="Settings"
+        title="Create new token"
         isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
         onClose={handleModalToggle}
         variant={ModalVariant.large}
