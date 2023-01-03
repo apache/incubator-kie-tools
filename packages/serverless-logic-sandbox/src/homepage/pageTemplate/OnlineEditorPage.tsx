@@ -41,7 +41,7 @@ import { BarsIcon } from "@patternfly/react-icons";
 import { HomePageNav } from "../uiNav/HomePageNav";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
-import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
+import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();

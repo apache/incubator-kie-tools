@@ -26,7 +26,7 @@ import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form"
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
-import { AuthStatus, useSettings, useSettingsDispatch } from "../SettingsContext";
+import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { makeCookieName } from "../../cookies";

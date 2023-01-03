@@ -18,7 +18,7 @@ import React from "react";
 import { Redirect, Switch } from "react-router";
 import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
-import { GitHubSettings } from "../../settings/github/GitHubSettings";
+import { GitHubSettings } from "../github/GitHubSettings";
 import { KieSandboxExtendedServicesSettings } from "../extendedServices/KieSandboxExtendedServicesSettings";
 import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/FeaturePreviewSettingsTab";
 import { ApacheKafkaSettingsTab } from "../../settings/kafka/ApacheKafkaSettingsTab";
