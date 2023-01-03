@@ -56,7 +56,6 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
   children,
   appendTo,
   arrowPlacement,
-  title,
   nameField,
   dataTypeField,
   selectedDataType = DmnBuiltInDataType.Undefined,
@@ -68,7 +67,6 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
   const boxedExpressionEditor = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  title = title ?? i18n.editExpression;
   nameField = nameField ?? i18n.name;
   dataTypeField = dataTypeField ?? i18n.dataType;
   appendTo = appendTo ?? boxedExpressionEditor.editorRef?.current ?? undefined;
@@ -142,7 +140,6 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
   return (
     <PopoverMenu
       ref={popoverMenuRef}
-      title={title}
       arrowPlacement={arrowPlacement}
       appendTo={appendTo}
       onCancel={onCancel}

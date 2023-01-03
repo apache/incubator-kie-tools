@@ -204,7 +204,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   const parametersColumnHeader = useMemo(
     () => (
       <PopoverMenu
-        title={i18n.editParameters}
         appendTo={editParametersPopoverAppendTo()}
         className="parameters-editor-popover"
         minWidth="400px"
@@ -212,9 +211,22 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
       >
         <div className={`parameters-list ${_.isEmpty(functionExpression.formalParameters) ? "empty-parameters" : ""}`}>
           <p className="pf-u-text-truncate">
-            {_.isEmpty(functionExpression.formalParameters)
-              ? i18n.editParameters
-              : `(${functionExpression.formalParameters.map((parameter) => parameter.name).join(", ")})`}
+            {_.isEmpty(functionExpression.formalParameters) ? (
+              i18n.editParameters
+            ) : (
+              <>
+                <span>{"("}</span>
+                {functionExpression.formalParameters.map((parameter, i) => (
+                  <>
+                    <span>{parameter.name}</span>
+                    <span>{": "}</span>
+                    <span className={"expression-info-data-type"}>({parameter.dataType})</span>
+                    {i < functionExpression.formalParameters.length - 1 && <span>{", "}</span>}
+                  </>
+                ))}
+                <span>{")"}</span>
+              </>
+            )}
           </p>
         </div>
       </PopoverMenu>

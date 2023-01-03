@@ -22,11 +22,20 @@
 .expression-container .function-expression .parameters-list {
   cursor: pointer;
   padding: 0.75em;
+  font-weight: lighter;
+  /* font-family: monospace; */
+}
+
+.expression-container .function-expression {
+  width: 100%;
+}
+
+.function-kind-popover .pf-c-menu {
+  box-shadow: none;
 }
 
 .expression-container .function-expression .parameters-list.empty-parameters {
   color: gray;
   font-style: italic;
-  font-weight: var(--pf-global--FontWeight--normal);
   text-align: center;
 }

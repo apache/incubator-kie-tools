@@ -76,22 +76,8 @@
   color: inherit;
 }
 
-.expression-container .table-component table thead tr:not(:first-of-type) {
+.expression-container .table-component table thead tr {
   height: 4em;
-}
-
-.expression-container .table-component table thead th.selected:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: "";
-  width: 100%;
-  height: 100%;
-  z-index: 15;
-  background-color: rgba(0, 0, 0, 0.06);
-}
-.expression-container .table-component table tbody td:first-child.selected {
-  background-color: #f0f0f0;
 }
 
 .expression-container .table-component table thead th,
@@ -114,6 +100,21 @@
 }
 
 /* SELECTION */
+
+.expression-container .table-component table thead th.selected:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+.expression-container .table-component table tbody td:first-child.selected {
+  background-color: #f0f0f0;
+}
+
 .expression-container .table-component table thead th.editing {
   box-shadow: inset 0px 0px 20px -5px darkgrey;
 }

@@ -234,7 +234,6 @@ export function ExpressionDefinitionLogicTypeSelector({
 
         {!isLogicTypeSelected && (
           <PopoverMenu
-            title={i18n.selectExpression}
             arrowPlacement={getPopoverArrowPlacement}
             appendTo={getPopoverContainer()}
             className="logic-type-popover"

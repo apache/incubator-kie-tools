@@ -86,7 +86,6 @@ export function HitPolicySelector({
 
   return (
     <PopoverMenu
-      title={i18n.editHitPolicy}
       appendTo={editorRef.current ?? undefined}
       className="hit-policy-popover"
       hasAutoWidth={true}

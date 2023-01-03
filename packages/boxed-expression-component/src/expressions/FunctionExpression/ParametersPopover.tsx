@@ -80,7 +80,6 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
 };
 
 function ParameterEntry({ parameter, index }: { parameter: ContextExpressionDefinitionEntryInfo; index: number }) {
-  const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onNameChange = useCallback(
@@ -137,9 +136,7 @@ function ParameterEntry({ parameter, index }: { parameter: ContextExpressionDefi
         icon={<OutlinedTrashAltIcon />}
         iconPosition="left"
         onClick={onParameterRemove}
-      >
-        {i18n.delete}
-      </Button>
+      />
     </div>
   );
 }

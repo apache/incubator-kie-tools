@@ -139,7 +139,7 @@ export function usePublishedBeeTableColumnResizingWidths(resizingWidthId: string
   useEffect(() => {
     updateResizingWidth(resizingWidthId, (prev) => {
       const initial: ResizingWidth = {
-        value: NESTED_EXPRESSION_CLEAR_MARGIN + columnResizingWidths.size + 1,
+        value: NESTED_EXPRESSION_CLEAR_MARGIN + columnResizingWidths.size,
         isPivoting: false,
       };
 

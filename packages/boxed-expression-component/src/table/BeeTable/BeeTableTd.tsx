@@ -63,9 +63,26 @@ export function BeeTableTd<R extends object>({
     return row.cells[columnIndex];
   }, [columnIndex, row]);
 
-  const { resetSelectionAt, setSelectionEnd, mutateSelection } = useBeeTableSelectionDispatch();
+  const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
+
+  const rowIndexLabel = useMemo(() => {
+    return `${rowIndex + 1}`;
+  }, [rowIndex]);
+
+  const getValue = useMemo(() => {
+    if (column.isRowIndexColumn) {
+      return () => rowIndexLabel;
+    }
+    return undefined;
+  }, [column.isRowIndexColumn, rowIndexLabel]);
+
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(
+    rowIndex,
+    columnIndex,
+    undefined,
+    getValue
+  );
 
   const cssClasses = useMemo(() => {
     return `
@@ -212,7 +229,7 @@ export function BeeTableTd<R extends object>({
       style={style}
     >
       {column.isRowIndexColumn ? (
-        <>{rowIndex + 1}</>
+        <>{rowIndexLabel}</>
       ) : (
         <>
           <div

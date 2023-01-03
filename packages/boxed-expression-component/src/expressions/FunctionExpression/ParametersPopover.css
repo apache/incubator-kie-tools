@@ -43,7 +43,7 @@
   .parameters-container
   .parameter-entry
   > :nth-child(1) {
-  width: 30%;
+  width: 45%;
 }
 
 .boxed-expression-provider
@@ -61,5 +61,5 @@
   .parameters-container
   .parameter-entry
   > :nth-child(3) {
-  width: 25%;
+  width: 12.5%;
 }

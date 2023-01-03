@@ -47,26 +47,21 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
     [boxedExpressionEditor.beeGwtService, onFunctionKindSelect]
   );
 
-  const renderFunctionKindItems = useCallback(
-    () =>
-      _.map(Object.values(FunctionExpressionDefinitionKind), (key) => (
-        <MenuItem key={key} itemId={key} data-ouia-component-id={key}>
-          {key}
-        </MenuItem>
-      )),
-    []
-  );
-
   return (
     <PopoverMenu
-      title={i18n.selectFunctionKind}
       appendTo={boxedExpressionEditor.editorRef?.current ?? undefined}
       className="function-kind-popover"
       position={PopoverPosition.leftEnd}
       hasAutoWidth={true}
       body={(hide: () => void) => (
         <Menu onSelect={functionKindSelectionCallback(hide)}>
-          <MenuList>{renderFunctionKindItems()}</MenuList>
+          <MenuList>
+            {_.map(Object.values(FunctionExpressionDefinitionKind), (key) => (
+              <MenuItem key={key} itemId={key} data-ouia-component-id={key}>
+                {key}
+              </MenuItem>
+            ))}
+          </MenuList>
         </Menu>
       )}
     >

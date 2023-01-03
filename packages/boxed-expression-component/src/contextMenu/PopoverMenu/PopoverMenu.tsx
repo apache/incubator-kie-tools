@@ -25,8 +25,6 @@ import { generateUuid } from "../../api";
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
   children?: React.ReactElement;
-  /** Title of the popover menu */
-  title: string;
   /** A function which returns the HTMLElement where the popover's arrow should be placed */
   arrowPlacement?: () => HTMLElement;
   /** The content of the popover itself */
@@ -72,7 +70,6 @@ export const PopoverMenu = React.forwardRef(
       children,
       arrowPlacement,
       body,
-      title,
       position,
       distance,
       appendTo,
@@ -135,11 +132,7 @@ export const PopoverMenu = React.forwardRef(
         distance={distance ?? 0}
         reference={arrowPlacement}
         appendTo={appendTo}
-        headerContent={
-          <div className="selector-menu-title" data-ouia-component-id="expression-popover-menu-title">
-            {title}
-          </div>
-        }
+        headerContent={<div style={{ height: "1px" }}></div>}
         bodyContent={body}
         isVisible={isPopoverVisible}
         onShown={onPopoverShown}

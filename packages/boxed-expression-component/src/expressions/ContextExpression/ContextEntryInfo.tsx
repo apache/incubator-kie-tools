@@ -29,8 +29,6 @@ export interface ContextEntryInfoProps {
   dataType: DmnBuiltInDataType;
   /** Callback to be executed when name or dataType get updated */
   onContextEntryUpdate: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
-  /** Label used for the popover triggered when editing info section */
-  editInfoPopoverLabel?: string;
 }
 
 export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = ({
@@ -38,7 +36,6 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   name,
   dataType,
   onContextEntryUpdate,
-  editInfoPopoverLabel,
 }) => {
   const onExpressionHeaderUpdated = useCallback(
     (args: Pick<ExpressionDefinition, "name" | "dataType">) => {
@@ -63,23 +60,15 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
 
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const renderEntryDefinitionWithPopoverMenu = useMemo(
-    () => (
+  return (
+    <div className={`${id} entry-info`} ref={ref}>
       <ExpressionDefinitionHeaderMenu
-        title={editInfoPopoverLabel}
         selectedExpressionName={name}
         selectedDataType={dataType}
         onExpressionHeaderUpdated={onExpressionHeaderUpdated}
       >
         {renderEntryDefinition({ additionalCssClass: "with-popover-menu" })}
       </ExpressionDefinitionHeaderMenu>
-    ),
-    [editInfoPopoverLabel, name, dataType, onExpressionHeaderUpdated, renderEntryDefinition]
-  );
-
-  return (
-    <div className={`${id} entry-info`} ref={ref}>
-      {editInfoPopoverLabel ? renderEntryDefinitionWithPopoverMenu : renderEntryDefinition({})}
     </div>
   );
 };

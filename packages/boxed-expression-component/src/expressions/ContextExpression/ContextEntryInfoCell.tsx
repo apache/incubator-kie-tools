@@ -25,7 +25,6 @@ export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnId".
   data: readonly ContextExpressionDefinitionEntry[];
   onEntryUpdate: (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => void;
-  editInfoPopoverLabel?: string;
   rowIndex: number;
   columnIndex: number;
   columnId: string;
@@ -36,7 +35,6 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   rowIndex,
   columnIndex,
   onEntryUpdate,
-  editInfoPopoverLabel,
 }) => {
   const contextEntry = useMemo(() => contextEntries[rowIndex], [contextEntries, rowIndex]);
   const entryInfo = useMemo(() => contextEntry.entryInfo, [contextEntry.entryInfo]);
@@ -72,7 +70,6 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
         name={entryInfo.name}
         dataType={entryInfo.dataType}
         onContextEntryUpdate={onContextEntryUpdate}
-        editInfoPopoverLabel={editInfoPopoverLabel}
       />
     </div>
   );

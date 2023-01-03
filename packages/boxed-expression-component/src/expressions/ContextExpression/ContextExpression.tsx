@@ -83,7 +83,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const { updateResizingWidth } = useResizingWidthsDispatch();
   const { resizingWidths } = useResizingWidths();
 
-  // That's BeeTable's column 0 width.
   const [entryInfoResizingWidth, setEntryInfoResizingWidth] = useState<ResizingWidth>({
     value: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
     isPivoting: false,
@@ -261,7 +260,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       entryInfo: (props) => {
         return (
           <>
-            <ContextEntryInfoCell {...props} editInfoPopoverLabel={i18n.editContextEntry} onEntryUpdate={updateEntry} />
+            <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />
           </>
         );
       },
@@ -273,7 +272,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         );
       },
     };
-  }, [i18n.editContextEntry, updateEntry]);
+  }, [updateEntry]);
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     return [
@@ -334,6 +333,12 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [setExpression]
   );
 
+  const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
+    if (args.columnIndex === 1) {
+      setEntryInfoResizingWidth(args.newResizingWidth);
+    }
+  }, []);
+
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div className={`context-expression ${contextExpression.id}`}>
@@ -349,6 +354,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           getRowKey={getRowKey}
           additionalRow={beeTableAdditionalRow}
           onRowAdded={onRowAdded}
+          onColumnResizingWidthChange={onColumnResizingWidthChange}
         />
       </div>
     </ContextExpressionContext.Provider>

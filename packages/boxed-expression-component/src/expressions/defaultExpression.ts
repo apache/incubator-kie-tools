@@ -49,11 +49,10 @@ export function getDefaultExpressionDefinitionByLogicType(
       functionKind: FunctionExpressionDefinitionKind.Feel,
       formalParameters: [],
       expression: {
-        ...getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.LiteralExpression, {
-          dataType: DmnBuiltInDataType.Undefined,
-          id: generateUuid(),
-          isHeadless: true,
-        }),
+        id: generateUuid(),
+        logicType: ExpressionDefinitionLogicType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
+        isHeadless: true,
       },
     };
     return functionExpression;
@@ -105,11 +104,24 @@ export function getDefaultExpressionDefinitionByLogicType(
       logicType,
       isHeadless: true,
       items: [
-        getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.LiteralExpression, {
+        {
           id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
           dataType: DmnBuiltInDataType.Undefined,
           isHeadless: true,
-        }),
+        },
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
+          isHeadless: true,
+        },
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
+          isHeadless: true,
+        },
       ],
     };
     return listExpression;

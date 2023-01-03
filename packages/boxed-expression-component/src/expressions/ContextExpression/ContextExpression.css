@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+.expression-container .context-expression {
+  width: 100%;
+}
+
 .expression-container .context-expression .context-result {
   font-style: italic;
   color: gray;

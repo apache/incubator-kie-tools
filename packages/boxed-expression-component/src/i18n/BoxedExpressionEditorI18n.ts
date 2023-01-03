@@ -43,10 +43,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
     output: string;
   };
   editContextEntry: string;
-  editExpression: string;
-  editHitPolicy: string;
   editParameter: string;
-  editParameters: string;
   editRelation: string;
   enterFunction: string;
   enterText: string;
@@ -78,7 +75,6 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   };
   ruleAnnotation: string;
   selectExpression: string;
-  selectFunctionKind: string;
   selectLogicType: string;
 }
 
