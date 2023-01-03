@@ -92,7 +92,6 @@ export function BeeTable2<R extends object>({
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection } = useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
-  const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
 
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -206,10 +205,6 @@ export function BeeTable2<R extends object>({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      const key = e.key;
-      const isModKey = e.altKey || e.ctrlKey || e.shiftKey || NavigationKeysUtils.isAltGraph(key);
-      const isFiredFromThis = e.currentTarget === e.target;
-
       if (!enableKeyboardNavigation) {
         return;
       }
@@ -219,7 +214,7 @@ export function BeeTable2<R extends object>({
       }
 
       // ENTER
-      if (NavigationKeysUtils.isEnter(key)) {
+      if (NavigationKeysUtils.isEnter(e.key) && !e.metaKey && !e.altKey && !e.ctrlKey) {
         e.stopPropagation();
         e.preventDefault();
         mutateSelection({
@@ -234,7 +229,7 @@ export function BeeTable2<R extends object>({
       }
 
       // TAB
-      if (NavigationKeysUtils.isTab(key)) {
+      if (NavigationKeysUtils.isTab(e.key)) {
         e.stopPropagation();
         e.preventDefault();
         if (e.shiftKey) {
@@ -264,7 +259,7 @@ export function BeeTable2<R extends object>({
 
       const selectionPart = e.shiftKey ? SelectionPart.SelectionEnd : SelectionPart.ActiveCell;
 
-      if (NavigationKeysUtils.isArrowLeft(key)) {
+      if (NavigationKeysUtils.isArrowLeft(e.key)) {
         e.stopPropagation();
         e.preventDefault();
         mutateSelection({
@@ -277,7 +272,7 @@ export function BeeTable2<R extends object>({
           keepInsideSelection: false,
         });
       }
-      if (NavigationKeysUtils.isArrowRight(key)) {
+      if (NavigationKeysUtils.isArrowRight(e.key)) {
         e.stopPropagation();
         e.preventDefault();
         mutateSelection({
@@ -290,7 +285,7 @@ export function BeeTable2<R extends object>({
           keepInsideSelection: false,
         });
       }
-      if (NavigationKeysUtils.isArrowUp(key)) {
+      if (NavigationKeysUtils.isArrowUp(e.key)) {
         e.stopPropagation();
         e.preventDefault();
         mutateSelection({
@@ -303,7 +298,7 @@ export function BeeTable2<R extends object>({
           keepInsideSelection: false,
         });
       }
-      if (NavigationKeysUtils.isArrowDown(key)) {
+      if (NavigationKeysUtils.isArrowDown(e.key)) {
         e.stopPropagation();
         e.preventDefault();
         mutateSelection({
@@ -327,7 +322,7 @@ export function BeeTable2<R extends object>({
 
       // ESC
 
-      if (NavigationKeysUtils.isEsc(key)) {
+      if (NavigationKeysUtils.isEsc(e.key)) {
         e.stopPropagation();
         e.preventDefault();
         resetSelectionAt(undefined);
@@ -377,11 +372,6 @@ export function BeeTable2<R extends object>({
           isEditingActiveCell: false,
           keepInsideSelection: false,
         });
-      }
-
-      if (!currentlyOpenContextMenu && isFiredFromThis && !isModKey && NavigationKeysUtils.isTypingKey(key)) {
-        // FIXME: Tiago: Do it.
-        // return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
       }
     },
     [
@@ -493,7 +483,7 @@ export function BeeTable2<R extends object>({
   );
 
   return (
-    <div className={`table-component ${tableId} ${tableEventUUID}`} ref={tableRef} onKeyDown={onKeyDown}>
+    <div className={`table-component ${tableId}`} ref={tableRef} onKeyDown={onKeyDown}>
       <PfReactTable.TableComposable
         {...reactTableInstance.getTableProps()}
         variant="compact"
@@ -558,7 +548,7 @@ function BeeTableDefaultCell<R extends object>({
   cellProps: ReactTable.CellProps<R>;
   onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
 }) {
-  const { resetSelectionAt, mutateSelection } = useBeeTableSelectionDispatch();
+  const { mutateSelection } = useBeeTableSelectionDispatch();
 
   const columnIndex = useMemo(() => {
     return cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);

@@ -587,10 +587,12 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
       for (let c = startColumn; c <= endColumn; c++) {
         // Select header cells
-        currentRefs
-          .get(-1)
-          ?.get(c)
-          ?.forEach((e) => e.setStatus?.({ isActive: false, isEditing: false, isSelected: true }));
+        if (startRow >= 0) {
+          currentRefs
+            .get(-1)
+            ?.get(c)
+            ?.forEach((e) => e.setStatus?.({ isActive: false, isEditing: false, isSelected: true }));
+        }
 
         // Select normal cells
         const refs = currentRefs.get(r)?.get(c);

@@ -59,30 +59,50 @@ export function BeeTableContextMenuHandler({
 }: BeeTableContextMenuHandlerProps) {
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
-  const { activeCell, selectionStart, selectionEnd } = useBeeTableSelection();
+  const { activeCell } = useBeeTableSelection();
   const { copy, cut, paste, erase } = useBeeTableSelectionDispatch();
 
-  const getColumnOperations = useCallback(
-    (columnIndex: number) => {
-      const groupTypeForCurrentColumn = reactTableInstance.allColumns[columnIndex]?.groupType;
-      const columnsByGroupType = _.groupBy(reactTableInstance.allColumns, (column) => column.groupType);
-      const atLeastTwoColumnsOfTheSameGroupType = groupTypeForCurrentColumn
-        ? columnsByGroupType[groupTypeForCurrentColumn].length > 1
-        : // FIXME: Tiago -> : colmnsWidthAddedRowIndex.length > 2; // The total number of columns is counting also the # of rows column
-          reactTableInstance.allColumns.length > 2; // The total number of columns is counting also the # of rows column
+  const columns = useMemo(() => {
+    if (!activeCell) {
+      return undefined;
+    }
 
-      const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType;
+    const rowIndex = activeCell.rowIndex;
 
-      return columnIndex === 0 // This is the rowIndex column
-        ? []
-        : [
-            BeeTableOperation.ColumnInsertLeft,
-            BeeTableOperation.ColumnInsertRight,
-            ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
-          ];
-    },
-    [reactTableInstance.allColumns]
-  );
+    return rowIndex < 0 // Header cells to be read from headerGroups
+      ? _.nth(reactTableInstance.headerGroups, rowIndex)?.headers
+      : reactTableInstance.allColumns;
+  }, [activeCell, reactTableInstance.allColumns, reactTableInstance.headerGroups]);
+
+  const column = useMemo(() => {
+    if (!activeCell) {
+      return undefined;
+    }
+
+    const columnIndex = activeCell.columnIndex;
+    return columns?.[columnIndex];
+  }, [activeCell, columns]);
+
+  const columnOperations = useMemo(() => {
+    if (!activeCell) {
+      return [];
+    }
+
+    const columnIndex = activeCell.columnIndex;
+    const atLeastTwoColumnsOfTheSameGroupType = column?.groupType
+      ? _.groupBy(columns, (column) => column?.groupType)[column.groupType].length > 1
+      : false;
+
+    const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType && column?.depth === 0;
+
+    return columnIndex === 0 // This is the rowIndex column
+      ? []
+      : [
+          BeeTableOperation.ColumnInsertLeft,
+          BeeTableOperation.ColumnInsertRight,
+          ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+        ];
+  }, [activeCell, column, columns]);
 
   const operationGroups = useMemo(() => {
     if (!activeCell) {
@@ -91,9 +111,8 @@ export function BeeTableContextMenuHandler({
     if (_.isArray(operationConfig)) {
       return operationConfig;
     }
-    const column = reactTableInstance.allColumns[activeCell.columnIndex];
     return (operationConfig ?? {})[column?.groupType || ""];
-  }, [activeCell, operationConfig, reactTableInstance.allColumns]);
+  }, [activeCell, column?.groupType, operationConfig]);
 
   const allowedOperations = useMemo(() => {
     if (!activeCell) {
@@ -101,7 +120,7 @@ export function BeeTableContextMenuHandler({
     }
 
     return [
-      ...getColumnOperations(activeCell.columnIndex),
+      ...columnOperations,
       ...(activeCell.rowIndex >= 0
         ? [
             BeeTableOperation.RowInsertAbove,
@@ -112,7 +131,7 @@ export function BeeTableContextMenuHandler({
           ]
         : []),
     ];
-  }, [activeCell, getColumnOperations, reactTableInstance.rows.length]);
+  }, [activeCell, columnOperations, reactTableInstance.rows.length]);
 
   const operationLabel = useCallback((operation: BeeTableOperation) => {
     switch (operation) {
@@ -166,46 +185,53 @@ export function BeeTableContextMenuHandler({
         return;
       }
 
+      if (!activeCell) {
+        return [];
+      }
+
+      const columnIndex = activeCell.columnIndex;
+      const rowIndex = activeCell.rowIndex;
+
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
           onColumnAdded?.({
-            beforeIndex: activeCell!.columnIndex - 1,
-            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+            beforeIndex: columnIndex - 1,
+            groupType: column?.groupType,
           });
-          console.info(`Insert column left to ${activeCell!.columnIndex}`);
+          console.info(`Insert column left to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
           onColumnAdded?.({
-            beforeIndex: activeCell!.columnIndex,
-            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+            beforeIndex: columnIndex,
+            groupType: column?.groupType,
           });
-          console.info(`Insert column right to ${activeCell!.columnIndex}`);
+          console.info(`Insert column right to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
           onColumnDeleted?.({
-            columnIndex: activeCell!.columnIndex - 1,
-            groupType: reactTableInstance.allColumns[activeCell!.columnIndex].groupType,
+            columnIndex: columnIndex - 1,
+            groupType: column?.groupType,
           });
-          console.info(`Delete column ${activeCell!.columnIndex}`);
+          console.info(`Delete column ${columnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
-          onRowAdded?.({ beforeIndex: activeCell!.rowIndex });
-          console.info(`Insert row above to ${activeCell!.rowIndex}`);
+          onRowAdded?.({ beforeIndex: rowIndex });
+          console.info(`Insert row above to ${rowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
-          onRowAdded?.({ beforeIndex: activeCell!.rowIndex + 1 });
-          console.info(`Insert row below to ${activeCell!.rowIndex}`);
+          onRowAdded?.({ beforeIndex: rowIndex + 1 });
+          console.info(`Insert row below to ${rowIndex}`);
           break;
         case BeeTableOperation.RowDelete:
-          onRowDeleted?.({ rowIndex: activeCell!.rowIndex });
-          console.info(`Delete row ${activeCell!.rowIndex}`);
+          onRowDeleted?.({ rowIndex: rowIndex });
+          console.info(`Delete row ${rowIndex}`);
           break;
         case BeeTableOperation.RowClear:
-          console.info(`Clear row ${activeCell!.rowIndex}`);
+          console.info(`Clear row ${rowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
-          onRowDuplicated?.({ rowIndex: activeCell!.rowIndex });
-          console.info(`Duplicate row ${activeCell!.rowIndex}`);
+          onRowDuplicated?.({ rowIndex: rowIndex });
+          console.info(`Duplicate row ${rowIndex}`);
           break;
         default:
           assertUnreachable(operation);
@@ -214,10 +240,10 @@ export function BeeTableContextMenuHandler({
       setCurrentlyOpenContextMenu(undefined);
     },
     [
+      activeCell,
       setCurrentlyOpenContextMenu,
       onColumnAdded,
-      activeCell,
-      reactTableInstance.allColumns,
+      column?.groupType,
       onColumnDeleted,
       onRowAdded,
       onRowDeleted,
