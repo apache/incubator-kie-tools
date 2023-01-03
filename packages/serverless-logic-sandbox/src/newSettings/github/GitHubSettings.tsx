@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,15 +24,14 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { AddCircleOIcon } from "@patternfly/react-icons";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import { AddCircleOIcon, CheckCircleIcon } from "@patternfly/react-icons";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
-import { AuthStatus, useSettings, useSettingsDispatch } from "../SettingsContext";
+import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
@@ -104,7 +103,7 @@ export function GitHubSettings() {
 
   return (
     <Page>
-      <PageSection variant={"light"} isWidthLimited>
+      <PageSection variant={"light"}>
         <TextContent>
           <Text component={TextVariants.h1}>GitHub</Text>
           <Text component={TextVariants.p}>
@@ -116,8 +115,8 @@ export function GitHubSettings() {
         </TextContent>
       </PageSection>
 
-      <PageSection isFilled isWidthLimited>
-        <PageSection isFilled variant={"light"}>
+      <PageSection isFilled>
+        <PageSection variant={"light"}>
           {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
             <EmptyState>
               <EmptyStateIcon icon={ExclamationTriangleIcon} />
@@ -190,7 +189,7 @@ export function GitHubSettings() {
       </PageSection>
 
       <Modal
-        title="Settings"
+        title="Create new token"
         isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
         onClose={handleModalToggle}
         variant={ModalVariant.large}

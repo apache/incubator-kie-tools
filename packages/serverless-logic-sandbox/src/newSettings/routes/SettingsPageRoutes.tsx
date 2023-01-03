@@ -18,13 +18,13 @@ import React from "react";
 import { Redirect, Switch } from "react-router";
 import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
-import { GitHubSettings } from "../../settings/github/GitHubSettings";
-import { KieSandboxExtendedServicesSettingsTab } from "../extendedServices/KieSandboxExtendedServicesSettingsTab";
-import { FeaturePreviewSettingsTab } from "../featurePreview/FeaturePreviewSettingsTab";
-import { ApacheKafkaSettingsTab } from "../kafka/ApacheKafkaSettingsTab";
-import { OpenShiftSettingsTab } from "../openshift/OpenShiftSettingsTab";
-import { ServiceAccountSettingsTab } from "../serviceAccount/ServiceAccountSettingsTab";
-import { ServiceRegistrySettingsTab } from "../serviceRegistry/ServiceRegistrySettingsTab";
+import { GitHubSettings } from "../github/GitHubSettings";
+import { KieSandboxExtendedServicesSettings } from "../extendedServices/KieSandboxExtendedServicesSettings";
+import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/FeaturePreviewSettingsTab";
+import { ApacheKafkaSettingsTab } from "../../settings/kafka/ApacheKafkaSettingsTab";
+import { OpenShiftSettingsTab } from "../../settings/openshift/OpenShiftSettingsTab";
+import { ServiceAccountSettingsTab } from "../../settings/serviceAccount/ServiceAccountSettingsTab";
+import { ServiceRegistrySettingsTab } from "../../settings/serviceRegistry/ServiceRegistrySettingsTab";
 
 export function SettingsPageRoutes() {
   const routes = useRoutes();
@@ -34,7 +34,7 @@ export function SettingsPageRoutes() {
         <GitHubSettings />
       </Route>
       <Route path={routes.settings.kie_sandbox_extended_services.path({})}>
-        <KieSandboxExtendedServicesSettingsTab />
+        <KieSandboxExtendedServicesSettings />
       </Route>
       <Route path={routes.settings.openshift.path({})}>
         <OpenShiftSettingsTab />
