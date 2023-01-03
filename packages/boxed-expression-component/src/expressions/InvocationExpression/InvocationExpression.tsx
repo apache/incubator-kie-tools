@@ -62,23 +62,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
 
   const { decisionNodeId } = useBoxedExpressionEditor();
 
-  const onBlurCallback = useCallback((event) => {}, []);
-
-  const headerCellElement = useMemo(
-    () => (
-      <div className="function-definition-container">
-        <input
-          className="function-definition pf-u-text-truncate"
-          type="text"
-          placeholder={i18n.enterFunction}
-          defaultValue={invocation.invokedFunction}
-          onBlur={onBlurCallback}
-        />
-      </div>
-    ),
-    [invocation.invokedFunction, onBlurCallback, i18n.enterFunction]
-  );
-
   const setInfoWidth = useCallback((newInfoWidth) => {}, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
@@ -91,40 +74,60 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         width: undefined,
         columns: [
           {
-            headerCellElement,
-            accessor: "functionDefinition" as keyof ROWTYPE,
+            accessor: "functionName" as keyof ROWTYPE,
+            label: invocation.invokedFunction ?? "Function name",
             isRowIndexColumn: false,
-            label: "functionDefinition",
+            isInlineEditable: true,
             dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
             width: undefined,
+            groupType: "invokedFunctionName",
             columns: [
               {
                 accessor: "entryInfo",
+                label: "entryInfo",
+                isRowIndexColumn: false,
+                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+                minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
                 width: invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
                 setWidth: setInfoWidth,
-                minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-                isRowIndexColumn: false,
-                label: "entryInfo",
-                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
               },
               {
                 accessor: "entryExpression",
-                width: undefined,
-                isRowIndexColumn: false,
                 label: "entryExpression",
+                isRowIndexColumn: false,
                 dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+                width: undefined,
               },
             ],
           },
         ],
       },
     ],
-    [invocation.name, invocation.dataType, invocation.entryInfoWidth, decisionNodeId, headerCellElement, setInfoWidth]
+    [
+      invocation.name,
+      invocation.dataType,
+      invocation.invokedFunction,
+      invocation.entryInfoWidth,
+      decisionNodeId,
+      setInfoWidth,
+    ]
   );
 
-  const onColumnUpdates = useCallback((columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
-    /** */
-  }, []);
+  const { setExpression } = useBoxedExpressionEditorDispatch();
+
+  const onColumnUpdates = useCallback(
+    (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
+      for (const u of columnUpdates) {
+        if (u.column.originalId === "functionName") {
+          setExpression((prev) => ({
+            ...prev,
+            invokedFunction: u.name,
+          }));
+        }
+      }
+    },
+    [setExpression]
+  );
 
   const headerVisibility = useMemo(
     () => (invocation.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels),
@@ -156,8 +159,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       },
     ];
   }, [i18n]);
-
-  const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {

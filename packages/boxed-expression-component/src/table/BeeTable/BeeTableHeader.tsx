@@ -170,10 +170,10 @@ export function BeeTableHeader<R extends object>({
             >
               {column.headerCellElement ? (
                 column.headerCellElement
-              ) : column.inlineEditable ? (
+              ) : column.isInlineEditable ? (
                 <InlineEditableTextInput
                   value={column.label}
-                  onTextChange={(value) => {
+                  onChange={(value) => {
                     onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
                   }}
                 />

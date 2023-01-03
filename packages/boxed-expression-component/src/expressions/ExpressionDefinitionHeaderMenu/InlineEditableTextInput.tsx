@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ChangeEvent, useCallback, useMemo, useState, FocusEvent, useEffect, useRef } from "react";
+import { useCallback, useMemo, useState, FocusEvent, useEffect, useRef } from "react";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NavigationKeysUtils } from "../../keysUtils";
@@ -24,69 +24,42 @@ export interface InlineEditableTextInputProps {
   /** Text value */
   value: string;
   /** Callback executed when text changes */
-  onTextChange: (updatedValue: string, event?: ChangeEvent<HTMLInputElement>) => void;
-  /** Callback executed when user cancel by pressing esc */
-  onCancel?: (event: KeyboardEvent) => void;
-  /** Callback executed when user toggle the state to edit/read mode */
-  onToggle?: (isReadMode: boolean) => void;
-  /** Callback executed when user press a key */
-  onKeyDown?: (event: KeyboardEvent) => void;
+  onChange: (updatedValue: string) => void;
 }
 
-export const InlineEditableTextInput: React.FunctionComponent<InlineEditableTextInputProps> = ({
-  value,
-  onTextChange,
-  onCancel = () => {},
-  onToggle = () => {},
-  onKeyDown = () => {},
-}) => {
+export const InlineEditableTextInput: React.FunctionComponent<InlineEditableTextInputProps> = ({ value, onChange }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [toggle, setToggle] = useState(true);
 
-  const onValueBlur = useCallback(
+  const onInputBlur = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {
       const changedText = event.target.value;
-      onTextChange(changedText, event);
+      onChange(changedText);
       setToggle(true);
-      onToggle(true);
     },
-    [onTextChange, onToggle]
+    [onChange]
   );
 
   const onInputKeyDown = useMemo(
-    () => (event: KeyboardEvent) => {
-      onKeyDown(event);
+    () => (e: React.KeyboardEvent) => {
+      e.stopPropagation();
 
-      if (NavigationKeysUtils.isEnter(event.key)) {
-        (event.currentTarget as HTMLElement)?.blur();
+      if (NavigationKeysUtils.isEnter(e.key)) {
+        (e.currentTarget as HTMLElement)?.blur();
       }
-      if (NavigationKeysUtils.isEsc(event.key)) {
-        onCancel(event);
+
+      if (NavigationKeysUtils.isEsc(e.key)) {
         setToggle(true);
-        onToggle(true);
       }
     },
-    [onKeyDown, onCancel, onToggle]
+    []
   );
 
-  useEffect(() => {
-    const onKeyDownForInput = onInputKeyDown;
-    const input = inputRef.current;
-    input?.addEventListener("keydown", onKeyDownForInput);
-    return () => {
-      input?.removeEventListener("keydown", onKeyDownForInput);
-    };
-  }, [onInputKeyDown]);
-
-  const onClick = useMemo(
-    () => () => {
-      setToggle(false);
-      onToggle(false);
-    },
-    [onToggle]
-  );
+  const onLabelClick = useCallback(() => {
+    setToggle(false);
+  }, []);
 
   const getTextStyle = useMemo(() => {
     if (_.isEmpty(value)) {
@@ -95,17 +68,17 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
   }, [value]);
 
   return toggle ? (
-    <p className="pf-u-text-truncate" style={getTextStyle} onClick={onClick}>
+    <p className={"pf-u-text-truncate"} style={getTextStyle} onClick={onLabelClick}>
       {value || i18n.enterText}
     </p>
   ) : (
     <input
       ref={inputRef}
-      type="text"
-      autoFocus
+      type={"text"}
+      autoFocus={true}
       defaultValue={value}
-      onBlur={onValueBlur}
-      style={{ borderRadius: "0.5em", width: "100%" }}
+      onBlur={onInputBlur}
+      onKeyDown={onInputKeyDown}
     />
   );
 };

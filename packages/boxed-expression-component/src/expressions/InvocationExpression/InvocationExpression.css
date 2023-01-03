@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-.expression-container .invocation-expression .function-definition-container .function-definition {
-  border: none;
-  background-color: #def3ff;
+.expression-container .invocation-expression .invokedFunctionName {
   font-family: monospace;
-  padding: 0.25em;
   text-align: center;
-}
-
-.expression-container .invocation-expression .function-definition-container .function-definition::placeholder {
+  font-weight: lighter;
   font-style: italic;
-  text-align: center;
-  font-family: var(--pf-global--FontFamily--sans-serif);
-}
-
-.expression-container .invocation-expression .function-definition-container .function-definition:focus {
-  background-color: white;
-  font-family: inherit;
 }

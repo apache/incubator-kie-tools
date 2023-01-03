@@ -50,7 +50,7 @@ declare module "react-table" {
     /** Custom Element to be rendered in place of the column label */
     headerCellElement?: JSX.Element;
     /** It makes this column header inline editable (with double-click) */
-    inlineEditable?: boolean;
+    isInlineEditable?: boolean;
     /** Column data type */
     dataType: DmnBuiltInDataType;
     /** It tells whether column is of type counter or not */
