@@ -37,7 +37,7 @@ export const en: BoxedExpressionEditorI18n = {
     custom: "CUSTOM",
   },
   decisionRule: "DECISION RULE",
-  decisionTable: "Decision Table",
+  decisionTable: "Decision table",
   delete: "Delete",
   document: "document",
   editClause: {
@@ -50,7 +50,7 @@ export const en: BoxedExpressionEditorI18n = {
   editParameter: "Edit Parameter",
   editParameters: "Edit parameters",
   editRelation: "Edit Relation",
-  enterFunction: "Enter function",
+  enterFunction: "Function name",
   enterText: "Enter Text",
   function: "Function",
   hitPolicy: "Hit Policy",

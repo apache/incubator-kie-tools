@@ -126,9 +126,9 @@ export const getNextAvailablePrefixedName = (
 };
 
 export interface DecisionTableExpressionDefinition extends ExpressionDefinitionBase {
-  /** Logic type must be Decision Table */
+  /** Logic type must be Decision table */
   logicType: ExpressionDefinitionLogicType.DecisionTable;
-  /** Hit policy for this particular decision table */
+  /** Hit policy for this particular Decision table */
   hitPolicy: DecisionTableExpressionDefinitionHitPolicy;
   /** Aggregation policy, when the hit policy supports it */
   aggregation: DecisionTableExpressionDefinitionBuiltInAggregation;

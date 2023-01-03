@@ -61,7 +61,7 @@ export function BeeTableThResizable<R extends object>({
     }
 
     cssClasses.push(column.groupType ?? "");
-    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Tiago -> Breaking decision tables because of positioning of rowSpan=2 column headers
+    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Tiago -> Breaking Decision tables because of positioning of rowSpan=2 column headers
     return cssClasses.join(" ");
   }, [column, columnKey]);
 

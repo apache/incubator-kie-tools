@@ -19,7 +19,7 @@ export enum ExpressionDefinitionLogicType {
   LiteralExpression = "Literal expression",
   PmmlLiteralExpression = "PMML Literal expression",
   Context = "Context",
-  DecisionTable = "Decision Table",
+  DecisionTable = "Decision table",
   Relation = "Relation",
   Function = "Function",
   Invocation = "Invocation",

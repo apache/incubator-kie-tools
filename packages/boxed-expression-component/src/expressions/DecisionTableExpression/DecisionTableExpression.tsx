@@ -428,7 +428,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     (args: { beforeIndex: number; groupType: DecisionTableColumnType | undefined }) => {
       const groupType = args.groupType;
       if (!groupType) {
-        throw new Error("Column without groupType for Decision Table.");
+        throw new Error("Column without groupType for Decision table.");
       }
 
       // Index used to mutate individual sections locally. Inputs, Outputs, and Annotations.
