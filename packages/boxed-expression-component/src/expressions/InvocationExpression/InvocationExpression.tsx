@@ -166,35 +166,44 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       {
         group: i18n.parameters,
         items: [
+          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
         ],
       },
     ];
   }, [i18n]);
 
+  const getDefaultArgumentEntry = useCallback(
+    (name?: string): ContextExpressionDefinitionEntry<any> => {
+      return {
+        nameAndDataTypeSynchronized: true,
+        entryInfo: {
+          id: generateUuid(),
+          dataType: DmnBuiltInDataType.Undefined,
+          name:
+            name ||
+            getNextAvailablePrefixedName(
+              (invocationExpression.bindingEntries ?? []).map((e) => e.entryInfo.name),
+              "p"
+            ),
+        },
+        entryExpression: {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
+        },
+      };
+    },
+    [invocationExpression.bindingEntries]
+  );
+
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setExpression((prev: InvocationExpressionDefinition) => {
         const newArgumentEntries = [...(prev.bindingEntries ?? [])];
-        newArgumentEntries.splice(args.beforeIndex, 0, {
-          nameAndDataTypeSynchronized: true,
-          entryExpression: {
-            logicType: ExpressionDefinitionLogicType.Undefined,
-            dataType: DmnBuiltInDataType.Undefined,
-            id: generateUuid(),
-          },
-          entryInfo: {
-            dataType: DmnBuiltInDataType.Undefined,
-            id: generateUuid(),
-            name: getNextAvailablePrefixedName(
-              (prev.bindingEntries ?? []).map((e) => e.entryInfo.name),
-              "p"
-            ),
-          },
-        });
+        newArgumentEntries.splice(args.beforeIndex, 0, getDefaultArgumentEntry());
 
         return {
           ...prev,
@@ -202,7 +211,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         };
       });
     },
-    [setExpression]
+    [getDefaultArgumentEntry, setExpression]
   );
 
   const onRowDeleted = useCallback(
@@ -219,6 +228,24 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [setExpression]
   );
 
+  const onRowReset = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: InvocationExpressionDefinition) => {
+        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
+        newArgumentEntries.splice(
+          args.rowIndex,
+          1,
+          getDefaultArgumentEntry(newArgumentEntries[args.rowIndex].entryInfo.name)
+        );
+        return {
+          ...prev,
+          bindingEntries: newArgumentEntries,
+        };
+      });
+    },
+    [getDefaultArgumentEntry, setExpression]
+  );
+
   return (
     <div className={`invocation-expression ${invocationExpression.id}`}>
       <BeeTable<ROWTYPE>
@@ -233,6 +260,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         operationConfig={beeTableOperationConfig}
         getRowKey={getRowKey}
         onRowAdded={onRowAdded}
+        onRowReset={onRowReset}
         onRowDeleted={onRowDeleted}
       />
     </div>

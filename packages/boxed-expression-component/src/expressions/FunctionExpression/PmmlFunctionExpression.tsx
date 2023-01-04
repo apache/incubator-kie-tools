@@ -52,7 +52,6 @@ export const pmmlContextExpression = (
           noOptionsLabel: i18n.pmml.firstSelection,
           kind: PmmlLiteralExpressionDefinitionKind.Document,
           selected: prev.document ?? "",
-          isHeadless: true,
         },
       },
       {
@@ -69,10 +68,8 @@ export const pmmlContextExpression = (
           testId: "pmml-selector-model",
           kind: PmmlLiteralExpressionDefinitionKind.Model,
           selected: prev.model ?? "",
-          isHeadless: true,
         },
       },
     ],
-    isHeadless: true,
   };
 };

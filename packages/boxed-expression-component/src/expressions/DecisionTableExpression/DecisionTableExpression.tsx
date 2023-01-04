@@ -531,6 +531,25 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
     [setExpression]
   );
 
+  const onRowDuplicated = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const duplicatedRule = {
+          ...JSON.parse(JSON.stringify(prev.rules?.[args.rowIndex])),
+          id: generateUuid(),
+        };
+
+        const newRules = [...(prev.rules ?? [])];
+        newRules.splice(args.rowIndex, 0, duplicatedRule);
+        return {
+          ...prev,
+          rules: newRules,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
@@ -547,6 +566,7 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}
+        onRowDuplicated={onRowDuplicated}
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
       />

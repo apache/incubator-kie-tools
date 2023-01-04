@@ -307,15 +307,19 @@ export function BeeTableContextMenuHandler({
 
             <MenuGroup label={"SELECTION"}>
               <MenuList>
+                {/* FIXME: Tiago -> Depends on some cells registering setValue */}
                 <MenuItem onClick={erase} icon={<CompressIcon />}>
                   {i18n.terms.reset}
                 </MenuItem>
+                {/* FIXME: Tiago -> Depends on some cells registering getValue */}
                 <MenuItem onClick={copy} icon={<CopyIcon />}>
                   {i18n.terms.copy}
                 </MenuItem>
+                {/* FIXME: Tiago -> Depends on some cells registering getValue AND setValue */}
                 <MenuItem onClick={cut} icon={<CutIcon />}>
                   {i18n.terms.cut}
                 </MenuItem>
+                {/* FIXME: Tiago -> Depends on some cells registering setValue */}
                 <MenuItem onClick={paste} icon={<PasteIcon />}>
                   {i18n.terms.paste}
                 </MenuItem>

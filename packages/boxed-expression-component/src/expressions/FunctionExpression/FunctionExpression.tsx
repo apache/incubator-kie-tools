@@ -126,14 +126,12 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
       setExpression((prev) => {
         if (kind === FunctionExpressionDefinitionKind.Feel) {
           return getDefaultExpressionDefinitionByLogicType(ExpressionDefinitionLogicType.Function, {
-            isHeadless: prev.isHeadless,
             id: prev.id ?? generateUuid(),
             name: prev.name,
             dataType: DmnBuiltInDataType.Undefined,
           });
         } else if (kind === FunctionExpressionDefinitionKind.Java) {
           return {
-            isHeadless: prev.isHeadless,
             name: prev.name,
             id: prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
@@ -143,7 +141,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           };
         } else if (kind === FunctionExpressionDefinitionKind.Pmml) {
           return {
-            isHeadless: prev.isHeadless,
             name: prev.name,
             id: prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
@@ -174,15 +171,18 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     return [
       {
         group: _.upperCase(i18n.function),
-        items: [
-          {
-            name: i18n.rowOperations.reset,
-            type: BeeTableOperation.RowReset,
-          },
-        ],
+        items:
+          functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel
+            ? [
+                {
+                  name: i18n.rowOperations.reset,
+                  type: BeeTableOperation.RowReset,
+                },
+              ]
+            : [],
       },
     ];
-  }, [i18n]);
+  }, [functionExpression.functionKind, i18n]);
 
   const { updateResizingWidth } = useResizingWidthsDispatch();
 
@@ -284,6 +284,23 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     };
   }, [nestedExpressionContainer]);
 
+  const onRowReset = useCallback(() => {
+    setExpression((prev) => {
+      if (functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel) {
+        return {
+          ...prev,
+          expression: {
+            id: generateUuid(),
+            logicType: ExpressionDefinitionLogicType.Undefined,
+            dataType: DmnBuiltInDataType.Undefined,
+          },
+        };
+      }
+
+      return prev;
+    });
+  }, [functionExpression.functionKind, setExpression]);
+
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div className={`function-expression ${functionExpression.id}`}>
@@ -291,6 +308,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           operationConfig={beeTableOperationConfig}
           onColumnUpdates={onColumnUpdates}
           getRowKey={getRowKey}
+          onRowReset={onRowReset}
           columns={beeTableColumns}
           rows={beeTableRows}
           headerLevelCount={1}

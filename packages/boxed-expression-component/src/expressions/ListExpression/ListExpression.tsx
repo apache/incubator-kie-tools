@@ -24,10 +24,10 @@ import {
   BeeTableProps,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
+  ExpressionDefinition,
   ExpressionDefinitionLogicType,
   generateUuid,
   ListExpressionDefinition,
-  UndefinedExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { BeeTable } from "../../table/BeeTable";
@@ -48,10 +48,10 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
       {
         group: i18n.rows,
         items: [
+          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
         ],
       },
     ],
@@ -83,25 +83,29 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
   }, []);
 
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
-    () => ({ list: ListItemCell }),
+    () => ({
+      list: ListItemCell,
+    }),
     []
   );
+
+  const getDefaultListItem = useCallback((): ExpressionDefinition => {
+    return {
+      id: generateUuid(),
+      logicType: ExpressionDefinitionLogicType.Undefined,
+      dataType: DmnBuiltInDataType.Undefined,
+    };
+  }, []);
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setExpression((prev: ListExpressionDefinition) => {
-        const newLiteralExpression: UndefinedExpressionDefinition = {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: DmnBuiltInDataType.Undefined,
-          isHeadless: true,
-        };
         const newItems = [...prev.items];
-        newItems.splice(args.beforeIndex, 0, newLiteralExpression);
+        newItems.splice(args.beforeIndex, 0, getDefaultListItem());
         return { ...prev, items: newItems };
       });
     },
-    [setExpression]
+    [getDefaultListItem, setExpression]
   );
 
   const onRowDeleted = useCallback(
@@ -118,6 +122,20 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [setExpression]
   );
 
+  const onRowReset = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: ListExpressionDefinition) => {
+        const newItems = [...(prev.items ?? [])];
+        newItems.splice(args.rowIndex, 1, getDefaultListItem());
+        return {
+          ...prev,
+          items: newItems,
+        };
+      });
+    },
+    [getDefaultListItem, setExpression]
+  );
+
   return (
     <div className={`${listExpression.id} list-expression`}>
       <BeeTable<ROWTYPE>
@@ -130,6 +148,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         getRowKey={getRowKey}
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}
+        onRowReset={onRowReset}
       />
     </div>
   );

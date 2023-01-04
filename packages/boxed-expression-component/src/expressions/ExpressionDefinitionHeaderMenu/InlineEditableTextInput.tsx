@@ -63,7 +63,9 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
 
   const getTextStyle = useMemo(() => {
     if (_.isEmpty(value)) {
-      return { fontStyle: "italic" };
+      return { fontStyle: "italic", cursor: "pointer" };
+    } else {
+      return { cursor: "pointer" };
     }
   }, [value]);
 

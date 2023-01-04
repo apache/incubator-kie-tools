@@ -52,7 +52,6 @@ export function getDefaultExpressionDefinitionByLogicType(
         id: generateUuid(),
         logicType: ExpressionDefinitionLogicType.Undefined,
         dataType: DmnBuiltInDataType.Undefined,
-        isHeadless: true,
       },
     };
     return functionExpression;
@@ -102,25 +101,21 @@ export function getDefaultExpressionDefinitionByLogicType(
     const listExpression: ListExpressionDefinition = {
       ...prev,
       logicType,
-      isHeadless: true,
       items: [
         {
           id: generateUuid(),
           logicType: ExpressionDefinitionLogicType.Undefined,
           dataType: DmnBuiltInDataType.Undefined,
-          isHeadless: true,
         },
         {
           id: generateUuid(),
           logicType: ExpressionDefinitionLogicType.Undefined,
           dataType: DmnBuiltInDataType.Undefined,
-          isHeadless: true,
         },
         {
           id: generateUuid(),
           logicType: ExpressionDefinitionLogicType.Undefined,
           dataType: DmnBuiltInDataType.Undefined,
-          isHeadless: true,
         },
       ],
     };
@@ -129,7 +124,6 @@ export function getDefaultExpressionDefinitionByLogicType(
     const invocationExpression: InvocationExpressionDefinition = {
       ...prev,
       logicType,
-      isHeadless: true,
       entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
       bindingEntries: [
         {
@@ -143,7 +137,6 @@ export function getDefaultExpressionDefinitionByLogicType(
             name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
             dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
             logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
-            isHeadless: true,
           },
           nameAndDataTypeSynchronized: true,
         },

@@ -262,10 +262,10 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       {
         group: i18n.contextEntry,
         items: [
+          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
         ],
       },
     ];
@@ -286,26 +286,35 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       : undefined;
   }, [contextExpression]);
 
+  const getDefaultContextEntry = useCallback(
+    (name?: string): ContextExpressionDefinitionEntry => {
+      return {
+        nameAndDataTypeSynchronized: true,
+        entryExpression: {
+          logicType: ExpressionDefinitionLogicType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
+          id: generateUuid(),
+        },
+        entryInfo: {
+          dataType: DmnBuiltInDataType.Undefined,
+          id: generateUuid(),
+          name:
+            name ||
+            getNextAvailablePrefixedName(
+              contextExpression.contextEntries.map((e) => e.entryInfo.name),
+              "ContextEntry"
+            ),
+        },
+      };
+    },
+    [contextExpression]
+  );
+
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setExpression((prev: ContextExpressionDefinition) => {
         const newContextEntries = [...(prev.contextEntries ?? [])];
-        newContextEntries.splice(args.beforeIndex, 0, {
-          nameAndDataTypeSynchronized: true,
-          entryExpression: {
-            logicType: ExpressionDefinitionLogicType.Undefined,
-            dataType: DmnBuiltInDataType.Undefined,
-            id: generateUuid(),
-          },
-          entryInfo: {
-            dataType: DmnBuiltInDataType.Undefined,
-            id: generateUuid(),
-            name: getNextAvailablePrefixedName(
-              prev.contextEntries.map((e) => e.entryInfo.name),
-              "ContextEntry"
-            ),
-          },
-        });
+        newContextEntries.splice(args.beforeIndex, 0, getDefaultContextEntry());
 
         return {
           ...prev,
@@ -313,7 +322,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         };
       });
     },
-    [setExpression]
+    [getDefaultContextEntry, setExpression]
   );
 
   const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
@@ -336,6 +345,22 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     [setExpression]
   );
 
+  const onRowReset = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: ContextExpressionDefinition) => {
+        const newContextEntries = [...(prev.contextEntries ?? [])];
+        newContextEntries.splice(args.rowIndex, 1, {
+          ...getDefaultContextEntry(newContextEntries[args.rowIndex].entryInfo.name),
+        });
+        return {
+          ...prev,
+          contextEntries: newContextEntries,
+        };
+      });
+    },
+    [getDefaultContextEntry, setExpression]
+  );
+
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div className={`context-expression ${contextExpression.id}`}>
@@ -351,6 +376,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           getRowKey={getRowKey}
           additionalRow={beeTableAdditionalRow}
           onRowAdded={onRowAdded}
+          onRowReset={onRowReset}
           onRowDeleted={onRowDeleted}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
         />

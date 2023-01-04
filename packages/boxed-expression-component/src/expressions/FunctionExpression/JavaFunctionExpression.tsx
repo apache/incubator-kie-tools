@@ -49,7 +49,6 @@ export const javaContextExpression = (
           dataType: DmnBuiltInDataType.Undefined,
           width: LITERAL_EXPRESSION_MIN_WIDTH,
           content: prev.className ?? "",
-          isHeadless: true,
         },
       },
       {
@@ -64,10 +63,8 @@ export const javaContextExpression = (
           dataType: DmnBuiltInDataType.Undefined,
           content: prev.methodName ?? "",
           width: LITERAL_EXPRESSION_MIN_WIDTH,
-          isHeadless: true,
         },
       },
     ],
-    isHeadless: true,
   };
 };

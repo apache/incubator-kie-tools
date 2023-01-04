@@ -68,6 +68,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         onLogicTypeReset={onLogicTypeReset}
         getPlacementRef={getPlacementRef}
         isResetSupported={isResetSupported}
+        isHeadless={isHeadless}
       />
     </div>
   );

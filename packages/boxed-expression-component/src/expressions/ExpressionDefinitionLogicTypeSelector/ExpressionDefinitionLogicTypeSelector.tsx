@@ -48,6 +48,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
   isResetSupported: boolean;
+  isHeadless: boolean;
 }
 
 const NON_SELECTABLE_LOGIC_TYPES = [ExpressionDefinitionLogicType.Undefined, ExpressionDefinitionLogicType.PmmlLiteral];
@@ -62,6 +63,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   onLogicTypeReset,
   getPlacementRef,
   isResetSupported,
+  isHeadless,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -76,27 +78,27 @@ export function ExpressionDefinitionLogicTypeSelector({
     const logicType = expression.logicType;
     switch (logicType) {
       case ExpressionDefinitionLogicType.Literal:
-        return <LiteralExpression {...expression} />;
+        return <LiteralExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.PmmlLiteral:
-        return <PmmlLiteralExpression {...expression} />;
+        return <PmmlLiteralExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.Relation:
-        return <RelationExpression {...expression} />;
+        return <RelationExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.Context:
-        return <ContextExpression {...expression} />;
+        return <ContextExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.DecisionTable:
-        return <DecisionTableExpression {...expression} />;
+        return <DecisionTableExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.Invocation:
-        return <InvocationExpression {...expression} />;
+        return <InvocationExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.List:
-        return <ListExpression {...expression} />;
+        return <ListExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.Function:
-        return <FunctionExpression {...expression} />;
+        return <FunctionExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.Undefined:
         return <></>; // Shouldn't ever reach this point, though
       default:
         assertUnreachable(logicType);
     }
-  }, [expression]);
+  }, [expression, isHeadless]);
 
   const getPopoverArrowPlacement = useCallback(() => {
     return getPlacementRef() as HTMLDivElement;

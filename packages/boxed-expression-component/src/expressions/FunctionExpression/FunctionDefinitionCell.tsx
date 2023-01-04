@@ -88,7 +88,7 @@ export function FunctionDefinitionCell({ data, rowIndex }: BeeTableCellProps<ROW
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ExpressionContainer expression={data[rowIndex]?.entryExpression} isResetSupported={true} isHeadless={true} />
+        <ExpressionContainer expression={data[rowIndex]?.entryExpression} isResetSupported={false} isHeadless={true} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );
