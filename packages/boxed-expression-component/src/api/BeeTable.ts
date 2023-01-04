@@ -86,7 +86,7 @@ export enum BeeTableOperation {
   RowInsertAbove,
   RowInsertBelow,
   RowDelete,
-  RowClear,
+  RowReset,
   RowDuplicate,
 }
 

@@ -16,8 +16,8 @@
 
 export enum ExpressionDefinitionLogicType {
   Undefined = "<Undefined>",
-  LiteralExpression = "Literal expression",
-  PmmlLiteralExpression = "PMML Literal expression",
+  Literal = "Literal",
+  PmmlLiteral = "PMML Literal",
   Context = "Context",
   DecisionTable = "Decision table",
   Relation = "Relation",

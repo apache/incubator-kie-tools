@@ -27,10 +27,7 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
-
-export const LITERAL_EXPRESSION_MIN_WIDTH = 250;
-
-export const LITERAL_EXPRESSION_EXTRA_WIDTH = 14; // 14px for clear margin
+import { LITERAL_EXPRESSION_MIN_WIDTH, NESTED_EXPRESSION_RESET_MARGIN } from "../../resizing/WidthValues";
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
   const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
@@ -70,7 +67,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   const minWidthGlobal = useMemo(() => {
     return Math.max(
-      nestedExpressionContainer.minWidthGlobal - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      nestedExpressionContainer.minWidthGlobal - NESTED_EXPRESSION_RESET_MARGIN,
       LITERAL_EXPRESSION_MIN_WIDTH
     );
   }, [nestedExpressionContainer]);
@@ -108,14 +105,14 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       return prev.isPivoting
         ? {
             value: Math.max(
-              nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
+              nestedExpressionContainer.resizingWidth.value - NESTED_EXPRESSION_RESET_MARGIN,
               minWidthGlobal
             ),
             isPivoting: true,
           }
         : {
             value: Math.max(
-              nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
+              nestedExpressionContainer.resizingWidth.value - NESTED_EXPRESSION_RESET_MARGIN,
               minWidthGlobal,
               literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
             ),

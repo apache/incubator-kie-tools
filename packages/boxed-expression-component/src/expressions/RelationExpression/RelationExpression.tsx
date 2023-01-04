@@ -30,6 +30,10 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
+import {
+  RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+  RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+} from "../../resizing/WidthValues";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -37,8 +41,6 @@ import "./RelationExpression.css";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
 
-export const RELATION_EXPRESSION_COLUMN_MIN_WIDTH = 100;
-export const RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH = 150;
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
 export const RelationExpression: React.FunctionComponent<RelationExpressionDefinition> = (
@@ -108,7 +110,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   //     const totalAvailableSpaceForColumns =
   //       pivotAwareNestedExpressionContainer.resizingWidth.value -
   //       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH -
-  //       NESTED_EXPRESSION_CLEAR_MARGIN -
+  //       NESTED_EXPRESSION_RESET_MARGIN -
   //       columns.length * 2; // 2px for border of each column
 
   //     const totalColumnsWidths = columns.reduce(

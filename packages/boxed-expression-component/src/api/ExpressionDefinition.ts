@@ -30,7 +30,7 @@ export interface ExpressionDefinitionBase {
 
 export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be LiteralExpression */
-  logicType: ExpressionDefinitionLogicType.LiteralExpression;
+  logicType: ExpressionDefinitionLogicType.Literal;
   /** Optional content to display for this literal expression */
   content?: string;
   /** Optional width for this literal expression */
@@ -44,7 +44,7 @@ export enum PmmlLiteralExpressionDefinitionKind {
 
 export interface PmmlLiteralExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be PmmlLiteralExpression */
-  logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression;
+  logicType: ExpressionDefinitionLogicType.PmmlLiteral;
   /** Dropdown's selected option */
   selected?: string;
   /** Label displayed (in italic style) when no options are available */

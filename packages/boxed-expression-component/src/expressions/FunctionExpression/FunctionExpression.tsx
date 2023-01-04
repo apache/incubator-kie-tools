@@ -34,16 +34,13 @@ import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { CONTEXT_ENTRY_EXTRA_WIDTH } from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import {
-  ContextExpressionContext,
-  ContextExpressionContextType,
-  CONTEXT_ENTRY_EXTRA_WIDTH,
-} from "../ContextExpression";
+import { ContextExpressionContext, ContextExpressionContextType } from "../ContextExpression";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 import { FunctionDefinitionCell } from "./FunctionDefinitionCell";
 import "./FunctionExpression.css";
@@ -179,8 +176,8 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         group: _.upperCase(i18n.function),
         items: [
           {
-            name: i18n.rowOperations.clear,
-            type: BeeTableOperation.RowClear,
+            name: i18n.rowOperations.reset,
+            type: BeeTableOperation.RowReset,
           },
         ],
       },

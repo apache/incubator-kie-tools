@@ -35,8 +35,8 @@ export interface BoxedExpressionEditorProps {
   /** All expression properties used to define it */
   expressionDefinition: ExpressionDefinition;
   setExpressionDefinition: React.Dispatch<React.SetStateAction<ExpressionDefinition>>;
-  /** A boolean used for making (or not) the clear button available on the root expression */
-  isClearSupportedOnRootExpression?: boolean;
+  /** A boolean used for making (or not) the reset button available on the root expression */
+  isResetSupportedOnRootExpression?: boolean;
   /** The data type elements that can be used in the editor */
   dataTypes: DmnDataType[];
   /** PMML parameters */
@@ -51,7 +51,7 @@ export function BoxedExpressionEditor({
   expressionDefinition,
   setExpressionDefinition,
   beeGwtService,
-  isClearSupportedOnRootExpression,
+  isResetSupportedOnRootExpression,
   pmmlParams,
 }: BoxedExpressionEditorProps) {
   return (
@@ -72,7 +72,7 @@ export function BoxedExpressionEditor({
         <ExpressionDefinitionRoot
           decisionNodeId={decisionNodeId}
           expression={expressionDefinition}
-          isClearSupported={isClearSupportedOnRootExpression}
+          isResetSupported={isResetSupportedOnRootExpression}
         />
       </BoxedExpressionEditorContextProvider>
     </I18nDictionariesProvider>

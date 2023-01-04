@@ -47,15 +47,10 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   onLogicTypeReset: () => void;
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
-  isClearSupported?: boolean;
+  isResetSupported: boolean;
 }
 
-export const LOGIC_TYPE_SELECTOR_CLASS = "logic-type-selector";
-
-const NON_SELECTABLE_LOGIC_TYPES = [
-  ExpressionDefinitionLogicType.Undefined,
-  ExpressionDefinitionLogicType.PmmlLiteralExpression,
-];
+const NON_SELECTABLE_LOGIC_TYPES = [ExpressionDefinitionLogicType.Undefined, ExpressionDefinitionLogicType.PmmlLiteral];
 
 const SELECTABLE_LOGIC_TYPES = Object.values(ExpressionDefinitionLogicType).filter((logicType) => {
   return !NON_SELECTABLE_LOGIC_TYPES.includes(logicType);
@@ -66,7 +61,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   onLogicTypeSelected,
   onLogicTypeReset,
   getPlacementRef,
-  isClearSupported = true,
+  isResetSupported,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -80,9 +75,9 @@ export function ExpressionDefinitionLogicTypeSelector({
   const renderExpression = useMemo(() => {
     const logicType = expression.logicType;
     switch (logicType) {
-      case ExpressionDefinitionLogicType.LiteralExpression:
+      case ExpressionDefinitionLogicType.Literal:
         return <LiteralExpression {...expression} />;
-      case ExpressionDefinitionLogicType.PmmlLiteralExpression:
+      case ExpressionDefinitionLogicType.PmmlLiteral:
         return <PmmlLiteralExpression {...expression} />;
       case ExpressionDefinitionLogicType.Relation:
         return <RelationExpression {...expression} />;
@@ -126,28 +121,28 @@ export function ExpressionDefinitionLogicTypeSelector({
 
   const cssClass = useMemo(() => {
     if (isLogicTypeSelected) {
-      return `${LOGIC_TYPE_SELECTOR_CLASS} logic-type-selected`;
+      return `logic-type-selector logic-type-selected`;
     } else {
-      return `${LOGIC_TYPE_SELECTOR_CLASS} logic-type-not-present`;
+      return `logic-type-selector logic-type-not-present`;
     }
   }, [isLogicTypeSelected]);
 
-  const clearContextMenuContainerRef = React.useRef<HTMLDivElement>(null);
+  const resetContextMenuContainerRef = React.useRef<HTMLDivElement>(null);
   const {
-    xPos: clearContextMenuXPos,
-    yPos: clearContextMenuYPos,
-    isOpen: isClearContextMenuOpen,
-  } = useCustomContextMenuHandler(clearContextMenuContainerRef);
+    xPos: resetContextMenuXPos,
+    yPos: resetContextMenuYPos,
+    isOpen: isResetContextMenuOpen,
+  } = useCustomContextMenuHandler(resetContextMenuContainerRef);
 
-  const shouldRenderClearContextMenu = useMemo(() => {
-    return isClearContextMenuOpen && isLogicTypeSelected && isClearSupported;
-  }, [isClearContextMenuOpen, isClearSupported, isLogicTypeSelected]);
+  const shouldRenderResetContextMenu = useMemo(() => {
+    return isResetContextMenuOpen && isLogicTypeSelected && isResetSupported;
+  }, [isResetContextMenuOpen, isResetSupported, isLogicTypeSelected]);
 
   const logicTypeIcon = useCallback((logicType: ExpressionDefinitionLogicType) => {
     switch (logicType) {
       case ExpressionDefinitionLogicType.Undefined:
         return ``;
-      case ExpressionDefinitionLogicType.LiteralExpression:
+      case ExpressionDefinitionLogicType.Literal:
         return (
           <div
             style={{
@@ -162,7 +157,7 @@ export function ExpressionDefinitionLogicTypeSelector({
             FEEL
           </div>
         );
-      case ExpressionDefinitionLogicType.PmmlLiteralExpression:
+      case ExpressionDefinitionLogicType.PmmlLiteral:
         return ``;
       case ExpressionDefinitionLogicType.Context:
         return (
@@ -227,8 +222,8 @@ export function ExpressionDefinitionLogicTypeSelector({
     <>
       <div
         className={cssClass}
-        ref={clearContextMenuContainerRef}
-        style={{ opacity: shouldRenderClearContextMenu ? 0.5 : 1 }}
+        ref={resetContextMenuContainerRef}
+        style={{ opacity: shouldRenderResetContextMenu ? 0.5 : 1 }}
       >
         {isLogicTypeSelected ? renderExpression : i18n.selectExpression}
 
@@ -277,18 +272,18 @@ export function ExpressionDefinitionLogicTypeSelector({
           />
         )}
       </div>
-      {shouldRenderClearContextMenu && (
+      {shouldRenderResetContextMenu && (
         <div
           className="context-menu-container"
           style={{
-            top: clearContextMenuYPos,
-            left: clearContextMenuXPos,
+            top: resetContextMenuYPos,
+            left: resetContextMenuXPos,
             opacity: 1,
             minWidth: "150px",
           }}
         >
           <Menu className="table-context-menu">
-            <MenuGroup label={expression.logicType.toLocaleUpperCase()}>
+            <MenuGroup label={`${expression.logicType.toLocaleUpperCase()} EXPRESSION`}>
               <MenuList>
                 <MenuItem
                   onClick={resetLogicType}
@@ -300,6 +295,7 @@ export function ExpressionDefinitionLogicTypeSelector({
                 >
                   {i18n.terms.reset}
                 </MenuItem>
+                <Divider style={{ padding: "16px", margin: 0 }} />
                 <MenuItem
                   onClick={copyExpression}
                   icon={

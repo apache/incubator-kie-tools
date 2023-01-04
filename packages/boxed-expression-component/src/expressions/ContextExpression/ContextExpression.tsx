@@ -34,6 +34,12 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { ResizingWidth, useResizingWidths, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { getExpressionMinWidth, getExpressionResizingWidth } from "../../resizing/Widths";
+import {
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_EXTRA_WIDTH,
+  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  NESTED_EXPRESSION_RESET_MARGIN,
+} from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -47,19 +53,6 @@ import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 const CONTEXT_ENTRY_DEFAULT_NAME = "ContextEntry-1";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
-
-export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
-
-export const NESTED_EXPRESSION_CLEAR_MARGIN = 14;
-
-export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 150;
-export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 370;
-
-export const CONTEXT_ENTRY_EXTRA_WIDTH =
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-  NESTED_EXPRESSION_CLEAR_MARGIN +
-  1 + // 1px for contextExpression column border-left and border-right
-  2; // 2px for contextInfo column border-left
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -272,7 +265,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
         ],
       },
     ];

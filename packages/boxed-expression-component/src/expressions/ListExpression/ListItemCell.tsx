@@ -42,7 +42,7 @@ export function ListItemCell({ rowIndex, data: items }: BeeTableCellProps<ROWTYP
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ExpressionContainer expression={items[rowIndex]?.entryExpression} isClearSupported={true} isHeadless={true} />
+        <ExpressionContainer expression={items[rowIndex]?.entryExpression} isResetSupported={true} isHeadless={true} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

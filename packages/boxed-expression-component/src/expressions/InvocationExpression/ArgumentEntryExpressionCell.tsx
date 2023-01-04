@@ -73,7 +73,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryE
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ExpressionContainer
           expression={argumentEntries[rowIndex]?.entryExpression}
-          isClearSupported={true}
+          isResetSupported={true}
           isHeadless={true}
         />
       </NestedExpressionDispatchContextProvider>

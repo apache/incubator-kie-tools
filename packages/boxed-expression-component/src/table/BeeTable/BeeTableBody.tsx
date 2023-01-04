@@ -15,23 +15,18 @@
  */
 
 import * as React from "react";
-import { BaseSyntheticEvent, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import * as PfReactTable from "@patternfly/react-table";
 import { BeeTableHeaderVisibility } from "../../api";
 import * as ReactTable from "react-table";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { LOGIC_TYPE_SELECTOR_CLASS } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
-import { BeeTableCellUpdate } from ".";
 
 export interface BeeTableBodyProps<R extends object> {
   /** Table instance */
   reactTableInstance: ReactTable.TableInstance<R>;
   /** The way in which the header will be rendered */
-  headerVisibility?: BeeTableHeaderVisibility;
-  /** True, for skipping the creation in the DOM of the last defined header group */
-  headerRowsCount: number;
+  headerVisibility: BeeTableHeaderVisibility;
   /** Optional children element to be appended below the table content */
   additionalRow?: React.ReactElement[];
   /** Custom function for getting row key prop, and avoid using the row index */
@@ -45,38 +40,11 @@ export interface BeeTableBodyProps<R extends object> {
 export function BeeTableBody<R extends object>({
   reactTableInstance,
   additionalRow,
-  headerVisibility = BeeTableHeaderVisibility.AllLevels,
-  headerRowsCount,
+  headerVisibility,
   getRowKey,
   getColumnKey,
   onRowAdded,
 }: BeeTableBodyProps<R>) {
-  const { beeGwtService } = useBoxedExpressionEditor();
-
-  const onTrClick = useCallback(
-    (rowKey: string) => (event: BaseSyntheticEvent) => {
-      function eventPathHasNestedExpression(event: React.BaseSyntheticEvent, path: EventTarget[]) {
-        let currentPathTarget: EventTarget = event.target;
-        let currentIndex = 0;
-        while (currentPathTarget !== event.currentTarget && currentIndex < path.length) {
-          currentIndex++;
-          currentPathTarget = path[currentIndex];
-          if ((currentPathTarget as HTMLElement)?.classList?.contains(LOGIC_TYPE_SELECTOR_CLASS)) {
-            return true;
-          }
-        }
-        return false;
-      }
-
-      const nativeEvent = event.nativeEvent as Event;
-      const path: EventTarget[] = nativeEvent?.composedPath?.() || [];
-      if (!eventPathHasNestedExpression(event, path)) {
-        beeGwtService?.selectObject(rowKey);
-      }
-    },
-    [beeGwtService]
-  );
-
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
@@ -88,7 +56,6 @@ export function BeeTableBody<R extends object>({
           {...row.getRowProps()}
           ouiaId={"expression-row-" + rowIndex} // FIXME: Tiago -> Bad name.
           key={rowKey}
-          onClick={onTrClick(rowKey)}
           style={{ display: "flex" }}
         >
           {row.cells.map((_, columnIndex) => (
@@ -117,7 +84,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [reactTableInstance, getRowKey, onTrClick, getColumnKey, onRowAdded]
+    [reactTableInstance, getRowKey, getColumnKey, onRowAdded]
   );
 
   const additionalRowIndex = useMemo(() => {

@@ -19,12 +19,11 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
-import { v4 as uuid } from "uuid";
 import { BeeTableHeaderVisibility, BeeTableProps } from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../expressions/ContextExpression";
 import { NavigationKeysUtils } from "../../keysUtils";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthValues";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import { BeeTableColumnResizingWidthsContextProvider } from "./BeeTableColumnResizingWidthsContextProvider";
@@ -82,7 +81,7 @@ export function BeeTable2<R extends object>({
   rows,
   columns,
   operationConfig,
-  headerVisibility,
+  headerVisibility = BeeTableHeaderVisibility.AllLevels,
   headerLevelCount = 0,
   skipLastHeaderGroup = false,
   getRowKey,
@@ -388,23 +387,6 @@ export function BeeTable2<R extends object>({
     ]
   );
 
-  const headerRowsCount = useMemo(() => {
-    const headerGroupsLength = skipLastHeaderGroup
-      ? reactTableInstance.headerGroups.length - 1
-      : reactTableInstance.headerGroups.length;
-
-    switch (headerVisibility) {
-      case BeeTableHeaderVisibility.AllLevels:
-        return headerGroupsLength;
-      case BeeTableHeaderVisibility.LastLevel:
-        return headerGroupsLength - 1;
-      case BeeTableHeaderVisibility.SecondToLastLevel:
-        return headerGroupsLength - 1;
-      default:
-        return 0;
-    }
-  }, [headerVisibility, reactTableInstance.headerGroups.length, skipLastHeaderGroup]);
-
   const onRowAdded2 = useCallback(
     (args: { beforeIndex: number }) => {
       if (onRowAdded) {
@@ -505,7 +487,6 @@ export function BeeTable2<R extends object>({
           getColumnKey={onGetColumnKey}
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
-          headerRowsCount={headerRowsCount}
           reactTableInstance={reactTableInstance}
           additionalRow={additionalRow}
           onRowAdded={onRowAdded2}

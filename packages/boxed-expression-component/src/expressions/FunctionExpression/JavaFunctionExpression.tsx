@@ -6,7 +6,7 @@ import {
   DmnBuiltInDataType,
 } from "../../api";
 import { BoxedExpressionEditorI18n } from "../../i18n";
-import { LITERAL_EXPRESSION_MIN_WIDTH } from "../LiteralExpression";
+import { LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthValues";
 
 export const javaContextExpression = (
   prev: ExpressionDefinition,
@@ -45,7 +45,7 @@ export const javaContextExpression = (
         },
         entryExpression: {
           id: prev.classFieldId ?? `${id}-classFieldId`,
-          logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          logicType: ExpressionDefinitionLogicType.Literal,
           dataType: DmnBuiltInDataType.Undefined,
           width: LITERAL_EXPRESSION_MIN_WIDTH,
           content: prev.className ?? "",
@@ -60,7 +60,7 @@ export const javaContextExpression = (
         },
         entryExpression: {
           id: prev.methodFieldId ?? `${id}-methodFieldId`,
-          logicType: ExpressionDefinitionLogicType.LiteralExpression,
+          logicType: ExpressionDefinitionLogicType.Literal,
           dataType: DmnBuiltInDataType.Undefined,
           content: prev.methodName ?? "",
           width: LITERAL_EXPRESSION_MIN_WIDTH,

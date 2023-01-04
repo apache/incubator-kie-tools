@@ -23,13 +23,13 @@ import "./ExpressionDefinitionRoot.css";
 export interface ExpressionDefinitionRootProps {
   decisionNodeId: string;
   expression: ExpressionDefinition;
-  isClearSupported: boolean | undefined;
+  isResetSupported: boolean | undefined;
 }
 
 export function ExpressionDefinitionRoot({
   decisionNodeId,
   expression,
-  isClearSupported = true,
+  isResetSupported = true,
 }: ExpressionDefinitionRootProps) {
   return (
     <ResizingWidthsContextProvider>
@@ -40,7 +40,7 @@ export function ExpressionDefinitionRoot({
           <span className="expression-type">({expression.logicType})</span>
         </div>
 
-        <ExpressionContainer expression={expression} isClearSupported={isClearSupported} isHeadless={false} />
+        <ExpressionContainer expression={expression} isResetSupported={isResetSupported} isHeadless={false} />
       </div>
     </ResizingWidthsContextProvider>
   );

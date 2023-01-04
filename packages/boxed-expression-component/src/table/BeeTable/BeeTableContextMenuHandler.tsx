@@ -126,7 +126,7 @@ export function BeeTableContextMenuHandler({
             BeeTableOperation.RowInsertAbove,
             BeeTableOperation.RowInsertBelow,
             ...(reactTableInstance.rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
-            BeeTableOperation.RowClear,
+            BeeTableOperation.RowReset,
             BeeTableOperation.RowDuplicate,
           ]
         : []),
@@ -147,8 +147,8 @@ export function BeeTableContextMenuHandler({
         return `Insert below`;
       case BeeTableOperation.RowDelete:
         return `Delete`;
-      case BeeTableOperation.RowClear:
-        return `Clear`;
+      case BeeTableOperation.RowReset:
+        return `Reset`;
       case BeeTableOperation.RowDuplicate:
         return `Duplicate`;
       default:
@@ -170,7 +170,7 @@ export function BeeTableContextMenuHandler({
         return <PlusIcon />;
       case BeeTableOperation.RowDelete:
         return <TrashIcon />;
-      case BeeTableOperation.RowClear:
+      case BeeTableOperation.RowReset:
         return <CompressIcon />;
       case BeeTableOperation.RowDuplicate:
         return <BlueprintIcon />;
@@ -226,8 +226,8 @@ export function BeeTableContextMenuHandler({
           onRowDeleted?.({ rowIndex: rowIndex });
           console.info(`Delete row ${rowIndex}`);
           break;
-        case BeeTableOperation.RowClear:
-          console.info(`Clear row ${rowIndex}`);
+        case BeeTableOperation.RowReset:
+          console.info(`Reset row ${rowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
           onRowDuplicated?.({ rowIndex: rowIndex });
@@ -303,6 +303,9 @@ export function BeeTableContextMenuHandler({
 
             <MenuGroup label={"SELECTION"}>
               <MenuList>
+                <MenuItem onClick={erase} icon={<CompressIcon />}>
+                  {i18n.terms.reset}
+                </MenuItem>
                 <MenuItem onClick={copy} icon={<CopyIcon />}>
                   {i18n.terms.copy}
                 </MenuItem>
@@ -311,9 +314,6 @@ export function BeeTableContextMenuHandler({
                 </MenuItem>
                 <MenuItem onClick={paste} icon={<PasteIcon />}>
                   {i18n.terms.paste}
-                </MenuItem>
-                <MenuItem onClick={erase} icon={<CompressIcon />}>
-                  {i18n.terms.reset}
                 </MenuItem>
               </MenuList>
             </MenuGroup>

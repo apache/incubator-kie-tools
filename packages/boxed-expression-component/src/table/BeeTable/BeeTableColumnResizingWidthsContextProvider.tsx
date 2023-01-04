@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { NESTED_EXPRESSION_CLEAR_MARGIN } from "../../expressions/ContextExpression";
 import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { NESTED_EXPRESSION_RESET_MARGIN } from "../../resizing/WidthValues";
 
 // TYPES
 
@@ -139,7 +139,7 @@ export function usePublishedBeeTableColumnResizingWidths(resizingWidthId: string
   useEffect(() => {
     updateResizingWidth(resizingWidthId, (prev) => {
       const initial: ResizingWidth = {
-        value: NESTED_EXPRESSION_CLEAR_MARGIN + columnResizingWidths.size,
+        value: NESTED_EXPRESSION_RESET_MARGIN + columnResizingWidths.size,
         isPivoting: false,
       };
 

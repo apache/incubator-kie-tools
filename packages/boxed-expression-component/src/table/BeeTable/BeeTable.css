@@ -356,4 +356,5 @@
 
 .logic-type-popover .pf-c-menu {
   box-shadow: none;
+  min-width: 210px;
 }

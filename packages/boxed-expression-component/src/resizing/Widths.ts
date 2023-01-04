@@ -2,20 +2,18 @@ import { ExpressionDefinitionLogicType } from "../api";
 import { ExpressionDefinition, FunctionExpressionDefinitionKind } from "../api/ExpressionDefinition";
 import { ResizingWidth } from "../resizing/ResizingWidthsContext";
 import {
-  CONTEXT_ENTRY_EXTRA_WIDTH,
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-  NESTED_EXPRESSION_CLEAR_MARGIN,
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_EXTRA_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
-} from "../expressions/ContextExpression";
-import { LITERAL_EXPRESSION_MIN_WIDTH, LITERAL_EXPRESSION_EXTRA_WIDTH } from "../expressions/LiteralExpression";
-import { RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "../expressions/RelationExpression";
-import { DEFAULT_MIN_WIDTH } from "./Resizer";
-import {
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
-} from "../expressions/DecisionTableExpression";
+  DEFAULT_MIN_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
+  NESTED_EXPRESSION_RESET_MARGIN,
+  RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+} from "./WidthValues";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
   if (!expression) {
@@ -30,7 +28,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
       CONTEXT_ENTRY_INFO_MIN_WIDTH +
       CONTEXT_ENTRY_EXTRA_WIDTH
     );
-  } else if (expression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Literal) {
     return LITERAL_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
@@ -47,7 +45,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
       (expression.columns?.length ?? 0) * (RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 1) +
       1 + // last-child border-right
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-      NESTED_EXPRESSION_CLEAR_MARGIN
+      NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
     return (
@@ -56,7 +54,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
         ...(expression.items ?? []).map((expression) => getExpressionMinWidth(expression))
       ) +
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-      NESTED_EXPRESSION_CLEAR_MARGIN
+      NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     return (
@@ -66,7 +64,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
         ...(expression.bindingEntries ?? []).map(({ entryExpression }) => getExpressionMinWidth(entryExpression))
       ) +
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-      NESTED_EXPRESSION_CLEAR_MARGIN
+      NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
     return (
@@ -77,9 +75,9 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
       (expression.annotations?.length ?? 0) * (DECISION_TABLE_ANNOTATION_MIN_WIDTH + 1) +
       1 + // last-child border-right
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-      NESTED_EXPRESSION_CLEAR_MARGIN
+      NESTED_EXPRESSION_RESET_MARGIN
     );
-  } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
+  } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteral) {
     return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
     return DEFAULT_MIN_WIDTH;
@@ -110,8 +108,8 @@ export function getExpressionResizingWidth(
         ) +
         CONTEXT_ENTRY_EXTRA_WIDTH
     );
-  } else if (expression.logicType === ExpressionDefinitionLogicType.LiteralExpression) {
-    return (resizingWidth ?? expression.width ?? LITERAL_EXPRESSION_MIN_WIDTH) + LITERAL_EXPRESSION_EXTRA_WIDTH;
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Literal) {
+    return (resizingWidth ?? expression.width ?? LITERAL_EXPRESSION_MIN_WIDTH) + NESTED_EXPRESSION_RESET_MARGIN;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
       return getExpressionResizingWidth(expression.expression, resizingWidths) + CONTEXT_ENTRY_EXTRA_WIDTH - 1 + 1; // 1px for the missing entry info border, 1px for last-child border-right
@@ -127,7 +125,7 @@ export function getExpressionResizingWidth(
       resizingWidth ??
       (expression.columns ?? []).reduce(
         (acc, { width }) => acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH),
-        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + (expression.columns?.length ?? 0) + 1 // last-child border-right
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_RESET_MARGIN + (expression.columns?.length ?? 0) + 1 // last-child border-right
       )
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
@@ -136,7 +134,7 @@ export function getExpressionResizingWidth(
       resizingWidth ??
       columns.reduce(
         (acc, c) => acc + (c.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH),
-        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length + 1
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_RESET_MARGIN + columns.length + 1
       )
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
@@ -147,7 +145,7 @@ export function getExpressionResizingWidth(
         ...(expression.items ?? []).map((expression) => getExpressionResizingWidth(expression, resizingWidths))
       ) +
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-        NESTED_EXPRESSION_CLEAR_MARGIN
+        NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     return (
@@ -157,9 +155,9 @@ export function getExpressionResizingWidth(
         ...(expression.bindingEntries ?? []).map((e) => getExpressionResizingWidth(e.entryExpression, resizingWidths))
       ) +
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-        NESTED_EXPRESSION_CLEAR_MARGIN
+        NESTED_EXPRESSION_RESET_MARGIN
     );
-  } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteralExpression) {
+  } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteral) {
     return resizingWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;

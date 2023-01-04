@@ -51,7 +51,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
         ],
       },
     ],

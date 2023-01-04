@@ -53,7 +53,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   inputClause: string;
   invocation: string;
   list: string;
-  literalExpression: string;
+  literal: string;
   manage: string;
   methodSignature: string;
   model: string;
@@ -67,7 +67,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   relation: string;
   rows: string;
   rowOperations: {
-    clear: string;
+    reset: string;
     delete: string;
     duplicate: string;
     insertAbove: string;

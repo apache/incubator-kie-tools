@@ -39,6 +39,14 @@ import "./DecisionTableExpression.css";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
 import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
+import {
+  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+  DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+  DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+  DECISION_TABLE_INPUT_MIN_WIDTH,
+  DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+  DECISION_TABLE_OUTPUT_MIN_WIDTH,
+} from "../../resizing/WidthValues";
 
 type ROWTYPE = any; // FIXME: Tiago
 
@@ -54,14 +62,7 @@ export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
-export const DECISION_TABLE_INPUT_MIN_WIDTH = 100;
-export const DECISION_TABLE_INPUT_DEFAULT_WIDTH = 100;
-export const DECISION_TABLE_OUTPUT_MIN_WIDTH = 100;
-export const DECISION_TABLE_OUTPUT_DEFAULT_WIDTH = 150;
-export const DECISION_TABLE_ANNOTATION_MIN_WIDTH = 100;
-export const DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH = 250;
-
-export function DecisionTableExpression(decisionTable: PropsWithChildren<DecisionTableExpressionDefinition>) {
+export function DecisionTableExpression(decisionTableExpression: PropsWithChildren<DecisionTableExpressionDefinition>) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -138,7 +139,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     [setExpression]
   );
 
-  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(decisionTable.id);
+  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(decisionTableExpression.id);
 
   // FIXME: Tiago -> OMG
   // ***************************************************************************************
@@ -151,7 +152,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   //     return columns.reduce(
   //       (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
   //       {
-  //         value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_CLEAR_MARGIN + columns.length + 1,
+  //         value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_RESET_MARGIN + columns.length + 1,
   //         isPivoting: false,
   //       }
   //     );
@@ -159,20 +160,22 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   // }, [annotationsResizingWidths, decisionTable.id, inputsResizingWidths, outputsResizingWidths, updateResizingWidth]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTable.input ?? []).map((inputClause, inputIndex) => ({
-      accessor: inputClause.id ?? generateUuid(),
-      label: inputClause.name,
-      id: inputClause.id,
-      dataType: inputClause.dataType,
-      width: inputClause.width,
-      setWidth: setInputColumnWidth(inputIndex),
-      minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
-      groupType: DecisionTableColumnType.InputClause,
-      cssClasses: "decision-table--input",
-      isRowIndexColumn: false,
-    }));
+    const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
+      (inputClause, inputIndex) => ({
+        accessor: inputClause.id ?? generateUuid(),
+        label: inputClause.name,
+        id: inputClause.id,
+        dataType: inputClause.dataType,
+        width: inputClause.width,
+        setWidth: setInputColumnWidth(inputIndex),
+        minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
+        groupType: DecisionTableColumnType.InputClause,
+        cssClasses: "decision-table--input",
+        isRowIndexColumn: false,
+      })
+    );
 
-    const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTable.output ?? []).map(
+    const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.output ?? []).map(
       (outputClause, outputIndex) => ({
         accessor: outputClause.id ?? generateUuid(),
         id: outputClause.id,
@@ -187,7 +190,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       })
     );
 
-    const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTable.annotations ?? []).map(
+    const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotations ?? []).map(
       (annotation, annotationIndex) => ({
         accessor: annotation.id ?? (generateUuid() as any),
         id: annotation.id,
@@ -218,9 +221,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
-      accessor: decisionTable.isHeadless ? decisionTable.id : (decisionNodeId as any),
-      label: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
-      dataType: decisionTable.dataType ?? DmnBuiltInDataType.Undefined,
+      accessor: decisionTableExpression.isHeadless ? decisionTableExpression.id : (decisionNodeId as any),
+      label: decisionTableExpression.name ?? DECISION_NODE_DEFAULT_NAME,
+      dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
       columns: outputColumns,
@@ -243,13 +246,13 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     return [inputSection, outputSection, annotationSection];
   }, [
     decisionNodeId,
-    decisionTable.annotations,
-    decisionTable.dataType,
-    decisionTable.id,
-    decisionTable.input,
-    decisionTable.isHeadless,
-    decisionTable.name,
-    decisionTable.output,
+    decisionTableExpression.annotations,
+    decisionTableExpression.dataType,
+    decisionTableExpression.id,
+    decisionTableExpression.input,
+    decisionTableExpression.isHeadless,
+    decisionTableExpression.name,
+    decisionTableExpression.output,
     setAnnotationColumnWidth,
     setInputColumnWidth,
     setOutputColumnWidth,
@@ -257,7 +260,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
 
   const beeTableRows = useMemo(
     () =>
-      (decisionTable.rules ?? []).map((rule) => {
+      (decisionTableExpression.rules ?? []).map((rule) => {
         const ruleRow = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
         const tableRow = getColumnsAtLastLevel(beeTableColumns).reduce(
           (tableRow: ROWTYPE, column, columnIndex) => {
@@ -268,7 +271,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         );
         return tableRow;
       }),
-    [beeTableColumns, decisionTable.rules]
+    [beeTableColumns, decisionTableExpression.rules]
   );
 
   const onCellUpdates = useCallback(
@@ -392,13 +395,18 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const controllerCell = useMemo(
     () => (
       <HitPolicySelector
-        selectedHitPolicy={decisionTable.hitPolicy}
-        selectedBuiltInAggregator={decisionTable.aggregation}
+        selectedHitPolicy={decisionTableExpression.hitPolicy}
+        selectedBuiltInAggregator={decisionTableExpression.aggregation}
         onHitPolicySelected={onHitPolicySelect}
         onBuiltInAggregatorSelected={onBuiltInAggregatorSelect}
       />
     ),
-    [decisionTable.aggregation, decisionTable.hitPolicy, onBuiltInAggregatorSelect, onHitPolicySelect]
+    [
+      decisionTableExpression.aggregation,
+      decisionTableExpression.hitPolicy,
+      onBuiltInAggregatorSelect,
+      onHitPolicySelect,
+    ]
   );
 
   const onRowAdded = useCallback(
@@ -438,10 +446,13 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
           sectionIndex = args.beforeIndex;
           break;
         case DecisionTableColumnType.OutputClause:
-          sectionIndex = args.beforeIndex - (decisionTable.input?.length ?? 0);
+          sectionIndex = args.beforeIndex - (decisionTableExpression.input?.length ?? 0);
           break;
         case DecisionTableColumnType.Annotation:
-          sectionIndex = args.beforeIndex - (decisionTable.input?.length ?? 0) - (decisionTable.output?.length ?? 0);
+          sectionIndex =
+            args.beforeIndex -
+            (decisionTableExpression.input?.length ?? 0) -
+            (decisionTableExpression.output?.length ?? 0);
           break;
       }
 
@@ -503,15 +514,15 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         }
       });
     },
-    [setExpression, decisionTable]
+    [setExpression, decisionTableExpression]
   );
 
   return (
-    <div className={`decision-table-expression ${decisionTable.id}`}>
+    <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
         headerLevelCount={1}
         headerVisibility={
-          decisionTable.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels
+          decisionTableExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels
         }
         editColumnLabel={getEditColumnLabel}
         operationConfig={beeTableOperationConfig}

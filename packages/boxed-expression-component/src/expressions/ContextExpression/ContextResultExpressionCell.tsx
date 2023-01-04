@@ -38,7 +38,7 @@ export function ContextResultExpressionCell(props: { contextExpression: ContextE
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ExpressionContainer expression={props.contextExpression.result} isClearSupported={true} isHeadless={true} />
+        <ExpressionContainer expression={props.contextExpression.result} isResetSupported={true} isHeadless={true} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

@@ -30,12 +30,13 @@ import {
   InvocationExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ContextEntryInfoCell, CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../ContextExpression";
+import { ContextEntryInfoCell } from "../ContextExpression";
 import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import "./InvocationExpression.css";
 
@@ -46,15 +47,15 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataT
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE = ExpressionDefinitionLogicType.Undefined;
 
 export const InvocationExpression: React.FunctionComponent<InvocationExpressionDefinition> = (
-  invocation: InvocationExpressionDefinition
+  invocationExpression: InvocationExpressionDefinition
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const beeTableRows: ROWTYPE[] = useMemo(() => {
-    return invocation.bindingEntries ?? [];
-  }, [invocation.bindingEntries]);
+    return invocationExpression.bindingEntries ?? [];
+  }, [invocationExpression.bindingEntries]);
 
   const { decisionNodeId } = useBoxedExpressionEditor();
 
@@ -71,15 +72,15 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        label: invocation.name ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+        label: invocationExpression.name ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
         accessor: decisionNodeId as keyof ROWTYPE,
-        dataType: invocation.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+        dataType: invocationExpression.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
           {
             accessor: "functionName" as keyof ROWTYPE,
-            label: invocation.invokedFunction ?? "Function name",
+            label: invocationExpression.invokedFunction ?? "Function name",
             isRowIndexColumn: false,
             isInlineEditable: true,
             dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
@@ -92,7 +93,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
                 isRowIndexColumn: false,
                 dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
                 minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-                width: invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
+                width: invocationExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
                 setWidth: setParametersInfoColumnWidth,
               },
               {
@@ -108,10 +109,10 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       },
     ],
     [
-      invocation.name,
-      invocation.dataType,
-      invocation.invokedFunction,
-      invocation.entryInfoWidth,
+      invocationExpression.name,
+      invocationExpression.dataType,
+      invocationExpression.invokedFunction,
+      invocationExpression.entryInfoWidth,
       decisionNodeId,
       setParametersInfoColumnWidth,
     ]
@@ -132,8 +133,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   );
 
   const headerVisibility = useMemo(
-    () => (invocation.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels),
-    [invocation.isHeadless]
+    () =>
+      invocationExpression.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels,
+    [invocationExpression.isHeadless]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
@@ -167,7 +169,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.clear, type: BeeTableOperation.RowClear },
+          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
         ],
       },
     ];
@@ -204,9 +206,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   );
 
   return (
-    <div className={`invocation-expression ${invocation.id}`}>
+    <div className={`invocation-expression ${invocationExpression.id}`}>
       <BeeTable<ROWTYPE>
-        tableId={invocation.id}
+        tableId={invocationExpression.id}
         headerLevelCount={2}
         headerVisibility={headerVisibility}
         skipLastHeaderGroup={true}

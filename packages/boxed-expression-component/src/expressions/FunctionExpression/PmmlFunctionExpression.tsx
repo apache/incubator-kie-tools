@@ -47,7 +47,7 @@ export const pmmlContextExpression = (
         entryExpression: {
           dataType: DmnBuiltInDataType.Undefined,
           id: prev.documentFieldId ?? `${id}-document`,
-          logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
+          logicType: ExpressionDefinitionLogicType.PmmlLiteral,
           testId: "pmml-selector-document",
           noOptionsLabel: i18n.pmml.firstSelection,
           kind: PmmlLiteralExpressionDefinitionKind.Document,
@@ -63,7 +63,7 @@ export const pmmlContextExpression = (
         },
         entryExpression: {
           id: prev.modelFieldId ?? `${id}-model`,
-          logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
+          logicType: ExpressionDefinitionLogicType.PmmlLiteral,
           dataType: DmnBuiltInDataType.Undefined,
           noOptionsLabel: i18n.pmml.secondSelection,
           testId: "pmml-selector-model",

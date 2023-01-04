@@ -15,27 +15,27 @@ import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
   ExpressionDefinitionBase,
 } from "../api";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "./ContextExpression";
 import {
+  LITERAL_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-  DECISION_TABLE_INPUT_DEFAULT_VALUE,
-  DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-} from "./DecisionTableExpression";
+} from "../resizing/WidthValues";
+import { DECISION_TABLE_INPUT_DEFAULT_VALUE, DECISION_TABLE_OUTPUT_DEFAULT_VALUE } from "./DecisionTableExpression";
 import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
 } from "./InvocationExpression";
-import { LITERAL_EXPRESSION_MIN_WIDTH } from "./LiteralExpression";
-import { RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH, RELATION_EXPRESSION_DEFAULT_VALUE } from "./RelationExpression";
+import { RELATION_EXPRESSION_DEFAULT_VALUE } from "./RelationExpression";
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinitionLogicType,
   prev: ExpressionDefinitionBase
 ): ExpressionDefinition {
-  if (logicType === ExpressionDefinitionLogicType.LiteralExpression) {
+  if (logicType === ExpressionDefinitionLogicType.Literal) {
     const literalExpression: LiteralExpressionDefinition = {
       ...prev,
       logicType,

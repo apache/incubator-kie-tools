@@ -57,7 +57,7 @@ export const en: BoxedExpressionEditorI18n = {
   inputClause: "INPUT CLAUSE",
   invocation: "Invocation",
   list: "List",
-  literalExpression: "Literal expression",
+  literal: "Literal",
   manage: "Manage",
   methodSignature: "method signature",
   model: "model",
@@ -70,7 +70,7 @@ export const en: BoxedExpressionEditorI18n = {
   },
   relation: "Relation",
   rowOperations: {
-    clear: "Clear",
+    reset: "Reset",
     delete: "Delete",
     duplicate: "Duplicate",
     insertAbove: "Insert above",

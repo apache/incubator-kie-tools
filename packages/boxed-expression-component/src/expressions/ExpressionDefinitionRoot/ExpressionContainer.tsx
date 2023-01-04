@@ -25,13 +25,13 @@ import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression"
 export interface ExpressionContainerProps {
   expression: ExpressionDefinition;
   isHeadless: boolean;
-  isClearSupported: boolean;
+  isResetSupported: boolean;
 }
 
 export const ExpressionContainer: React.FunctionComponent<ExpressionContainerProps> = ({
   expression,
   isHeadless,
-  isClearSupported,
+  isResetSupported,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +67,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         onLogicTypeSelected={onLogicTypeSelected}
         onLogicTypeReset={onLogicTypeReset}
         getPlacementRef={getPlacementRef}
-        isClearSupported={isClearSupported}
+        isResetSupported={isResetSupported}
       />
     </div>
   );
