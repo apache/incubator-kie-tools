@@ -137,12 +137,11 @@ describe("Bpmn Workitem E2E Test.", () => {
           .wait(1000)
           .scrollIntoView();
 
-        // Custom workitem task has expected data inputs and data output assignments
-
         // Custom workitem has expected size of data assignments when opened for edit
         cy.wrap($properties).find("button[id='assignmentsButton']").should("not.be", "disabled").click();
       });
 
+    // Custom workitem task has expected data inputs and data output assignments
     cy.editor("bpmn-workitem")
       .find(".modal-content")
       .should("be.visible")

@@ -69,7 +69,10 @@ describe("Bpmn Read Only.", () => {
           .should("not.have.class", "editable");
 
         // Process documentation property is read only
-        cy.wrap($properties).find("textarea[name*='diagramSet.documentation']").should("have.value", "Documentation");
+        cy.wrap($properties)
+          .find("textarea[name*='diagramSet.documentation']")
+          .should("have.value", "Documentation")
+          .should("not.have.class", "editable");
 
         // Process ID property is read only
         cy.wrap($properties)
@@ -109,9 +112,6 @@ describe("Bpmn Read Only.", () => {
           .find("input[id='importsTextBox']")
           .should("have.value", "No imports")
           .should("not.have.class", "editable");
-
-        // Process imports buttons is read only - is currently enabled
-        // cy.wrap($properties).find("button[id='importsButton']").should("be.disabled");
 
         // Process executable property is read only
         cy.wrap($properties).find("input[name*='diagramSet.executable']").should("be.checked").should("be.disabled");
@@ -158,9 +158,6 @@ describe("Bpmn Read Only.", () => {
               .find("select[data-field='dataType']")
               .should("not.have.class", "editable")
               .should("have.value", "String");
-
-            // Process variable TAG handle is read only - is currently enabled
-            // cy.wrap($processVariablesContainer).find("a[data-field='variable-tags-settings']").should("be.disabled");
 
             // Process variable delete button is read only
             cy.wrap($processVariablesContainer)
@@ -226,7 +223,7 @@ describe("Bpmn Read Only.", () => {
               .should("not.have.class", "editable")
               .should("have.value", "is_processing");
 
-            // Process global variable typeis read only"
+            // Process global variable type is read only"
             cy.wrap($globalVariablesContainer)
               .find("select[data-field='dataType']")
               .should("not.have.class", "editable")
