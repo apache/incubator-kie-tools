@@ -55,7 +55,6 @@ export function FunctionDefinitionCell({ data, rowIndex }: BeeTableCellProps<ROW
         // PMML
         else if (prev.functionKind === FunctionExpressionDefinitionKind.Pmml) {
           const newExpression = getNewExpression(pmmlContextExpression(prev, i18n)) as ContextExpressionDefinition;
-          // FIXME: Tiago -> STATE GAP
           return {
             ...prev,
             document: (newExpression.contextEntries[0].entryExpression as PmmlLiteralExpressionDefinition).selected,
