@@ -36,6 +36,8 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { SettingsTabs } from "../SettingsModalBody";
+import { routes } from "../../navigation/Routes";
+import { Link } from "react-router-dom";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -44,7 +46,7 @@ enum FormValiationOptions {
   CONFIG_EXPIRED = "CONFIG_EXPIRED",
 }
 
-export function OpenShiftSettingsTabSimpleConfig() {
+export function OpenShiftSettingsSimpleConfig() {
   const { i18n } = useAppI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -139,9 +141,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
               title={
                 <Text>
                   Connect to{" "}
-                  <a onClick={() => settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES)}>
-                    KIE Sandbox Extended Services
-                  </a>{" "}
+                  <Link to={routes.settings.kie_sandbox_extended_services.path({})}>KIE Sandbox Extended Services</Link>{" "}
                   before configuring your OpenShift instance
                 </Text>
               }
@@ -183,15 +183,6 @@ export function OpenShiftSettingsTabSimpleConfig() {
             />
           </FormAlert>
         )}
-        <TextContent>
-          <Text component={TextVariants.h3}>OpenShift</Text>
-        </TextContent>
-        <TextContent>
-          <Text component={TextVariants.small}>
-            Data you provide here is necessary for deploying models you design to your OpenShift instance. All
-            information is locally stored in your browser and never shared with anyone.
-          </Text>
-        </TextContent>
         <FormGroup
           label={i18n.terms.namespace}
           labelIcon={

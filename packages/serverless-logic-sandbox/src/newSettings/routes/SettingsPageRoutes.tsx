@@ -22,7 +22,7 @@ import { GitHubSettings } from "../github/GitHubSettings";
 import { KieSandboxExtendedServicesSettings } from "../extendedServices/KieSandboxExtendedServicesSettings";
 import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/FeaturePreviewSettingsTab";
 import { ApacheKafkaSettingsTab } from "../../settings/kafka/ApacheKafkaSettingsTab";
-import { OpenShiftSettingsTab } from "../../settings/openshift/OpenShiftSettingsTab";
+import { OpenShiftSettings } from "../../newSettings/openshift/OpenShiftSettings";
 import { ServiceAccountSettingsTab } from "../../settings/serviceAccount/ServiceAccountSettingsTab";
 import { ServiceRegistrySettingsTab } from "../../settings/serviceRegistry/ServiceRegistrySettingsTab";
 
@@ -37,7 +37,7 @@ export function SettingsPageRoutes() {
         <KieSandboxExtendedServicesSettings />
       </Route>
       <Route path={routes.settings.openshift.path({})}>
-        <OpenShiftSettingsTab />
+        <OpenShiftSettings />
       </Route>
       <Route path={routes.settings.service_account.path({})}>
         <ServiceAccountSettingsTab />

@@ -18,7 +18,7 @@ import * as React from "react";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { GitHubSettings } from "./github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
-import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
+import { OpenShiftSettings } from "./openshift/OpenShiftSettings";
 import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
 import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettingsTab";
 import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
@@ -35,6 +35,7 @@ export enum SettingsTabs {
   FEATURE_PREVIEW = "featurePreview",
 }
 
+/* TODO: SettingsModalBody: do we still need this? */
 export function SettingsModalBody() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -65,7 +66,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.OPENSHIFT}
         title={<TabTitleText>OpenShift</TabTitleText>}
       >
-        <OpenShiftSettingsTab />
+        <OpenShiftSettings />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
