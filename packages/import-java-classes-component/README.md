@@ -43,12 +43,3 @@ pnpm start
 # Compiles a production ready showcase application
 pnpm build
 ```
-
-Furthermore, there are cypress tests for the showcase project, however they are not automated yet. You can run them as:
-
-```sh
-# Start a local server to see the 'ImportJavaClasses' in action
-pnpm start
-# Wait until app is running and execute tests
-pnpm cypress run
-```

@@ -18,7 +18,7 @@ describe("Bpmn Workitem E2E Test.", () => {
   const NAME_INPUT_LOCATOR: string = "input[data-field='name']";
   const DATATYPE_SELECT_LOCATOR: string = "select[data-field='dataType']";
 
-  before("Visit page", () => {
+  beforeEach("Visit page", () => {
     cy.visit("/bpmn-workitem");
     cy.loadEditors(["bpmn-workitem"]);
   });
@@ -84,173 +84,140 @@ describe("Bpmn Workitem E2E Test.", () => {
 
         cy.editor("bpmn-workitem").ouiaId("expanded-docks-bar", "expanded-docks-bar-E").should("be.visible");
       });
-  });
 
-  describe("Custom workitem task has expected properties.", () => {
-    let propertyItems: JQuery<HTMLElement>;
+    // Custom workitem task has expected properties
+    // Properties have expected length
+    cy.editor("bpmn-workitem")
+      .ouiaId("expanded-docks-bar", "expanded-docks-bar-E")
+      .within(($properties) => {
+        cy.wrap($properties).find("[id='mainContainer']").should("be.visible").children(".row");
 
-    it("Properties have expected length", () => {
-      cy.editor("bpmn-workitem")
-        .ouiaId("expanded-docks-bar", "expanded-docks-bar-E")
-        .within(($properties) => {
-          cy.wrap($properties)
-            .find("[id='mainContainer']")
-            .should("be.visible")
-            .children(".row")
-            .then(($items) => {
-              propertyItems = $items;
-            });
-        });
-    });
+        // Custom workitem has expected name", () => {
+        cy.wrap($properties)
+          .find("textarea[name*='general.name']")
+          .should("have.value", "Create Customer Internal Service")
+          .should("not.be", "disabled");
 
-    it("Custom workitem has expected name", () => {
-      cy.wrap(propertyItems)
-        .find("textarea[name*='general.name']")
-        .should("have.value", "Create Customer Internal Service")
-        .should("not.be", "disabled");
-    });
+        // Custom workitem has expected documentation", () => {
+        cy.wrap($properties)
+          .find("textarea[name*='general.documentation']")
+          .should("have.value", "Calls internal service that creates the customer in database server.")
+          .should("not.be", "disabled");
 
-    it("Custom workitem has expected documentation", () => {
-      cy.wrap(propertyItems)
-        .find("textarea[name*='general.documentation']")
-        .should("have.value", "Calls internal service that creates the customer in database server.")
-        .should("not.be", "disabled");
-    });
+        // Custom workitem has expected isAsync value", () => {
+        cy.wrap($properties)
+          .find("input[name*='executionSet.isAsync']")
+          .should("not.be.checked")
+          .should("not.be.disabled");
 
-    it("Custom workitem has expected isAsync value", () => {
-      cy.wrap(propertyItems)
-        .find("input[name*='executionSet.isAsync']")
-        .should("not.be.checked")
-        .should("not.be.disabled");
-    });
+        // Custom workitem has expected AdHoc Autostart value", () => {
+        cy.wrap($properties)
+          .find("input[name*='executionSet.adHocAutostart']")
+          .should("not.be.checked")
+          .should("not.be.disabled");
 
-    it("Custom workitem has expected AdHoc Autostart value", () => {
-      cy.wrap(propertyItems)
-        .find("input[name*='executionSet.adHocAutostart']")
-        .should("not.be.checked")
-        .should("not.be.disabled");
-    });
+        // Custom workitem has expected SLA Due Date", () => {
+        cy.wrap($properties)
+          .find("input[name*='executionSet.slaDueDate']")
+          .should("have.value", "")
+          .should("not.be", "disabled");
 
-    it("Custom workitem has expected SLA Due Date", () => {
-      cy.wrap(propertyItems)
-        .find("input[name*='executionSet.slaDueDate']")
-        .should("have.value", "")
-        .should("not.be", "disabled");
-    });
+        // Custom workitem has expected data assignment size", () => {
+        cy.wrap($properties)
+          .find("input[id='assignmentsTextBox']")
+          .should("have.value", "7 data inputs, 1 data output")
+          .should("not.be", "disabled");
 
-    it("Custom workitem has expected data assignment size", () => {
-      cy.wrap(propertyItems)
-        .find("input[id='assignmentsTextBox']")
-        .should("have.value", "7 data inputs, 1 data output")
-        .should("not.be", "disabled");
-    });
+        // Data assignments of custom work item tasks are not disabled", () => {
+        cy.wrap($properties)
+          .find("a")
+          .contains("Data Assignments")
+          .should("not.be.disabled")
+          .click()
+          .wait(1000)
+          .scrollIntoView();
 
-    it("Data assignments of custom work item tasks are not disabled", () => {
-      cy.wrap(propertyItems)
-        .find("a")
-        .contains("Data Assignments")
-        .should("not.be.disabled")
-        .click()
-        .wait(1000)
-        .scrollIntoView();
-    });
-
-    describe("Custom workitem task has expected data inputs and data output assignments.", () => {
-      let dataAssignments: JQuery<HTMLElement>;
-      after(() => {
-        // Close open modal after checking the assignments
-        cy.editor("bpmn-workitem").find(".modal-body").contains("button", "OK").click();
+        // Custom workitem has expected size of data assignments when opened for edit
+        cy.wrap($properties).find("button[id='assignmentsButton']").should("not.be", "disabled").click();
       });
 
-      it("Custom workitem has expected size of data assignments when opened for edit", () => {
-        cy.wrap(propertyItems).find("button[id='assignmentsButton']").should("not.be", "disabled").click();
+    // Custom workitem task has expected data inputs and data output assignments
+    cy.editor("bpmn-workitem")
+      .find(".modal-content")
+      .should("be.visible")
+      .within(() => {
+        cy.get(".modal-title").should("have.text", "Create Customer Internal Service Data I/O");
 
-        cy.editor("bpmn-workitem")
-          .find(".modal-content")
-          .should("be.visible")
-          .within(() => {
-            cy.get(".modal-title").should("have.text", "Create Customer Internal Service Data I/O");
+        cy.get("tr[id='assignment']")
+          .should("have.length", 8)
+          .then(($assignments) => {
+            // Custom workitem has correct in_customer_id data input assignments", () => {
+            cy.wrap($assignments.eq(0)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "in_customer_id")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "String");
+            });
 
-            cy.get("tr[id='assignment']")
-              .should("have.length", 8)
-              .then(($assignments) => {
-                dataAssignments = $assignments;
-              });
+            // Custom workitem has correct in_customer_initial_balance data input assignment", () => {
+            cy.wrap($assignments.eq(1)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "in_customer_initial_balance")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "Float");
+            });
+
+            // Custom workitem has correct in_customer_level_id data input assignments", () => {
+            cy.wrap($assignments.eq(2)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "in_customer_level_id")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "Integer");
+            });
+
+            // Custom workitem has correct in_customer_level_label data input assignment", () => {
+            cy.wrap($assignments.eq(3)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "in_customer_level_label")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "java.lang.Object");
+            });
+
+            // Custom workitem has correct in_customer_roles data input assignment", () => {
+            cy.wrap($assignments.eq(4)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "in_customer_roles")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "java.util.List");
+            });
+
+            // Custom workitem has correct in_message data input assignment", () => {
+            cy.wrap($assignments.eq(5)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "in_message")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "java.lang.Object");
+            });
+
+            // Custom workitem has correct in_security_token data input assignment", () => {
+            cy.wrap($assignments.eq(6)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "in_security_token")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "java.lang.Object");
+            });
+
+            // Custom workitem has correct out_operation_success data output assignment", () => {
+            cy.wrap($assignments.eq(7)).within(() => {
+              cy.get(NAME_INPUT_LOCATOR)
+                .should("have.value", "out_operation_success")
+                .get(DATATYPE_SELECT_LOCATOR)
+                .should("have.value", "Boolean");
+            });
           });
       });
 
-      it("Custom workitem has correct in_customer_id data input assignments", () => {
-        cy.wrap(dataAssignments.eq(0)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "in_customer_id")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "String");
-        });
-      });
-
-      it("Custom workitem has correct in_customer_initial_balance data input assignment", () => {
-        cy.wrap(dataAssignments.eq(1)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "in_customer_initial_balance")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "Float");
-        });
-      });
-
-      it("Custom workitem has correct in_customer_level_id data input assignments", () => {
-        cy.wrap(dataAssignments.eq(2)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "in_customer_level_id")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "Integer");
-        });
-      });
-
-      it("Custom workitem has correct in_customer_level_label data input assignment", () => {
-        cy.wrap(dataAssignments.eq(3)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "in_customer_level_label")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "java.lang.Object");
-        });
-      });
-
-      it("Custom workitem has correct in_customer_roles data input assignment", () => {
-        cy.wrap(dataAssignments.eq(4)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "in_customer_roles")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "java.util.List");
-        });
-      });
-
-      it("Custom workitem has correct in_message data input assignment", () => {
-        cy.wrap(dataAssignments.eq(5)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "in_message")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "java.lang.Object");
-        });
-      });
-
-      it("Custom workitem has correct in_security_token data input assignment", () => {
-        cy.wrap(dataAssignments.eq(6)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "in_security_token")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "java.lang.Object");
-        });
-      });
-
-      it("Custom workitem has correct out_operation_success data output assignment", () => {
-        cy.wrap(dataAssignments.eq(7)).within(() => {
-          cy.get(NAME_INPUT_LOCATOR)
-            .should("have.value", "out_operation_success")
-            .get(DATATYPE_SELECT_LOCATOR)
-            .should("have.value", "Boolean");
-        });
-      });
-    });
+    cy.editor("bpmn-workitem").find(".modal-body").contains("button", "OK").click();
   });
 
   describe.skip("Unknown custom workitem task has expected properties.", () => {
