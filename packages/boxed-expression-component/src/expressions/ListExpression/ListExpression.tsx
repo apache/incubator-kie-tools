@@ -104,6 +104,20 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [setExpression]
   );
 
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: ListExpressionDefinition) => {
+        const newItems = [...(prev.items ?? [])];
+        newItems.splice(args.rowIndex, 1);
+        return {
+          ...prev,
+          items: newItems,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`${listExpression.id} list-expression`}>
       <BeeTable<ROWTYPE>
@@ -115,6 +129,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         operationConfig={beeTableOperationConfig}
         getRowKey={getRowKey}
         onRowAdded={onRowAdded}
+        onRowDeleted={onRowDeleted}
       />
     </div>
   );

@@ -322,6 +322,20 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     }
   }, []);
 
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: ContextExpressionDefinition) => {
+        const newContextEntries = [...(prev.contextEntries ?? [])];
+        newContextEntries.splice(args.rowIndex, 1);
+        return {
+          ...prev,
+          contextEntries: newContextEntries,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div className={`context-expression ${contextExpression.id}`}>
@@ -337,6 +351,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           getRowKey={getRowKey}
           additionalRow={beeTableAdditionalRow}
           onRowAdded={onRowAdded}
+          onRowDeleted={onRowDeleted}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
         />
       </div>

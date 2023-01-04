@@ -268,6 +268,20 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     [setExpression]
   );
 
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const newRows = [...(prev.rows ?? [])];
+        newRows.splice(args.rowIndex, 1);
+        return {
+          ...prev,
+          rows: newRows,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`relation-expression`}>
       <BeeTable<ROWTYPE>
@@ -278,6 +292,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         onColumnUpdates={onColumnUpdates}
         operationConfig={beeTableOperationConfig}
         onRowAdded={onRowAdded}
+        onRowDeleted={onRowDeleted}
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
       />

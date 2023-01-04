@@ -517,6 +517,20 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
     [setExpression, decisionTableExpression]
   );
 
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const newRules = [...(prev.rules ?? [])];
+        newRules.splice(args.rowIndex, 1);
+        return {
+          ...prev,
+          rules: newRules,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
@@ -532,6 +546,7 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
         onCellUpdates={onCellUpdates}
         controllerCell={controllerCell}
         onRowAdded={onRowAdded}
+        onRowDeleted={onRowDeleted}
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
       />

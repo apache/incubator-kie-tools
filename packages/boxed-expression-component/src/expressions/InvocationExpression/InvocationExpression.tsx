@@ -205,6 +205,20 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     [setExpression]
   );
 
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: InvocationExpressionDefinition) => {
+        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
+        newArgumentEntries.splice(args.rowIndex, 1);
+        return {
+          ...prev,
+          bindingEntries: newArgumentEntries,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`invocation-expression ${invocationExpression.id}`}>
       <BeeTable<ROWTYPE>
@@ -219,6 +233,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         operationConfig={beeTableOperationConfig}
         getRowKey={getRowKey}
         onRowAdded={onRowAdded}
+        onRowDeleted={onRowDeleted}
       />
     </div>
   );
