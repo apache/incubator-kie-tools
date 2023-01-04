@@ -34,7 +34,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsTabs } from "../SettingsModalBody";
 import { EMPTY_CONFIG, isServiceAccountConfigValid, resetConfigCookie, saveConfigCookie } from "./ServiceAccountConfig";
 
-export function ServiceAccountSettingsTab() {
+export function ServiceAccountSettings() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceAccount.config);

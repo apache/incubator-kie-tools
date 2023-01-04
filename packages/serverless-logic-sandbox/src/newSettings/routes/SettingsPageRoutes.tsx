@@ -23,7 +23,7 @@ import { KieSandboxExtendedServicesSettings } from "../extendedServices/KieSandb
 import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/FeaturePreviewSettingsTab";
 import { ApacheKafkaSettingsTab } from "../../settings/kafka/ApacheKafkaSettingsTab";
 import { OpenShiftSettings } from "../../newSettings/openshift/OpenShiftSettings";
-import { ServiceAccountSettingsTab } from "../../settings/serviceAccount/ServiceAccountSettingsTab";
+import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettingsTab } from "../../settings/serviceRegistry/ServiceRegistrySettingsTab";
 
 export function SettingsPageRoutes() {
@@ -40,7 +40,7 @@ export function SettingsPageRoutes() {
         <OpenShiftSettings />
       </Route>
       <Route path={routes.settings.service_account.path({})}>
-        <ServiceAccountSettingsTab />
+        <ServiceAccountSettings />
       </Route>
       <Route path={routes.settings.service_registry.path({})}>
         <ServiceRegistrySettingsTab />

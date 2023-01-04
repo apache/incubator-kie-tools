@@ -20,7 +20,7 @@ import { GitHubSettings } from "./github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettings } from "./openshift/OpenShiftSettings";
 import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
-import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettingsTab";
+import { ServiceAccountSettings } from "./serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
 import { KieSandboxExtendedServicesSettings } from "./extendedServices/KieSandboxExtendedServicesSettings";
 import { FeaturePreviewSettingsTab } from "./featurePreview/FeaturePreviewSettingsTab";
@@ -73,7 +73,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.SERVICE_ACCOUNT}
         title={<TabTitleText>Service Account</TabTitleText>}
       >
-        <ServiceAccountSettingsTab />
+        <ServiceAccountSettings />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
