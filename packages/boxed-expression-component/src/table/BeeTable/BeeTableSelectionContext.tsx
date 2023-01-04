@@ -12,6 +12,9 @@ export interface BeeTableSelectionContextType<R extends object> {
   activeCell: BeeTableSelectionActiveCell<R> | undefined;
   selectionEnd: BeeTableSelectionActiveCell<R> | undefined;
   selectionStart: BeeTableSelectionActiveCell<R> | undefined;
+  depth: number;
+  maxDepth: number;
+  activeDepth: number | undefined;
 }
 
 export enum SelectionPart {
@@ -21,6 +24,8 @@ export enum SelectionPart {
 }
 
 export interface BeeTableSelectionDispatchContextType<R extends object> {
+  setActiveDepth: React.Dispatch<React.SetStateAction<number>>;
+  setMaxDepth: React.Dispatch<React.SetStateAction<number | undefined>>;
   erase(): void;
   copy(): void;
   cut(): void;
@@ -52,7 +57,15 @@ export interface BeeTableSelectionDispatchContextType<R extends object> {
   unsubscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): void;
 }
 
-export const BeeTableSelectionContext = React.createContext<BeeTableSelectionContextType<any>>({} as any);
+export const BeeTableSelectionContext = React.createContext<BeeTableSelectionContextType<any>>({
+  activeCell: undefined,
+  selectionEnd: undefined,
+  selectionStart: undefined,
+  depth: -1,
+  activeDepth: undefined,
+  maxDepth: 0,
+});
+
 export const BeeTableSelectionDispatchContext = React.createContext<BeeTableSelectionDispatchContextType<any>>(
   {} as any
 );
@@ -83,9 +96,16 @@ export enum BeeTableSelectionPosition {
   Left = "left",
   Right = "right",
 }
+export const SELECTION_MIN_DEPTH = -1;
 
 const CLIPBOARD_ROW_SEPARATOR = "\n";
 const CLIPBOARD_COLUMN_SEPARATOR = "\t";
+
+const NEUTRAL_SELECTION = {
+  active: undefined,
+  selectionEnd: undefined,
+  selectionStart: undefined,
+};
 
 const NEUTRAL_CELL_STATUS = {
   isActive: false,
@@ -96,13 +116,31 @@ const NEUTRAL_CELL_STATUS = {
 const CELL_EMPTY_VALUE = ""; // FIXME: Tiago -> This value needs to be parameterized, perhaps. Not all values are strings.
 
 export function BeeTableSelectionContextProvider<R extends object>({ children }: React.PropsWithChildren<{}>) {
-  const [selection, setSelection] = useState<BeeTableSelection<R>>({
-    active: undefined,
-    selectionEnd: undefined,
-    selectionStart: undefined,
-  });
+  const [_selection, setSelection] = useState<BeeTableSelection<R>>(NEUTRAL_SELECTION);
+
+  const [_activeDepth, _setActiveDepth] = useState<number | undefined>(undefined);
+  const [_maxDepth, _setMaxDepth] = useState<number>(0);
+
+  const { maxDepth: parentMaxDepth, depth: parentDepth, activeDepth: parentActiveDepth } = useBeeTableSelection();
+  const { setActiveDepth: setParentActiveDepth } = useBeeTableSelectionDispatch();
+  const { setMaxDepth: setParentMaxDepth } = useBeeTableSelectionDispatch();
 
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
+
+  const depth = parentDepth + 1;
+  const activeDepth = parentActiveDepth ?? _activeDepth;
+  const maxDepth = Math.max(parentMaxDepth, _maxDepth);
+  const setActiveDepth = setParentActiveDepth ?? _setActiveDepth;
+  const setMaxDepth = setParentMaxDepth ?? _setMaxDepth;
+
+  const selection = useMemo(() => {
+    // FIXME: Tiago -> Need to take the coordinates of the parent into account as well.
+    if (depth === activeDepth) {
+      return _selection;
+    }
+
+    return NEUTRAL_SELECTION;
+  }, [_selection, activeDepth, depth]);
 
   const selectionRef = React.useRef<BeeTableSelection<R>>(selection);
 
@@ -115,11 +153,24 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       activeCell: selection.active,
       selectionStart: selection.selectionStart,
       selectionEnd: selection.selectionEnd,
+      depth,
+      activeDepth,
+      maxDepth,
     };
-  }, [selection]);
+  }, [activeDepth, depth, maxDepth, selection.active, selection.selectionEnd, selection.selectionStart]);
 
   const dispatch = useMemo<BeeTableSelectionDispatchContextType<R>>(() => {
     return {
+      setActiveDepth: (newActiveDepthAction) => {
+        setActiveDepth((prev) => {
+          const newActiveDepth =
+            typeof newActiveDepthAction === "function"
+              ? newActiveDepthAction(prev ?? SELECTION_MIN_DEPTH)
+              : newActiveDepthAction;
+          return Math.min(maxDepth, newActiveDepth);
+        });
+      },
+      setMaxDepth: setMaxDepth,
       mutateSelection: ({
         part,
         columnCount,
@@ -475,6 +526,13 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         }
       },
       resetSelectionAt: (activeCell) => {
+        if (!activeCell) {
+          setActiveDepth(Math.max(SELECTION_MIN_DEPTH, depth - 1));
+          return;
+        }
+
+        setActiveDepth((prev) => Math.max(prev ?? SELECTION_MIN_DEPTH, depth));
+
         setSelection((prev) => {
           const newActiveCell = typeof activeCell === "function" ? activeCell(prev.active) : activeCell;
           return {
@@ -567,7 +625,21 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
     };
-  }, []);
+  }, [depth, maxDepth, setActiveDepth, setMaxDepth]);
+
+  useEffect(() => {
+    if (depth === activeDepth && !selection.active) {
+      dispatch.resetSelectionAt({
+        rowIndex: 0,
+        columnIndex: 1,
+        isEditing: false,
+      });
+    }
+  }, [activeDepth, depth, dispatch, selection.active]);
+
+  useEffect(() => {
+    setMaxDepth((prev) => Math.max(prev ?? SELECTION_MIN_DEPTH, depth));
+  }, [depth, setMaxDepth]);
 
   useEffect(() => {
     if (!selection.active || !selection.selectionStart || !selection.selectionEnd) {
@@ -656,6 +728,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
   return (
     <BeeTableSelectionContext.Provider value={value}>
       <BeeTableSelectionDispatchContext.Provider value={dispatch}>
+        <div style={{ textAlign: "left" }}>Depth: {value.depth}</div>
+        <br />
         <>{children}</>
       </BeeTableSelectionDispatchContext.Provider>
     </BeeTableSelectionContext.Provider>
