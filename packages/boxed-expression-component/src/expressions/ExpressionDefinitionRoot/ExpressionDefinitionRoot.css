@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-.expression-container .expression-container-box {
+.expression-container > .expression-container-box {
   display: inline-block;
   border: 2px solid var(--pf-global--palette--black-300);
   margin-top: 5px;
@@ -26,9 +26,8 @@
   font-style: initial;
 }
 
-.expression-container > .expression-container-box,
-.expression-container .expression-type,
-.expression-container .entry-expression {
+.expression-container .expression-container-box,
+.expression-container .expression-type {
   font-size: 14px;
   font-style: italic;
   color: gray;

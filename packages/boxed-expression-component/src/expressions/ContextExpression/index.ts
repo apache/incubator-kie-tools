@@ -15,6 +15,5 @@
  */
 
 export * from "./ContextExpression";
-export * from "./ContextEntryExpression";
 export * from "./ContextEntryInfoCell";
 export * from "./ContextEntryExpressionCell";

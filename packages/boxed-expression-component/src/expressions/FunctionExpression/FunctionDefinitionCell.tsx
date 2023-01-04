@@ -16,11 +16,12 @@ import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useContextExpressionContext, ContextEntryExpressionCell, ContextEntryExpression } from "../ContextExpression";
+import { useContextExpressionContext } from "../ContextExpression";
 import * as React from "react";
 import { ROWTYPE } from "./FunctionExpression";
 import { javaContextExpression } from "./JavaFunctionExpression";
 import { pmmlContextExpression } from "./PmmlFunctionExpression";
+import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 
 export function FunctionDefinitionCell({ data, rowIndex }: BeeTableCellProps<ROWTYPE>) {
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -87,7 +88,7 @@ export function FunctionDefinitionCell({ data, rowIndex }: BeeTableCellProps<ROW
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpression expression={data[rowIndex]?.entryExpression} />
+        <ExpressionContainer expression={data[rowIndex]?.entryExpression} isClearSupported={true} isHeadless={true} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

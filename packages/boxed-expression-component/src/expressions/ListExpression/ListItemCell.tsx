@@ -8,9 +8,10 @@ import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useContextExpressionContext, ContextEntryExpression } from "../ContextExpression";
+import { useContextExpressionContext } from "../ContextExpression";
 import { ROWTYPE } from "../FunctionExpression";
 import * as React from "react";
+import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 
 export function ListItemCell({ rowIndex, data: items }: BeeTableCellProps<ROWTYPE>) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -41,7 +42,7 @@ export function ListItemCell({ rowIndex, data: items }: BeeTableCellProps<ROWTYP
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpression expression={items[rowIndex]?.entryExpression} />
+        <ExpressionContainer expression={items[rowIndex]?.entryExpression} isClearSupported={true} isHeadless={true} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

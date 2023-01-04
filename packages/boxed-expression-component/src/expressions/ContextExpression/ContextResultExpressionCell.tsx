@@ -9,7 +9,7 @@ import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ContextEntryExpression } from "./ContextEntryExpression";
+import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { useContextExpressionContext } from "./ContextExpression";
 
 export function ContextResultExpressionCell(props: { contextExpression: ContextExpressionDefinition }) {
@@ -38,7 +38,7 @@ export function ContextResultExpressionCell(props: { contextExpression: ContextE
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpression expression={props.contextExpression.result} />
+        <ExpressionContainer expression={props.contextExpression.result} isClearSupported={true} isHeadless={true} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

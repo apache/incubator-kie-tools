@@ -22,29 +22,31 @@ import * as _ from "lodash";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 
-export interface ContextEntryExpressionProps {
+export interface ExpressionContainerProps {
   expression: ExpressionDefinition;
+  isHeadless: boolean;
+  isClearSupported: boolean;
 }
 
-export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpressionProps> = ({ expression }) => {
-  const logicTypeContainerRef = useRef<HTMLDivElement>(null);
+export const ExpressionContainer: React.FunctionComponent<ExpressionContainerProps> = ({
+  expression,
+  isHeadless,
+  isClearSupported,
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const getLogicTypeSelectorRef = useCallback(() => {
-    return logicTypeContainerRef.current!;
-  }, []);
-
   const onLogicTypeSelected = useCallback(
-    (logicType) => {
+    (logicType) =>
       setExpression((prev) => ({
         ...getDefaultExpressionDefinitionByLogicType(logicType, prev),
         logicType,
-        isHeadless: true,
+        isHeadless,
         id: prev.id ?? generateUuid(),
-      }));
-    },
-    [setExpression]
+        name: prev.name ?? "Expression Name",
+      })),
+    [isHeadless, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {
@@ -56,13 +58,16 @@ export const ContextEntryExpression: React.FunctionComponent<ContextEntryExpress
     }));
   }, [setExpression]);
 
+  const getPlacementRef = useCallback(() => containerRef.current!, []);
+
   return (
-    <div className="entry-expression" ref={logicTypeContainerRef}>
+    <div ref={containerRef} className={"expression-container-box"} data-ouia-component-id="expression-container">
       <ExpressionDefinitionLogicTypeSelector
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}
         onLogicTypeReset={onLogicTypeReset}
-        getPlacementRef={getLogicTypeSelectorRef}
+        getPlacementRef={getPlacementRef}
+        isClearSupported={isClearSupported}
       />
     </div>
   );

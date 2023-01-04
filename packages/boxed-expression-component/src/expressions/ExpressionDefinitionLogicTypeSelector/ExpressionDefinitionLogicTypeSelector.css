@@ -33,7 +33,7 @@
 .expression-container .logic-type-selector.logic-type-not-present {
   cursor: pointer;
   justify-content: center;
-  min-width: 15em;
+  min-width: 210px;
 }
 
 .expression-container .logic-type-selector.logic-type-selected {

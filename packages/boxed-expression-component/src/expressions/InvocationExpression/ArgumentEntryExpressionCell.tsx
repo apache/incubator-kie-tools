@@ -21,8 +21,6 @@ import {
   ExpressionDefinitionLogicType,
   InvocationExpressionDefinition,
 } from "../../api";
-import { ContextEntryExpression } from "../ContextExpression/ContextEntryExpression";
-import * as _ from "lodash";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
@@ -33,6 +31,7 @@ import {
 } from "../../resizing/NestedExpressionContainerContext";
 import { useContextExpressionContext } from "../ContextExpression";
 import { useCallback, useMemo } from "react";
+import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 
 export interface ArgumentEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnId".
@@ -72,7 +71,11 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryE
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpression expression={argumentEntries[rowIndex]?.entryExpression} />
+        <ExpressionContainer
+          expression={argumentEntries[rowIndex]?.entryExpression}
+          isClearSupported={true}
+          isHeadless={true}
+        />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

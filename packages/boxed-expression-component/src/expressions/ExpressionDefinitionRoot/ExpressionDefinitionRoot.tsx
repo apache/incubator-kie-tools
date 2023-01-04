@@ -15,15 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useRef } from "react";
-import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../api";
+import { ExpressionDefinition } from "../../api";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
-import {
-  NestedExpressionDispatchContextProvider,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
-import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
+import { ExpressionContainer } from "./ExpressionContainer";
 import "./ExpressionDefinitionRoot.css";
 
 export interface ExpressionDefinitionRootProps {
@@ -37,75 +31,16 @@ export function ExpressionDefinitionRoot({
   expression,
   isClearSupported = true,
 }: ExpressionDefinitionRootProps) {
-  const expressionContainerRef = useRef<HTMLDivElement>(null);
-
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-
-  const onLogicTypeSelected = useCallback(
-    (logicType) => {
-      return setExpression((prev) => {
-        {
-          return {
-            ...getDefaultExpressionDefinitionByLogicType(logicType, prev),
-            logicType,
-            isHeadless: false,
-            id: prev.id ?? generateUuid(),
-          };
-        }
-      });
-    },
-    [setExpression]
-  );
-
-  const onLogicTypeReset = useCallback(() => {
-    setExpression((prev) => ({
-      id: prev.id,
-      name: prev.name,
-      dataType: prev.dataType,
-      logicType: ExpressionDefinitionLogicType.Undefined,
-    }));
-  }, [setExpression]);
-
-  const getLogicTypeSelectorRef = useCallback(() => expressionContainerRef.current!, []);
-
-  const onSetExpression = useCallback(
-    ({ getNewExpression }) => {
-      setExpression((prev) => {
-        const n = getNewExpression(prev);
-        return {
-          ...n,
-          name: n.name ?? "Expression Name",
-          isHeadless: false,
-        };
-      });
-    },
-    [setExpression]
-  );
-
   return (
     <ResizingWidthsContextProvider>
-      <div className="expression-container">
+      <div className={`expression-container ${decisionNodeId}`}>
         <div className="expression-name-and-logic-type">
           <span className="expression-title">{expression.name}</span>
           &nbsp;
           <span className="expression-type">({expression.logicType})</span>
         </div>
 
-        <div
-          className={`expression-container-box ${decisionNodeId}`}
-          ref={expressionContainerRef}
-          data-ouia-component-id="expression-container"
-        >
-          <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-            <ExpressionDefinitionLogicTypeSelector
-              isClearSupported={isClearSupported}
-              expression={expression}
-              onLogicTypeSelected={onLogicTypeSelected}
-              onLogicTypeReset={onLogicTypeReset}
-              getPlacementRef={getLogicTypeSelectorRef}
-            />
-          </NestedExpressionDispatchContextProvider>
-        </div>
+        <ExpressionContainer expression={expression} isClearSupported={isClearSupported} isHeadless={false} />
       </div>
     </ResizingWidthsContextProvider>
   );
