@@ -42,6 +42,7 @@ export interface BeeTableContextMenuHandlerProps {
   //
   onRowAdded?: (args: { beforeIndex: number }) => void;
   onRowDuplicated?: (args: { rowIndex: number }) => void;
+  onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
@@ -54,6 +55,7 @@ export function BeeTableContextMenuHandler({
   onRowAdded,
   onRowDuplicated,
   onRowDeleted,
+  onRowReset,
   onColumnAdded,
   onColumnDeleted,
 }: BeeTableContextMenuHandlerProps) {
@@ -227,6 +229,7 @@ export function BeeTableContextMenuHandler({
           console.info(`Delete row ${rowIndex}`);
           break;
         case BeeTableOperation.RowReset:
+          onRowReset?.({ rowIndex: rowIndex });
           console.info(`Reset row ${rowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
@@ -247,6 +250,7 @@ export function BeeTableContextMenuHandler({
       onColumnDeleted,
       onRowAdded,
       onRowDeleted,
+      onRowReset,
       onRowDuplicated,
     ]
   );

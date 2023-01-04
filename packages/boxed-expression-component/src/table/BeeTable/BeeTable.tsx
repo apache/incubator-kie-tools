@@ -73,6 +73,7 @@ export function BeeTable2<R extends object>({
   onColumnUpdates,
   onRowAdded,
   onRowDuplicated,
+  onRowReset,
   onRowDeleted,
   onColumnAdded,
   onColumnDeleted,
@@ -501,6 +502,7 @@ export function BeeTable2<R extends object>({
         onRowDeleted={onRowDeleted2}
         onColumnAdded={onColumnAdded2}
         onColumnDeleted={onColumnDeleted2}
+        onRowReset={onRowReset}
       />
     </div>
   );

@@ -65,6 +65,7 @@ export interface BeeTableProps<R extends object> {
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
   onRowDuplicated?: (args: { rowIndex: number }) => void;
+  onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
