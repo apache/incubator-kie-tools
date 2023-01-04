@@ -90,12 +90,6 @@ export function OpenShiftSettingsSimpleConfig() {
     setConnecting(true);
     const isConfigOk = await settingsDispatch.openshift.service.isConnectionEstablished(config);
 
-    if (isConfigOk) {
-      saveConfigCookie(config);
-      settingsDispatch.openshift.setConfig(config);
-      settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.CONNECTED);
-    }
-
     setConnecting(false);
 
     if (!isConfigOk) {
@@ -103,7 +97,10 @@ export function OpenShiftSettingsSimpleConfig() {
       return;
     }
 
+    saveConfigCookie(config);
+    settingsDispatch.openshift.setConfig(config);
     resetConfig(config);
+    settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.CONNECTED);
   }, [config, isConnecting, resetConfig, settingsDispatch.openshift]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
