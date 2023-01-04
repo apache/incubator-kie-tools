@@ -17,9 +17,10 @@
 import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinition } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { ContextEntryInfo } from "./ContextEntryInfo";
 import * as _ from "lodash";
 import { useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
+import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
+import "./ContextEntryInfoCell.css";
 
 export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnId".
@@ -63,14 +64,38 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     useCallback(() => `${entryInfo.name} (${entryInfo.dataType})`, [entryInfo.dataType, entryInfo.name])
   );
 
+  const onExpressionHeaderUpdated = useCallback(
+    (args: Pick<ExpressionDefinition, "name" | "dataType">) => {
+      onContextEntryUpdate(args);
+    },
+    [onContextEntryUpdate]
+  );
+
+  const renderEntryDefinition = useCallback(
+    (args: { additionalCssClass?: string }) => (
+      <div className={`expression-info ${args.additionalCssClass}`}>
+        <p className="expression-info-name pf-u-text-truncate" title={entryInfo.name}>
+          {entryInfo.name}
+        </p>
+        <p className="expression-info-data-type pf-u-text-truncate" title={entryInfo.dataType}>
+          ({entryInfo.dataType})
+        </p>
+      </div>
+    ),
+    [entryInfo]
+  );
+
   return (
     <div className="context-entry-info-cell">
-      <ContextEntryInfo
-        id={entryInfo.id}
-        name={entryInfo.name}
-        dataType={entryInfo.dataType}
-        onContextEntryUpdate={onContextEntryUpdate}
-      />
+      <div className={`${entryInfo.id} entry-info`}>
+        <ExpressionDefinitionHeaderMenu
+          selectedExpressionName={entryInfo.name}
+          selectedDataType={entryInfo.dataType}
+          onExpressionHeaderUpdated={onExpressionHeaderUpdated}
+        >
+          {renderEntryDefinition({ additionalCssClass: "with-popover-menu" })}
+        </ExpressionDefinitionHeaderMenu>
+      </div>
     </div>
   );
 };

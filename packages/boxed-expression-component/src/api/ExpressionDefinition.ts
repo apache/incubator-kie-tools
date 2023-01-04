@@ -25,7 +25,7 @@ export interface ExpressionDefinitionBase {
   /** Expression data type */
   dataType: DmnBuiltInDataType;
   /** True, to have no header for this specific expression component, used in a recursive expression */
-  isHeadless?: boolean;
+  isHeadless?: boolean; // FIXME: Tiago -> I think this needs to go as well, as this is purely a UI thing.
 }
 
 export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
@@ -94,7 +94,7 @@ export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   /** Entry info width */
   entryInfoWidth?: number;
   /** Entry expression width */
-  entryExpressionWidth?: number;
+  entryExpressionWidth?: number; // FIXME: Tiago -> Remove
 }
 
 export interface ContextExpressionDefinitionEntryInfo {
@@ -111,7 +111,7 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   /** Entry expression */
   entryExpression: T;
   /** True, for synchronizing name and dataType parameters, between entryInfo and entryExpression */
-  nameAndDataTypeSynchronized?: boolean;
+  nameAndDataTypeSynchronized?: boolean; // FIXME: Tiago -> Remove this?
 }
 
 // FIXME: Tiago -> Move
@@ -197,7 +197,7 @@ export interface ListExpressionDefinition extends ExpressionDefinitionBase {
   /** List items */
   items: ExpressionDefinition[];
   /** Optional width for this list expression */
-  width?: number;
+  width?: number; // FIXME: Tiago -> Remove
 }
 
 export interface InvocationExpressionDefinition<T extends ExpressionDefinition = ExpressionDefinition>
@@ -206,10 +206,11 @@ export interface InvocationExpressionDefinition<T extends ExpressionDefinition =
   logicType: ExpressionDefinitionLogicType.Invocation;
   /** Function to be invoked */
   invokedFunction?: string;
-  /** Collection of parameters used to invoke the function */
+  /** Collection of arguments used to invoke the function */
+  // FIXME: Tiago -> Rename to argumentEntries
   bindingEntries?: ContextExpressionDefinitionEntry<T>[];
   /** Entry info width */
-  entryInfoWidth?: number;
+  entryInfoWidth?: number; // Rename to parametersInfoColumnWidth?
   /** Entry expression width */
   entryExpressionWidth?: number; // FIXME: Tiago -> Remove
 }

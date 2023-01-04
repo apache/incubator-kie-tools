@@ -24,7 +24,6 @@ import {
   DecisionTableExpressionDefinition,
   generateUuid,
   DecisionTableExpressionDefinitionHitPolicy,
-  BeeTableRowsUpdateArgs,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   getNextAvailablePrefixedName,

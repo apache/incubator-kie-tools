@@ -25,8 +25,8 @@ import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useNestedExpressionContainer } from "../ContextExpression";
 import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
+import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 
 export const LITERAL_EXPRESSION_MIN_WIDTH = 250;
 

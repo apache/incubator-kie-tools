@@ -18,13 +18,6 @@ import * as React from "react";
 import * as ReactTable from "react-table";
 import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
 
-export interface BeeTableRowsUpdateArgs<R extends object> {
-  rows: R[];
-  operation?: BeeTableOperation;
-  rowIndex?: number;
-  columns?: ReactTable.Column<R>[];
-}
-
 export interface BeeTableCellProps<R extends object> {
   data: readonly R[];
   rowIndex: number;
@@ -112,14 +105,6 @@ export interface BeeTableOperationGroup {
 export type BeeTableOperationConfig =
   | BeeTableOperationGroup[]
   | { [columnGroupType: string]: BeeTableOperationGroup[] };
-
-/**
- * Interface to be inherited from the table cell components (td, th)
- */
-export interface BeeTableThProps<R extends object> {
-  columnIndex: number;
-  column: ReactTable.ColumnInstance<R>;
-}
 
 export interface BeeTableTdProps<R extends object> {
   rowIndex: number;

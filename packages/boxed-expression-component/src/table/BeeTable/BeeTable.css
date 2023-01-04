@@ -124,7 +124,7 @@
 }
 
 .expression-container .table-component table thead tr th:first-child {
-  border-right: 3px solid var(--pf-global--palette--black-400);
+  border-right: 1px solid var(--pf-global--palette--black-400);
 }
 .expression-container .table-component table thead th {
   border-top: 1px solid var(--pf-global--palette--black-400);

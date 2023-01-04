@@ -18,8 +18,10 @@ import * as React from "react";
 import { useCallback, useRef } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../api";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { NestedExpressionDispatchContextProvider } from "../ContextExpression";
+import {
+  NestedExpressionDispatchContextProvider,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
 import "./ExpressionDefinitionRoot.css";

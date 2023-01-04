@@ -19,174 +19,42 @@ import * as React from "react";
 import { PropsWithChildren, useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
-  BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  ContextExpressionDefinition,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  ExpressionDefinition,
   ExpressionDefinitionLogicType,
   FunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
   generateUuid,
-  LiteralExpressionDefinition,
-  PmmlLiteralExpressionDefinition,
-  PmmlLiteralExpressionDefinitionKind,
 } from "../../api";
-import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
+import { PopoverMenu } from "../../contextMenu/PopoverMenu";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
+import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import {
-  ContextEntryExpressionCell,
   ContextExpressionContext,
   ContextExpressionContextType,
   CONTEXT_ENTRY_EXTRA_WIDTH,
-  NestedExpressionContainerContext,
-  NestedExpressionContainerContextType,
-  NestedExpressionDispatchContextProvider,
-  useContextExpressionContext,
-  useNestedExpressionContainer,
 } from "../ContextExpression";
-import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
-import { LITERAL_EXPRESSION_MIN_WIDTH } from "../LiteralExpression";
-import { PopoverMenu } from "../../contextMenu/PopoverMenu";
-import { ParametersPopover } from "./ParametersPopover";
+import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
+import { FunctionDefinitionCell } from "./FunctionDefinitionCell";
 import "./FunctionExpression.css";
 import { FunctionKindSelector } from "./FunctionKindSelector";
-import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
+import { javaContextExpression } from "./JavaFunctionExpression";
+import { ParametersPopover } from "./ParametersPopover";
+import { pmmlContextExpression } from "./PmmlFunctionExpression";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
-type ROWTYPE = ContextExpressionDefinitionEntry;
-
-const javaContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpressionEditorI18n): ExpressionDefinition => {
-  const id = generateUuid();
-  if (
-    !(
-      prev.logicType === ExpressionDefinitionLogicType.Function &&
-      prev.functionKind === FunctionExpressionDefinitionKind.Java
-    )
-  ) {
-    return { logicType: ExpressionDefinitionLogicType.Undefined, id, dataType: DmnBuiltInDataType.Undefined };
-  }
-
-  return {
-    id: id,
-    logicType: ExpressionDefinitionLogicType.Context,
-    dataType: DmnBuiltInDataType.Undefined,
-    renderResult: false,
-    result: {
-      id: `${id}-result`,
-      logicType: ExpressionDefinitionLogicType.Undefined,
-      dataType: DmnBuiltInDataType.Undefined,
-    },
-    contextEntries: [
-      {
-        entryInfo: {
-          id: prev.classFieldId ?? `${id}-classFieldId`,
-          name: i18n.class,
-          dataType: DmnBuiltInDataType.String,
-        },
-        entryExpression: {
-          id: prev.classFieldId ?? `${id}-classFieldId`,
-          logicType: ExpressionDefinitionLogicType.LiteralExpression,
-          dataType: DmnBuiltInDataType.Undefined,
-          width: LITERAL_EXPRESSION_MIN_WIDTH,
-          content: prev.className ?? "",
-          isHeadless: true,
-        },
-      },
-      {
-        entryInfo: {
-          id: prev.methodFieldId ?? `${id}-methodFieldId`,
-          name: i18n.methodSignature,
-          dataType: DmnBuiltInDataType.String,
-        },
-        entryExpression: {
-          id: prev.methodFieldId ?? `${id}-methodFieldId`,
-          logicType: ExpressionDefinitionLogicType.LiteralExpression,
-          dataType: DmnBuiltInDataType.Undefined,
-          content: prev.methodName ?? "",
-          width: LITERAL_EXPRESSION_MIN_WIDTH,
-          isHeadless: true,
-        },
-      },
-    ],
-    isHeadless: true,
-  };
-};
-
-const pmmlContextExpression = (prev: ExpressionDefinition, i18n: BoxedExpressionEditorI18n): ExpressionDefinition => {
-  const id = generateUuid();
-
-  if (
-    !(
-      prev.logicType === ExpressionDefinitionLogicType.Function &&
-      prev.functionKind === FunctionExpressionDefinitionKind.Pmml
-    )
-  ) {
-    return {
-      logicType: ExpressionDefinitionLogicType.Undefined,
-      id,
-      dataType: DmnBuiltInDataType.Undefined,
-    };
-  }
-
-  return {
-    id,
-    logicType: ExpressionDefinitionLogicType.Context,
-    dataType: DmnBuiltInDataType.Undefined,
-    renderResult: false,
-    result: {
-      id: `${id}-result`,
-      logicType: ExpressionDefinitionLogicType.Undefined,
-      dataType: DmnBuiltInDataType.Undefined,
-    },
-    contextEntries: [
-      {
-        entryInfo: {
-          id: prev.documentFieldId ?? `${id}-document`,
-          name: i18n.document,
-          dataType: DmnBuiltInDataType.String,
-        },
-        entryExpression: {
-          dataType: DmnBuiltInDataType.Undefined,
-          id: prev.documentFieldId ?? `${id}-document`,
-          logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
-          testId: "pmml-selector-document",
-          noOptionsLabel: i18n.pmml.firstSelection,
-          kind: PmmlLiteralExpressionDefinitionKind.Document,
-          selected: prev.document ?? "",
-          isHeadless: true,
-        },
-      },
-      {
-        entryInfo: {
-          id: prev.modelFieldId ?? `${id}-model`,
-          name: i18n.model,
-          dataType: DmnBuiltInDataType.String,
-        },
-        entryExpression: {
-          id: prev.modelFieldId ?? `${id}-model`,
-          logicType: ExpressionDefinitionLogicType.PmmlLiteralExpression,
-          dataType: DmnBuiltInDataType.Undefined,
-          noOptionsLabel: i18n.pmml.secondSelection,
-          testId: "pmml-selector-model",
-          kind: PmmlLiteralExpressionDefinitionKind.Model,
-          selected: prev.model ?? "",
-          isHeadless: true,
-        },
-      },
-    ],
-    isHeadless: true,
-  };
-};
+export type ROWTYPE = ContextExpressionDefinitionEntry;
 
 export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefinition> = (
   functionExpression: PropsWithChildren<FunctionExpressionDefinition>
@@ -197,14 +65,10 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 
   const { editorRef, pmmlParams, decisionNodeId } = useBoxedExpressionEditor();
 
-  const editParametersPopoverAppendTo = useCallback(() => {
-    return () => editorRef.current!;
-  }, [editorRef]);
-
   const parametersColumnHeader = useMemo(
     () => (
       <PopoverMenu
-        appendTo={editParametersPopoverAppendTo()}
+        appendTo={() => editorRef.current!}
         className="parameters-editor-popover"
         minWidth="400px"
         body={<ParametersPopover parameters={functionExpression.formalParameters} />}
@@ -231,7 +95,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
         </div>
       </PopoverMenu>
     ),
-    [editParametersPopoverAppendTo, i18n, functionExpression.formalParameters]
+    [functionExpression.formalParameters, i18n.editParameters, editorRef]
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
@@ -401,11 +265,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
 
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
     () => ({
-      parameters: (props) => (
-        <>
-          <ParametersCell {...props} />
-        </>
-      ),
+      parameters: (props) => <FunctionDefinitionCell {...props} />,
     }),
     []
   );
@@ -445,74 +305,3 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     </ContextExpressionContext.Provider>
   );
 };
-
-function ParametersCell(props: BeeTableCellProps<ROWTYPE>) {
-  const { i18n } = useBoxedExpressionEditorI18n();
-  const contextExpression = useContextExpressionContext();
-
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-
-  const onSetExpression = useCallback(
-    ({ getNewExpression }) => {
-      setExpression((prev) => {
-        if (prev.logicType !== ExpressionDefinitionLogicType.Function) {
-          return prev;
-        }
-
-        // FEEL
-        if (prev.functionKind === FunctionExpressionDefinitionKind.Feel) {
-          return { ...prev, expression: getNewExpression(prev.expression) };
-        }
-
-        // Java
-        else if (prev.functionKind === FunctionExpressionDefinitionKind.Java) {
-          const newExpression = getNewExpression(javaContextExpression(prev, i18n)) as ContextExpressionDefinition;
-          return {
-            ...prev,
-            className: (newExpression.contextEntries![0].entryExpression as LiteralExpressionDefinition).content,
-            classFieldId: (newExpression.contextEntries![0].entryExpression as LiteralExpressionDefinition).content,
-            methodName: (newExpression.contextEntries![1].entryExpression as LiteralExpressionDefinition).content,
-            methodFieldId: (newExpression.contextEntries![1].entryExpression as LiteralExpressionDefinition).content,
-          };
-        }
-
-        // PMML
-        else if (prev.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-          const newExpression = getNewExpression(pmmlContextExpression(prev, i18n)) as ContextExpressionDefinition;
-          // FIXME: Tiago -> STATE GAP
-          return {
-            ...prev,
-            document: (newExpression.contextEntries[0].entryExpression as PmmlLiteralExpressionDefinition).selected,
-            documentFieldId: (newExpression.contextEntries[0].entryExpression as PmmlLiteralExpressionDefinition)
-              .selected,
-            model: (newExpression.contextEntries[1].entryExpression as PmmlLiteralExpressionDefinition).selected,
-            modelFieldId: (newExpression.contextEntries[1].entryExpression as PmmlLiteralExpressionDefinition).selected,
-          };
-        }
-
-        // default
-        else {
-          throw new Error("Shouldn't ever reach this point.");
-        }
-      });
-    },
-    [i18n, setExpression]
-  );
-
-  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
-    return {
-      minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
-      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
-      actualWidth: contextExpression.entryExpressionsActualWidth,
-      resizingWidth: contextExpression.entryExpressionsResizingWidth,
-    };
-  }, [contextExpression]);
-
-  return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
-      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpressionCell {...props} />
-      </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerContext.Provider>
-  );
-}

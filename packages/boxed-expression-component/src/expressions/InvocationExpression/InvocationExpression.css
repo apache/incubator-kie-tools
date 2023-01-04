@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+.expression-container .invocation-expression {
+  width: 100%;
+}
+
 .expression-container .invocation-expression .invokedFunctionName {
   font-family: monospace;
   text-align: center;

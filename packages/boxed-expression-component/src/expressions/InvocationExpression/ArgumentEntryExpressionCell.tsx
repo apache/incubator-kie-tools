@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import "./ContextEntryExpressionCell.css";
+import "../ContextExpression/ContextEntryExpressionCell.css";
 import * as React from "react";
 import {
-  ContextExpressionDefinition,
   ContextExpressionDefinitionEntry,
   ExpressionDefinitionLogicType,
+  InvocationExpressionDefinition,
 } from "../../api";
-import { ContextEntryExpression } from "./ContextEntryExpression";
+import { ContextEntryExpression } from "../ContextExpression/ContextEntryExpression";
 import * as _ from "lodash";
 import {
   NestedExpressionDispatchContextProvider,
@@ -31,29 +31,29 @@ import {
   NestedExpressionContainerContext,
   NestedExpressionContainerContextType,
 } from "../../resizing/NestedExpressionContainerContext";
-import { useContextExpressionContext } from "./ContextExpression";
+import { useContextExpressionContext } from "../ContextExpression";
 import { useCallback, useMemo } from "react";
 
-export interface ContextEntryExpressionCellProps {
+export interface ArgumentEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnId".
   data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
 }
 
-export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
-  data: contextEntries,
+export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryExpressionCellProps> = ({
+  data: argumentEntries,
   rowIndex,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const contextEntries = [...(prev.contextEntries ?? [])];
-        contextEntries[rowIndex].entryExpression = getNewExpression(
-          contextEntries[rowIndex]?.entryExpression ?? { logicType: ExpressionDefinitionLogicType.Undefined }
+      setExpression((prev: InvocationExpressionDefinition) => {
+        const argumentEntries = [...(prev.bindingEntries ?? [])];
+        argumentEntries[rowIndex].entryExpression = getNewExpression(
+          argumentEntries[rowIndex]?.entryExpression ?? { logicType: ExpressionDefinitionLogicType.Undefined }
         );
-        return { ...prev, contextEntries };
+        return { ...prev, bindingEntries: argumentEntries };
       });
     },
     [rowIndex, setExpression]
@@ -72,7 +72,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpression expression={contextEntries[rowIndex]?.entryExpression} />
+        <ContextEntryExpression expression={argumentEntries[rowIndex]?.entryExpression} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

@@ -101,3 +101,28 @@ export function BoxedExpressionEditorContextProvider({
     </BoxedExpressionEditorContext.Provider>
   );
 }
+
+export function NestedExpressionDispatchContextProvider({
+  onSetExpression,
+  children,
+}: React.PropsWithChildren<{
+  onSetExpression: (args: { getNewExpression: (prev: ExpressionDefinition) => ExpressionDefinition }) => void;
+}>) {
+  const nestedExpressionDispatch = useMemo(() => {
+    return {
+      setExpression: (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
+        function getNewExpression(prev: ExpressionDefinition) {
+          return typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
+        }
+
+        onSetExpression({ getNewExpression });
+      },
+    };
+  }, [onSetExpression]);
+
+  return (
+    <BoxedExpressionEditorDispatchContext.Provider value={nestedExpressionDispatch}>
+      {children}
+    </BoxedExpressionEditorDispatchContext.Provider>
+  );
+}

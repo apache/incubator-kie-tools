@@ -14,36 +14,30 @@
  * limitations under the License.
  */
 
-import "./InvocationExpression.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import {
-  ContextExpressionDefinitionEntry,
-  DmnBuiltInDataType,
-  generateUuid,
-  InvocationExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  BeeTableRowsUpdateArgs,
-  BeeTableHeaderVisibility,
-  BeeTableProps,
-  getNextAvailablePrefixedName,
-  BeeTableOperation,
-  BeeTableOperationConfig,
-} from "../../api";
-import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as ReactTable from "react-table";
 import {
-  ContextEntryExpressionCell,
-  ContextEntryInfoCell,
-  ContextEntryInfoCellProps,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
-} from "../ContextExpression";
-import * as _ from "lodash";
+  BeeTableHeaderVisibility,
+  BeeTableOperation,
+  BeeTableOperationConfig,
+  BeeTableProps,
+  ContextExpressionDefinitionEntry,
+  DmnBuiltInDataType,
+  ExpressionDefinitionLogicType,
+  generateUuid,
+  getNextAvailablePrefixedName,
+  InvocationExpressionDefinition,
+} from "../../api";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { ContextEntryInfoCell, CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../ContextExpression";
+import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
+import "./InvocationExpression.css";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -56,13 +50,23 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
 ) => {
   const { i18n } = useBoxedExpressionEditorI18n();
 
+  const { setExpression } = useBoxedExpressionEditorDispatch();
+
   const beeTableRows: ROWTYPE[] = useMemo(() => {
     return invocation.bindingEntries ?? [];
   }, [invocation.bindingEntries]);
 
   const { decisionNodeId } = useBoxedExpressionEditor();
 
-  const setInfoWidth = useCallback((newInfoWidth) => {}, []);
+  const setParametersInfoColumnWidth = useCallback(
+    (newParametersInfoColumnWidth) => {
+      setExpression((prev) => ({
+        ...prev,
+        entryInfoWidth: newParametersInfoColumnWidth,
+      }));
+    },
+    [setExpression]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
@@ -83,17 +87,17 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             groupType: "invokedFunctionName",
             columns: [
               {
-                accessor: "entryInfo",
-                label: "entryInfo",
+                accessor: "parametersInfo" as any,
+                label: "parametersInfo",
                 isRowIndexColumn: false,
                 dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
                 minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
                 width: invocation.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
-                setWidth: setInfoWidth,
+                setWidth: setParametersInfoColumnWidth,
               },
               {
-                accessor: "entryExpression",
-                label: "entryExpression",
+                accessor: "argumentExpression" as any,
+                label: "argumentExpression",
                 isRowIndexColumn: false,
                 dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
                 width: undefined,
@@ -109,11 +113,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       invocation.invokedFunction,
       invocation.entryInfoWidth,
       decisionNodeId,
-      setInfoWidth,
+      setParametersInfoColumnWidth,
     ]
   );
-
-  const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
@@ -138,12 +140,23 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
     return row.original.entryInfo.id;
   }, []);
 
+  const updateParameterInfo = useCallback(
+    (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => {
+      setExpression((prev: InvocationExpressionDefinition) => {
+        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
+        newArgumentEntries[rowIndex] = newEntry;
+        return { ...prev, bindingEntries: newArgumentEntries };
+      });
+    },
+    [setExpression]
+  );
+
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
     () => ({
-      entryInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={() => {}} />,
-      entryExpression: (props) => <ContextEntryExpressionCell {...props} />,
+      parametersInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={updateParameterInfo} />,
+      argumentExpression: (props) => <ArgumentEntryExpressionCell {...props} />,
     }),
-    []
+    [updateParameterInfo]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
@@ -163,8 +176,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setExpression((prev: InvocationExpressionDefinition) => {
-        const newBindingEntries = [...(prev.bindingEntries ?? [])];
-        newBindingEntries.splice(args.beforeIndex, 0, {
+        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
+        newArgumentEntries.splice(args.beforeIndex, 0, {
           nameAndDataTypeSynchronized: true,
           entryExpression: {
             logicType: ExpressionDefinitionLogicType.Undefined,
@@ -183,7 +196,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
 
         return {
           ...prev,
-          bindingEntries: newBindingEntries,
+          bindingEntries: newArgumentEntries,
         };
       });
     },

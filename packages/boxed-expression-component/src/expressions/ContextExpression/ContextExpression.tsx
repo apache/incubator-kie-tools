@@ -18,7 +18,6 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
 import {
-  BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -31,20 +30,19 @@ import {
   generateUuid,
   getNextAvailablePrefixedName,
 } from "../../api";
-import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
-import { Resizer } from "../../resizing/Resizer";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
+import { ResizingWidth, useResizingWidths, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { getExpressionMinWidth, getExpressionResizingWidth } from "../../resizing/Widths";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
-  BoxedExpressionEditorDispatchContext,
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
-import { ContextEntryExpression } from "./ContextEntryExpression";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import "./ContextExpression.css";
+import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 
 const CONTEXT_ENTRY_DEFAULT_NAME = "ContextEntry-1";
 
@@ -258,18 +256,10 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(() => {
     return {
       entryInfo: (props) => {
-        return (
-          <>
-            <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />
-          </>
-        );
+        return <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />;
       },
       entryExpression: (props) => {
-        return (
-          <>
-            <ContextEntryCell {...props} />
-          </>
-        );
+        return <ContextEntryExpressionCell {...props} />;
       },
     };
   }, [updateEntry]);
@@ -298,7 +288,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           <div key={"context-result"} className="context-result">
             {`<result>`}
           </div>,
-          <ResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
+          <ContextResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
         ]
       : undefined;
   }, [contextExpression]);
@@ -361,73 +351,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 };
 
-function ResultExpressionCell(props: { contextExpression: ContextExpressionDefinition }) {
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-
-  const onSetExpression = useCallback(
-    ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => ({
-        ...prev,
-        result: getNewExpression(prev.result),
-      }));
-    },
-    [setExpression]
-  );
-
-  const contextExpression = useContextExpressionContext();
-  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
-    return {
-      minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
-      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
-      actualWidth: contextExpression.entryExpressionsActualWidth,
-      resizingWidth: contextExpression.entryExpressionsResizingWidth,
-    };
-  }, [contextExpression]);
-
-  return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
-      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpression expression={props.contextExpression.result} />
-      </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerContext.Provider>
-  );
-}
-
-function ContextEntryCell(props: BeeTableCellProps<ROWTYPE>) {
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-
-  const onSetExpression = useCallback(
-    ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const contextEntries = [...(prev.contextEntries ?? [])];
-        contextEntries[props.rowIndex].entryExpression = getNewExpression(
-          contextEntries[props.rowIndex]?.entryExpression ?? { logicType: ExpressionDefinitionLogicType.Undefined }
-        );
-        return { ...prev, contextEntries };
-      });
-    },
-    [props.rowIndex, setExpression]
-  );
-
-  const contextExpression = useContextExpressionContext();
-  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
-    return {
-      minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
-      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
-      actualWidth: contextExpression.entryExpressionsActualWidth,
-      resizingWidth: contextExpression.entryExpressionsResizingWidth,
-    };
-  }, [contextExpression]);
-
-  return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
-      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ContextEntryExpressionCell {...props} />
-      </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerContext.Provider>
-  );
-}
-
 export interface ContextExpressionContextType {
   entryExpressionsMinWidthLocal: number;
   entryExpressionsMinWidthGlobal: number;
@@ -447,50 +370,4 @@ export const ContextExpressionContext = React.createContext<ContextExpressionCon
 
 export function useContextExpressionContext() {
   return React.useContext(ContextExpressionContext);
-}
-
-export function NestedExpressionDispatchContextProvider({
-  onSetExpression,
-  children,
-}: React.PropsWithChildren<{
-  onSetExpression: (args: { getNewExpression: (prev: ExpressionDefinition) => ExpressionDefinition }) => void;
-}>) {
-  const nestedExpressionDispatch = useMemo(() => {
-    return {
-      setExpression: (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
-        function getNewExpression(prev: ExpressionDefinition) {
-          return typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
-        }
-
-        onSetExpression({ getNewExpression });
-      },
-    };
-  }, [onSetExpression]);
-
-  return (
-    <BoxedExpressionEditorDispatchContext.Provider value={nestedExpressionDispatch}>
-      {children}
-    </BoxedExpressionEditorDispatchContext.Provider>
-  );
-}
-
-export type NestedExpressionContainerContextType = {
-  minWidthLocal: number;
-  minWidthGlobal: number;
-  actualWidth: number;
-  resizingWidth: ResizingWidth;
-};
-
-export const NestedExpressionContainerContext = React.createContext<NestedExpressionContainerContextType>({
-  minWidthLocal: -2,
-  minWidthGlobal: -2,
-  actualWidth: -2,
-  resizingWidth: {
-    value: -2,
-    isPivoting: false,
-  },
-});
-
-export function useNestedExpressionContainer() {
-  return React.useContext(NestedExpressionContainerContext);
 }

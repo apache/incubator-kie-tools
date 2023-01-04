@@ -16,7 +16,7 @@
 
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";

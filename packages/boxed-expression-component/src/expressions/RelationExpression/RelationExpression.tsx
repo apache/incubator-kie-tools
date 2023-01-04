@@ -29,10 +29,10 @@ import {
   RelationExpressionDefinitionRow,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useNestedExpressionContainer } from "../ContextExpression";
 import "./RelationExpression.css";
 
 type ROWTYPE = RelationExpressionDefinitionRow;

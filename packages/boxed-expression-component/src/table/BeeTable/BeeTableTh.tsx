@@ -19,9 +19,9 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import * as PfReactTable from "@patternfly/react-table";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
-import { BeeTableThProps } from "../../api";
+import * as ReactTable from "react-table";
 
-export interface BeeTableThProps2<R extends object> extends BeeTableThProps<R> {
+export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   className: string;
@@ -29,6 +29,8 @@ export interface BeeTableThProps2<R extends object> extends BeeTableThProps<R> {
   onClick?: React.MouseEventHandler;
   isLastLevelColumn: boolean;
   rowIndex: number;
+  columnIndex: number;
+  column: ReactTable.ColumnInstance<R>;
 }
 
 export type HoverInfo =
@@ -51,7 +53,7 @@ export function BeeTableTh<R extends object>({
   groupType,
   column,
   isLastLevelColumn,
-}: React.PropsWithChildren<BeeTableThProps2<R>>) {
+}: React.PropsWithChildren<BeeTableThProps<R>>) {
   const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
   const thRef = useRef<HTMLTableCellElement>(null);
 
