@@ -22,6 +22,7 @@ import org.appformer.kogito.bridge.client.resource.ResourceContentService;
 import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
 public class StateShape extends NodeShapeImpl implements HasShapeState {
@@ -47,36 +48,39 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
             return;
         }
 
-        if (state.metadata.type != null) {
-            setType(state.metadata.type);
+        if (StringUtils.nonEmpty(state.metadata.icon)) {
+            if (state.metadata.icon.startsWith("data:")) {
+                Picture picture = new Picture(state.metadata.icon);
+                setIconPicture(picture);
+            } else {
+                loadIconFormFile(state, resourceContentService);
+            }
         }
 
         if (!isIconEmpty()) {
             return;
         }
 
-        if (state.metadata.icon == null) {
-            setType(state.getType());
-            return;
+        if (StringUtils.nonEmpty(state.metadata.type)) {
+            setType(state.metadata.type);
         }
 
-        if (state.metadata.icon.startsWith("data:")) {
-            Picture picture = new Picture(state.metadata.icon);
-            setIconPicture(picture);
-        } else {
-            resourceContentService
-                    .get(state.metadata.icon, ResourceContentOptions.binary())
-                    .then(image -> {
-                        if (image != null) {
-                            String base64image = iconDataUri(state.metadata.icon, image);
-                            Picture picture = new Picture(base64image);
-                            setIconPicture(picture);
-                        } else {
-                            setType(state.getType());
-                        }
-                        return null;
-                    });
+        if (isIconEmpty()) {
+            setType(state.getType());
         }
+    }
+
+    private void loadIconFormFile(State state, ResourceContentService resourceContentService) {
+        resourceContentService
+                .get(state.metadata.icon, ResourceContentOptions.binary())
+                .then(image -> {
+                    if (StringUtils.nonEmpty(image)) {
+                        String base64image = iconDataUri(state.metadata.icon, image);
+                        Picture picture = new Picture(base64image);
+                        setIconPicture(picture);
+                    }
+                    return null;
+                });
     }
 
     public StateShape(String name) {
