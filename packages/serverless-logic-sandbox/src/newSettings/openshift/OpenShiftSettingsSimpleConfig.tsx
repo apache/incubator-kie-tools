@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import {
+  isOpenShiftConnectionValid,
+  OpenShiftConnection,
+} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAppI18n } from "../../i18n";
-import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import {
-  isOpenShiftConnectionValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
-import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { SettingsTabs } from "../SettingsModalBody";
 import { routes } from "../../navigation/Routes";
-import { Link } from "react-router-dom";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",

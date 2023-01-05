@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,6 +137,7 @@ export function OpenShiftSettings() {
         title="Add connection"
         isOpen={
           isModalOpen &&
+          kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
           (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
             settings.openshift.status === OpenShiftInstanceStatus.EXPIRED)
         }
