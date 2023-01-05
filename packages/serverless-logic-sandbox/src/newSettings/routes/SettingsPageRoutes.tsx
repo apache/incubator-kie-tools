@@ -24,7 +24,7 @@ import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/Feature
 import { ApacheKafkaSettingsTab } from "../../settings/kafka/ApacheKafkaSettingsTab";
 import { OpenShiftSettings } from "../../newSettings/openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
-import { ServiceRegistrySettingsTab } from "../../settings/serviceRegistry/ServiceRegistrySettingsTab";
+import { ServiceRegistrySettings } from "../../newSettings/serviceRegistry/ServiceRegistrySettings";
 
 export function SettingsPageRoutes() {
   const routes = useRoutes();
@@ -43,7 +43,7 @@ export function SettingsPageRoutes() {
         <ServiceAccountSettings />
       </Route>
       <Route path={routes.settings.service_registry.path({})}>
-        <ServiceRegistrySettingsTab />
+        <ServiceRegistrySettings />
       </Route>
       <Route path={routes.settings.kafka.path({})}>
         <ApacheKafkaSettingsTab />

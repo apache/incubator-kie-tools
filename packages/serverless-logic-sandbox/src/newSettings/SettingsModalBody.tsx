@@ -21,7 +21,7 @@ import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettings } from "./openshift/OpenShiftSettings";
 import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
 import { ServiceAccountSettings } from "./serviceAccount/ServiceAccountSettings";
-import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
+import { ServiceRegistrySettings } from "./serviceRegistry/ServiceRegistrySettings";
 import { KieSandboxExtendedServicesSettings } from "./extendedServices/KieSandboxExtendedServicesSettings";
 import { FeaturePreviewSettingsTab } from "./featurePreview/FeaturePreviewSettingsTab";
 
@@ -80,7 +80,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.SERVICE_REGISTRY}
         title={<TabTitleText>Service Registry</TabTitleText>}
       >
-        <ServiceRegistrySettingsTab />
+        <ServiceRegistrySettings />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"

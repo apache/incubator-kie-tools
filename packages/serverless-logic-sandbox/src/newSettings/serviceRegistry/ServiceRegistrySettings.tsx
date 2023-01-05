@@ -39,7 +39,7 @@ import {
   saveConfigCookie,
 } from "./ServiceRegistryConfig";
 
-export function ServiceRegistrySettingsTab() {
+export function ServiceRegistrySettings() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceRegistry.config);
