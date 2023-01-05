@@ -135,57 +135,57 @@ export const App: React.FunctionComponent = () => {
   }, [expression]);
 
   return (
-    <div className="showcase">
-      <div className="boxed-expression">
-        <BoxedExpressionEditor
-          beeGwtService={beeGwtService}
-          decisionNodeId="_00000000-0000-0000-0000-000000000000"
-          expressionDefinition={expression}
-          setExpressionDefinition={setExpression}
-          dataTypes={dataTypes}
-          pmmlParams={pmmlParams}
-        />
-      </div>
+    // <div className="showcase">
+    //   <div className="boxed-expression">
+    <BoxedExpressionEditor
+      beeGwtService={beeGwtService}
+      decisionNodeId="_00000000-0000-0000-0000-000000000000"
+      expressionDefinition={expression}
+      setExpressionDefinition={setExpression}
+      dataTypes={dataTypes}
+      pmmlParams={pmmlParams}
+    />
+    // </div>
 
-      <div className="updated-json">
-        <div className="buttons">
-          <Button
-            variant="secondary"
-            icon={<PenIcon />}
-            iconPosition="left"
-            onClick={toggleModal}
-            ouiaId="edit-expression-json"
-          />
-        </div>
+    //   <div className="updated-json">
+    //     <div className="buttons">
+    //       <Button
+    //         variant="secondary"
+    //         icon={<PenIcon />}
+    //         iconPosition="left"
+    //         onClick={toggleModal}
+    //         ouiaId="edit-expression-json"
+    //       />
+    //     </div>
 
-        <pre>
-          <ReactJson src={expression} name={false} enableClipboard />
-        </pre>
-      </div>
+    //     <pre>
+    //       <ReactJson src={expression} name={false} enableClipboard />
+    //     </pre>
+    //   </div>
 
-      <Modal
-        title="Manually edit Expression Definition"
-        className="expression-definition-editor-modal"
-        isOpen={isModalOpen}
-        onClose={toggleModal}
-        description="This modal is supposed to provide a manual edit option for the expression definition. If «Confirm» action does nothing, probably there is an issue with JSON definition parsing: look at browser's console."
-        actions={[
-          <Button key="confirm" variant="primary" onClick={setExpressionFromString} ouiaId="confirm-expression-json">
-            Confirm
-          </Button>,
-          <Button key="cancel" variant="link" onClick={toggleModal}>
-            Cancel
-          </Button>,
-        ]}
-      >
-        <textarea
-          className="typed-expression"
-          value={expressionString}
-          onChange={onExpressionStringChange}
-          data-ouia-component-id="typed-expression-json"
-        />
-      </Modal>
-    </div>
+    //   <Modal
+    //     title="Manually edit Expression Definition"
+    //     className="expression-definition-editor-modal"
+    //     isOpen={isModalOpen}
+    //     onClose={toggleModal}
+    //     description="This modal is supposed to provide a manual edit option for the expression definition. If «Confirm» action does nothing, probably there is an issue with JSON definition parsing: look at browser's console."
+    //     actions={[
+    //       <Button key="confirm" variant="primary" onClick={setExpressionFromString} ouiaId="confirm-expression-json">
+    //         Confirm
+    //       </Button>,
+    //       <Button key="cancel" variant="link" onClick={toggleModal}>
+    //         Cancel
+    //       </Button>,
+    //     ]}
+    //   >
+    //     <textarea
+    //       className="typed-expression"
+    //       value={expressionString}
+    //       onChange={onExpressionStringChange}
+    //       data-ouia-component-id="typed-expression-json"
+    //     />
+    //   </Modal>
+    // </div>
   );
 };
 

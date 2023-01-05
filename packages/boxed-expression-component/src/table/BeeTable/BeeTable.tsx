@@ -32,7 +32,7 @@ import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { BeeTableCellUpdate, BeeTableHeader } from "./BeeTableHeader";
 import {
   BeeTableSelectionContextProvider,
-  SELECTION_MIN_DEPTH,
+  SELECTION_MIN_ACTIVE_DEPTH,
   SelectionPart,
   useBeeTableCell,
   useBeeTableSelectionDispatch,
@@ -91,7 +91,7 @@ export function BeeTable2<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
 }: BeeTableProps<R>) {
-  const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setActiveDepth } =
+  const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -219,7 +219,10 @@ export function BeeTable2<R extends object>({
       if (NavigationKeysUtils.isSpace(e.key) && !e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey) {
         e.stopPropagation();
         e.preventDefault();
-        setActiveDepth((prev) => prev + 1);
+        setCurrentDepth((prev) => ({
+          max: prev.max,
+          active: (prev.active ?? SELECTION_MIN_ACTIVE_DEPTH) + 1,
+        }));
       }
 
       // ENTER
@@ -386,7 +389,7 @@ export function BeeTable2<R extends object>({
     [
       enableKeyboardNavigation,
       currentlyOpenContextMenu,
-      setActiveDepth,
+      setCurrentDepth,
       mutateSelection,
       reactTableInstance.allColumns.length,
       reactTableInstance.rows.length,

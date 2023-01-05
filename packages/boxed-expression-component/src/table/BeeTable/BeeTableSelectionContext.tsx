@@ -1,20 +1,20 @@
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 
-export interface BeeTableSelectionActiveCell<R extends object> {
+export const SELECTION_MIN_ACTIVE_DEPTH = -1;
+export const SELECTION_MIN_MAX_DEPTH = 0;
+
+export interface BeeTableCellCoordinates {
+  columnIndex: number;
+  rowIndex: number;
+}
+
+export interface BeeTableSelectionActiveCell {
   columnIndex: number;
   rowIndex: number;
   isEditing: boolean;
-}
-export interface BeeTableSelectionContextType<R extends object> {
-  activeCell: BeeTableSelectionActiveCell<R> | undefined;
-  selectionEnd: BeeTableSelectionActiveCell<R> | undefined;
-  selectionStart: BeeTableSelectionActiveCell<R> | undefined;
-  depth: number;
-  maxDepth: number;
-  activeDepth: number | undefined;
 }
 
 export enum SelectionPart {
@@ -23,9 +23,21 @@ export enum SelectionPart {
   SelectionStart,
 }
 
-export interface BeeTableSelectionDispatchContextType<R extends object> {
-  setActiveDepth: React.Dispatch<React.SetStateAction<number>>;
-  setMaxDepth: React.Dispatch<React.SetStateAction<number | undefined>>;
+export interface BeeTableSelectionContextType {
+  activeCell: BeeTableSelectionActiveCell | undefined;
+  activeCellForNestedTables: BeeTableSelectionActiveCell | undefined;
+  selectionEnd: BeeTableSelectionActiveCell | undefined;
+  selectionStart: BeeTableSelectionActiveCell | undefined;
+  currentDepth: { active: number | undefined; max: number };
+  depth: number;
+}
+
+export interface BeeTableCoordinatesDispatchContextType {
+  setMaxDepth: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export interface BeeTableSelectionDispatchContextType {
+  setCurrentDepth: React.Dispatch<React.SetStateAction<{ active: number | undefined; max: number }>>;
   erase(): void;
   copy(): void;
   cut(): void;
@@ -50,25 +62,38 @@ export interface BeeTableSelectionDispatchContextType<R extends object> {
     keepInsideSelection: boolean;
   }) => void;
   resetSelectionAt: React.Dispatch<
-    React.SetStateAction<(BeeTableSelectionActiveCell<R> & { keepSelection?: boolean }) | undefined>
+    React.SetStateAction<(BeeTableSelectionActiveCell & { keepSelection?: boolean }) | undefined>
   >;
-  setSelectionEnd: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell<R> | undefined>>;
+  setSelectionEnd: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell | undefined>>;
   subscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): BeeTableCellRef;
   unsubscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): void;
 }
 
-export const BeeTableSelectionContext = React.createContext<BeeTableSelectionContextType<any>>({
+export interface BeeTableCoordinatesContextType {
+  containerCellCoordinates: BeeTableCellCoordinates | undefined;
+}
+
+export const BeeTableSelectionContext = React.createContext<BeeTableSelectionContextType>({
   activeCell: undefined,
+  activeCellForNestedTables: undefined,
   selectionEnd: undefined,
   selectionStart: undefined,
-  depth: -1,
-  activeDepth: undefined,
-  maxDepth: 0,
+  currentDepth: {
+    active: undefined,
+    max: SELECTION_MIN_MAX_DEPTH,
+  },
+  depth: SELECTION_MIN_ACTIVE_DEPTH,
 });
 
-export const BeeTableSelectionDispatchContext = React.createContext<BeeTableSelectionDispatchContextType<any>>(
+export const BeeTableCoordinatesContext = React.createContext<BeeTableCoordinatesContextType>({
+  containerCellCoordinates: undefined,
+});
+
+export const BeeTableCoordinatesDispatchContext = React.createContext<BeeTableCoordinatesDispatchContextType>(
   {} as any
 );
+
+export const BeeTableSelectionDispatchContext = React.createContext<BeeTableSelectionDispatchContextType>({} as any);
 
 export type BeeTableCellStatus = {
   isActive: boolean;
@@ -84,10 +109,10 @@ export interface BeeTableCellRef {
   setResizingWidth?: React.Dispatch<React.SetStateAction<ResizingWidth>>;
 }
 
-export interface BeeTableSelection<R extends object> {
-  active: BeeTableSelectionActiveCell<R> | undefined;
-  selectionEnd: BeeTableSelectionActiveCell<R> | undefined;
-  selectionStart: BeeTableSelectionActiveCell<R> | undefined;
+export interface BeeTableSelection {
+  active: BeeTableSelectionActiveCell | undefined;
+  selectionEnd: BeeTableSelectionActiveCell | undefined;
+  selectionStart: BeeTableSelectionActiveCell | undefined;
 }
 
 export enum BeeTableSelectionPosition {
@@ -96,7 +121,6 @@ export enum BeeTableSelectionPosition {
   Left = "left",
   Right = "right",
 }
-export const SELECTION_MIN_DEPTH = -1;
 
 const CLIPBOARD_ROW_SEPARATOR = "\n";
 const CLIPBOARD_COLUMN_SEPARATOR = "\t";
@@ -115,35 +139,107 @@ const NEUTRAL_CELL_STATUS = {
 
 const CELL_EMPTY_VALUE = ""; // FIXME: Tiago -> This value needs to be parameterized, perhaps. Not all values are strings.
 
+export function BeeTableCoordinatesContextProvider({
+  children,
+  coordinates,
+}: React.PropsWithChildren<{ coordinates: BeeTableCellCoordinates }>) {
+  const { activeCell, depth } = useBeeTableSelection();
+
+  //
+
+  const { setMaxDepth: setParentMaxDepth } = useBeeTableCoordinatesDispatch();
+  const [_maxDepth, _setMaxDepth] = useState<number>(depth);
+
+  const { setCurrentDepth } = useBeeTableSelectionDispatch();
+
+  const setMaxDepth: React.Dispatch<React.SetStateAction<number>> = useCallback(
+    (newMaxDepthAction) => {
+      setParentMaxDepth?.(newMaxDepthAction);
+      _setMaxDepth?.(newMaxDepthAction);
+    },
+    [setParentMaxDepth]
+  );
+
+  useEffect(() => {
+    setMaxDepth((prev) => {
+      console.info(
+        `Setting maxDepth (${prev} -> ${depth}) for coords D: ${depth} (${coordinates.rowIndex}, ${coordinates.columnIndex})`
+      );
+      return Math.max(prev, depth);
+    });
+  }, [coordinates.columnIndex, coordinates.rowIndex, depth, setMaxDepth]);
+
+  //
+
+  useEffect(() => {
+    if (coincides(activeCell, coordinates)) {
+      console.info(
+        `Setting maxDepth (${_maxDepth}) for coords: D: ${depth} (${coordinates.rowIndex}, ${coordinates.columnIndex})`
+      );
+      setCurrentDepth((prev) => ({
+        active: prev.active,
+        max: _maxDepth,
+      }));
+    }
+  }, [_maxDepth, activeCell, coordinates, depth, setCurrentDepth]);
+
+  //
+
+  const value = useMemo<BeeTableCoordinatesContextType>(() => {
+    return {
+      containerCellCoordinates: coordinates,
+    };
+  }, [coordinates]);
+
+  const dispatch = useMemo(() => {
+    return {
+      setMaxDepth,
+    };
+  }, [setMaxDepth]);
+
+  return (
+    <BeeTableCoordinatesContext.Provider value={value}>
+      <BeeTableCoordinatesDispatchContext.Provider value={dispatch}>
+        {children}
+      </BeeTableCoordinatesDispatchContext.Provider>
+    </BeeTableCoordinatesContext.Provider>
+  );
+}
+
 export function BeeTableSelectionContextProvider<R extends object>({ children }: React.PropsWithChildren<{}>) {
-  const [_selection, setSelection] = useState<BeeTableSelection<R>>(NEUTRAL_SELECTION);
-
-  const [_activeDepth, _setActiveDepth] = useState<number | undefined>(undefined);
-  const [_maxDepth, _setMaxDepth] = useState<number>(0);
-
-  const { maxDepth: parentMaxDepth, depth: parentDepth, activeDepth: parentActiveDepth } = useBeeTableSelection();
-  const { setActiveDepth: setParentActiveDepth } = useBeeTableSelectionDispatch();
-  const { setMaxDepth: setParentMaxDepth } = useBeeTableSelectionDispatch();
-
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
 
+  const [_selection, _setSelection] = useState<BeeTableSelection>(NEUTRAL_SELECTION);
+  const [_currentDepth, _setCurrentDepth] = useState<{ active: number | undefined; max: number }>({
+    active: undefined,
+    max: SELECTION_MIN_MAX_DEPTH,
+  });
+
+  const {
+    activeCellForNestedTables: parentActiveCell,
+    currentDepth: parentCurrentDepth,
+    depth: parentDepth,
+  } = useBeeTableSelection();
+
+  const { setCurrentDepth: setParentCurrentDepth } = useBeeTableSelectionDispatch();
+  const { containerCellCoordinates } = useBeeTableCoordinates();
+
+  //
+
   const depth = parentDepth + 1;
-  const activeDepth = parentActiveDepth ?? _activeDepth;
-  const maxDepth = Math.max(parentMaxDepth, _maxDepth);
-  const setActiveDepth = setParentActiveDepth ?? _setActiveDepth;
-  const setMaxDepth = setParentMaxDepth ?? _setMaxDepth;
+  const activeDepth = parentCurrentDepth.active ?? _currentDepth.active;
+  const activeMaxDepth = Math.max(parentCurrentDepth.max, _currentDepth.max);
+  const setCurrentDepth = setParentCurrentDepth ?? _setCurrentDepth;
 
   const selection = useMemo(() => {
-    // FIXME: Tiago -> Need to take the coordinates of the parent into account as well.
-    if (depth === activeDepth) {
+    if (depth === activeDepth && coincides(parentActiveCell, containerCellCoordinates)) {
       return _selection;
     }
 
     return NEUTRAL_SELECTION;
-  }, [_selection, activeDepth, depth]);
+  }, [_selection, activeDepth, containerCellCoordinates, depth, parentActiveCell]);
 
-  const selectionRef = React.useRef<BeeTableSelection<R>>(selection);
-
+  const selectionRef = React.useRef<BeeTableSelection>(selection);
   useEffect(() => {
     selectionRef.current = selection;
   }, [selection]);
@@ -153,24 +249,38 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
       activeCell: selection.active,
       selectionStart: selection.selectionStart,
       selectionEnd: selection.selectionEnd,
+      activeCellForNestedTables: _selection.active,
+      currentDepth: {
+        active: activeDepth,
+        max: activeMaxDepth,
+      },
       depth,
-      activeDepth,
-      maxDepth,
     };
-  }, [activeDepth, depth, maxDepth, selection.active, selection.selectionEnd, selection.selectionStart]);
+  }, [
+    _selection.active,
+    activeDepth,
+    activeMaxDepth,
+    depth,
+    selection.active,
+    selection.selectionEnd,
+    selection.selectionStart,
+  ]);
 
-  const dispatch = useMemo<BeeTableSelectionDispatchContextType<R>>(() => {
+  const dispatch = useMemo<BeeTableSelectionDispatchContextType>(() => {
     return {
-      setActiveDepth: (newActiveDepthAction) => {
-        setActiveDepth((prev) => {
-          const newActiveDepth =
-            typeof newActiveDepthAction === "function"
-              ? newActiveDepthAction(prev ?? SELECTION_MIN_DEPTH)
-              : newActiveDepthAction;
-          return Math.min(maxDepth, newActiveDepth);
+      setCurrentDepth: (newCurrentDepthAction) => {
+        setCurrentDepth((prev) => {
+          const newCurrentDepth =
+            typeof newCurrentDepthAction === "function"
+              ? newCurrentDepthAction(prev ?? SELECTION_MIN_ACTIVE_DEPTH)
+              : newCurrentDepthAction;
+
+          return {
+            max: Math.max(SELECTION_MIN_MAX_DEPTH, newCurrentDepth.max),
+            active: Math.min(newCurrentDepth.max, newCurrentDepth.active ?? SELECTION_MIN_ACTIVE_DEPTH),
+          };
         });
       },
-      setMaxDepth: setMaxDepth,
       mutateSelection: ({
         part,
         columnCount,
@@ -180,13 +290,14 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         isEditingActiveCell,
         keepInsideSelection,
       }) => {
-        setSelection((prev) => {
+        _setSelection((prev) => {
           if (!prev.active) {
             return prev;
           }
 
           const isExpanded = isSelectionExpanded(prev);
-          const { startColumn, startRow, endColumn, endRow } = getSelectionIterationBoundaries(prev);
+          const { startRow, startColumn, endRow, endColumn } = getSelectionIterationBoundaries(prev);
+
           const boundaries =
             isExpanded && keepInsideSelection
               ? {
@@ -200,14 +311,28 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
           const prevCoords =
             part === SelectionPart.ActiveCell
-              ? { columnIndex: prev.active.columnIndex, rowIndex: prev.active.rowIndex }
+              ? {
+                  rowIndex: prev.active.rowIndex,
+                  columnIndex: prev.active.columnIndex,
+                }
               : part === SelectionPart.SelectionEnd
-              ? { columnIndex: prev.selectionEnd?.columnIndex, rowIndex: prev.selectionEnd?.rowIndex }
+              ? {
+                  rowIndex: prev.selectionEnd?.rowIndex,
+                  columnIndex: prev.selectionEnd?.columnIndex,
+                }
               : part === SelectionPart.SelectionStart
-              ? { columnIndex: prev.selectionStart?.columnIndex, rowIndex: prev.selectionStart?.rowIndex }
+              ? {
+                  rowIndex: prev.selectionStart?.rowIndex,
+                  columnIndex: prev.selectionStart?.columnIndex,
+                }
               : (() => {
                   throw new Error("Impossible case for SelectionPart");
                 })();
+
+          const newRowIndex =
+            (prevCoords.rowIndex ?? 0) < 0
+              ? prevCoords.rowIndex ?? 0 // Don't move away from header cells
+              : Math.min(boundaries.rows.max, Math.max(boundaries.rows.min, (prevCoords.rowIndex ?? 0) + deltaRows));
 
           const newColumnIndex =
             prevCoords.columnIndex === 0
@@ -217,18 +342,13 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                   Math.max(boundaries.columns.min, (prevCoords.columnIndex ?? 0) + deltaColumns)
                 );
 
-          const newRowIndex =
-            (prevCoords.rowIndex ?? 0) < 0
-              ? prevCoords.rowIndex ?? 0 // Don't move away from header cells
-              : Math.min(boundaries.rows.max, Math.max(boundaries.rows.min, (prevCoords.rowIndex ?? 0) + deltaRows));
-
           switch (part) {
             case SelectionPart.SelectionEnd:
               return {
                 ...prev,
                 selectionEnd: {
-                  columnIndex: newColumnIndex,
                   rowIndex: newRowIndex,
+                  columnIndex: newColumnIndex,
                   isEditing: prev.selectionEnd?.isEditing ?? false,
                 },
               };
@@ -236,8 +356,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               return {
                 ...prev,
                 selectionStart: {
-                  columnIndex: newColumnIndex,
                   rowIndex: newRowIndex,
+                  columnIndex: newColumnIndex,
                   isEditing: prev.selectionStart?.isEditing ?? false,
                 },
               };
@@ -245,18 +365,18 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               if (!isExpanded || !keepInsideSelection) {
                 return {
                   active: {
-                    columnIndex: newColumnIndex,
                     rowIndex: newRowIndex,
+                    columnIndex: newColumnIndex,
                     isEditing: isEditingActiveCell,
                   },
                   selectionEnd: {
-                    columnIndex: newColumnIndex,
                     rowIndex: newRowIndex,
+                    columnIndex: newColumnIndex,
                     isEditing: false,
                   },
                   selectionStart: {
-                    columnIndex: newColumnIndex,
                     rowIndex: newRowIndex,
+                    columnIndex: newColumnIndex,
                     isEditing: false,
                   },
                 };
@@ -273,16 +393,16 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
               // Shift + Tab   --> RTL, Bottom-Up
               // ===============================================
 
-              const targetColumn = prev.active.columnIndex + deltaColumns;
               const targetRow = prev.active.rowIndex + deltaRows;
+              const targetColumn = prev.active.columnIndex + deltaColumns;
 
               if (targetRow > boundaries.rows.max) {
                 const nextColumn = prev.active.columnIndex + 1;
                 return {
                   ...prev,
                   active: {
-                    columnIndex: nextColumn > boundaries.columns.max ? boundaries.columns.min : nextColumn,
                     rowIndex: boundaries.rows.min,
+                    columnIndex: nextColumn > boundaries.columns.max ? boundaries.columns.min : nextColumn,
                     isEditing: isEditingActiveCell,
                   },
                 };
@@ -291,8 +411,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                 return {
                   ...prev,
                   active: {
-                    columnIndex: boundaries.columns.max,
                     rowIndex: previousRow < boundaries.rows.min ? boundaries.rows.max : previousRow,
+                    columnIndex: boundaries.columns.max,
                     isEditing: isEditingActiveCell,
                   },
                 };
@@ -301,8 +421,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                 return {
                   ...prev,
                   active: {
-                    columnIndex: boundaries.columns.min,
                     rowIndex: nextRow > boundaries.rows.max ? boundaries.rows.min : nextRow,
+                    columnIndex: boundaries.columns.min,
                     isEditing: isEditingActiveCell,
                   },
                 };
@@ -311,8 +431,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                 return {
                   ...prev,
                   active: {
-                    columnIndex: previousColumn < boundaries.columns.min ? boundaries.columns.max : previousColumn,
                     rowIndex: boundaries.rows.max,
+                    columnIndex: previousColumn < boundaries.columns.min ? boundaries.columns.max : previousColumn,
                     isEditing: isEditingActiveCell,
                   },
                 };
@@ -320,8 +440,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
                 return {
                   ...prev,
                   active: {
-                    columnIndex: newColumnIndex,
                     rowIndex: newRowIndex,
+                    columnIndex: newColumnIndex,
                     isEditing: isEditingActiveCell,
                   },
                 };
@@ -352,7 +472,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         atColumnIndex: number;
         columnCountDelta: number;
       }) => {
-        setSelection((prev) => {
+        _setSelection((prev) => {
           if (!prev || !prev.active || !prev.selectionStart || !prev.selectionEnd) {
             return prev;
           }
@@ -488,7 +608,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
             }
           }
 
-          setSelection({
+          _setSelection({
             active: {
               rowIndex: startRow,
               columnIndex: startColumn,
@@ -525,16 +645,26 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
           }
         }
       },
-      resetSelectionAt: (activeCell) => {
-        if (!activeCell) {
-          setActiveDepth(Math.max(SELECTION_MIN_DEPTH, depth - 1));
+      resetSelectionAt: (newSelectionAction) => {
+        if (!newSelectionAction) {
+          setCurrentDepth((prev) => ({
+            max: prev.max,
+            active: Math.max(SELECTION_MIN_ACTIVE_DEPTH, depth - 1),
+          }));
           return;
         }
 
-        setActiveDepth((prev) => Math.max(prev ?? SELECTION_MIN_DEPTH, depth));
+        setCurrentDepth((prev) => ({
+          max: prev.max,
+          active: Math.max(prev.active ?? SELECTION_MIN_ACTIVE_DEPTH, depth),
+        }));
 
-        setSelection((prev) => {
-          const newActiveCell = typeof activeCell === "function" ? activeCell(prev.active) : activeCell;
+        _setSelection((prev) => {
+          const newActiveCell =
+            typeof newSelectionAction === "function" //
+              ? newSelectionAction(prev.active)
+              : newSelectionAction;
+
           return {
             active: newActiveCell,
             selectionStart: newActiveCell?.keepSelection ? prev.selectionStart : newActiveCell,
@@ -542,9 +672,12 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
           };
         });
       },
-      setSelectionEnd: (selectionEnd) => {
-        setSelection((prev) => {
-          const newSelectionEnd = typeof selectionEnd === "function" ? selectionEnd(prev.selectionEnd) : selectionEnd;
+      setSelectionEnd: (newSelectionEndAction) => {
+        _setSelection((prev) => {
+          const newSelectionEnd =
+            typeof newSelectionEndAction === "function"
+              ? newSelectionEndAction(prev.selectionEnd)
+              : newSelectionEndAction;
 
           // Selecting a header cell from another header cell
           // Do not allow selecting multi-line header cells
@@ -625,8 +758,9 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
     };
-  }, [depth, maxDepth, setActiveDepth, setMaxDepth]);
+  }, [depth, setCurrentDepth]);
 
+  // If there's no selection on the table that is coming into focus, we focus at the top-left cell.
   useEffect(() => {
     if (depth === activeDepth && !selection.active) {
       dispatch.resetSelectionAt({
@@ -635,12 +769,9 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         isEditing: false,
       });
     }
-  }, [activeDepth, depth, dispatch, selection.active]);
+  }, [activeDepth, depth, dispatch, selection]);
 
-  useEffect(() => {
-    setMaxDepth((prev) => Math.max(prev ?? SELECTION_MIN_DEPTH, depth));
-  }, [depth, setMaxDepth]);
-
+  // Paint the selection
   useEffect(() => {
     if (!selection.active || !selection.selectionStart || !selection.selectionEnd) {
       return;
@@ -728,8 +859,6 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
   return (
     <BeeTableSelectionContext.Provider value={value}>
       <BeeTableSelectionDispatchContext.Provider value={dispatch}>
-        <div style={{ textAlign: "left" }}>Depth: {value.depth}</div>
-        <br />
         <>{children}</>
       </BeeTableSelectionDispatchContext.Provider>
     </BeeTableSelectionContext.Provider>
@@ -742,6 +871,14 @@ export function useBeeTableSelection() {
 
 export function useBeeTableSelectionDispatch() {
   return React.useContext(BeeTableSelectionDispatchContext);
+}
+
+export function useBeeTableCoordinates() {
+  return React.useContext(BeeTableCoordinatesContext);
+}
+
+export function useBeeTableCoordinatesDispatch() {
+  return React.useContext(BeeTableCoordinatesDispatchContext);
 }
 
 /**
@@ -772,7 +909,7 @@ export function useBeeTableCell(
   return status;
 }
 
-function getSelectionIterationBoundaries(selection: BeeTableSelection<any>) {
+function getSelectionIterationBoundaries(selection: BeeTableSelection) {
   // Let's always go smaller to bigger, no matter the direction of the selection.
   return {
     startColumn: Math.min(selection.selectionStart?.columnIndex ?? 0, selection.selectionEnd?.columnIndex ?? 0),
@@ -782,10 +919,10 @@ function getSelectionIterationBoundaries(selection: BeeTableSelection<any>) {
   };
 }
 
-function coincides(a: BeeTableSelectionActiveCell<any> | undefined, b: BeeTableSelectionActiveCell<any> | undefined) {
+function coincides(a: BeeTableCellCoordinates | undefined, b: BeeTableCellCoordinates | undefined) {
   return a?.columnIndex === b?.columnIndex && a?.rowIndex === b?.rowIndex;
 }
 
-function isSelectionExpanded(selection: BeeTableSelection<any>) {
+function isSelectionExpanded(selection: BeeTableSelection) {
   return !coincides(selection.active, selection.selectionEnd) || !coincides(selection.active, selection.selectionStart);
 }

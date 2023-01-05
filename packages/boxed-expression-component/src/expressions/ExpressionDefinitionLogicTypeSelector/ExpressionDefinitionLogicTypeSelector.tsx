@@ -37,6 +37,8 @@ import "./ExpressionDefinitionLogicTypeSelector.css";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import { CopyIcon, CutIcon, ListIcon, PasteIcon, TableIcon } from "@patternfly/react-icons";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { useBeeTableSelection } from "../../table/BeeTable/BeeTableSelectionContext";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -146,7 +148,7 @@ export function ExpressionDefinitionLogicTypeSelector({
         return ``;
       case ExpressionDefinitionLogicType.Literal:
         return (
-          <div
+          <span
             style={{
               fontSize: "0.8em",
               fontWeight: "bold",
@@ -157,17 +159,17 @@ export function ExpressionDefinitionLogicTypeSelector({
             }}
           >
             FEEL
-          </div>
+          </span>
         );
       case ExpressionDefinitionLogicType.PmmlLiteral:
         return ``;
       case ExpressionDefinitionLogicType.Context:
         return (
-          <div>
+          <span>
             <b>
               <i>{`{}`}</i>
             </b>
-          </div>
+          </span>
         );
       case ExpressionDefinitionLogicType.DecisionTable:
         return <TableIcon />;
@@ -175,19 +177,19 @@ export function ExpressionDefinitionLogicTypeSelector({
         return <TableIcon />;
       case ExpressionDefinitionLogicType.Function:
         return (
-          <div>
+          <span>
             <b>
               <i>{"f"}</i>
             </b>
-          </div>
+          </span>
         );
       case ExpressionDefinitionLogicType.Invocation:
         return (
-          <div>
+          <span>
             <b>
               <i>{"f()"}</i>
             </b>
-          </div>
+          </span>
         );
       case ExpressionDefinitionLogicType.List:
         return <ListIcon />;
@@ -220,6 +222,8 @@ export function ExpressionDefinitionLogicTypeSelector({
     };
   }, []);
 
+  const { depth, currentDepth } = useBeeTableSelection();
+
   return (
     <>
       <div
@@ -227,7 +231,29 @@ export function ExpressionDefinitionLogicTypeSelector({
         ref={resetContextMenuContainerRef}
         style={{ opacity: shouldRenderResetContextMenu ? 0.5 : 1 }}
       >
-        {isLogicTypeSelected ? renderExpression : i18n.selectExpression}
+        {isLogicTypeSelected ? (
+          <>
+            <div className={"logic-type-selected-header"}>
+              <Dropdown
+                isPlain={true}
+                toggle={
+                  <DropdownToggle icon={<>{logicTypeIcon(expression.logicType)}</>} style={{ padding: 0 }}>
+                    {expression.logicType}
+                  </DropdownToggle>
+                }
+                dropdownItems={[]}
+              />
+              {/* <div
+                style={{ textAlign: "left", display: "inline" }}
+              >{`Depth: ${depth}, Active: ${currentDepth.active} (max: ${currentDepth.max})`}</div> */}
+            </div>
+            {/* <div style={{ width: "100%" }}> */}
+            {renderExpression}
+            {/* </div> */}
+          </>
+        ) : (
+          i18n.selectExpression
+        )}
 
         {!isLogicTypeSelected && (
           <PopoverMenu

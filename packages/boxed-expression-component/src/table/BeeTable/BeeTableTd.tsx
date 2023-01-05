@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
+import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import * as PfReactTable from "@patternfly/react-table";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import * as PfReactTable from "@patternfly/react-table";
-import { Resizer } from "../../resizing/Resizer";
 import * as ReactTable from "react-table";
-import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import { BeeTableTdProps } from "../../api";
+import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
+import {
+  BeeTableCellCoordinates,
+  BeeTableCoordinatesContextProvider,
+  useBeeTableCell,
+  useBeeTableSelectionDispatch,
+} from "./BeeTableSelectionContext";
 
 export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -218,53 +223,63 @@ export function BeeTableTd<R extends object>({
     }
   }, [isActive, isEditing]);
 
-  return (
-    <PfReactTable.Td
-      onMouseDown={onMouseDown}
-      onDoubleClick={onDoubleClick}
-      ref={tdRef}
-      tabIndex={-1}
-      className={cssClasses}
-      data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
-      style={style}
-    >
-      {column.isRowIndexColumn ? (
-        <>{rowIndexLabel}</>
-      ) : (
-        <>
-          <div
-            style={{
-              width: resizingWidth?.value,
-              minWidth: cell.column.minWidth,
-            }}
-          >
-            {tdContent}
-          </div>
-          {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
-            <Resizer
-              minWidth={cell.column.minWidth}
-              width={cell.column.width}
-              setWidth={cell.column.setWidth}
-              resizingWidth={resizingWidth}
-              setResizingWidth={setResizingWidth}
-              setResizing={setResizing}
-            />
-          )}
-        </>
-      )}
+  const coordinates = useMemo<BeeTableCellCoordinates>(
+    () => ({
+      rowIndex,
+      columnIndex,
+    }),
+    [columnIndex, rowIndex]
+  );
 
-      {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
-        <div
-          onMouseDown={(e) => e.stopPropagation()}
-          onDoubleClick={(e) => e.stopPropagation()}
-          onClick={onAddRowButtonClick}
-          className={"add-row-button"}
-          style={addRowButtonStyle}
-        >
-          <PlusIcon size="sm" />
-        </div>
-      )}
-    </PfReactTable.Td>
+  return (
+    <BeeTableCoordinatesContextProvider coordinates={coordinates}>
+      <PfReactTable.Td
+        onMouseDown={onMouseDown}
+        onDoubleClick={onDoubleClick}
+        ref={tdRef}
+        tabIndex={-1}
+        className={cssClasses}
+        data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
+        style={style}
+      >
+        {column.isRowIndexColumn ? (
+          <>{rowIndexLabel}</>
+        ) : (
+          <>
+            <div
+              style={{
+                width: resizingWidth?.value,
+                minWidth: cell.column.minWidth,
+              }}
+            >
+              {tdContent}
+            </div>
+            {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
+              <Resizer
+                minWidth={cell.column.minWidth}
+                width={cell.column.width}
+                setWidth={cell.column.setWidth}
+                resizingWidth={resizingWidth}
+                setResizingWidth={setResizingWidth}
+                setResizing={setResizing}
+              />
+            )}
+          </>
+        )}
+
+        {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
+          <div
+            onMouseDown={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
+            onClick={onAddRowButtonClick}
+            className={"add-row-button"}
+            style={addRowButtonStyle}
+          >
+            <PlusIcon size="sm" />
+          </div>
+        )}
+      </PfReactTable.Td>
+    </BeeTableCoordinatesContextProvider>
   );
 }
 

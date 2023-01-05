@@ -38,5 +38,25 @@
 
 .expression-container .logic-type-selector.logic-type-selected {
   cursor: default;
-  padding: 0.5em;
+  text-align: left;
+  /* padding: 2px; */ /* This is the nested expression padding. */
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header {
+  color: black;
+  padding: 0 0 2px 8px;
+  background-color: white;
+  border-bottom: 1px solid var(--pf-global--palette--black-500);
+  border-top: 1px solid var(--pf-global--palette--black-400);
+  border-left: 1px solid var(--pf-global--palette--black-400);
+  border-right: 1px solid var(--pf-global--palette--black-400);
+  position: relative;
+  font-size: 10px;
+  width: 100%;
+}
+
+.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-c-dropdown__toggle-icon {
+  margin-left: 4px;
 }

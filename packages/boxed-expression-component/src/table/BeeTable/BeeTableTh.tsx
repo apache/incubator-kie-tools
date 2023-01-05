@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
+import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import * as PfReactTable from "@patternfly/react-table";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import * as PfReactTable from "@patternfly/react-table";
-import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { useBeeTableCell, useBeeTableSelectionDispatch } from "./BeeTableSelectionContext";
 import * as ReactTable from "react-table";
+import {
+  BeeTableCellCoordinates,
+  BeeTableCoordinatesContextProvider,
+  useBeeTableCell,
+  useBeeTableSelectionDispatch,
+} from "./BeeTableSelectionContext";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
@@ -192,30 +197,40 @@ export function BeeTableTh<R extends object>({
       `;
   }, [className, isActive, isEditing, isSelected, selectedPositions]);
 
+  const coordinates = useMemo<BeeTableCellCoordinates>(
+    () => ({
+      rowIndex,
+      columnIndex,
+    }),
+    [columnIndex, rowIndex]
+  );
+
   return (
-    <PfReactTable.Th
-      {...thProps}
-      style={{ ...thProps.style, display: "table-cell" }}
-      ref={thRef}
-      onMouseDown={onMouseDown}
-      onDoubleClick={onDoubleClick}
-      onClick={onClick}
-      className={cssClasses}
-      tabIndex={-1}
-    >
-      {children}
-      {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && (
-        <div
-          onMouseDown={(e) => e.stopPropagation()}
-          onDoubleClick={(e) => e.stopPropagation()}
-          onClick={onAddColumnButtonClick}
-          className={"add-column-button"}
-          style={addColumButtonStyle}
-        >
-          <PlusIcon size="sm" />
-        </div>
-      )}
-    </PfReactTable.Th>
+    <BeeTableCoordinatesContextProvider coordinates={coordinates}>
+      <PfReactTable.Th
+        {...thProps}
+        style={{ ...thProps.style, display: "table-cell" }}
+        ref={thRef}
+        onMouseDown={onMouseDown}
+        onDoubleClick={onDoubleClick}
+        onClick={onClick}
+        className={cssClasses}
+        tabIndex={-1}
+      >
+        {children}
+        {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && (
+          <div
+            onMouseDown={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
+            onClick={onAddColumnButtonClick}
+            className={"add-column-button"}
+            style={addColumButtonStyle}
+          >
+            <PlusIcon size="sm" />
+          </div>
+        )}
+      </PfReactTable.Th>
+    </BeeTableCoordinatesContextProvider>
   );
 }
 
