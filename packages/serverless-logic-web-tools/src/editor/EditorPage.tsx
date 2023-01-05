@@ -68,6 +68,7 @@ import { Position } from "monaco-editor";
 import { DashbuilderLanguageServiceChannelApiImpl } from "./api/DashbuilderLanguageServiceChannelApiImpl";
 import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { DashbuilderEditorChannelApiImpl } from "@kie-tools/dashbuilder-editor/dist/impl";
+import { DashbuilderLanguageServiceChannelApi } from "@kie-tools/dashbuilder-language-service/dist/api";
 export interface Props {
   workspaceId: string;
   fileRelativePath: string;
@@ -330,8 +331,14 @@ export function EditorPage(props: Props) {
   }, [embeddedEditorFile, isReady, settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry]);
 
   const apiImpl = useMemo(() => {
-    if (!channelApiImpl || !swfLanguageService || !swfServiceCatalogChannelApiImpl) {
+    if (!channelApiImpl || (!swfLanguageService && !dashbuilderLanguageService) || !swfServiceCatalogChannelApiImpl) {
       return;
+    }
+    if (isDash) {
+      return new DashbuilderEditorChannelApiImpl(
+        channelApiImpl,
+        dashbuilderLanguageServiceChannelApiImpl as DashbuilderLanguageServiceChannelApi
+      );
     }
     return new SwfCombinedEditorChannelApiImpl(
       channelApiImpl,
@@ -342,17 +349,12 @@ export function EditorPage(props: Props) {
   }, [
     channelApiImpl,
     swfLanguageService,
+    dashbuilderLanguageService,
     swfServiceCatalogChannelApiImpl,
     swfFeatureToggleChannelApiImpl,
     swfLanguageServiceChannelApiImpl,
+    dashbuilderLanguageServiceChannelApiImpl,
   ]);
-
-  const dashbuilderApiImpl = useMemo(() => {
-    if (!channelApiImpl || !dashbuilderLanguageService || !dashbuilderLanguageServiceChannelApiImpl) {
-      return;
-    }
-    return new DashbuilderEditorChannelApiImpl(channelApiImpl, dashbuilderLanguageServiceChannelApiImpl);
-  }, [channelApiImpl, dashbuilderLanguageService, dashbuilderLanguageServiceChannelApiImpl]);
 
   useEffect(() => {
     if (!editor?.isReady || lastContent.current === undefined || !workspaceFilePromise.data || !swfLanguageService) {
@@ -450,7 +452,7 @@ export function EditorPage(props: Props) {
                           editorEnvelopeLocator={editorEnvelopeLocator}
                           channelType={ChannelType.ONLINE_MULTI_FILE}
                           locale={locale}
-                          customChannelApiImpl={apiImpl ?? dashbuilderApiImpl}
+                          customChannelApiImpl={apiImpl}
                           stateControl={stateControl}
                           isReady={isReady}
                         />
