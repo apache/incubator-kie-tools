@@ -19,10 +19,6 @@
  * All methods are case insensitive.
  */
 export class NavigationKeysUtils {
-  static isSpace(key: string) {
-    return key === " ";
-  }
-
   static isBackspace(key: string) {
     return /^backspace$/i.test(key);
   }

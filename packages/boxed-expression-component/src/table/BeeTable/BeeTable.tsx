@@ -234,14 +234,25 @@ export function BeeTable2<R extends object>({
       if (NavigationKeysUtils.isEnter(e.key) && !e.metaKey && !e.altKey && !e.ctrlKey) {
         e.stopPropagation();
         e.preventDefault();
-        mutateSelection({
-          part: SelectionPart.ActiveCell,
-          columnCount: reactTableInstance.allColumns.length,
-          rowCount,
-          deltaColumns: 0,
-          deltaRows: 0,
-          isEditingActiveCell: true,
-          keepInsideSelection: true,
+        setCurrentDepth((prev) => {
+          const newActiveDepth = Math.min(prev.max, (prev.active ?? SELECTION_MIN_ACTIVE_DEPTH) + 1);
+          if ((prev.active ?? SELECTION_MIN_ACTIVE_DEPTH) < prev.max) {
+            return {
+              max: prev.max,
+              active: newActiveDepth,
+            };
+          }
+
+          mutateSelection({
+            part: SelectionPart.ActiveCell,
+            columnCount: reactTableInstance.allColumns.length,
+            rowCount,
+            deltaColumns: 0,
+            deltaRows: 0,
+            isEditingActiveCell: true,
+            keepInsideSelection: true,
+          });
+          return prev;
         });
       }
 
@@ -342,15 +353,6 @@ export function BeeTable2<R extends object>({
         e.stopPropagation();
         e.preventDefault();
         resetSelectionAt(undefined);
-      }
-
-      // SPACE
-      if (NavigationKeysUtils.isSpace(e.key) && !e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey) {
-        e.stopPropagation();
-        setCurrentDepth((prev) => ({
-          max: prev.max,
-          active: Math.min(prev.max, (prev.active ?? SELECTION_MIN_ACTIVE_DEPTH) + 1),
-        }));
       }
 
       // FIXME: Tiago -> This won't work well on non-macOS
