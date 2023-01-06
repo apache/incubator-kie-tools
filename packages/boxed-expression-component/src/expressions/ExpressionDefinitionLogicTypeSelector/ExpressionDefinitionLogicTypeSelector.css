@@ -21,7 +21,7 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
-  min-height: 4em;
+  min-height: 60px; /* That's the default Literal expression height. 20px * 3 lines */
   overflow: visible;
   transition: background-color 0.1s ease;
 }
