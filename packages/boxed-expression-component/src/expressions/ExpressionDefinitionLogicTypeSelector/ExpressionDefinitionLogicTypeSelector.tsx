@@ -318,14 +318,7 @@ export function ExpressionDefinitionLogicTypeSelector({
               >{`Depth: ${depth}, Active: ${currentDepth.active} (max: ${currentDepth.max})`}</div> */}
               </div>
             )}
-            <div
-              style={{
-                width: "100%",
-                opacity: isResetContextMenuOpen || isDropdownOpen ? 0.5 : 1,
-              }}
-            >
-              {renderExpression}
-            </div>
+            {renderExpression}
           </>
         ) : (
           i18n.selectExpression

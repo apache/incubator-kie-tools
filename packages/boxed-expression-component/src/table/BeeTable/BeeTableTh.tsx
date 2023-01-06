@@ -25,6 +25,7 @@ import {
   useBeeTableCell,
   useBeeTableSelectionDispatch,
 } from "./BeeTableSelectionContext";
+import { useBeeTableSelectableCell } from "./BeeTableSelectionContext";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
@@ -85,19 +86,6 @@ export function BeeTableTh<R extends object>({
   useEffect(() => {
     function onEnter(e: MouseEvent) {
       e.stopPropagation();
-
-      // User is pressing the left mouse button. Meaning user is dragging.
-      // Not a final solution, as user can start dragging from anywhere.
-      // Ideally, we want users to change selection only when the dragging originates
-      // some other cell within the table.
-      if (e.buttons === 1 && e.button === 0) {
-        setSelectionEnd({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-        });
-      }
-
       setHoverInfo((prev) => getHoverInfo(e, th!));
     }
 
@@ -132,7 +120,7 @@ export function BeeTableTh<R extends object>({
     [hoverInfo]
   );
 
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(
+  useBeeTableCell(
     rowIndex,
     columnIndex,
     undefined,
@@ -145,57 +133,7 @@ export function BeeTableTh<R extends object>({
     }, [column.dataType, column.label])
   );
 
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      // That's the right-click case to open the Context Menu at the right place.
-      if (e.button !== 0 && isSelected) {
-        resetSelectionAt({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-          keepSelection: true,
-        });
-        return;
-      }
-      if (!isActive && !isEditing) {
-        const set = e.shiftKey ? setSelectionEnd : resetSelectionAt;
-        set({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-        });
-      }
-    },
-    [columnIndex, isActive, isEditing, isSelected, rowIndex, resetSelectionAt, setSelectionEnd]
-  );
-
-  const onDoubleClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      resetSelectionAt({
-        columnIndex,
-        rowIndex,
-        isEditing: columnIndex > 0, // Not rowIndex column
-      });
-    },
-    [columnIndex, rowIndex, resetSelectionAt]
-  );
-
-  useLayoutEffect(() => {
-    if (isActive && !isEditing) {
-      thRef.current?.focus();
-    }
-  }, [isActive, isEditing]);
-
-  const cssClasses = useMemo(() => {
-    return `
-        ${className}
-        ${isActive ? "active" : ""}
-        ${isEditing ? "editing" : ""}
-        ${isSelected ? "selected" : ""}
-        ${selectedPositions?.join(" ") ?? ""}
-      `;
-  }, [className, isActive, isEditing, isSelected, selectedPositions]);
+  const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(thRef, rowIndex, columnIndex);
 
   const coordinates = useMemo<BeeTableCellCoordinates>(
     () => ({
@@ -214,7 +152,7 @@ export function BeeTableTh<R extends object>({
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
         onClick={onClick}
-        className={cssClasses}
+        className={`${className} ${cssClasses}`}
         tabIndex={-1}
       >
         {children}

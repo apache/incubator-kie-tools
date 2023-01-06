@@ -75,6 +75,11 @@ export function BeeTableBody<R extends object>({
                     column={reactTableInstance.allColumns[cellIndex]}
                     onRowAdded={onRowAdded}
                     isActive={false}
+                    shouldRenderInlineButtons={
+                      shouldRenderRowIndexColumn
+                        ? reactTableInstance.allColumns[cellIndex].isRowIndexColumn
+                        : cellIndex === 1
+                    }
                   />
                 )}
               </>
@@ -129,7 +134,7 @@ export function BeeTableBody<R extends object>({
             return (
               <BeeTableCoordinatesContextProvider
                 key={columnIndex}
-                coordinates={{ rowIndex: additionalRowIndex, columnIndex: elemIndex }}
+                coordinates={{ rowIndex: additionalRowIndex, columnIndex }}
               >
                 <BeeTableTdForAdditionalRow
                   key={columnIndex}

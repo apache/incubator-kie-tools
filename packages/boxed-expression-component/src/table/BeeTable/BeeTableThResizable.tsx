@@ -74,7 +74,6 @@ export function BeeTableThResizable<R extends object>({
   }, [column.groupType, getColumnLabel]);
 
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
-  const { isEditing } = useBeeTableCell(rowIndex, columnIndex);
 
   return (
     <BeeTableTh<R>
@@ -95,7 +94,6 @@ export function BeeTableThResizable<R extends object>({
       >
         {column.dataType && isEditableHeader ? (
           <ExpressionDefinitionHeaderMenu
-            isPopoverOpen={isEditing}
             position={PopoverPosition.bottom}
             selectedExpressionName={column.label}
             selectedDataType={column.dataType}

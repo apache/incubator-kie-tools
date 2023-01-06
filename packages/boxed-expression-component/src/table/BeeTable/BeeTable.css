@@ -212,18 +212,19 @@
   border: 0;
 }
 
-.expression-container .table-component table tbody td.row-index-cell-column {
+.expression-container .table-component table tbody tr td.row-index-cell-column {
   padding: 1.1em 0;
 }
 
-.expression-container .table-component table tbody td {
+.expression-container .table-component table tbody tr td {
   padding: 0;
   border-style: solid;
   text-align: center;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
-.expression-container .table-component table tbody td.row-index-column-cell {
+.expression-container .table-component table tbody tr td:first-child {
   display: flex;
   align-items: center;
   justify-content: center;

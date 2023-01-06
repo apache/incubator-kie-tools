@@ -20,6 +20,7 @@ import { useRef } from "react";
 import { BeeTableTdProps } from "../../api";
 import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableSelectableCell } from "./BeeTableSelectionContext";
 
 export interface BeeTableTdForAdditionalRowProps<R extends object> extends BeeTableTdProps<R> {
   children?: React.ReactElement;
@@ -32,23 +33,34 @@ export function BeeTableTdForAdditionalRow<R extends object>({
   isEmptyCell,
   columnIndex,
   column,
+  rowIndex,
   isLastColumn,
 }: BeeTableTdForAdditionalRowProps<R>) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
 
+  const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(tdRef, rowIndex, columnIndex);
+
   return isEmptyCell ? (
-    <PfReactTable.Td ref={tdRef} role="cell" className="empty-cell">
+    <PfReactTable.Td
+      ref={tdRef}
+      role="cell"
+      className={`empty-cell ${cssClasses}`}
+      onMouseDown={onMouseDown}
+      onDoubleClick={onDoubleClick}
+    >
       <br />
     </PfReactTable.Td>
   ) : (
     <PfReactTable.Td
       ref={tdRef}
-      role="cell"
-      className="additional-row-content"
+      role={"cell"}
+      className={`additional-row-content ${cssClasses}`}
       tabIndex={-1}
       style={{ flexGrow: isLastColumn ? "1" : "0" }}
+      onMouseDown={onMouseDown}
+      onDoubleClick={onDoubleClick}
     >
       <div style={{ width: resizingWidth?.value }}>{children}</div>
 

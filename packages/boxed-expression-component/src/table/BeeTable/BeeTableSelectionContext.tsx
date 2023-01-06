@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 
@@ -206,7 +206,7 @@ export function BeeTableCoordinatesContextProvider({
   );
 }
 
-export function BeeTableSelectionContextProvider<R extends object>({ children }: React.PropsWithChildren<{}>) {
+export function BeeTableSelectionContextProvider({ children }: React.PropsWithChildren<{}>) {
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
 
   const [_selection, _setSelection] = useState<BeeTableSelection>(NEUTRAL_SELECTION);
@@ -221,7 +221,8 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
     depth: parentDepth,
   } = useBeeTableSelection();
 
-  const { setCurrentDepth: setParentCurrentDepth } = useBeeTableSelectionDispatch();
+  const { setCurrentDepth: setParentCurrentDepth, resetSelectionAt: resetParentSelectionAt } =
+    useBeeTableSelectionDispatch();
   const { containerCellCoordinates } = useBeeTableCoordinates();
 
   //
@@ -231,13 +232,17 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
   const activeMaxDepth = Math.max(parentCurrentDepth.max, _currentDepth.max);
   const setCurrentDepth = setParentCurrentDepth ?? _setCurrentDepth;
 
+  const isSelectionAtThisLevel = useMemo(() => {
+    return depth === activeDepth && coincides(parentActiveCell, containerCellCoordinates);
+  }, [activeDepth, containerCellCoordinates, depth, parentActiveCell]);
+
   const selection = useMemo(() => {
-    if (depth === activeDepth && coincides(parentActiveCell, containerCellCoordinates)) {
+    if (isSelectionAtThisLevel) {
       return _selection;
     }
 
     return NEUTRAL_SELECTION;
-  }, [_selection, activeDepth, containerCellCoordinates, depth, parentActiveCell]);
+  }, [_selection, isSelectionAtThisLevel]);
 
   const selectionRef = React.useRef<BeeTableSelection>(selection);
   useEffect(() => {
@@ -277,7 +282,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
           return {
             max: Math.max(SELECTION_MIN_MAX_DEPTH, newCurrentDepth.max),
-            active: Math.min(newCurrentDepth.max, newCurrentDepth.active ?? SELECTION_MIN_ACTIVE_DEPTH),
+            active: newCurrentDepth.active ?? SELECTION_MIN_ACTIVE_DEPTH,
           };
         });
       },
@@ -646,6 +651,12 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         }
       },
       resetSelectionAt: (newSelectionAction) => {
+        resetParentSelectionAt?.({
+          columnIndex: containerCellCoordinates?.columnIndex ?? 1,
+          rowIndex: containerCellCoordinates?.rowIndex ?? 0,
+          isEditing: false,
+        });
+
         if (!newSelectionAction) {
           setCurrentDepth((prev) => ({
             max: prev.max,
@@ -656,7 +667,7 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
 
         setCurrentDepth((prev) => ({
           max: prev.max,
-          active: Math.max(prev.active ?? SELECTION_MIN_ACTIVE_DEPTH, depth),
+          active: depth,
         }));
 
         _setSelection((prev) => {
@@ -758,18 +769,24 @@ export function BeeTableSelectionContextProvider<R extends object>({ children }:
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
     };
-  }, [depth, setCurrentDepth]);
+  }, [
+    containerCellCoordinates?.columnIndex,
+    containerCellCoordinates?.rowIndex,
+    depth,
+    resetParentSelectionAt,
+    setCurrentDepth,
+  ]);
 
   // If there's no selection on the table that is coming into focus, we focus at the top-left cell.
   useEffect(() => {
-    if (depth === activeDepth && !selection.active) {
+    if (!selection.active && isSelectionAtThisLevel) {
       dispatch.resetSelectionAt({
         rowIndex: 0,
         columnIndex: 1,
         isEditing: false,
       });
     }
-  }, [activeDepth, depth, dispatch, selection]);
+  }, [activeDepth, containerCellCoordinates, depth, dispatch, isSelectionAtThisLevel, parentActiveCell, selection]);
 
   // Paint the selection
   useEffect(() => {
@@ -925,4 +942,99 @@ function coincides(a: BeeTableCellCoordinates | undefined, b: BeeTableCellCoordi
 
 function isSelectionExpanded(selection: BeeTableSelection) {
   return !coincides(selection.active, selection.selectionEnd) || !coincides(selection.active, selection.selectionStart);
+}
+
+export function useBeeTableSelectableCell(
+  cellRef: React.RefObject<HTMLTableCellElement>,
+  rowIndex: number,
+  columnIndex: number
+) {
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
+
+  const cssClasses = useMemo(() => {
+    return `
+      ${isActive ? "active" : ""}
+      ${isEditing ? "editing" : ""} 
+      ${isSelected ? "selected" : ""}
+      ${(selectedPositions?.length ?? 0) <= 0 ? "middle" : selectedPositions?.join(" ")}
+    `;
+  }, [isActive, isEditing, isSelected, selectedPositions]);
+
+  const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
+
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      // That's the right-click case to open the Context Menu at the right place.
+      if (e.button !== 0 && isSelected) {
+        resetSelectionAt({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+          keepSelection: true,
+        });
+        return;
+      }
+
+      if (!isActive && !isEditing) {
+        const set = e.shiftKey ? setSelectionEnd : resetSelectionAt;
+        set({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+        });
+      }
+    },
+    [columnIndex, isActive, isEditing, isSelected, rowIndex, resetSelectionAt, setSelectionEnd]
+  );
+
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      resetSelectionAt({
+        columnIndex,
+        rowIndex,
+        isEditing: columnIndex > 0, // Not rowIndex column
+      });
+    },
+    [columnIndex, rowIndex, resetSelectionAt]
+  );
+
+  useEffect(() => {
+    function onEnter(e: MouseEvent) {
+      e.stopPropagation();
+
+      // User is pressing the left mouse button. Meaning user is dragging.
+      // Not a final solution, as user can start dragging from anywhere.
+      // Ideally, we want users to change selection only when the dragging originates
+      // some other cell within the table.
+      if (e.buttons === 1 && e.button === 0) {
+        setSelectionEnd({
+          columnIndex,
+          rowIndex,
+          isEditing: false,
+        });
+      }
+    }
+
+    const cell = cellRef.current;
+    cell?.addEventListener("mouseenter", onEnter);
+    return () => {
+      cell?.removeEventListener("mouseenter", onEnter);
+    };
+  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd, cellRef]);
+
+  useLayoutEffect(() => {
+    if (isActive && !isEditing) {
+      cellRef.current?.focus();
+    }
+  }, [columnIndex, isActive, isEditing, rowIndex, cellRef]);
+
+  return {
+    cssClasses,
+    onMouseDown,
+    onDoubleClick,
+  };
 }

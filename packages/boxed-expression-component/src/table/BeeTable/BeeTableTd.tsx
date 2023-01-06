@@ -26,8 +26,8 @@ import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
   useBeeTableCell,
-  useBeeTableSelectionDispatch,
 } from "./BeeTableSelectionContext";
+import { useBeeTableSelectableCell } from "./BeeTableSelectionContext";
 
 export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -36,6 +36,7 @@ export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   shouldUseCellDelegate: boolean;
   onRowAdded?: (args: { beforeIndex: number }) => void;
   isActive: boolean;
+  shouldRenderInlineButtons: boolean;
 }
 
 export type HoverInfo =
@@ -53,6 +54,7 @@ export function BeeTableTd<R extends object>({
   column,
   rowIndex,
   shouldUseCellDelegate,
+  shouldRenderInlineButtons,
   onRowAdded,
 }: BeeTableTdProps2<R>) {
   const [isResizing, setResizing] = useState(false);
@@ -68,7 +70,6 @@ export function BeeTableTd<R extends object>({
     return row.cells[columnIndex];
   }, [columnIndex, row]);
 
-  const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
 
   const rowIndexLabel = useMemo(() => {
@@ -82,22 +83,7 @@ export function BeeTableTd<R extends object>({
     return undefined;
   }, [column.isRowIndexColumn, rowIndexLabel]);
 
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(
-    rowIndex,
-    columnIndex,
-    undefined,
-    getValue
-  );
-
-  const cssClasses = useMemo(() => {
-    return `
-      ${cssClass} 
-      ${isActive ? "active" : ""}
-      ${isEditing ? "editing" : ""} 
-      ${isSelected ? "selected" : ""} 
-      ${(selectedPositions?.length ?? 0) <= 0 ? "middle" : selectedPositions?.join(" ")}
-    `;
-  }, [cssClass, isActive, isEditing, isSelected, selectedPositions]);
+  useBeeTableCell(rowIndex, columnIndex, undefined, getValue);
 
   const tdContent = useMemo(() => {
     return shouldUseCellDelegate && column.cellDelegate
@@ -108,18 +94,6 @@ export function BeeTableTd<R extends object>({
   useEffect(() => {
     function onEnter(e: MouseEvent) {
       e.stopPropagation();
-
-      // User is pressing the left mouse button. Meaning user is dragging.
-      // Not a final solution, as user can start dragging from anywhere.
-      // Ideally, we want users to change selection only when the dragging originates
-      // some other cell within the table.
-      if (e.buttons === 1 && e.button === 0) {
-        setSelectionEnd({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-        });
-      }
 
       setHoverInfo((prev) => getHoverInfo(e, td!));
     }
@@ -141,44 +115,7 @@ export function BeeTableTd<R extends object>({
       td?.removeEventListener("mousemove", onMove);
       td?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd]);
-
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      // That's the right-click case to open the Context Menu at the right place.
-      if (e.button !== 0 && isSelected) {
-        resetSelectionAt({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-          keepSelection: true,
-        });
-        return;
-      }
-
-      if (!isActive && !isEditing) {
-        const set = e.shiftKey ? setSelectionEnd : resetSelectionAt;
-        set({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-        });
-      }
-    },
-    [columnIndex, isActive, isEditing, isSelected, rowIndex, resetSelectionAt, setSelectionEnd]
-  );
-
-  const onDoubleClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      resetSelectionAt({
-        columnIndex,
-        rowIndex,
-        isEditing: columnIndex > 0, // Not rowIndex column
-      });
-    },
-    [columnIndex, rowIndex, resetSelectionAt]
-  );
+  }, [columnIndex, rowIndex]);
 
   const onAddRowButtonClick = useCallback(
     (e: React.MouseEvent) => {
@@ -200,8 +137,6 @@ export function BeeTableTd<R extends object>({
   const style = useMemo(() => {
     return {
       flexGrow: columnIndex === row.cells.length - 1 ? "1" : "0",
-      overflow: "visible",
-      position: "relative" as const,
     };
   }, [columnIndex, row.cells.length]);
 
@@ -217,12 +152,6 @@ export function BeeTableTd<R extends object>({
     [hoverInfo]
   );
 
-  useLayoutEffect(() => {
-    if (isActive && !isEditing) {
-      tdRef.current?.focus();
-    }
-  }, [isActive, isEditing]);
-
   const coordinates = useMemo<BeeTableCellCoordinates>(
     () => ({
       rowIndex,
@@ -231,6 +160,8 @@ export function BeeTableTd<R extends object>({
     [columnIndex, rowIndex]
   );
 
+  const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(tdRef, rowIndex, columnIndex);
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <PfReactTable.Td
@@ -238,7 +169,7 @@ export function BeeTableTd<R extends object>({
         onDoubleClick={onDoubleClick}
         ref={tdRef}
         tabIndex={-1}
-        className={cssClasses}
+        className={`${cssClass} ${cssClasses}`}
         data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
         style={style}
       >
@@ -267,7 +198,7 @@ export function BeeTableTd<R extends object>({
           </>
         )}
 
-        {hoverInfo.isHovered && column.isRowIndexColumn && onRowAdded && (
+        {hoverInfo.isHovered && shouldRenderInlineButtons && onRowAdded && (
           <div
             onMouseDown={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}

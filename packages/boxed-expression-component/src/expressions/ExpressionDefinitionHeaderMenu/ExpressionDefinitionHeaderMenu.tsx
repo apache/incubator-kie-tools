@@ -46,7 +46,6 @@ export interface ExpressionDefinitionHeaderMenuProps {
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
-  isPopoverOpen?: boolean;
   position?: PopoverPosition;
 }
 
@@ -61,7 +60,6 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
   selectedDataType = DmnBuiltInDataType.Undefined,
   selectedExpressionName,
   onExpressionHeaderUpdated,
-  isPopoverOpen,
   position,
 }: ExpressionDefinitionHeaderMenuProps) => {
   const boxedExpressionEditor = useBoxedExpressionEditor();

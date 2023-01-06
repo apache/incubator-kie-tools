@@ -269,7 +269,7 @@ export function BeeTableContextMenuHandler({
   return (
     <>
       {isOpen && (
-        <div className="context-menu-container" style={style}>
+        <div className="context-menu-container" style={style} onMouseDown={(e) => e.stopPropagation()}>
           <Menu
             ouiaId="expression-table-context-menu"
             className="table-context-menu"
