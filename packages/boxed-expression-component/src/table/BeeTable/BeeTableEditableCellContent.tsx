@@ -15,7 +15,7 @@
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
-import { FeelEditorService, FeelInput } from "@kie-tools/feel-input-component";
+import { FeelEditorService, FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils";
@@ -63,6 +63,8 @@ export function BeeTableEditableCellContent({
   const [previousValue, setPreviousValue] = useState(value);
   const [editingValue, setEditingValue] = useState(value);
 
+  const feelInputRef = useRef<FeelInputRef>(null);
+
   const mode = useMemo(() => {
     return isEditing && !isReadOnly ? Mode.Edit : Mode.Read;
   }, [isEditing, isReadOnly]);
@@ -80,6 +82,7 @@ export function BeeTableEditableCellContent({
 
       if (value !== newValue) {
         onChange(newValue);
+        setCellHeight(calculateCellHeight(newValue));
       }
     },
     [mode, value, onChange]
@@ -110,15 +113,13 @@ export function BeeTableEditableCellContent({
       }
 
       if (NavigationKeysUtils.isEnter(eventKey)) {
-        if (e.ctrlKey || e.altKey || e.metaKey) {
-          // Let FeelInput handle this keypress, but prevent this event from bubbling up.
-          // This is used for inserting new lines.
-          e.stopPropagation();
+        if (e.ctrlKey || e.metaKey || e.altKey) {
+          feelInputRef.current?.insertNewLineToMonaco();
         } else if (FeelEditorService.isSuggestWidgetOpen()) {
-          // Do nothing
+          // Do nothing;
         } else {
-          triggerReadMode(newValue);
           setEditing(false);
+          triggerReadMode(newValue);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
         }
       }
@@ -135,22 +136,16 @@ export function BeeTableEditableCellContent({
     [triggerReadMode, setEditing, onFeelTabKeyDown, onFeelEnterKeyDown, previousValue]
   );
 
-  const calculateCellHeight = useCallback((value: string) => {
-    const numberOfValueLines = `${value}`.split("\n").length + 1;
-    const numberOfLines = numberOfValueLines < 3 ? 3 : numberOfValueLines;
-    return numberOfLines * CELL_LINE_HEIGHT;
-  }, []);
-
   useEffect(() => {
     setCellHeight(calculateCellHeight(value));
-  }, [calculateCellHeight, value]);
+  }, [value]);
 
   const onFeelChange = useCallback(
     (_e: Monaco.editor.IModelContentChangedEvent, newValue: string, newPreview: string) => {
       setCellHeight(calculateCellHeight(newValue));
       setPreview(newPreview);
     },
-    [calculateCellHeight]
+    []
   );
 
   const onFeelLoad = useCallback((preview: string) => {
@@ -158,7 +153,6 @@ export function BeeTableEditableCellContent({
   }, []);
 
   const editableCellRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (isActive && !isEditing) {
       editableCellRef.current?.focus();
@@ -177,8 +171,14 @@ export function BeeTableEditableCellContent({
         style={{ height: `${cellHeight}px`, outline: "none" }}
         className={cssClass}
         // FIXME: Tiago -> Extracting this to a useCallback breaks it.
-        // This is used to start editing a cell without being in edit mode.
         onKeyDown={(e) => {
+          // When inside FEEL Input, all keyboard events should be kept inside it.
+          // Exceptions to this strategy are handled on `onFeelKeyDown`.
+          if (isEditing) {
+            e.stopPropagation();
+          }
+
+          // This is used to start editing a cell without being in edit mode.
           if (isActive && !isEditing && isEditModeTriggeringKey(e)) {
             setEditingValue("");
             setEditing(true);
@@ -187,6 +187,7 @@ export function BeeTableEditableCellContent({
       >
         <span className="editable-cell-value" dangerouslySetInnerHTML={{ __html: preview }} />
         <FeelInput
+          ref={feelInputRef}
           enabled={mode === Mode.Edit}
           value={isEditing ? editingValue : value}
           onKeyDown={onFeelKeyDown}
@@ -206,4 +207,12 @@ function isEditModeTriggeringKey(e: React.KeyboardEvent) {
   }
 
   return /^[\d\w ()[\]{},.\-_'"/?<>+\\|]$/.test(e.key);
+}
+
+function calculateCellHeight(value: string) {
+  const numberOfValueLines = `${value}`.split("\n").length;
+  const numberOfLines = numberOfValueLines <= 2 ? 2 : numberOfValueLines;
+
+  // Always add one extra line at the end to compensate for the scrollbar.
+  return (numberOfLines + 1) * CELL_LINE_HEIGHT;
 }

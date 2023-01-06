@@ -126,17 +126,17 @@
 .expression-container .table-component table thead tr th:first-child {
   border-right: 1px solid var(--pf-global--palette--black-400);
 }
-.expression-container .table-component table thead th {
+.expression-container .table-component table thead tr th {
   border-top: 1px solid var(--pf-global--palette--black-400);
   border-left: 1px solid var(--pf-global--palette--black-400);
 }
-.expression-container .table-component table thead th:last-child {
+.expression-container .table-component table thead tr th:last-child {
   border-right: 1px solid var(--pf-global--palette--black-400);
 }
 .expression-container .table-component table thead tr:last-child th {
   border-bottom: 1px solid var(--pf-global--palette--black-400);
 }
-.expression-container .table-component table tbody td:first-child {
+.expression-container .table-component table tbody tr td:first-child {
   border-top: 1px solid var(--pf-global--palette--black-400);
   border-left: 1px solid var(--pf-global--palette--black-400);
   border-right: 1px solid var(--pf-global--palette--black-400);
@@ -226,10 +226,14 @@
 
 .expression-container .table-component table tbody tr td:first-child {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   box-sizing: border-box;
   min-width: 60px;
+}
+
+.expression-container .table-component table tbody tr td.row-index-column-cell {
+  align-items: center;
 }
 
 .expression-container .table-component table tbody tr .empty-cell {
