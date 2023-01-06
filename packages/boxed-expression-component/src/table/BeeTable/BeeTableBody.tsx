@@ -21,6 +21,7 @@ import { BeeTableHeaderVisibility } from "../../api";
 import * as ReactTable from "react-table";
 import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
+import { BeeTableCoordinatesContextProvider } from "./BeeTableSelectionContext";
 
 export interface BeeTableBodyProps<R extends object> {
   /** Table instance */
@@ -35,6 +36,8 @@ export interface BeeTableBodyProps<R extends object> {
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** */
   onRowAdded?: (args: { beforeIndex: number }) => void;
+
+  shouldRenderRowIndexColumn: boolean;
 }
 
 export function BeeTableBody<R extends object>({
@@ -44,6 +47,7 @@ export function BeeTableBody<R extends object>({
   getRowKey,
   getColumnKey,
   onRowAdded,
+  shouldRenderRowIndexColumn,
 }: BeeTableBodyProps<R>) {
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
@@ -58,18 +62,24 @@ export function BeeTableBody<R extends object>({
           key={rowKey}
           style={{ display: "flex" }}
         >
-          {row.cells.map((_, columnIndex) => (
-            <BeeTableTd<R>
-              key={getColumnKey(reactTableInstance.allColumns[columnIndex])}
-              columnIndex={columnIndex}
-              row={row}
-              rowIndex={rowIndex}
-              shouldUseCellDelegate={args.shouldUseCellDelegate}
-              column={reactTableInstance.allColumns[columnIndex]}
-              onRowAdded={onRowAdded}
-              isActive={false}
-            />
-          ))}
+          {row.cells.map((cell, cellIndex) => {
+            return (
+              <>
+                {((cell.column.isRowIndexColumn && shouldRenderRowIndexColumn) || !cell.column.isRowIndexColumn) && (
+                  <BeeTableTd<R>
+                    key={getColumnKey(reactTableInstance.allColumns[cellIndex])}
+                    columnIndex={cellIndex}
+                    row={row}
+                    rowIndex={rowIndex}
+                    shouldUseCellDelegate={args.shouldUseCellDelegate}
+                    column={reactTableInstance.allColumns[cellIndex]}
+                    onRowAdded={onRowAdded}
+                    isActive={false}
+                  />
+                )}
+              </>
+            );
+          })}
         </PfReactTable.Tr>
       );
 
@@ -84,7 +94,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [reactTableInstance, getRowKey, getColumnKey, onRowAdded]
+    [reactTableInstance, getRowKey, shouldRenderRowIndexColumn, getColumnKey, onRowAdded]
   );
 
   const additionalRowIndex = useMemo(() => {
@@ -102,28 +112,37 @@ export function BeeTableBody<R extends object>({
 
       {additionalRow && (
         <PfReactTable.Tr className={"additional-row"}>
-          <BeeTableTdForAdditionalRow
-            row={undefined as any}
-            rowIndex={additionalRowIndex}
-            columnIndex={0}
-            column={reactTableInstance.allColumns[0]}
-            isLastColumn={false}
-            isEmptyCell={true}
-          />
+          {shouldRenderRowIndexColumn && (
+            <BeeTableCoordinatesContextProvider coordinates={{ rowIndex: additionalRowIndex, columnIndex: 0 }}>
+              <BeeTableTdForAdditionalRow
+                row={undefined as any}
+                rowIndex={additionalRowIndex}
+                columnIndex={0}
+                column={reactTableInstance.allColumns[0]}
+                isLastColumn={false}
+                isEmptyCell={true}
+              />
+            </BeeTableCoordinatesContextProvider>
+          )}
           {additionalRow.map((elem, elemIndex) => {
             const columnIndex = elemIndex + 1;
             return (
-              <BeeTableTdForAdditionalRow
+              <BeeTableCoordinatesContextProvider
                 key={columnIndex}
-                row={undefined as any}
-                rowIndex={additionalRowIndex}
-                column={reactTableInstance.allColumns[columnIndex]}
-                columnIndex={columnIndex}
-                isLastColumn={elemIndex === additionalRow.length - 1}
-                isEmptyCell={false}
+                coordinates={{ rowIndex: additionalRowIndex, columnIndex: elemIndex }}
               >
-                {elem}
-              </BeeTableTdForAdditionalRow>
+                <BeeTableTdForAdditionalRow
+                  key={columnIndex}
+                  row={undefined as any}
+                  rowIndex={additionalRowIndex}
+                  column={reactTableInstance.allColumns[columnIndex]}
+                  columnIndex={columnIndex}
+                  isLastColumn={elemIndex === additionalRow.length - 1}
+                  isEmptyCell={false}
+                >
+                  {elem}
+                </BeeTableTdForAdditionalRow>
+              </BeeTableCoordinatesContextProvider>
             );
           })}
         </PfReactTable.Tr>

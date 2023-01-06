@@ -2,17 +2,19 @@ export const DEFAULT_MIN_WIDTH = 100;
 
 export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 
-export const NESTED_EXPRESSION_RESET_MARGIN = 14;
+export const NESTED_EXPRESSION_RESET_MARGIN = 0;
+
+export const LITERAL_EXPRESSION_EXTRA_WIDTH = 20;
 
 // CONTEXT
-export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 150;
+export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 120;
 export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 210;
 
 export const CONTEXT_ENTRY_EXTRA_WIDTH =
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
   NESTED_EXPRESSION_RESET_MARGIN +
-  1 + // 1px for contextExpression column border-left and border-right
-  2; // 2px for contextInfo column border-left
+  1 + // 1px border-left
+  2 + // 1px for each contextExpression column border-left and border-right
+  1; // 1px for contextInfo column border-right
 
 // DECISION TABLE
 export const DECISION_TABLE_INPUT_MIN_WIDTH = 100;
@@ -27,4 +29,5 @@ export const RELATION_EXPRESSION_COLUMN_MIN_WIDTH = 100;
 export const RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH = 150;
 
 // LITERAL
-export const LITERAL_EXPRESSION_MIN_WIDTH = CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH - NESTED_EXPRESSION_RESET_MARGIN;
+export const LITERAL_EXPRESSION_MIN_WIDTH =
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH - NESTED_EXPRESSION_RESET_MARGIN - LITERAL_EXPRESSION_EXTRA_WIDTH;

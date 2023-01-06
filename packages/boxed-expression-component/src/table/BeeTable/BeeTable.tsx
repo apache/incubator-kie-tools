@@ -90,6 +90,7 @@ export function BeeTable2<R extends object>({
   getColumnKey,
   isReadOnly = false,
   enableKeyboardNavigation = true,
+  shouldRenderRowIndexColumn,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -487,6 +488,7 @@ export function BeeTable2<R extends object>({
         ouiaId="expression-grid-table"
       >
         <BeeTableHeader<R>
+          shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
           editColumnLabel={editColumnLabel}
           isEditableHeader={isEditableHeader}
           getColumnKey={onGetColumnKey}
@@ -498,6 +500,7 @@ export function BeeTable2<R extends object>({
           onColumnAdded={onColumnAdded2}
         />
         <BeeTableBody<R>
+          shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
           getColumnKey={onGetColumnKey}
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}

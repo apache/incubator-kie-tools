@@ -51,6 +51,17 @@
 
 .literal-expression .literal-expression-body {
   width: 100%;
-  border: 1px solid var(--pf-global--palette--black-300);
   position: relative;
+}
+
+.literal-expression .literal-expression-body-container {
+  display: flex;
+}
+
+.literal-expression .literal-expression-body-container .equals-sign {
+  border-right: 1px solid var(--pf-global--palette--black-300);
+  background-color: var(--pf-global--palette--black-200);
+  width: 20px;
+  color: var(--pf-global--palette--black-600);
+  font-family: Menlo, monospace;
 }

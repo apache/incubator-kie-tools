@@ -75,6 +75,7 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
     </p>
   ) : (
     <input
+      style={{ width: "100%" }}
       ref={inputRef}
       type={"text"}
       autoFocus={true}

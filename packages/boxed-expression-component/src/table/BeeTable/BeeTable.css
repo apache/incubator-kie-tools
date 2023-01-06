@@ -52,7 +52,7 @@
   min-width: 60px;
 }
 
-.expression-container .table-component table th:not(:first-child) {
+.expression-container .table-component table th:not(.row-index-column) {
   text-align: center;
   background-color: #def3ff;
 }
@@ -111,7 +111,7 @@
   z-index: 15;
   background-color: rgba(0, 0, 0, 0.06);
 }
-.expression-container .table-component table tbody td:first-child.selected {
+.expression-container .table-component table tbody td.row-index-column-cell.selected {
   background-color: #f0f0f0;
 }
 
@@ -159,7 +159,7 @@
   pointer-events: none;
 }
 
-.expression-container .table-component table tbody td.selected:not(.editing):not(:first-child):after {
+.expression-container .table-component table tbody td.selected:not(.editing):not(.row-index-column-cell):after {
   background-color: rgba(182, 210, 251, 0.312);
 }
 
@@ -212,15 +212,15 @@
   border: 0;
 }
 
-.expression-container .table-component table tbody td {
-  border-style: solid;
+.expression-container .table-component table tbody td.row-index-cell-column {
   padding: 1.1em 0;
-  text-align: center;
-  overflow: hidden;
 }
 
-.expression-container .table-component table tbody td + td {
+.expression-container .table-component table tbody td {
   padding: 0;
+  border-style: solid;
+  text-align: center;
+  overflow: hidden;
 }
 
 .expression-container .table-component table tbody td.row-index-column-cell {

@@ -39,7 +39,7 @@
 .expression-container .logic-type-selector.logic-type-selected {
   cursor: default;
   text-align: left;
-  /* padding: 2px; */ /* This is the nested expression padding. */
+  padding: 0; /* That's NESTED_EXPRESSION_RESET_MARGIN */
   align-items: flex-start;
   flex-direction: column;
 }
@@ -55,6 +55,11 @@
   position: relative;
   font-size: 10px;
   width: 100%;
+  height: 20px;
+}
+
+.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-c-dropdown__menu {
+  padding: 0;
 }
 
 .expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-c-dropdown__toggle-icon {

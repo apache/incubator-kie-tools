@@ -379,6 +379,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
           onRowReset={onRowReset}
           onRowDeleted={onRowDeleted}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
+          shouldRenderRowIndexColumn={false}
         />
       </div>
     </ContextExpressionContext.Provider>

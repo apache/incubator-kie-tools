@@ -69,6 +69,7 @@ export interface BeeTableProps<R extends object> {
   onRowDeleted?: (args: { rowIndex: number }) => void;
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
+  shouldRenderRowIndexColumn: boolean;
 }
 
 /** Possible status for the visibility of the Table's Header */

@@ -10,6 +10,7 @@ import {
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
   DEFAULT_MIN_WIDTH,
+  LITERAL_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
   NESTED_EXPRESSION_RESET_MARGIN,
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
@@ -29,7 +30,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
       CONTEXT_ENTRY_EXTRA_WIDTH
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Literal) {
-    return LITERAL_EXPRESSION_MIN_WIDTH;
+    return LITERAL_EXPRESSION_MIN_WIDTH + LITERAL_EXPRESSION_EXTRA_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
       return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH - 1; // 1px for the missing entry info border
@@ -63,7 +64,6 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
         CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         ...(expression.bindingEntries ?? []).map(({ entryExpression }) => getExpressionMinWidth(entryExpression))
       ) +
-      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
@@ -109,7 +109,11 @@ export function getExpressionResizingWidth(
         CONTEXT_ENTRY_EXTRA_WIDTH
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Literal) {
-    return (resizingWidth ?? expression.width ?? LITERAL_EXPRESSION_MIN_WIDTH) + NESTED_EXPRESSION_RESET_MARGIN;
+    return (
+      (resizingWidth ?? expression.width ?? LITERAL_EXPRESSION_MIN_WIDTH) +
+      NESTED_EXPRESSION_RESET_MARGIN +
+      LITERAL_EXPRESSION_EXTRA_WIDTH
+    );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
       return getExpressionResizingWidth(expression.expression, resizingWidths) + CONTEXT_ENTRY_EXTRA_WIDTH - 1 + 1; // 1px for the missing entry info border, 1px for last-child border-right
@@ -153,9 +157,7 @@ export function getExpressionResizingWidth(
       Math.max(
         CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         ...(expression.bindingEntries ?? []).map((e) => getExpressionResizingWidth(e.entryExpression, resizingWidths))
-      ) +
-        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-        NESTED_EXPRESSION_RESET_MARGIN
+      ) + NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteral) {
     return resizingWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH;

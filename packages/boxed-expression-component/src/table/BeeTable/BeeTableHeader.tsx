@@ -59,6 +59,8 @@ export interface BeeTableHeaderProps<R extends object> {
   isEditableHeader: boolean;
   /** */
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+
+  shouldRenderRowIndexColumn: boolean;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -70,6 +72,7 @@ export function BeeTableHeader<R extends object>({
   onColumnUpdates,
   isEditableHeader,
   onColumnAdded,
+  shouldRenderRowIndexColumn,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -147,7 +150,7 @@ export function BeeTableHeader<R extends object>({
   >(
     (rowIndex, column, columnIndex) =>
       column.isRowIndexColumn ? (
-        renderRowIndexColumn(column, rowIndex)
+        <>{shouldRenderRowIndexColumn && renderRowIndexColumn(column, rowIndex)}</>
       ) : (
         <BeeTableThResizable
           key={getColumnKey(column)}
@@ -188,6 +191,7 @@ export function BeeTableHeader<R extends object>({
         />
       ),
     [
+      shouldRenderRowIndexColumn,
       renderRowIndexColumn,
       getColumnKey,
       isEditableHeader,

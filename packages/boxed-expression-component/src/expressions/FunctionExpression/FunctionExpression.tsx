@@ -315,6 +315,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
           headerVisibility={headerVisibility}
           controllerCell={controllerCell}
           cellComponentByColumnId={cellComponentByColumnId}
+          shouldRenderRowIndexColumn={true}
         />
       </div>
     </ContextExpressionContext.Provider>

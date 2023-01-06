@@ -132,6 +132,7 @@ export const PopoverMenu = React.forwardRef(
         distance={distance ?? 0}
         reference={arrowPlacement}
         appendTo={appendTo}
+        // Need this 1px to render something and not break it.
         headerContent={<div style={{ height: "1px" }}></div>}
         bodyContent={body}
         isVisible={isPopoverVisible}

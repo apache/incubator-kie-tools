@@ -79,6 +79,8 @@
 }
 
 .expression-container .expression-info .expression-info-name {
+  font-family: Menlo, monospace;
+  font-size: 0.8em;
   white-space: nowrap;
 }
 

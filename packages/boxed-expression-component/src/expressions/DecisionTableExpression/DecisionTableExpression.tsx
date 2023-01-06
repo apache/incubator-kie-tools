@@ -569,6 +569,7 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
         onRowDuplicated={onRowDuplicated}
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
+        shouldRenderRowIndexColumn={true}
       />
     </div>
   );

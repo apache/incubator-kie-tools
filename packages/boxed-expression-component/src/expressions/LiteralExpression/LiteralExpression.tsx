@@ -27,7 +27,11 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
-import { LITERAL_EXPRESSION_MIN_WIDTH, NESTED_EXPRESSION_RESET_MARGIN } from "../../resizing/WidthValues";
+import {
+  LITERAL_EXPRESSION_EXTRA_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
+  NESTED_EXPRESSION_RESET_MARGIN,
+} from "../../resizing/WidthValues";
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
   const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
@@ -105,16 +109,20 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       return prev.isPivoting
         ? {
             value: Math.max(
-              nestedExpressionContainer.resizingWidth.value - NESTED_EXPRESSION_RESET_MARGIN,
+              nestedExpressionContainer.resizingWidth.value -
+                NESTED_EXPRESSION_RESET_MARGIN -
+                LITERAL_EXPRESSION_EXTRA_WIDTH,
               minWidthGlobal
             ),
             isPivoting: true,
           }
         : {
             value: Math.max(
-              nestedExpressionContainer.resizingWidth.value - NESTED_EXPRESSION_RESET_MARGIN,
+              nestedExpressionContainer.resizingWidth.value -
+                NESTED_EXPRESSION_RESET_MARGIN -
+                LITERAL_EXPRESSION_EXTRA_WIDTH,
               minWidthGlobal,
-              literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
+              literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH - LITERAL_EXPRESSION_EXTRA_WIDTH
             ),
             isPivoting: false,
           };
@@ -153,27 +161,30 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           </ExpressionDefinitionHeaderMenu>
         </div>
       )}
-      <div
-        className={`${literalExpression.id} literal-expression-body ${isEditing ? "editing" : ""}`}
-        onClick={selectLiteralExpression}
-        onDoubleClick={onDoubleClick}
-        style={{ width: resizingWidth.value, minWidth: minWidthGlobal }}
-      >
-        <BeeTableEditableCellContent
-          isReadOnly={false}
-          value={literalExpression.content ?? ""}
-          onChange={updateContent}
-          isActive={isEditing}
-          isEditing={isEditing}
-          setEditing={setEditing}
-        />
-        <Resizer
-          minWidth={minWidthGlobal}
-          width={literalExpression.width}
-          setWidth={setWidth}
-          resizingWidth={resizingWidth}
-          setResizingWidth={setResizingWidth}
-        />
+      <div className={"literal-expression-body-container"}>
+        <div className={"equals-sign"}>{`=`}</div>
+        <div
+          className={`${literalExpression.id} literal-expression-body ${isEditing ? "editing" : ""}`}
+          onClick={selectLiteralExpression}
+          onDoubleClick={onDoubleClick}
+          style={{ width: resizingWidth.value, minWidth: minWidthGlobal }}
+        >
+          <BeeTableEditableCellContent
+            isReadOnly={false}
+            value={literalExpression.content ?? ""}
+            onChange={updateContent}
+            isActive={isEditing}
+            isEditing={isEditing}
+            setEditing={setEditing}
+          />
+          <Resizer
+            minWidth={minWidthGlobal}
+            width={literalExpression.width}
+            setWidth={setWidth}
+            resizingWidth={resizingWidth}
+            setResizingWidth={setResizingWidth}
+          />
+        </div>
       </div>
     </div>
   );

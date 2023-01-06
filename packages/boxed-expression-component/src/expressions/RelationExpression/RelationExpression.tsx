@@ -295,6 +295,7 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
         onRowDeleted={onRowDeleted}
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
+        shouldRenderRowIndexColumn={true}
       />
     </div>
   );

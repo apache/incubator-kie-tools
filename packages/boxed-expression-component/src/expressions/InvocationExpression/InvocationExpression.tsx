@@ -262,6 +262,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
         onRowAdded={onRowAdded}
         onRowReset={onRowReset}
         onRowDeleted={onRowDeleted}
+        shouldRenderRowIndexColumn={false}
       />
     </div>
   );

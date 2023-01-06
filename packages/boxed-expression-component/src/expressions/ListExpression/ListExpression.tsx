@@ -149,6 +149,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}
         onRowReset={onRowReset}
+        shouldRenderRowIndexColumn={true}
       />
     </div>
   );
