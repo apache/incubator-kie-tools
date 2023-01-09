@@ -34,7 +34,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsTabs } from "../SettingsModalBody";
 import { EMPTY_CONFIG, isKafkaConfigValid, resetConfigCookie, saveConfigCookie } from "./KafkaSettingsConfig";
 
-export function ApacheKafkaSettingsTab() {
+export function ApacheKafkaSettings() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.apacheKafka.config);

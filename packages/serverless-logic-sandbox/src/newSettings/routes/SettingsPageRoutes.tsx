@@ -21,10 +21,10 @@ import { useRoutes } from "../../navigation/Hooks";
 import { GitHubSettings } from "../github/GitHubSettings";
 import { KieSandboxExtendedServicesSettings } from "../extendedServices/KieSandboxExtendedServicesSettings";
 import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/FeaturePreviewSettingsTab";
-import { ApacheKafkaSettingsTab } from "../../settings/kafka/ApacheKafkaSettingsTab";
-import { OpenShiftSettings } from "../../newSettings/openshift/OpenShiftSettings";
+import { ApacheKafkaSettings } from "../kafka/ApacheKafkaSettings";
+import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
-import { ServiceRegistrySettings } from "../../newSettings/serviceRegistry/ServiceRegistrySettings";
+import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
 
 export function SettingsPageRoutes() {
   const routes = useRoutes();
@@ -46,7 +46,7 @@ export function SettingsPageRoutes() {
         <ServiceRegistrySettings />
       </Route>
       <Route path={routes.settings.kafka.path({})}>
-        <ApacheKafkaSettingsTab />
+        <ApacheKafkaSettings />
       </Route>
       <Route path={routes.settings.feature_preview.path({})}>
         <FeaturePreviewSettingsTab />

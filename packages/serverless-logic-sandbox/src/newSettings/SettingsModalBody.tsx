@@ -19,7 +19,7 @@ import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/componen
 import { GitHubSettings } from "./github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettings } from "./openshift/OpenShiftSettings";
-import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
+import { ApacheKafkaSettings } from "./kafka/ApacheKafkaSettings";
 import { ServiceAccountSettings } from "./serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "./serviceRegistry/ServiceRegistrySettings";
 import { KieSandboxExtendedServicesSettings } from "./extendedServices/KieSandboxExtendedServicesSettings";
@@ -87,7 +87,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.KAFKA}
         title={<TabTitleText>Streams for Apache Kafka</TabTitleText>}
       >
-        <ApacheKafkaSettingsTab />
+        <ApacheKafkaSettings />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
