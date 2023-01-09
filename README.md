@@ -174,31 +174,26 @@ The Kogito s2i Builder Image is equipped with the following components:
 For more information about what is installed on this image, take a look [here](kogito-s2i-builder-overrides.yaml) in the
 **modules.install** section. 
 
+
 #### Kogito swf Builder Image usage
 
-The main purpose is the use in the Kogito Serverless operator as a builder
+The main purpose of this image is to be used within the Kogito Serverless Operator as a builder image, below you can find
+an example on how to use it:
 
 ```bash
 FROM quay.io/kiegroup/kogito-swf-builder:latest AS builder
 
-# Copy from build context to resources directory
+# Copy all files from current directory to the builder context
 COPY * ./resources/
 
 # Build app with given resources
 RUN "${KOGITO_HOME}"/launch/build-app.sh './resources'
 #=============================
 # Runtime Run
+ENTRYPOINT ['java', '-jar', 'target/quarkus-app/quarkus-run.jar']
 #=============================
-...
 ```
-but obvioulsy can be used to create other swf "flavours" images installing the org.kie.kogito.swf.builder and 
-adding in the configure script the addition of other extensions
-to reuse the scaffolding and the pom created byt the swf builder
 
-```bash
-"${MAVEN_HOME}"/bin/mvn -Dmaven.repo.local="${KOGITO_HOME}"/.m2/repository -U -B -s "${MAVEN_SETTINGS_PATH:-/home/kogito/.m2/settings.xml}" \
-quarkus:add-extension -Dextensions="${QUARKUS_EXTENSIONS:-my-other-kogito-quarkus-extension,my-custom-kogito-addons-quarkus-extension}"
-```
 
 #### Kogito s2i Builder Image usage
 

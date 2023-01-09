@@ -18,8 +18,8 @@ source "${script_dir_path}"/configure-maven.sh
 configure
 
 cd "${PROJECT_ARTIFACT_ID}"
-
+export MAVEN_OPTS="$("${KOGITO_HOME}"/launch/jvm-settings.sh $(pwd))"
 "${MAVEN_HOME}"/bin/mvn -U -B -s "${MAVEN_SETTINGS_PATH}" \
-io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":add-extension ${QUARKUS_ADD_EXTENSION_ARGS}\
--DplatformVersion="${QUARKUS_VERSION}" \
--Dextensions="${extensions}"
+  io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":add-extension ${QUARKUS_ADD_EXTENSION_ARGS}\
+  -DplatformVersion="${QUARKUS_VERSION}" \
+  -Dextensions="${extensions}"

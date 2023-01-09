@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # =================================================================
 # Detect whether running in a container and set appropriate options
 # for limiting Java VM resources

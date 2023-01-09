@@ -27,12 +27,16 @@ if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then
 fi
 
 # Copy resources if exists
+log_info "-> Copying files from ${resources_path}, if any..."
 if [ ! -z "${resources_path}" ]; then
   if [ -d "${resources_path}" ]; then
     cp -rv "${resources_path}"/* src/main/resources/
   else
     cp -rv "${resources_path}" src/main/resources/
   fi
+else
+  log_warn "-> Nothing to copy from ${resources_path}..."
 fi
 
+export MAVEN_OPTS="$("${KOGITO_HOME}"/launch/jvm-settings.sh ${resources_path})"
 "${MAVEN_HOME}"/bin/mvn ${MAVEN_ARGS_APPEND} -U -B clean install -DskipTests -s "${MAVEN_SETTINGS_PATH}" -Dquarkus.container-image.build=false

@@ -8,7 +8,7 @@ else
     git clone https://github.com/bats-core/bats-core.git
     ./bats-core/install.sh bats
     rm -rf bats-core
-fi 
+fi
 
 echo  "----> running bats on kogito-trusty-common"
 ./bats/bin/bats modules/kogito-trusty-common/tests/bats
@@ -42,3 +42,6 @@ echo "----> running bats on kogito-persistence"
 
 echo "----> running bats on kogito-s2i-core"
 ./bats/bin/bats modules/kogito-s2i-core/tests/bats
+
+echo "----> running bats on kogito-swf-builder"
+./bats/bin/bats modules/kogito-swf-builder/tests/bats

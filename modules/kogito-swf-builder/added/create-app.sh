@@ -16,13 +16,15 @@ fi
 source "${script_dir_path}"/configure-maven.sh
 configure
 
+export MAVEN_OPTS="$("${KOGITO_HOME}"/launch/jvm-settings.sh)"
+
 "${MAVEN_HOME}"/bin/mvn -U -B -s "${MAVEN_SETTINGS_PATH}" \
-io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":create ${QUARKUS_CREATE_ARGS} \
--DprojectGroupId="${PROJECT_GROUP_ID}" \
--DprojectArtifactId="${PROJECT_ARTIFACT_ID}" \
--DprojectVersionId="${PROJECT_VERSION}" \
--DplatformVersion="${QUARKUS_VERSION}" \
--Dextensions="${QUARKUS_EXTENSIONS}"
+  io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":create ${QUARKUS_CREATE_ARGS} \
+  -DprojectGroupId="${PROJECT_GROUP_ID}" \
+  -DprojectArtifactId="${PROJECT_ARTIFACT_ID}" \
+  -DprojectVersionId="${PROJECT_VERSION}" \
+  -DplatformVersion="${QUARKUS_VERSION}" \
+  -Dextensions="${QUARKUS_EXTENSIONS}"
 
 cd "${PROJECT_ARTIFACT_ID}"
 

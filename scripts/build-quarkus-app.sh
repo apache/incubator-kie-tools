@@ -38,11 +38,7 @@ mkdir -p ${mvn_local_repo}
 
 . ${script_dir_path}/setup-maven.sh "${build_target_dir}"/settings.xml
 
-echo "Copy current maven repo to maven context local repo ${mvn_local_repo}"
-cp -r ${HOME}/.m2/repository/* "${mvn_local_repo}"
-
 set -x
-
 echo "Create quarkus project to path ${build_target_dir}"
 cd ${build_target_dir}
 mvn -U "${MAVEN_OPTIONS}" \
@@ -59,8 +55,16 @@ cd "serverless-workflow-project"
 mvn ${MAVEN_OPTIONS} -U clean install -DskipTests -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false
 
 cd ${build_target_dir}
+
+#remove unnecessary files
+rm -rfv serverless-workflow-project/target
+rm -rfv serverless-workflow-project/src/main/resources/*
+rm -rfv serverless-workflow-project/src/main/docker
+rm -rfv serverless-workflow-project/.mvn/wrapper
+rm -rfv serverless-workflow-project/mvnw*
+rm -rfv serverless-workflow-project/src/test
+
 echo "Zip and copy scaffold project"
-cd ${build_target_dir}/
 zip -r kogito-swf-builder-quarkus-app.zip serverless-workflow-project/ 
 cp -v kogito-swf-builder-quarkus-app.zip ${target_tmp_dir}/
 echo "Zip and copy maven repo"

@@ -3,7 +3,7 @@ QUARKUS_VERSION := $(shell awk '/- name: "QUARKUS_VERSION"/,/description/' image
 SHORTENED_LATEST_VERSION := $(shell echo $(IMAGE_VERSION) | awk -F. '{print $$1"."$$2}')
 KOGITO_APPS_TARGET_BRANCH ?= main
 KOGITO_APPS_TARGET_URI ?= https://github.com/kiegroup/kogito-apps.git
-BUILD_ENGINE := docker
+BUILD_ENGINE ?= docker
 .DEFAULT_GOAL := build
 CEKIT_CMD := cekit -v ${cekit_option}
 NATIVE := true
@@ -40,17 +40,17 @@ ifneq ($(ignore_build),true)
 	scripts/build-quarkus-app.sh ${image_name} $(QUARKUS_VERSION)
 	${CEKIT_CMD} build --overrides-file ${image_name}-overrides.yaml ${BUILD_ENGINE}
 endif
-# if ignore_test is set to true, ignore the tests
-ifneq ($(ignore_test),true)
-	${CEKIT_CMD} test --overrides-file ${image_name}-overrides.yaml behave ${test_options}
-	tests/shell/run.sh ${image_name}
-endif
+# tag with shortened version
 ifneq ($(ignore_tag),true)
     ifneq ($(findstring rc,$(IMAGE_VERSION)),rc)
 	    ${BUILD_ENGINE} tag quay.io/kiegroup/${image_name}:${IMAGE_VERSION} quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
     endif
 endif
-
+# if ignore_test is set to true, ignore the tests
+ifneq ($(ignore_test),true)
+	${CEKIT_CMD} test --overrides-file ${image_name}-overrides.yaml behave ${test_options}
+	tests/shell/run.sh ${image_name}
+endif
 
 # Build all images
 .PHONY: build-prod
@@ -83,11 +83,11 @@ _push:
 .PHONY: push-image
 image_name=
 push-image:
-	docker push quay.io/kiegroup/${image_name}:${IMAGE_VERSION}
-	docker push quay.io/kiegroup/${image_name}:latest
+	${BUILD_ENGINE} push quay.io/kiegroup/${image_name}:${IMAGE_VERSION}
+	${BUILD_ENGINE} push quay.io/kiegroup/${image_name}:latest
 ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	@echo "${SHORTENED_LATEST_VERSION} will be pushed"
-	docker push quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
+	${BUILD_ENGINE} push quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
 endif
 
 

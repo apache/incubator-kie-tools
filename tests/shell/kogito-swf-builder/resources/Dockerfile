@@ -3,6 +3,8 @@ FROM quay.io/kiegroup/kogito-swf-builder:2.0 AS builder
 # Copy from build context to resources directory
 COPY * ./resources/
 
+ARG SCRIPT_DEBUG=false
+
 # Build app with given resources
 RUN "${KOGITO_HOME}"/launch/build-app.sh './resources'
 

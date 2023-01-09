@@ -16,7 +16,12 @@ if [ -n "${IMAGE_NAME}" ]; then
 fi
 
 set -e
-base_dir=`dirname $(realpath -s $0)`
+realPath="realpath"
+if [[ $OSTYPE == 'darwin'* ]]; then
+  realPath="grealpath"
+fi
+base_dir=`dirname $(${realPath} -s $0)`
+echo $base_dir
 . ${base_dir}/../../scripts/setup-maven.sh "$(mktemp)"
 
 MAVEN_OPTIONS="-U ${MAVEN_OPTIONS}"
