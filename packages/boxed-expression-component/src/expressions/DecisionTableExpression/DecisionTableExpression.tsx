@@ -413,6 +413,24 @@ export function DecisionTableExpression(
     [setExpression]
   );
 
+  const getSectionIndexForGroupType = useCallback(
+    (columnIndex: number, groupType: DecisionTableColumnType) => {
+      switch (groupType) {
+        case DecisionTableColumnType.InputClause:
+          return columnIndex;
+        case DecisionTableColumnType.OutputClause:
+          return columnIndex - (decisionTableExpression.input?.length ?? 0);
+        case DecisionTableColumnType.Annotation:
+          return (
+            columnIndex - (decisionTableExpression.input?.length ?? 0) - (decisionTableExpression.output?.length ?? 0)
+          );
+        default:
+          assertUnreachable(groupType);
+      }
+    },
+    [decisionTableExpression.input?.length, decisionTableExpression.output?.length]
+  );
+
   const onColumnAdded = useCallback(
     (args: { beforeIndex: number; groupType: DecisionTableColumnType | undefined }) => {
       const groupType = args.groupType;
@@ -420,23 +438,7 @@ export function DecisionTableExpression(
         throw new Error("Column without groupType for Decision table.");
       }
 
-      // Index used to mutate individual sections locally. Inputs, Outputs, and Annotations.
-      let sectionIndex: number;
-
-      switch (groupType) {
-        case DecisionTableColumnType.InputClause:
-          sectionIndex = args.beforeIndex;
-          break;
-        case DecisionTableColumnType.OutputClause:
-          sectionIndex = args.beforeIndex - (decisionTableExpression.input?.length ?? 0);
-          break;
-        case DecisionTableColumnType.Annotation:
-          sectionIndex =
-            args.beforeIndex -
-            (decisionTableExpression.input?.length ?? 0) -
-            (decisionTableExpression.output?.length ?? 0);
-          break;
-      }
+      const sectionIndex = getSectionIndexForGroupType(args.beforeIndex, groupType);
 
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const newRules = [...(prev.rules ?? [])];
@@ -496,7 +498,71 @@ export function DecisionTableExpression(
         }
       });
     },
-    [setExpression, decisionTableExpression]
+    [getSectionIndexForGroupType, setExpression]
+  );
+
+  const onColumnDeleted = useCallback(
+    (args: { columnIndex: number; groupType: DecisionTableColumnType }) => {
+      setExpression((prev: DecisionTableExpressionDefinition) => {
+        const groupType = args.groupType;
+        if (!groupType) {
+          throw new Error("Column without groupType for Decision table.");
+        }
+
+        const sectionIndex = getSectionIndexForGroupType(args.columnIndex, groupType);
+
+        switch (groupType) {
+          case DecisionTableColumnType.InputClause:
+            const newInputs = [...(prev.input ?? [])];
+            newInputs.splice(sectionIndex, 1);
+            return {
+              ...prev,
+              input: newInputs,
+              rules: [...(prev.rules ?? [])].map((rule) => {
+                const newInputEntry = [...rule.inputEntries];
+                newInputEntry.splice(sectionIndex, 1);
+                return {
+                  ...rule,
+                  inputEntries: newInputEntry,
+                };
+              }),
+            };
+          case DecisionTableColumnType.OutputClause:
+            const newOutputs = [...(prev.output ?? [])];
+            newOutputs.splice(sectionIndex, 1);
+            return {
+              ...prev,
+              output: newOutputs,
+              rules: [...(prev.rules ?? [])].map((rule) => {
+                const newOutputEntry = [...rule.outputEntries];
+                newOutputEntry.splice(sectionIndex, 1);
+                return {
+                  ...rule,
+                  outputEntries: newOutputEntry,
+                };
+              }),
+            };
+          case DecisionTableColumnType.Annotation:
+            const newAnnotations = [...(prev.annotations ?? [])];
+            newAnnotations.splice(sectionIndex, 1);
+            return {
+              ...prev,
+              annotations: newAnnotations,
+              rules: [...(prev.rules ?? [])].map((rule) => {
+                const newAnnotationEntry = [...rule.annotationEntries];
+                newAnnotationEntry.splice(sectionIndex, 1);
+                return {
+                  ...rule,
+                  annotationEntries: newAnnotationEntry,
+                };
+              }),
+            };
+          default:
+            assertUnreachable(groupType);
+        }
+      });
+    },
+    [getSectionIndexForGroupType, setExpression]
   );
 
   const onRowDeleted = useCallback(
@@ -552,6 +618,7 @@ export function DecisionTableExpression(
         onRowDeleted={onRowDeleted}
         onRowDuplicated={onRowDuplicated}
         onColumnAdded={onColumnAdded}
+        onColumnDeleted={onColumnDeleted}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}

@@ -91,11 +91,16 @@ export function BeeTableContextMenuHandler({
     }
 
     const columnIndex = activeCell.columnIndex;
+
     const atLeastTwoColumnsOfTheSameGroupType = column?.groupType
       ? _.groupBy(columns, (column) => column?.groupType)[column.groupType].length > 1
-      : false;
+      : true;
 
-    const columnCanBeDeleted = columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType && column?.depth === 0;
+    const columnCanBeDeleted =
+      columnIndex > 0 &&
+      atLeastTwoColumnsOfTheSameGroupType &&
+      (columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
+      (column?.columns?.length ?? 0) <= 0;
 
     return columnIndex === 0 // This is the rowIndex column
       ? []

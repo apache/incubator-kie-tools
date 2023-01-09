@@ -229,6 +229,31 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     [setExpression]
   );
 
+  const onColumnDeleted = useCallback(
+    (args: { columnIndex: number }) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const newColumns = [...(prev.columns ?? [])];
+        newColumns.splice(args.columnIndex, 1);
+
+        const newRows = [...(prev.rows ?? [])].map((row) => {
+          const newCells = [...row.cells];
+          newCells.splice(args.columnIndex, 1);
+          return {
+            ...row,
+            cells: newCells,
+          };
+        });
+
+        return {
+          ...prev,
+          columns: newColumns,
+          rows: newRows,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
       setExpression((prev: RelationExpressionDefinition) => {
@@ -260,6 +285,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}
         onColumnAdded={onColumnAdded}
+        onColumnDeleted={onColumnDeleted}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
