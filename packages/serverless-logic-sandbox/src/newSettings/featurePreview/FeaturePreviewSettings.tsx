@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,18 +44,19 @@ export function FeaturePreviewSettings() {
 
   return (
     <Page>
+      <PageSection variant={"light"} isWidthLimited>
+        <TextContent>
+          <Text component={TextVariants.h1}>Feature Preview</Text>
+          <Text component={TextVariants.p}>
+            Data you provide here is necessary for configuring the preview of features that are not fully supported yet.
+            <br /> All information is locally stored in your browser and never shared with anyone.
+          </Text>
+        </TextContent>
+      </PageSection>
+
       <PageSection>
-        <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+        <PageSection variant={"light"}>
           <Form>
-            <TextContent>
-              <Text component={TextVariants.h3}>Feature Preview</Text>
-            </TextContent>
-            <TextContent>
-              <Text component={TextVariants.small}>
-                Data you provide here is necessary for configuring the preview of features that are not fully supported
-                yet. All information is locally stored in your browser and never shared with anyone.
-              </Text>
-            </TextContent>
             <Checkbox
               id="feature-preview-enable-stunner"
               label="Kogito Serverless Workflow Visualization"
