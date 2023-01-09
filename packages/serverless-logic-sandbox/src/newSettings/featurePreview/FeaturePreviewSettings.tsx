@@ -23,7 +23,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { saveConfigCookie } from "./FeaturePreviewConfig";
 
-export function FeaturePreviewSettingsTab() {
+export function FeaturePreviewSettings() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.featurePreview.config);

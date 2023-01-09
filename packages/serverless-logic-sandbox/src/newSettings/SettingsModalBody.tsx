@@ -23,7 +23,7 @@ import { ApacheKafkaSettings } from "./kafka/ApacheKafkaSettings";
 import { ServiceAccountSettings } from "./serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "./serviceRegistry/ServiceRegistrySettings";
 import { KieSandboxExtendedServicesSettings } from "./extendedServices/KieSandboxExtendedServicesSettings";
-import { FeaturePreviewSettingsTab } from "./featurePreview/FeaturePreviewSettingsTab";
+import { FeaturePreviewSettings } from "./featurePreview/FeaturePreviewSettings";
 
 export enum SettingsTabs {
   GITHUB = "github",
@@ -94,7 +94,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.FEATURE_PREVIEW}
         title={<TabTitleText>Feature Preview</TabTitleText>}
       >
-        <FeaturePreviewSettingsTab />
+        <FeaturePreviewSettings />
       </Tab>
     </Tabs>
   );

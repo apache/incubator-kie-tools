@@ -20,7 +20,7 @@ import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { GitHubSettings } from "../github/GitHubSettings";
 import { KieSandboxExtendedServicesSettings } from "../extendedServices/KieSandboxExtendedServicesSettings";
-import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/FeaturePreviewSettingsTab";
+import { FeaturePreviewSettings } from "../featurePreview/FeaturePreviewSettings";
 import { ApacheKafkaSettings } from "../kafka/ApacheKafkaSettings";
 import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
@@ -49,7 +49,7 @@ export function SettingsPageRoutes() {
         <ApacheKafkaSettings />
       </Route>
       <Route path={routes.settings.feature_preview.path({})}>
-        <FeaturePreviewSettingsTab />
+        <FeaturePreviewSettings />
       </Route>
       <Route>
         <Redirect to={routes.settings.github.path({})} />
