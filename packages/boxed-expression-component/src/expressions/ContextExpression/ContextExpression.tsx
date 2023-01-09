@@ -348,14 +348,26 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
       setExpression((prev: ContextExpressionDefinition) => {
-        const newContextEntries = [...(prev.contextEntries ?? [])];
-        newContextEntries.splice(args.rowIndex, 1, {
-          ...getDefaultContextEntry(newContextEntries[args.rowIndex].entryInfo.name),
-        });
-        return {
-          ...prev,
-          contextEntries: newContextEntries,
-        };
+        // That's the additionalRow, meaning the contextExpression result.
+        if (args.rowIndex === prev.contextEntries.length) {
+          return {
+            ...prev,
+            result: {
+              ...getDefaultContextEntry().entryExpression,
+            },
+          };
+        }
+        // That's a normal context entry
+        else {
+          const newContextEntries = [...(prev.contextEntries ?? [])];
+          newContextEntries.splice(args.rowIndex, 1, {
+            ...getDefaultContextEntry(newContextEntries[args.rowIndex].entryInfo.name),
+          });
+          return {
+            ...prev,
+            contextEntries: newContextEntries,
+          };
+        }
       });
     },
     [getDefaultContextEntry, setExpression]

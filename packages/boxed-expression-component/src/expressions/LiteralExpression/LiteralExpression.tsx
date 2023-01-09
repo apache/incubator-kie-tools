@@ -71,7 +71,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   const minWidthGlobal = useMemo(() => {
     return Math.max(
-      nestedExpressionContainer.minWidthGlobal - NESTED_EXPRESSION_RESET_MARGIN,
+      nestedExpressionContainer.minWidthGlobal - NESTED_EXPRESSION_RESET_MARGIN - LITERAL_EXPRESSION_EXTRA_WIDTH,
       LITERAL_EXPRESSION_MIN_WIDTH
     );
   }, [nestedExpressionContainer]);
@@ -122,7 +122,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
                 NESTED_EXPRESSION_RESET_MARGIN -
                 LITERAL_EXPRESSION_EXTRA_WIDTH,
               minWidthGlobal,
-              literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH - LITERAL_EXPRESSION_EXTRA_WIDTH
+              literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
             ),
             isPivoting: false,
           };
