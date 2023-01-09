@@ -89,47 +89,6 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     );
   }, [nestedExpressionContainer]);
 
-  // useEffect(() => {
-  //   setResizingWidth((prev) => ({
-  //     value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
-  //     isPivoting: false,
-  //   }));
-  // }, [literalExpression.width, setResizingWidth]);
-
-  // useEffect(() => {
-  //   setResizingWidth((prev) => {
-  //     return prev.isPivoting
-  //       ? {
-  //           value: Math.max(
-  //             nestedExpressionContainer.resizingWidth.value -
-  //               NESTED_EXPRESSION_RESET_MARGIN -
-  //               LITERAL_EXPRESSION_EXTRA_WIDTH,
-  //             minWidthGlobal
-  //           ),
-  //           isPivoting: true,
-  //         }
-  //       : {
-  //           value: Math.max(
-  //             nestedExpressionContainer.resizingWidth.value -
-  //               NESTED_EXPRESSION_RESET_MARGIN -
-  //               LITERAL_EXPRESSION_EXTRA_WIDTH,
-  //             minWidthGlobal,
-  //             literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
-  //           ),
-  //           isPivoting: false,
-  //         };
-  //   });
-  // }, [
-  //   literalExpression.id,
-  //   literalExpression.width,
-  //   minWidthGlobal,
-  //   nestedExpressionContainer.minWidthGlobal,
-  //   nestedExpressionContainer.resizingWidth,
-  //   setResizingWidth,
-  // ]);
-
-  //
-
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {

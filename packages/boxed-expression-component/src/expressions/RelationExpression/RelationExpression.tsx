@@ -19,6 +19,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
   DmnBuiltInDataType,
@@ -43,9 +44,7 @@ type ROWTYPE = RelationExpressionDefinitionRow;
 
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
-export const RelationExpression: React.FunctionComponent<RelationExpressionDefinition> = (
-  relationExpression: RelationExpressionDefinition
-) => {
+export function RelationExpression(relationExpression: RelationExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -90,74 +89,28 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   );
 
   // RESIZING WIDTHS
-
-  const nestedExpressionContainer = useNestedExpressionContainer();
-
-  // const isRelationExpressionPivoting = useMemo(() => {
-  //   return columnResizingWidths.some(({ isPivoting }) => isPivoting);
-  // }, [columnResizingWidths]);
-
-  // const [pivotAwareNestedExpressionContainer, setPivotAwareNestedExpressionContainer] =
-  //   useState(nestedExpressionContainer);
-  // useEffect(() => {
-  //   setPivotAwareNestedExpressionContainer((prev) => {
-  //     return isRelationExpressionPivoting ? prev : nestedExpressionContainer;
-  //   });
-  // }, [isRelationExpressionPivoting, nestedExpressionContainer]);
-
-  // useEffect(() => {
-  //   setColumnResizingWidths((prev) => {
-  //     const totalAvailableSpaceForColumns =
-  //       pivotAwareNestedExpressionContainer.resizingWidth.value -
-  //       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH -
-  //       NESTED_EXPRESSION_RESET_MARGIN -
-  //       columns.length * 2; // 2px for border of each column
-
-  //     const totalColumnsWidths = columns.reduce(
-  //       (acc, { width }) => acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH),
-  //       0
-  //     );
-
-  //     let currentSpaceLeftToDistribute = totalAvailableSpaceForColumns;
-
-  //     return columns.map((column, columnIndex) => {
-  //       const proportion = (column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH) / totalColumnsWidths;
-  //       const proportionalColumnWidth = Math.max(
-  //         column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-  //         Math.floor(proportion * totalAvailableSpaceForColumns),
-  //         RELATION_EXPRESSION_COLUMN_MIN_WIDTH
-  //       );
-
-  //       // If last column, take up all space left to distribute. That will make sure no pixel remains unused, due to the Math.floor rounding.
-  //       if (columnIndex === columns.length - 1) {
-  //         return {
-  //           value: Math.max(currentSpaceLeftToDistribute, RELATION_EXPRESSION_COLUMN_MIN_WIDTH),
-  //           isPivoting: false,
-  //         };
-  //       } else {
-  //         currentSpaceLeftToDistribute -= proportionalColumnWidth;
-  //         return {
-  //           value: proportionalColumnWidth,
-  //           isPivoting: false,
-  //         };
-  //       }
-  //     });
-  //   });
-  // }, [columns, pivotAwareNestedExpressionContainer]);
-
   const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(relationExpression.id);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    return columns.map((column, columnIndex) => ({
-      accessor: column.id as any, // FIXME: Tiago -> Not good.
-      label: column.name,
-      dataType: column.dataType,
-      isRowIndexColumn: false,
-      minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-      setWidth: setColumnWidth(columnIndex),
-      width: column.width,
-    }));
-  }, [columns, setColumnWidth]);
+    return [
+      {
+        accessor: relationExpression.id as any,
+        label: relationExpression.name ?? "Expression Name",
+        dataType: relationExpression.dataType,
+        isRowIndexColumn: false,
+        width: undefined,
+        columns: columns.map((column, columnIndex) => ({
+          accessor: column.id as any,
+          label: column.name,
+          dataType: column.dataType,
+          isRowIndexColumn: false,
+          minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          setWidth: setColumnWidth(columnIndex),
+          width: column.width,
+        })),
+      },
+    ];
+  }, [columns, relationExpression.dataType, relationExpression.id, relationExpression.name, setColumnWidth]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(
     () =>
@@ -201,18 +154,26 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev: RelationExpressionDefinition) => {
+        const n = {
+          ...prev,
+        };
         const newColumns = [...(prev.columns ?? [])];
 
         for (const u of columnUpdates) {
-          newColumns[u.columnIndex] = {
-            ...newColumns[u.columnIndex],
-            name: u.name,
-            dataType: u.dataType,
-          };
+          if (u.column.depth === 0) {
+            n.dataType = u.dataType;
+            n.name = u.name;
+          } else {
+            newColumns[u.columnIndex] = {
+              ...newColumns[u.columnIndex],
+              name: u.name,
+              dataType: u.dataType,
+            };
+          }
         }
 
         return {
-          ...prev,
+          ...n,
           columns: newColumns,
         };
       });
@@ -281,12 +242,17 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
     },
     [setExpression]
   );
+  const beeTableHeaderVisibility = useMemo(() => {
+    return relationExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [relationExpression.isHeadless]);
 
   return (
     <div className={`relation-expression`}>
       <BeeTable<ROWTYPE>
+        headerLevelCount={1}
         editColumnLabel={i18n.editRelation}
         columns={beeTableColumns}
+        headerVisibility={beeTableHeaderVisibility}
         rows={beeTableRows}
         onCellUpdates={onCellUpdates}
         onColumnUpdates={onColumnUpdates}
@@ -299,4 +265,4 @@ export const RelationExpression: React.FunctionComponent<RelationExpressionDefin
       />
     </div>
   );
-};
+}

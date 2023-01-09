@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
-import * as _ from "lodash";
+import { CopyIcon, CutIcon, ListIcon, PasteIcon, TableIcon } from "@patternfly/react-icons";
+import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
+import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import {
   useBoxedExpressionEditor,
@@ -31,14 +35,8 @@ import { FunctionExpression } from "../FunctionExpression";
 import { InvocationExpression } from "../InvocationExpression";
 import { ListExpression } from "../ListExpression";
 import { LiteralExpression, PmmlLiteralExpression } from "../LiteralExpression";
-import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { RelationExpression } from "../RelationExpression";
 import "./ExpressionDefinitionLogicTypeSelector.css";
-import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
-import { CopyIcon, CutIcon, ListIcon, PasteIcon, TableIcon } from "@patternfly/react-icons";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { useBeeTableSelection } from "../../table/BeeTable/BeeTableSelectionContext";
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */

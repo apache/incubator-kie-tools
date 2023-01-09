@@ -56,13 +56,13 @@ enum DecisionTableColumnType {
   Annotation = "annotation",
 }
 
-const DECISION_NODE_DEFAULT_NAME = "output-1";
-
 export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
-export function DecisionTableExpression(decisionTableExpression: PropsWithChildren<DecisionTableExpressionDefinition>) {
+export function DecisionTableExpression(
+  decisionTableExpression: DecisionTableExpressionDefinition & { isHeadless: boolean }
+) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -141,24 +141,6 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
 
   const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(decisionTableExpression.id);
 
-  // FIXME: Tiago -> OMG
-  // ***************************************************************************************
-  // THIS STATE IS AMBIGUOUS. WE SHOULD RELY ON THE RESIZING WIDTHS TO GET THE COLUMN WIDTHS
-  // ***************************************************************************************
-  //
-  // useEffect(() => {
-  //   updateResizingWidth(decisionTable.id!, (prev) => {
-  //     const columns = [...inputsResizingWidths, ...outputsResizingWidths, ...annotationsResizingWidths];
-  //     return columns.reduce(
-  //       (acc, { value, isPivoting }) => ({ value: acc.value + value, isPivoting: acc.isPivoting || isPivoting }),
-  //       {
-  //         value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + NESTED_EXPRESSION_RESET_MARGIN + columns.length + 1,
-  //         isPivoting: false,
-  //       }
-  //     );
-  //   });
-  // }, [annotationsResizingWidths, decisionTable.id, inputsResizingWidths, outputsResizingWidths, updateResizingWidth]);
-
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
       (inputClause, inputIndex) => ({
@@ -222,7 +204,7 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
       accessor: decisionTableExpression.isHeadless ? decisionTableExpression.id : (decisionNodeId as any),
-      label: decisionTableExpression.name ?? DECISION_NODE_DEFAULT_NAME,
+      label: decisionTableExpression.name ?? "Expression Name",
       dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
@@ -550,13 +532,15 @@ export function DecisionTableExpression(decisionTableExpression: PropsWithChildr
     [setExpression]
   );
 
+  const beeTableHeaderVisibility = useMemo(() => {
+    return decisionTableExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [decisionTableExpression.isHeadless]);
+
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
         headerLevelCount={1}
-        headerVisibility={
-          decisionTableExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels
-        }
+        headerVisibility={beeTableHeaderVisibility}
         editColumnLabel={getEditColumnLabel}
         operationConfig={beeTableOperationConfig}
         columns={beeTableColumns}

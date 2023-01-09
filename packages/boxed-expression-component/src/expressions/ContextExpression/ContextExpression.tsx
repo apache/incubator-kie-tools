@@ -59,9 +59,7 @@ const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export const ContextExpression: React.FunctionComponent<ContextExpressionDefinition> = (
-  contextExpression: ContextExpressionDefinition
-) => {
+export function ContextExpression(contextExpression: ContextExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -73,7 +71,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 
   //// RESIZING WIDTHS
-
   const { updateResizingWidth } = useResizingWidthsDispatch();
   const { resizingWidths } = useResizingWidths();
 
@@ -140,10 +137,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   ]);
 
   const entryExpressionsMinWidthLocal = useMemo(() => {
-    return Math.max(
-      ...nestedExpressions.map((e) => getExpressionMinWidth(e)), //
-      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
-    );
+    return Math.max(...nestedExpressions.map((e) => getExpressionMinWidth(e)), CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
   }, [nestedExpressions]);
 
   const entryExpressionsMinWidthGlobal = useMemo(() => {
@@ -180,12 +174,11 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   );
 
   ///
-
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
         accessor: decisionNodeId as any,
-        label: contextExpression.name ?? CONTEXT_ENTRY_DEFAULT_NAME,
+        label: contextExpression.name ?? "Expression Name",
         isRowIndexColumn: false,
         dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
         width: undefined,
@@ -353,6 +346,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
             },
           };
         }
+
         // That's a normal context entry
         else {
           const newContextEntries = [...(prev.contextEntries ?? [])];
@@ -392,7 +386,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
       </div>
     </ContextExpressionContext.Provider>
   );
-};
+}
 
 export interface ContextExpressionContextType {
   entryExpressionsMinWidthLocal: number;

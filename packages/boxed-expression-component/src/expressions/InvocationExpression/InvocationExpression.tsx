@@ -46,9 +46,7 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE = ExpressionDefinitionLogicType.Undefined;
 
-export const InvocationExpression: React.FunctionComponent<InvocationExpressionDefinition> = (
-  invocationExpression: InvocationExpressionDefinition
-) => {
+export function InvocationExpression(invocationExpression: InvocationExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -56,8 +54,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   const beeTableRows: ROWTYPE[] = useMemo(() => {
     return invocationExpression.bindingEntries ?? [];
   }, [invocationExpression.bindingEntries]);
-
-  const { decisionNodeId } = useBoxedExpressionEditor();
 
   const setParametersInfoColumnWidth = useCallback(
     (newParametersInfoColumnWidth) => {
@@ -72,8 +68,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        label: invocationExpression.name ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-        accessor: decisionNodeId as keyof ROWTYPE,
+        label: invocationExpression.name ?? "Expression Name",
+        accessor: "invocation-expression" as keyof ROWTYPE,
         dataType: invocationExpression.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
         isRowIndexColumn: false,
         width: undefined,
@@ -83,7 +79,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
             label: invocationExpression.invokedFunction ?? "Function name",
             isRowIndexColumn: false,
             isInlineEditable: true,
-            dataType: undefined as any, // FIXME: Tiago -> This column shouldn't have a datatype, however, the type system asks for it.
+            dataType: undefined as any,
             width: undefined,
             groupType: "invokedFunctionName",
             columns: [
@@ -113,7 +109,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       invocationExpression.dataType,
       invocationExpression.invokedFunction,
       invocationExpression.entryInfoWidth,
-      decisionNodeId,
       setParametersInfoColumnWidth,
     ]
   );
@@ -266,4 +261,4 @@ export const InvocationExpression: React.FunctionComponent<InvocationExpressionD
       />
     </div>
   );
-};
+}

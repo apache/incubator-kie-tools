@@ -24,8 +24,6 @@ export interface ExpressionDefinitionBase {
   name?: string;
   /** Expression data type */
   dataType: DmnBuiltInDataType;
-  /** True, to have no header for this specific expression component, used in a recursive expression */
-  isHeadless?: boolean; // FIXME: Tiago -> I think this needs to go as well, as this is purely a UI thing.
 }
 
 export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {

@@ -25,9 +25,9 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 
-export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressionDefinition> = (
-  pmmlLiteralExpression: PmmlLiteralExpressionDefinition
-) => {
+export function PmmlLiteralExpression(
+  pmmlLiteralExpression: PmmlLiteralExpressionDefinition & { isHeadless: boolean }
+) {
   const { pmmlParams, editorRef } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -102,4 +102,4 @@ export const PmmlLiteralExpression: React.FunctionComponent<PmmlLiteralExpressio
       </Select>
     </div>
   );
-};
+}

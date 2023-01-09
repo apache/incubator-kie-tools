@@ -55,18 +55,18 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     }
   } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
     return (
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       (expression.columns?.length ?? 0) * (RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 1) +
       1 + // last-child border-right
-      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.List) {
     return (
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       Math.max(
         CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         ...(expression.items ?? []).map((expression) => getExpressionMinWidth(expression))
       ) +
-      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
@@ -80,13 +80,11 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
     return (
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       (expression.input?.length ?? 0) * (DECISION_TABLE_INPUT_MIN_WIDTH + 1) +
-      1 + // last-child border-right
       (expression.output?.length ?? 0) * (DECISION_TABLE_OUTPUT_MIN_WIDTH + 1) +
-      1 + // last-child border-right
       (expression.annotations?.length ?? 0) * (DECISION_TABLE_ANNOTATION_MIN_WIDTH + 1) +
       1 + // last-child border-right
-      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       NESTED_EXPRESSION_RESET_MARGIN
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteral) {

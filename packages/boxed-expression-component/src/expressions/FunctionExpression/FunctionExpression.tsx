@@ -53,9 +53,7 @@ export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefinition> = (
-  functionExpression: PropsWithChildren<FunctionExpressionDefinition>
-) => {
+export function FunctionExpression(functionExpression: FunctionExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const nestedExpressionContainer = useNestedExpressionContainer();
@@ -98,18 +96,18 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        label: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
-        accessor: decisionNodeId as any, // FIXME: Tiago -> No bueno.
+        label: functionExpression.name ?? "Expression Name",
+        accessor: decisionNodeId as any,
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any, // FIXME: Tiago -> No bueno.
+            accessor: "parameters" as any,
             label: "",
             isRowIndexColumn: false,
-            dataType: undefined as any, // FIXME: Tiago -> No bueno.
+            dataType: undefined as any,
             width: undefined,
           },
         ],
@@ -184,31 +182,6 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
     ];
   }, [functionExpression.functionKind, i18n]);
 
-  const { updateResizingWidth } = useResizingWidthsDispatch();
-
-  // FIXME: Tiago -> Fix this.
-  // useEffect(() => {
-  //   if (functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel) {
-  //     updateResizingWidth(functionExpression.id!, (prev) => {
-  //       const nestedLiteralExpressionResizingWidth = prev
-  //         ? {
-  //             value: prev.value - BEE_TABLE_ROW_INDEX_COLUMN_WIDTH - 2,
-  //             isPivoting: prev?.isPivoting ?? false,
-  //           }
-  //         : {
-  //             value: getExpressionResizingWidth(functionExpression.expression, new Map()),
-  //             isPivoting: false,
-  //           };
-  //       return {
-  //         value: nestedLiteralExpressionResizingWidth.value + BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + 2,
-  //         isPivoting: nestedLiteralExpressionResizingWidth.isPivoting,
-  //       };
-  //     });
-  //   } else {
-  //     // FIXME: Tiago -> Implement the logic for the others.
-  //   }
-  // }, [functionExpression, updateResizingWidth]);
-
   const beeTableRows = useMemo(() => {
     function rows(): ContextExpressionDefinitionEntry {
       switch (functionExpression.functionKind) {
@@ -274,11 +247,11 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
   const contextExpressionContextValue = useMemo<ContextExpressionContextType>(() => {
     // TODO: Tiago -> Make this depend on Function type
     return {
-      entryExpressionsMinWidthGlobal: nestedExpressionContainer.minWidthGlobal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
-      entryExpressionsMinWidthLocal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
-      entryExpressionsActualWidth: nestedExpressionContainer.actualWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
+      entryExpressionsMinWidthGlobal: nestedExpressionContainer.minWidthGlobal - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
+      entryExpressionsMinWidthLocal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
+      entryExpressionsActualWidth: nestedExpressionContainer.actualWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
       entryExpressionsResizingWidth: {
-        value: nestedExpressionContainer.resizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH + 2, // 2px for the border
+        value: nestedExpressionContainer.resizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
         isPivoting: false,
       },
     };
@@ -320,4 +293,4 @@ export const FunctionExpression: React.FunctionComponent<FunctionExpressionDefin
       </div>
     </ContextExpressionContext.Provider>
   );
-};
+}

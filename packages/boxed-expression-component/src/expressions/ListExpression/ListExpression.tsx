@@ -30,16 +30,14 @@ import {
   ListExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { BeeTable } from "../../table/BeeTable";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export const ListExpression: React.FunctionComponent<ListExpressionDefinition> = (
-  listExpression: ListExpressionDefinition
-) => {
+export function ListExpression(listExpression: ListExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -60,7 +58,7 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
 
   const beeTableRows = useMemo(() => {
     return listExpression.items.map((item) => ({
-      entryInfo: undefined as any, // FIXME: Tiago -> Not ideal.
+      entryInfo: undefined as any,
       entryExpression: item,
     }));
   }, [listExpression.items]);
@@ -69,13 +67,13 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     () => [
       {
         accessor: "list" as any,
-        label: "",
-        dataType: undefined as any,
+        label: listExpression.name ?? "Expression Name",
+        dataType: listExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
       },
     ],
-    []
+    [listExpression.dataType, listExpression.name]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
@@ -136,11 +134,26 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
     [getDefaultListItem, setExpression]
   );
 
+  const beeTableHeaderVisibility = useMemo(() => {
+    return listExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [listExpression.isHeadless]);
+
+  const onColumnUpdates = useCallback(
+    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+      setExpression((prev) => ({
+        ...prev,
+        name,
+        dataType,
+      }));
+    },
+    [setExpression]
+  );
+
   return (
     <div className={`${listExpression.id} list-expression`}>
       <BeeTable<ROWTYPE>
         tableId={listExpression.id}
-        headerVisibility={BeeTableHeaderVisibility.None}
+        headerVisibility={beeTableHeaderVisibility}
         cellComponentByColumnId={cellComponentByColumnId}
         columns={beeTableColumns}
         rows={beeTableRows}
@@ -149,8 +162,9 @@ export const ListExpression: React.FunctionComponent<ListExpressionDefinition> =
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}
         onRowReset={onRowReset}
+        onColumnUpdates={onColumnUpdates}
         shouldRenderRowIndexColumn={true}
       />
     </div>
   );
-};
+}
