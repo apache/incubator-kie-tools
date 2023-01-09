@@ -31,7 +31,10 @@ import {
   getNextAvailablePrefixedName,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
+import {
+  useNestedExpressionContainer,
+  usePivotAwareNestedExpressionContainer,
+} from "../../resizing/NestedExpressionContainerContext";
 import { ResizingWidth, useResizingWidths, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { getExpressionMinWidth, getExpressionResizingWidth } from "../../resizing/Widths";
 import {
@@ -40,7 +43,7 @@ import {
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
 } from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
+import { useBeeTableCell, useBeeTableCoordinates } from "../../table/BeeTable/BeeTableSelectionContext";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
@@ -83,6 +86,8 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
     return entryInfoResizingWidth.isPivoting || nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting);
   }, [entryInfoResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
 
+  const pivotAwareExpressionContainer = usePivotAwareNestedExpressionContainer(isContextExpressionPivoting);
+
   const nonPivotingEntryExpressionsMaxActualWidth = useMemo<number>(() => {
     return Math.max(
       nestedExpressionContainer.actualWidth -
@@ -93,13 +98,6 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
         .map((expression) => getExpressionResizingWidth(expression, new Map()))
     );
   }, [contextExpression.entryInfoWidth, nestedExpressionContainer.actualWidth, nestedExpressions, resizingWidths]);
-
-  const [pivotAwareExpressionContainer, setPivotAwareNestedExpressionContainer] = useState(nestedExpressionContainer);
-  useEffect(() => {
-    setPivotAwareNestedExpressionContainer((prev) => {
-      return isContextExpressionPivoting ? prev : nestedExpressionContainer;
-    });
-  }, [isContextExpressionPivoting, nestedExpressionContainer, nestedExpressionContainer.resizingWidth.value]);
 
   const entryExpressionsResizingWidthValue = useMemo<number>(() => {
     const nestedPivotingExpressions = nestedExpressions.filter(({ id }) => resizingWidths.get(id!)?.isPivoting);
@@ -278,7 +276,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const beeTableAdditionalRow = useMemo(() => {
     return contextExpression.renderResult ?? true
       ? [
-          <ContextResultInfoCell key={"context-result-info"} rowIndex={contextExpression.contextEntries.length} />,
+          <ContextResultInfoCell key={"context-result-info"} />,
           <ContextResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
         ]
       : undefined;
@@ -417,7 +415,9 @@ export function useContextExpressionContext() {
   return React.useContext(ContextExpressionContext);
 }
 
-export function ContextResultInfoCell(props: { rowIndex: number }) {
+export function ContextResultInfoCell() {
+  const { containerCellCoordinates } = useBeeTableCoordinates();
+
   const value = useMemo(() => {
     return `<result>`;
   }, []);
@@ -426,7 +426,12 @@ export function ContextResultInfoCell(props: { rowIndex: number }) {
     return value;
   }, [value]);
 
-  useBeeTableCell(props.rowIndex, 1, undefined, getValue);
+  useBeeTableCell(
+    containerCellCoordinates?.rowIndex ?? 0,
+    containerCellCoordinates?.columnIndex ?? 0,
+    undefined,
+    getValue
+  );
 
   return <div className="context-result">{value}</div>;
 }

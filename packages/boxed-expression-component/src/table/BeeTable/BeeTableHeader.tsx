@@ -155,10 +155,12 @@ export function BeeTableHeader<R extends object>({
     ) => JSX.Element
   >(
     (rowIndex, _column, columnIndex, done) => {
-      const column = _column.placeholderOf ?? _column;
-      const rowSpan = _column.placeholderOf ? 1 : 1;
+      const column = _column;
+      const rowSpan = 1;
       const ret = column.isRowIndexColumn ? (
-        <>{shouldRenderRowIndexColumn && renderRowIndexColumn(column, rowIndex)}</>
+        <React.Fragment key={"row-index-column"}>
+          {shouldRenderRowIndexColumn && renderRowIndexColumn(column, rowIndex)}
+        </React.Fragment>
       ) : (
         <React.Fragment key={getColumnKey(column)}>
           {!done.has(column) && (
@@ -232,7 +234,6 @@ export function BeeTableHeader<R extends object>({
       const rowIndex = -(headerGroupsToRender.length - 1 - headerGroupLevel + 1);
 
       const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
-
       return (
         <PfReactTable.Tr key={key} {...props}>
           {headerGroup.headers.map((column, columnIndex) => renderColumn(rowIndex, column, columnIndex, done))}

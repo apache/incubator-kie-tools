@@ -165,21 +165,13 @@ export function BeeTableCoordinatesContextProvider({
   );
 
   useEffect(() => {
-    setMaxDepth((prev) => {
-      console.info(
-        `Setting maxDepth (${prev} -> ${depth}) for coords D: ${depth} (${coordinates.rowIndex}, ${coordinates.columnIndex})`
-      );
-      return Math.max(prev, depth);
-    });
+    setMaxDepth((prev) => Math.max(prev, depth));
   }, [coordinates.columnIndex, coordinates.rowIndex, depth, setMaxDepth]);
 
   //
 
   useEffect(() => {
     if (coincides(activeCell, coordinates)) {
-      console.info(
-        `Setting maxDepth (${_maxDepth}) for coords: D: ${depth} (${coordinates.rowIndex}, ${coordinates.columnIndex})`
-      );
       setCurrentDepth((prev) => ({
         active: prev.active,
         max: _maxDepth,
@@ -918,13 +910,13 @@ export function useBeeTableCell(
   const [status, setStatus] = useState<BeeTableCellStatus>(NEUTRAL_CELL_STATUS);
 
   useEffect(() => {
-    const ref = subscribeToCellStatus(rowIndex, columnIndex, {
+    const ref = subscribeToCellStatus?.(rowIndex, columnIndex, {
       setStatus,
       setValue,
       getValue,
     });
     return () => {
-      unsubscribeToCellStatus(rowIndex, columnIndex, ref);
+      unsubscribeToCellStatus?.(rowIndex, columnIndex, ref);
     };
   }, [columnIndex, rowIndex, getValue, setValue, subscribeToCellStatus, unsubscribeToCellStatus]);
 

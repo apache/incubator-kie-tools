@@ -88,13 +88,11 @@ export function BeeTableEditableCellContent({
     [mode, value, onChange]
   );
 
-  const onFeelBlur = useCallback(
-    (valueOnBlur: string) => {
-      triggerReadMode(valueOnBlur);
-      setEditing(false);
-    },
-    [setEditing, triggerReadMode]
-  );
+  const onFeelBlur = useCallback((valueOnBlur: string) => {
+    // FIXME: Tiago -> This is not working well.
+    // triggerReadMode(valueOnBlur);
+    // setEditing(false);
+  }, []);
   (window as any).a = FeelEditorService.getStandaloneEditor();
 
   const onFeelKeyDown = useCallback(

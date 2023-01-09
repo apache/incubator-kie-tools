@@ -4,7 +4,7 @@ export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 
 export const NESTED_EXPRESSION_RESET_MARGIN = 0;
 
-export const LITERAL_EXPRESSION_EXTRA_WIDTH = 20;
+export const LITERAL_EXPRESSION_EXTRA_WIDTH = 20 + 2; // 20px for the equals sign, plus 2px for borders left and right.
 
 // CONTEXT
 export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 120;

@@ -64,10 +64,9 @@ export function BeeTableBody<R extends object>({
         >
           {row.cells.map((cell, cellIndex) => {
             return (
-              <>
+              <React.Fragment key={getColumnKey(reactTableInstance.allColumns[cellIndex])}>
                 {((cell.column.isRowIndexColumn && shouldRenderRowIndexColumn) || !cell.column.isRowIndexColumn) && (
                   <BeeTableTd<R>
-                    key={getColumnKey(reactTableInstance.allColumns[cellIndex])}
                     columnIndex={cellIndex}
                     row={row}
                     rowIndex={rowIndex}
@@ -82,7 +81,7 @@ export function BeeTableBody<R extends object>({
                     }
                   />
                 )}
-              </>
+              </React.Fragment>
             );
           })}
         </PfReactTable.Tr>

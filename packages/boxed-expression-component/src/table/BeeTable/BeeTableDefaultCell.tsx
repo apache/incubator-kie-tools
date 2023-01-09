@@ -38,7 +38,7 @@ export function BeeTableDefaultCell<R extends object>({
         },
       ]);
     },
-    [cellProps, columnIndex, onCellUpdates]
+    [cellProps.column, cellProps.row.index, cellProps.row.original, columnIndex, onCellUpdates]
   );
 
   const setEditing = useCallback(

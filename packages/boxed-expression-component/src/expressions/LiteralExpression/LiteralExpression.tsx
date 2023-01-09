@@ -14,46 +14,54 @@
  * limitations under the License.
  */
 
-import "./LiteralExpression.css";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { DmnBuiltInDataType, LiteralExpressionDefinition, ExpressionDefinition } from "../../api";
-import { ExpressionDefinitionHeaderMenu, EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
-import { Resizer } from "../../resizing/Resizer";
-import { BeeTableEditableCellContent } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ResizingWidth, useResizingWidthsDispatch, useResizingWidths } from "../../resizing/ResizingWidthsContext";
+import { useCallback, useMemo } from "react";
+import * as ReactTable from "react-table";
+import { BeeTableHeaderVisibility, LiteralExpressionDefinition } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import {
   LITERAL_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
   NESTED_EXPRESSION_RESET_MARGIN,
 } from "../../resizing/WidthValues";
-import { useBeeTableCell, useBeeTableCoordinates } from "../../table/BeeTable/BeeTableSelectionContext";
+import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
+import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableCoordinates, useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
+import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import "./LiteralExpression.css";
 
-export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
-  const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
+type ROWTYPE = any;
+
+export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isHeadless: boolean }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const nestedExpressionContainer = useNestedExpressionContainer();
-  const { containerCellCoordinates } = useBeeTableCoordinates();
 
   const getValue = useCallback(() => {
     return literalExpression.content ?? "";
   }, [literalExpression.content]);
 
-  const { isActive: isParentCellActive, isEditing: isParentCellEditing } = useBeeTableCell(
+  const setValue = useCallback(
+    (value: string) => {
+      setExpression((prev) => ({ ...prev, content: value }));
+    },
+    [setExpression]
+  );
+
+  const { containerCellCoordinates } = useBeeTableCoordinates();
+  useBeeTableCell(
     containerCellCoordinates?.rowIndex ?? 0,
     containerCellCoordinates?.columnIndex ?? 0,
-    undefined,
+    setValue,
     getValue
   );
 
-  const onExpressionHeaderUpdated = useCallback(
-    ({ dataType, name }: Pick<ExpressionDefinition, "name" | "dataType">) => {
-      setExpression((prev) => ({ ...prev, name, dataType }));
+  const onColumnUpdates = useCallback(
+    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+      setExpression((prev) => ({
+        ...prev,
+        name,
+        dataType,
+      }));
     },
     [setExpression]
   );
@@ -65,20 +73,12 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     [setExpression]
   );
 
-  const updateContent = useCallback(
-    (value: string) => {
-      setExpression((prev) => ({ ...prev, content: value }));
+  const onCellUpdates = useCallback(
+    (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
+      setValue(cellUpdates[0].value);
     },
-    [setExpression]
+    [setValue]
   );
-
-  const selectDecisionNode = useCallback(() => {
-    beeGwtService?.selectObject(decisionNodeId);
-  }, [beeGwtService, decisionNodeId]);
-
-  const selectLiteralExpression = useCallback(() => {
-    beeGwtService?.selectObject(literalExpression.id);
-  }, [beeGwtService, literalExpression.id]);
 
   //// RESIZING WIDTH
 
@@ -89,117 +89,99 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     );
   }, [nestedExpressionContainer]);
 
-  const { updateResizingWidth } = useResizingWidthsDispatch();
-  const { resizingWidths } = useResizingWidths();
+  // useEffect(() => {
+  //   setResizingWidth((prev) => ({
+  //     value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+  //     isPivoting: false,
+  //   }));
+  // }, [literalExpression.width, setResizingWidth]);
 
-  const setResizingWidth = useCallback(
-    (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      // FIXME: Tiago -> id optional
-      updateResizingWidth(literalExpression.id!, getNewResizingWidth);
-    },
-    [literalExpression.id, updateResizingWidth]
-  );
-
-  const resizingWidth = useMemo<ResizingWidth>(() => {
-    return (
-      // FIXME: Tiago -> id optional
-      resizingWidths.get(literalExpression.id!) ?? {
-        value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
-        isPivoting: false,
-      }
-    );
-  }, [literalExpression.id, literalExpression.width, resizingWidths]);
-
-  useEffect(() => {
-    setResizingWidth((prev) => ({
-      value: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
-      isPivoting: false,
-    }));
-  }, [literalExpression.width, setResizingWidth]);
-
-  useEffect(() => {
-    setResizingWidth((prev) => {
-      return prev.isPivoting
-        ? {
-            value: Math.max(
-              nestedExpressionContainer.resizingWidth.value -
-                NESTED_EXPRESSION_RESET_MARGIN -
-                LITERAL_EXPRESSION_EXTRA_WIDTH,
-              minWidthGlobal
-            ),
-            isPivoting: true,
-          }
-        : {
-            value: Math.max(
-              nestedExpressionContainer.resizingWidth.value -
-                NESTED_EXPRESSION_RESET_MARGIN -
-                LITERAL_EXPRESSION_EXTRA_WIDTH,
-              minWidthGlobal,
-              literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
-            ),
-            isPivoting: false,
-          };
-    });
-  }, [
-    literalExpression.id,
-    literalExpression.width,
-    minWidthGlobal,
-    nestedExpressionContainer.minWidthGlobal,
-    nestedExpressionContainer.resizingWidth,
-    setResizingWidth,
-  ]);
+  // useEffect(() => {
+  //   setResizingWidth((prev) => {
+  //     return prev.isPivoting
+  //       ? {
+  //           value: Math.max(
+  //             nestedExpressionContainer.resizingWidth.value -
+  //               NESTED_EXPRESSION_RESET_MARGIN -
+  //               LITERAL_EXPRESSION_EXTRA_WIDTH,
+  //             minWidthGlobal
+  //           ),
+  //           isPivoting: true,
+  //         }
+  //       : {
+  //           value: Math.max(
+  //             nestedExpressionContainer.resizingWidth.value -
+  //               NESTED_EXPRESSION_RESET_MARGIN -
+  //               LITERAL_EXPRESSION_EXTRA_WIDTH,
+  //             minWidthGlobal,
+  //             literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH
+  //           ),
+  //           isPivoting: false,
+  //         };
+  //   });
+  // }, [
+  //   literalExpression.id,
+  //   literalExpression.width,
+  //   minWidthGlobal,
+  //   nestedExpressionContainer.minWidthGlobal,
+  //   nestedExpressionContainer.resizingWidth,
+  //   setResizingWidth,
+  // ]);
 
   //
 
-  const [isEditing, setEditing] = useState(false);
+  const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
+    return [
+      {
+        accessor: "literal-expression" as any, // FIXME: Tiago -> No bueno.
+        label: literalExpression.name ?? "Expression Name",
+        isRowIndexColumn: false,
+        dataType: literalExpression.dataType,
+        minWidth: minWidthGlobal,
+        width: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+        setWidth,
+      },
+    ];
+  }, [literalExpression.dataType, literalExpression.name, literalExpression.width, minWidthGlobal, setWidth]);
 
-  const onDoubleClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEditing(true);
+  const beeTableRows = useMemo<ROWTYPE[]>(() => {
+    return [{ "literal-expression": literalExpression.content ?? "" }];
+  }, [literalExpression]);
+
+  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(literalExpression.id!);
+
+  const beeTableHeaderVisibility = useMemo(() => {
+    return literalExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [literalExpression.isHeadless]);
+
+  const getColumnKey = useCallback((column: ReactTable.Column<ROWTYPE>) => {
+    return column.label;
+  }, []);
+
+  const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return row.id;
+  }, []);
+
+  const beeTableOperationConfig = useMemo(() => {
+    return [];
   }, []);
 
   return (
     <div className={`literal-expression`}>
-      {!literalExpression.isHeadless && (
-        <div className="literal-expression-header" onClick={selectDecisionNode}>
-          <ExpressionDefinitionHeaderMenu
-            selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
-            selectedDataType={literalExpression.dataType ?? DmnBuiltInDataType.Undefined}
-            onExpressionHeaderUpdated={onExpressionHeaderUpdated}
-          >
-            <div className={"expression-info"}>
-              <p className="expression-info-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>
-              <p className="expression-info-data-type pf-u-text-truncate">({literalExpression.dataType})</p>
-            </div>
-          </ExpressionDefinitionHeaderMenu>
-        </div>
-      )}
       <div className={"literal-expression-body-container"}>
         <div className={"equals-sign"}>{`=`}</div>
-        <div
-          className={`${literalExpression.id} literal-expression-body ${
-            isEditing || isParentCellEditing ? "editing" : ""
-          }`}
-          onClick={selectLiteralExpression}
-          onDoubleClick={onDoubleClick}
-          style={{ width: resizingWidth.value, minWidth: minWidthGlobal }}
-        >
-          <BeeTableEditableCellContent
-            isReadOnly={false}
-            value={literalExpression.content ?? ""}
-            onChange={updateContent}
-            isActive={isEditing || isParentCellActive}
-            isEditing={isEditing || isParentCellEditing}
-            setEditing={setEditing}
-          />
-          <Resizer
-            minWidth={minWidthGlobal}
-            width={literalExpression.width}
-            setWidth={setWidth}
-            resizingWidth={resizingWidth}
-            setResizingWidth={setResizingWidth}
-          />
-        </div>
+        <BeeTable
+          getColumnKey={getColumnKey}
+          getRowKey={getRowKey}
+          columns={beeTableColumns}
+          rows={beeTableRows}
+          shouldRenderRowIndexColumn={false}
+          headerVisibility={beeTableHeaderVisibility}
+          onColumnUpdates={onColumnUpdates}
+          onCellUpdates={onCellUpdates}
+          operationConfig={beeTableOperationConfig}
+          onColumnResizingWidthChange={onColumnResizingWidthChange}
+        ></BeeTable>
       </div>
     </div>
   );
