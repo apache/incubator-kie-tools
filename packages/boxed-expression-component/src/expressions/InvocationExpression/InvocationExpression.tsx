@@ -243,7 +243,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
 
   return (
     <div className={`invocation-expression ${invocationExpression.id}`}>
-      <BeeTable<ROWTYPE>
+      <BeeTable
         tableId={invocationExpression.id}
         headerLevelCount={2}
         headerVisibility={headerVisibility}
@@ -258,7 +258,8 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
         onRowReset={onRowReset}
         onRowDeleted={onRowDeleted}
         shouldRenderRowIndexColumn={false}
-        showInlineControls={true}
+        shouldShowRowsInlineControls={true}
+        shouldShowColumnsInlineControls={false}
       />
     </div>
   );

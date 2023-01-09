@@ -277,7 +277,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
   return (
     <ContextExpressionContext.Provider value={contextExpressionContextValue}>
       <div className={`function-expression ${functionExpression.id}`}>
-        <BeeTable<ROWTYPE>
+        <BeeTable
           operationConfig={beeTableOperationConfig}
           onColumnUpdates={onColumnUpdates}
           getRowKey={getRowKey}
@@ -289,7 +289,8 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
           controllerCell={controllerCell}
           cellComponentByColumnId={cellComponentByColumnId}
           shouldRenderRowIndexColumn={true}
-          showInlineControls={false}
+          shouldShowRowsInlineControls={false}
+          shouldShowColumnsInlineControls={false}
         />
       </div>
     </ContextExpressionContext.Provider>

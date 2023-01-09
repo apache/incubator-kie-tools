@@ -70,7 +70,8 @@ export interface BeeTableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
   shouldRenderRowIndexColumn: boolean;
-  showInlineControls: boolean;
+  shouldShowRowsInlineControls: boolean;
+  shouldShowColumnsInlineControls: boolean;
 }
 
 /** Possible status for the visibility of the Table's Header */

@@ -248,7 +248,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
 
   return (
     <div className={`relation-expression`}>
-      <BeeTable<ROWTYPE>
+      <BeeTable
         headerLevelCount={1}
         editColumnLabel={i18n.editRelation}
         columns={beeTableColumns}
@@ -262,7 +262,8 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         shouldRenderRowIndexColumn={true}
-        showInlineControls={true}
+        shouldShowRowsInlineControls={true}
+        shouldShowColumnsInlineControls={true}
       />
     </div>
   );

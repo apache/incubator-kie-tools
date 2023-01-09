@@ -39,7 +39,7 @@ export interface BeeTableBodyProps<R extends object> {
 
   shouldRenderRowIndexColumn: boolean;
 
-  showInlineControls: boolean;
+  shouldShowRowsInlineControls: boolean;
 }
 
 export function BeeTableBody<R extends object>({
@@ -50,7 +50,7 @@ export function BeeTableBody<R extends object>({
   getColumnKey,
   onRowAdded,
   shouldRenderRowIndexColumn,
-  showInlineControls,
+  shouldShowRowsInlineControls,
 }: BeeTableBodyProps<R>) {
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
@@ -70,7 +70,7 @@ export function BeeTableBody<R extends object>({
               <React.Fragment key={getColumnKey(reactTableInstance.allColumns[cellIndex])}>
                 {((cell.column.isRowIndexColumn && shouldRenderRowIndexColumn) || !cell.column.isRowIndexColumn) && (
                   <BeeTableTd<R>
-                    showInlineControls={showInlineControls}
+                    shouldShowRowsInlineControls={shouldShowRowsInlineControls}
                     columnIndex={cellIndex}
                     row={row}
                     rowIndex={rowIndex}
@@ -102,7 +102,7 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [reactTableInstance, getRowKey, getColumnKey, shouldRenderRowIndexColumn, showInlineControls, onRowAdded]
+    [reactTableInstance, getRowKey, getColumnKey, shouldRenderRowIndexColumn, shouldShowRowsInlineControls, onRowAdded]
   );
 
   const additionalRowIndex = useMemo(() => {

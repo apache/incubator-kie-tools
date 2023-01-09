@@ -140,7 +140,8 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           operationConfig={beeTableOperationConfig}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           shouldRenderRowIndexColumn={false}
-          showInlineControls={false}
+          shouldShowRowsInlineControls={false}
+          shouldShowColumnsInlineControls={false}
         ></BeeTable>
       </div>
     </div>

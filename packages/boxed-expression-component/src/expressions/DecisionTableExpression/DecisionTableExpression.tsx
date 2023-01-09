@@ -554,7 +554,8 @@ export function DecisionTableExpression(
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         shouldRenderRowIndexColumn={true}
-        showInlineControls={true}
+        shouldShowRowsInlineControls={true}
+        shouldShowColumnsInlineControls={true}
       />
     </div>
   );

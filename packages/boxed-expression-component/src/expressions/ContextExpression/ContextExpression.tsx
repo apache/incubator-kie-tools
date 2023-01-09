@@ -63,6 +63,9 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+
+  //// RESIZING WIDTHS (begin)
+
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   const nestedExpressions = useMemo<ExpressionDefinition[]>(
@@ -70,7 +73,6 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [contextExpression.contextEntries, contextExpression.result]
   );
 
-  //// RESIZING WIDTHS
   const { updateResizingWidth } = useResizingWidthsDispatch();
   const { resizingWidths } = useResizingWidths();
 
@@ -173,7 +175,8 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [setExpression]
   );
 
-  ///
+  //// RESIZING WIDTHS (end)
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
@@ -382,7 +385,8 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           onRowDeleted={onRowDeleted}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           shouldRenderRowIndexColumn={false}
-          showInlineControls={true}
+          shouldShowRowsInlineControls={true}
+          shouldShowColumnsInlineControls={false}
         />
       </div>
     </ContextExpressionContext.Provider>
