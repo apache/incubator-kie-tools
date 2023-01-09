@@ -87,7 +87,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Showcase } from "./Showcase";
-import { FileTypes, isEditable, SupportedFileExtensions } from "../extension";
+import { FileTypes, splitFiles, SupportedFileExtensions } from "../extension";
 import { APP_NAME } from "../AppConstants";
 
 export function HomePage() {
@@ -326,9 +326,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
-  const editableFiles = useMemo(() => {
-    return workspacePromise.data?.files.filter((file) => isEditable(file.relativePath)) ?? [];
-  }, [workspacePromise.data?.files]);
+  const { editableFiles, readonlyFiles } = useMemo(
+    () => splitFiles(workspacePromise.data?.files ?? []),
+    [workspacePromise.data?.files]
+  );
 
   const workspaceName = useMemo(() => {
     return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
@@ -341,88 +342,93 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
-          {(editableFiles.length === 1 && workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
-            <Card
-              isSelected={props.isSelected}
-              isSelectable={true}
-              onMouseOver={() => setHovered(true)}
-              onMouseLeave={() => setHovered(false)}
-              isHoverable={true}
-              isCompact={true}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                history.push({
-                  pathname: routes.workspaceWithFilePath.path({
-                    workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                    extension: editableFiles[0].extension,
-                  }),
-                });
-              }}
-            >
-              <CardHeader>
-                <Link
-                  to={routes.workspaceWithFilePath.path({
-                    workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                    extension: editableFiles[0].extension,
-                  })}
-                >
-                  <CardHeaderMain style={{ width: "100%" }}>
-                    <Flex>
-                      <FlexItem>
-                        <CardTitle>
-                          <TextContent>
-                            <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                              <TaskIcon />
-                              &nbsp;&nbsp;
-                              {editableFiles[0].nameWithoutExtension}
-                            </Text>
-                          </TextContent>
-                        </CardTitle>
-                      </FlexItem>
-                      <FlexItem>
-                        <b>
-                          <FileLabel extension={editableFiles[0].extension} />
-                        </b>
-                      </FlexItem>
-                    </Flex>
-                  </CardHeaderMain>
-                </Link>
-                <CardActions>
-                  {isHovered && (
-                    <DeleteDropdownWithConfirmation
-                      onDelete={() => {
-                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                      }}
-                      item={
-                        <Flex flexWrap={{ default: "nowrap" }}>
-                          <FlexItem>
-                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
-                          </FlexItem>
-                          <FlexItem>
-                            <b>
-                              <FileLabel extension={editableFiles[0].extension} />
-                            </b>
-                          </FlexItem>
-                        </Flex>
-                      }
-                    />
-                  )}
-                </CardActions>
-              </CardHeader>
-              <CardBody>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <b>{`Created: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
-                    <b>{`, Last updated: `}</b>
-                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
-                  </Text>
-                </TextContent>
-              </CardBody>
-            </Card>
-          )) || (
+          {(editableFiles.length === 1 &&
+            readonlyFiles.length === 0 &&
+            workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
+              <Card
+                isSelected={props.isSelected}
+                isSelectable={true}
+                onMouseOver={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
+                isHoverable={true}
+                isCompact={true}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  history.push({
+                    pathname: routes.workspaceWithFilePath.path({
+                      workspaceId: editableFiles[0].workspaceId,
+                      fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+                      extension: editableFiles[0].extension,
+                    }),
+                  });
+                }}
+              >
+                <CardHeader>
+                  <Link
+                    to={routes.workspaceWithFilePath.path({
+                      workspaceId: editableFiles[0].workspaceId,
+                      fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+                      extension: editableFiles[0].extension,
+                    })}
+                  >
+                    <CardHeaderMain style={{ width: "100%" }}>
+                      <Flex>
+                        <FlexItem>
+                          <CardTitle>
+                            <TextContent>
+                              <Text
+                                component={TextVariants.h3}
+                                style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                              >
+                                <TaskIcon />
+                                &nbsp;&nbsp;
+                                {editableFiles[0].nameWithoutExtension}
+                              </Text>
+                            </TextContent>
+                          </CardTitle>
+                        </FlexItem>
+                        <FlexItem>
+                          <b>
+                            <FileLabel extension={editableFiles[0].extension} />
+                          </b>
+                        </FlexItem>
+                      </Flex>
+                    </CardHeaderMain>
+                  </Link>
+                  <CardActions>
+                    {isHovered && (
+                      <DeleteDropdownWithConfirmation
+                        onDelete={() => {
+                          workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                        }}
+                        item={
+                          <Flex flexWrap={{ default: "nowrap" }}>
+                            <FlexItem>
+                              Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                            </FlexItem>
+                            <FlexItem>
+                              <b>
+                                <FileLabel extension={editableFiles[0].extension} />
+                              </b>
+                            </FlexItem>
+                          </Flex>
+                        }
+                      />
+                    )}
+                  </CardActions>
+                </CardHeader>
+                <CardBody>
+                  <TextContent>
+                    <Text component={TextVariants.p}>
+                      <b>{`Created: `}</b>
+                      <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
+                      <b>{`, Last updated: `}</b>
+                      <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
+                    </Text>
+                  </TextContent>
+                </CardBody>
+              </Card>
+            )) || (
             <Card
               isSelected={props.isSelected}
               isSelectable={true}
@@ -561,21 +567,10 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   const routes = useRoutes();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
-  const readonlyFiles = useMemo(
-    () =>
-      (workspacePromise.data?.files ?? [])
-        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => !isEditable(file.relativePath)),
-    [workspacePromise.data?.files]
-  );
-
-  const editableFiles = useMemo(
-    () =>
-      (workspacePromise.data?.files ?? [])
-        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => isEditable(file.relativePath)),
-    [workspacePromise.data?.files]
-  );
+  const { editableFiles, readonlyFiles } = useMemo(() => {
+    const allFiles = (workspacePromise.data?.files ?? []).sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+    return splitFiles(allFiles);
+  }, [workspacePromise.data?.files]);
 
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const [alerts, alertsRef] = useController<AlertsController>();

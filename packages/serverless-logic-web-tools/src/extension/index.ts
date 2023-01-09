@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { basename } from "path";
 import { PROJECT_FILES } from "../project";
 
@@ -108,3 +109,15 @@ export function isYaml(path: string): boolean {
 }
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
+
+export function splitFiles(files: WorkspaceFile[]): {
+  editableFiles: WorkspaceFile[];
+  readonlyFiles: WorkspaceFile[];
+} {
+  const [editableFiles, readonlyFiles] = files.reduce(
+    ([editableFiles, readonlyFiles], f: WorkspaceFile) =>
+      isEditable(f.relativePath) ? [[...editableFiles, f], readonlyFiles] : [editableFiles, [...readonlyFiles, f]],
+    [[], []]
+  );
+  return { editableFiles, readonlyFiles };
+}
