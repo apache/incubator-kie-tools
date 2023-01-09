@@ -35,6 +35,7 @@ export interface BeeTableThProps<R extends object> {
   onClick?: React.MouseEventHandler;
   isLastLevelColumn: boolean;
   rowIndex: number;
+  rowSpan: number;
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
 }
@@ -56,6 +57,7 @@ export function BeeTableTh<R extends object>({
   onClick,
   columnIndex,
   rowIndex,
+  rowSpan,
   groupType,
   column,
   isLastLevelColumn,
@@ -146,6 +148,7 @@ export function BeeTableTh<R extends object>({
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <PfReactTable.Th
+        rowSpan={rowSpan}
         {...thProps}
         style={{ ...thProps.style, display: "table-cell" }}
         ref={thRef}

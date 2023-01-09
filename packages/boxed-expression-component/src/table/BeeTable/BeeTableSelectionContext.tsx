@@ -6,6 +6,11 @@ import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 export const SELECTION_MIN_ACTIVE_DEPTH = -1;
 export const SELECTION_MIN_MAX_DEPTH = 0;
 
+export const INITIAL_CURRENT_DEPTH = {
+  active: undefined,
+  max: SELECTION_MIN_MAX_DEPTH,
+};
+
 export interface BeeTableCellCoordinates {
   columnIndex: number;
   rowIndex: number;
@@ -30,6 +35,7 @@ export interface BeeTableSelectionContextType {
   selectionStart: BeeTableSelectionActiveCell | undefined;
   currentDepth: { active: number | undefined; max: number };
   depth: number;
+  isSelectionHere: boolean;
 }
 
 export interface BeeTableCoordinatesDispatchContextType {
@@ -78,11 +84,9 @@ export const BeeTableSelectionContext = React.createContext<BeeTableSelectionCon
   activeCellForNestedTables: undefined,
   selectionEnd: undefined,
   selectionStart: undefined,
-  currentDepth: {
-    active: undefined,
-    max: SELECTION_MIN_MAX_DEPTH,
-  },
+  currentDepth: INITIAL_CURRENT_DEPTH,
   depth: SELECTION_MIN_ACTIVE_DEPTH,
+  isSelectionHere: true,
 });
 
 export const BeeTableCoordinatesContext = React.createContext<BeeTableCoordinatesContextType>({
@@ -210,12 +214,11 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
 
   const [_selection, _setSelection] = useState<BeeTableSelection>(NEUTRAL_SELECTION);
-  const [_currentDepth, _setCurrentDepth] = useState<{ active: number | undefined; max: number }>({
-    active: undefined,
-    max: SELECTION_MIN_MAX_DEPTH,
-  });
+  const [_currentDepth, _setCurrentDepth] =
+    useState<{ active: number | undefined; max: number }>(INITIAL_CURRENT_DEPTH);
 
   const {
+    isSelectionHere: isParentSelectionThere,
     activeCellForNestedTables: parentActiveCell,
     currentDepth: parentCurrentDepth,
     depth: parentDepth,
@@ -232,17 +235,17 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   const activeMaxDepth = Math.max(parentCurrentDepth.max, _currentDepth.max);
   const setCurrentDepth = setParentCurrentDepth ?? _setCurrentDepth;
 
-  const isSelectionAtThisLevel = useMemo(() => {
-    return depth === activeDepth && coincides(parentActiveCell, containerCellCoordinates);
-  }, [activeDepth, containerCellCoordinates, depth, parentActiveCell]);
+  const isSelectionHere = useMemo(() => {
+    return coincides(parentActiveCell, containerCellCoordinates) && isParentSelectionThere;
+  }, [containerCellCoordinates, isParentSelectionThere, parentActiveCell]);
 
   const selection = useMemo(() => {
-    if (isSelectionAtThisLevel) {
+    if (depth === activeDepth && isSelectionHere) {
       return _selection;
     }
 
     return NEUTRAL_SELECTION;
-  }, [_selection, isSelectionAtThisLevel]);
+  }, [_selection, activeDepth, depth, isSelectionHere]);
 
   const selectionRef = React.useRef<BeeTableSelection>(selection);
   useEffect(() => {
@@ -260,12 +263,14 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         max: activeMaxDepth,
       },
       depth,
+      isSelectionHere,
     };
   }, [
     _selection.active,
     activeDepth,
     activeMaxDepth,
     depth,
+    isSelectionHere,
     selection.active,
     selection.selectionEnd,
     selection.selectionStart,
@@ -779,14 +784,14 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
 
   // If there's no selection on the table that is coming into focus, we focus at the top-left cell.
   useEffect(() => {
-    if (!selection.active && isSelectionAtThisLevel) {
+    if (!selection.active && depth === activeDepth && isSelectionHere) {
       dispatch.resetSelectionAt({
         rowIndex: 0,
         columnIndex: 1,
         isEditing: false,
       });
     }
-  }, [activeDepth, containerCellCoordinates, depth, dispatch, isSelectionAtThisLevel, parentActiveCell, selection]);
+  }, [activeDepth, containerCellCoordinates, depth, dispatch, isSelectionHere, parentActiveCell, selection]);
 
   // Paint the selection
   useEffect(() => {

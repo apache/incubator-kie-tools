@@ -120,6 +120,7 @@ export function BeeTableHeader<R extends object>({
 
       return (
         <BeeTableTh
+          rowSpan={1}
           key={columnKey}
           column={column}
           columnIndex={0}
@@ -146,50 +147,65 @@ export function BeeTableHeader<R extends object>({
   );
 
   const renderColumn = useCallback<
-    (rowIndex: number, column: ReactTable.ColumnInstance<R>, columnIndex: number) => JSX.Element
+    (
+      rowIndex: number,
+      column: ReactTable.ColumnInstance<R>,
+      columnIndex: number,
+      done: Set<ReactTable.ColumnInstance<R>>
+    ) => JSX.Element
   >(
-    (rowIndex, column, columnIndex) =>
-      column.isRowIndexColumn ? (
+    (rowIndex, _column, columnIndex, done) => {
+      const column = _column.placeholderOf ?? _column;
+      const rowSpan = _column.placeholderOf ? 1 : 1;
+      const ret = column.isRowIndexColumn ? (
         <>{shouldRenderRowIndexColumn && renderRowIndexColumn(column, rowIndex)}</>
       ) : (
-        <BeeTableThResizable
-          key={getColumnKey(column)}
-          isEditableHeader={isEditableHeader}
-          getColumnKey={getColumnKey}
-          getColumnLabel={getColumnLabel}
-          onHeaderClick={onHeaderClick}
-          reactTableInstance={reactTableInstance}
-          column={column}
-          columnIndex={columnIndex}
-          rowIndex={rowIndex}
-          onColumnAdded={onColumnAdded}
-          onExpressionHeaderUpdated={({ name, dataType }) =>
-            onColumnNameOrDataTypeUpdate(column, columnIndex)({ name, dataType })
-          }
-          headerCellInfo={
-            <div
-              className="expression-info header-cell-info"
-              data-ouia-component-type="expression-column-header-cell-info"
-            >
-              {column.headerCellElement ? (
-                column.headerCellElement
-              ) : column.isInlineEditable ? (
-                <InlineEditableTextInput
-                  value={column.label}
-                  onChange={(value) => {
-                    onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
-                  }}
-                />
-              ) : (
-                <p className="expression-info-name pf-u-text-truncate label">{column.label}</p>
-              )}
-              {column.dataType ? (
-                <p className="expression-info-data-type pf-u-text-truncate data-type">({column.dataType})</p>
-              ) : null}
-            </div>
-          }
-        />
-      ),
+        <React.Fragment key={getColumnKey(column)}>
+          {!done.has(column) && (
+            <BeeTableThResizable
+              rowSpan={rowSpan}
+              isEditableHeader={isEditableHeader}
+              getColumnKey={getColumnKey}
+              getColumnLabel={getColumnLabel}
+              onHeaderClick={onHeaderClick}
+              reactTableInstance={reactTableInstance}
+              column={column}
+              columnIndex={columnIndex}
+              rowIndex={rowIndex}
+              onColumnAdded={onColumnAdded}
+              onExpressionHeaderUpdated={({ name, dataType }) =>
+                onColumnNameOrDataTypeUpdate(column, columnIndex)({ name, dataType })
+              }
+              headerCellInfo={
+                <div
+                  className="expression-info header-cell-info"
+                  data-ouia-component-type="expression-column-header-cell-info"
+                >
+                  {column.headerCellElement ? (
+                    column.headerCellElement
+                  ) : column.isInlineEditable ? (
+                    <InlineEditableTextInput
+                      value={column.label}
+                      onChange={(value) => {
+                        onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
+                      }}
+                    />
+                  ) : (
+                    <p className="expression-info-name pf-u-text-truncate label">{column.label}</p>
+                  )}
+                  {column.dataType ? (
+                    <p className="expression-info-data-type pf-u-text-truncate data-type">({column.dataType})</p>
+                  ) : null}
+                </div>
+              }
+            />
+          )}
+        </React.Fragment>
+      );
+
+      done.add(column);
+      return ret;
+    },
     [
       shouldRenderRowIndexColumn,
       renderRowIndexColumn,
@@ -208,6 +224,7 @@ export function BeeTableHeader<R extends object>({
       ? _.dropRight(reactTableInstance.headerGroups)
       : reactTableInstance.headerGroups;
 
+    const done = new Set<ReactTable.ColumnInstance<R>>();
     return headerGroupsToRender.map((headerGroup, headerGroupLevel) => {
       // rowIndex === -1 --> Last headerGroup
       // rowIndex === -2 --> Second to last headerGroup
@@ -215,22 +232,26 @@ export function BeeTableHeader<R extends object>({
       const rowIndex = -(headerGroupsToRender.length - 1 - headerGroupLevel + 1);
 
       const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
+
       return (
         <PfReactTable.Tr key={key} {...props}>
-          {headerGroup.headers.map((column, columnIndex) => renderColumn(rowIndex, column, columnIndex))}
+          {headerGroup.headers.map((column, columnIndex) => renderColumn(rowIndex, column, columnIndex, done))}
         </PfReactTable.Tr>
       );
     });
   }, [skipLastHeaderGroup, reactTableInstance.headerGroups, renderColumn]);
 
   const renderAtLevelInHeaderGroups = useCallback(
-    (headerGroupLevel: number) => (
-      <PfReactTable.Tr>
-        {_.nth(reactTableInstance.headerGroups, headerGroupLevel)?.headers.map((column, columnIndex) =>
-          renderColumn(headerGroupLevel, column, columnIndex)
-        )}
-      </PfReactTable.Tr>
-    ),
+    (headerGroupLevel: number) => {
+      const done = new Set<ReactTable.ColumnInstance<R>>();
+      return (
+        <PfReactTable.Tr>
+          {_.nth(reactTableInstance.headerGroups, headerGroupLevel)?.headers.map((column, columnIndex) =>
+            renderColumn(headerGroupLevel, column, columnIndex, done)
+          )}
+        </PfReactTable.Tr>
+      );
+    },
     [renderColumn, reactTableInstance.headerGroups]
   );
 
