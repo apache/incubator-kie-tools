@@ -38,7 +38,7 @@ export interface BeeTableThProps<R extends object> {
   rowSpan: number;
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
-  shouldShowRowsInlineControls: boolean;
+  shouldShowColumnsInlineControls: boolean;
 }
 
 export type HoverInfo =
@@ -62,7 +62,7 @@ export function BeeTableTh<R extends object>({
   groupType,
   column,
   isLastLevelColumn,
-  shouldShowRowsInlineControls,
+  shouldShowColumnsInlineControls: shouldShowRowsInlineControls,
 }: React.PropsWithChildren<BeeTableThProps<R>>) {
   const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
   const thRef = useRef<HTMLTableCellElement>(null);

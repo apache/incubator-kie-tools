@@ -132,7 +132,7 @@ export function BeeTableHeader<R extends object>({
           className={classNames}
           groupType={column.groupType}
           isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
-          shouldShowRowsInlineControls={shouldShowRowsInlineControls}
+          shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
@@ -171,7 +171,7 @@ export function BeeTableHeader<R extends object>({
             <BeeTableThResizable
               rowSpan={rowSpan}
               isEditableHeader={isEditableHeader}
-              shouldShowRowsInlineControls={shouldShowRowsInlineControls}
+              shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
               getColumnKey={getColumnKey}
               getColumnLabel={getColumnLabel}
               onHeaderClick={onHeaderClick}
