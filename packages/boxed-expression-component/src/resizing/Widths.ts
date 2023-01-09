@@ -33,11 +33,23 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     return LITERAL_EXPRESSION_MIN_WIDTH + LITERAL_EXPRESSION_EXTRA_WIDTH;
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH - 1; // 1px for the missing entry info border
+      return BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH - 1; // 1px for the missing entry info border
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 1;
+      return (
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
+        CONTEXT_ENTRY_INFO_MIN_WIDTH +
+        CONTEXT_ENTRY_EXTRA_WIDTH * 2 -
+        1
+      );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 1;
+      return (
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
+        CONTEXT_ENTRY_INFO_MIN_WIDTH +
+        CONTEXT_ENTRY_EXTRA_WIDTH * 2 -
+        1
+      );
     } else {
       throw new Error("Should never get here");
     }

@@ -32,11 +32,24 @@ import {
   LITERAL_EXPRESSION_MIN_WIDTH,
   NESTED_EXPRESSION_RESET_MARGIN,
 } from "../../resizing/WidthValues";
+import { useBeeTableCell, useBeeTableCoordinates } from "../../table/BeeTable/BeeTableSelectionContext";
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition) {
   const { beeGwtService, decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const nestedExpressionContainer = useNestedExpressionContainer();
+  const { containerCellCoordinates } = useBeeTableCoordinates();
+
+  const getValue = useCallback(() => {
+    return literalExpression.content ?? "";
+  }, [literalExpression.content]);
+
+  const { isActive: isParentCellActive, isEditing: isParentCellEditing } = useBeeTableCell(
+    containerCellCoordinates?.rowIndex ?? 0,
+    containerCellCoordinates?.columnIndex ?? 0,
+    undefined,
+    getValue
+  );
 
   const onExpressionHeaderUpdated = useCallback(
     ({ dataType, name }: Pick<ExpressionDefinition, "name" | "dataType">) => {
@@ -164,7 +177,9 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       <div className={"literal-expression-body-container"}>
         <div className={"equals-sign"}>{`=`}</div>
         <div
-          className={`${literalExpression.id} literal-expression-body ${isEditing ? "editing" : ""}`}
+          className={`${literalExpression.id} literal-expression-body ${
+            isEditing || isParentCellEditing ? "editing" : ""
+          }`}
           onClick={selectLiteralExpression}
           onDoubleClick={onDoubleClick}
           style={{ width: resizingWidth.value, minWidth: minWidthGlobal }}
@@ -173,8 +188,8 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
             isReadOnly={false}
             value={literalExpression.content ?? ""}
             onChange={updateContent}
-            isActive={isEditing}
-            isEditing={isEditing}
+            isActive={isEditing || isParentCellActive}
+            isEditing={isEditing || isParentCellEditing}
             setEditing={setEditing}
           />
           <Resizer

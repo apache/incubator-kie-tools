@@ -38,9 +38,9 @@ import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_ENTRY_EXTRA_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
-  NESTED_EXPRESSION_RESET_MARGIN,
 } from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
+import { useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
@@ -278,9 +278,7 @@ export const ContextExpression: React.FunctionComponent<ContextExpressionDefinit
   const beeTableAdditionalRow = useMemo(() => {
     return contextExpression.renderResult ?? true
       ? [
-          <div key={"context-result"} className="context-result">
-            {`<result>`}
-          </div>,
+          <ContextResultInfoCell key={"context-result-info"} rowIndex={contextExpression.contextEntries.length} />,
           <ContextResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
         ]
       : undefined;
@@ -417,4 +415,18 @@ export const ContextExpressionContext = React.createContext<ContextExpressionCon
 
 export function useContextExpressionContext() {
   return React.useContext(ContextExpressionContext);
+}
+
+export function ContextResultInfoCell(props: { rowIndex: number }) {
+  const value = useMemo(() => {
+    return `<result>`;
+  }, []);
+
+  const getValue = useCallback(() => {
+    return value;
+  }, [value]);
+
+  useBeeTableCell(props.rowIndex, 1, undefined, getValue);
+
+  return <div className="context-result">{value}</div>;
 }
