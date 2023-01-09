@@ -19,13 +19,13 @@ package org.kie.workbench.common.dmn.client.marshaller;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -65,6 +65,8 @@ import org.uberfire.client.promise.Promises;
 
 @Dependent
 public class DMNMarshallerService {
+
+    private static Logger LOGGER = Logger.getLogger(DMNMarshallerService.class.getName());
 
     private final DMNUnmarshaller dmnUnmarshaller;
 
@@ -121,8 +123,8 @@ public class DMNMarshallerService {
             };
             MainJs.unmarshall(xml, "", jsCallback);
         } catch (final Exception e) {
-            GWT.log(e.getMessage(), e);
-            callback.onError(new ClientRuntimeError(new DiagramParsingException(getMetadata(), xml)));
+            LOGGER.severe(e.getMessage());
+            callback.onError(new ClientRuntimeError(e.getMessage(), new DiagramParsingException(getMetadata(), xml)));
         }
     }
 

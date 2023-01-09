@@ -154,7 +154,9 @@ public class StunnerEditor {
             final DiagramParsingException dpe = (DiagramParsingException) e;
             close();
             parsingExceptionProcessor.accept(dpe);
-            errorPage.setContent(e.getMessage());
+            errorPage.setTitle("Parsing error");
+            errorPage.setContent("Unfortunately there was an expected error processing your asset.");
+            errorPage.setErrorContent(error.getMessage());
             view.setWidget(errorPage);
         } else {
             String message = null;
@@ -177,6 +179,7 @@ public class StunnerEditor {
             diagramPresenter = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
+
             view.clear();
         }
         return this;
