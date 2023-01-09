@@ -72,7 +72,10 @@ export function BeeTableTd<R extends object>({
     return row.cells[columnIndex];
   }, [columnIndex, row]);
 
-  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(columnIndex, column.width);
+  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
+    columnIndex,
+    Math.max(column.minWidth ?? 0, column.width ?? 0)
+  );
 
   const rowIndexLabel = useMemo(() => {
     return `${rowIndex + 1}`;
