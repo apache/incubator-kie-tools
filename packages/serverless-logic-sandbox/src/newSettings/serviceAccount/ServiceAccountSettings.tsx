@@ -142,6 +142,7 @@ export function ServiceAccountSettings() {
                 <b>Client secret: </b>
                 <i>{obfuscate(config.clientSecret)}</i>
                 <br />
+                <br />
                 <Button variant={ButtonVariant.tertiary} onClick={onReset}>
                   Reset
                 </Button>
@@ -151,7 +152,7 @@ export function ServiceAccountSettings() {
             <EmptyState>
               <EmptyStateIcon icon={AddCircleOIcon} />
               <TextContent>
-                <Text component={"h2"}>No service accounts yet</Text>
+                <Text component={"h2"}>No Service Accounts yet</Text>
               </TextContent>
               <EmptyStateBody>
                 To get started, add a service account.
