@@ -37,6 +37,7 @@ export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
   onRowAdded?: (args: { beforeIndex: number }) => void;
   isActive: boolean;
   shouldRenderInlineButtons: boolean;
+  showInlineControls: boolean;
 }
 
 export type HoverInfo =
@@ -55,6 +56,7 @@ export function BeeTableTd<R extends object>({
   rowIndex,
   shouldUseCellDelegate,
   shouldRenderInlineButtons,
+  showInlineControls,
   onRowAdded,
 }: BeeTableTdProps2<R>) {
   const [isResizing, setResizing] = useState(false);
@@ -198,7 +200,7 @@ export function BeeTableTd<R extends object>({
           </>
         )}
 
-        {hoverInfo.isHovered && shouldRenderInlineButtons && onRowAdded && (
+        {hoverInfo.isHovered && shouldRenderInlineButtons && onRowAdded && showInlineControls && (
           <div
             onMouseDown={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}

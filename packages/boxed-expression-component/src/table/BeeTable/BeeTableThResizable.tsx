@@ -39,6 +39,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onHeaderClick: (columnKey: string) => () => void;
   reactTableInstance: ReactTable.TableInstance<R>;
   headerCellInfo: React.ReactElement;
+  showInlineControls: boolean;
 }
 
 export function BeeTableThResizable<R extends object>({
@@ -53,6 +54,7 @@ export function BeeTableThResizable<R extends object>({
   onHeaderClick,
   headerCellInfo,
   onColumnAdded,
+  showInlineControls,
 }: BeeTableThResizableProps<R>) {
   const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
 
@@ -88,6 +90,7 @@ export function BeeTableThResizable<R extends object>({
       onColumnAdded={onColumnAdded}
       groupType={column.groupType}
       isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
+      showInlineControls={showInlineControls}
       column={column}
     >
       <div

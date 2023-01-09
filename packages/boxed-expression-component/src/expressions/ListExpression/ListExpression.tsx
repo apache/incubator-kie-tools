@@ -164,6 +164,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
         onRowReset={onRowReset}
         onColumnUpdates={onColumnUpdates}
         shouldRenderRowIndexColumn={true}
+        showInlineControls={true}
       />
     </div>
   );

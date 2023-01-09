@@ -90,6 +90,7 @@ export function BeeTable2<R extends object>({
   isReadOnly = false,
   enableKeyboardNavigation = true,
   shouldRenderRowIndexColumn,
+  showInlineControls,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -502,6 +503,7 @@ export function BeeTable2<R extends object>({
       >
         <BeeTableHeader<R>
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
+          showInlineControls={showInlineControls}
           editColumnLabel={editColumnLabel}
           isEditableHeader={isEditableHeader}
           getColumnKey={onGetColumnKey}
@@ -514,6 +516,7 @@ export function BeeTable2<R extends object>({
         />
         <BeeTableBody<R>
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
+          showInlineControls={showInlineControls}
           getColumnKey={onGetColumnKey}
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}

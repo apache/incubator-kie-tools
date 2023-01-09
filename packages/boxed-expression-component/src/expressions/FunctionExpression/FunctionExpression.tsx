@@ -289,6 +289,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
           controllerCell={controllerCell}
           cellComponentByColumnId={cellComponentByColumnId}
           shouldRenderRowIndexColumn={true}
+          showInlineControls={false}
         />
       </div>
     </ContextExpressionContext.Provider>

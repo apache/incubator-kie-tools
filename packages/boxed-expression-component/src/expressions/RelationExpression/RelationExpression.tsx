@@ -262,6 +262,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         onColumnAdded={onColumnAdded}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         shouldRenderRowIndexColumn={true}
+        showInlineControls={true}
       />
     </div>
   );

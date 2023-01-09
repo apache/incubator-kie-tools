@@ -258,6 +258,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
         onRowReset={onRowReset}
         onRowDeleted={onRowDeleted}
         shouldRenderRowIndexColumn={false}
+        showInlineControls={true}
       />
     </div>
   );

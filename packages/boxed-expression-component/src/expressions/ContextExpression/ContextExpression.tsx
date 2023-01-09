@@ -382,6 +382,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           onRowDeleted={onRowDeleted}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           shouldRenderRowIndexColumn={false}
+          showInlineControls={true}
         />
       </div>
     </ContextExpressionContext.Provider>

@@ -134,12 +134,13 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           getRowKey={getRowKey}
           columns={beeTableColumns}
           rows={beeTableRows}
-          shouldRenderRowIndexColumn={false}
           headerVisibility={beeTableHeaderVisibility}
           onColumnUpdates={onColumnUpdates}
           onCellUpdates={onCellUpdates}
           operationConfig={beeTableOperationConfig}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
+          shouldRenderRowIndexColumn={false}
+          showInlineControls={false}
         ></BeeTable>
       </div>
     </div>

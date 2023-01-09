@@ -61,6 +61,8 @@ export interface BeeTableHeaderProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
 
   shouldRenderRowIndexColumn: boolean;
+
+  showInlineControls: boolean;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -73,6 +75,7 @@ export function BeeTableHeader<R extends object>({
   isEditableHeader,
   onColumnAdded,
   shouldRenderRowIndexColumn,
+  showInlineControls,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -129,6 +132,7 @@ export function BeeTableHeader<R extends object>({
           className={classNames}
           groupType={column.groupType}
           isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
+          showInlineControls={showInlineControls}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
@@ -136,7 +140,7 @@ export function BeeTableHeader<R extends object>({
         </BeeTableTh>
       );
     },
-    [getColumnKey]
+    [getColumnKey, showInlineControls]
   );
 
   const onHeaderClick = useCallback(
@@ -167,6 +171,7 @@ export function BeeTableHeader<R extends object>({
             <BeeTableThResizable
               rowSpan={rowSpan}
               isEditableHeader={isEditableHeader}
+              showInlineControls={showInlineControls}
               getColumnKey={getColumnKey}
               getColumnLabel={getColumnLabel}
               onHeaderClick={onHeaderClick}
@@ -213,6 +218,7 @@ export function BeeTableHeader<R extends object>({
       renderRowIndexColumn,
       getColumnKey,
       isEditableHeader,
+      showInlineControls,
       getColumnLabel,
       onHeaderClick,
       reactTableInstance,
