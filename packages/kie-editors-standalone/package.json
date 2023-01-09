@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.0.22-micord",
+  "version": "0.0.24-micord",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@kie-tooling-core/editor": "0.0.0",
+    "@kogito-tooling/keyboard-shortcuts": "^0.11.0",
     "@kogito-tooling/kie-bc-editors": "0.0.0"
   },
   "devDependencies": {
