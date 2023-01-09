@@ -104,7 +104,7 @@ export function ServiceRegistrySettings() {
       </PageSection>
 
       <PageSection>
-        {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+        {!isExtendedServicesRunning && (
           <>
             <Alert
               variant="danger"
