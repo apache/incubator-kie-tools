@@ -82,10 +82,7 @@ export function GitHubSettings() {
       setPotentialGitHubToken(token);
       settingsDispatch.github.authService
         .authenticate(token)
-        .then(() => {
-          setIsGitHubTokenValid(false);
-          handleModalToggle();
-        })
+        .then(() => handleModalToggle())
         .catch(() => setIsGitHubTokenValid(false));
     },
     [settingsDispatch.github.authService, handleModalToggle]
