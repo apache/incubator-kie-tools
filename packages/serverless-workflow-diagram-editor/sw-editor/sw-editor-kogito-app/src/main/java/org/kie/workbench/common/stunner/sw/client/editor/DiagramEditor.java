@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.JsCanvas;
@@ -35,6 +36,7 @@ import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
@@ -85,6 +87,7 @@ public class DiagramEditor {
     private final ClientDiagramService diagramService;
     private final IncrementalMarshaller incrementalMarshaller;
     private final CanvasFileExport canvasFileExport;
+    private final Event<TogglePreviewEvent> togglePreviewEvent;
 
     JsCanvas jsCanvas;
 
@@ -93,13 +96,15 @@ public class DiagramEditor {
                          StunnerEditor stunnerEditor,
                          ClientDiagramService diagramService,
                          IncrementalMarshaller incrementalMarshaller,
-                         CanvasFileExport canvasFileExport) {
+                         CanvasFileExport canvasFileExport,
+                         final Event<TogglePreviewEvent> togglePreviewEvent) {
         this.promises = promises;
         this.stunnerEditor = stunnerEditor;
         this.diagramService = diagramService;
         this.incrementalMarshaller = incrementalMarshaller;
         this.canvasFileExport = canvasFileExport;
         this.jsCanvas = null;
+        this.togglePreviewEvent = togglePreviewEvent;
     }
 
     public IsWidget asWidget() {
@@ -124,10 +129,16 @@ public class DiagramEditor {
     }
 
     public Promise<Void> setContent(final String path, final String value) {
+        TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
+        togglePreviewEvent.fire(event);
         if (stunnerEditor.isClosed() || !isSameWorkflow(value)) {
             return setNewContent(path, value);
         }
         return updateContent(path, value);
+    }
+
+    public Promise<Boolean> hasErrors() {
+        return promises.resolve(stunnerEditor.hasErrors());
     }
 
     public Promise<Void> setNewContent(final String path, final String value) {

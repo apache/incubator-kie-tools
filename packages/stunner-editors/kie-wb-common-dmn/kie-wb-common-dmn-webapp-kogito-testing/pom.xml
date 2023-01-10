@@ -30,7 +30,6 @@
   <packaging>war</packaging>
 
   <properties>
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.wildfly}</errai.jboss.home>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
     <gwt.helper.includes>DMNClient,Marshaller</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
@@ -291,7 +290,7 @@
 
     <!-- GWT and extensions -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -303,7 +302,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -514,7 +513,7 @@
               <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
               <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
               <draftCompile>true</draftCompile>
-              <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+              <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
               <module>org.kie.workbench.common.dmn.showcase.FastCompiledDMNKogitoTestingWebapp</module>
               <logLevel>INFO</logLevel>
               <noServer>false</noServer>
@@ -523,7 +522,6 @@
               <hostedWebapp>src/main/webapp</hostedWebapp>
               <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
               <generateJsInteropExports>true</generateJsInteropExports>
-              <logLevel>INFO</logLevel>
 
               <compileSourcesArtifacts>
                 <!-- UberFire -->
@@ -626,24 +624,6 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.jboss.errai</groupId>
-                      <artifactId>wildfly-dist</artifactId>
-                      <type>zip</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
               <execution>
                 <id>Unpack DMNMarshaller JS from dependency</id>
                 <phase>process-sources</phase>

@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
+import { Holder } from "./Holder";
 import { useCancelableEffect } from "./useCancelableEffect";
 
 export type Pending<T> = { status: PromiseStateStatus.PENDING; data?: undefined; error?: undefined };
@@ -143,33 +144,43 @@ export function PromiseStateWrapper<T>(props: {
   return <>{component}</>;
 }
 
-export function useLivePromiseState<T>(promiseDelegate: (() => Promise<T>) | { error: string }) {
+export function useLivePromiseState<T>(
+  promiseDelegate: (() => Promise<T>) | { error: string }
+): [PromiseState<T>, (canceled: Holder<boolean>) => void] {
   const [state, setState] = usePromiseState<T>();
+
+  const refresh = useCallback(
+    (canceled: Holder<boolean>) => {
+      if (typeof promiseDelegate !== "function") {
+        setState({ error: promiseDelegate.error });
+        return;
+      }
+      setState({ loading: true });
+      promiseDelegate()
+        .then((refs) => {
+          if (canceled.get()) {
+            return;
+          }
+          setState({ data: refs });
+        })
+        .catch((e) => {
+          if (canceled.get()) {
+            return;
+          }
+          console.log(e);
+          setState({ error: e });
+        });
+    },
+    [promiseDelegate, setState]
+  );
+
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (typeof promiseDelegate !== "function") {
-          setState({ error: promiseDelegate.error });
-          return;
-        }
-        setState({ loading: true });
-        promiseDelegate()
-          .then((refs) => {
-            if (canceled.get()) {
-              return;
-            }
-            setState({ data: refs });
-          })
-          .catch((e) => {
-            if (canceled.get()) {
-              return;
-            }
-            console.log(e);
-            setState({ error: e });
-          });
+        refresh(canceled);
       },
-      [promiseDelegate, setState]
+      [refresh]
     )
   );
-  return state;
+  return [state, refresh];
 }

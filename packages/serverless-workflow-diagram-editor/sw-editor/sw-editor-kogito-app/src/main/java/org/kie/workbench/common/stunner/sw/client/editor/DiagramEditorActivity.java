@@ -92,4 +92,8 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     public ResourceType getResourceType() {
         return ActivityResourceType.EDITOR;
     }
+
+    public Promise<Boolean> hasErrors() {
+        return realPresenter.hasErrors();
+    }
 }

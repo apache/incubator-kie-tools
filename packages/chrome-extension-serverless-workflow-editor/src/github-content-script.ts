@@ -16,7 +16,7 @@
 
 import { ChromeRouter } from "./ChromeRouter";
 import { startExtension } from "@kie-tools-core/chrome-extension";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 startExtension({
@@ -28,7 +28,10 @@ startExtension({
       type: "swf",
       filePathGlob: "**/*.sw.+(json|yml|yaml)",
       resourcesPathPrefix: `${resourcesPathPrefix}`,
-      envelopePath: `${resourcesPathPrefix}/serverless-workflow-combined-editor-envelope.html`,
+      envelopeContent: {
+        type: EnvelopeContentType.PATH,
+        path: `${resourcesPathPrefix}/serverless-workflow-combined-editor-envelope.html`,
+      },
     }),
   ]),
 });

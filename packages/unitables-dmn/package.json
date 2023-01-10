@@ -46,7 +46,7 @@
     "react-table": "^7.6.2",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.5"
+    "uniforms-patternfly": "^4.7.8"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

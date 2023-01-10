@@ -1,6 +1,7 @@
 package org.kie.lienzo.client;
 
 import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
+import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -24,9 +25,13 @@ public class LionExample extends BaseExample implements Example {
 
     private IPathClipper m_star_clip;
 
+    private IPathClipper m_circle_clip;
+
     private HTMLButtonElement m_doclip = (HTMLButtonElement) DomGlobal.document.createElement("button");
 
     private HTMLButtonElement m_dostar = (HTMLButtonElement) DomGlobal.document.createElement("button");
+
+    private HTMLButtonElement m_docircle = (HTMLButtonElement) DomGlobal.document.createElement("button");
 
     public LionExample(final String title) {
         super(title);
@@ -43,8 +48,12 @@ public class LionExample extends BaseExample implements Example {
         m_dostar = (HTMLButtonElement) DomGlobal.document.createElement("button");
         m_dostar.textContent = "Star Off";
 
+        m_docircle = (HTMLButtonElement) DomGlobal.document.createElement("button");
+        m_docircle.textContent = "Circle Off";
+
         topDiv.appendChild(m_doclip);
         topDiv.appendChild(m_dostar);
+        topDiv.appendChild(m_docircle);
 
         heightOffset = 30;
     }
@@ -55,6 +64,25 @@ public class LionExample extends BaseExample implements Example {
 
         m_doclip.remove();
         m_dostar.remove();
+        m_docircle.remove();
+    }
+
+    private void disableCircleClip(Circle circle) {
+        m_circle_clip.setActive(false);
+        circle.setVisible(false);
+        m_docircle.textContent = "Circle Off";
+    }
+
+    private void disableStarClip(Star star) {
+        m_star_clip.setActive(false);
+        star.setVisible(false);
+        m_dostar.textContent = "Star Off";
+    }
+
+    private void disableRectangleClip(Rectangle rectangle) {
+        m_bbox_clip.setActive(false);
+        rectangle.setVisible(false);
+        m_doclip.textContent = "Rect Off";
     }
 
     @Override
@@ -62,82 +90,80 @@ public class LionExample extends BaseExample implements Example {
         final Layer boxes = new Layer();
 
         final Rectangle rect = new Rectangle(352, 352).setX(124).setY(124).setStrokeColor(ColorName.BLACK).setStrokeWidth(3).setListening(false).setVisible(false);
-
-        final Star star = new Star(5, 150, 250).setX(300).setY(325).setStrokeColor(ColorName.BLACK).setStrokeWidth(3).setListening(false).setVisible(false);
-
-        final Group lion = new Group().setX(-100).setY(0).setDraggable(true).setDragMode(DragMode.SAME_LAYER);
-
-        final PathPartListPathClipper path = new PathPartListPathClipper(star);
-        path.setX(300);
-        path.setY(325);
-        m_star_clip = path;
-        m_star_clip.setActive(false);
-
         layer.setPathClipper(new BoundingBoxPathClipper(BoundingBox.fromDoubles(125, 125, 475, 475)));
         m_bbox_clip = layer.getPathClipper();
         m_bbox_clip.setActive(false);
 
+        final Circle circle = new Circle(100).setX(300).setY(325).setStrokeColor(ColorName.BLACK).setStrokeWidth(3).setListening(false).setVisible(true);
+        final PathPartListPathClipper circlePath = new PathPartListPathClipper(circle);
+        circlePath.setX(circle.getX());
+        circlePath.setY(circle.getY());
+        m_circle_clip = circlePath;
+        m_circle_clip.setActive(false);
+
+        final Star star = new Star(5, 100, 200).setX(300).setY(325).setStrokeColor(ColorName.BLACK).setStrokeWidth(3).setListening(false).setVisible(false);
+        final PathPartListPathClipper path = new PathPartListPathClipper(star);
+        path.setX(star.getX());
+        path.setY(star.getY());
+        m_star_clip = path;
+        m_star_clip.setActive(false);
+
         m_doclip.name = "Rect Off";
         m_doclip.onclick = (e) -> {
-            if (m_star_clip.isActive()) {
-                m_star_clip.setActive(false);
+            disableStarClip(star);
+            disableCircleClip(circle);
 
-                star.setVisible(false);
-
-                m_dostar.textContent = "Star Off";
-            }
             if (m_bbox_clip.isActive()) {
-                m_bbox_clip.setActive(false);
-
-                rect.setVisible(false);
-
-                m_doclip.textContent = "Rect Off";
+                disableRectangleClip(rect);
             } else {
                 layer.setPathClipper(m_bbox_clip);
-
                 m_bbox_clip.setActive(true);
-
                 rect.setVisible(true);
-
                 m_doclip.textContent = "Rect On";
             }
             layer.batch();
-
             boxes.batch();
             return null;
         };
         m_doclip.style.width = CSSProperties.WidthUnionType.of("90px");
 
         m_dostar.onclick = (e) -> {
-            if (m_bbox_clip.isActive()) {
-                m_bbox_clip.setActive(false);
+            disableRectangleClip(rect);
+            disableCircleClip(circle);
 
-                rect.setVisible(false);
-
-                m_doclip.textContent = "Rect Off";
-            }
             if (m_star_clip.isActive()) {
-                m_star_clip.setActive(false);
-
-                star.setVisible(false);
-
-                m_dostar.textContent = "Star Off";
+                disableStarClip(star);
             } else {
                 layer.setPathClipper(m_star_clip);
-
                 m_star_clip.setActive(true);
-
                 star.setVisible(true);
-
                 m_dostar.textContent = "Star On";
             }
             layer.batch();
-
             boxes.batch();
             return null;
         };
         m_dostar.style.width = CSSProperties.WidthUnionType.of("90px");
 
+        m_docircle.onclick = (e) -> {
+            disableRectangleClip(rect);
+            disableStarClip(star);
+
+            if (m_circle_clip.isActive()) {
+                disableCircleClip(circle);
+            } else {
+                layer.setPathClipper(m_circle_clip);
+                m_circle_clip.setActive(true);
+                circle.setVisible(true);
+                m_docircle.textContent = "Circle On";
+            }
+            layer.batch();
+            boxes.batch();
+            return null;
+        };
+        m_docircle.style.width = CSSProperties.WidthUnionType.of("90px");
+
+        final Group lion = new Group().setX(-100).setY(0).setDraggable(true).setDragMode(DragMode.SAME_LAYER);
         lion.add(new Polygon(392, 85, 380, 128, 339, 98).setFillColor("#FADFAA"));
         lion.add(new Polygon(392, 85, 380, 128, 412, 111).setFillColor("#EABA8C"));
         lion.add(new Polygon(339, 98, 380, 128, 340, 140).setFillColor("#FAD398"));

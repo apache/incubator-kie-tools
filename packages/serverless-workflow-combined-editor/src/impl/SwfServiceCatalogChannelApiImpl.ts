@@ -20,7 +20,6 @@ import {
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(

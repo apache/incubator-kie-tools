@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationService;
-import org.kie.workbench.common.dmn.client.editors.documentation.common.HTMLDownloadHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -55,9 +54,6 @@ import static org.mockito.Mockito.when;
 public class DMNDocumentationViewTest {
 
     @Mock
-    private HTMLDivElement documentationPanel;
-
-    @Mock
     private HTMLDivElement documentationContent;
 
     @Mock
@@ -71,9 +67,6 @@ public class DMNDocumentationViewTest {
 
     @Mock
     private Diagram diagram;
-
-    @Mock
-    private HTMLDownloadHelper downloadHelper;
 
     @Mock
     private DMNDocumentationViewButtonsVisibilitySupplier buttonsVisibilitySupplier;
@@ -94,10 +87,9 @@ public class DMNDocumentationViewTest {
 
     @Before
     public void setup() {
-
         printButton.classList = printButtonClassList;
         downloadHtmlFileButton.classList = downloadButtonClassList;
-        view = spy(new DMNDocumentationView(documentationPanel, documentationContent, printButton, downloadHtmlFileButton, printHelper, documentationService, downloadHelper, buttonsVisibilitySupplier));
+        view = spy(new DMNDocumentationView(documentationContent, printButton, downloadHtmlFileButton, printHelper, documentationService, buttonsVisibilitySupplier));
     }
 
     @Test
@@ -124,7 +116,7 @@ public class DMNDocumentationViewTest {
 
         view.refresh();
 
-        verify(downloadButtonClassList).add(HiddenHelper.HIDDEN_CSS_CLASS);
+        verify(downloadButtonClassList, never()).add(HiddenHelper.HIDDEN_CSS_CLASS);
         verify(printButtonClassList).add(HiddenHelper.HIDDEN_CSS_CLASS);
         verify(buttonsVisibilitySupplier).isButtonsVisible();
         verify(view).refreshDocumentationHTML();
@@ -198,6 +190,6 @@ public class DMNDocumentationViewTest {
         view.onDownloadHtmlFile(mock(ClickEvent.class));
 
         verify(view).getCurrentDocumentationHTML();
-        verify(downloadHelper).download(modelName, html);
+        verify(view).getCurrentDocumentationModelName();
     }
 }

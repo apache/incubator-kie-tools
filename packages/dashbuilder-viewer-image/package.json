@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@kie-tools/dashbuilder-viewer-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "pnpm cleanup",
+    "build:prod": "pnpm cleanup && run-script-os",
+    "build:prod:darwin": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:prod:linux": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:podman:build\"",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:assets": "cp -R ../dashbuilder-viewer-deployment-webapp/dist ./dist-dev/dashbuilder-viewer-deployment-webapp",
+    "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env dashbuilderViewerImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilderViewerImageEnv.registry)/$(build-env dashbuilderViewerImageEnv.account)/$(build-env dashbuilderViewerImageEnv.name):%s\n\" | xargs echo) .\" --else \"echo Docker not found, skipping image build.\"",
+    "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dashbuilderViewerImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilderViewerImageEnv.registry)/$(build-env dashbuilderViewerImageEnv.account)/$(build-env dashbuilderViewerImageEnv.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+  },
+  "devDependencies": {
+    "@kie-tools/dashbuilder-viewer-deployment-webapp": "workspace:*",
+    "@kie-tools/dashbuilder-viewer-image-env": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  }
+}

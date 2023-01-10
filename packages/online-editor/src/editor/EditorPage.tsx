@@ -25,7 +25,7 @@ import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandbox/DmnDevSandboxModalConfirmDeploy";
+import { DevDeploymentsConfirmDeployModal } from "../devDeployments/DevDeploymentsConfirmDeployModal";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
@@ -397,7 +397,7 @@ export function EditorPage(props: Props) {
               refreshEditor={refreshEditor}
               isOpen={isTextEditorModalOpen}
             />
-            <DmnDevSandboxModalConfirmDeploy workspaceFile={file.workspaceFile} />
+            <DevDeploymentsConfirmDeployModal workspaceFile={file.workspaceFile} />
           </>
         )}
       />

@@ -38,9 +38,9 @@ import static org.drools.workbench.screens.scenariosimulation.client.popover.Abs
 import static org.drools.workbench.screens.scenariosimulation.client.popover.AbstractPopoverView.POSITION;
 import static org.drools.workbench.screens.scenariosimulation.client.popover.AbstractPopoverView.TITLE;
 import static org.drools.workbench.screens.scenariosimulation.client.popover.AbstractPopoverView.TOP;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;

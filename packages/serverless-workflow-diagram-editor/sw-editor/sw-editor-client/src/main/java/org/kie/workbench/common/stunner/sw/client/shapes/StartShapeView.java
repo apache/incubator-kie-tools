@@ -20,27 +20,14 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 
 public class StartShapeView extends ServerlessWorkflowBasicShape<StartShapeView> {
 
+    private final static double START_SHAPE_RADIUS = 25;
+
     public StartShapeView() {
         super(new MultiPath()
-                      .circle(25)
-                      .setDraggable(false)
-                      .setID("start")
-                      .setAlpha(1.00)
-                      .setListening(true)
-                      .setOffset(0.00, 0.00)
-                      .setFillColor("#ffffff")
-                      .setStrokeColor("#ccc")
-                      .setStrokeWidth(2.00));
-        setTitle("Start");
+                      .circle(START_SHAPE_RADIUS)
+                      .setID("start"),
+              "Start");
         setTitleXOffsetPosition(2.0);
         setTitleYOffsetPosition(17.0);
-        setTitlePosition(VerticalAlignment.MIDDLE, HorizontalAlignment.CENTER, ReferencePosition.INSIDE, Orientation.HORIZONTAL);
-        setTitleFontColor("#929292");
-        setTitleFontFamily("Open Sans");
-        setTitleFontSize(12);
-        setTitleStrokeWidth(0);
-        setTitleStrokeAlpha(0);
-        setTitleStrokeColor("#929292");
-        isTitleListening(false);
     }
 }

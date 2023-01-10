@@ -26,6 +26,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
@@ -67,6 +69,8 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
 
     private String constraintValueType = "";
 
+    private DataType dataType;
+
     @Inject
     public DataTypeConstraintModal(final View view,
                                    final DataTypeShortcuts dataTypeShortcuts,
@@ -106,17 +110,15 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
         hide();
     }
 
-    void load(final String type,
-              final String value,
-              final ConstraintType constraintType) {
+    void load(final DataTypeListItem dataTypeListItem) {
+        this.constraintValue = dataTypeListItem.getDataType().getConstraint();
+        this.constraintValueType = dataTypeListItem.getType();
+        this.dataType = dataTypeListItem.getDataType();
 
-        this.constraintValue = value;
-        this.constraintValueType = type;
-
-        if (!StringUtils.isEmpty(value) && isNone(constraintType)) {
-            this.constraintType = inferComponentType(value);
+        if (!StringUtils.isEmpty(constraintValue) && isNone(constraintType)) {
+            this.constraintType = inferComponentType(constraintValue);
         } else {
-            this.constraintType = constraintType;
+            this.constraintType = dataTypeListItem.getDataType().getConstraintType();
         }
 
         prepareView();
@@ -170,6 +172,7 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     void prepareView() {
 
         getView().setType(getConstraintValueType());
+        getView().setDataType(dataType);
 
         if (!isEmpty(getConstraintValue()) || !isNone(getConstraintType())) {
             getView().loadComponent(getConstraintType());
@@ -287,6 +290,8 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     public interface View extends Elemental2Modal.View<DataTypeConstraintModal> {
 
         void setType(final String type);
+
+        void setDataType(final DataType dataType);
 
         void setupEmptyContainer();
 

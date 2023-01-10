@@ -40,8 +40,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -49,9 +47,6 @@ public class PanelMediatorsTest {
 
     @Mock
     private ScrollablePanel panel;
-
-    @Mock
-    private PanelPreviewMediator previewMediator;
 
     private PanelMediators tested;
     private Viewport viewport;
@@ -65,16 +60,12 @@ public class PanelMediatorsTest {
         when(panel.getLayer()).thenReturn(layer);
         when(panel.getElement()).thenReturn(mock(HTMLDivElement.class));
         tested = new PanelMediators().init(new Supplier<LienzoBoundsPanel>() {
-            @Override
-            public LienzoBoundsPanel get() {
-                return panel;
-            }
-        }, new Supplier<PanelPreviewMediator>() {
-            @Override
-            public PanelPreviewMediator get() {
-                return previewMediator;
-            }
-        }, EventFilter.CONTROL, EventFilter.ALT);
+                                               @Override
+                                               public LienzoBoundsPanel get() {
+                                                   return panel;
+                                               }
+                                           },
+                                           EventFilter.CONTROL, EventFilter.ALT);
     }
 
     @Test
@@ -90,29 +81,10 @@ public class PanelMediatorsTest {
         assertTrue(panMediator.isXConstrained());
         assertTrue(panMediator.isYConstrained());
         assertTrue(panMediator.isEnabled());
-        assertNotNull(tested.getPreviewMediator());
-        PanelPreviewMediator previewMediator = tested.getPreviewMediator();
-        assertFalse(previewMediator.isEnabled());
         IMediator mediator1 = viewport.getMediators().pop();
         IMediator mediator2 = viewport.getMediators().pop();
         assertEquals(zoomMediator, mediator1);
         assertEquals(panMediator, mediator2);
-    }
-
-    @Test
-    public void testEnablePreview() {
-        tested.enablePreview();
-        assertFalse(tested.getZoomMediator().isEnabled());
-        assertFalse(tested.getPanMediator().isEnabled());
-        verify(previewMediator, times(1)).enable();
-    }
-
-    @Test
-    public void testDisablePreview() {
-        tested.disablePreview();
-        assertTrue(tested.getZoomMediator().isEnabled());
-        assertTrue(tested.getPanMediator().isEnabled());
-        verify(previewMediator, times(1)).disable();
     }
 
     @Test
@@ -121,7 +93,5 @@ public class PanelMediatorsTest {
         assertFalse(viewport.getMediators().iterator().hasNext());
         assertNull(tested.getZoomMediator());
         assertNull(tested.getPanMediator());
-        assertNull(tested.getPreviewMediator());
-        verify(previewMediator, times(1)).removeHandler();
     }
 }

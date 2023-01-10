@@ -52,6 +52,7 @@ public class StunnerEditor {
     private final ClientTranslationService translationService;
     private final StunnerEditorView view;
     private final ErrorPage errorPage;
+    private boolean hasErrors;
 
     private SessionDiagramPresenter diagramPresenter;
     private boolean isReadOnly;
@@ -174,7 +175,6 @@ public class StunnerEditor {
                 final String title = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_PARSING);
                 message = buildErrorMessage(error, throwable, title);
             }
-
         } else if (throwable instanceof DefinitionNotFoundException) {
             final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) throwable;
             exceptionProcessor.accept(dnfe);
@@ -186,6 +186,7 @@ public class StunnerEditor {
             message = buildErrorMessage(error, throwable, title);
         }
 
+        hasErrors = true;
         if ((diagramPresenter != null) &&
                 (diagramPresenter.getView() != null)) {
             addError(message);
@@ -234,6 +235,10 @@ public class StunnerEditor {
         return view;
     }
 
+    public boolean hasErrors() {
+        return hasErrors;
+    }
+
     public void addMessage(String message) {
         if (!isClosed()) {
             alertsControl.addInfo(message);
@@ -248,12 +253,14 @@ public class StunnerEditor {
 
     public void addError(String message) {
         if (!isClosed()) {
+            hasErrors = true;
             alertsControl.addError(message);
         }
     }
 
     public void clearAlerts() {
         if (!isClosed()) {
+            hasErrors = false;
             alertsControl.clear();
         }
     }

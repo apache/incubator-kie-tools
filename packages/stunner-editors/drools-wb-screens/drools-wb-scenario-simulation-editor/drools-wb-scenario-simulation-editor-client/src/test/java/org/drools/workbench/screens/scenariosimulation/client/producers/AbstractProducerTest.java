@@ -28,7 +28,7 @@ import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDele
 import org.junit.Before;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractProducerTest extends AbstractScenarioSimulationTest {

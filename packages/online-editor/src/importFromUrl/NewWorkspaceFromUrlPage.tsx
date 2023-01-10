@@ -40,16 +40,16 @@ import {
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { useOctokit } from "../github/Hooks";
-import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsDispatchContext";
-import { useAuthSession, useAuthSessions } from "../accounts/authSessions/AuthSessionsContext";
-import { useAuthProvider, useAuthProviders } from "../accounts/authProviders/AuthProvidersContext";
-import { getCompatibleAuthSessionWithUrlDomain } from "../accounts/authSessions/CompatibleAuthSessions";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
+import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
+import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { AUTH_SESSION_NONE } from "../accounts/authSessions/AuthSessionApi";
+import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();

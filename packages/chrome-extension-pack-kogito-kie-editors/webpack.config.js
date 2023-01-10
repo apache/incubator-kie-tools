@@ -77,9 +77,21 @@ module.exports = async (env) => {
           { from: `./rules.json`, to: "./rules.json" },
 
           // These are used for development only.
-          { from: stunnerEditors.dmnEditorPath(), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: stunnerEditors.bpmnEditorPath(), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: stunnerEditors.scesimEditorPath(), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          {
+            from: stunnerEditors.dmnEditorPath(),
+            to: "dmn",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            from: stunnerEditors.bpmnEditorPath(),
+            to: "bpmn",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            from: stunnerEditors.scesimEditorPath(),
+            to: "scesim",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
         ],
       }),
       new ZipPlugin({

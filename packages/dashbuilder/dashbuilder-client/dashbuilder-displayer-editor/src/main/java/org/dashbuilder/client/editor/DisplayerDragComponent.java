@@ -26,6 +26,7 @@ import org.dashbuilder.client.editor.resources.i18n.Constants;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.PerspectiveCoordinator;
 import org.dashbuilder.displayer.client.widgets.DisplayerEditorPopup;
@@ -50,17 +51,20 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
     PlaceManager placeManager;
     PerspectiveCoordinator perspectiveCoordinator;
     DisplayerSettingsJSONMarshaller marshaller;
+    GlobalDisplayerSettings globalDisplayerSettings;
 
     @Inject
     public DisplayerDragComponent(SyncBeanManager beanManager,
                                   DisplayerViewer viewer,
                                   PlaceManager placeManager,
-                                  PerspectiveCoordinator perspectiveCoordinator) {
+                                  PerspectiveCoordinator perspectiveCoordinator,
+                                  GlobalDisplayerSettings globalDisplayerSettings) {
 
         this.beanManager = beanManager;
         this.viewer = viewer;
         this.placeManager = placeManager;
         this.perspectiveCoordinator = perspectiveCoordinator;
+        this.globalDisplayerSettings = globalDisplayerSettings;
         this.marshaller = DisplayerSettingsJSONMarshaller.get();
     }
 
@@ -187,9 +191,11 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
         var settings = component.getSettings();
         if (settings != null) {
             var displayerSettings = (DisplayerSettings) settings;
+            globalDisplayerSettings.apply(displayerSettings);
             return Optional.of(displayerSettings);
         }
 
         return Optional.empty();
     }
+
 }

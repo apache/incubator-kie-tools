@@ -75,7 +75,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     if (field.type === "boolean") {
       field.default = false;
     }
-    if (field.type === "string" && field.enum) {
+    if ((field.type === "string" || field.type === "number") && field.enum) {
       field.placeholder = this.i18n.schema.selectPlaceholder;
       field.direction = SelectDirection.up;
       field.menuAppendTo = document.body;

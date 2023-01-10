@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
@@ -51,7 +51,7 @@ export function DmnPage() {
         type: "dmn",
         filePathGlob: "**/*.dmn",
         resourcesPathPrefix: "../dmn-editor/dmn/",
-        envelopePath: "envelope/dmn-editor.html",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/dmn-editor.html" },
       }),
     ]);
   }, []);

@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
@@ -243,11 +242,9 @@ public class BaseGridRenderer implements GridRenderer {
                 final double x = cx;
                 final double w = column.getWidth();
                 Rectangle header;
-                if (column.isLinked()) {
-                    header = theme.getHeaderLinkBackground(column);
-                } else {
-                    header = theme.getHeaderBackground(column);
-                }
+
+                header = theme.getHeaderBackground(column);
+
                 if (header != null) {
                     commands.add((RenderHeaderBackgroundCommand) (rc) -> {
                         if (columnRenderingConstraint.apply(rc.isSelectionLayer(), column)) {
@@ -283,30 +280,6 @@ public class BaseGridRenderer implements GridRenderer {
                                                                         renderingInformation,
                                                                         columnRenderingConstraint));
                 cx = cx + columnWidth;
-            }
-        }
-
-        //Linked column icons
-        cx = 0;
-        for (final GridColumn<?> column : visibleBlockColumns) {
-            if (column.isVisible()) {
-                final double x = cx;
-                final double w = column.getWidth();
-
-                if (column.isLinked()) {
-                    commands.add((RenderHeaderContentCommand) (rc) -> {
-                        if (columnRenderingConstraint.apply(rc.isSelectionLayer(), column)) {
-                            final Text t = theme.getBodyText()
-                                    .setFontFamily(LINK_FONT_FAMILY)
-                                    .setFontSize(LINK_FONT_SIZE)
-                                    .setText(LINK_ICON)
-                                    .setY(headerRowsYOffset + LINK_FONT_SIZE)
-                                    .setX(x + w - LINK_FONT_SIZE);
-                            rc.getGroup().add(t);
-                        }
-                    });
-                }
-                cx = cx + w;
             }
         }
 

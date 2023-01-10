@@ -87,8 +87,10 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
             getElement().parentElement.removeChild(getElement());
         }
         removeAll();
-        m_events.destroy();
-        m_events = null;
+        if (m_events != null) {
+            m_events.destroy();
+            m_events = null;
+        }
     }
 
     @Override
@@ -118,7 +120,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
      * Adds a layer to the {@link LienzoFixedPanel}. It should be noted that this
      * action will cause a {@link com.ait.lienzo.client.core.shape.Layer} draw operation, painting all children in the
      * Layer.
-     *
      * @param layer
      * @return
      */
@@ -133,7 +134,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
      * Adds a layer to the {@link LienzoFixedPanel}. It should be noted that this
      * action will cause a {@link com.ait.lienzo.client.core.shape.Layer} draw operation, painting all children in the
      * Layer.
-     *
      * @param layer
      * @return
      */
@@ -150,7 +150,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
      * Removes a layer from the {@link LienzoFixedPanel}. It should be noted that
      * this action will cause a {@link com.ait.lienzo.client.core.shape.Layer} draw operation, painting all children in
      * the Layer.
-     *
      * @param layer
      * @return
      */
@@ -162,7 +161,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Removes all layer from the {@link LienzoFixedPanel}.
-     *
      * @return
      */
     public LienzoFixedPanel removeAll() {
@@ -182,7 +180,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Sets the type of cursor to be used when hovering above the element.
-     *
      * @param cursor
      */
     @Override
@@ -193,7 +190,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Returns the {@link com.ait.lienzo.client.core.shape.Viewport} main {@link com.ait.lienzo.client.core.shape.Scene}
-     *
      * @return
      */
     public Scene getScene() {
@@ -202,7 +198,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Returns the automatically create {@link com.ait.lienzo.client.core.shape.Viewport} instance.
-     *
      * @return
      */
     @Override
@@ -221,7 +216,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     /**
      * Sets the {@link com.ait.lienzo.client.core.shape.Viewport} background {@link
      * com.ait.lienzo.client.core.shape.Layer}
-     *
      * @param layer
      */
     @Override
@@ -233,7 +227,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Returns the {@link com.ait.lienzo.client.core.shape.Viewport} Drag {@link com.ait.lienzo.client.core.shape.Layer}
-     *
      * @return
      */
     public Layer getDragLayer() {
@@ -258,7 +251,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Sets the background color of the LienzoPanelImpl.
-     *
      * @param color String
      * @return this LienzoPanelImpl
      */
@@ -269,7 +261,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Sets the background color of the LienzoPanelImpl.
-     *
      * @param color IColor, i.e. ColorName or Color
      * @return this LienzoPanelImpl
      */
@@ -283,7 +274,6 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     /**
      * Returns the {@link com.ait.lienzo.client.core.mediator.Mediators} for this panels {@link
      * com.ait.lienzo.client.core.shape.Viewport}. Mediators can be used to e.g. to add zoom operations.
-     *
      * @return Mediators
      */
     public Mediators getMediators() {

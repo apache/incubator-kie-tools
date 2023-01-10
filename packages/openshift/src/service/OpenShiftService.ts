@@ -17,7 +17,7 @@
 import { GetProject } from "../api/kubernetes/Project";
 import { Resource } from "../api/types";
 import { ResourceFetcher } from "../fetch/ResourceFetcher";
-import { KNativeService } from "./KNativeService";
+import { KnativeService } from "./KnativeService";
 import { KubernetesService } from "./KubernetesService";
 import { isOpenShiftConnectionValid, OpenShiftConnection } from "./OpenShiftConnection";
 
@@ -28,20 +28,20 @@ export interface OpenShiftServiceArgs {
 
 export class OpenShiftService {
   private readonly kubernetesService: KubernetesService;
-  private readonly knativeService: KNativeService;
+  private readonly knativeService: KnativeService;
   private readonly fetcher: ResourceFetcher;
 
   constructor(private readonly args: OpenShiftServiceArgs) {
     this.fetcher = new ResourceFetcher({ proxyUrl: args.proxyUrl, connection: this.args.connection });
     this.kubernetesService = new KubernetesService({ fetcher: this.fetcher, namespace: args.connection.namespace });
-    this.knativeService = new KNativeService({ fetcher: this.fetcher, namespace: args.connection.namespace });
+    this.knativeService = new KnativeService({ fetcher: this.fetcher, namespace: args.connection.namespace });
   }
 
   public get kubernetes(): KubernetesService {
     return this.kubernetesService;
   }
 
-  public get knative(): KNativeService {
+  public get knative(): KnativeService {
     return this.knativeService;
   }
 

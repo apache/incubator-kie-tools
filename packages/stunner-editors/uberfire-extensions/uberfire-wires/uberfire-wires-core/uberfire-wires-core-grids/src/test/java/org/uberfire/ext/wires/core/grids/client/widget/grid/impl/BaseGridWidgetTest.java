@@ -147,10 +147,9 @@ public class BaseGridWidgetTest {
     public void testDefaultNodeMouseClickHandlers() {
         final List<NodeMouseEventHandler> handlers = gridWidget.getNodeMouseClickEventHandlers(selectionManager);
 
-        assertThat(handlers).hasSize(3);
+        assertThat(handlers).hasSize(2);
         assertThat(handlers.get(0)).isInstanceOf(DefaultGridWidgetCellSelectorMouseEventHandler.class);
         assertThat(handlers.get(1)).isInstanceOf(DefaultGridWidgetCollapsedCellMouseEventHandler.class);
-        assertThat(handlers.get(2)).isInstanceOf(DefaultGridWidgetLinkedColumnMouseEventHandler.class);
     }
 
     @Test

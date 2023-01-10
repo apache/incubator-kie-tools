@@ -37,7 +37,6 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     private boolean isVisible = true;
     private Double minimumWidth = COLUMN_MIN_WIDTH;
     private Double maximumWidth = null;
-    private GridColumn<?> link;
     private int index = -1;
     private List<HeaderMetaData> headerMetaData = new ArrayList<HeaderMetaData>();
     private GridColumnRenderer<T> columnRenderer;
@@ -97,21 +96,6 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     @Override
     public void setWidth(final double width) {
         this.width = width;
-    }
-
-    @Override
-    public boolean isLinked() {
-        return link != null;
-    }
-
-    @Override
-    public GridColumn<?> getLink() {
-        return link;
-    }
-
-    @Override
-    public void setLink(final GridColumn<?> link) {
-        this.link = link;
     }
 
     @Override
@@ -238,9 +222,6 @@ public class BaseGridColumn<T> implements GridColumn<T> {
         if (maximumWidth != null ? !maximumWidth.equals(that.maximumWidth) : that.maximumWidth != null) {
             return false;
         }
-        if (link != null ? !link.equals(that.link) : that.link != null) {
-            return false;
-        }
         return getHeaderMetaData().equals(that.getHeaderMetaData());
     }
 
@@ -260,8 +241,6 @@ public class BaseGridColumn<T> implements GridColumn<T> {
         result = 31 * result + (minimumWidth != null ? minimumWidth.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (maximumWidth != null ? maximumWidth.hashCode() : 0);
-        result = ~~result;
-        result = 31 * result + (link != null ? link.hashCode() : 0);
         result = ~~result;
         result = 31 * result + index;
         result = ~~result;

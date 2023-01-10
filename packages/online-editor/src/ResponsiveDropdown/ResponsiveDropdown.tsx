@@ -33,7 +33,7 @@ export interface ResponsiveDropdownProps extends DropdownProps {
   title?: string;
 }
 
-export function ResponsiveDropdown(props: ResponsiveDropdownProps) {
+export function ResponsiveDropdown(props: React.PropsWithChildren<ResponsiveDropdownProps>) {
   const isModal = useWindowSizeRelationToBreakpoint(props.switchingBreakpoint || "sm") === RelationToBreakpoint.Below;
 
   return (

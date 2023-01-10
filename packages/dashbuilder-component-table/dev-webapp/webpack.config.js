@@ -38,6 +38,9 @@ module.exports = async (env) => {
       new CopyPlugin({
         patterns: [{ from: path.resolve(__dirname, "manifest.dev.json"), to: "." }],
       }),
+      new CopyPlugin({
+        patterns: [{ from: path.resolve(__dirname, "../static/index.css"), to: "." }],
+      }),
     ],
 
     module: {
