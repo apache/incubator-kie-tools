@@ -2,16 +2,10 @@ export const DEFAULT_MIN_WIDTH = 100;
 
 export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 
-export const NESTED_EXPRESSION_RESET_MARGIN = 0;
-
-export const LITERAL_EXPRESSION_EXTRA_WIDTH = 20 + 2; // 20px for the equals sign, plus 2px for borders left and right.
-
 // CONTEXT
 export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 120;
 export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 210;
-
 export const CONTEXT_ENTRY_EXTRA_WIDTH =
-  NESTED_EXPRESSION_RESET_MARGIN +
   1 + // 1px border-left
   2 + // 1px for each contextExpression column border-left and border-right
   1; // 1px for contextInfo column border-right
@@ -29,5 +23,17 @@ export const RELATION_EXPRESSION_COLUMN_MIN_WIDTH = 100;
 export const RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH = 150;
 
 // LITERAL
-export const LITERAL_EXPRESSION_MIN_WIDTH =
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH - NESTED_EXPRESSION_RESET_MARGIN - LITERAL_EXPRESSION_EXTRA_WIDTH;
+export const LITERAL_EXPRESSION_EXTRA_WIDTH =
+  20 + // 20px for the equals sign,
+  2; //2px for borders left and right.
+export const LITERAL_EXPRESSION_MIN_WIDTH = CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH - LITERAL_EXPRESSION_EXTRA_WIDTH;
+
+// LIST
+export const LIST_EXPRESSION_EXTRA_WIDTH =
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+  1 + // 1px for border-left of the only column
+  1; // 1px for last-child border-right
+
+// INVOCATION
+
+// FUNCTION

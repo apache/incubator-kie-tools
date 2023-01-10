@@ -26,7 +26,10 @@ import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthValues";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
-import { BeeTableColumnResizingWidthsContextProvider } from "./BeeTableColumnResizingWidthsContextProvider";
+import {
+  BeeTableColumnResizingWidthsContextProvider,
+  BeeTableColumnResizingWidthsDispatchContextType,
+} from "./BeeTableColumnResizingWidthsContextProvider";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableDefaultCell } from "./BeeTableDefaultCell";
 import { BeeTableHeader } from "./BeeTableHeader";
@@ -541,16 +544,18 @@ export function BeeTable2<R extends object>({
   );
 }
 
-export function BeeTable<R extends object>(
+export type BeeTableRef = BeeTableColumnResizingWidthsDispatchContextType;
+
+export const BeeTable = <R extends object>(
   props: BeeTableProps<R> & {
     onColumnResizingWidthChange?: (args: { columnIndex: number; newResizingWidth: ResizingWidth }) => void;
-  }
-) {
+  } & { forwardRef?: React.Ref<BeeTableRef> }
+) => {
   return (
     <BeeTableSelectionContextProvider>
-      <BeeTableColumnResizingWidthsContextProvider onChange={props.onColumnResizingWidthChange}>
+      <BeeTableColumnResizingWidthsContextProvider ref={props.forwardRef} onChange={props.onColumnResizingWidthChange}>
         <BeeTable2 {...props} />
       </BeeTableColumnResizingWidthsContextProvider>
     </BeeTableSelectionContextProvider>
   );
-}
+};

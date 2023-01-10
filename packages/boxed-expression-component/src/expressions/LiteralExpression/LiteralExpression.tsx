@@ -15,16 +15,12 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import { BeeTableHeaderVisibility, LiteralExpressionDefinition } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
-import {
-  LITERAL_EXPRESSION_EXTRA_WIDTH,
-  LITERAL_EXPRESSION_MIN_WIDTH,
-  NESTED_EXPRESSION_RESET_MARGIN,
-} from "../../resizing/WidthValues";
-import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
+import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthValues";
+import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
 import { useBeeTableCoordinates, useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -34,7 +30,6 @@ type ROWTYPE = any;
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isHeadless: boolean }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const nestedExpressionContainer = useNestedExpressionContainer();
 
   const getValue = useCallback(() => {
     return literalExpression.content ?? "";
@@ -82,12 +77,32 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   //// RESIZING WIDTH
 
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(literalExpression.id!);
+  const nestedExpressionContainer = useNestedExpressionContainer();
+
   const minWidthGlobal = useMemo(() => {
     return Math.max(
-      nestedExpressionContainer.minWidthGlobal - NESTED_EXPRESSION_RESET_MARGIN - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      nestedExpressionContainer.minWidthGlobal - LITERAL_EXPRESSION_EXTRA_WIDTH,
       LITERAL_EXPRESSION_MIN_WIDTH
     );
   }, [nestedExpressionContainer]);
+
+  const beeTableRef = useRef<BeeTableRef>(null);
+
+  useEffect(() => {
+    const COLUMN_INDEX = 1;
+
+    if (isPivoting) {
+      return;
+    }
+
+    beeTableRef.current?.updateResizingWidth(COLUMN_INDEX, (prev) => {
+      return {
+        value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidthGlobal),
+        isPivoting: prev?.isPivoting ?? false,
+      };
+    });
+  }, [isPivoting, minWidthGlobal, nestedExpressionContainer.resizingWidth.value]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -106,8 +121,6 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return [{ "literal-expression": literalExpression.content ?? "" }];
   }, [literalExpression]);
-
-  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(literalExpression.id!);
 
   const beeTableHeaderVisibility = useMemo(() => {
     return literalExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
@@ -130,6 +143,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       <div className={"literal-expression-body-container"}>
         <div className={"equals-sign"}>{`=`}</div>
         <BeeTable
+          forwardRef={beeTableRef}
           getColumnKey={getColumnKey}
           getRowKey={getRowKey}
           columns={beeTableColumns}

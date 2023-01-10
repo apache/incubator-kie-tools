@@ -1,16 +1,15 @@
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
-import { NESTED_EXPRESSION_RESET_MARGIN } from "../../resizing/WidthValues";
 
 // TYPES
 
-export type BeeTableColumnResizingWidthsContextType<R extends object> = {
+export type BeeTableColumnResizingWidthsContextType = {
   //
 };
 
-export interface BeeTableColumnResizingWidthsDispatchContextType<R extends object> {
-  updateResizingWidths(
+export interface BeeTableColumnResizingWidthsDispatchContextType {
+  updateResizingWidth(
     columnIndex: number,
     getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth | undefined
   ): void;
@@ -21,12 +20,11 @@ export interface BeeTableColumnResizingWidthsDispatchContextType<R extends objec
   unsubscribeToColumnResizingWidth(columnIndex: number, ref: BeeTableColumnResizingWidthRef): void;
 }
 
-export const BeeTableColumnResizingWidthsContext = React.createContext<BeeTableColumnResizingWidthsContextType<any>>(
+export const BeeTableColumnResizingWidthsContext = React.createContext<BeeTableColumnResizingWidthsContextType>(
   {} as any
 );
-export const BeeTableColumnResizingWidthsDispatchContext = React.createContext<
-  BeeTableColumnResizingWidthsDispatchContextType<any>
->({} as any);
+export const BeeTableColumnResizingWidthsDispatchContext =
+  React.createContext<BeeTableColumnResizingWidthsDispatchContextType>({} as any);
 
 export interface BeeTableColumnResizingWidthRef {
   setResizingWidth?: React.Dispatch<React.SetStateAction<ResizingWidth | undefined>>;
@@ -34,48 +32,53 @@ export interface BeeTableColumnResizingWidthRef {
 
 // PROVIDER
 
-export function BeeTableColumnResizingWidthsContextProvider<R extends object>({
-  children,
-  onChange,
-}: React.PropsWithChildren<{
+type Props = React.PropsWithChildren<{
   onChange?: (args: { columnIndex: number; newResizingWidth: ResizingWidth }) => void;
-}>) {
-  const refs = React.useRef<Map<number, Set<BeeTableColumnResizingWidthRef>>>(new Map());
+}>;
 
-  const value = useMemo(() => {
-    return {};
-  }, []);
+type MyRef = BeeTableColumnResizingWidthsDispatchContextType;
 
-  const dispatch = useMemo<BeeTableColumnResizingWidthsDispatchContextType<R>>(() => {
-    return {
-      updateResizingWidths: (columnIndex, getNewResizingWidth) => {
-        const newResizingWidth = getNewResizingWidth(undefined);
-        for (const ref of refs.current.get(columnIndex) ?? []) {
-          ref.setResizingWidth?.(newResizingWidth);
-        }
-        if (newResizingWidth) {
-          onChange?.({ columnIndex, newResizingWidth });
-        }
-      },
-      subscribeToColumnResizingWidth: (columnIndex, ref) => {
-        const prev = refs.current?.get(columnIndex) ?? new Set();
-        refs.current?.set(columnIndex, new Set([...prev, ref]));
-        return ref;
-      },
-      unsubscribeToColumnResizingWidth: (columnIndex, ref) => {
-        refs.current?.get(columnIndex)?.delete(ref);
-      },
-    };
-  }, [onChange]);
+export const BeeTableColumnResizingWidthsContextProvider = React.forwardRef<MyRef, Props>(
+  ({ children, onChange }, forwardRef) => {
+    const refs = React.useRef<Map<number, Set<BeeTableColumnResizingWidthRef>>>(new Map());
 
-  return (
-    <BeeTableColumnResizingWidthsContext.Provider value={value}>
-      <BeeTableColumnResizingWidthsDispatchContext.Provider value={dispatch}>
-        <>{children}</>
-      </BeeTableColumnResizingWidthsDispatchContext.Provider>
-    </BeeTableColumnResizingWidthsContext.Provider>
-  );
-}
+    const value = useMemo(() => {
+      return {};
+    }, []);
+
+    const dispatch = useMemo<BeeTableColumnResizingWidthsDispatchContextType>(() => {
+      return {
+        updateResizingWidth: (columnIndex, getNewResizingWidth) => {
+          const newResizingWidth = getNewResizingWidth(undefined);
+          for (const ref of refs.current.get(columnIndex) ?? []) {
+            ref.setResizingWidth?.(newResizingWidth);
+          }
+          if (newResizingWidth) {
+            onChange?.({ columnIndex, newResizingWidth });
+          }
+        },
+        subscribeToColumnResizingWidth: (columnIndex, ref) => {
+          const prev = refs.current?.get(columnIndex) ?? new Set();
+          refs.current?.set(columnIndex, new Set([...prev, ref]));
+          return ref;
+        },
+        unsubscribeToColumnResizingWidth: (columnIndex, ref) => {
+          refs.current?.get(columnIndex)?.delete(ref);
+        },
+      };
+    }, [onChange]);
+
+    useImperativeHandle(forwardRef, () => dispatch, [dispatch]);
+
+    return (
+      <BeeTableColumnResizingWidthsContext.Provider value={value}>
+        <BeeTableColumnResizingWidthsDispatchContext.Provider value={dispatch}>
+          <>{children}</>
+        </BeeTableColumnResizingWidthsDispatchContext.Provider>
+      </BeeTableColumnResizingWidthsContext.Provider>
+    );
+  }
+);
 
 export function useBeeTableColumnResizingWidthsDispatch() {
   return React.useContext(BeeTableColumnResizingWidthsDispatchContext);
@@ -84,7 +87,7 @@ export function useBeeTableColumnResizingWidthsDispatch() {
 // HOOKS
 
 export function useBeeTableColumnResizingWidth(columnIndex: number, initialResizingWidthValue?: number) {
-  const { subscribeToColumnResizingWidth, unsubscribeToColumnResizingWidth, updateResizingWidths } =
+  const { subscribeToColumnResizingWidth, unsubscribeToColumnResizingWidth, updateResizingWidth } =
     useBeeTableColumnResizingWidthsDispatch();
 
   const initialResizingWidth: ResizingWidth | undefined = useMemo(() => {
@@ -101,14 +104,14 @@ export function useBeeTableColumnResizingWidth(columnIndex: number, initialResiz
   const [resizingWidth, setResizingWidth] = useState<ResizingWidth | undefined>(initialResizingWidth);
 
   useEffect(() => {
-    updateResizingWidths(columnIndex, (prev) => initialResizingWidth);
-  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateResizingWidths]);
+    updateResizingWidth(columnIndex, (prev) => initialResizingWidth);
+  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateResizingWidth]);
 
-  const updateResizingWidth = useCallback(
+  const _updateResizingWidth = useCallback(
     (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      updateResizingWidths(columnIndex, getNewResizingWidth);
+      updateResizingWidth(columnIndex, getNewResizingWidth);
     },
-    [columnIndex, updateResizingWidths]
+    [columnIndex, updateResizingWidth]
   );
 
   useEffect(() => {
@@ -118,11 +121,15 @@ export function useBeeTableColumnResizingWidth(columnIndex: number, initialResiz
     };
   }, [columnIndex, subscribeToColumnResizingWidth, unsubscribeToColumnResizingWidth]);
 
-  return { resizingWidth, setResizingWidth: updateResizingWidth };
+  return { resizingWidth, setResizingWidth: _updateResizingWidth };
 }
 
 export function usePublishedBeeTableColumnResizingWidths(resizingWidthId: string) {
   const [columnResizingWidths, setColumnResizingWidths] = useState<Map<number, ResizingWidth>>(new Map());
+
+  const isPivoting = useMemo(() => {
+    return [...columnResizingWidths.values()].some((s) => s.isPivoting);
+  }, [columnResizingWidths]);
 
   const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
     setColumnResizingWidths((prev) => {
@@ -136,20 +143,18 @@ export function usePublishedBeeTableColumnResizingWidths(resizingWidthId: string
 
   useEffect(() => {
     updateResizingWidth(resizingWidthId, (prev) => {
-      const initial: ResizingWidth = {
-        value: NESTED_EXPRESSION_RESET_MARGIN + columnResizingWidths.size,
-        isPivoting: false,
-      };
-
       return [...columnResizingWidths.values()].reduce(
         (acc, resizingWidth) => ({
           value: acc.value + resizingWidth.value,
           isPivoting: acc.isPivoting || resizingWidth.isPivoting,
         }),
-        initial
+        {
+          value: 0,
+          isPivoting: false,
+        }
       );
     });
   }, [columnResizingWidths, resizingWidthId, updateResizingWidth]);
 
-  return { onColumnResizingWidthChange, columnResizingWidths };
+  return { onColumnResizingWidthChange, columnResizingWidths, isPivoting };
 }

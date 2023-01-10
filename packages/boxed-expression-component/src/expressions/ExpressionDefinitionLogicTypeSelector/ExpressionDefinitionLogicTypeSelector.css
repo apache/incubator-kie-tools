@@ -39,7 +39,7 @@
 .expression-container .logic-type-selector.logic-type-selected {
   cursor: default;
   text-align: left;
-  padding: 0; /* That's NESTED_EXPRESSION_RESET_MARGIN */
+  padding: 0; /* That's NESTED_EXPRESSION_RESET_MARGIN. Changing this will alter all Widths.ts calculations */
   align-items: flex-start;
   flex-direction: column;
 }

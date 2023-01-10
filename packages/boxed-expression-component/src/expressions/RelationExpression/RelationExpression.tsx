@@ -268,7 +268,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     [setExpression]
   );
   const beeTableHeaderVisibility = useMemo(() => {
-    return relationExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+    return relationExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [relationExpression.isHeadless]);
 
   return (

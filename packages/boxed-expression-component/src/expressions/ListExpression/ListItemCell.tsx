@@ -3,15 +3,16 @@ import { BeeTableCellProps, ListExpressionDefinition, ExpressionDefinitionLogicT
 import {
   NestedExpressionContainerContextType,
   NestedExpressionContainerContext,
+  useNestedExpressionContainer,
 } from "../../resizing/NestedExpressionContainerContext";
 import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useContextExpressionContext } from "../ContextExpression";
 import { ROWTYPE } from "../FunctionExpression";
 import * as React from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
+import { LIST_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthValues";
 
 export function ListItemCell({ rowIndex, data: items }: BeeTableCellProps<ROWTYPE>) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -29,18 +30,21 @@ export function ListItemCell({ rowIndex, data: items }: BeeTableCellProps<ROWTYP
     [rowIndex, setExpression]
   );
 
-  const contextExpression = useContextExpressionContext();
-  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
+  const nestedExpressionContainer = useNestedExpressionContainer();
+  const nestedExpressionContainerValue = useMemo<NestedExpressionContainerContextType>(() => {
     return {
-      minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
-      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
-      actualWidth: contextExpression.entryExpressionsActualWidth,
-      resizingWidth: contextExpression.entryExpressionsResizingWidth,
+      actualWidth: nestedExpressionContainer.actualWidth - LIST_EXPRESSION_EXTRA_WIDTH,
+      minWidthGlobal: nestedExpressionContainer.minWidthGlobal - LIST_EXPRESSION_EXTRA_WIDTH,
+      minWidthLocal: nestedExpressionContainer.minWidthLocal - LIST_EXPRESSION_EXTRA_WIDTH,
+      resizingWidth: {
+        value: nestedExpressionContainer.resizingWidth.value - LIST_EXPRESSION_EXTRA_WIDTH,
+        isPivoting: false,
+      },
     };
-  }, [contextExpression]);
+  }, [nestedExpressionContainer]);
 
   return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
+    <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ExpressionContainer expression={items[rowIndex]?.entryExpression} isResetSupported={true} isHeadless={true} />
       </NestedExpressionDispatchContextProvider>
