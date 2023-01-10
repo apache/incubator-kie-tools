@@ -685,8 +685,8 @@ public class DataTypeListItemViewTest {
         // item 0 - yPosition: 0
         // item 1 - yPosition: 1
         // child1 and child2 yPosition need to be greater than 0 and less than 1
-        verify(presenter).setPositionY(eq(child1), doubleThat(d -> d > 0.3));
-        verify(presenter).setPositionY(eq(child2), doubleThat(d -> d > 0.6));
+        verify(presenter).setPositionY(eq(child1), doubleThat(d -> d > 0.3 && d < 0.6));
+        verify(presenter).setPositionY(eq(child2), doubleThat(d -> d > 0.6 && d < 1.0));
     }
 
     @Test
