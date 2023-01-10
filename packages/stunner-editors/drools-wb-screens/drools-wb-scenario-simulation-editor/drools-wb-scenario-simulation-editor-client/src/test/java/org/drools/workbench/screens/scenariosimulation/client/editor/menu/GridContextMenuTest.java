@@ -33,8 +33,8 @@ import static org.drools.workbench.screens.scenariosimulation.client.editor.menu
 import static org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu.GRIDCONTEXTMENU_GRID_TITLE;
 import static org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu.GRIDCONTEXTMENU_INSERT_ROW_ABOVE;
 import static org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu.GRIDCONTEXTMENU_INSERT_ROW_BELOW;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

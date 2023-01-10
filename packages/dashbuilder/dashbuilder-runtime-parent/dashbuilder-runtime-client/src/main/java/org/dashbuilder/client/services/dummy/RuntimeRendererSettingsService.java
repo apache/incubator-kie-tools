@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
 import org.dashbuilder.renderer.RendererSettings;
-import org.dashbuilder.renderer.c3.client.C3Renderer;
+import org.dashbuilder.renderer.echarts.client.EChartsRenderer;
 import org.dashbuilder.renderer.service.RendererSettingsService;
 import org.jboss.errai.bus.server.annotations.ShadowService;
 
@@ -35,7 +35,7 @@ public class RuntimeRendererSettingsService implements RendererSettingsService {
 
     @Override
     public RendererSettings getSettings() {
-        return new RendererSettings(C3Renderer.UUID, false);
+        return new RendererSettings(EChartsRenderer.UUID, false);
     }
 
 }

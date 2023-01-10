@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.sw.client.editor;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.enterprise.event.Event;
+
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.core.types.Transform;
@@ -143,6 +145,9 @@ public class DiagramEditorTest {
     @Mock
     private CanvasCommandManager commandManager;
 
+    @Mock
+    private Event togglePreviewEvent;
+
     private DiagramEditor tested;
     private Promises promises;
     private DiagramImpl diagram;
@@ -215,7 +220,8 @@ public class DiagramEditorTest {
                                        stunnerEditor2,
                                        diagramServices,
                                        incrementalMarshaller,
-                                       canvasFileExport));
+                                       canvasFileExport,
+                                       togglePreviewEvent));
         tested.jsRegExp = jsRegExp;
         tested.jsCanvas = jsCanvas;
     }

@@ -28,8 +28,10 @@
       { "id": "kie-tools-examples-todo-list-view-vscode-extension" },
       { "id": "@kie-tools-examples/webapp" },
       { "id": "@kie-tools/kie-editors-standalone" },
+      { "id": "@kie-tools/serverless-workflow-standalone-editor" },
       { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/stunner-editors" },
+      { "id": "@kie-tools/serverless-workflow-combined-editor" },
       { "id": "@kie-tools-core/notifications" },
       { "id": "@kie-tools-core/i18n" },
       { "id": "@kie-tools-core/workspace" },
@@ -44,7 +46,6 @@
       { "id": "@kie-tools/pmml-editor-marshaller" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-serverless-workflow-editor" },
-      { "id": "@kie-tools/serverless-workflow-combined-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-assets" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-mermaid-viewer" },
@@ -74,7 +75,6 @@
       { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
-      { "id": "@kie-tools/desktop" },
       { "id": "@kie-tools/dmn-dev-deployment-base-image" },
       { "id": "@kie-tools/dmn-dev-deployment-form-webapp" },
       { "id": "@kie-tools/dmn-dev-deployment-quarkus-app" },
@@ -97,7 +97,7 @@
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/unitables" },
-      { "id": "@kie-tools/serverless-logic-sandbox" },
+      { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
@@ -216,13 +216,43 @@
       { "source": "@kie-tools-examples/webapp", "target": "@kie-tools-examples/ping-pong-view-react", "weight": 1 },
       { "source": "@kie-tools-examples/webapp", "target": "@kie-tools-examples/todo-list-view", "weight": 1 },
       { "source": "@kie-tools-examples/webapp", "target": "@kie-tools/kie-editors-standalone", "weight": 1 },
+      {
+        "source": "@kie-tools-examples/webapp",
+        "target": "@kie-tools/serverless-workflow-standalone-editor",
+        "weight": 1
+      },
       { "source": "@kie-tools/kie-editors-standalone", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/kie-editors-standalone", "target": "@kie-tools/stunner-editors", "weight": 1 },
+      {
+        "source": "@kie-tools/serverless-workflow-standalone-editor",
+        "target": "@kie-tools/serverless-workflow-combined-editor",
+        "weight": 1
+      },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools-core/vscode-java-code-completion", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      {
+        "source": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/serverless-workflow-text-editor",
+        "weight": 1
+      },
       { "source": "@kie-tools-core/notifications", "target": "@kie-tools-core/i18n", "weight": 1 },
       { "source": "@kie-tools-core/notifications", "target": "@kie-tools-core/workspace", "weight": 1 },
       { "source": "@kie-tools-core/i18n", "target": "@kie-tools/eslint", "weight": 1 },
@@ -278,26 +308,6 @@
       {
         "source": "chrome-extension-serverless-workflow-editor",
         "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-text-editor",
         "weight": 1
       },
       {
@@ -508,8 +518,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/desktop", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
-      { "source": "@kie-tools/desktop", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
         "source": "@kie-tools/dmn-dev-deployment-base-image",
         "target": "@kie-tools/dmn-dev-deployment-form-webapp",
@@ -597,28 +605,28 @@
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/openshift", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/openshift", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/text-editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/dashbuilder-viewer-image-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
@@ -819,7 +827,6 @@
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
-    ["@kie-tools/desktop", "packages/desktop"],
     ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
     ["@kie-tools/dmn-dev-deployment-base-image-env", "packages/dmn-dev-deployment-base-image-env"],
     ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],
@@ -857,7 +864,7 @@
     ["@kie-tools/pmml-editor-marshaller", "packages/pmml-editor-marshaller"],
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
-    ["@kie-tools/serverless-logic-sandbox", "packages/serverless-logic-sandbox"],
+    ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
     [
       "@kie-tools/serverless-logic-web-tools-base-builder-image",
       "packages/serverless-logic-web-tools-base-builder-image"
@@ -885,6 +892,7 @@
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
     ["@kie-tools/serverless-workflow-mermaid-viewer", "packages/serverless-workflow-mermaid-viewer"],
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],
+    ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],

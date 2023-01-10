@@ -67,8 +67,8 @@ public class DMNDocumentationFactory {
                                        getDataTypes(diagram),
                                        getDrds(diagram),
                                        getDiagramImage(),
-                                       getCurrentUserName(),
                                        getCurrentDate(),
+                                       getCurrentYear(),
                                        getDocumentationI18n());
     }
 
@@ -103,9 +103,7 @@ public class DMNDocumentationFactory {
     private void makeDMNDocumentationDataTypes(final List<ItemDefinition> itemDefinitions,
                                                final List<DMNDocumentationDataType> dataTypes,
                                                final int level) {
-        itemDefinitions.forEach(itemDefinition -> {
-            makeDMNDocumentationDataType(dataTypes, itemDefinition, level);
-        });
+        itemDefinitions.forEach(itemDefinition -> makeDMNDocumentationDataType(dataTypes, itemDefinition, level));
     }
 
     private void makeDMNDocumentationDataType(final List<DMNDocumentationDataType> dataTypes,
@@ -150,6 +148,10 @@ public class DMNDocumentationFactory {
         return moment().format("D MMMM YYYY");
     }
 
+    protected String getCurrentYear() {
+        return moment().format("YYYY");
+    }
+
     protected String getDiagramName(final Diagram diagram) {
         return graphUtils
                 .getDefinitions(diagram)
@@ -162,10 +164,6 @@ public class DMNDocumentationFactory {
                 .getDefinitions(diagram)
                 .getDescription()
                 .getValue();
-    }
-
-    protected String getCurrentUserName() {
-        return "default";
     }
 
     private Optional<AbstractCanvasHandler> getCanvasHandler() {

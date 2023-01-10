@@ -164,4 +164,14 @@ public class LayeredGraph implements ReorderedGraph {
         }
         return verticesFrom.toArray(new String[0]);
     }
+
+    public String[] getVerticesTo(final String vertex) {
+        final HashSet<String> verticesTo = new HashSet<>();
+        for (final OrientedEdge edge : this.edges) {
+            if (Objects.equals(edge.getToVertexId(), vertex)) {
+                verticesTo.add(edge.getFromVertexId());
+            }
+        }
+        return verticesTo.toArray(new String[0]);
+    }
 }

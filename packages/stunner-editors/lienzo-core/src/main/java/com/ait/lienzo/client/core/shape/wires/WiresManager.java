@@ -258,48 +258,47 @@ public final class WiresManager {
     }
 
     public WiresConnectorControl register(final WiresConnector connector) {
-        return register(connector, true);
+        return registerConnector(connector);
     }
 
-    public WiresConnectorControl register(final WiresConnector connector,
-                                          final boolean addHandlers) {
-        final String uuid = connector.uuid();
-
+    public WiresConnectorControl registerConnector(final WiresConnector connector) {
         final WiresConnectorControl control = getControlFactory().newConnectorControl(connector, this);
         connector.setControl(control);
 
-        final HandlerRegistrationManager m_registrationManager = createHandlerRegistrationManager();
-
-        if (addHandlers) {
-            final WiresConnectorHandler handler = getWiresHandlerFactory().newConnectorHandler(connector, this);
-
-            m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
-            m_registrationManager.register(connector.getHead().addNodeMouseEnterHandler(handler));
-            m_registrationManager.register(connector.getHead().addNodeMouseMoveHandler(handler));
-            m_registrationManager.register(connector.getHead().addNodeMouseExitHandler(handler));
-            m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
-
-            m_registrationManager.register(connector.getTail().addNodeMouseEnterHandler(handler));
-            m_registrationManager.register(connector.getTail().addNodeMouseMoveHandler(handler));
-            m_registrationManager.register(connector.getTail().addNodeMouseExitHandler(handler));
-
-            m_registrationManager.register(connector.getGroup().addNodeDragStartHandler(handler));
-            m_registrationManager.register(connector.getGroup().addNodeDragMoveHandler(handler));
-            m_registrationManager.register(connector.getGroup().addNodeDragEndHandler(handler));
-
-            m_registrationManager.register(connector.getLine().addNodeMouseClickHandler(handler));
-            m_registrationManager.register(connector.getLine().addNodeMouseDownHandler(handler));
-            m_registrationManager.register(connector.getLine().addNodeMouseMoveHandler(handler));
-            m_registrationManager.register(connector.getLine().addNodeMouseEnterHandler(handler));
-            m_registrationManager.register(connector.getLine().addNodeMouseExitHandler(handler));
-        }
-
         getConnectorList().add(connector);
-        m_shapeHandlersMap.put(uuid, m_registrationManager);
 
         connector.addToLayer(getLayer().getLayer());
 
         return control;
+    }
+
+    public void addHandlers(final WiresConnector connector) {
+        final String uuid = connector.uuid();
+        final HandlerRegistrationManager m_registrationManager = createHandlerRegistrationManager();
+
+        final WiresConnectorHandler handler = getWiresHandlerFactory().newConnectorHandler(connector, this);
+
+        m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
+        m_registrationManager.register(connector.getHead().addNodeMouseEnterHandler(handler));
+        m_registrationManager.register(connector.getHead().addNodeMouseMoveHandler(handler));
+        m_registrationManager.register(connector.getHead().addNodeMouseExitHandler(handler));
+        m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
+
+        m_registrationManager.register(connector.getTail().addNodeMouseEnterHandler(handler));
+        m_registrationManager.register(connector.getTail().addNodeMouseMoveHandler(handler));
+        m_registrationManager.register(connector.getTail().addNodeMouseExitHandler(handler));
+
+        m_registrationManager.register(connector.getGroup().addNodeDragStartHandler(handler));
+        m_registrationManager.register(connector.getGroup().addNodeDragMoveHandler(handler));
+        m_registrationManager.register(connector.getGroup().addNodeDragEndHandler(handler));
+
+        m_registrationManager.register(connector.getLine().addNodeMouseClickHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseDownHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseMoveHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseEnterHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseExitHandler(handler));
+
+        m_shapeHandlersMap.put(uuid, m_registrationManager);
     }
 
     public void deregister(final WiresConnector connector) {

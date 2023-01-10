@@ -106,6 +106,7 @@ public final class DefaultVertexOrdering implements VertexOrdering {
         for (int i = 0; i < virtualized.size() - 1; i++) {
             final GraphLayer currentLayer = virtualized.get(i);
             final GraphLayer nextLayer = virtualized.get(i + 1);
+            final int layerHeight = calculateLayerHeight(nextLayer);
             for (final VertexPosition vertexPosition : currentLayer.getVertices()) {
 
                 final List<OrientedEdge> outgoing = edges.stream()
@@ -120,6 +121,7 @@ public final class DefaultVertexOrdering implements VertexOrdering {
 
                 for (final OrientedEdge edge : outgoing) {
                     final VertexPosition virtualVertexPosition = new VertexPosition("V" + virtualIndex++, true);
+                    virtualVertexPosition.setHeight(layerHeight);
                     nextLayer.getVertices().add(virtualVertexPosition);
                     edges.remove(edge);
                     final OrientedEdge v1 = new OrientedEdgeImpl(edge.getFromVertexId(), virtualVertexPosition.getId());
@@ -130,6 +132,7 @@ public final class DefaultVertexOrdering implements VertexOrdering {
 
                 for (final OrientedEdge edge : incoming) {
                     final VertexPosition virtualVertexPosition = new VertexPosition("V" + virtualIndex++, true);
+                    virtualVertexPosition.setHeight(layerHeight);
                     nextLayer.getVertices().add(virtualVertexPosition);
                     edges.remove(edge);
                     final OrientedEdge v1 = new OrientedEdgeImpl(virtualVertexPosition.getId(), edge.getToVertexId());
@@ -141,6 +144,10 @@ public final class DefaultVertexOrdering implements VertexOrdering {
         }
 
         return virtualized;
+    }
+
+    int calculateLayerHeight(final GraphLayer currentLayer) {
+        return currentLayer.getVertices().stream().mapToInt(v -> v.getHeight()).max().orElse(0);
     }
 
     private int getLayerNumber(final String vertex,

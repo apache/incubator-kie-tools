@@ -16,7 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode/VsCodeBackendProxy";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
@@ -47,7 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
         type: "yard",
         filePathGlob: "**/*.yard.+(json|yml|yaml)",
         resourcesPathPrefix: "dist/webview/editors/yard",
-        envelopePath: "dist/webview/YardEditorEnvelopeApp.js",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/YardEditorEnvelopeApp.js" },
       }),
     ]),
     backendProxy,

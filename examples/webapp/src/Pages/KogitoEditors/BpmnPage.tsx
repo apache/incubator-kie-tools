@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
@@ -54,7 +54,10 @@ export function BpmnPage() {
         type: "bpmn",
         filePathGlob: "**/*.bpmn?(2)",
         resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
-        envelopePath: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
+        envelopeContent: {
+          type: EnvelopeContentType.PATH,
+          path: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
+        },
       }),
     ]);
   }, []);

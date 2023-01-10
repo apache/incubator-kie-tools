@@ -23,7 +23,6 @@ import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
-import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
@@ -49,12 +48,6 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends C3Abstract
 
     private static final double DEFAULT_POINT_RADIUS = 2.5;
     protected C3JsTypesFactory factory;
-
-    public static final String[] COLOR_PATTERN = {
-                                                  "#0088CE", "#CC0000", "#EC7A08", "#3F9C35", "#F0AB00", "#703FEC",
-                                                  "#007A87", "#92D400", "#35CAED",
-                                                  "#00659C", "#A30000", "#B35C00", "#B58100", "#6CA100", "#2D7623",
-                                                  "#005C66", "#008BAD", "#40199A"};
 
     public interface View<P extends C3AbstractDisplayer> extends C3AbstractDisplayer.View<P> {
 
@@ -289,10 +282,10 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends C3Abstract
         if (columns.size() > 1) {
             data = new String[columns.size() - 1][];
             for (int i = 1; i < columns.size(); i++) {
-                DataColumn dataColumn = columns.get(i);
-                ColumnSettings columnSettings = displayerSettings.getColumnSettings(dataColumn);
-                List<?> values = dataColumn.getValues();
-                String[] seriesValues = new String[values.size() + 1];
+                var dataColumn = columns.get(i);
+                var columnSettings = displayerSettings.getColumnSettings(dataColumn);
+                var values = dataColumn.getValues();
+                var seriesValues = new String[values.size() + 1];
                 seriesValues[0] = columnSettings.getColumnName();
                 for (int j = 0; j < values.size(); j++) {
                     seriesValues[j + 1] = values.get(j).toString();
@@ -313,10 +306,10 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends C3Abstract
     }
 
     protected String[][] getDataTable() {
-        List<DataColumn> columns = dataSet.getColumns();
-        String data[][] = new String[columns.size()][];
+        var columns = dataSet.getColumns();
+        var data = new String[columns.size()][];
         for (int i = 0; i < columns.size(); i++) {
-            List<?> values = columns.get(i).getValues();
+            var values = columns.get(i).getValues();
             data[i] = new String[values.size()];
             for (int j = 0; j < values.size(); j++) {
                 data[i][j] = columnValueToString(values.get(j));

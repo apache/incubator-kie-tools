@@ -42,6 +42,8 @@ public class ZoomLevelSelector implements IsWidget {
 
         void setEnabled(boolean enabled);
 
+        void updatePreviewButton(boolean enabled);
+
         void dropUp();
     }
 
@@ -49,6 +51,7 @@ public class ZoomLevelSelector implements IsWidget {
     private Command onScaleToFit;
     private Command onDecreaseLevel;
     private Command onIncreaseLevel;
+    private Command onPreview;
 
     @Inject
     public ZoomLevelSelector(final View view) {
@@ -59,12 +62,20 @@ public class ZoomLevelSelector implements IsWidget {
         };
         this.onDecreaseLevel = () -> {
         };
+        this.onPreview = () -> {
+        };
     }
 
     @PostConstruct
     public void init() {
         view.init(this);
         view.setEnabled(true);
+    }
+
+    public ZoomLevelSelector onPreview(final Command onPreview) {
+        checkNotNull("onPreview", onPreview);
+        this.onPreview = onPreview;
+        return this;
     }
 
     public ZoomLevelSelector onDecreaseLevel(final Command onDecreaseLevel) {
@@ -115,9 +126,18 @@ public class ZoomLevelSelector implements IsWidget {
         return this;
     }
 
+    public ZoomLevelSelector setPreviewEnabled(boolean enabled) {
+        view.updatePreviewButton(enabled);
+        return this;
+    }
+
     @Override
     public Widget asWidget() {
         return view.asWidget();
+    }
+
+    void onPreview() {
+        onPreview.execute();
     }
 
     void onScaleToFitSize() {

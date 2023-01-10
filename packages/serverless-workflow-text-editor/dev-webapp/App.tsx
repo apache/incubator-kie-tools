@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorEnvelopeLocator, EditorTheme, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorEnvelopeLocator,
+  EditorTheme,
+  EnvelopeContentType,
+  EnvelopeMapping,
+} from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -38,7 +44,7 @@ export const App = () => {
           type: "swf",
           filePathGlob: "**/*.sw.+(json|yml|yaml)",
           resourcesPathPrefix: "",
-          envelopePath: "serverless-workflow-text-editor-envelope.html",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "serverless-workflow-text-editor-envelope.html" },
         }),
       ]),
     []

@@ -1,3 +1,26 @@
+# 0.26.0 (alpha)
+
+- [KOGITO-7471](https://issues.redhat.com/browse/KOGITO-7471) - Auto-layout for SWF
+- [KOGITO-7078](https://issues.redhat.com/browse/KOGITO-7078) - SWF Viewer connector Labels
+- [KOGITO-8128](https://issues.redhat.com/browse/KOGITO-8128) - [SWF Editor] Diagram nodes highlighting is triggered too many times
+- [KOGITO-8101](https://issues.redhat.com/browse/KOGITO-8101) - SWF Viewer - warn user about duplicated state name
+- [KOGITO-7736](https://issues.redhat.com/browse/KOGITO-7736) - SWF Viewer - Performance improvements
+- [KOGITO-8093](https://issues.redhat.com/browse/KOGITO-8093) - [SWF Editor] Improve auto-completion experience
+- [KOGITO-7954](https://issues.redhat.com/browse/KOGITO-7954) - SWF Editor - Some basic automated integration tests
+- [KOGITO-7098](https://issues.redhat.com/browse/KOGITO-7098) - SWF Viewer - refactor shapes from SVG to pure lienzo
+- [KOGITO-8227](https://issues.redhat.com/browse/KOGITO-8227) - [SWF Editor] Add comma automatically after completions
+- [KOGITO-7717](https://issues.redhat.com/browse/KOGITO-7717) - Migrate to apt-based json marshallers
+- [KOGITO-8280](https://issues.redhat.com/browse/KOGITO-8280) - preserve JSON properties that aren't defined as target for marshalling
+- [KOGITO-8258](https://issues.redhat.com/browse/KOGITO-8258) - [SWF Editor] Implement click action over an error
+- [KOGITO-8236](https://issues.redhat.com/browse/KOGITO-8236) - SWF Viewer - Fixing layers for Auto-layout
+- [KOGITO-7078](https://issues.redhat.com/browse/KOGITO-7078) - SWF Viewer - Connector labels
+- [KOGITO-7633](https://issues.redhat.com/browse/KOGITO-7633) - SWF Viewer - Usability improvements for mediators (Preview Window)
+- [KOGITO-8104](https://issues.redhat.com/browse/KOGITO-8104) - SWF Viewer - Ability to customize the states icon (json)
+- [KOGITO-7603](https://issues.redhat.com/browse/KOGITO-7603) - SWF Editor - change icon of Event State
+- [KOGITO-8317](https://issues.redhat.com/browse/KOGITO-8317) - Show condition names, instead of expressions, when possible
+- [KOGITO-8307](https://issues.redhat.com/browse/KOGITO-8307) - SWF Editor - States without incoming transition are shown in top left corner
+- [KOGITO-8277](https://issues.redhat.com/browse/KOGITO-8277) - FunctionRef.arguments could be String or JsObject
+
 # 0.25.0 (alpha)
 
 - [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)

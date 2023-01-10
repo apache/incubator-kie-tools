@@ -144,7 +144,10 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
     private ExternalComponentMessage initMessage() {
         Map<String, Object> componentProperties = new HashMap<>(displayerSettings.getComponentProperties());
-        return messageHelper.newInitMessage(componentProperties);
+        var message = messageHelper.newInitMessage(componentProperties);
+        var mode = displayerSettings.getMode();
+        message.setProperty(DisplayerAttributeDef.MODE.getId(), mode.name());
+        return message;
     }
 
     private ExternalColumn[] buildColumns() {

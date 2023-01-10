@@ -29,4 +29,7 @@ public interface NativeLibraryResources extends ClientBundle {
     @Source("js/js-yaml.min.js")
     TextResource jsYaml();
 
+    @Source("css/mode-dark.css")
+    TextResource cssDarkMode();
+
 }

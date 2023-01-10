@@ -29,7 +29,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.popover.Err
 import static org.drools.workbench.screens.scenariosimulation.client.popover.ErrorReportPopoverViewTest.KEEP_TEXT;
 import static org.drools.workbench.screens.scenariosimulation.client.popover.ErrorReportPopoverViewTest.MX;
 import static org.drools.workbench.screens.scenariosimulation.client.popover.ErrorReportPopoverViewTest.MY;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

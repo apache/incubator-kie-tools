@@ -35,6 +35,7 @@ export interface SwfTextEditorApi {
   forceRedraw: () => void;
   dispose: () => void;
   moveCursorToNode: (nodeName: string) => void;
+  moveCursorToPosition: (position: Position) => void;
 }
 
 export enum SwfTextEditorOperation {
@@ -172,8 +173,22 @@ export class SwfTextEditorController implements SwfTextEditorApi {
       return;
     }
 
-    this.editor?.revealLineInCenter(targetPosition.lineNumber);
-    this.editor?.setPosition(targetPosition);
+    this.moveCursorToPosition(targetPosition);
+  }
+
+  /**
+   * Moves the cursor to a specified position
+   *
+   * @param position -
+   * @returns
+   */
+  public moveCursorToPosition(position: Position): void {
+    if (!this.editor) {
+      return;
+    }
+
+    this.editor?.revealLineInCenter(position.lineNumber);
+    this.editor?.setPosition(position);
     this.editor?.focus();
   }
 

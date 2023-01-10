@@ -20,7 +20,6 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
@@ -80,21 +79,17 @@ public class DefaultPinnedModeManagerTest {
             @Override
             protected void doEnterPinnedMode(final Command onStartCommand,
                                              final GridWidget gridWidget,
-                                             final Set<GridWidget> gridWidgetsToFadeFromView,
-                                             final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView) {
+                                             final Set<GridWidget> gridWidgetsToFadeFromView) {
                 assertEquals(DefaultPinnedModeManagerTest.this.gridWidget,
                              gridWidget);
                 assertTrue(gridWidgetsToFadeFromView.isEmpty());
-                assertTrue(gridWidgetConnectorsToFadeFromView.isEmpty());
                 onStartCommand.execute();
             }
 
             @Override
             protected void doExitPinnedMode(final Command onCompleteCommand,
-                                            final Set<GridWidget> gridWidgetsToFadeIntoView,
-                                            final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView) {
+                                            final Set<GridWidget> gridWidgetsToFadeIntoView) {
                 assertTrue(gridWidgetsToFadeIntoView.isEmpty());
-                assertTrue(gridWidgetConnectorsToFadeIntoView.isEmpty());
                 onCompleteCommand.execute();
             }
         };

@@ -15,12 +15,23 @@
  */
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { SwfLanguageServiceChannelApi } from "../../../serverless-workflow-language-service/dist/api/SwfLanguageServiceChannelApi";
+import { Position } from "monaco-editor";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api/SwfLanguageServiceChannelApi";
 import { SwfFeatureToggleChannelApi } from "./SwfFeatureToggleChannelApi";
 import { SwfPreviewOptionsChannelApi } from "./SwfPreviewOptionsChannelApi";
+import { SwfStaticEnvelopeContentProviderChannelApi } from "./SwfStaticEnvelopeContentProviderChannelApi";
 
 export interface ServerlessWorkflowCombinedEditorChannelApi
   extends KogitoEditorChannelApi,
     SwfFeatureToggleChannelApi,
     SwfLanguageServiceChannelApi,
-    SwfPreviewOptionsChannelApi {}
+    SwfPreviewOptionsChannelApi,
+    SwfStaticEnvelopeContentProviderChannelApi {
+  /**
+   * Moves the cursor in the editor to a specified position
+   *
+   * @param position
+   * @returns
+   */
+  kogitoSwfCombinedEditor_moveCursorToPosition(position: Position): void;
+}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
@@ -50,7 +50,7 @@ export function Base64PngPage() {
           type: "base64png",
           filePathGlob: "**/*.base64png",
           resourcesPathPrefix: "envelope/",
-          envelopePath: "envelope/base64-editor.html",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/base64-editor.html" },
         }),
       ]),
     [file]

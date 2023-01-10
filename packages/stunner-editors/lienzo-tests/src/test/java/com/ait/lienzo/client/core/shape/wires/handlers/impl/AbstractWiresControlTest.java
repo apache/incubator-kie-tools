@@ -30,7 +30,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import elemental2.dom.HTMLDivElement;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
