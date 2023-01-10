@@ -25,8 +25,8 @@ import { readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
-import { useHistory } from "react-router";
-import { QueryParams } from "../navigation/Routes";
+import { useHistory, useRouteMatch } from "react-router";
+import { QueryParams, routes } from "../navigation/Routes";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
 import { KafkaSettingsConfig, readKafkaConfigCookie } from "./kafka/KafkaSettingsConfig";
 import { readServiceAccountConfigCookie, ServiceAccountSettingsConfig } from "./serviceAccount/ServiceAccountConfig";
@@ -136,6 +136,7 @@ export function SettingsContextProvider(props: any) {
   const history = useHistory();
   const [isOpen, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(SettingsTabs.GITHUB);
+  const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
 
   useEffect(() => {
     setOpen(queryParams.has(QueryParams.SETTINGS));
@@ -343,8 +344,13 @@ export function SettingsContextProvider(props: any) {
   return (
     <SettingsContext.Provider value={value}>
       <SettingsDispatchContext.Provider value={dispatch}>
-        {githubAuthStatus !== AuthStatus.LOADING && <>{props.children}</>}
-        <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
+        {(isRouteInSettingsSection || githubAuthStatus !== AuthStatus.LOADING) && <>{props.children}</>}
+        <Modal
+          title="Settings"
+          isOpen={!isRouteInSettingsSection && isOpen}
+          onClose={close}
+          variant={ModalVariant.large}
+        >
           <div style={{ height: "calc(100vh * 0.5)" }} className={"kie-tools--settings-modal-content"}>
             <SettingsModalBody />
           </div>
