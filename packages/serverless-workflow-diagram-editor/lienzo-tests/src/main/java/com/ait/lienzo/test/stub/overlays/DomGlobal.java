@@ -9,7 +9,6 @@ import elemental2.dom.ImageBitmap;
 import elemental2.dom.Response;
 import elemental2.dom.Window;
 import elemental2.promise.Promise;
-import jsinterop.base.Js;
 
 @StubClass("elemental2.dom.DomGlobal")
 public class DomGlobal {
@@ -34,17 +33,17 @@ public class DomGlobal {
 
     public static final Promise<ImageBitmap> createImageBitmap(Blob image) {
         return new Promise<ImageBitmap>((resolve, reject) ->
-                                      new ImageBitmap() {
-                                          @Override
-                                          public int getHeight() {
-                                              return 0;
-                                          }
+                                                new ImageBitmap() {
+                                                    @Override
+                                                    public int getHeight() {
+                                                        return 0;
+                                                    }
 
-                                          @Override
-                                          public int getWidth() {
-                                              return 0;
-                                          }
-                                      }
+                                                    @Override
+                                                    public int getWidth() {
+                                                        return 0;
+                                                    }
+                                                }
         );
     }
 }
