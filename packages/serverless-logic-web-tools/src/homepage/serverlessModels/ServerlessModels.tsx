@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { useHistory } from "react-router";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
+import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import {
   Card,
   CardActions,
@@ -27,20 +29,13 @@ import {
   CardHeaderMain,
   CardTitle,
 } from "@patternfly/react-core/dist/js/components/Card";
-import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
-import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
-import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
-import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { FileLabel } from "../../workspace/components/FileLabel";
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import {
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+} from "@patternfly/react-core/dist/js/components/DataList";
 import {
   Drawer,
   DrawerActions,
@@ -52,31 +47,35 @@ import {
   DrawerPanelContent,
   DrawerSection,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { Link } from "react-router-dom";
-import { DeleteDropdownWithConfirmation } from "../../editor/DeleteDropdownWithConfirmation";
-import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
-import { QueryParams } from "../../navigation/Routes";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { RelativeDate } from "../../dates/RelativeDate";
-import {
-  DataList,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-} from "@patternfly/react-core/dist/js/components/DataList";
-import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
-import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { NewFileDropdownMenu } from "../../editor/NewFileDropdownMenu";
-import { Alerts, AlertsController } from "../../alerts/Alerts";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import { Alerts, AlertsController } from "../../alerts/Alerts";
+import { RelativeDate } from "../../dates/RelativeDate";
+import { DeleteDropdownWithConfirmation } from "../../editor/DeleteDropdownWithConfirmation";
+import { NewFileDropdownMenu } from "../../editor/NewFileDropdownMenu";
+import { isEditable, splitFiles } from "../../extension";
 import { useRoutes } from "../../navigation/Hooks";
+import { QueryParams } from "../../navigation/Routes";
+import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { isEditable } from "../../extension";
+import { FileLabel } from "../../workspace/components/FileLabel";
+import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 
 export function ServerlessModels() {
   const routes = useRoutes();

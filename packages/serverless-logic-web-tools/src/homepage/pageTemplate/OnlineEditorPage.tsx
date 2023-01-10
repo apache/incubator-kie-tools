@@ -42,6 +42,8 @@ import { HomePageNav } from "../uiNav/HomePageNav";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
