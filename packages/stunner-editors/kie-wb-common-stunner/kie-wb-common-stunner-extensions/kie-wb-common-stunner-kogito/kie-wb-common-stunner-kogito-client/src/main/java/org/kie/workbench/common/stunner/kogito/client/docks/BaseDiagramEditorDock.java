@@ -40,6 +40,8 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
     public void init() {
         if (uberfireDock == null) {
             uberfireDock = makeUberfireDock();
+            uberfireDocks.add(getUberfireDock());
+            uberfireDocks.show(position());
         }
     }
 
@@ -58,8 +60,7 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
         }
 
         isOpened = true;
-        uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position());
+        uberfireDocks.open(getUberfireDock());
     }
 
     @Override

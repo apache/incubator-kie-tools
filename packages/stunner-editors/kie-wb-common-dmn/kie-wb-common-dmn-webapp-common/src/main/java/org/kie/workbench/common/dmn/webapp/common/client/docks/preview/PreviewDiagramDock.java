@@ -56,6 +56,8 @@ public class PreviewDiagramDock implements DiagramEditorDock {
     public void init() {
         if (uberfireDock == null) {
             uberfireDock = makeUberfireDock();
+            uberfireDocks.add(getUberfireDock());
+            uberfireDocks.show(position());
         }
     }
 
@@ -74,8 +76,6 @@ public class PreviewDiagramDock implements DiagramEditorDock {
         }
 
         isOpened = true;
-        uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position());
         uberfireDocks.open(getUberfireDock());
     }
 
