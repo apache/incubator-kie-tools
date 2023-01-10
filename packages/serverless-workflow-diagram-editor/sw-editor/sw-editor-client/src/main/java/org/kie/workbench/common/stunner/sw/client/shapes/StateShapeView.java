@@ -96,6 +96,10 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
                               .setStrokeWidth(2.00));
     }
 
+    public String getIconBackgroundColor() {
+        return backgroundCircle.getFillColor();
+    }
+
     public boolean isIconEmpty() {
         return iconImage.getChildNodes().isEmpty();
     }

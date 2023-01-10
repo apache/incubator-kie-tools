@@ -653,11 +653,17 @@ public final class Geometry {
 
             final PathPartEntryJSO nextEntry = baseList.get(i + 1);
 
-            Point2D p0 = basePoints.get(i - 1);
+            Point2D p0 = null;
+            if (i > 0) {
+                p0 = basePoints.get(i - 1);
+            }
 
             final Point2D p2 = basePoints.get(i);
 
-            Point2D p4 = basePoints.get(i + 1);
+            Point2D p4 = null;
+            if (i + 1 < pointsSize) {
+                p4 = basePoints.get(i + 1);
+            }
 
             if (closed) {
                 if (i == 0) {

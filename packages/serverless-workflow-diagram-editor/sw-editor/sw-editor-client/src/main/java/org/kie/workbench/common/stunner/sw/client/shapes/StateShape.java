@@ -70,23 +70,29 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
         }
     }
 
-    private void loadIconFormFile(State state, ResourceContentService resourceContentService) {
-        resourceContentService
-                .get(state.metadata.icon, ResourceContentOptions.binary())
-                .then(image -> {
-                    if (StringUtils.nonEmpty(image)) {
-                        String base64image = iconDataUri(state.metadata.icon, image);
-                        Picture picture = new Picture(base64image);
-                        setIconPicture(picture);
-                    }
-                    return null;
-                });
-    }
-
     public StateShape(String name) {
         super(new StateShapeView(name).asAbstractShape());
 
         shapeView = (StateShapeView) getShape().getShapeView();
+    }
+
+    private void loadIconFormFile(State state, ResourceContentService resourceContentService) {
+        resourceContentService
+                .get(state.metadata.icon, ResourceContentOptions.binary())
+                .then(image -> {
+                    setIconPicture(image, state.metadata.icon);
+                    return null;
+                });
+    }
+
+    protected void setIconPicture(String base64Data, String iconPath) {
+        if (StringUtils.isEmpty(base64Data)) {
+            return;
+        }
+
+        String base64image = iconDataUri(iconPath, base64Data);
+        Picture picture = new Picture(base64image);
+        setIconPicture(picture);
     }
 
     protected static String iconDataUri(String iconUri, String iconData) {
@@ -140,18 +146,35 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
         return shapeView.isIconEmpty();
     }
 
+    public StateShapeView getView() {
+        return shapeView;
+    }
+
     public StateShape setIconPicture(Picture picture) {
         picture.setImageShapeLoadedHandler(p -> {
-            double size = StateShapeView.STATE_SHAPE_ICON_RADIUS * 2;
-            int min = Math.min(p.getImageData().width, p.getImageData().height);
-            double scale = (size > min) ?
-                    size / min
-                    : 1 / (min / size);
+            double scale = calculateIconScale(p.getImageData().width, p.getImageData().height);
             p.setTransform(new Transform().scale(scale));
             p.getLayer().batch();
         });
         shapeView.setIconPicture(picture);
 
         return this;
+    }
+
+    /**
+     * The method calculates the scale for image transformation by using the smaller side
+     * of the not-square image as a reference. The longer side of the image is cut to fill
+     * the entire icon circle with the source image. If the source image is smaller than
+     * the icon circle, it is scaled to full size.
+     * @param width of the source image
+     * @param height of the source image
+     * @return scale rate to fit the icon in the icon circle
+     */
+    public static double calculateIconScale(int width, int height) {
+        double size = StateShapeView.STATE_SHAPE_ICON_RADIUS * 2;
+        int min = Math.min(width, height);
+        return size > min
+                ? size / min
+                : 1 / (min / size);
     }
 }
