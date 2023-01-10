@@ -59,12 +59,17 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
 
     @Override
     public void init() {
-        this.uberfireDock = makeUberfireDock();
+        if (uberfireDock == null) {
+            uberfireDock = makeUberfireDock();
+        }
     }
 
     @Override
     public void destroy() {
-        uberfireDocks.remove(getUberfireDock());
+        if (uberfireDock != null) {
+            uberfireDocks.remove(getUberfireDock());
+            uberfireDock = null;
+        }
     }
 
     public void reload() {
@@ -120,7 +125,7 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
     }
 
     protected UberfireDockPosition position() {
-        return UberfireDockPosition.WEST;
+        return UberfireDockPosition.EAST;
     }
 
     protected String icon() {

@@ -172,10 +172,16 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     public void onStartup(final PlaceRequest place) {
         init(place);
         stunnerEditor.setReadOnly(this.isReadOnly());
-        decisionNavigatorDock.init();
-        diagramPropertiesDock.init();
-        diagramPreviewAndExplorerDock.init();
         guidedTourBridgeInitializer.init();
+        ensureDocksAreInitialized();
+        setParsingErrorBehavior();
+    }
+
+    private void setParsingErrorBehavior() {
+        stunnerEditor.setParsingExceptionProcessor(e -> {
+            ensureDocksAreRemoved();
+            searchBarComponent.disableSearch();
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -230,6 +236,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     @SuppressWarnings("all")
     public void open(final Diagram diagram,
                      final SessionPresenter.SessionPresenterCallback callback) {
+        ensureDocksAreInitialized();
         feelInitializer.initializeFEELEditor();
         if (layoutHelper.hasLayoutInformation(diagram)) {
             executeOpen(diagram, callback);
@@ -321,11 +328,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     public void onClose() {
         stunnerEditor.close();
 
-        decisionNavigatorDock.destroy();
-        decisionNavigatorDock.resetContent();
-
-        diagramPropertiesDock.destroy();
-        diagramPreviewAndExplorerDock.destroy();
+        ensureDocksAreRemoved();
 
         dataTypesPage.disableShortcuts();
     }
@@ -427,4 +430,19 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
             return Promise.resolve("");
         }
     }
+
+
+    private void ensureDocksAreInitialized() {
+        decisionNavigatorDock.init();
+        diagramPropertiesDock.init();
+        diagramPreviewAndExplorerDock.init();
+    }
+
+    private void ensureDocksAreRemoved() {
+        decisionNavigatorDock.destroy();
+        decisionNavigatorDock.resetContent();
+        diagramPropertiesDock.destroy();
+        diagramPreviewAndExplorerDock.destroy();
+    }
+
 }

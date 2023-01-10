@@ -38,12 +38,17 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
 
     @Override
     public void init() {
-        this.uberfireDock = makeUberfireDock();
+        if (uberfireDock == null) {
+            uberfireDock = makeUberfireDock();
+        }
     }
 
     @Override
     public void destroy() {
-        uberfireDocks.remove(getUberfireDock());
+        if (uberfireDock != null) {
+            uberfireDocks.remove(getUberfireDock());
+            uberfireDock = null;
+        }
     }
 
     @Override
