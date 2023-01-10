@@ -86,18 +86,18 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
         String text;
         QName typeRef;
-        Optional<String> constraintValue;
-        Optional<ConstraintType> constraintType;
+        String constraintValue;
+        ConstraintType constraintType;
 
         ClauseRequirement(final String text,
                           final QName typeRef) {
-            this(text, typeRef, Optional.empty(), Optional.empty());
+            this(text, typeRef, null, null);
         }
 
         ClauseRequirement(final String text,
                           final QName typeRef,
-                          final Optional<String> constraintValue,
-                          final Optional<ConstraintType> constraintType) {
+                          String constraintValue,
+                          ConstraintType constraintType) {
             this.text = text;
             this.typeRef = typeRef;
             this.constraintValue = constraintValue;
@@ -173,7 +173,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
         if (outputClausesRequirement.isEmpty()) {
             dTable.getOutput().add(
-                    buildOutputClause(dTable, typeRef, name, Optional.empty())
+                    buildOutputClause(dTable, typeRef, name, null)
             );
             populateOutputEntries(decisionRule);
         } else {
@@ -235,8 +235,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         return new ClauseRequirement(
                 name,
                 typeRef,
-                Optional.ofNullable(itemDefinitionUtils.getConstraintText(itemDefinition)),
-                Optional.ofNullable(itemDefinitionUtils.getConstraintType(itemDefinition)));
+                itemDefinitionUtils.getConstraintText(itemDefinition),
+                itemDefinitionUtils.getConstraintType(itemDefinition));
     }
 
     private boolean typeRefDoesNotMatchAnyDefinition(final QName typeRef) {
@@ -246,13 +246,13 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                         .noneMatch(typeRefIsCustom(typeRef));
     }
 
-    private OutputClause buildOutputClause(final DecisionTable dtable, final QName typeRef, final String text, final Optional<String> constraintValue) {
+    private OutputClause buildOutputClause(final DecisionTable dtable, final QName typeRef, final String text, final String constraintValue) {
         final OutputClause outputClause = new OutputClause();
         outputClause.setName(text);
         outputClause.setTypeRef(typeRef);
         final OutputClauseUnaryTests ocUnaryTests = new OutputClauseUnaryTests();
-        if (constraintValue.isPresent()) {
-            ocUnaryTests.setText(new Text(constraintValue.get()));
+        if (constraintValue != null) {
+            ocUnaryTests.setText(new Text(constraintValue));
         }
         outputClause.setOutputValues(ocUnaryTests);
         outputClause.setParent(dtable);
@@ -325,11 +325,11 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                     literalExpression.setTypeRef(inputClauseRequirement.typeRef);
                     inputClause.setInputExpression(literalExpression);
                     final InputClauseUnaryTests icUnaryTests = new InputClauseUnaryTests();
-                    if (inputClauseRequirement.constraintValue.isPresent()) {
-                        icUnaryTests.setText(new Text(inputClauseRequirement.constraintValue.get()));
+                    if (inputClauseRequirement.constraintValue != null) {
+                        icUnaryTests.setText(new Text(inputClauseRequirement.constraintValue));
                     }
-                    if (inputClauseRequirement.constraintType.isPresent()) {
-                        icUnaryTests.setConstraintTypeProperty(new ConstraintTypeProperty(inputClauseRequirement.constraintType.get().value()));
+                    if (inputClauseRequirement.constraintType != null) {
+                        icUnaryTests.setConstraintTypeProperty(new ConstraintTypeProperty(inputClauseRequirement.constraintType.value()));
                     }
                     inputClause.setInputValues(icUnaryTests);
                     dtable.getInput().add(inputClause);
@@ -372,8 +372,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                     new ClauseRequirement(
                             text,
                             getQName(itemDefinition),
-                            Optional.ofNullable(itemDefinitionUtils.getConstraintText(itemDefinition)),
-                            Optional.ofNullable(itemDefinitionUtils.getConstraintType(itemDefinition))
+                            itemDefinitionUtils.getConstraintText(itemDefinition),
+                            itemDefinitionUtils.getConstraintType(itemDefinition)
                     )
             );
         } else {
