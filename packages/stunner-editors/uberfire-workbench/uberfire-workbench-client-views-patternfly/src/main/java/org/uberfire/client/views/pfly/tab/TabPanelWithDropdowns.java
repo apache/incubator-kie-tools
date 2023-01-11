@@ -363,7 +363,7 @@ public class TabPanelWithDropdowns extends Composite {
     }
 
     public void setTabBarVisible(final boolean visible) {
-        tabBar.setVisible(visible);
+        getTabBar().setVisible(visible);
     }
 
     interface TabPanelWithDropdownsBinder
