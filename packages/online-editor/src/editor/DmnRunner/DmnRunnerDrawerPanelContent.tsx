@@ -324,7 +324,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       selectRow(`Row ${newData.length}`);
       return newData;
     });
-  }, [dmnRunnerDispatch.setInputRows, dmnRunnerDispatch]);
+  }, [dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
