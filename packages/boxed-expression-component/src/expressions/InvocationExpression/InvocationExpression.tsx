@@ -182,11 +182,11 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     return row.original.entryInfo.id;
   }, []);
 
-  const updateParameterInfo = useCallback(
-    (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => {
+  const updateEntry = useCallback(
+    (rowIndex: number, newArgumentEntry: ContextExpressionDefinitionEntry) => {
       setExpression((prev: InvocationExpressionDefinition) => {
         const newArgumentEntries = [...(prev.bindingEntries ?? [])];
-        newArgumentEntries[rowIndex] = newEntry;
+        newArgumentEntries[rowIndex] = newArgumentEntry;
         return { ...prev, bindingEntries: newArgumentEntries };
       });
     },
@@ -195,10 +195,10 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
 
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
     () => ({
-      parametersInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={updateParameterInfo} />,
+      parametersInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />,
       argumentExpression: (props) => <ArgumentEntryExpressionCell {...props} />,
     }),
-    [updateParameterInfo]
+    [updateEntry]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {

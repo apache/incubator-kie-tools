@@ -37,9 +37,9 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   columnIndex,
   onEntryUpdate,
 }) => {
-  const contextEntry = useMemo(() => contextEntries[rowIndex], [contextEntries, rowIndex]);
-  const entryInfo = useMemo(() => contextEntry.entryInfo, [contextEntry.entryInfo]);
-  const entryExpression = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
+  const entry = useMemo(() => contextEntries[rowIndex], [contextEntries, rowIndex]);
+  const entryInfo = useMemo(() => entry.entryInfo, [entry.entryInfo]);
+  const entryExpression = useMemo(() => entry.entryExpression, [entry.entryExpression]);
 
   const onContextEntryInfoUpdated = useCallback(
     ({
@@ -47,12 +47,13 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
       dataType = DmnBuiltInDataType.Undefined,
     }: Pick<ExpressionDefinition, "name" | "dataType">) => {
       onEntryUpdate(rowIndex, {
-        ...contextEntry,
+        ...entry,
+        // entryExpression and entryInfo must always have the same `dataType` and `name`, as those are dictated by the entryInfo.
         entryExpression: { ...entryExpression, name, dataType },
         entryInfo: { ...entryInfo, name, dataType },
       });
     },
-    [onEntryUpdate, rowIndex, contextEntry, entryExpression, entryInfo]
+    [onEntryUpdate, rowIndex, entry, entryExpression, entryInfo]
   );
 
   useBeeTableCell(
