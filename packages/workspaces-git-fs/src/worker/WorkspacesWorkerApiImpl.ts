@@ -439,12 +439,15 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   public async kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
+    commitMessage?: string;
   }): Promise<void> {
     const descriptor = await this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.get(fs, args.workspaceId);
     });
 
     const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+
+    const defaultCommitMessage = `Changes from ${this.args.appName}`;
 
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
@@ -488,7 +491,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           fs,
           dir: workspaceRootDirPath,
           targetBranch: descriptor.origin.branch,
-          message: `Changes from ${this.args.appName}`,
+          message: defaultCommitMessage,
           author: {
             name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
             email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,

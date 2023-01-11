@@ -138,7 +138,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createSavePoint = useCallback(
-    async (args: { workspaceId: string; gitConfig?: { email: string; name: string } }) =>
+    async (args: { workspaceId: string; gitConfig?: { email: string; name: string } }, commitMessage?: string) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
       ),
