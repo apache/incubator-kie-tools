@@ -83,7 +83,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     useMemo(() => {
       return {
         nestedExpressions,
-        fixedColumnWidth: parametersWidth,
+        fixedColumnActualWidth: parametersWidth,
         fixedColumnResizingWidth: parametersResizingWidth,
         fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
         nestedExpressionMin: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,

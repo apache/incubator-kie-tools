@@ -95,7 +95,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     useMemo(() => {
       return {
         nestedExpressions,
-        fixedColumnWidth: entryInfoWidth,
+        fixedColumnActualWidth: entryInfoWidth,
         fixedColumnResizingWidth: entryInfoResizingWidth,
         fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
         nestedExpressionMin: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,

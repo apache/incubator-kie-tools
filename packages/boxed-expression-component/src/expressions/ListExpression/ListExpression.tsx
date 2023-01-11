@@ -56,7 +56,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
     useMemo(() => {
       return {
         nestedExpressions,
-        fixedColumnWidth: 0,
+        fixedColumnActualWidth: 0,
         fixedColumnResizingWidth: { value: 0, isPivoting: false },
         fixedColumnMinWidth: 0,
         nestedExpressionMin: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
