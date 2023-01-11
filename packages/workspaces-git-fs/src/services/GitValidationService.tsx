@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-import { AuthProvider } from "../authProviders/AuthProvidersApi";
+export class InvalidCommitMessage extends Error {
+  constructor(commitMessage: string, reason: string) {
+    super(`Invalid commit message: "${commitMessage}"! Reason: ${reason}.`);
+  }
+}
 
-export interface EnvJson {
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
-  KIE_SANDBOX_GIT_CORS_PROXY_URL: string;
-  KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES: boolean;
-  KIE_SANDBOX_AUTH_PROVIDERS: AuthProvider[];
-  KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE: boolean;
+export class GitValidationService {
+  constructor(private readonly commitMessageValidationServiceUrl: Promise<string>) {}
+
+  public async validateCommitMessage(commitMessage: string) {
+    // TODO: Implement fetch request to validate commit message via commitMessageValidationServiceUrl.
+    if (!commitMessage) {
+      throw new InvalidCommitMessage(commitMessage, "Empty message");
+    }
+
+    return true;
+  }
 }

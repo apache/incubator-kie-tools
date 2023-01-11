@@ -16,6 +16,7 @@
 
 import { FsFlushManager } from "../services/FsFlushManager";
 import { GitService } from "../services/GitService";
+import { GitValidationService } from "../services/GitValidationService";
 import { StorageService } from "../services/StorageService";
 import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
 import { WorkspaceDescriptorService } from "../services/WorkspaceDescriptorService";
@@ -30,6 +31,7 @@ export interface WorkspaceServices {
   descriptorService: WorkspaceDescriptorService;
   descriptorsFsService: WorkspaceDescriptorFsService;
   gitService: GitService;
+  gitValidationService: GitValidationService;
 }
 
 export interface CreateServicesArgs {
@@ -43,6 +45,7 @@ export function createWorkspaceServices(args: CreateServicesArgs): WorkspaceServ
   const descriptorsFsService = new WorkspaceDescriptorFsService(fsFlushManager);
   const descriptorService = new WorkspaceDescriptorService(descriptorsFsService, storageService);
   const gitService = new GitService(args.gitCorsProxyUrl);
+  const gitValidationService = new GitValidationService(args.gitCorsProxyUrl);
   const workspaceService = new WorkspaceService(
     storageService,
     descriptorsFsService,
@@ -58,5 +61,6 @@ export function createWorkspaceServices(args: CreateServicesArgs): WorkspaceServ
     descriptorService,
     workspaceService,
     gitService,
+    gitValidationService,
   };
 }
