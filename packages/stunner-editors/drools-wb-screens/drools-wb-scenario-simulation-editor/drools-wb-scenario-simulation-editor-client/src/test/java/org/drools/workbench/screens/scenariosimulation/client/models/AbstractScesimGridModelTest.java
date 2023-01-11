@@ -217,12 +217,12 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
 
     @Test
     public void getValidPlaceholders() {
-        doReturn(false).when(abstractScesimGridModelSpy).isSameInstanceType(eq(FactMapping.getInstancePlaceHolder(0)));
-        doReturn(false).when(abstractScesimGridModelSpy).isSameInstanceType(eq(FactMapping.getInstancePlaceHolder(1)));
-        doReturn(true).when(abstractScesimGridModelSpy).isSameInstanceType(eq(FactMapping.getInstancePlaceHolder(2)));
-        doReturn(false).when(abstractScesimGridModelSpy).isNewPropertyName(eq(FactMapping.getPropertyPlaceHolder(0)));
-        doReturn(false).when(abstractScesimGridModelSpy).isNewPropertyName(eq(FactMapping.getPropertyPlaceHolder(1)));
-        doReturn(false).when(abstractScesimGridModelSpy).isNewPropertyName(eq(FactMapping.getPropertyPlaceHolder(2)));
+        doReturn(false).when(abstractScesimGridModelSpy).isSameInstanceType(FactMapping.getInstancePlaceHolder(0));
+        doReturn(false).when(abstractScesimGridModelSpy).isSameInstanceType(FactMapping.getInstancePlaceHolder(1));
+        doReturn(true).when(abstractScesimGridModelSpy).isSameInstanceType(FactMapping.getInstancePlaceHolder(2));
+        doReturn(false).when(abstractScesimGridModelSpy).isNewPropertyName(FactMapping.getPropertyPlaceHolder(0));
+        doReturn(false).when(abstractScesimGridModelSpy).isNewPropertyName(FactMapping.getPropertyPlaceHolder(1));
+        doReturn(false).when(abstractScesimGridModelSpy).isNewPropertyName(FactMapping.getPropertyPlaceHolder(2));
         final Map.Entry<String, String> retrieved = abstractScesimGridModelSpy.getValidPlaceholders();
         assertNotNull(retrieved);
         assertEquals(FactMapping.getInstancePlaceHolder(3), retrieved.getKey());
@@ -233,21 +233,21 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     public void appendRow() {
         abstractScesimGridModelSpy.appendRow(gridRowMock);
         verify(abstractScesimGridModelSpy, atLeast(1)).checkSimulation();
-        verify(abstractScesimGridModelSpy, times(1)).commonAddRow(eq(ROW_COUNT));
+        verify(abstractScesimGridModelSpy, times(1)).commonAddRow(ROW_COUNT);
     }
 
     @Test
     public void insertRow() {
         abstractScesimGridModelSpy.insertRow(ROW_INDEX, gridRowMock);
         verify(abstractScesimGridModelSpy, atLeast(1)).checkSimulation();
-        verify(abstractScesimGridModelSpy, times(1)).commonAddRow(eq(ROW_INDEX));
+        verify(abstractScesimGridModelSpy, times(1)).commonAddRow(ROW_INDEX);
     }
 
     @Test
     public void deleteRow() {
         abstractScesimGridModelSpy.deleteRow(ROW_INDEX);
         verify(abstractScesimGridModelSpy, atLeast(1)).checkSimulation();
-        verify(simulationMock, times(1)).removeDataByIndex(eq(ROW_INDEX));
+        verify(simulationMock, times(1)).removeDataByIndex(ROW_INDEX);
         verify(abstractScesimGridModelSpy, times(1)).updateIndexColumn();
     }
 
@@ -255,9 +255,9 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     public void duplicateRow() {
         abstractScesimGridModelSpy.duplicateRow(ROW_INDEX, gridRowMock);
         verify(abstractScesimGridModelSpy, atLeast(1)).checkSimulation();
-        verify(simulationMock, times(1)).cloneData(eq(ROW_INDEX), eq(ROW_INDEX + 1));
+        verify(simulationMock, times(1)).cloneData(ROW_INDEX, ROW_INDEX + 1);
         verify(abstractScesimGridModelSpy, times(1)).insertRowGridOnly(eq(ROW_INDEX + 1), eq(gridRowMock), isA(Scenario.class));
-        verify(abstractScesimGridModelSpy, never()).insertRow(eq(ROW_INDEX), eq(gridRowMock));
+        verify(abstractScesimGridModelSpy, never()).insertRow(ROW_INDEX, gridRowMock);
     }
 
     @Test
@@ -279,23 +279,23 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     public void insertColumn() {
         abstractScesimGridModelSpy.insertColumn(COLUMN_INDEX, gridColumnMock);
         verify(abstractScesimGridModelSpy, times(1)).checkSimulation();
-        verify(abstractScesimGridModelSpy, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(gridColumnMock));
+        verify(abstractScesimGridModelSpy, times(1)).commonAddColumn(COLUMN_INDEX, gridColumnMock);
     }
 
     @Test
     public void deleteColumn() {
         abstractScesimGridModelSpy.deleteColumn(COLUMN_INDEX);
         verify(abstractScesimGridModelSpy, times(1)).checkSimulation();
-        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(eq(gridColumnMock));
-        verify(simulationMock, times(1)).removeFactMappingByIndex(eq(COLUMN_INDEX));
+        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(gridColumnMock);
+        verify(simulationMock, times(1)).removeFactMappingByIndex(COLUMN_INDEX);
     }
 
     @Test
     public void updateColumnTypeFalse() {
         abstractScesimGridModelSpy.updateColumnProperty(COLUMN_INDEX, gridColumnMock, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, false, FactMappingValueType.NOT_EXPRESSION, ScenarioSimulationModel.Type.RULE);
         verify(abstractScesimGridModelSpy, times(2)).checkSimulation();
-        verify(factMappingMock, times(1)).setFactMappingValueType(eq(FactMappingValueType.NOT_EXPRESSION));
-        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(eq(COLUMN_INDEX));
+        verify(factMappingMock, times(1)).setFactMappingValueType(FactMappingValueType.NOT_EXPRESSION);
+        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(COLUMN_INDEX);
         verify(abstractScesimGridModelSpy, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(gridColumnMock), isA(ExpressionIdentifier.class));
         verify(abstractScesimGridModelSpy, never()).setCellValue(anyInt(), anyInt(), any());
     }
@@ -305,8 +305,8 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         abstractScesimGridModelSpy.updateColumnProperty(COLUMN_INDEX, gridColumnMock, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, true, FactMappingValueType.NOT_EXPRESSION, ScenarioSimulationModel.Type.RULE);
         verify(abstractScesimGridModelSpy, atLeast(2)).checkSimulation();
         verify(abstractScesimGridModelSpy, atLeast(ROW_COUNT - 1)).getCell(anyInt(), eq(COLUMN_INDEX));
-        verify(factMappingMock, times(1)).setFactMappingValueType(eq(FactMappingValueType.NOT_EXPRESSION));
-        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(eq(COLUMN_INDEX));
+        verify(factMappingMock, times(1)).setFactMappingValueType(FactMappingValueType.NOT_EXPRESSION);
+        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(COLUMN_INDEX);
         verify(abstractScesimGridModelSpy, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(gridColumnMock), isA(ExpressionIdentifier.class));
         verify(abstractScesimGridModelSpy, atLeast(ROW_COUNT - 1)).setCellValue(anyInt(), eq(COLUMN_INDEX), isA(ScenarioGridCellValue.class));
     }
@@ -316,7 +316,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         abstractScesimGridModelSpy.replaceColumn(ROW_INDEX, gridColumnMock);
         verify(gridColumnMock, times(COLUMN_NUMBER)).getWidth();
         verify(gridColumnMock, times(COLUMN_NUMBER)).setWidth(anyDouble());
-        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(eq(ROW_INDEX));
+        verify(abstractScesimGridModelSpy, times(1)).deleteColumn(ROW_INDEX);
         verify(abstractScesimGridModelSpy, times(1)).commonAddColumn(eq(ROW_INDEX), eq(gridColumnMock), isA(ExpressionIdentifier.class));
     }
 
@@ -329,7 +329,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     @Test
     public void setCell() {
         abstractScesimGridModelSpy.setCell(ROW_INDEX, COLUMN_INDEX, gridCellSupplier);
-        verify(abstractScesimGridModelSpy, times(1)).setCell(eq(ROW_INDEX), eq(COLUMN_INDEX), eq(gridCellSupplier));
+        verify(abstractScesimGridModelSpy, times(1)).setCell(ROW_INDEX, COLUMN_INDEX, gridCellSupplier);
     }
 
     @Test
@@ -394,37 +394,37 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         when(factMappingToCheck.getFactAlias()).thenReturn(ALIAS_1);
         when(simulationDescriptorMock.getFactMappingByIndex(INDEX)).thenReturn(factMappingToCheck);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.INSTANCE);
-        verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, times(1)).setFactAlias(eq(MULTIPART_VALUE));
+        verify(informationHeaderMetaDataMock, times(1)).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, times(1)).setFactAlias(MULTIPART_VALUE);
         reset(informationHeaderMetaDataMock);
         reset(factMappingToCheck);
         // Should not execute the if in the first if
         when(factMappingToCheck.getFactAlias()).thenReturn(ALIAS_2);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.INSTANCE);
-        verify(informationHeaderMetaDataMock, never()).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, never()).setFactAlias(eq(MULTIPART_VALUE));
+        verify(informationHeaderMetaDataMock, never()).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, never()).setFactAlias(MULTIPART_VALUE);
         reset(informationHeaderMetaDataMock);
         reset(factMappingToCheck);
         // Should not execute the if in the first if
         when(factMappingReference.getFactIdentifier()).thenReturn(factIdentifier1);
         when(factMappingToCheck.getFactAlias()).thenReturn(ALIAS_1);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.INSTANCE);
-        verify(informationHeaderMetaDataMock, never()).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, never()).setFactAlias(eq(MULTIPART_VALUE));
+        verify(informationHeaderMetaDataMock, never()).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, never()).setFactAlias(MULTIPART_VALUE);
         reset(informationHeaderMetaDataMock);
         reset(factMappingToCheck);
         // Should execute the second if
         when(factMappingToCheck.getFactIdentifier()).thenReturn(factIdentifier1);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.INSTANCE);
-        verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, times(1)).setFactAlias(eq(MULTIPART_VALUE));
+        verify(informationHeaderMetaDataMock, times(1)).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, times(1)).setFactAlias(MULTIPART_VALUE);
         reset(informationHeaderMetaDataMock);
         reset(factMappingToCheck);
         // Should not execute the second if
         when(factMappingToCheck.getFactIdentifier()).thenReturn(factIdentifier2);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.INSTANCE);
-        verify(informationHeaderMetaDataMock, never()).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, never()).setFactAlias(eq(MULTIPART_VALUE));
+        verify(informationHeaderMetaDataMock, never()).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, never()).setFactAlias(MULTIPART_VALUE);
     }
 
     @Test
@@ -444,15 +444,15 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         when(factMappingToCheck.getFullExpression()).thenReturn(ALIAS_1);
         when(simulationDescriptorMock.getFactMappingByIndex(INDEX)).thenReturn(factMappingToCheck);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.PROPERTY);
-        verify(propertyHeaderMetaDataMock, times(1)).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, times(1)).setExpressionAlias(eq(MULTIPART_VALUE));
+        verify(propertyHeaderMetaDataMock, times(1)).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, times(1)).setExpressionAlias(MULTIPART_VALUE);
         reset(propertyHeaderMetaDataMock);
         reset(factMappingToCheck);
         // Should not execute
         when(factMappingToCheck.getFactAlias()).thenReturn(ALIAS_2);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.PROPERTY);
-        verify(propertyHeaderMetaDataMock, never()).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, never()).setExpressionAlias(eq(MULTIPART_VALUE));
+        verify(propertyHeaderMetaDataMock, never()).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, never()).setExpressionAlias(MULTIPART_VALUE);
         reset(propertyHeaderMetaDataMock);
         reset(factMappingToCheck);
         // Should not execute
@@ -460,8 +460,8 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         when(factMappingToCheck.getFactAlias()).thenReturn(ALIAS_1);
         when(factMappingToCheck.getFullExpression()).thenReturn(ALIAS_2);
         abstractScesimGridModelSpy.updateFactMapping(simulationDescriptorMock, factMappingReference, INDEX, MULTIPART_VALUE, ScenarioHeaderMetaData.MetadataType.PROPERTY);
-        verify(propertyHeaderMetaDataMock, never()).setTitle(eq(MULTIPART_VALUE));
-        verify(factMappingToCheck, never()).setExpressionAlias(eq(MULTIPART_VALUE));
+        verify(propertyHeaderMetaDataMock, never()).setTitle(MULTIPART_VALUE);
+        verify(factMappingToCheck, never()).setExpressionAlias(MULTIPART_VALUE);
     }
 
     @Test
@@ -511,11 +511,11 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     public void refreshErrorsTest() {
         int expectedCalls = abstractScesimGridModelSpy.getRowCount() * abstractScesimGridModelSpy.getColumnCount();
         abstractScesimGridModelSpy.refreshErrors();
-        verify(gridCellMock, times(expectedCalls)).setErrorMode(eq(true));
+        verify(gridCellMock, times(expectedCalls)).setErrorMode(true);
 
         when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.SUCCESS);
         abstractScesimGridModelSpy.refreshErrors();
-        verify(gridCellMock, times(expectedCalls)).setErrorMode(eq(false));
+        verify(gridCellMock, times(expectedCalls)).setErrorMode(false);
     }
 
     @Test
@@ -564,7 +564,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         when(simulationDescriptorMock.getFactMappingByIndex(COLUMN_INDEX)).thenReturn(factMappingMock);
         boolean result = abstractScesimGridModelSpy.isSameInstanceType(COLUMN_INDEX, value);
         verify(simulationMock, times(1)).getScesimModelDescriptor();
-        verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
+        verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(COLUMN_INDEX);
         assertEquals(result, expectedResult);
     }
 
@@ -575,7 +575,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         when(simulationDescriptorMock.getFactMappingByIndex(COLUMN_INDEX)).thenReturn(factMappingMock);
         try {
             abstractScesimGridModelSpy.checkSameInstanceHeader(COLUMN_INDEX, value);
-            verify(abstractScesimGridModelSpy, times(1)).isSameInstanceType(eq(COLUMN_INDEX), eq(value));
+            verify(abstractScesimGridModelSpy, times(1)).isSameInstanceType(COLUMN_INDEX, value);
         } catch (Exception e) {
             if (expected) {
                 fail("No exception expected, retrieved " + e.getMessage());
@@ -655,9 +655,9 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
             }
         });
         abstractScesimGridModelSpy.resetError(ROW_INDEX, COLUMN_INDEX);
-        verify(simulationMock, times(1)).getDataByIndex(eq(ROW_INDEX));
-        verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
-        verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
+        verify(simulationMock, times(1)).getDataByIndex(ROW_INDEX);
+        verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(COLUMN_INDEX);
+        verify(scenarioMock, times(1)).getFactMappingValue(factMappingMock);
         verify(factMappingValueMock, times(1)).resetStatus();
         verify(abstractScesimGridModelSpy, times(1)).refreshErrors();
     }
@@ -672,7 +672,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     public void synchronizeFactMappingWidth() {
         when(gridColumnMock.isVisible()).thenReturn(true);
         abstractScesimGridModelSpy.synchronizeFactMappingWidth(gridColumnMock);
-        verify(factMappingMock, times(1)).setColumnWidth(eq(gridColumnMock.getWidth()));
+        verify(factMappingMock, times(1)).setColumnWidth(gridColumnMock.getWidth());
     }
 
     @Test
@@ -698,7 +698,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         gridColumns.add(gridColumnMock);
         abstractScesimGridModelSpy.loadFactMappingsWidth();
         verify(factMappingMock, never()).setColumnWidth(anyDouble());
-        verify(gridColumnMock, times(1)).setWidth(eq(factMappingMock.getColumnWidth()));
+        verify(gridColumnMock, times(1)).setWidth(factMappingMock.getColumnWidth());
     }
 
     @Test
@@ -733,10 +733,10 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
 
     @Test
     public void destroyAllTextAreaDOMElementFactoryResources() {
-        abstractScesimGridModelSpy.destroyAllTextAreaDOMElementFactoryResources();
-        verify(scenarioCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
-        verify(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
-        verify(scenarioHeaderTextBoxSingletonDOMElementFactorySpy, times(1)).destroyResources();
+        abstractScesimGridModelSpy.flushAllTextAreaDOMElementFactoryResources();
+        verify(scenarioCellTextAreaSingletonDOMElementFactorySpy, times(1)).flush();
+        verify(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, times(1)).flush();
+        verify(scenarioHeaderTextBoxSingletonDOMElementFactorySpy, times(1)).flush();
     }
 
     @Test
