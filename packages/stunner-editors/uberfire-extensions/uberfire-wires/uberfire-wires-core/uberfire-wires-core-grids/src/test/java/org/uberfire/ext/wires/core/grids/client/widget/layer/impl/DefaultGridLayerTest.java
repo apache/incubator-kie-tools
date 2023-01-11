@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.mediator.Mediators;
@@ -33,6 +35,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringDOMElementSingletonColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.DefaultPinnedModeManager;
@@ -41,7 +44,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -120,10 +122,8 @@ public class DefaultGridLayerTest {
 
         gridLayer.flipToGridWidget(gridWidget);
 
-        verify(gridLayer,
-               times(1)).updatePinnedContext(eq(gridWidget));
-        verify(gridLayer,
-               times(1)).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
+        verify(gridLayer, times(1)).updatePinnedContext(gridWidget);
+        verify(gridLayer, times(1)).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class DefaultGridLayerTest {
         gridLayer.flipToGridWidget(gridWidget);
 
         verify(gridLayer,
-               never()).updatePinnedContext(eq(gridWidget));
+               never()).updatePinnedContext(gridWidget);
         verify(gridLayer,
                never()).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
     }
@@ -154,8 +154,7 @@ public class DefaultGridLayerTest {
 
         gridLayer.scrollToGridWidget(gridWidget);
 
-        verify(gridLayer,
-               never()).select(eq(gridWidget));
+        verify(gridLayer, never()).select(gridWidget);
     }
 
     @Test
@@ -165,8 +164,7 @@ public class DefaultGridLayerTest {
 
         gridLayer.scrollToGridWidget(gridWidget);
 
-        verify(gridLayer,
-               times(1)).select(eq(gridWidget));
+        verify(gridLayer, times(1)).select(gridWidget);
     }
 
     @Test
@@ -228,12 +226,12 @@ public class DefaultGridLayerTest {
 
         gridLayer.register(gridWidget1);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).hasSize(1);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget1);
 
         gridLayer.register(gridWidget2);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).hasSize(2);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
     }
 
@@ -247,12 +245,12 @@ public class DefaultGridLayerTest {
 
         gridLayer.add(gridWidget1);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).hasSize(1);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget1);
 
         gridLayer.register(gridWidget2);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).hasSize(2);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
     }
 
@@ -265,8 +263,7 @@ public class DefaultGridLayerTest {
         gridLayer.register(gridWidget2);
 
         final Set<GridWidget> gridWidgets = gridLayer.getGridWidgets();
-        assertThat(gridWidgets.size()).isEqualTo(2);
-        assertThat(gridWidgets).containsExactly(gridWidget1, gridWidget2);
+        assertThat(gridWidgets).hasSize(2).containsExactly(gridWidget1, gridWidget2);
     }
 
     @Test
@@ -287,8 +284,7 @@ public class DefaultGridLayerTest {
         gridLayer.register(gridWidget4);
 
         final Set<GridWidget> gridWidgets = gridLayer.getGridWidgets();
-        assertThat(gridWidgets.size()).isEqualTo(4);
-        assertThat(gridWidgets).containsExactly(gridWidget1, gridWidget2, gridWidget3, gridWidget4);
+        assertThat(gridWidgets).hasSize(4).containsExactly(gridWidget1, gridWidget2, gridWidget3, gridWidget4);
     }
 
     @Test
@@ -299,8 +295,7 @@ public class DefaultGridLayerTest {
         gridLayer.register(gridWidget);
 
         final Set<GridWidget> gridWidgets = gridLayer.getGridWidgets();
-        assertThat(gridWidgets.size()).isEqualTo(1);
-        assertThat(gridWidgets).containsExactly(gridWidget);
+        assertThat(gridWidgets).hasSize(1).containsExactly(gridWidget);
     }
 
     @Test
@@ -317,8 +312,7 @@ public class DefaultGridLayerTest {
         gridLayer.register(gridWidget2);
 
         final Set<GridWidget> gridWidgets = gridLayer.getGridWidgets();
-        assertThat(gridWidgets.size()).isEqualTo(2);
-        assertThat(gridWidgets).containsExactly(gridWidget1, gridWidget2);
+        assertThat(gridWidgets).hasSize(2).containsExactly(gridWidget1, gridWidget2);
     }
 
     @Test
@@ -337,8 +331,7 @@ public class DefaultGridLayerTest {
         gridLayer.register(gridWidget2);
 
         final Set<GridWidget> gridWidgets = gridLayer.getGridWidgets();
-        assertThat(gridWidgets.size()).isEqualTo(2);
-        assertThat(gridWidgets).containsExactly(gridWidget1, gridWidget2);
+        assertThat(gridWidgets).hasSize(2).containsExactly(gridWidget1, gridWidget2);
     }
 
     @Test
@@ -349,12 +342,12 @@ public class DefaultGridLayerTest {
         gridLayer.register(gridWidget1);
         gridLayer.register(gridWidget2);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).hasSize(2);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
 
         gridLayer.deregister(gridWidget1);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).hasSize(1);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget2);
 
         gridLayer.deregister(gridWidget2);
@@ -373,12 +366,12 @@ public class DefaultGridLayerTest {
         gridLayer.register(gridWidget1);
         gridLayer.register(gridWidget2);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).hasSize(2);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
 
         gridLayer.deregister(gridWidget1);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).hasSize(1);
         assertThat(gridLayer.getGridWidgets()).contains(gridWidget2);
 
         gridLayer.remove(gridWidget2);
@@ -397,12 +390,31 @@ public class DefaultGridLayerTest {
         gridLayer.add(gridWidget1);
         gridLayer.register(gridWidget2);
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).hasSize(2);
         assertThat(gridLayer.getGridWidgets()).containsOnly(gridWidget1, gridWidget2);
 
         gridLayer.draw();
 
-        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).hasSize(1);
         assertThat(gridLayer.getGridWidgets()).containsOnly(gridWidget1);
+    }
+
+    @Test
+    public void testFlush() {
+        final GridWidget gridWidget1 = mock(GridWidget.class);
+        final List<GridColumn<?>> columnsWidget = new ArrayList<>();
+        final StringDOMElementSingletonColumn column1 = mock(StringDOMElementSingletonColumn.class);
+        final StringDOMElementSingletonColumn column2 = mock(StringDOMElementSingletonColumn.class);
+        columnsWidget.add(column1);
+        columnsWidget.add(column2);
+        GridData gridData = mock(GridData.class);
+        when(gridWidget1.getModel()).thenReturn(gridData);
+        when(gridData.getColumns()).thenReturn(columnsWidget);
+        gridLayer.register(gridWidget1);
+
+        gridLayer.flushAllSingletonDOMElements();
+
+        verify(column1, times(1)).flush();
+        verify(column2, times(1)).flush();
     }
 }
