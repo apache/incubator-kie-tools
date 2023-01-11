@@ -81,7 +81,7 @@ export class Route<
 
 export interface QueryParamsImpl<Q extends string> {
   has(name: Q): boolean;
-  get(name: Q): string | undefined;
+  getString(name: Q): string | undefined;
   getBoolean(name: Q): boolean | undefined;
   with(name: Q, value: string | undefined): QueryParamsImpl<Q>;
   without(name: Q): QueryParamsImpl<Q>;
@@ -91,7 +91,7 @@ export interface QueryParamsImpl<Q extends string> {
 export function newQueryParamsImpl<Q extends string>(queryString: string): QueryParamsImpl<Q> {
   return {
     has: (name) => new URLSearchParams(queryString).has(name),
-    get: (name) => {
+    getString: (name) => {
       const val = new URLSearchParams(queryString).get(name);
       return !val ? undefined : decodeURIComponent(val);
     },

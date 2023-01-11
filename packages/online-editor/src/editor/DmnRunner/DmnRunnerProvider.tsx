@@ -230,7 +230,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     try {
-      setInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
+      setInputRows([jsonParseWithDate(queryParams.getString(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
     } finally {
