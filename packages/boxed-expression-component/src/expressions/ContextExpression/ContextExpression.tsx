@@ -31,16 +31,16 @@ import {
   getNextAvailablePrefixedName,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useNestedExpressionContainerWidthNestedExpressions } from "../../resizing/Hooks";
+import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
-} from "../../resizing/WidthValues";
+} from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBeeTableCell, useBeeTableCoordinates } from "../../table/BeeTable/BeeTableSelectionContext";
+import { useBeeTableCell, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
@@ -49,6 +49,7 @@ import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 import "./ContextExpression.css";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
@@ -91,7 +92,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [contextExpression.contextEntries, contextExpression.result]
   );
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWidthNestedExpressions(
+  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
     useMemo(() => {
       return {
         nestedExpressions,
@@ -111,7 +112,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     return [
       {
         accessor: decisionNodeId as any,
-        label: contextExpression.name ?? "Expression Name",
+        label: contextExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
         dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
         width: undefined,
@@ -205,21 +206,20 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   const getDefaultContextEntry = useCallback(
     (name?: string): ContextExpressionDefinitionEntry => {
       return {
-        nameAndDataTypeSynchronized: true,
-        entryExpression: {
-          logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: DmnBuiltInDataType.Undefined,
-          id: generateUuid(),
-        },
         entryInfo: {
-          dataType: DmnBuiltInDataType.Undefined,
           id: generateUuid(),
+          dataType: DmnBuiltInDataType.Undefined,
           name:
             name ||
             getNextAvailablePrefixedName(
               contextExpression.contextEntries.map((e) => e.entryInfo.name),
               "ContextEntry"
             ),
+        },
+        entryExpression: {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
         },
       };
     },

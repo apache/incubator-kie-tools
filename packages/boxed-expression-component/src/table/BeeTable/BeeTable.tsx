@@ -23,13 +23,13 @@ import { BeeTableHeaderVisibility, BeeTableProps } from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
-import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthValues";
+import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthConstants";
 import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import {
   BeeTableColumnResizingWidthsContextProvider,
   BeeTableColumnResizingWidthsDispatchContextType,
-} from "./BeeTableColumnResizingWidthsContextProvider";
+} from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableDefaultCell } from "./BeeTableDefaultCell";
 import { BeeTableHeader } from "./BeeTableHeader";
@@ -38,7 +38,7 @@ import {
   SelectionPart,
   SELECTION_MIN_ACTIVE_DEPTH,
   useBeeTableSelectionDispatch,
-} from "./BeeTableSelectionContext";
+} from "../../selection/BeeTableSelectionContext";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";

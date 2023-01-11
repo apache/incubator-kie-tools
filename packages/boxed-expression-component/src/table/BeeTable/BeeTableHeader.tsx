@@ -91,10 +91,7 @@ export function BeeTableHeader<R extends object>({
     [editColumnLabel]
   );
 
-  /**
-   * Currently, column rename/type update is supported only for the first and the second level of the header
-   */
-  const onColumnNameOrDataTypeUpdate = useCallback<
+  const onExpressionHeaderUpdated = useCallback<
     (
       column: ReactTable.ColumnInstance<R>,
       columnIndex: number
@@ -181,7 +178,7 @@ export function BeeTableHeader<R extends object>({
               rowIndex={rowIndex}
               onColumnAdded={onColumnAdded}
               onExpressionHeaderUpdated={({ name, dataType }) =>
-                onColumnNameOrDataTypeUpdate(column, columnIndex)({ name, dataType })
+                onExpressionHeaderUpdated(column, columnIndex)({ name, dataType })
               }
               headerCellInfo={
                 <div
@@ -194,7 +191,7 @@ export function BeeTableHeader<R extends object>({
                     <InlineEditableTextInput
                       value={column.label}
                       onChange={(value) => {
-                        onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value, dataType: column.dataType });
+                        onExpressionHeaderUpdated(column, columnIndex)({ name: value, dataType: column.dataType });
                       }}
                     />
                   ) : (
@@ -223,7 +220,7 @@ export function BeeTableHeader<R extends object>({
       onHeaderClick,
       reactTableInstance,
       onColumnAdded,
-      onColumnNameOrDataTypeUpdate,
+      onExpressionHeaderUpdated,
     ]
   );
 

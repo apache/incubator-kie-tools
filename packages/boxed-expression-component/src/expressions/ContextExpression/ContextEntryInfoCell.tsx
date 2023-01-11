@@ -18,8 +18,8 @@ import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinit
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as _ from "lodash";
-import { useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
-import { ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
+import { useBeeTableCell } from "../../selection/BeeTableSelectionContext";
+import { DEFAULT_EXPRESSION_NAME, ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
 import "./ContextEntryInfoCell.css";
 
 export interface ContextEntryInfoCellProps {
@@ -41,20 +41,18 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const entryInfo = useMemo(() => contextEntry.entryInfo, [contextEntry.entryInfo]);
   const entryExpression = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
 
-  const onContextEntryUpdate = useCallback(
-    ({ name = "", dataType = DmnBuiltInDataType.Undefined }: Pick<ExpressionDefinition, "name" | "dataType">) => {
-      const updatedExpression = { ...entryExpression };
-      if (contextEntry.nameAndDataTypeSynchronized && _.size(name) && _.size(dataType)) {
-        updatedExpression.name = name;
-        updatedExpression.dataType = dataType;
-      }
+  const onContextEntryInfoUpdated = useCallback(
+    ({
+      name = DEFAULT_EXPRESSION_NAME,
+      dataType = DmnBuiltInDataType.Undefined,
+    }: Pick<ExpressionDefinition, "name" | "dataType">) => {
       onEntryUpdate(rowIndex, {
         ...contextEntry,
-        entryExpression: updatedExpression,
-        entryInfo: { id: entryInfo.id, name, dataType },
+        entryExpression: { ...entryExpression, name, dataType },
+        entryInfo: { ...entryInfo, name, dataType },
       });
     },
-    [entryExpression, contextEntry, rowIndex, onEntryUpdate, entryInfo.id]
+    [onEntryUpdate, rowIndex, contextEntry, entryExpression, entryInfo]
   );
 
   useBeeTableCell(
@@ -62,13 +60,6 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     columnIndex,
     undefined,
     useCallback(() => `${entryInfo.name} (${entryInfo.dataType})`, [entryInfo.dataType, entryInfo.name])
-  );
-
-  const onExpressionHeaderUpdated = useCallback(
-    (args: Pick<ExpressionDefinition, "name" | "dataType">) => {
-      onContextEntryUpdate(args);
-    },
-    [onContextEntryUpdate]
   );
 
   const renderEntryDefinition = useCallback(
@@ -91,7 +82,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
         <ExpressionDefinitionHeaderMenu
           selectedExpressionName={entryInfo.name}
           selectedDataType={entryInfo.dataType}
-          onExpressionHeaderUpdated={onExpressionHeaderUpdated}
+          onExpressionHeaderUpdated={onContextEntryInfoUpdated}
         >
           {renderEntryDefinition({ additionalCssClass: "with-popover-menu" })}
         </ExpressionDefinitionHeaderMenu>

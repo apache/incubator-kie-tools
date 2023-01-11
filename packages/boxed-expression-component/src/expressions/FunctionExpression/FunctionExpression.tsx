@@ -32,9 +32,9 @@ import {
 } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useNestedExpressionContainerWidthNestedExpressions } from "../../resizing/Hooks";
+import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, FUNCTION_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthValues";
+import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, FUNCTION_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -47,6 +47,7 @@ import { javaContextExpression } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
 import { pmmlContextExpression } from "./PmmlFunctionExpression";
 import "./FunctionExpression.css";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
@@ -70,7 +71,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     return nestedFeelExpression ? [nestedFeelExpression] : [];
   }, [nestedFeelExpression]);
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWidthNestedExpressions(
+  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
     useMemo(() => {
       return {
         nestedExpressions,
@@ -124,7 +125,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        label: functionExpression.name ?? "Expression Name",
+        label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
         accessor: decisionNodeId as any,
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,

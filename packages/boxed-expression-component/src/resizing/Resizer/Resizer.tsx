@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Resizable } from "react-resizable";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
-import { DEFAULT_MIN_WIDTH } from "../WidthValues";
+import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
 
 export interface ResizerProps {

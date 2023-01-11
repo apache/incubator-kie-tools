@@ -22,7 +22,7 @@ import {
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-} from "../resizing/WidthValues";
+} from "../resizing/WidthConstants";
 import { DECISION_TABLE_INPUT_DEFAULT_VALUE, DECISION_TABLE_OUTPUT_DEFAULT_VALUE } from "./DecisionTableExpression";
 import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
@@ -78,7 +78,6 @@ export function getDefaultExpressionDefinitionByLogicType(
             dataType: DmnBuiltInDataType.Undefined,
             logicType: ExpressionDefinitionLogicType.Undefined,
           },
-          nameAndDataTypeSynchronized: true,
         },
         {
           entryInfo: {
@@ -92,7 +91,6 @@ export function getDefaultExpressionDefinitionByLogicType(
             dataType: DmnBuiltInDataType.Undefined,
             logicType: ExpressionDefinitionLogicType.Undefined,
           },
-          nameAndDataTypeSynchronized: true,
         },
       ],
     };
@@ -138,7 +136,6 @@ export function getDefaultExpressionDefinitionByLogicType(
             dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
             logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
           },
-          nameAndDataTypeSynchronized: true,
         },
       ],
     };

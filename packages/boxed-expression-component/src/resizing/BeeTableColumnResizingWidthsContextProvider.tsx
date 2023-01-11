@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { ResizingWidth, useResizingWidthsDispatch } from "./ResizingWidthsContext";
 
 // TYPES
 

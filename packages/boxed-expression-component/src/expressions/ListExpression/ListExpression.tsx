@@ -30,13 +30,14 @@ import {
   ListExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useNestedExpressionContainerWidthNestedExpressions } from "../../resizing/Hooks";
+import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, LIST_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthValues";
+import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, LIST_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ListItemCell } from "./ListItemCell";
 import "./ListExpression.css";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -52,7 +53,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
     return listExpression.items;
   }, [listExpression.items]);
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWidthNestedExpressions(
+  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
     useMemo(() => {
       return {
         nestedExpressions,
@@ -94,7 +95,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
     () => [
       {
         accessor: "list" as any,
-        label: listExpression.name ?? "Expression Name",
+        label: listExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: listExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,

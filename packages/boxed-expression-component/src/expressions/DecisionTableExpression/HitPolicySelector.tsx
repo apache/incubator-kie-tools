@@ -27,7 +27,6 @@ import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popov
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */

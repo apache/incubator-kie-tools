@@ -6,7 +6,7 @@ import {
   NestedExpressionContainerContextType,
 } from "./NestedExpressionContainerContext";
 import { ResizingWidth, useResizingWidths, useResizingWidthsDispatch } from "./ResizingWidthsContext";
-import { getExpressionResizingWidth, getExpressionMinWidth } from "./Widths";
+import { getExpressionResizingWidth, getExpressionMinWidth } from "./WidthMaths";
 
 export function useNestedExpressionResizingWidth(
   isPivoting: boolean,
@@ -95,7 +95,7 @@ export function useNestedExpressionActualWidth(
   }, [fixedColumnActualWidth, extraWidth, nestedExpressionContainer.actualWidth, nestedExpressions, resizingWidths]);
 }
 
-export function useNestedExpressionContainerWidthNestedExpressions({
+export function useNestedExpressionContainerWithNestedExpressions({
   nestedExpressions,
   fixedColumnActualWidth,
   fixedColumnResizingWidth,

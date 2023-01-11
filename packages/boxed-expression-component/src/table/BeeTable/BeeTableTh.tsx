@@ -24,8 +24,8 @@ import {
   BeeTableCoordinatesContextProvider,
   useBeeTableCell,
   useBeeTableSelectionDispatch,
-} from "./BeeTableSelectionContext";
-import { useBeeTableSelectableCell } from "./BeeTableSelectionContext";
+} from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;

@@ -21,8 +21,7 @@ import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
-import { useBeeTableCell } from "./BeeTableSelectionContext";
+import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import { BeeTableTh } from "./BeeTableTh";
 
 export interface BeeTableThResizableProps<R extends object> {

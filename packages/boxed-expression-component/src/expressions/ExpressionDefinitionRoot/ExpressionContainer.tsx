@@ -17,10 +17,11 @@
 import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../api";
 import * as React from "react";
 import { useCallback, useRef } from "react";
-import { ExpressionDefinitionLogicTypeSelector } from "../ExpressionDefinitionLogicTypeSelector";
+import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 export interface ExpressionContainerProps {
   expression: ExpressionDefinition;
@@ -44,7 +45,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         logicType,
         isHeadless,
         id: prev.id ?? generateUuid(),
-        name: prev.name ?? "Expression Name",
+        name: prev.name ?? DEFAULT_EXPRESSION_NAME,
       })),
     [isHeadless, setExpression]
   );

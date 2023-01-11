@@ -37,13 +37,14 @@ import {
   INVOCATION_PARAMETER_MIN_WIDTH,
   INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
   INVOCATION_EXTRA_WIDTH,
-} from "../../resizing/WidthValues";
+} from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useNestedExpressionContainerWidthNestedExpressions } from "../../resizing/Hooks";
+import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell } from "../ContextExpression";
 import "./InvocationExpression.css";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -79,7 +80,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     return invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [];
   }, [invocationExpression.bindingEntries]);
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWidthNestedExpressions(
+  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
     useMemo(() => {
       return {
         nestedExpressions,
@@ -112,7 +113,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        label: invocationExpression.name ?? "Expression Name",
+        label: invocationExpression.name ?? DEFAULT_EXPRESSION_NAME,
         accessor: "invocation-expression" as keyof ROWTYPE,
         dataType: invocationExpression.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
         isRowIndexColumn: false,
@@ -215,9 +216,8 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   }, [i18n]);
 
   const getDefaultArgumentEntry = useCallback(
-    (name?: string): ContextExpressionDefinitionEntry<any> => {
+    (name?: string): ContextExpressionDefinitionEntry => {
       return {
-        nameAndDataTypeSynchronized: true,
         entryInfo: {
           id: generateUuid(),
           dataType: DmnBuiltInDataType.Undefined,

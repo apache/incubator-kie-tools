@@ -1,6 +1,6 @@
 import { ExpressionDefinitionLogicType } from "../api";
 import { ExpressionDefinition, FunctionExpressionDefinitionKind } from "../api/ExpressionDefinition";
-import { ResizingWidth } from "../resizing/ResizingWidthsContext";
+import { ResizingWidth } from "./ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
@@ -15,7 +15,7 @@ import {
   LITERAL_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-} from "./WidthValues";
+} from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
   if (!expression) {

@@ -6,7 +6,7 @@ import {
   DmnBuiltInDataType,
 } from "../../api";
 import { BoxedExpressionEditorI18n } from "../../i18n";
-import { LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthValues";
+import { LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
 
 export const javaContextExpression = (
   prev: ExpressionDefinition,

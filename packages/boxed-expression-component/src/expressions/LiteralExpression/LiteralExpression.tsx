@@ -19,12 +19,13 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import { BeeTableHeaderVisibility, LiteralExpressionDefinition } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
-import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthValues";
+import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
-import { useBeeTableCoordinates, useBeeTableCell } from "../../table/BeeTable/BeeTableSelectionContext";
+import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableCoordinates, useBeeTableCell } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import "./LiteralExpression.css";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 type ROWTYPE = any;
 
@@ -107,7 +108,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     return [
       {
         accessor: "literal-expression" as any, // FIXME: Tiago -> No bueno.
-        label: literalExpression.name ?? "Expression Name",
+        label: literalExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
         dataType: literalExpression.dataType,
         minWidth,

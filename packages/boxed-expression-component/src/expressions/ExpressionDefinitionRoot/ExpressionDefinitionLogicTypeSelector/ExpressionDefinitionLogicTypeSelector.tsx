@@ -21,21 +21,21 @@ import { CopyIcon, CutIcon, ListIcon, PasteIcon, TableIcon } from "@patternfly/r
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
-import { useCustomContextMenuHandler } from "../../contextMenu";
-import { PopoverMenu } from "../../contextMenu/PopoverMenu";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../../api";
+import { useCustomContextMenuHandler } from "../../../contextMenu";
+import { PopoverMenu } from "../../../contextMenu/PopoverMenu";
+import { useBoxedExpressionEditorI18n } from "../../../i18n";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ContextExpression } from "../ContextExpression";
-import { DecisionTableExpression } from "../DecisionTableExpression";
-import { FunctionExpression } from "../FunctionExpression";
-import { InvocationExpression } from "../InvocationExpression";
-import { ListExpression } from "../ListExpression";
-import { LiteralExpression, PmmlLiteralExpression } from "../LiteralExpression";
-import { RelationExpression } from "../RelationExpression";
+} from "../../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { ContextExpression } from "../../ContextExpression";
+import { DecisionTableExpression } from "../../DecisionTableExpression";
+import { FunctionExpression } from "../../FunctionExpression";
+import { InvocationExpression } from "../../InvocationExpression";
+import { ListExpression } from "../../ListExpression";
+import { LiteralExpression, PmmlLiteralExpression } from "../../LiteralExpression";
+import { RelationExpression } from "../../RelationExpression";
 import "./ExpressionDefinitionLogicTypeSelector.css";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {

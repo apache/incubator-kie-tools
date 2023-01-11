@@ -37,8 +37,8 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate, BeeTableCellUpdate } from "../../table/BeeTable";
 import "./DecisionTableExpression.css";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
-import { assertUnreachable } from "../ExpressionDefinitionLogicTypeSelector";
-import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
+import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
+import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
@@ -46,7 +46,8 @@ import {
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
-} from "../../resizing/WidthValues";
+} from "../../resizing/WidthConstants";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 type ROWTYPE = any; // FIXME: Tiago
 
@@ -204,7 +205,7 @@ export function DecisionTableExpression(
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
       accessor: decisionTableExpression.isHeadless ? decisionTableExpression.id : (decisionNodeId as any),
-      label: decisionTableExpression.name ?? "Expression Name",
+      label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
       dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,

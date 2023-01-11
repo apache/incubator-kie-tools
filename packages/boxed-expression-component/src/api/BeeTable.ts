@@ -109,10 +109,3 @@ export interface BeeTableOperationGroup {
 export type BeeTableOperationConfig =
   | BeeTableOperationGroup[]
   | { [columnGroupType: string]: BeeTableOperationGroup[] };
-
-export interface BeeTableTdProps<R extends object> {
-  rowIndex: number;
-  row: ReactTable.Row<R>;
-  columnIndex: number;
-  column: ReactTable.ColumnInstance<R>;
-}

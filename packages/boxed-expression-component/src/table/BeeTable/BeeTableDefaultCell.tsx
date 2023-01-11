@@ -2,7 +2,7 @@ import * as React from "react";
 import { useMemo, useCallback } from "react";
 import { BeeTableCellUpdate } from ".";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
-import { useBeeTableSelectionDispatch, SelectionPart, useBeeTableCell } from "./BeeTableSelectionContext";
+import { useBeeTableSelectionDispatch, SelectionPart, useBeeTableCell } from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
 
 export function BeeTableDefaultCell<R extends object>({

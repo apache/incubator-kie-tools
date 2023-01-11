@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { assertUnreachable } from "../../expressions/ExpressionDefinitionLogicTypeSelector";
-import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
+import { ResizingWidth } from "../resizing/ResizingWidthsContext";
 
 export const SELECTION_MIN_ACTIVE_DEPTH = -1;
 export const SELECTION_MIN_MAX_DEPTH = 0;
@@ -389,8 +389,8 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
               // Direction: left-to-right, top-to-bottom
               //
               // ===============================================
-              // Enter         --> Bottom-Up, RTL
-              // Shift + Enter --> Top-Down, LTR
+              // Enter         --> Top-Down, LTR
+              // Shift + Enter --> Bottom-Up, RTL
               // Tab           --> LTR, Top-Down
               // Shift + Tab   --> RTL, Bottom-Up
               // ===============================================

@@ -49,9 +49,9 @@ export interface ExpressionDefinitionHeaderMenuProps {
   position?: PopoverPosition;
 }
 
-export const EXPRESSION_NAME = "Expression Name";
+export const DEFAULT_EXPRESSION_NAME = "Expression Name";
 
-export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionDefinitionHeaderMenuProps> = ({
+export function ExpressionDefinitionHeaderMenu({
   children,
   appendTo,
   arrowPlacement,
@@ -61,7 +61,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
   selectedExpressionName,
   onExpressionHeaderUpdated,
   position,
-}: ExpressionDefinitionHeaderMenuProps) => {
+}: ExpressionDefinitionHeaderMenuProps) {
   const boxedExpressionEditor = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -158,7 +158,7 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
               onChange={onExpressionNameChange}
               onBlur={onExpressionNameChange}
               className="form-control pf-c-form-control"
-              placeholder={EXPRESSION_NAME}
+              placeholder={DEFAULT_EXPRESSION_NAME}
               onKeyDown={onKeyDown}
             />
           </div>
@@ -182,4 +182,4 @@ export const ExpressionDefinitionHeaderMenu: React.FunctionComponent<ExpressionD
       {children}
     </PopoverMenu>
   );
-};
+}

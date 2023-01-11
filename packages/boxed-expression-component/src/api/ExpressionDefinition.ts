@@ -108,8 +108,6 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   entryInfo: ContextExpressionDefinitionEntryInfo;
   /** Entry expression */
   entryExpression: T;
-  /** True, for synchronizing name and dataType parameters, between entryInfo and entryExpression */
-  nameAndDataTypeSynchronized?: boolean; // FIXME: Tiago -> Remove this?
 }
 
 // FIXME: Tiago -> Move

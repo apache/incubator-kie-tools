@@ -17,27 +17,28 @@
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import * as PfReactTable from "@patternfly/react-table";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
-import { BeeTableTdProps } from "../../api";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
   useBeeTableCell,
-} from "./BeeTableSelectionContext";
-import { useBeeTableSelectableCell } from "./BeeTableSelectionContext";
+} from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 
-export interface BeeTableTdProps2<R extends object> extends BeeTableTdProps<R> {
+export interface BeeTableTdProps<R extends object> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
-  row: ReactTable.Row<R>;
-  column: ReactTable.ColumnInstance<R>;
   shouldUseCellDelegate: boolean;
   onRowAdded?: (args: { beforeIndex: number }) => void;
   isActive: boolean;
   shouldRenderInlineButtons: boolean;
   shouldShowRowsInlineControls: boolean;
+  rowIndex: number;
+  row: ReactTable.Row<R>;
+  columnIndex: number;
+  column: ReactTable.ColumnInstance<R>;
 }
 
 export type HoverInfo =
@@ -58,7 +59,7 @@ export function BeeTableTd<R extends object>({
   shouldRenderInlineButtons,
   shouldShowRowsInlineControls,
   onRowAdded,
-}: BeeTableTdProps2<R>) {
+}: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 

@@ -21,7 +21,7 @@ import { BeeTableHeaderVisibility } from "../../api";
 import * as ReactTable from "react-table";
 import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
-import { BeeTableCoordinatesContextProvider } from "./BeeTableSelectionContext";
+import { BeeTableCoordinatesContextProvider } from "../../selection/BeeTableSelectionContext";
 
 export interface BeeTableBodyProps<R extends object> {
   /** Table instance */

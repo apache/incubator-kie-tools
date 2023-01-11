@@ -16,7 +16,7 @@
 
 import "@patternfly/react-styles/css/utilities/Text/text.css";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -32,12 +32,14 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import {
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-} from "../../resizing/WidthValues";
-import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { usePublishedBeeTableColumnResizingWidths } from "../../table/BeeTable/BeeTableColumnResizingWidthsContextProvider";
+} from "../../resizing/WidthConstants";
+import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
+import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./RelationExpression.css";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
@@ -87,15 +89,35 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     },
     [setExpression]
   );
+  const beeTableRef = useRef<BeeTableRef>(null);
 
-  // RESIZING WIDTHS
-  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(relationExpression.id);
+  const nestedExpressionContainer = useNestedExpressionContainer();
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(relationExpression.id);
+
+  // FIXME: Tiago -> Proportional resizing of columns.
+  // useEffect(() => {
+  //   if (isPivoting) {
+  //     return;
+  //   }
+
+  //   const widthToDistribute =
+  //     nestedExpressionContainer.resizingWidth.value - BEE_TABLE_ROW_INDEX_COLUMN_WIDTH - 1 - columns.length;
+
+  //   columns.forEach((c, index) => {
+  //     beeTableRef.current?.updateResizingWidth(index + 1, (prev) => {
+  //       return {
+  //         isPivoting: false,
+  //         value: widthToDistribute / columns.length,
+  //       };
+  //     });
+  //   });
+  // }, [columns, isPivoting, nestedExpressionContainer.resizingWidth.value]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
         accessor: relationExpression.id as any,
-        label: relationExpression.name ?? "Expression Name",
+        label: relationExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: relationExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
@@ -274,6 +296,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
   return (
     <div className={`relation-expression`}>
       <BeeTable
+        forwardRef={beeTableRef}
         headerLevelCount={1}
         editColumnLabel={i18n.editRelation}
         columns={beeTableColumns}

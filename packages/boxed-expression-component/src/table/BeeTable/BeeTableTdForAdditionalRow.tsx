@@ -15,17 +15,21 @@
  */
 
 import * as PfReactTable from "@patternfly/react-table";
+import * as ReactTable from "react-table";
 import * as React from "react";
 import { useRef } from "react";
-import { BeeTableTdProps } from "../../api";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnResizingWidth } from "./BeeTableColumnResizingWidthsContextProvider";
-import { useBeeTableSelectableCell } from "./BeeTableSelectionContext";
+import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 
-export interface BeeTableTdForAdditionalRowProps<R extends object> extends BeeTableTdProps<R> {
+export interface BeeTableTdForAdditionalRowProps<R extends object> {
   children?: React.ReactElement;
   isEmptyCell: boolean;
   isLastColumn: boolean;
+  rowIndex: number;
+  row: ReactTable.Row<R>;
+  columnIndex: number;
+  column: ReactTable.ColumnInstance<R>;
 }
 
 export function BeeTableTdForAdditionalRow<R extends object>({
