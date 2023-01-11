@@ -46,6 +46,11 @@ public class ScenarioSimulationViewImpl extends KieEditorViewImpl implements Sce
     }
 
     @Override
+    public void setScenarioGridWidgetAsContent() {
+        editorPanel.setWidget(scenarioGridWidget);
+    }
+
+    @Override
     public ScenarioGridWidget getScenarioGridWidget() {
         return scenarioGridWidget;
     }

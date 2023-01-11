@@ -195,9 +195,24 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
             success.onInvoke((Void) null);
         } catch (Exception e) {
             /* If any exception occurs, promise returns a failure */
-            scenarioSimulationEditorPresenter.getView().setContentWidget(errorPage);
+            setErrorPage(e.getMessage());
             failure.onInvoke(e.getMessage());
         }
+    }
+
+    private void setErrorPage(final String errorMessage) {
+        errorPage.setTitle(ScenarioSimulationEditorConstants.INSTANCE.scenarioParsingError());
+        errorPage.setContent(ScenarioSimulationEditorConstants.INSTANCE.scenarioParsingErrorContent());
+        errorPage.setErrorContent(errorMessage);
+        scenarioSimulationEditorPresenter.getView().setContentWidget(errorPage);
+        scenarioSimulationEditorPresenter.hideDocks();
+        getWidget().getMultiPage().setTabBarVisible(false);
+    }
+
+    private void ensureScenarioGridIsSet() {
+        scenarioSimulationEditorPresenter.getView().setScenarioGridWidgetAsContent();
+        scenarioSimulationEditorPresenter.showDocks();
+        getWidget().getMultiPage().setTabBarVisible(true);
     }
 
     public void prepareContent(Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<String> success,
@@ -405,7 +420,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         }
         dataManagementStrategy.setModel(model);
         scenarioSimulationEditorPresenter.getModelSuccessCallbackMethod(dataManagementStrategy, model);
-        scenarioSimulationEditorPresenter.showDocks();
+        ensureScenarioGridIsSet();
     }
 
     protected void onBackgroundTabSelected() {
@@ -451,6 +466,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                 scenarioSimulationBuilder.populateScenarioSimulationModelRULE("",
                                                                               this::onModelSuccessCallbackMethod);
             }
+            ensureScenarioGridIsSet();
         };
     }
 

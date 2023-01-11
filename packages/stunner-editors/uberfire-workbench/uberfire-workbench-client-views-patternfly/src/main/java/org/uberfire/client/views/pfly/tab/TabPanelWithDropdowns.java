@@ -183,16 +183,7 @@ public class TabPanelWithDropdowns extends Composite {
 
         registerTabHandlers(tab);
         insertTabAndContent(tab, index);
-        shouldShowTabBar(index);
         resizeTabContent();
-    }
-
-    void shouldShowTabBar(final int index) {
-        if (index > 1) {
-            tabBar.setVisible(true);
-        } else {
-            tabBar.setVisible(false);
-        }
     }
 
     void insertTabAndContent(final TabPanelEntry tab,
@@ -378,6 +369,10 @@ public class TabPanelWithDropdowns extends Composite {
     public void addTabBarWidget(final IsWidget customWidget) {
         this.getWidgetsPanel().add(customWidget);
         this.getWidgetsPanel().setCellHorizontalAlignment(customWidget, endOf(LTR));
+    }
+
+    public void setTabBarVisible(final boolean visible) {
+        tabBar.setVisible(visible);
     }
 
     interface TabPanelWithDropdownsBinder

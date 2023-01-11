@@ -174,12 +174,14 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         stunnerEditor.setReadOnly(this.isReadOnly());
         guidedTourBridgeInitializer.init();
         ensureDocksAreInitialized();
+        ensureTabBarVisibility(true);
         setParsingErrorBehavior();
     }
 
     private void setParsingErrorBehavior() {
         stunnerEditor.setParsingExceptionProcessor(e -> {
             ensureDocksAreRemoved();
+            ensureTabBarVisibility(false);
             searchBarComponent.disableSearch();
         });
     }
@@ -237,6 +239,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     public void open(final Diagram diagram,
                      final SessionPresenter.SessionPresenterCallback callback) {
         ensureDocksAreInitialized();
+        ensureTabBarVisibility(true);
         feelInitializer.initializeFEELEditor();
         if (layoutHelper.hasLayoutInformation(diagram)) {
             executeOpen(diagram, callback);
@@ -443,6 +446,10 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         decisionNavigatorDock.resetContent();
         diagramPropertiesDock.destroy();
         diagramPreviewAndExplorerDock.destroy();
+    }
+
+    private void ensureTabBarVisibility(boolean visible) {
+        getWidget().getMultiPage().setTabBarVisible(visible);
     }
 
 }
