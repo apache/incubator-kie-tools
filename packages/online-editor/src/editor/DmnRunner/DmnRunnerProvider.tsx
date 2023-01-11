@@ -241,18 +241,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile]);
 
-  useEffect(() => {
-    if () {
-      return;
-    }
-
-    try {
-      setExpanded(!!queryParams.get(QueryParams.DMN_RUNNER_IS_OPEN));
-    } catch (e) {
-      console.error(`Cannot parse "${QueryParams.DMN_RUNNER_IS_OPEN}"`, e)
-    }
-  }, [queryParams])
-
   const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
