@@ -133,7 +133,7 @@ export function usePublishedBeeTableColumnResizingWidths(resizingWidthId: string
 
   const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
     setColumnResizingWidths((prev) => {
-      const n = new Map([...prev.entries()]);
+      const n = new Map(prev);
       n.set(args.columnIndex, args.newResizingWidth);
       return n;
     });
