@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -30,13 +30,24 @@ import {
   InvocationExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../resizing/WidthValues";
-import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ContextEntryInfoCell } from "../ContextExpression";
+  NestedExpressionContainerContext,
+  NestedExpressionContainerContextType,
+} from "../../resizing/NestedExpressionContainerContext";
+import { ResizingWidth, useResizingWidths, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import {
+  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_EXTRA_WIDTH,
+  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+} from "../../resizing/WidthValues";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
+import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  ContextEntryInfoCell,
+  useNestedExpressionActualWidth,
+  useNestedExpressionMinWidth,
+  useNestedExpressionResizingWidth,
+} from "../ContextExpression";
 import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import "./InvocationExpression.css";
 
@@ -51,15 +62,110 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
+  const nestedExpressions = useMemo(() => {
+    return invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [];
+  }, [invocationExpression.bindingEntries]);
+
+  const parametersWidth = useMemo(() => {
+    return invocationExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH;
+  }, [invocationExpression.entryInfoWidth]);
+
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////// COPIED FROM ContextExpression.tsx ///////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+
+  //// RESIZING WIDTHS (begin)
+
+  const [parametersResizingWidth, setParametersResizingWidth] = React.useState<ResizingWidth>({
+    value: parametersWidth,
+    isPivoting: false,
+  });
+
+  const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
+    if (args.columnIndex === 1) {
+      setParametersResizingWidth(args.newResizingWidth);
+    }
+  }, []);
+
+  const { resizingWidths } = useResizingWidths();
+  const isPivoting = useMemo<boolean>(() => {
+    return (
+      parametersResizingWidth.isPivoting || nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting)
+    );
+  }, [parametersResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
+
+  const argumentExpressionsResizingWidthValue = useNestedExpressionResizingWidth(
+    isPivoting,
+    nestedExpressions,
+    parametersWidth,
+    parametersResizingWidth,
+    CONTEXT_ENTRY_INFO_MIN_WIDTH,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    CONTEXT_ENTRY_EXTRA_WIDTH
+  );
+
+  const argumentExpressionsMinWidth = useNestedExpressionMinWidth(
+    nestedExpressions,
+    parametersResizingWidth,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    CONTEXT_ENTRY_EXTRA_WIDTH
+  );
+
+  const argumentExpressionsActualWidth = useNestedExpressionActualWidth(
+    nestedExpressions,
+    parametersWidth,
+    CONTEXT_ENTRY_EXTRA_WIDTH
+  );
+
+  const nestedExpressionContainerValue = useMemo<NestedExpressionContainerContextType>(() => {
+    return {
+      minWidth: argumentExpressionsMinWidth,
+      actualWidth: argumentExpressionsActualWidth,
+      resizingWidth: {
+        value: argumentExpressionsResizingWidthValue,
+        isPivoting,
+      },
+    };
+  }, [argumentExpressionsMinWidth, argumentExpressionsActualWidth, argumentExpressionsResizingWidthValue, isPivoting]);
+
+  const { updateResizingWidth } = useResizingWidthsDispatch();
+
+  useEffect(() => {
+    updateResizingWidth(invocationExpression.id!, (prev) => ({
+      value: parametersResizingWidth.value + argumentExpressionsResizingWidthValue + CONTEXT_ENTRY_EXTRA_WIDTH,
+      isPivoting,
+    }));
+  }, [
+    invocationExpression.id,
+    argumentExpressionsResizingWidthValue,
+    parametersResizingWidth.value,
+    isPivoting,
+    updateResizingWidth,
+  ]);
+
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+
   const beeTableRows: ROWTYPE[] = useMemo(() => {
     return invocationExpression.bindingEntries ?? [];
   }, [invocationExpression.bindingEntries]);
 
-  const setParametersInfoColumnWidth = useCallback(
-    (newParametersInfoColumnWidth) => {
+  const setParametersWidth = useCallback(
+    (newParametersWidth) => {
       setExpression((prev) => ({
         ...prev,
-        entryInfoWidth: newParametersInfoColumnWidth,
+        entryInfoWidth: newParametersWidth,
       }));
     },
     [setExpression]
@@ -89,8 +195,8 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
                 isRowIndexColumn: false,
                 dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
                 minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-                width: invocationExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
-                setWidth: setParametersInfoColumnWidth,
+                width: parametersWidth,
+                setWidth: setParametersWidth,
               },
               {
                 accessor: "argumentExpression" as any,
@@ -108,8 +214,8 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
       invocationExpression.name,
       invocationExpression.dataType,
       invocationExpression.invokedFunction,
-      invocationExpression.entryInfoWidth,
-      setParametersInfoColumnWidth,
+      parametersWidth,
+      setParametersWidth,
     ]
   );
 
@@ -242,25 +348,28 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   );
 
   return (
-    <div className={`invocation-expression ${invocationExpression.id}`}>
-      <BeeTable
-        tableId={invocationExpression.id}
-        headerLevelCount={2}
-        headerVisibility={headerVisibility}
-        skipLastHeaderGroup={true}
-        cellComponentByColumnId={cellComponentByColumnId}
-        columns={beeTableColumns}
-        rows={beeTableRows}
-        onColumnUpdates={onColumnUpdates}
-        operationConfig={beeTableOperationConfig}
-        getRowKey={getRowKey}
-        onRowAdded={onRowAdded}
-        onRowReset={onRowReset}
-        onRowDeleted={onRowDeleted}
-        shouldRenderRowIndexColumn={false}
-        shouldShowRowsInlineControls={true}
-        shouldShowColumnsInlineControls={false}
-      />
-    </div>
+    <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
+      <div className={`invocation-expression ${invocationExpression.id}`}>
+        <BeeTable
+          tableId={invocationExpression.id}
+          headerLevelCount={2}
+          headerVisibility={headerVisibility}
+          skipLastHeaderGroup={true}
+          cellComponentByColumnId={cellComponentByColumnId}
+          columns={beeTableColumns}
+          rows={beeTableRows}
+          onColumnUpdates={onColumnUpdates}
+          onColumnResizingWidthChange={onColumnResizingWidthChange}
+          operationConfig={beeTableOperationConfig}
+          getRowKey={getRowKey}
+          onRowAdded={onRowAdded}
+          onRowReset={onRowReset}
+          onRowDeleted={onRowDeleted}
+          shouldRenderRowIndexColumn={false}
+          shouldShowRowsInlineControls={true}
+          shouldShowColumnsInlineControls={false}
+        />
+      </div>
+    </NestedExpressionContainerContext.Provider>
   );
 }

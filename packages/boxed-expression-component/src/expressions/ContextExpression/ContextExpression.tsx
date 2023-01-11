@@ -32,6 +32,8 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import {
+  NestedExpressionContainerContext,
+  NestedExpressionContainerContextType,
   useNestedExpressionContainer,
   usePivotAwareNestedExpressionContainer,
 } from "../../resizing/NestedExpressionContainerContext";
@@ -53,8 +55,6 @@ import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import "./ContextExpression.css";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 
-const CONTEXT_ENTRY_DEFAULT_NAME = "ContextEntry-1";
-
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
@@ -64,109 +64,15 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  //// RESIZING WIDTHS (begin)
-
-  const nestedExpressionContainer = useNestedExpressionContainer();
-
   const nestedExpressions = useMemo<ExpressionDefinition[]>(
     () => [...contextExpression.contextEntries.map((e) => e.entryExpression), contextExpression.result],
     [contextExpression.contextEntries, contextExpression.result]
   );
 
-  const { updateResizingWidth } = useResizingWidthsDispatch();
-  const { resizingWidths } = useResizingWidths();
-
-  const [entryInfoResizingWidth, setEntryInfoResizingWidth] = useState<ResizingWidth>({
-    value: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
-    isPivoting: false,
-  });
-
-  const isContextExpressionPivoting = useMemo<boolean>(() => {
-    return entryInfoResizingWidth.isPivoting || nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting);
-  }, [entryInfoResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
-
-  const pivotAwareExpressionContainer = usePivotAwareNestedExpressionContainer(isContextExpressionPivoting);
-
-  const nonPivotingEntryExpressionsMaxActualWidth = useMemo<number>(() => {
-    return Math.max(
-      nestedExpressionContainer.actualWidth -
-        (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) -
-        CONTEXT_ENTRY_EXTRA_WIDTH,
-      ...nestedExpressions
-        .filter(({ id }) => !(resizingWidths.get(id!)?.isPivoting ?? false))
-        .map((expression) => getExpressionResizingWidth(expression, new Map()))
-    );
-  }, [contextExpression.entryInfoWidth, nestedExpressionContainer.actualWidth, nestedExpressions, resizingWidths]);
-
-  const entryExpressionsResizingWidthValue = useMemo<number>(() => {
-    const nestedPivotingExpressions = nestedExpressions.filter(({ id }) => resizingWidths.get(id!)?.isPivoting);
-    if (nestedPivotingExpressions.length === 1) {
-      return Math.max(
-        getExpressionResizingWidth(nestedPivotingExpressions[0]!, resizingWidths),
-        CONTEXT_ENTRY_INFO_MIN_WIDTH
-      );
-    }
-
-    return Math.max(
-      entryInfoResizingWidth.value >= (contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH)
-        ? pivotAwareExpressionContainer.resizingWidth.value - entryInfoResizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH
-        : nestedExpressionContainer.actualWidth - entryInfoResizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH,
-      ...nestedExpressions.map((e) => getExpressionResizingWidth(e, new Map())),
-      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
-    );
-  }, [
-    contextExpression.entryInfoWidth,
-    entryInfoResizingWidth.value,
-    nestedExpressionContainer.actualWidth,
-    nestedExpressions,
-    pivotAwareExpressionContainer.resizingWidth.value,
-    resizingWidths,
-  ]);
-
-  useEffect(() => {
-    updateResizingWidth(contextExpression.id!, (prev) => {
-      return {
-        value: entryInfoResizingWidth.value + entryExpressionsResizingWidthValue + CONTEXT_ENTRY_EXTRA_WIDTH,
-        isPivoting: isContextExpressionPivoting,
-      };
-    });
-  }, [
-    contextExpression.id,
-    entryExpressionsResizingWidthValue,
-    entryInfoResizingWidth.value,
-    isContextExpressionPivoting,
-    updateResizingWidth,
-  ]);
-
-  const entryExpressionsMinWidthLocal = useMemo(() => {
-    return Math.max(...nestedExpressions.map((e) => getExpressionMinWidth(e)), CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
-  }, [nestedExpressions]);
-
-  const entryExpressionsMinWidthGlobal = useMemo(() => {
-    return Math.max(
-      nestedExpressionContainer.minWidthGlobal - entryInfoResizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH,
-      ...nestedExpressions.map((e) => getExpressionMinWidth(e)),
-      CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
-    );
-  }, [entryInfoResizingWidth.value, nestedExpressionContainer.minWidthGlobal, nestedExpressions]);
-
-  const contextExpressionContextValue = useMemo<ContextExpressionContextType>(() => {
-    return {
-      entryExpressionsMinWidthLocal: entryExpressionsMinWidthLocal,
-      entryExpressionsMinWidthGlobal: entryExpressionsMinWidthGlobal,
-      entryExpressionsActualWidth: nonPivotingEntryExpressionsMaxActualWidth,
-      entryExpressionsResizingWidth: {
-        value: entryExpressionsResizingWidthValue,
-        isPivoting: isContextExpressionPivoting,
-      },
-    };
-  }, [
-    entryExpressionsMinWidthLocal,
-    entryExpressionsMinWidthGlobal,
-    nonPivotingEntryExpressionsMaxActualWidth,
-    entryExpressionsResizingWidthValue,
-    isContextExpressionPivoting,
-  ]);
+  const entryInfoWidth = useMemo(
+    () => contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
+    [contextExpression.entryInfoWidth]
+  );
 
   const setEntryInfoWidth = useCallback(
     (newEntryInfoWidth: number) => {
@@ -175,7 +81,90 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [setExpression]
   );
 
-  //// RESIZING WIDTHS (end)
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////// ORIGINAL AT ContextExpression.tsx ///////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+
+  //// RESIZING WIDTHS (begin)
+
+  const [entryInfoResizingWidth, setEntryInfoResizingWidth] = useState<ResizingWidth>({
+    value: entryInfoWidth,
+    isPivoting: false,
+  });
+
+  const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
+    if (args.columnIndex === 1) {
+      setEntryInfoResizingWidth(args.newResizingWidth);
+    }
+  }, []);
+
+  const { resizingWidths } = useResizingWidths();
+  const isPivoting = useMemo<boolean>(() => {
+    return entryInfoResizingWidth.isPivoting || nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting);
+  }, [entryInfoResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
+
+  const entryExpressionsResizingWidthValue = useNestedExpressionResizingWidth(
+    isPivoting,
+    nestedExpressions,
+    entryInfoWidth,
+    entryInfoResizingWidth,
+    CONTEXT_ENTRY_INFO_MIN_WIDTH,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    CONTEXT_ENTRY_EXTRA_WIDTH
+  );
+
+  const entryExpressionsMinWidth = useNestedExpressionMinWidth(
+    nestedExpressions,
+    entryInfoResizingWidth,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    CONTEXT_ENTRY_EXTRA_WIDTH
+  );
+
+  const entryExpressionsActualWidth = useNestedExpressionActualWidth(
+    nestedExpressions,
+    entryInfoWidth,
+    CONTEXT_ENTRY_EXTRA_WIDTH
+  );
+
+  const nestedExpressionContainerValue = useMemo<NestedExpressionContainerContextType>(() => {
+    return {
+      minWidth: entryExpressionsMinWidth,
+      actualWidth: entryExpressionsActualWidth,
+      resizingWidth: {
+        value: entryExpressionsResizingWidthValue,
+        isPivoting,
+      },
+    };
+  }, [entryExpressionsMinWidth, entryExpressionsActualWidth, entryExpressionsResizingWidthValue, isPivoting]);
+
+  const { updateResizingWidth } = useResizingWidthsDispatch();
+
+  useEffect(() => {
+    updateResizingWidth(contextExpression.id!, (prev) => ({
+      value: entryInfoResizingWidth.value + entryExpressionsResizingWidthValue + CONTEXT_ENTRY_EXTRA_WIDTH,
+      isPivoting,
+    }));
+  }, [
+    contextExpression.id,
+    entryExpressionsResizingWidthValue,
+    entryInfoResizingWidth.value,
+    isPivoting,
+    updateResizingWidth,
+  ]);
+
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -192,7 +181,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
             minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-            width: contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
+            width: entryInfoWidth,
             setWidth: setEntryInfoWidth,
           },
           {
@@ -206,13 +195,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         ],
       },
     ];
-  }, [
-    contextExpression.name,
-    contextExpression.dataType,
-    contextExpression.entryInfoWidth,
-    decisionNodeId,
-    setEntryInfoWidth,
-  ]);
+  }, [decisionNodeId, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
@@ -317,12 +300,6 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [getDefaultContextEntry, setExpression]
   );
 
-  const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
-    if (args.columnIndex === 1) {
-      setEntryInfoResizingWidth(args.newResizingWidth);
-    }
-  }, []);
-
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
       setExpression((prev: ContextExpressionDefinition) => {
@@ -367,7 +344,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   );
 
   return (
-    <ContextExpressionContext.Provider value={contextExpressionContextValue}>
+    <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`context-expression ${contextExpression.id}`}>
         <BeeTable
           tableId={contextExpression.id}
@@ -389,29 +366,8 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           shouldShowColumnsInlineControls={false}
         />
       </div>
-    </ContextExpressionContext.Provider>
+    </NestedExpressionContainerContext.Provider>
   );
-}
-
-export interface ContextExpressionContextType {
-  entryExpressionsMinWidthLocal: number;
-  entryExpressionsMinWidthGlobal: number;
-  entryExpressionsActualWidth: number;
-  entryExpressionsResizingWidth: ResizingWidth;
-}
-
-export const ContextExpressionContext = React.createContext<ContextExpressionContextType>({
-  entryExpressionsMinWidthLocal: -2,
-  entryExpressionsMinWidthGlobal: -2,
-  entryExpressionsActualWidth: -2,
-  entryExpressionsResizingWidth: {
-    value: -2,
-    isPivoting: false,
-  },
-});
-
-export function useContextExpressionContext() {
-  return React.useContext(ContextExpressionContext);
 }
 
 export function ContextResultInfoCell() {
@@ -433,4 +389,91 @@ export function ContextResultInfoCell() {
   );
 
   return <div className="context-result">{value}</div>;
+}
+
+export function useNestedExpressionResizingWidth(
+  isPivoting: boolean,
+  nestedExpressions: ExpressionDefinition[],
+  entryInfoWidth: number,
+  entryInfoResizingWidth: ResizingWidth,
+  entryInfoMinWidth: number,
+  entryExpressionMinWidth: number,
+  extraWidth: number
+) {
+  const { resizingWidths } = useResizingWidths();
+  const nestedExpressionContainer = useNestedExpressionContainer();
+  const pivotAwareNestedExpressionContainer = usePivotAwareNestedExpressionContainer(isPivoting);
+
+  const entryExpressionsResizingWidthValue = useMemo<number>(() => {
+    const nestedPivotingExpression: ExpressionDefinition | undefined = nestedExpressions.filter(
+      ({ id }) => resizingWidths.get(id!)?.isPivoting ?? false
+    )[0];
+
+    if (nestedPivotingExpression) {
+      return Math.max(getExpressionResizingWidth(nestedPivotingExpression, resizingWidths), entryInfoMinWidth);
+    }
+
+    const asdf =
+      entryInfoResizingWidth.value >= entryInfoWidth
+        ? pivotAwareNestedExpressionContainer.resizingWidth.value
+        : nestedExpressionContainer.actualWidth;
+
+    return Math.max(
+      asdf - entryInfoResizingWidth.value - extraWidth,
+      ...nestedExpressions.map((e) => getExpressionResizingWidth(e, new Map())),
+      entryExpressionMinWidth
+    );
+  }, [
+    entryExpressionMinWidth,
+    entryInfoMinWidth,
+    entryInfoResizingWidth.value,
+    entryInfoWidth,
+    extraWidth,
+    nestedExpressionContainer.actualWidth,
+    nestedExpressions,
+    pivotAwareNestedExpressionContainer.resizingWidth.value,
+    resizingWidths,
+  ]);
+
+  return entryExpressionsResizingWidthValue;
+}
+
+export function useNestedExpressionMinWidth(
+  nestedExpressions: ExpressionDefinition[],
+  entryInfoResizingWidth: ResizingWidth,
+  entryExpressionMinWidth: number,
+  extraWidth: number
+) {
+  const nestedExpressionContainer = useNestedExpressionContainer();
+  return useMemo(() => {
+    return Math.max(
+      nestedExpressionContainer.minWidth - entryInfoResizingWidth.value - extraWidth,
+      ...nestedExpressions.map((e) => getExpressionMinWidth(e)),
+      entryExpressionMinWidth
+    );
+  }, [
+    entryExpressionMinWidth,
+    entryInfoResizingWidth.value,
+    extraWidth,
+    nestedExpressionContainer.minWidth,
+    nestedExpressions,
+  ]);
+}
+
+export function useNestedExpressionActualWidth(
+  nestedExpressions: ExpressionDefinition[],
+  entryInfoWidth: number,
+  extraWidth: number
+) {
+  const nestedExpressionContainer = useNestedExpressionContainer();
+  const { resizingWidths } = useResizingWidths();
+
+  return useMemo<number>(() => {
+    return Math.max(
+      nestedExpressionContainer.actualWidth - entryInfoWidth - extraWidth,
+      ...nestedExpressions
+        .filter(({ id }) => !(resizingWidths.get(id!)?.isPivoting ?? false))
+        .map((expression) => getExpressionResizingWidth(expression, new Map()))
+    );
+  }, [entryInfoWidth, extraWidth, nestedExpressionContainer.actualWidth, nestedExpressions, resizingWidths]);
 }

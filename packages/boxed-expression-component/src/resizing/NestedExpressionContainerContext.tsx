@@ -3,15 +3,13 @@ import { useEffect, useState } from "react";
 import { ResizingWidth } from "./ResizingWidthsContext";
 
 export type NestedExpressionContainerContextType = {
-  minWidthLocal: number;
-  minWidthGlobal: number;
+  minWidth: number;
   actualWidth: number;
   resizingWidth: ResizingWidth;
 };
 
 export const NestedExpressionContainerContext = React.createContext<NestedExpressionContainerContextType>({
-  minWidthLocal: -2,
-  minWidthGlobal: -2,
+  minWidth: -2,
   actualWidth: -2,
   resizingWidth: {
     value: -2,

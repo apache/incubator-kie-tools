@@ -67,7 +67,7 @@ export function areEqualColumns<R extends object>(
   };
 }
 
-export function BeeTable2<R extends object>({
+export function BeeTableInternal<R extends object>({
   tableId,
   additionalRow,
   editColumnLabel,
@@ -546,15 +546,15 @@ export function BeeTable2<R extends object>({
 
 export type BeeTableRef = BeeTableColumnResizingWidthsDispatchContextType;
 
-export const BeeTable = <R extends object>(
-  props: BeeTableProps<R> & {
-    onColumnResizingWidthChange?: (args: { columnIndex: number; newResizingWidth: ResizingWidth }) => void;
-  } & { forwardRef?: React.Ref<BeeTableRef> }
-) => {
+export type ForwardRefBeeTableProps<R extends object> = BeeTableProps<R> & { forwardRef?: React.Ref<BeeTableRef> } & {
+  onColumnResizingWidthChange?: (args: { columnIndex: number; newResizingWidth: ResizingWidth }) => void;
+};
+
+export const BeeTable = <R extends object>(props: ForwardRefBeeTableProps<R>) => {
   return (
     <BeeTableSelectionContextProvider>
       <BeeTableColumnResizingWidthsContextProvider ref={props.forwardRef} onChange={props.onColumnResizingWidthChange}>
-        <BeeTable2 {...props} />
+        <BeeTableInternal {...props} />
       </BeeTableColumnResizingWidthsContextProvider>
     </BeeTableSelectionContextProvider>
   );

@@ -16,7 +16,7 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -32,15 +32,22 @@ import {
 } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
-import { useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
-import { CONTEXT_ENTRY_EXTRA_WIDTH } from "../../resizing/WidthValues";
+import {
+  NestedExpressionContainerContext,
+  NestedExpressionContainerContextType,
+} from "../../resizing/NestedExpressionContainerContext";
+import { useResizingWidths, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, LIST_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ContextExpressionContext, ContextExpressionContextType } from "../ContextExpression";
+import {
+  useNestedExpressionActualWidth,
+  useNestedExpressionMinWidth,
+  useNestedExpressionResizingWidth,
+} from "../ContextExpression";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 import { FunctionDefinitionCell } from "./FunctionDefinitionCell";
 import "./FunctionExpression.css";
@@ -56,7 +63,106 @@ export type ROWTYPE = ContextExpressionDefinitionEntry;
 export function FunctionExpression(functionExpression: FunctionExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const nestedExpressionContainer = useNestedExpressionContainer();
+
+  const nestedFeelExpression = useMemo(() => {
+    return functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel
+      ? functionExpression.expression
+      : undefined;
+  }, [functionExpression]);
+
+  const nestedExpressions = useMemo(() => {
+    return nestedFeelExpression ? [nestedFeelExpression] : [];
+  }, [nestedFeelExpression]);
+
+  const nonExistingInfoColumnWidth = 0;
+  const nonExistingInfoColumnMinWidth = 0;
+
+  const nonExistingInfoColumnResizingWidth = useMemo(
+    () => ({
+      value: nonExistingInfoColumnWidth,
+      isPivoting: false,
+    }),
+    []
+  );
+
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////// COPIED FROM ContextExpression.tsx ///////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+
+  //// RESIZING WIDTHS (begin)
+
+  const { resizingWidths } = useResizingWidths();
+  const isPivoting = useMemo<boolean>(() => {
+    return (
+      nonExistingInfoColumnResizingWidth.isPivoting ||
+      nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting)
+    );
+  }, [nonExistingInfoColumnResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
+
+  const itemExpressionsResizingWidthValue = useNestedExpressionResizingWidth(
+    isPivoting,
+    nestedExpressions,
+    nonExistingInfoColumnWidth,
+    nonExistingInfoColumnResizingWidth,
+    nonExistingInfoColumnMinWidth,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    LIST_EXPRESSION_EXTRA_WIDTH
+  );
+
+  const itemExpressionsMinWidth = useNestedExpressionMinWidth(
+    nestedExpressions,
+    nonExistingInfoColumnResizingWidth,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    LIST_EXPRESSION_EXTRA_WIDTH
+  );
+
+  const itemExpressionsActualWidth = useNestedExpressionActualWidth(
+    nestedExpressions,
+    nonExistingInfoColumnWidth,
+    LIST_EXPRESSION_EXTRA_WIDTH
+  );
+
+  const nestedExpressionContainerValue = useMemo<NestedExpressionContainerContextType>(() => {
+    return {
+      minWidth: itemExpressionsMinWidth,
+      actualWidth: itemExpressionsActualWidth,
+      resizingWidth: {
+        value: itemExpressionsResizingWidthValue,
+        isPivoting,
+      },
+    };
+  }, [itemExpressionsMinWidth, itemExpressionsActualWidth, itemExpressionsResizingWidthValue, isPivoting]);
+
+  console.info(nestedExpressionContainerValue);
+
+  const { updateResizingWidth } = useResizingWidthsDispatch();
+
+  useEffect(() => {
+    updateResizingWidth(functionExpression.id!, (prev) => ({
+      value: nonExistingInfoColumnResizingWidth.value + itemExpressionsResizingWidthValue + LIST_EXPRESSION_EXTRA_WIDTH,
+      isPivoting,
+    }));
+  }, [
+    functionExpression.id,
+    itemExpressionsResizingWidthValue,
+    nonExistingInfoColumnResizingWidth.value,
+    isPivoting,
+    updateResizingWidth,
+  ]);
+
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
 
   const { editorRef, pmmlParams, decisionNodeId } = useBoxedExpressionEditor();
 
@@ -244,19 +350,6 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     return r.original.entryInfo.id;
   }, []);
 
-  const contextExpressionContextValue = useMemo<ContextExpressionContextType>(() => {
-    // TODO: Tiago -> Make this depend on Function type
-    return {
-      entryExpressionsMinWidthGlobal: nestedExpressionContainer.minWidthGlobal - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
-      entryExpressionsMinWidthLocal: nestedExpressionContainer.minWidthLocal - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
-      entryExpressionsActualWidth: nestedExpressionContainer.actualWidth - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
-      entryExpressionsResizingWidth: {
-        value: nestedExpressionContainer.resizingWidth.value - CONTEXT_ENTRY_EXTRA_WIDTH + 2,
-        isPivoting: false,
-      },
-    };
-  }, [nestedExpressionContainer]);
-
   const onRowReset = useCallback(() => {
     setExpression((prev) => {
       if (functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel) {
@@ -275,7 +368,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
   }, [functionExpression.functionKind, setExpression]);
 
   return (
-    <ContextExpressionContext.Provider value={contextExpressionContextValue}>
+    <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`function-expression ${functionExpression.id}`}>
         <BeeTable
           operationConfig={beeTableOperationConfig}
@@ -293,6 +386,6 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
           shouldShowColumnsInlineControls={false}
         />
       </div>
-    </ContextExpressionContext.Provider>
+    </NestedExpressionContainerContext.Provider>
   );
 }

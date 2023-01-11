@@ -9,14 +9,9 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import {
-  NestedExpressionContainerContextType,
-  NestedExpressionContainerContext,
-} from "../../resizing/NestedExpressionContainerContext";
-import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useContextExpressionContext } from "../ContextExpression";
 import * as React from "react";
 import { ROWTYPE } from "./FunctionExpression";
 import { javaContextExpression } from "./JavaFunctionExpression";
@@ -74,21 +69,9 @@ export function FunctionDefinitionCell({ data, rowIndex }: BeeTableCellProps<ROW
     [i18n, setExpression]
   );
 
-  const contextExpression = useContextExpressionContext();
-  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
-    return {
-      minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
-      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
-      actualWidth: contextExpression.entryExpressionsActualWidth,
-      resizingWidth: contextExpression.entryExpressionsResizingWidth,
-    };
-  }, [contextExpression]);
-
   return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
-      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ExpressionContainer expression={data[rowIndex]?.entryExpression} isResetSupported={false} isHeadless={true} />
-      </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerContext.Provider>
+    <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+      <ExpressionContainer expression={data[rowIndex]?.entryExpression} isResetSupported={false} isHeadless={true} />
+    </NestedExpressionDispatchContextProvider>
   );
 }

@@ -10,6 +10,7 @@ import {
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
   DEFAULT_MIN_WIDTH,
+  FUNCTION_EXPRESSION_EXTRA_WIDTH,
   LIST_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
@@ -41,8 +42,14 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     // Function
   } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
-      return BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH - 1; // 1px for the missing entry info border
+      return (
+        Math.max(
+          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          ...[expression.expression].map((expression) => getExpressionMinWidth(expression))
+        ) + FUNCTION_EXPRESSION_EXTRA_WIDTH
+      );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
+      // TODO: Tiago -> Fix.
       return (
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
         CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
@@ -51,6 +58,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
         1
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
+      // TODO: Tiago -> Fix.
       return (
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
         CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
@@ -173,10 +181,18 @@ export function getExpressionResizingWidth(
   // Function
   else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
-      return getExpressionResizingWidth(expression.expression, resizingWidths) + CONTEXT_ENTRY_EXTRA_WIDTH - 1 + 1; // 1px for the missing entry info border, 1px for last-child border-right
+      return (
+        resizingWidth ??
+        Math.max(
+          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          ...[expression.expression].map((expression) => getExpressionResizingWidth(expression, resizingWidths))
+        ) + FUNCTION_EXPRESSION_EXTRA_WIDTH
+      );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
+      // TODO: Tiago -> Fix.
       return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 1;
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
+      // TODO: Tiago -> Fix.
       return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 1;
     } else {
       throw new Error("Should never get here");

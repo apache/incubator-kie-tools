@@ -80,9 +80,9 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(literalExpression.id!);
   const nestedExpressionContainer = useNestedExpressionContainer();
 
-  const minWidthGlobal = useMemo(() => {
+  const minWidth = useMemo(() => {
     return Math.max(
-      nestedExpressionContainer.minWidthGlobal - LITERAL_EXPRESSION_EXTRA_WIDTH,
+      nestedExpressionContainer.minWidth - LITERAL_EXPRESSION_EXTRA_WIDTH, //
       LITERAL_EXPRESSION_MIN_WIDTH
     );
   }, [nestedExpressionContainer]);
@@ -90,19 +90,18 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const beeTableRef = useRef<BeeTableRef>(null);
 
   useEffect(() => {
-    const COLUMN_INDEX = 1;
-
     if (isPivoting) {
       return;
     }
 
+    const COLUMN_INDEX = 1;
     beeTableRef.current?.updateResizingWidth(COLUMN_INDEX, (prev) => {
       return {
-        value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidthGlobal),
+        value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidth),
         isPivoting: prev?.isPivoting ?? false,
       };
     });
-  }, [isPivoting, minWidthGlobal, nestedExpressionContainer.resizingWidth.value]);
+  }, [isPivoting, minWidth, nestedExpressionContainer.resizingWidth.value]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -111,12 +110,12 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         label: literalExpression.name ?? "Expression Name",
         isRowIndexColumn: false,
         dataType: literalExpression.dataType,
-        minWidth: minWidthGlobal,
+        minWidth,
         width: literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
         setWidth,
       },
     ];
-  }, [literalExpression.dataType, literalExpression.name, literalExpression.width, minWidthGlobal, setWidth]);
+  }, [literalExpression.dataType, literalExpression.name, literalExpression.width, minWidth, setWidth]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return [{ "literal-expression": literalExpression.content ?? "" }];

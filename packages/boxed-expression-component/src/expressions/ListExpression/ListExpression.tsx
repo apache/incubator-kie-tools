@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -30,8 +30,19 @@ import {
   ListExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import {
+  NestedExpressionContainerContext,
+  NestedExpressionContainerContextType,
+} from "../../resizing/NestedExpressionContainerContext";
+import { useResizingWidths, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, LIST_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useNestedExpressionResizingWidth,
+  useNestedExpressionMinWidth,
+  useNestedExpressionActualWidth,
+} from "../ContextExpression";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
 
@@ -40,6 +51,98 @@ type ROWTYPE = ContextExpressionDefinitionEntry;
 export function ListExpression(listExpression: ListExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+
+  const nestedExpressions = useMemo(() => {
+    return listExpression.items;
+  }, [listExpression.items]);
+
+  const nonExistingInfoColumnWidth = 0;
+  const nonExistingInfoColumnMinWidth = 0;
+
+  const nonExistingInfoColumnResizingWidth = useMemo(
+    () => ({
+      value: nonExistingInfoColumnWidth,
+      isPivoting: false,
+    }),
+    []
+  );
+
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////// COPIED FROM ContextExpression.tsx ///////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+
+  //// RESIZING WIDTHS (begin)
+
+  const { resizingWidths } = useResizingWidths();
+  const isPivoting = useMemo<boolean>(() => {
+    return (
+      nonExistingInfoColumnResizingWidth.isPivoting ||
+      nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting)
+    );
+  }, [nonExistingInfoColumnResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
+
+  const itemExpressionsResizingWidthValue = useNestedExpressionResizingWidth(
+    isPivoting,
+    nestedExpressions,
+    nonExistingInfoColumnWidth,
+    nonExistingInfoColumnResizingWidth,
+    nonExistingInfoColumnMinWidth,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    LIST_EXPRESSION_EXTRA_WIDTH
+  );
+
+  const itemExpressionsMinWidth = useNestedExpressionMinWidth(
+    nestedExpressions,
+    nonExistingInfoColumnResizingWidth,
+    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+    LIST_EXPRESSION_EXTRA_WIDTH
+  );
+
+  const itemExpressionsActualWidth = useNestedExpressionActualWidth(
+    nestedExpressions,
+    nonExistingInfoColumnWidth,
+    LIST_EXPRESSION_EXTRA_WIDTH
+  );
+
+  const nestedExpressionContainerContextValue = useMemo<NestedExpressionContainerContextType>(() => {
+    return {
+      minWidth: itemExpressionsMinWidth,
+      actualWidth: itemExpressionsActualWidth,
+      resizingWidth: {
+        value: itemExpressionsResizingWidthValue,
+        isPivoting,
+      },
+    };
+  }, [itemExpressionsMinWidth, itemExpressionsActualWidth, itemExpressionsResizingWidthValue, isPivoting]);
+
+  const { updateResizingWidth } = useResizingWidthsDispatch();
+
+  useEffect(() => {
+    updateResizingWidth(listExpression.id!, (prev) => ({
+      value: nonExistingInfoColumnResizingWidth.value + itemExpressionsResizingWidthValue + LIST_EXPRESSION_EXTRA_WIDTH,
+      isPivoting,
+    }));
+  }, [
+    listExpression.id,
+    itemExpressionsResizingWidthValue,
+    nonExistingInfoColumnResizingWidth.value,
+    isPivoting,
+    updateResizingWidth,
+  ]);
+
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -150,23 +253,25 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
   );
 
   return (
-    <div className={`${listExpression.id} list-expression`}>
-      <BeeTable<ROWTYPE>
-        tableId={listExpression.id}
-        headerVisibility={beeTableHeaderVisibility}
-        cellComponentByColumnId={cellComponentByColumnId}
-        columns={beeTableColumns}
-        rows={beeTableRows}
-        operationConfig={beeTableOperationConfig}
-        getRowKey={getRowKey}
-        onRowAdded={onRowAdded}
-        onRowDeleted={onRowDeleted}
-        onRowReset={onRowReset}
-        onColumnUpdates={onColumnUpdates}
-        shouldRenderRowIndexColumn={true}
-        shouldShowRowsInlineControls={true}
-        shouldShowColumnsInlineControls={false}
-      />
-    </div>
+    <NestedExpressionContainerContext.Provider value={nestedExpressionContainerContextValue}>
+      <div className={`${listExpression.id} list-expression`}>
+        <BeeTable<ROWTYPE>
+          tableId={listExpression.id}
+          headerVisibility={beeTableHeaderVisibility}
+          cellComponentByColumnId={cellComponentByColumnId}
+          columns={beeTableColumns}
+          rows={beeTableRows}
+          operationConfig={beeTableOperationConfig}
+          getRowKey={getRowKey}
+          onRowAdded={onRowAdded}
+          onRowDeleted={onRowDeleted}
+          onRowReset={onRowReset}
+          onColumnUpdates={onColumnUpdates}
+          shouldRenderRowIndexColumn={true}
+          shouldShowRowsInlineControls={true}
+          shouldShowColumnsInlineControls={false}
+        />
+      </div>
+    </NestedExpressionContainerContext.Provider>
   );
 }

@@ -2,7 +2,7 @@ export const DEFAULT_MIN_WIDTH = 100;
 
 export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 
-// CONTEXT
+// CONTEXT + INVOCATION
 export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 120;
 export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 210;
 export const CONTEXT_ENTRY_EXTRA_WIDTH =
@@ -34,6 +34,8 @@ export const LIST_EXPRESSION_EXTRA_WIDTH =
   1 + // 1px for border-left of the only column
   1; // 1px for last-child border-right
 
-// INVOCATION
-
 // FUNCTION
+export const FUNCTION_EXPRESSION_EXTRA_WIDTH =
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
+  1 + // 1px for border-left of the only column
+  1; // 1px for last-child border-right

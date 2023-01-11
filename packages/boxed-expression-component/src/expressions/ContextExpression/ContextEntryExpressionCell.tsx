@@ -26,11 +26,6 @@ import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import {
-  NestedExpressionContainerContext,
-  NestedExpressionContainerContextType,
-} from "../../resizing/NestedExpressionContainerContext";
-import { useContextExpressionContext } from "./ContextExpression";
 import { useCallback, useMemo } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 
@@ -59,25 +54,13 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
     [rowIndex, setExpression]
   );
 
-  const contextExpression = useContextExpressionContext();
-  const nestedExpressionContainer = useMemo<NestedExpressionContainerContextType>(() => {
-    return {
-      minWidthLocal: contextExpression.entryExpressionsMinWidthLocal,
-      minWidthGlobal: contextExpression.entryExpressionsMinWidthGlobal,
-      actualWidth: contextExpression.entryExpressionsActualWidth,
-      resizingWidth: contextExpression.entryExpressionsResizingWidth,
-    };
-  }, [contextExpression]);
-
   return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainer}>
-      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ExpressionContainer
-          expression={contextEntries[rowIndex]?.entryExpression}
-          isResetSupported={true}
-          isHeadless={true}
-        />
-      </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerContext.Provider>
+    <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+      <ExpressionContainer
+        expression={contextEntries[rowIndex]?.entryExpression}
+        isResetSupported={true}
+        isHeadless={true}
+      />
+    </NestedExpressionDispatchContextProvider>
   );
 };
