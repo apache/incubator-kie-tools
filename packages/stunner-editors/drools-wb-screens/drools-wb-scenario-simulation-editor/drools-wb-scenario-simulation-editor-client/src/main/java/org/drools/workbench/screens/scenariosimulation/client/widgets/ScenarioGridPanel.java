@@ -103,7 +103,7 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
 
     @Override
     public void onNodeMouseWheel(NodeMouseWheelEvent nodeMouseWheelEvent) {
-        getScenarioGrid().getModel().destroyAllTextAreaDOMElementFactoryResources();
+        getScenarioGrid().getModel().flushAllTextAreaDOMElementFactoryResources();
     }
 
     @Override
