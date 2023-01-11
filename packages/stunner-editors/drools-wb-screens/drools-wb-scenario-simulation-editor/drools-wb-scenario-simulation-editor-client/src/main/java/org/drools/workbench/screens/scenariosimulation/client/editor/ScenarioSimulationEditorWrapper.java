@@ -89,10 +89,8 @@ public interface ScenarioSimulationEditorWrapper {
                 break;
             case CheatSheetPresenter.IDENTIFIER:
                 CheatSheetView.Presenter cheatSheetPresenter = getScenarioSimulationDocksHandler().getCheatSheetPresenter();
-                if (!cheatSheetPresenter.isCurrentlyShow(getScenarioSimulationEditorPresenter().getPath())) {
-                    getScenarioSimulationEditorPresenter().setCheatSheet(cheatSheetPresenter);
-                    cheatSheetPresenter.setCurrentPath(getScenarioSimulationEditorPresenter().getPath());
-                }
+                getScenarioSimulationEditorPresenter().setCheatSheet(cheatSheetPresenter);
+                cheatSheetPresenter.setCurrentPath(getScenarioSimulationEditorPresenter().getPath());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid identifier");

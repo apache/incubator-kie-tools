@@ -466,7 +466,6 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                 scenarioSimulationBuilder.populateScenarioSimulationModelRULE("",
                                                                               this::onModelSuccessCallbackMethod);
             }
-            ensureScenarioGridIsSet();
         };
     }
 
