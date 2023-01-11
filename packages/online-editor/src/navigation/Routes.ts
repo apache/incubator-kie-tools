@@ -24,6 +24,7 @@ export enum QueryParams {
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
   CONFIRM = "confirm",
+  DMN_RUNNER_IS_OPEN = "runnerIsOpen",
 }
 
 export enum PathParams {
@@ -81,6 +82,7 @@ export class Route<
 export interface QueryParamsImpl<Q extends string> {
   has(name: Q): boolean;
   get(name: Q): string | undefined;
+  getBoolean(name: Q): boolean | undefined;
   with(name: Q, value: string | undefined): QueryParamsImpl<Q>;
   without(name: Q): QueryParamsImpl<Q>;
   toString(): string;
@@ -92,6 +94,15 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
     get: (name) => {
       const val = new URLSearchParams(queryString).get(name);
       return !val ? undefined : decodeURIComponent(val);
+    },
+    getBoolean: (name) => {
+      const val = new URLSearchParams(queryString).get(name);
+      if (val === "false") {
+        return false;
+      } else if (val === "true") {
+        return true;
+      }
+      return undefined;
     },
     with: (name, value) => {
       const urlSearchParams = new URLSearchParams(queryString);
@@ -124,7 +135,11 @@ export const routes = {
    * Use import instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
-    queryParams: QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
+    queryParams:
+      | QueryParams.URL
+      | QueryParams.SETTINGS
+      | QueryParams.DMN_RUNNER_FORM_INPUTS
+      | QueryParams.DMN_RUNNER_IS_OPEN;
   }>(({ extension }) => `/editor/${extension}`),
 
   newModel: new Route<{

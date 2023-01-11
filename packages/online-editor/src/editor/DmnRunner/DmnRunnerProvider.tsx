@@ -218,13 +218,19 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   ]);
 
   useEffect(() => {
+    if (queryParams.has(QueryParams.DMN_RUNNER_IS_OPEN)) {
+      const isOpen = queryParams.getBoolean(QueryParams.DMN_RUNNER_IS_OPEN);
+      if (isOpen !== undefined) {
+        setExpanded(isOpen);
+      }
+    }
+
     if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
       return;
     }
 
     try {
       setInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
-      setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
     } finally {
@@ -234,6 +240,18 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       });
     }
   }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile]);
+
+  useEffect(() => {
+    if () {
+      return;
+    }
+
+    try {
+      setExpanded(!!queryParams.get(QueryParams.DMN_RUNNER_IS_OPEN));
+    } catch (e) {
+      console.error(`Cannot parse "${QueryParams.DMN_RUNNER_IS_OPEN}"`, e)
+    }
+  }, [queryParams])
 
   const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
   useEffect(() => {
