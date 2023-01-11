@@ -293,7 +293,12 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorKogitoWrapperSpy, never()).showScenarioSimulationCreationPopup(any());
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).gotoPath(pathArgumentCaptor.capture());
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).unmarshallContent("value");
+        verify(errorPageMock).setErrorContent("Error message");
+        verify(errorPageMock).setTitle(ScenarioSimulationEditorConstants.INSTANCE.scenarioParsingError());
+        verify(errorPageMock).setContent(ScenarioSimulationEditorConstants.INSTANCE.scenarioParsingErrorContent());
         verify(scenarioSimulationViewMock).setContentWidget(errorPageMock);
+        verify(scenarioSimulationEditorPresenterMock, times(1)).hideDocks();
+        verify(multiPageEditorMock, times(1)).setTabBarVisible(false);
         verify(rejectCallbackFnMock, times(1)).onInvoke("Error message");
     }
 
@@ -338,7 +343,9 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorPresenterMock, times(1)).setPackageName(ScenarioSimulationEditorKogitoWrapper.DEFAULT_PACKAGE);
         verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(dataManagementStrategyCaptor.capture(), eq(scenarioSimulationModelMock));
         assertTrue(dataManagementStrategyCaptor.getValue() instanceof KogitoDMODataManagementStrategy);
+        verify(scenarioSimulationViewMock, times(1)).setScenarioGridWidgetAsContent();
         verify(scenarioSimulationEditorPresenterMock, times(1)).showDocks();
+        verify(multiPageEditorMock, times(1)).setTabBarVisible(true);
     }
 
     @Test
@@ -350,8 +357,9 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorPresenterMock, times(1)).setPackageName(ScenarioSimulationEditorKogitoWrapper.DEFAULT_PACKAGE);
         verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(dataManagementStrategyCaptor.capture(), eq(scenarioSimulationModelMock));
         assertTrue(dataManagementStrategyCaptor.getValue() instanceof KogitoDMNDataManagementStrategy);
+        verify(scenarioSimulationViewMock, times(1)).setScenarioGridWidgetAsContent();
         verify(scenarioSimulationEditorPresenterMock, times(1)).showDocks();
-    }
+        verify(multiPageEditorMock, times(1)).setTabBarVisible(true);    }
 
     @Test
     public void addBackgroundPage() {
