@@ -41,7 +41,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -167,7 +166,18 @@ public class TabPanelWithDropdownsTest {
 
         tabPanel.addTabBarWidget(widget);
 
-        verify(tabBarWidgetsPanel).add(eq(widget));
-        verify(tabBarWidgetsPanel).setCellHorizontalAlignment(eq(widget), eq(endOf(LTR)));
+        verify(tabBarWidgetsPanel).add(widget);
+        verify(tabBarWidgetsPanel).setCellHorizontalAlignment(widget, endOf(LTR));
     }
+
+    @Test
+    public void test() {
+        final NavTabs tabBar = mock(NavTabs.class);
+        doReturn(tabBar).when(tabPanel).getTabBar();
+
+        tabPanel.setTabBarVisible(false);
+
+        verify(tabBar).setVisible(false);
+    }
+
 }
