@@ -2,13 +2,21 @@ export const DEFAULT_MIN_WIDTH = 100;
 
 export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 
-// CONTEXT + INVOCATION
+// CONTEXT
 export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 120;
 export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 210;
-export const CONTEXT_ENTRY_EXTRA_WIDTH =
+export const CONTEXT_EXPRESSION_EXTRA_WIDTH =
+  1 + // 1px border-left
+  2 + // 1px for each column border-left and border-right
+  1; // 1px for contextExpression column border-right
+
+// INVOCATION
+export const INVOCATION_PARAMETER_MIN_WIDTH = 120;
+export const INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH = 210;
+export const INVOCATION_EXTRA_WIDTH =
   1 + // 1px border-left
   2 + // 1px for each contextExpression column border-left and border-right
-  1; // 1px for contextInfo column border-right
+  1; // 1px for argumentExpression column border-right
 
 // DECISION TABLE
 export const DECISION_TABLE_INPUT_MIN_WIDTH = 100;

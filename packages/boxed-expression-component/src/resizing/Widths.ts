@@ -4,7 +4,7 @@ import { ResizingWidth } from "../resizing/ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_EXTRA_WIDTH,
+  CONTEXT_EXPRESSION_EXTRA_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
   DECISION_TABLE_INPUT_MIN_WIDTH,
@@ -29,14 +29,14 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     return (
       CONTEXT_ENTRY_INFO_MIN_WIDTH +
       Math.max(CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
-      CONTEXT_ENTRY_EXTRA_WIDTH
+      CONTEXT_EXPRESSION_EXTRA_WIDTH
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     const nestedExpressions = (expression.bindingEntries ?? []).map((e) => e.entryExpression);
     return (
       CONTEXT_ENTRY_INFO_MIN_WIDTH +
       Math.max(CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
-      CONTEXT_ENTRY_EXTRA_WIDTH
+      CONTEXT_EXPRESSION_EXTRA_WIDTH
     );
 
     // Function
@@ -54,7 +54,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
         CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
         CONTEXT_ENTRY_INFO_MIN_WIDTH +
-        CONTEXT_ENTRY_EXTRA_WIDTH * 2 -
+        CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 -
         1
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
@@ -63,7 +63,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
         CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
         CONTEXT_ENTRY_INFO_MIN_WIDTH +
-        CONTEXT_ENTRY_EXTRA_WIDTH * 2 -
+        CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 -
         1
       );
     } else {
@@ -163,7 +163,7 @@ export function getExpressionResizingWidth(
           CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths))
         ) +
-        CONTEXT_ENTRY_EXTRA_WIDTH
+        CONTEXT_EXPRESSION_EXTRA_WIDTH
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     const nestedExpressions = (expression.bindingEntries ?? []).map((e) => e.entryExpression);
@@ -174,7 +174,7 @@ export function getExpressionResizingWidth(
           CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths))
         ) +
-        CONTEXT_ENTRY_EXTRA_WIDTH
+        CONTEXT_EXPRESSION_EXTRA_WIDTH
     );
   }
 
@@ -190,10 +190,10 @@ export function getExpressionResizingWidth(
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
       // TODO: Tiago -> Fix.
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 1;
+      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 - 1;
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
       // TODO: Tiago -> Fix.
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_ENTRY_EXTRA_WIDTH * 2 - 1;
+      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 - 1;
     } else {
       throw new Error("Should never get here");
     }

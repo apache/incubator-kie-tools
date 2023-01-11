@@ -16,7 +16,7 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -32,29 +32,21 @@ import {
 } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import {
-  NestedExpressionContainerContext,
-  NestedExpressionContainerContextType,
-} from "../../resizing/NestedExpressionContainerContext";
-import { useResizingWidths, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
-import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, LIST_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthValues";
+import { useNestedExpressionContainerWidthNestedExpressions } from "../../resizing/Hooks";
+import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
+import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, FUNCTION_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthValues";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import {
-  useNestedExpressionActualWidth,
-  useNestedExpressionMinWidth,
-  useNestedExpressionResizingWidth,
-} from "../ContextExpression";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 import { FunctionDefinitionCell } from "./FunctionDefinitionCell";
-import "./FunctionExpression.css";
 import { FunctionKindSelector } from "./FunctionKindSelector";
 import { javaContextExpression } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
 import { pmmlContextExpression } from "./PmmlFunctionExpression";
+import "./FunctionExpression.css";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
@@ -70,98 +62,28 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
       : undefined;
   }, [functionExpression]);
 
+  /// //////////////////////////////////////////////////////
+  /// ///////////// RESIZING WIDTHS ////////////////////////
+  /// //////////////////////////////////////////////////////
+
   const nestedExpressions = useMemo(() => {
     return nestedFeelExpression ? [nestedFeelExpression] : [];
   }, [nestedFeelExpression]);
 
-  const nonExistingInfoColumnWidth = 0;
-  const nonExistingInfoColumnMinWidth = 0;
-
-  const nonExistingInfoColumnResizingWidth = useMemo(
-    () => ({
-      value: nonExistingInfoColumnWidth,
-      isPivoting: false,
-    }),
-    []
+  const { nestedExpressionContainerValue } = useNestedExpressionContainerWidthNestedExpressions(
+    useMemo(() => {
+      return {
+        nestedExpressions,
+        fixedColumnWidth: 0,
+        fixedColumnResizingWidth: { value: 0, isPivoting: false },
+        fixedColumnMinWidth: 0,
+        nestedExpressionMin: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        extraWidth: FUNCTION_EXPRESSION_EXTRA_WIDTH,
+        id: functionExpression.id,
+      };
+    }, [nestedExpressions, functionExpression.id])
   );
 
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////// COPIED FROM ContextExpression.tsx ///////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-
-  //// RESIZING WIDTHS (begin)
-
-  const { resizingWidths } = useResizingWidths();
-  const isPivoting = useMemo<boolean>(() => {
-    return (
-      nonExistingInfoColumnResizingWidth.isPivoting ||
-      nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting)
-    );
-  }, [nonExistingInfoColumnResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
-
-  const itemExpressionsResizingWidthValue = useNestedExpressionResizingWidth(
-    isPivoting,
-    nestedExpressions,
-    nonExistingInfoColumnWidth,
-    nonExistingInfoColumnResizingWidth,
-    nonExistingInfoColumnMinWidth,
-    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-    LIST_EXPRESSION_EXTRA_WIDTH
-  );
-
-  const itemExpressionsMinWidth = useNestedExpressionMinWidth(
-    nestedExpressions,
-    nonExistingInfoColumnResizingWidth,
-    CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-    LIST_EXPRESSION_EXTRA_WIDTH
-  );
-
-  const itemExpressionsActualWidth = useNestedExpressionActualWidth(
-    nestedExpressions,
-    nonExistingInfoColumnWidth,
-    LIST_EXPRESSION_EXTRA_WIDTH
-  );
-
-  const nestedExpressionContainerValue = useMemo<NestedExpressionContainerContextType>(() => {
-    return {
-      minWidth: itemExpressionsMinWidth,
-      actualWidth: itemExpressionsActualWidth,
-      resizingWidth: {
-        value: itemExpressionsResizingWidthValue,
-        isPivoting,
-      },
-    };
-  }, [itemExpressionsMinWidth, itemExpressionsActualWidth, itemExpressionsResizingWidthValue, isPivoting]);
-
-  console.info(nestedExpressionContainerValue);
-
-  const { updateResizingWidth } = useResizingWidthsDispatch();
-
-  useEffect(() => {
-    updateResizingWidth(functionExpression.id!, (prev) => ({
-      value: nonExistingInfoColumnResizingWidth.value + itemExpressionsResizingWidthValue + LIST_EXPRESSION_EXTRA_WIDTH,
-      isPivoting,
-    }));
-  }, [
-    functionExpression.id,
-    itemExpressionsResizingWidthValue,
-    nonExistingInfoColumnResizingWidth.value,
-    isPivoting,
-    updateResizingWidth,
-  ]);
-
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
-  /// //////////////////////////////////////////////////////
   /// //////////////////////////////////////////////////////
 
   const { editorRef, pmmlParams, decisionNodeId } = useBoxedExpressionEditor();
