@@ -173,7 +173,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
         if (outputClausesRequirement.isEmpty()) {
             dTable.getOutput().add(
-                    buildOutputClause(dTable, typeRef, name, null)
+                    buildOutputClause(dTable, typeRef, name, null, null)
             );
             populateOutputEntries(decisionRule);
         } else {
@@ -183,7 +183,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                     .map(outputClauseRequirement -> buildOutputClause(dTable,
                                                                       outputClauseRequirement.typeRef,
                                                                       outputClauseRequirement.text,
-                                                                      outputClauseRequirement.constraintValue))
+                                                                      outputClauseRequirement.constraintValue,
+                                                                      outputClauseRequirement.constraintType))
                     .forEach(outputClause -> {
                         dTable.getOutput().add(outputClause);
                         populateOutputEntries(decisionRule);
@@ -246,13 +247,16 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                         .noneMatch(typeRefIsCustom(typeRef));
     }
 
-    private OutputClause buildOutputClause(final DecisionTable dtable, final QName typeRef, final String text, final String constraintValue) {
+    private OutputClause buildOutputClause(final DecisionTable dtable, final QName typeRef, final String text, final String constraintValue, final ConstraintType constraintType) {
         final OutputClause outputClause = new OutputClause();
         outputClause.setName(text);
         outputClause.setTypeRef(typeRef);
         final OutputClauseUnaryTests ocUnaryTests = new OutputClauseUnaryTests();
         if (constraintValue != null) {
             ocUnaryTests.setText(new Text(constraintValue));
+        }
+        if (constraintType != null) {
+            ocUnaryTests.setConstraintTypeField(constraintType);
         }
         outputClause.setOutputValues(ocUnaryTests);
         outputClause.setParent(dtable);
