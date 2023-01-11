@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { QuickStartContext } from "@patternfly/quickstarts";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Modal, ModalVariant } from "@patternfly/react-core";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -29,7 +29,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 
@@ -52,7 +52,7 @@ enum GitHubTokenScope {
 export function GitHubSettings() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const qsContext = useContext(QuickStartContext);
+  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
   const [isGitHubTokenValid, setIsGitHubTokenValid] = useState(true);
@@ -71,10 +71,6 @@ export function GitHubSettings() {
     return obfuscate(potentialGitHubToken ?? settings.github.token) ?? "";
   }, [settings.github, potentialGitHubToken]);
 
-  useEffect(() => {
-    tokenInput.current?.focus();
-  }, [isModalOpen, settings.github.authStatus]);
-
   const handleModalToggle = useCallback(() => {
     setPotentialGitHubToken(undefined);
     setIsGitHubTokenValid(true);
@@ -87,10 +83,7 @@ export function GitHubSettings() {
       setPotentialGitHubToken(token);
       settingsDispatch.github.authService
         .authenticate(token)
-        .then(() => {
-          setIsGitHubTokenValid(false);
-          handleModalToggle();
-        })
+        .then(() => handleModalToggle())
         .catch(() => setIsGitHubTokenValid(false));
     },
     [settingsDispatch.github.authService, handleModalToggle]
@@ -221,7 +214,7 @@ export function GitHubSettings() {
                 validated={githubTokenValidated}
                 value={githubTokenToDisplay}
                 onPaste={onPasteGitHubToken}
-                tabIndex={0}
+                tabIndex={1}
               />
             </InputGroup>
           </FormGroup>

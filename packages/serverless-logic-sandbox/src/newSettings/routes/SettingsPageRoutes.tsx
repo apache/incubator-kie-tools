@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { GitHubSettings } from "../github/GitHubSettings";
 import { KieSandboxExtendedServicesSettings } from "../extendedServices/KieSandboxExtendedServicesSettings";
-import { FeaturePreviewSettingsTab } from "../../settings/featurePreview/FeaturePreviewSettingsTab";
-import { ApacheKafkaSettingsTab } from "../../settings/kafka/ApacheKafkaSettingsTab";
-import { OpenShiftSettingsTab } from "../../settings/openshift/OpenShiftSettingsTab";
-import { ServiceAccountSettingsTab } from "../../settings/serviceAccount/ServiceAccountSettingsTab";
-import { ServiceRegistrySettingsTab } from "../../settings/serviceRegistry/ServiceRegistrySettingsTab";
+import { FeaturePreviewSettings } from "../featurePreview/FeaturePreviewSettings";
+import { ApacheKafkaSettings } from "../kafka/ApacheKafkaSettings";
+import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
+import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
+import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
 
 export function SettingsPageRoutes() {
   const routes = useRoutes();
@@ -37,19 +37,19 @@ export function SettingsPageRoutes() {
         <KieSandboxExtendedServicesSettings />
       </Route>
       <Route path={routes.settings.openshift.path({})}>
-        <OpenShiftSettingsTab />
+        <OpenShiftSettings />
       </Route>
       <Route path={routes.settings.service_account.path({})}>
-        <ServiceAccountSettingsTab />
+        <ServiceAccountSettings />
       </Route>
       <Route path={routes.settings.service_registry.path({})}>
-        <ServiceRegistrySettingsTab />
+        <ServiceRegistrySettings />
       </Route>
       <Route path={routes.settings.kafka.path({})}>
-        <ApacheKafkaSettingsTab />
+        <ApacheKafkaSettings />
       </Route>
       <Route path={routes.settings.feature_preview.path({})}>
-        <FeaturePreviewSettingsTab />
+        <FeaturePreviewSettings />
       </Route>
       <Route>
         <Redirect to={routes.settings.github.path({})} />

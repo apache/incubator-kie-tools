@@ -73,199 +73,201 @@ export function KieSandboxExtendedServicesSettings() {
   }, []);
 
   return (
-    <>
-      <Page>
-        <PageSection variant={"light"} isWidthLimited>
-          <TextContent>
-            <Text component={TextVariants.h1}>KIE Sandbox Extended Services</Text>
-            <Text component={TextVariants.p}>
-              Data you provide here is necessary for proxying Serverless Logic Web Tools requests to OpenShift, thus
-              making it possible to deploy models.
-              <br /> All information is locally stored in your browser and never shared with anyone.
-            </Text>
-          </TextContent>
-        </PageSection>
+    <Page>
+      <PageSection variant={"light"} isWidthLimited>
+        <TextContent>
+          <Text component={TextVariants.h1}>KIE Sandbox Extended Services</Text>
+          <Text component={TextVariants.p}>
+            Data you provide here is necessary for proxying Serverless Logic Web Tools requests to OpenShift, thus
+            making it possible to deploy models.
+            <br /> All information is locally stored in your browser and never shared with anyone.
+          </Text>
+        </TextContent>
+      </PageSection>
 
-        <PageSection isFilled>
-          <PageSection variant={"light"}>
-            {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
+      <PageSection isFilled>
+        <PageSection variant={"light"}>
+          {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
+            <EmptyState>
+              <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+              <TextContent>
+                <Text component={"h2"}>You are connect to the KIE Sandbox Extended Services.</Text>
+              </TextContent>
+              <EmptyStateBody>
+                Deploying models is <b>enabled</b>.
+                <br />
+                <b>URL: </b>
+                <i>{config.buildUrl()}</i>
+                <br />
+                <br />
+                <Button variant={ButtonVariant.secondary} onClick={onReset}>
+                  Reset
+                </Button>
+              </EmptyStateBody>
+            </EmptyState>
+          ) : (
+            <>
               <EmptyState>
-                <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+                <EmptyStateIcon icon={AddCircleOIcon} />
                 <TextContent>
-                  <Text component={"h2"}>You are connect to the KIE Sandbox Extended Services.</Text>
+                  <Text component={"h2"}>You are not connected to KIE Sandbox Extended Services.</Text>
                 </TextContent>
                 <EmptyStateBody>
-                  Deploying models is <b>enabled</b>.
+                  You currently have no KIE Sandbox Extended Services connections.{" "}
+                  <a
+                    onClick={() => {
+                      kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
+                      kieSandboxExtendedServices.setModalOpen(true);
+                    }}
+                  >
+                    Click to setup
+                  </a>
                   <br />
-                  <b>URL: </b>
-                  <i>{config.buildUrl()}</i>
                   <br />
-                  <br />
-                  <Button variant={ButtonVariant.secondary} onClick={onReset}>
-                    Reset
+                  <Button
+                    variant={ButtonVariant.primary}
+                    onClick={handleModalToggle}
+                    data-testid="add-connection-button"
+                  >
+                    Add connection
                   </Button>
                 </EmptyStateBody>
               </EmptyState>
-            ) : (
-              <>
-                <EmptyState>
-                  <EmptyStateIcon icon={AddCircleOIcon} />
-                  <TextContent>
-                    <Text component={"h2"}>You are not connected to KIE Sandbox Extended Services.</Text>
-                  </TextContent>
-                  <EmptyStateBody>
-                    You currently have no KIE Sandbox Extended Services connection.{" "}
-                    <a
-                      onClick={() => {
-                        kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
-                        kieSandboxExtendedServices.setModalOpen(true);
-                      }}
-                    >
-                      Click to setup
-                    </a>
-                    <br />
-                    <br />
-                    <Button
-                      variant={ButtonVariant.primary}
-                      onClick={handleModalToggle}
-                      data-testid="add-connection-button"
-                    >
-                      Add connection
-                    </Button>
-                  </EmptyStateBody>
-                </EmptyState>
-              </>
-            )}
-          </PageSection>
+            </>
+          )}
         </PageSection>
+      </PageSection>
 
-        <Modal
-          title="Add connection"
-          isOpen={isModalOpen && kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
-          onClose={handleModalToggle}
-          variant={ModalVariant.large}
-        >
-          <Form>
-            <FormAlert>
-              <Alert
-                variant="danger"
-                title={
-                  <Text>
-                    You are not connected to KIE Sandbox Extended Services.{" "}
-                    <a
-                      onClick={() => {
-                        kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
-                        kieSandboxExtendedServices.setModalOpen(true);
-                      }}
-                    >
-                      Click to setup
-                    </a>
-                  </Text>
-                }
-                aria-live="polite"
-                isInline
-              />
-            </FormAlert>
-            <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-              <FormGroup
-                label={"Host"}
-                labelIcon={
-                  <Popover bodyContent={"The host associated with the KIE Sandbox Extended Services URL instance."}>
-                    <button
-                      type="button"
-                      aria-label="More info for host field"
-                      onClick={(e) => e.preventDefault()}
-                      aria-describedby="host-server-field"
-                      className="pf-c-form__group-label-help"
-                    >
-                      <HelpIcon noVerticalAlign />
-                    </button>
-                  </Popover>
-                }
-                isRequired
-                fieldId="host-server-field"
-              >
-                <InputGroup className="pf-u-mt-sm">
-                  <TextInput
-                    autoComplete={"off"}
-                    isRequired
-                    type="text"
-                    id="host-server-field"
-                    name="host-server-field"
-                    aria-label="Host field"
-                    aria-describedby="host-server-field-helper"
-                    value={config.host}
-                    onChange={onHostChanged}
-                    tabIndex={1}
-                    data-testid="host-text-field"
-                  />
-                  <InputGroupText>
-                    <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
-                      <TimesIcon />
-                    </Button>
-                  </InputGroupText>
-                </InputGroup>
-              </FormGroup>
-              <FormGroup
-                label={"Port"}
-                labelIcon={
-                  <Popover
-                    bodyContent={"The port number associated with the KIE Sandbox Extended Services URL instance."}
+      <Modal
+        title="Add connection"
+        isOpen={
+          isModalOpen &&
+          kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING &&
+          !kieSandboxExtendedServices.isModalOpen
+        }
+        onClose={handleModalToggle}
+        variant={ModalVariant.large}
+      >
+        <Form>
+          <FormAlert>
+            <Alert
+              variant="danger"
+              title={
+                <Text>
+                  You are not connected to KIE Sandbox Extended Services.{" "}
+                  <a
+                    onClick={() => {
+                      kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
+                      kieSandboxExtendedServices.setModalOpen(true);
+                    }}
                   >
-                    <button
-                      type="button"
-                      aria-label="More info for port field"
-                      onClick={(e) => e.preventDefault()}
-                      aria-describedby="port-field"
-                      className="pf-c-form__group-label-help"
-                    >
-                      <HelpIcon noVerticalAlign />
-                    </button>
-                  </Popover>
-                }
-                isRequired
-                fieldId="port-field"
-              >
-                <InputGroup className="pf-u-mt-sm">
-                  <TextInput
-                    autoComplete={"off"}
-                    isRequired
-                    type="text"
-                    id="port-field"
-                    name="port-field"
-                    aria-label="Port field"
-                    aria-describedby="port-field-helper"
-                    value={config.port}
-                    onChange={onPortChanged}
-                    tabIndex={2}
-                    data-testid="port-text-field"
-                  />
-                  <InputGroupText>
-                    <Button isSmall variant="plain" aria-label="Clear port button" onClick={onClearPort}>
-                      <TimesIcon />
-                    </Button>
-                  </InputGroupText>
-                </InputGroup>
-              </FormGroup>
-              <ActionGroup>
-                <Button
-                  isDisabled={!isCurrentConfigValid}
-                  id="kie-sandbox-extended-services-config-connect-button"
-                  key="connect"
-                  variant="primary"
-                  onClick={onConnect}
-                  data-testid="connect-config-button"
+                    Click to setup
+                  </a>
+                </Text>
+              }
+              aria-live="polite"
+              isInline
+            />
+          </FormAlert>
+          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+            <FormGroup
+              label={"Host"}
+              labelIcon={
+                <Popover bodyContent={"The host associated with the KIE Sandbox Extended Services URL instance."}>
+                  <button
+                    type="button"
+                    aria-label="More info for host field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="host-server-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="host-server-field"
+            >
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="host-server-field"
+                  name="host-server-field"
+                  aria-label="Host field"
+                  aria-describedby="host-server-field-helper"
+                  value={config.host}
+                  onChange={onHostChanged}
+                  tabIndex={1}
+                  data-testid="host-text-field"
+                />
+                <InputGroupText>
+                  <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+            <FormGroup
+              label={"Port"}
+              labelIcon={
+                <Popover
+                  bodyContent={"The port number associated with the KIE Sandbox Extended Services URL instance."}
                 >
-                  Connect
-                </Button>
-                <Button key="cancel" variant="link" onClick={handleModalToggle} data-testid="connect-cancel-button">
-                  Connect
-                </Button>
-              </ActionGroup>
-            </PageSection>
-          </Form>
-        </Modal>
-      </Page>
-    </>
+                  <button
+                    type="button"
+                    aria-label="More info for port field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="port-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="port-field"
+            >
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="port-field"
+                  name="port-field"
+                  aria-label="Port field"
+                  aria-describedby="port-field-helper"
+                  value={config.port}
+                  onChange={onPortChanged}
+                  tabIndex={2}
+                  data-testid="port-text-field"
+                />
+                <InputGroupText>
+                  <Button isSmall variant="plain" aria-label="Clear port button" onClick={onClearPort}>
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+            <ActionGroup>
+              <Button
+                isDisabled={!isCurrentConfigValid}
+                id="kie-sandbox-extended-services-config-connect-button"
+                key="connect"
+                variant="primary"
+                onClick={onConnect}
+                data-testid="connect-config-button"
+              >
+                Connect
+              </Button>
+              <Button key="cancel" variant="link" onClick={handleModalToggle} data-testid="connect-cancel-button">
+                Connect
+              </Button>
+            </ActionGroup>
+          </PageSection>
+        </Form>
+      </Modal>
+    </Page>
   );
 }
