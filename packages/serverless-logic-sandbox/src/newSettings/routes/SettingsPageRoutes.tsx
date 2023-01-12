@@ -26,12 +26,12 @@ import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
 
-export function SettingsPageRoutes() {
+export function SettingsPageRoutes(props: { pageContainerRef?: React.RefObject<HTMLDivElement> }) {
   const routes = useRoutes();
   return (
     <Switch>
       <Route path={routes.settings.github.path({})}>
-        <GitHubSettings />
+        <GitHubSettings pageContainerRef={props.pageContainerRef} />
       </Route>
       <Route path={routes.settings.kie_sandbox_extended_services.path({})}>
         <KieSandboxExtendedServicesSettings />

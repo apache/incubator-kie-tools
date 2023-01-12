@@ -49,7 +49,7 @@ enum GitHubTokenScope {
   REPO = "repo",
 }
 
-export function GitHubSettings() {
+export function GitHubSettings(props: { pageContainerRef?: React.RefObject<HTMLDivElement> }) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
@@ -181,55 +181,58 @@ export function GitHubSettings() {
         </PageSection>
       </PageSection>
 
-      <Modal
-        title="Create new token"
-        isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
-        onClose={handleModalToggle}
-        variant={ModalVariant.large}
-      >
-        <Form onSubmit={(e) => e.preventDefault()}>
-          <h3>
-            <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
-              Create a new token&nbsp;&nbsp;
-              <ExternalLinkAltIcon />
-            </a>
-          </h3>
-          <FormGroup
-            isRequired={true}
-            helperTextInvalid={githubTokenHelperText}
-            validated={githubTokenValidated}
-            label={"Token"}
-            fieldId={"github-pat"}
-            helperText={"Your token must include the 'repo' scope."}
-          >
-            <InputGroup>
-              <TextInput
-                ref={tokenInput}
-                autoComplete={"off"}
-                id="token-input"
-                name="tokenInput"
-                aria-describedby="token-text-input-helper"
-                placeholder={"Paste your GitHub token here"}
-                maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-                validated={githubTokenValidated}
-                value={githubTokenToDisplay}
-                onPaste={onPasteGitHubToken}
-                tabIndex={1}
-              />
-            </InputGroup>
-          </FormGroup>
-          <Button
-            isInline={true}
-            key="quickstart"
-            variant="link"
-            onClick={() => {
-              qsContext.setActiveQuickStartID?.("github");
-            }}
-          >
-            Need help getting started? Follow our quickstart guide.
-          </Button>
-        </Form>
-      </Modal>
+      {props.pageContainerRef?.current && (
+        <Modal
+          title="Create new token"
+          isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
+          onClose={handleModalToggle}
+          variant={ModalVariant.large}
+          appendTo={props.pageContainerRef.current || document.body}
+        >
+          <Form onSubmit={(e) => e.preventDefault()}>
+            <h3>
+              <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
+                Create a new token&nbsp;&nbsp;
+                <ExternalLinkAltIcon />
+              </a>
+            </h3>
+            <FormGroup
+              isRequired={true}
+              helperTextInvalid={githubTokenHelperText}
+              validated={githubTokenValidated}
+              label={"Token"}
+              fieldId={"github-pat"}
+              helperText={"Your token must include the 'repo' scope."}
+            >
+              <InputGroup>
+                <TextInput
+                  ref={tokenInput}
+                  autoComplete={"off"}
+                  id="token-input"
+                  name="tokenInput"
+                  aria-describedby="token-text-input-helper"
+                  placeholder={"Paste your GitHub token here"}
+                  maxLength={GITHUB_OAUTH_TOKEN_SIZE}
+                  validated={githubTokenValidated}
+                  value={githubTokenToDisplay}
+                  onPaste={onPasteGitHubToken}
+                  tabIndex={1}
+                />
+              </InputGroup>
+            </FormGroup>
+            <Button
+              isInline={true}
+              key="quickstart"
+              variant="link"
+              onClick={() => {
+                qsContext.setActiveQuickStartID?.("github");
+              }}
+            >
+              Need help getting started? Follow our quickstart guide.
+            </Button>
+          </Form>
+        </Modal>
+      )}
     </Page>
   );
 }

@@ -664,3 +664,11 @@ section.kie-tools--settings-tab {
   text-align: left;
   font-size: 17px;
 }
+
+#page-container {
+  height: 100%;
+}
+
+#page-container .pf-c-backdrop {
+  position: absolute !important;
+}

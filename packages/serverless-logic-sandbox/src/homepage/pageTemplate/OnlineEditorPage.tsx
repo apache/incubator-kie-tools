@@ -44,7 +44,9 @@ import * as GitHubQuickStart from "../../quickstarts-data/GitHub.json";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 
-export function OnlineEditorPage(props: { children?: React.ReactNode }) {
+export type OnlineEditorPageProps = { children?: React.ReactNode; pageContainerRef: React.RefObject<HTMLDivElement> };
+
+export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const history = useHistory();
   const routes = useRoutes();
   const [isNavOpen, setIsNavOpen] = useState(true);
@@ -133,9 +135,11 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
 
   return (
     <QuickStartContainer {...drawerProps}>
-      <Page header={masthead} sidebar={sidebar} skipToContent={pageSkipToContent} mainContainerId={mainContainerId}>
-        {props.children}
-      </Page>
+      <div id="page-container" ref={props.pageContainerRef}>
+        <Page header={masthead} sidebar={sidebar} skipToContent={pageSkipToContent} mainContainerId={mainContainerId}>
+          {props.children}
+        </Page>
+      </div>
     </QuickStartContainer>
   );
 }
