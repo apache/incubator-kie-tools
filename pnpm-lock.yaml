@@ -4060,6 +4060,7 @@ importers:
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
       rimraf: ^3.0.2
+      showdown: ^2.1.0
       start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
       typescript: ^4.4.2
@@ -4112,6 +4113,7 @@ importers:
       react-dropzone: 11.4.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
+      showdown: 2.1.0
       vscode-languageserver-types: 3.16.0
       yaml: 2.0.1
     devDependencies:
@@ -14566,7 +14568,6 @@ packages:
     resolution:
       { integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw== }
     engines: { node: ^12.20.0 || >=14 }
-    dev: true
 
   /common-tags/1.8.0:
     resolution:
@@ -26628,6 +26629,14 @@ packages:
     hasBin: true
     dependencies:
       yargs: 10.1.2
+    dev: false
+
+  /showdown/2.1.0:
+    resolution:
+      { integrity: sha512-/6NVYu4U819R2pUIk79n67SYgJHWCce0a5xTP979WbNp0FL9MN1I1QK662IDU1b6JzKTvmhgI7T7JYIxBi3kMQ== }
+    hasBin: true
+    dependencies:
+      commander: 9.4.1
     dev: false
 
   /side-channel/1.0.4:
