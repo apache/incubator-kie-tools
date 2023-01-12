@@ -198,11 +198,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>kie-wb-common-dmn-webapp-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -693,7 +688,6 @@
             <!-- DMN Editor -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-wires-core-grids</compileSourcesArtifact>

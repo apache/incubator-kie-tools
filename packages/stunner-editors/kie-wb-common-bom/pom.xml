@@ -97,12 +97,6 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.editors</groupId>
-        <artifactId>kie-wb-common-dmn-webapp-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
         <version>${project.version}</version>
       </dependency>

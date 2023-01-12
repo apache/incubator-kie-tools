@@ -37,7 +37,6 @@
   <modules>
     <module>kie-wb-common-dmn-api</module>
     <module>kie-wb-common-dmn-client</module>
-    <module>kie-wb-common-dmn-webapp-common</module>
     <module>kie-wb-common-dmn-webapp-kogito-common</module>
     <module>kie-wb-common-dmn-webapp-kogito-marshaller</module>
     <module>kie-wb-common-dmn-webapp-kogito-runtime</module>

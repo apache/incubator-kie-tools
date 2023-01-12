@@ -23,20 +23,17 @@ API specific to integration with Business Central.
 
 Client-side code specific to the integration with Business Central.
 
-6. `kie-wb-common-dmn-webapp-common`
+6. `kie-wb-common-dmn-webapp-kogito-common`
 
 Client-side code common to the `kie-wb-common-webapp-standalone` and `kie-wb-common-webapp-kogito-testing`
-modules. Includes _docks_ and diagram _navigator_. This code is not used by Business Central.
+modules. Includes _docks_ and diagram _navigator_. Substitute implementations of services in `kie-wb-common-dmn-backend`
+for _kogito_ client-side use.
 
-7. `kie-wb-common-dmn-webapp-kogito-common`
-
-Substitute implementations of services in `kie-wb-common-dmn-backend` for _kogito_ client-side use.
-
-8. `kie-wb-common-dmn-webapp-kogito-marshaller`
+7`kie-wb-common-dmn-webapp-kogito-marshaller`
 
 Client-side marshaller for _kogito_.
 
-9. `kie-wb-common-dmn-webapp-kogito-runtime`
+8`kie-wb-common-dmn-webapp-kogito-runtime`
 
 Webapp targeting _kogito_ integration with VSCode etc. No decorations.
 
@@ -48,11 +45,11 @@ browser mode by default thus are not visible. To see the actual progress of test
 
 There is small set of performance test checking loading of large models. These set of tests is not started by default. You can activate these tests by `-Dperformance-tests` property.
 
-10. `kie-wb-common-dmn-webapp-kogito-testing`
+9. `kie-wb-common-dmn-webapp-kogito-testing`
 
 Webapp used for development of _kogito_ decorated with a diagram _navigator_ to emulate integration with VSCode etc.
 To run this module launch the `gwt` plugin; i.e. `mvn clean process-resources gwt:run`.
 
-11. `kie-wb-common-dmn-webapp-standalone`
+10. `kie-wb-common-dmn-webapp-standalone`
 
 Webapp used for development of Business Central integration.
