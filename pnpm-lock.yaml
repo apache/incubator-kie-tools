@@ -2848,7 +2848,7 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      junit-report-merger: ^2.2.2
+      junit-report-merger: ^4.0.0
       minimatch: ^3.0.4
       raw-loader: ^4.0.2
       react: ^17.0.2
@@ -2898,7 +2898,7 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
-      junit-report-merger: 2.2.2
+      junit-report-merger: 4.0.0
       minimatch: 3.0.5
       raw-loader: 4.0.2_webpack@5.70.0
       react: 17.0.2
@@ -3655,6 +3655,7 @@ importers:
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
       jszip: ^3.7.1
+      junit-report-merger: ^4.0.0
       minimatch: ^3.0.4
       moment: ^2.29.4
       monaco-editor: ^0.33.0
@@ -3751,6 +3752,7 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
+      junit-report-merger: 4.0.0
       minimatch: 3.0.5
       monaco-editor-webpack-plugin: 7.0.1_eodoae2vto4nf5xogfjxixxxnq
       rimraf: 3.0.2
@@ -4291,7 +4293,6 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      junit-report-merger: ^2.2.2
       minimatch: ^3.0.4
       monaco-editor: ^0.33.0
       monaco-yaml: ^4.0.0
@@ -4347,7 +4348,6 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
-      junit-report-merger: 2.2.2
       minimatch: 3.0.5
       monaco-editor: 0.33.0
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
@@ -8568,9 +8568,9 @@ packages:
       "@octokit/openapi-types": 7.0.0
     dev: false
 
-  /@oozcitak/dom/1.15.8:
+  /@oozcitak/dom/1.15.10:
     resolution:
-      { integrity: sha512-MoOnLBNsF+ok0HjpAvxYxR4piUhRDCEWK0ot3upwOOHYudJd30j6M+LNcE8RKpwfnclAX9T66nXXzkytd29XSw== }
+      { integrity: sha512-0JT29/LaxVgRcGKvHmSrUTEvZ8BXvZhGl2LASRUgHqDTC1M5g1pLmVv56IYNyt3bG2CUjDkc67wnyZC14pbQrQ== }
     engines: { node: ">=8.0" }
     dependencies:
       "@oozcitak/infra": 1.0.8
@@ -16465,19 +16465,6 @@ packages:
       micromatch: 4.0.5
     dev: true
 
-  /fast-glob/3.2.5:
-    resolution:
-      { integrity: sha512-2DtFcgT68wiTTiwZ2hNdJfcHNke9XOfnwmBRWXhmeKM8rF0TGwmC/Qto3S7RoZKp5cilZbxzO5iTNTQsJ+EeDg== }
-    engines: { node: ">=8" }
-    dependencies:
-      "@nodelib/fs.stat": 2.0.3
-      "@nodelib/fs.walk": 1.2.4
-      glob-parent: 5.1.2
-      merge2: 1.4.1
-      micromatch: 4.0.4
-      picomatch: 2.3.1
-    dev: true
-
   /fast-json-stable-stringify/2.1.0:
     resolution:
       { integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw== }
@@ -19555,7 +19542,6 @@ packages:
       pako: 1.0.11
       readable-stream: 2.3.7
       setimmediate: 1.0.5
-    dev: true
 
   /jszip/3.7.1:
     resolution:
@@ -19567,14 +19553,15 @@ packages:
       set-immediate-shim: 1.0.1
     dev: false
 
-  /junit-report-merger/2.2.2:
+  /junit-report-merger/4.0.0:
     resolution:
-      { integrity: sha512-ZXudaOvaUsmcn/632IbkIA9ggU3eBAQBEuAIXGstiZeuuBM7jjN3g2ighNyPMriywRBSOckOyiUCYleazlvrbw== }
-    engines: { node: ">=10" }
+      { integrity: sha512-bn7VCzTF0k4sIvP9WK0TLSfixzvr6I5Y0yVoYj45sXCh8uvy5ZQBGGUAzi/zb8sQpZitp6hDMOcN6mbpsVNyKw== }
+    engines: { node: ^12.20.0 || >=14 }
     hasBin: true
     dependencies:
-      fast-glob: 3.2.5
-      xmlbuilder2: 2.4.1
+      commander: 9.4.1
+      fast-glob: 3.2.11
+      xmlbuilder2: 3.0.2
     dev: true
 
   /just-debounce-it/3.0.1:
@@ -24372,7 +24359,6 @@ packages:
   /setimmediate/1.0.5:
     resolution:
       { integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA== }
-    dev: true
 
   /setprototypeof/1.0.3:
     resolution:
@@ -27524,12 +27510,12 @@ packages:
     engines: { node: ">=4.0" }
     dev: true
 
-  /xmlbuilder2/2.4.1:
+  /xmlbuilder2/3.0.2:
     resolution:
-      { integrity: sha512-vliUplZsk5vJnhxXN/mRcij/AE24NObTUm/Zo4vkLusgayO6s3Et5zLEA14XZnY1c3hX5o1ToR0m0BJOPy0UvQ== }
-    engines: { node: ">=10.0" }
+      { integrity: sha512-h4MUawGY21CTdhV4xm3DG9dgsqyhDkZvVJBx88beqX8wJs3VgyGQgAn5VreHuae6unTQxh115aMK5InCVmOIKw== }
+    engines: { node: ">=12.0" }
     dependencies:
-      "@oozcitak/dom": 1.15.8
+      "@oozcitak/dom": 1.15.10
       "@oozcitak/infra": 1.0.8
       "@oozcitak/util": 8.3.8
       "@types/node": 17.0.12
