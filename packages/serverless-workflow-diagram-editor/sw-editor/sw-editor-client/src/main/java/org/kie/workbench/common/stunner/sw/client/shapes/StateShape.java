@@ -53,7 +53,7 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
                 Picture picture = new Picture(state.metadata.icon);
                 setIconPicture(picture);
             } else {
-                loadIconFormFile(state, resourceContentService);
+                loadIconFromFile(state, resourceContentService);
             }
         }
 
@@ -76,7 +76,7 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
         shapeView = (StateShapeView) getShape().getShapeView();
     }
 
-    private void loadIconFormFile(State state, ResourceContentService resourceContentService) {
+    private void loadIconFromFile(State state, ResourceContentService resourceContentService) {
         resourceContentService
                 .get(state.metadata.icon, ResourceContentOptions.binary())
                 .then(image -> {
@@ -173,8 +173,6 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
     public static double calculateIconScale(int width, int height) {
         double size = StateShapeView.STATE_SHAPE_ICON_RADIUS * 2;
         int min = Math.min(width, height);
-        return size > min
-                ? size / min
-                : 1 / (min / size);
+        return size / min;
     }
 }
