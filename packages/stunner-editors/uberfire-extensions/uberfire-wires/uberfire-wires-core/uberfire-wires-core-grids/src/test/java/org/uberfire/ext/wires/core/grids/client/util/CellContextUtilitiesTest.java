@@ -117,9 +117,17 @@ public class CellContextUtilitiesTest {
     @Test
     public void testMakeHeaderRenderContextNoBlockMultipleColumns() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
-        final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
-        final GridColumn<?> uiColumn2 = mockGridColumn(50.0);
-        final GridColumn<?> uiColumn3 = mockGridColumn(100.0);
+        final GridColumn.HeaderMetaData col1Header1 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-1").when(col1Header1).getColumnGroup();
+        final GridColumn<?> uiColumn1 = mockGridColumn(25.0, Collections.singletonList(col1Header1));
+
+        final GridColumn.HeaderMetaData col2Header1 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-2").when(col2Header1).getColumnGroup();
+        final GridColumn<?> uiColumn2 = mockGridColumn(50.0, Collections.singletonList(col2Header1));
+
+        final GridColumn.HeaderMetaData col3Header1 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-3").when(col3Header1).getColumnGroup();
+        final GridColumn<?> uiColumn3 = mockGridColumn(100.0, Collections.singletonList(col3Header1));
         allColumns.add(uiColumn1);
         allColumns.add(uiColumn2);
         allColumns.add(uiColumn3);
@@ -362,10 +370,16 @@ public class CellContextUtilitiesTest {
     private List<GridColumn<?>> setupHeadersWithDifferentColumnHeaderMetaDataRows() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         //Two Header rows
-        final GridColumn<?> uiColumn1 = mockGridColumn(50.0);
+        final GridColumn.HeaderMetaData col1Header1 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-1").when(col1Header1).getColumnGroup();
+        final GridColumn.HeaderMetaData col1Header2 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-1").when(col1Header2).getColumnGroup();
+        final GridColumn<?> uiColumn1 = mockGridColumn(50.0, Arrays.asList(col1Header1, col1Header2));
         //Single Header row
+        final GridColumn.HeaderMetaData col2Header1 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-2").when(col2Header1).getColumnGroup();
         final GridColumn<?> uiColumn2 = mockGridColumn(50.0,
-                                                       Collections.singletonList(mock(GridColumn.HeaderMetaData.class)));
+                                                       Collections.singletonList(col2Header1));
         allColumns.add(uiColumn1);
         allColumns.add(uiColumn2);
 
@@ -376,7 +390,13 @@ public class CellContextUtilitiesTest {
     public void testMakeHeaderRenderContextLeadBlockWithExtraLeadNonBlockColumn() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
-        final GridColumn<?> uiColumn2 = mockGridColumn(50.0);
+
+        final GridColumn.HeaderMetaData col2Header1 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-2").when(col2Header1).getColumnGroup();
+        final GridColumn.HeaderMetaData col2Header2 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-2").when(col2Header2).getColumnGroup();
+        final GridColumn<?> uiColumn2 = mockGridColumn(50.0, Arrays.asList(col2Header1, col2Header2));
+
         final GridColumn<?> uiColumn3 = mockGridColumn(75.0,
                                                        uiColumn2.getHeaderMetaData());
         allColumns.add(uiColumn1);
@@ -435,7 +455,11 @@ public class CellContextUtilitiesTest {
     @Test
     public void testMakeHeaderRenderContextTailBlockWithExtraTailNonBlockColumn() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
-        final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
+        final GridColumn.HeaderMetaData col1Header1 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-1").when(col1Header1).getColumnGroup();
+        final GridColumn.HeaderMetaData col1Header2 = mock(GridColumn.HeaderMetaData.class);
+        doReturn("group-1").when(col1Header2).getColumnGroup();
+        final GridColumn<?> uiColumn1 = mockGridColumn(25.0, Arrays.asList(col1Header1, col1Header2));
         final GridColumn<?> uiColumn2 = mockGridColumn(50.0,
                                                        uiColumn1.getHeaderMetaData());
         final GridColumn<?> uiColumn3 = mockGridColumn(100.0);

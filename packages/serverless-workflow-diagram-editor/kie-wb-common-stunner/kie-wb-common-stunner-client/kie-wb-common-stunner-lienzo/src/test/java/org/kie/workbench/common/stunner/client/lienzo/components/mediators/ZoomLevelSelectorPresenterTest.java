@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
+import javax.enterprise.event.Event;
+
 import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -37,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
@@ -109,6 +112,9 @@ public class ZoomLevelSelectorPresenterTest {
     @Mock
     private Widget widget;
 
+    @Mock
+    private Event<TogglePreviewEvent> togglePreviewEvent;
+
     private ZoomLevelSelectorPresenter tested;
     private ClientTranslationService translationService;
     private FloatingView<IsWidget> floatingView;
@@ -137,6 +143,7 @@ public class ZoomLevelSelectorPresenterTest {
         tested = new ZoomLevelSelectorPresenter(translationService,
                                                 floatingView,
                                                 selector,
+                                                togglePreviewEvent,
                                                 selectorElement);
         tested.init(() -> canvas);
         tested.show();

@@ -47,8 +47,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -228,6 +228,36 @@ public class WiresManagerTest {
         assertFalse(spied.getConnectorList().isEmpty());
         verify(connector, times(1)).setControl(any(WiresConnectorControl.class));
         verify(connector, times(1)).addToLayer(eq(layer));
+    }
+
+    @Test
+    public void testRegisterAddHandler() {
+        final IConnectionAcceptor connectionAcceptor = mock(IConnectionAcceptor.class);
+        tested.setConnectionAcceptor(connectionAcceptor);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
+        final Group group = new Group();
+        final Group shapeGroup = spy(group);
+        final AbstractDirectionalMultiPointShape<?> line = mock(AbstractDirectionalMultiPointShape.class);
+        final MultiPath head = mock(MultiPath.class);
+        final MultiPath tail = mock(MultiPath.class);
+        final WiresConnector connector = mock(WiresConnector.class);
+        final WiresHandlerFactory wiresHandlerFactory = mock(WiresHandlerFactory.class);
+        final WiresConnectorHandler wiresConnectorHandler = mock(WiresConnectorHandler.class);
+        final WiresConnectorControl wiresConnectorControl = mock(WiresConnectorControl.class);
+        doReturn(shapeGroup).when(connector).getGroup();
+        doReturn(line).when(connector).getLine();
+        doReturn(head).when(connector).getHead();
+        doReturn(tail).when(connector).getTail();
+        doReturn(group.uuid()).when(connector).uuid();
+        doReturn(wiresConnectorHandler).when(wiresHandlerFactory).newConnectorHandler(connector, spied);
+        doReturn(wiresConnectorControl).when(wiresConnectorHandler).getControl();
+
+        spied.setWiresHandlerFactory(wiresHandlerFactory);
+        assertEquals(spied.getWiresHandlerFactory(), wiresHandlerFactory);
+        spied.addHandlers(connector);
+        assertTrue(spied.getConnectorList().isEmpty());
         verify(wiresHandlerFactory, times(1)).newConnectorHandler(connector, spied);
     }
 
@@ -250,6 +280,7 @@ public class WiresManagerTest {
         spied.enableSelectionManager();
         spied.getSelectionManager().getSelectedItems().add(connector);
         spied.register(connector);
+        spied.addHandlers(connector);
         spied.deregister(connector);
         assertTrue(spied.getConnectorList().isEmpty());
         assertTrue(spied.getSelectionManager().getSelectedItems().isEmpty());

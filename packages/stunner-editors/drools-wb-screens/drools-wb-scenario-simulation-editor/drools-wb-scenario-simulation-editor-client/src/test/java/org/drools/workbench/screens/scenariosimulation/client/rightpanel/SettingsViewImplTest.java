@@ -31,7 +31,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.
 import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsViewImpl.DMN_NAME_LABEL;
 import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsViewImpl.STATELESS_LABEL;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

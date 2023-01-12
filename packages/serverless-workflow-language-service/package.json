@@ -26,11 +26,13 @@
   },
   "dependencies": {
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
+    "@kie-tools/yaml-language-server": "workspace:*",
     "@severlessworkflow/sdk-typescript": "^3.0.3",
     "json-to-ast": "^2.1.0",
     "jsonata": "^1.8.3",
     "jsonc-parser": "^3.0.0",
     "vscode-json-languageservice": "^4.2.1",
+    "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-textdocument": "^1.0.4",
     "vscode-languageserver-types": "^3.16.0",
     "yaml-language-server-parser": "^0.1.3"

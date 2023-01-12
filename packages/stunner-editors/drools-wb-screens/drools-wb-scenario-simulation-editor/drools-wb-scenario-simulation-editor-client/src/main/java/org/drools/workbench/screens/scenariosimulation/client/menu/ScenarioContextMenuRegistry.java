@@ -42,6 +42,8 @@ import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 @Dependent
 public class ScenarioContextMenuRegistry {
 
+    private static final int BIGGEST_MENU_HEIGHT_PX = 130;
+
     protected OtherContextMenu otherContextMenu;
     protected HeaderGivenContextMenu headerGivenContextMenu;
     protected HeaderExpectedContextMenu headerExpectedContextMenu;
@@ -126,16 +128,20 @@ public class ScenarioContextMenuRegistry {
         if (scenarioGridColumn == null) {
             return false;
         }
+        final int gridHeight =
+                (int) scenarioGrid.getRendererHelper().getRenderingInformation().getBounds().getHeight();
+        final int adjustedYPosition =
+                clientYPosition + BIGGEST_MENU_HEIGHT_PX < gridHeight ? clientYPosition : clientYPosition - BIGGEST_MENU_HEIGHT_PX;
         if (isHeader) {
             return manageHeaderRightClick(scenarioGrid,
                                           clientXPosition,
-                                          clientYPosition,
+                                          adjustedYPosition,
                                           uiRowIndex,
                                           uiColumnIndex);
         } else {
             return manageBodyRightClickLocal(scenarioGrid,
                                              clientXPosition,
-                                             clientYPosition,
+                                             adjustedYPosition,
                                              uiRowIndex,
                                              uiColumnIndex);
         }

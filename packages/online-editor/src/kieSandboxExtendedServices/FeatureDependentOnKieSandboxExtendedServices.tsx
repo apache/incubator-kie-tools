@@ -17,7 +17,7 @@
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import * as React from "react";
 import { useOnlineI18n } from "../i18n";
-import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 
 interface Props {
@@ -28,11 +28,12 @@ interface Props {
 
 export function FeatureDependentOnKieSandboxExtendedServices(props: Props) {
   const { i18n } = useOnlineI18n();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
 
-  if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+  if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
     return props.children;
   }
+
   return (
     <Tooltip
       content={i18n.kieSandboxExtendedServices.dropdown.tooltip.install}

@@ -28,7 +28,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_PROPERTYNAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_VALUE_PROPERTYY_MAP;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

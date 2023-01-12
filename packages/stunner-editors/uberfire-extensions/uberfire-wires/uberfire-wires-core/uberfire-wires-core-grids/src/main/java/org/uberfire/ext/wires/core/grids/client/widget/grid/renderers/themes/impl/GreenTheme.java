@@ -74,14 +74,6 @@ public class GreenTheme implements GridRendererTheme {
     }
 
     @Override
-    public Rectangle getHeaderLinkBackground(final GridColumn<?> column) {
-        final Rectangle link = new Rectangle(0,
-                                             0)
-                .setFillColor(ColorName.BROWN);
-        return link;
-    }
-
-    @Override
     public MultiPath getHeaderGridLine() {
         final MultiPath headerGrid = new MultiPath()
                 .setStrokeColor(ColorName.SLATEGRAY)

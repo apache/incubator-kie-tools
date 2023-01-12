@@ -465,6 +465,25 @@
       </dependency>
 
       <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
+        <artifactId>api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
+        <artifactId>common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
+        <artifactId>processor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+
+      <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${project.version}</version>

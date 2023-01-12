@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.dashbuilder.client.editor.resources.i18n.Constants;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.PerspectiveCoordinator;
 import org.dashbuilder.displayer.client.widgets.DisplayerViewer;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -32,9 +33,9 @@ public class MapChartDragComponent extends DisplayerDragComponent {
     public MapChartDragComponent(SyncBeanManager beanManager,
             DisplayerViewer viewer,
             PlaceManager placeManager,
-            PerspectiveCoordinator perspectiveCoordinator ) {
-
-        super(beanManager, viewer, placeManager, perspectiveCoordinator);
+            PerspectiveCoordinator perspectiveCoordinator,
+            GlobalDisplayerSettings globalDisplayerSettings) {
+        super(beanManager, viewer, placeManager, perspectiveCoordinator, globalDisplayerSettings);
     }
 
     @Override

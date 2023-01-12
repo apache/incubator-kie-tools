@@ -57,7 +57,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     share: string;
     embed: string;
   };
-  dmnDevSandbox: {
+  devDeployments: {
     common: {
       deployYourModel: string;
       deployInstanceInfo: string;
@@ -65,12 +65,15 @@ interface OnlineDictionary extends ReferenceDictionary {
       learnMore: string;
       requiredField: string;
       deploying: string;
+      deleting: string;
       saving: string;
       setupFirst: string;
     };
     dropdown: {
       noDeployments: string;
       connectedTo: (username: string) => string;
+      connectedToAction: string;
+      deleteDeployments: string;
       item: {
         upTooltip: string;
         downTooltip: string;
@@ -93,13 +96,19 @@ interface OnlineDictionary extends ReferenceDictionary {
       configExpiredWarning: string;
       useWizard: string;
     };
-    confirmModal: {
+    deployConfirmModal: {
+      title: string;
+      body: string;
+    };
+    deleteConfirmModal: {
       title: string;
       body: string;
     };
     alerts: {
       deployStartedError: string;
       deployStartedSuccess: string;
+      deleteError: string;
+      deleteSuccess: string;
     };
     configWizard: {
       header: {
@@ -364,8 +373,8 @@ interface OnlineDictionary extends ReferenceDictionary {
         fillTheForm: string;
         deployTheModel: string;
         backToEditor: string;
-        setupDmnDevSandbox: string;
-        dmnDevSandboxAlreadySetup: string;
+        setupDevDeployments: string;
+        devDeploymentsAlreadySetup: string;
       };
     };
     dropdown: {

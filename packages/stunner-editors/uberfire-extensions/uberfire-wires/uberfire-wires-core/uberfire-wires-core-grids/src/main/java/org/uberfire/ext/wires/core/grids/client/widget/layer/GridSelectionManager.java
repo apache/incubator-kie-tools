@@ -17,14 +17,11 @@ package org.uberfire.ext.wires.core.grids.client.widget.layer;
 
 import java.util.Set;
 
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public interface GridSelectionManager {
 
     void select(final GridWidget selectedGridWidget);
-
-    void selectLinkedColumn(final GridColumn<?> selectedGridColumn);
 
     Set<GridWidget> getGridWidgets();
 }

@@ -25,10 +25,10 @@ import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandbox/DmnDevSandboxModalConfirmDeploy";
+import { DevDeploymentsConfirmDeployModal } from "../devDeployments/DevDeploymentsConfirmDeployModal";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
-import { AlertsController, useAlert } from "../alerts/Alerts";
+import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
@@ -65,8 +65,8 @@ export function EditorPage(props: Props) {
   const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
-  const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
+  const alertsDispatch = useGlobalAlertsDispatchContext();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [isFileBroken, setFileBroken] = useState(false);
 
@@ -81,8 +81,7 @@ export function EditorPage(props: Props) {
     document.title = `KIE Sandbox :: ${props.fileRelativePath}`;
   }, [props.fileRelativePath]);
 
-  const setContentErrorAlert = useAlert(
-    alerts,
+  const setContentErrorAlert = useGlobalAlert(
     useCallback(() => {
       return (
         <Alert
@@ -248,8 +247,8 @@ export function EditorPage(props: Props) {
   //end (UPDATE PREVIEW SVGS)
 
   useEffect(() => {
-    alerts?.closeAll();
-  }, [alerts]);
+    alertsDispatch.closeAll();
+  }, [alertsDispatch]);
 
   useEffect(() => {
     setFileBroken(false);
@@ -279,9 +278,9 @@ export function EditorPage(props: Props) {
   );
 
   const refreshEditor = useCallback(() => {
-    alerts?.closeAll();
+    alertsDispatch.closeAll();
     setTextEditorModalOpen(false);
-  }, [alerts]);
+  }, [alertsDispatch]);
 
   // validate
   useEffect(() => {
@@ -361,13 +360,7 @@ export function EditorPage(props: Props) {
           <>
             <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
               <Page>
-                <EditorToolbar
-                  workspaceFile={file.workspaceFile}
-                  editor={editor}
-                  alerts={alerts}
-                  alertsRef={alertsRef}
-                  editorPageDock={editorPageDock}
-                />
+                <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
                 <Divider />
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
                   <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
@@ -404,7 +397,7 @@ export function EditorPage(props: Props) {
               refreshEditor={refreshEditor}
               isOpen={isTextEditorModalOpen}
             />
-            <DmnDevSandboxModalConfirmDeploy workspaceFile={file.workspaceFile} alerts={alerts} />
+            <DevDeploymentsConfirmDeployModal workspaceFile={file.workspaceFile} />
           </>
         )}
       />

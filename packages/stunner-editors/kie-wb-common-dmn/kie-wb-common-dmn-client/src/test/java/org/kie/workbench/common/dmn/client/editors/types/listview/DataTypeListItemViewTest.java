@@ -58,6 +58,7 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Remove;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Save;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.doubleThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
@@ -681,6 +682,11 @@ public class DataTypeListItemViewTest {
         verify(arrowClassList).remove(RIGHT_ARROW_CSS_CLASS);
         verify(child1.classList).remove(HIDDEN_CSS_CLASS);
         verify(child2.classList).remove(HIDDEN_CSS_CLASS);
+        // item 0 - yPosition: 0
+        // item 1 - yPosition: 1
+        // child1 and child2 yPosition need to be greater than 0 and less than 1
+        verify(presenter).setPositionY(eq(child1), doubleThat(d -> d > 0.3 && d < 0.6));
+        verify(presenter).setPositionY(eq(child2), doubleThat(d -> d > 0.6 && d < 1.0));
     }
 
     @Test

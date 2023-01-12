@@ -113,6 +113,10 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         return cast();
     }
 
+    public void isTitleListening(boolean isListening) {
+        textViewDecorator.isListening(isListening);
+    }
+
     @Override
     public T setMargins(final Map<Enum, Double> margins) {
         textViewDecorator.setMargins(margins);
@@ -127,8 +131,8 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     }
 
     @Override
-    public T setTextSizeConstraints(final Size sizeConstraints) {
-        textViewDecorator.setTextSizeConstraints(sizeConstraints);
+    public T setTitleSizeConstraints(final Size sizeConstraints) {
+        textViewDecorator.setTitleSizeConstraints(sizeConstraints);
         return cast();
     }
 
@@ -246,8 +250,8 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     }
 
     @Override
-    public T setTextWrapper(final TextWrapperStrategy wrapperStrategy) {
-        textViewDecorator.setTextWrapper(wrapperStrategy);
+    public T setTitleWrapper(final TextWrapperStrategy wrapperStrategy) {
+        textViewDecorator.setTitleWrapper(wrapperStrategy);
         labelContainerLayout.ifPresent(LabelContainerLayout::execute);
         return (cast());
     }
@@ -284,7 +288,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     @Override
     public void refresh() {
-        getTextViewDecorator().update();
+        getTitleViewDecorator().update();
         super.refresh();
         updateControlPoints(ControlPointType.RESIZE);
     }
@@ -421,17 +425,17 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         return cast();
     }
 
-    protected WiresTextDecorator getTextViewDecorator() {
+    protected WiresTextDecorator getTitleViewDecorator() {
         return textViewDecorator;
     }
 
     protected void rebuildTextBoundaries(final double width,
                                          final double height) {
-        textViewDecorator.setTextBoundaries(width, height);
+        textViewDecorator.setTitleBoundaries(width, height);
     }
 
     @Override
-    public void setTextBoundaries(final double width, final double height) {
+    public void setTitleBoundaries(final double width, final double height) {
         rebuildTextBoundaries(width, height);
     }
 

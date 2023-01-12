@@ -26,7 +26,7 @@ import {
 } from "@kie-tools-core/chrome-extension/dist/app/components/common/GitHubContext";
 import { Logger } from "@kie-tools-core/chrome-extension/dist/Logger";
 import { Dependencies } from "@kie-tools-core/chrome-extension/dist/app/Dependencies";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import {
   ChromeExtensionI18nContext,
@@ -41,7 +41,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
       type: "txt",
       filePathGlob: "**/*.txt",
       resourcesPathPrefix: "envelope",
-      envelopePath: "chrome-testing://https://my-url.com/",
+      envelopeContent: { type: EnvelopeContentType.PATH, path: "chrome-testing://https://my-url.com/" },
     }),
   ]);
 

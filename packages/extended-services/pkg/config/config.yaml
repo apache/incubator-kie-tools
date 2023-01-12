@@ -1,8 +1,0 @@
-proxy:
-  ip: 0.0.0.0
-  port: 21345
-  insecureSkipVerify: false
-modeler:
-  link: https://kiegroup.github.io/kogito-online/#/
-app:
-  version: 0.0.0

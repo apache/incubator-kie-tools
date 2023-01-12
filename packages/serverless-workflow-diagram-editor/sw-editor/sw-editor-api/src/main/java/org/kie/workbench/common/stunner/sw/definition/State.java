@@ -20,7 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -30,6 +31,12 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
 
 /**
  * This class defines workflow states define building blocks of the workflow execution instructions.
@@ -47,11 +54,9 @@ public class State {
     public static final String LABEL_STATE = "state";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.STATES;
 
     @Labels
-    @JsIgnore
     public static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                        LABEL_STATE).collect(Collectors.toSet());
 
@@ -59,39 +64,52 @@ public class State {
      * Unique state name, can't be null.
      */
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     /**
      * Type of the state, can't be null.
      */
-    public String type;
+    protected String type;
+
+    public Metadata metadata;
 
     /**
      * Next transition of the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
-    public Object transition;
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
+    private Object transition;
 
     /**
      * Whether this State is a last state in the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
-    public Object end;
+    @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
+    private Object end;
 
     /**
      * Definitions of states error handling.
      */
-    public ErrorTransition[] onErrors;
+    private ErrorTransition[] onErrors;
 
     /**
      * State specific timeouts.
      */
-    public String eventTimeout;
+    private String eventTimeout;
 
     /**
      * Unique name of a workflow state which is responsible for compensation of this state.
      */
-    public String compensatedBy;
+    private String compensatedBy;
+
+    private StateDataFilter stateDataFilter;
+
+
+    @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
+    @JsonbTypeDeserializer(WorkflowTimeoutsJsonDeserializer.class)
+    private Object timeouts;
 
     public State() {
         this.name = "State";
@@ -166,5 +184,28 @@ public class State {
 
     public String getCategory() {
         return category;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+    public StateDataFilter getStateDataFilter() {
+        return stateDataFilter;
+    }
+
+    public void setStateDataFilter(StateDataFilter stateDataFilter) {
+        this.stateDataFilter = stateDataFilter;
+    }
+
+    public Object getTimeouts() {
+        return timeouts;
+    }
+
+    public void setTimeouts(Object timeouts) {
+        this.timeouts = timeouts;
     }
 }

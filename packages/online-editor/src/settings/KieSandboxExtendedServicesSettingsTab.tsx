@@ -23,13 +23,13 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "./SettingsContext";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 export function KieSandboxExtendedServicesSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
   const [host, setHost] = useState(settings.kieSandboxExtendedServices.config.host);
   const [port, setPort] = useState(settings.kieSandboxExtendedServices.config.port);
 
@@ -48,7 +48,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
           <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
             <Form onSubmit={onSubmit}>
               <FormAlert>
-                {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING && (
+                {extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING && (
                   <Alert
                     variant="success"
                     title={"You are connected to KIE Sandbox Extended Services"}
@@ -56,7 +56,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
                     isInline
                   />
                 )}
-                {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+                {extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
                   <Alert
                     variant="danger"
                     title={"You are not connected to KIE Sandbox Extended Services"}
@@ -107,7 +107,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
               </FormGroup>
               <ActionGroup>
                 <Button
-                  id="dmn-dev-sandbox-config-save-button"
+                  id="extended-services-config-save-button"
                   key="save"
                   variant="primary"
                   onClick={onSubmit}

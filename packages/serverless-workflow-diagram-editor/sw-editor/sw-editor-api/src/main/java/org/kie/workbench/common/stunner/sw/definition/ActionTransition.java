@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -47,15 +46,13 @@ public class ActionTransition {
     public static final String LABEL_TRANSITION_ACTION = "transition_action";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.TRANSITIONS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(LABEL_TRANSITION_ACTION).collect(Collectors.toSet());
 
     @Property
-    public String name;
+    private String name;
 
     public ActionTransition() {
     }

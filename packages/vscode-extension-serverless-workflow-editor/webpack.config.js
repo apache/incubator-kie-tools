@@ -60,7 +60,7 @@ module.exports = async (env) => [
           {
             from: swEditor.swEditorPath(),
             to: "webview/editors/serverless-workflow/diagram",
-            globOptions: { ignore: ["**/WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
         ],
       }),

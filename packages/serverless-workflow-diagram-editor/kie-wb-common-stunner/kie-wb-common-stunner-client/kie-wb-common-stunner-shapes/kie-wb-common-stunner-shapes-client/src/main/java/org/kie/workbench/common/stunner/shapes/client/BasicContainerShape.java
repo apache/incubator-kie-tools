@@ -22,19 +22,16 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ContainerShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributesFactory;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
-public class BasicContainerShape<W, D extends ShapeViewDef<W, V>, V extends LienzoShapeView<?>>
-        extends ContainerShape<W, D, V, Shape<?>> {
+public class BasicContainerShape<W, V extends LienzoShapeView<?>>
+        extends ContainerShape<W, V, Shape<?>> {
 
     @SuppressWarnings("unchecked")
-    public BasicContainerShape(final D shapeDef,
-                               final V view) {
-        super(shapeDef,
-              new LienzoShape<V>(view,
+    public BasicContainerShape(final V view) {
+        super(new LienzoShape<V>(view,
                                  new ShapeStateAttributeAnimationHandler<>()
                                          .getAttributesHandler()
-                                         .useAttributes(ShapeStateAttributesFactory::buildStrokeAttributes)
+                                         .useAttributes(ShapeStateAttributesFactory::buildStateAttributes)
                                          .setView(() -> view)));
     }
 }

@@ -121,7 +121,7 @@ public class WiresTextDecoratorTest {
     @Test
     public void assertWidthHeightWhenMaxSizeIsNull() {
         when(layout.getMaxSize(any())).thenReturn(null);
-        decorator.setTextBoundaries(30, 30);
+        decorator.setTitleBoundaries(30, 30);
         verify(layout, atLeastOnce()).execute();
         assertBoundaries(30, 30);
     }
@@ -166,7 +166,7 @@ public class WiresTextDecoratorTest {
         final Text text = decorator.getView();
         final ITextWrapper expectedWrapper = TextWrapperProvider.get(wrapperStrategy, text);
 
-        decorator.setTextWrapper(wrapperStrategy);
+        decorator.setTitleWrapper(wrapperStrategy);
 
         verify(decorator).setTextBoundaries(any(BoundingBox.class));
         assertEquals(expectedWrapper.getClass(), text.getWrapper().getClass());
@@ -176,7 +176,7 @@ public class WiresTextDecoratorTest {
     public void ensureSetWrapBoundariesIsCalled() {
         doReturn(textWrapperWithBoundaries).when(decorator).getTextWrapper(any());
 
-        decorator.setTextWrapper(any());
+        decorator.setTitleWrapper(any());
 
         verify(textWrapperWithBoundaries).setWrapBoundaries(any());
     }

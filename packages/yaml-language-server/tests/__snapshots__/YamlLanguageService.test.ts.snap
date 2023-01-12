@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`YAMLValidation tests not valid YAML 1`] = `1`;
+
+exports[`YAMLValidation tests not valid YAML 2`] = `
+Array [
+  Object {
+    "code": 0,
+    "data": Object {
+      "schemaUri": Array [
+        "https://serverlessworkflow.io/schemas/0.8/workflow.json",
+      ],
+    },
+    "message": "Incorrect type. Expected \\"array\\".",
+    "range": Object {
+      "end": Object {
+        "character": 25,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 8,
+        "line": 2,
+      },
+    },
+    "severity": 2,
+    "source": "yaml-schema: https://serverlessworkflow.io/schemas/0.8/workflow.json",
+  },
+]
+`;
+
+exports[`YAMLValidation tests valid 1`] = `0`;
+
+exports[`YAMLValidation tests valid 2`] = `Array []`;

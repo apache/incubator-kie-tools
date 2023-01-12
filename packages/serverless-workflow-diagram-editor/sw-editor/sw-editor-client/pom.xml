@@ -72,13 +72,7 @@
 
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-svg-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
-      <scope>provided</scope>
+      <artifactId>appformer-kogito-bridge</artifactId>
     </dependency>
 
     <!-- GWT and GWT Extensions -->
@@ -124,8 +118,6 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
     </dependency>
-
-
 
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>

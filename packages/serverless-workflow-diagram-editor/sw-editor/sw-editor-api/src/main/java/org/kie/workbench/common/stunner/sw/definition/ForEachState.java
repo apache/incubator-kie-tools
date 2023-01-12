@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
@@ -32,18 +32,21 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 @Bindable
 @Definition
 @Morph(base = State.class)
+@JSONMapper
 @JsType
 public class ForEachState extends State {
 
-    @JsIgnore
     public static final String TYPE_FOR_EACH = "foreach";
-
-    // Missing inputCollection, mode
 
     /**
      * Actions to be executed for each of the elements of inputCollection.
      */
-    public ActionNode[] actions;
+    private ActionNode[] actions;
+
+    public String inputCollection;
+    public String outputCollection;
+
+    public String iterationParam;
 
     public ForEachState() {
         this.type = TYPE_FOR_EACH;
@@ -51,6 +54,30 @@ public class ForEachState extends State {
 
     public ActionNode[] getActions() {
         return actions;
+    }
+
+    public String getInputCollection() {
+        return inputCollection;
+    }
+
+    public void setInputCollection(String inputCollection) {
+        this.inputCollection = inputCollection;
+    }
+
+    public String getOutputCollection() {
+        return outputCollection;
+    }
+
+    public void setOutputCollection(String outputCollection) {
+        this.outputCollection = outputCollection;
+    }
+
+    public String getIterationParam() {
+        return iterationParam;
+    }
+
+    public void setIterationParam(String iterationParam) {
+        this.iterationParam = iterationParam;
     }
 
     public void setActions(ActionNode[] actions) {

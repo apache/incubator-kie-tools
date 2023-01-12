@@ -16,7 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
@@ -48,7 +48,7 @@ export async function activate(context: vscode.ExtensionContext) {
         type: "dashbuilder",
         filePathGlob: "**/*.dash.+(yaml|yml|json)",
         resourcesPathPrefix: "dist/webview/",
-        envelopePath: "dist/webview/DashbuilderEditorEnvelopeApp.js",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/DashbuilderEditorEnvelopeApp.js" },
       }),
     ]),
     channelApiProducer: new DashbuilderViewerChannelApiProducer(new Promise((resolve) => resolve(componentServerUrl))),

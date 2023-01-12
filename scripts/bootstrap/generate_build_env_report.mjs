@@ -52,11 +52,18 @@ async function main() {
   );
 
   const pkgs = await Promise.all(
-    pkgPathsWithEnvDir.map(async (pkgPath) => ({
-      env: (await import(url.pathToFileURL(path.resolve(path.join(pkgPath, "env", "index.js"))))).default,
-      manifest: JSON.parse(fs.readFileSync(path.resolve(pkgPath, "package.json"), "utf-8")),
-      dir: pkgPath,
-    }))
+    pkgPathsWithEnvDir.map(async (pkgPath) => {
+      const envPathJS = path.resolve(path.join(pkgPath, "env", "index.js"));
+      const envPathCJS = path.resolve(path.join(pkgPath, "env", "index.cjs"));
+      const envPathJSExist = fs.existsSync(envPathJS);
+      const envPath = envPathJSExist ? envPathJS : envPathCJS;
+
+      return {
+        env: (await import(url.pathToFileURL(envPath))).default,
+        manifest: JSON.parse(fs.readFileSync(path.resolve(pkgPath, "package.json"), "utf-8")),
+        dir: pkgPath,
+      };
+    })
   );
 
   const completeReport = buildVarsReport(pkgs);

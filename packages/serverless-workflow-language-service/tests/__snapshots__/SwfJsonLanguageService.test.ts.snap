@@ -213,7 +213,7 @@ Array [
     "label": "\\"GreetEvent\\"",
     "sortText": "100_\\"GreetEvent\\"",
     "textEdit": Object {
-      "newText": "\\"GreetEvent\\"",
+      "newText": "\\"GreetEvent\\",",
       "range": Object {
         "end": Object {
           "character": 22,
@@ -341,7 +341,7 @@ Array [
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
   \\"type\\": \\"\${3:CloudEvent type}\\"
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 13,
@@ -374,6 +374,70 @@ Array [
   \\"source\\": \\"\${2:CloudEvent source}\\",
   \\"type\\": \\"\${3:CloudEvent type}\\"
 }",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion events completion add in the middle of the array / with comma at the end 1`] = `1`;
+
+exports[`SWF LS JSON code completion events completion add in the middle of the array / with comma at the end 2`] = `
+Array [
+  Object {
+    "detail": "Add a new event",
+    "filterText": "New event",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event",
+    "sortText": "100_New event",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique event name}\\",
+  \\"source\\": \\"\${2:CloudEvent source}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion events completion add in the middle of the array 1`] = `1`;
+
+exports[`SWF LS JSON code completion events completion add in the middle of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new event",
+    "filterText": "New event",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event",
+    "sortText": "100_New event",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique event name}\\",
+  \\"source\\": \\"\${2:CloudEvent source}\\",
+  \\"type\\": \\"\${3:CloudEvent type}\\"
+},",
       "range": Object {
         "end": Object {
           "character": 17,
@@ -453,7 +517,7 @@ Array [
   \\"argString\\": \\"\${1:}\\",
   \\"argNumber\\": \\"\${2:}\\",
   \\"argBoolean\\": \\"\${3:}\\"
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 25,
@@ -520,7 +584,7 @@ Array [
     \\"argNumber\\": \\"\${2:}\\",
     \\"argBoolean\\": \\"\${3:}\\"
   }
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 25,
@@ -583,7 +647,7 @@ Array [
     "label": "\\"myFunc\\"",
     "sortText": "100_\\"myFunc\\"",
     "textEdit": Object {
-      "newText": "\\"myFunc\\"",
+      "newText": "\\"myFunc\\",",
       "range": Object {
         "end": Object {
           "character": 23,
@@ -639,7 +703,7 @@ Array [
     "label": "\\"myFunc\\"",
     "sortText": "100_\\"myFunc\\"",
     "textEdit": Object {
-      "newText": "\\"myFunc\\"",
+      "newText": "\\"myFunc\\",",
       "range": Object {
         "end": Object {
           "character": 23,
@@ -733,7 +797,7 @@ Array [
   \\"name\\": \\"\${1:testRelativeFunction1}\\",
   \\"operation\\": \\"specs/testRelativeService1.yml#testRelativeFunction1\\",
   \\"type\\": \\"rest\\"
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 16,
@@ -758,7 +822,7 @@ Array [
   \\"name\\": \\"\${1:Unique function name}\\",
   \\"operation\\": \\"\${2:localhost#operation}\\",
   \\"type\\": \\"\${3:Function type}\\"
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 16,
@@ -850,6 +914,188 @@ Array [
   \\"operation\\": \\"\${2:localhost#operation}\\",
   \\"type\\": \\"\${3:Function type}\\"
 }",
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functions completion add in the middle of the array / with comma at the end 1`] = `2`;
+
+exports[`SWF LS JSON code completion functions completion add in the middle of the array / with comma at the end 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.json",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:testRelativeFunction1}\\",
+  \\"operation\\": \\"specs/testRelativeService1.yml#testRelativeFunction1\\",
+  \\"type\\": \\"rest\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:Function type}\\"
+}",
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion functions completion add in the middle of the array 1`] = `2`;
+
+exports[`SWF LS JSON code completion functions completion add in the middle of the array 2`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "containingService": Object {
+            "functions": Array [
+              Object {
+                "arguments": Object {
+                  "argBoolean": "boolean",
+                  "argNumber": "number",
+                  "argString": "string",
+                },
+                "name": "testRelativeFunction1",
+                "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+                "source": Object {
+                  "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+                  "type": 1,
+                },
+                "type": "rest",
+              },
+            ],
+            "name": "testRelativeService1",
+            "rawContent": "",
+            "source": Object {
+              "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
+              "type": 1,
+            },
+            "type": "rest",
+          },
+          "documentUri": "test.sw.json",
+        },
+      ],
+      "command": "swf.ls.commands.ImportFunctionFromCompletionItem",
+      "title": "Import function from completion item",
+    },
+    "detail": "specs/testRelativeService1.yml#testRelativeFunction1",
+    "filterText": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "insertTextFormat": 2,
+    "kind": 18,
+    "label": "specs»testRelativeService1.yml#testRelativeFunction1",
+    "sortText": "100_specs»testRelativeService1.yml#testRelativeFunction1",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:testRelativeFunction1}\\",
+  \\"operation\\": \\"specs/testRelativeService1.yml#testRelativeFunction1\\",
+  \\"type\\": \\"rest\\"
+},",
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new function",
+    "filterText": "New function",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New function",
+    "sortText": "100_New function",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique function name}\\",
+  \\"operation\\": \\"\${2:localhost#operation}\\",
+  \\"type\\": \\"\${3:Function type}\\"
+},",
       "range": Object {
         "end": Object {
           "character": 20,
@@ -984,10 +1230,10 @@ Array [
     "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
     "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
     "textEdit": Object {
-      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\",",
       "range": Object {
         "end": Object {
-          "character": 19,
+          "character": 21,
           "line": 4,
         },
         "start": Object {
@@ -1015,7 +1261,7 @@ Array [
       "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
       "range": Object {
         "end": Object {
-          "character": 19,
+          "character": 21,
           "line": 4,
         },
         "start": Object {
@@ -1040,7 +1286,7 @@ Array [
     "label": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
     "sortText": "100_\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
     "textEdit": Object {
-      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\"",
+      "newText": "\\"specs/testRelativeService1.yml#testRelativeFunction1\\",",
       "range": Object {
         "end": Object {
           "character": 19,
@@ -1084,9 +1330,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after 1`] = `2`;
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after / with comma at the end 1`] = `2`;
 
-exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after 2`] = `
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after / with comma at the end 2`] = `
 Array [
   Object {
     "detail": "\\"GreetInEnglish\\"",
@@ -1099,12 +1345,12 @@ Array [
       "newText": "\\"GreetInEnglish\\"",
       "range": Object {
         "end": Object {
-          "character": 11,
-          "line": 1,
+          "character": 13,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
       },
     },
@@ -1120,12 +1366,110 @@ Array [
       "newText": "\\"GreetInSpanish\\"",
       "range": Object {
         "end": Object {
-          "character": 11,
-          "line": 1,
+          "character": 13,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after / with spaces and comma at the end 1`] = `2`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after / with spaces and comma at the end 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "\\"GreetInEnglish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInEnglish\\"",
+    "sortText": "100_\\"GreetInEnglish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInEnglish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 9,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "\\"GreetInSpanish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInSpanish\\"",
+    "sortText": "100_\\"GreetInSpanish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInSpanish\\"",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 9,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after 1`] = `2`;
+
+exports[`SWF LS JSON code completion start completion inside double quotes / with same level content after 2`] = `
+Array [
+  Object {
+    "detail": "\\"GreetInEnglish\\"",
+    "filterText": "\\"GreetInEnglish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInEnglish\\"",
+    "sortText": "100_\\"GreetInEnglish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInEnglish\\",",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 9,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "\\"GreetInSpanish\\"",
+    "filterText": "\\"GreetInSpanish\\"",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "\\"GreetInSpanish\\"",
+    "sortText": "100_\\"GreetInSpanish\\"",
+    "textEdit": Object {
+      "newText": "\\"GreetInSpanish\\",",
+      "range": Object {
+        "end": Object {
+          "character": 13,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 11,
+          "line": 9,
         },
       },
     },
@@ -1148,12 +1492,12 @@ Array [
       "newText": "\\"GreetInEnglish\\"",
       "range": Object {
         "end": Object {
-          "character": 11,
-          "line": 1,
+          "character": 13,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
       },
     },
@@ -1169,12 +1513,12 @@ Array [
       "newText": "\\"GreetInSpanish\\"",
       "range": Object {
         "end": Object {
-          "character": 11,
-          "line": 1,
+          "character": 13,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
       },
     },
@@ -1194,15 +1538,15 @@ Array [
     "label": "\\"GreetInEnglish\\"",
     "sortText": "100_\\"GreetInEnglish\\"",
     "textEdit": Object {
-      "newText": "\\"GreetInEnglish\\"",
+      "newText": "\\"GreetInEnglish\\",",
       "range": Object {
         "end": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
       },
     },
@@ -1215,15 +1559,15 @@ Array [
     "label": "\\"GreetInSpanish\\"",
     "sortText": "100_\\"GreetInSpanish\\"",
     "textEdit": Object {
-      "newText": "\\"GreetInSpanish\\"",
+      "newText": "\\"GreetInSpanish\\",",
       "range": Object {
         "end": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
       },
     },
@@ -1247,11 +1591,11 @@ Array [
       "range": Object {
         "end": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
       },
     },
@@ -1268,11 +1612,11 @@ Array [
       "range": Object {
         "end": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
         "start": Object {
           "character": 11,
-          "line": 1,
+          "line": 9,
         },
       },
     },
@@ -1303,7 +1647,7 @@ Array [
   ],
   \\"transition\\": \\"\${10:Next transition of the workflow}\\",
   \\"end\\": false
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 13,
@@ -1336,7 +1680,7 @@ Array [
   ],
   \\"transition\\": \\"\${10:Next transition of the workflow}\\",
   \\"end\\": false
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 13,
@@ -1369,7 +1713,7 @@ Array [
   \\"defaultCondition\\": {
     \\"transition\\": \\"\${7:Default transition of the workflow}\\"
   }
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 13,
@@ -1396,7 +1740,7 @@ Array [
   \\"data\\": {},
   \\"transition\\": \\"\${10:Next transition of the workflow}\\",
   \\"end\\": false
-}",
+},",
       "range": Object {
         "end": Object {
           "character": 13,
@@ -1529,6 +1873,270 @@ Array [
   \\"transition\\": \\"\${10:Next transition of the workflow}\\",
   \\"end\\": false
 }",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion states completion add in the middle of the array / with comma at the end 1`] = `4`;
+
+exports[`SWF LS JSON code completion states completion add in the middle of the array / with comma at the end 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": {},
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+}",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion states completion add in the middle of the array 1`] = `4`;
+
+exports[`SWF LS JSON code completion states completion add in the middle of the array 2`] = `
+Array [
+  Object {
+    "detail": "Add a new operation state",
+    "filterText": "New operation state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New operation state",
+    "sortText": "100_New operation state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"operation\\",
+  \\"actions\\": [
+    {
+      \\"name\\": \\"\${5:Unique Action name}\\",
+      \\"functionRef\\": {}
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+},",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new event state",
+    "filterText": "New event state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New event state",
+    "sortText": "100_New event state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"event\\",
+  \\"onEvents\\": [
+    {
+      \\"eventRefs\\": [
+        \\"\${5:Unique event names}\\"
+      ]
+    }
+  ],
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+},",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new switch state",
+    "filterText": "New switch state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New switch state",
+    "sortText": "100_New switch state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"switch\\",
+  \\"dataConditions\\": [
+    {
+      \\"condition\\": \\"\${5:Workflow expression evaluated against state data}\\",
+      \\"transition\\": \\"\${6:Transition to another state if condition is true}\\"
+    }
+  ],
+  \\"defaultCondition\\": {
+    \\"transition\\": \\"\${7:Default transition of the workflow}\\"
+  }
+},",
+      "range": Object {
+        "end": Object {
+          "character": 17,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 17,
+          "line": 0,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Add a new inject state",
+    "filterText": "New inject state",
+    "insertTextFormat": 2,
+    "kind": 8,
+    "label": "New inject state",
+    "sortText": "100_New inject state",
+    "textEdit": Object {
+      "newText": "{
+  \\"name\\": \\"\${1:Unique State name}\\",
+  \\"type\\": \\"inject\\",
+  \\"data\\": {},
+  \\"transition\\": \\"\${10:Next transition of the workflow}\\",
+  \\"end\\": false
+},",
       "range": Object {
         "end": Object {
           "character": 17,
@@ -1788,7 +2396,7 @@ Array [
     "label": "\\"Inject Mantra\\"",
     "sortText": "100_\\"Inject Mantra\\"",
     "textEdit": Object {
-      "newText": "\\"Inject Mantra\\"",
+      "newText": "\\"Inject Mantra\\",",
       "range": Object {
         "end": Object {
           "character": 22,
@@ -1844,7 +2452,7 @@ Array [
     "label": "\\"Inject Mantra\\"",
     "sortText": "100_\\"Inject Mantra\\"",
     "textEdit": Object {
-      "newText": "\\"Inject Mantra\\"",
+      "newText": "\\"Inject Mantra\\",",
       "range": Object {
         "end": Object {
           "character": 22,
@@ -1884,6 +2492,152 @@ Array [
         },
       },
     },
+  },
+]
+`;
+
+exports[`SWF LS JSON diagnostic empty file 1`] = `0`;
+
+exports[`SWF LS JSON diagnostic empty file 2`] = `Array []`;
+
+exports[`SWF LS JSON diagnostic missing property value 1`] = `2`;
+
+exports[`SWF LS JSON diagnostic missing property value 2`] = `
+Array [
+  Object {
+    "message": "Missing property \\"type\\".",
+    "range": Object {
+      "end": Object {
+        "character": 11,
+        "line": 5,
+      },
+      "start": Object {
+        "character": 10,
+        "line": 5,
+      },
+    },
+    "severity": 2,
+  },
+  Object {
+    "code": 516,
+    "message": "Value expected",
+    "range": Object {
+      "end": Object {
+        "character": 11,
+        "line": 10,
+      },
+      "start": Object {
+        "character": 10,
+        "line": 10,
+      },
+    },
+    "severity": 1,
+    "source": "serverless-workflow-json",
+  },
+]
+`;
+
+exports[`SWF LS JSON diagnostic missing state type 1`] = `1`;
+
+exports[`SWF LS JSON diagnostic missing state type 2`] = `
+Array [
+  Object {
+    "message": "Missing property \\"type\\".",
+    "range": Object {
+      "end": Object {
+        "character": 11,
+        "line": 5,
+      },
+      "start": Object {
+        "character": 10,
+        "line": 5,
+      },
+    },
+    "severity": 2,
+  },
+]
+`;
+
+exports[`SWF LS JSON diagnostic unclosed brackets 1`] = `2`;
+
+exports[`SWF LS JSON diagnostic unclosed brackets 2`] = `
+Array [
+  Object {
+    "code": 514,
+    "message": "Expected comma",
+    "range": Object {
+      "end": Object {
+        "character": 9,
+        "line": 10,
+      },
+      "start": Object {
+        "character": 8,
+        "line": 10,
+      },
+    },
+    "severity": 1,
+    "source": "serverless-workflow-json",
+  },
+  Object {
+    "code": 517,
+    "message": "Expected comma or closing bracket",
+    "range": Object {
+      "end": Object {
+        "character": 7,
+        "line": 11,
+      },
+      "start": Object {
+        "character": 6,
+        "line": 11,
+      },
+    },
+    "severity": 1,
+    "source": "serverless-workflow-json",
+  },
+]
+`;
+
+exports[`SWF LS JSON diagnostic valid 1`] = `0`;
+
+exports[`SWF LS JSON diagnostic valid 2`] = `Array []`;
+
+exports[`SWF LS JSON diagnostic wrong start state 1`] = `1`;
+
+exports[`SWF LS JSON diagnostic wrong start state 2`] = `
+Array [
+  Object {
+    "message": "Missing 'Wrong state name' in 'states'",
+    "range": Object {
+      "end": Object {
+        "character": 35,
+        "line": 3,
+      },
+      "start": Object {
+        "character": 17,
+        "line": 3,
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON diagnostic wrong states type 1`] = `1`;
+
+exports[`SWF LS JSON diagnostic wrong states type 2`] = `
+Array [
+  Object {
+    "message": "Incorrect type. Expected \\"array\\".",
+    "range": Object {
+      "end": Object {
+        "character": 37,
+        "line": 3,
+      },
+      "start": Object {
+        "character": 18,
+        "line": 3,
+      },
+    },
+    "severity": 2,
   },
 ]
 `;

@@ -14,8 +14,25 @@
  * limitations under the License.
  */
 
-import { TextDocument } from "vscode-json-languageservice";
-import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
+import {
+  getLanguageService,
+  LanguageSettings,
+  SchemaRequestService,
+  SettingsState,
+  Telemetry,
+  WorkspaceContextService,
+} from "@kie-tools/yaml-language-server";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import {
+  CodeLens,
+  CompletionItem,
+  CompletionItemKind,
+  Diagnostic,
+  DiagnosticSeverity,
+  Position,
+  Range,
+} from "vscode-languageserver-types";
+import { Connection } from "vscode-languageserver/node";
 import {
   dump,
   Kind,
@@ -27,19 +44,20 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
-import { getNodeFormat } from "./getNodeFormat";
 import { FileLanguage } from "../api";
+import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
+import { getLineContentFromOffset } from "./getLineContentFromOffset";
+import { getNodeFormat } from "./getNodeFormat";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, positions_equals, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import {
-  ShouldCreateCodelensArgs,
   CodeCompletionStrategy,
   ShouldCompleteArgs,
+  ShouldCreateCodelensArgs,
   SwfLsNode,
   TranslateArgs,
 } from "./types";
-import { getLineContentFromOffset } from "./getLineContentFromOffset";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -66,7 +84,7 @@ export class SwfYamlLanguageService {
 
     // check if the yaml is not valid
     if (ast && ast.errors && ast.errors.length) {
-      throw new Error(ast.errors[0].message);
+      return;
     }
 
     return astConvert(ast);
@@ -117,7 +135,64 @@ export class SwfYamlLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
-    return this.ls.getDiagnostics({ ...args, rootNode: this.parseContent(args.content) });
+    if (!args.content.trim()) {
+      return [];
+    }
+
+    const rootNode = this.parseContent(args.content);
+    const loadErrors = !rootNode ? load(args.content).errors : [];
+
+    //check the syntax
+    if (loadErrors.length > 0) {
+      const error = loadErrors[0];
+      const position = Position.create(error.mark.line, error.mark.column);
+      // show only the first error because syntax errors are repeated for each line, after the error.
+      return [
+        {
+          message: error.message,
+          range: Range.create(position, position),
+          severity: DiagnosticSeverity.Error,
+        },
+      ];
+    }
+
+    return this.ls.getDiagnostics({
+      ...args,
+      rootNode,
+      getSchemaDiagnostics: this.getSchemaDiagnostics,
+    });
+  }
+
+  private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
+    const schemaRequestService: SchemaRequestService = async (uri: string) => {
+      if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
+        return Promise.resolve(JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA));
+      } else {
+        throw new Error(`Unable to load schema from '${uri}'`);
+      }
+    };
+    const workspaceContext: WorkspaceContextService = {
+      resolveRelativePath: (_relativePath: string, _resource: string) => {
+        return "";
+      },
+    };
+
+    const connection = {} as Connection;
+    connection.onRequest = () => null;
+    const telemetry = new Telemetry(connection);
+
+    const yamlSettings = { yamlFormatterSettings: { enable: false } } as SettingsState;
+    const yamlLanguageSettings: LanguageSettings = {
+      validate: true,
+      completion: false,
+      format: false,
+      hover: false,
+      isKubernetes: false,
+      schemas: [{ fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
+    };
+    const yamlLs = getLanguageService(schemaRequestService, workspaceContext, connection, telemetry, yamlSettings);
+    yamlLs.configure(yamlLanguageSettings);
+    return yamlLs.doValidation(textDocument, false);
   }
 
   public dispose() {

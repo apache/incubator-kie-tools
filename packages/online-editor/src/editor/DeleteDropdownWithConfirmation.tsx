@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, ReactElement } from "react";
 import { DropdownGroup, DropdownItem, DropdownPosition } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
@@ -25,7 +25,7 @@ export function DeleteDropdownWithConfirmation(
   props: {
     onDelete: () => void;
     item: React.ReactNode;
-    label?: string;
+    label?: string | ReactElement;
     isHoverable?: boolean;
   } = { onDelete: () => {}, item: <></>, isHoverable: true }
 ) {

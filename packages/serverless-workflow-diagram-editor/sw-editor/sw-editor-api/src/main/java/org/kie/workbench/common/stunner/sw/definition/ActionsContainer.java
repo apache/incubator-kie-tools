@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -37,11 +36,9 @@ public class ActionsContainer {
     public static final String LABEL_ACTIONS = "actions";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.EVENTS;
 
     @Labels
-    @JsIgnore
     private final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                  LABEL_ACTIONS).collect(Collectors.toSet());
 

@@ -56,10 +56,8 @@ public class C3MeterChartDisplayer extends C3Displayer<C3Displayer.View> {
     
     @Override
     public DisplayerConstraints createDisplayerConstraints() {
-        DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setGroupRequired(false)
-                .setGroupAllowed(true)
-                .setGroupColumn(true)
+        DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()                
+                .setGroupAllowed(true)                
                 .setMaxColumns(2)
                 .setMinColumns(1)
                 .setExtraColumnsAllowed(false)

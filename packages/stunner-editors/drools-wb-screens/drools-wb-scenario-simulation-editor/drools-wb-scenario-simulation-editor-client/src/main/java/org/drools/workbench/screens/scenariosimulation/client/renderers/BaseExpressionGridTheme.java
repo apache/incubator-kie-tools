@@ -93,12 +93,6 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
     }
 
     @Override
-    public Rectangle getHeaderLinkBackground(final GridColumn<?> column) {
-        return new Rectangle(0, 0)
-                .setFillColor(ColorName.LIGHTGRAY);
-    }
-
-    @Override
     public MultiPath getHeaderGridLine() {
         return new MultiPath()
                 .setStrokeColor(TABLE_GRID)

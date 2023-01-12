@@ -56,12 +56,12 @@ module.exports = async (env) => [
           {
             from: stunnerEditors.bpmnEditorPath(),
             to: "webview/editors/bpmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
           {
             from: vscodeJavaCodeCompletionExtensionPlugin.path(),
             to: "server/",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
         ],
       }),

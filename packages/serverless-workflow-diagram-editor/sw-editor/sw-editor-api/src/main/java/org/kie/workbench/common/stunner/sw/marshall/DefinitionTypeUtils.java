@@ -1,7 +1,10 @@
 package org.kie.workbench.common.stunner.sw.marshall;
 
 import jsinterop.base.Js;
+import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
 public class DefinitionTypeUtils {
@@ -14,10 +17,9 @@ public class DefinitionTypeUtils {
         if (end instanceof Boolean) {
             return (boolean) end;
         } else if (end != null) {
-            Object terminate = getObjectProperty(end, TERMINATE);
-            if (terminate != null) {
-                return (boolean) terminate;
-            }
+            StateEnd stateEnd = (StateEnd) end;
+            if(stateEnd.getTerminate() != null)
+            return stateEnd.getTerminate();
         }
         return false;
     }
@@ -26,7 +28,8 @@ public class DefinitionTypeUtils {
         if (transition instanceof String) {
             return (String) transition;
         } else if (transition != null) {
-            return (String) getObjectProperty(transition, NEXT_STATE);
+            StateTransition stateTransition = (StateTransition) transition;
+            return stateTransition.getNextState();
         }
         return null;
     }
@@ -36,7 +39,7 @@ public class DefinitionTypeUtils {
         if (start instanceof String) {
             return (String) start;
         } else if (start != null) {
-            Object stateName = getObjectProperty(start, STATE_NAME);
+            Object stateName =((StartDefinition)workflow.getStart()).getStateName();
             if (stateName != null) {
                 return (String) stateName;
             } else {

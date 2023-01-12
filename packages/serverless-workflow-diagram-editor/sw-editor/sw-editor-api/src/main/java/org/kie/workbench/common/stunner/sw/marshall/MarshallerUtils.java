@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import java.util.Stack;
+
+import elemental2.core.Global;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -25,6 +28,9 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.uberfire.commons.Pair;
+
 
 public class MarshallerUtils {
 
@@ -50,8 +56,6 @@ public class MarshallerUtils {
 
     public static <T> T parse(FactoryManager factoryManager, Class<? extends T> type, T jso) {
         T instance = factoryManager.newDefinition(type.getName());
-        // TODO: Check stunner vs native approach here...
-        //instance = stunnerMerge(instance, jso);
         instance = nativeMerge(instance, jso);
         return (T) instance;
     }
@@ -98,4 +102,51 @@ public class MarshallerUtils {
         // return Object.assign({}, o1, o2);
         return Object.assign(o1, o2);
     }-*/;
+
+
+    /**
+     * The original JSON could have the properties, that are not defined in Java based models.
+     * But we still need to have them in the JSON after the serialization. So we preserve them
+     * in the "__original__" field of the definition after deserialization.
+     *
+     * After we finished the serialization of the workflow, we merge the original JSON with the JSON, that
+     * is generated from the definition. We can skip the check for the "function" property, because initially
+     * it's a JSON object, that has no "function" properties. So it's safe to merge it with the resulted JSON.
+     * @param json - the original JSON
+     * @param workflow - the definition of the workflow
+     */
+    static void onPostDeserialize(String json, Workflow workflow) {
+        Object parsed = Global.JSON.parse(json);
+        Js.asPropertyMap(workflow).set("__original__", parsed);
+    }
+
+    static String onPostSerialize(String json, Workflow workflow) {
+        Object parsed = Global.JSON.parse(json);
+        merge(Js.asPropertyMap(workflow).get("__original__"), parsed);
+        return Global.JSON.stringify(parsed);
+    }
+
+    private static void merge(Object o1, Object o2) {
+        Pair<Object, Object> pair = new Pair<>(o1, o2);
+        Stack<Pair<Object, Object>> stack = new Stack<>();
+        stack.push(pair);
+        while (!stack.isEmpty()) {
+            Pair<Object, Object> current = stack.pop();
+            JsPropertyMap<Object> old = Js.asPropertyMap(current.getK1());
+            JsPropertyMap<Object> _new = Js.asPropertyMap(current.getK2());
+            old.forEach(key -> {
+                if(Js.typeof(old.get(key)).equals("object")) {
+                    if(_new.has(key)) {
+                        stack.push(new Pair<>(old.get(key), _new.get(key)));
+                    } else {
+                        _new.set(key, old.get(key));
+                    }
+                } else {
+                    if(!_new.has(key)) {
+                        _new.set(key, old.get(key));
+                    }
+                }
+            });
+        }
+    }
 }

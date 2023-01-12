@@ -142,7 +142,7 @@ describe.skip("Decision Table Expression Tests", () => {
 });
 
 describe("Decision Table Keyboard Navigation Tests", () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
 
     // Entry point for each new expression
@@ -152,7 +152,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
 
     // open contextMenu from first input cell
-    cy.ouiaId("expression-column-1").as("firstInputCell").rightclick();
+    cy.ouiaId("expression-column-1").first().as("firstInputCell").rightclick();
 
     // create a row below
     cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
@@ -260,8 +260,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("The last cell should keep the focus after tab press", () => {
     // from the cell 12
-    cy.contains("td", /cell 12/)
+    cy.get("[data-xposition='4'][data-yposition='4']")
       .as("cell-12")
+      .should("contain.text", "cell 12")
       .type("{enter}")
       .focused();
 
@@ -291,8 +292,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Edit cells appending text selecting the Td", () => {
     // from the cell 1, enter edit mode, write TestInput and press enter to save
-    cy.contains("td", /cell 1/)
+    cy.get("[data-xposition='1'][data-yposition='2']")
       .as("cell-1")
+      .should("contain.text", "cell 1")
       .type("{enter}TestAppend{enter}");
 
     // cell 5 should be focused
@@ -315,8 +317,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Edit cells appending text selecting the TextArea", () => {
     // from the cell 5, enter edit mode and write TestInput
-    cy.contains(".editable-cell ", /cell 5/)
+    cy.get("[data-xposition='1'][data-yposition='3']")
       .as("textarea-5")
+      .should("contain.text", "cell 5")
       .type("{enter}")
       .type("TestAppend");
 
@@ -329,8 +332,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Edit cells overwriting text selecting the Td", () => {
     // from the cell 2, enter edit mode and write TestInput
-    cy.contains("td", /cell 2/)
+    cy.get("[data-xposition='2'][data-yposition='2']")
       .as("cell-2")
+      .should("contain.text", "cell 2")
       .type("TestOverwrite");
 
     // click on cell 3
@@ -342,8 +346,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Edit cells overwriting text selecting the TextArea", () => {
     // from the cell 6, enter edit mode and write TestInput
-    cy.contains(".editable-cell ", /cell 6/)
+    cy.get("[data-xposition='2'][data-yposition='3']")
       .as("textarea-6")
+      .should("contain.text", "cell 6")
       .type("TestOverwrite");
 
     // click on cell 7
@@ -355,8 +360,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Insert a newline in a cell pressing Ctrl+Enter", () => {
     // from the cell 3, enter edit mode and write TestInput
-    cy.contains(".editable-cell ", /cell 3/)
+    cy.get("[data-xposition='3'][data-yposition='2']")
       .as("textarea-3")
+      .should("contain.text", "cell 3")
       .type("{enter}{ctrl+enter}newline");
 
     // click on cell 7
@@ -368,8 +374,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Edit a cell using the suggestions", () => {
     // from the cell 4, write sum, press enter to accept the suggestion
-    cy.contains("td", /cell 4/)
+    cy.get("[data-xposition='4'][data-yposition='2']")
       .as("cell-4")
+      .should("contain.text", "cell 4")
       .type("sum{enter}")
       .prev()
       .click();
@@ -384,8 +391,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Keyboard interaction with contextMenu", () => {
     // select cell 3 and open the contextMenu with rightclick
-    cy.contains("td", /cell 3/)
+    cy.get("[data-xposition='3'][data-yposition='2']")
       .as("cell-3")
+      .should("contain.text", "cell 3")
       .click()
       .rightclick();
 
@@ -401,7 +409,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   describe("Keyboard interaction with annotation cell", () => {
     beforeEach(() => {
-      cy.contains("th", "annotation-1").as("annotationCell").focus().type("{enter}");
+      cy.get("[data-xposition='4'][data-yposition='1']").as("annotationCell").focus().type("{enter}");
 
       cy.get("@annotationCell").find("input:text").as("annotationInput").clear();
     });
@@ -419,9 +427,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       // from the annotation cell, edit the text then press esc to cancel editing
       cy.get("@annotationInput").type("not to save text{esc}");
 
-      cy.get("@annotationCell")
-        .should("have.text", "annotation-1 edited")
-        .should("not.contain.text", "not to save text");
+      cy.get("@annotationCell").should("have.text", "annotation-1").should("not.contain.text", "not to save text");
 
       cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
     });

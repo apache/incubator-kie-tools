@@ -57,22 +57,22 @@ module.exports = async (env) => [
           {
             from: stunnerEditors.dmnEditorPath(),
             to: "webview/editors/dmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
           {
             from: stunnerEditors.scesimEditorPath(),
             to: "webview/editors/scesim",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
           {
             from: stunnerEditors.dmnEditorPath(),
             to: "target/dmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
           {
             from: vscodeJavaCodeCompletionExtensionPlugin.path(),
             to: "server/",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
         ],
       }),

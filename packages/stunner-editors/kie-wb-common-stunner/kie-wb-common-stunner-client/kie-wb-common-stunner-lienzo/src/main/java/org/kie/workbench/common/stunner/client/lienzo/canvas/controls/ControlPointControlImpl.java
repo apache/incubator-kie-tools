@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -84,6 +85,14 @@ public class ControlPointControlImpl
 
     @Override
     public void register(final Element element) {
+        // this gets called on authoring
+        final String uuid = element.getUUID();
+        final Shape shape = canvasHandler.getCanvas().getShape(uuid);
+
+        if (shape.getShapeView() instanceof WiresConnector) {
+            final WiresConnector shapeViewConnector = (WiresConnector) shape.getShapeView();
+            getWiresManager().addHandlers(shapeViewConnector);
+        }
     }
 
     @Override

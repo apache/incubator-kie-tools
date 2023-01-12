@@ -1,24 +1,24 @@
 id: 'Workflow unique identifier'
 version: '0.1'
-specVersion: '0.1'
-name: Workflow name
-description: Workflow description
-start: StartState
+specVersion: '0.8'
+name: 'Workflow name'
+description: 'Workflow description'
+start: 'StartState'
 functions:
-  - name: uniqueFunctionName
+  - name: 'uniqueFunctionName'
     operation: 'localhost#operation'
-    type: rest
+    type: 'rest'
 events:
-  - name: Unique event name
-    source: CloudEvent source
-    type: CloudEvent type
+  - name: 'Unique event name'
+    source: 'CloudEvent source'
+    type: 'CloudEvent type'
 states:
-  - name: StartState
-    type: operation
+  - name: 'StartState'
+    type: 'operation'
     actions:
-      - name: uniqueActionName
+      - name: 'uniqueActionName'
         functionRef:
-          refName: uniqueFunctionName
+          refName: 'uniqueFunctionName'
           arguments:
             firstArgument: ''
             secondArgument: ''

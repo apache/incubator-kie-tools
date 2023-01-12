@@ -16,23 +16,30 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
+import java.util.Objects;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLOptionsCollection;
+import elemental2.dom.HTMLSelectElement;
 import elemental2.dom.Node;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
@@ -46,7 +53,7 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 @Dependent
 public class DataTypeConstraintModalView implements DataTypeConstraintModal.View {
 
-    private static final String DISABLED_CLASS = "disabled";
+    private static final String DISABLED = "disabled";
 
     @DataField("header")
     private final HTMLDivElement header;
@@ -82,6 +89,7 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     private final HTMLButtonElement closeConstraintWarningMessage;
 
     private DataTypeConstraintModal presenter;
+    private DataType dataType;
 
     @Inject
     public DataTypeConstraintModalView(final HTMLDivElement header,
@@ -165,6 +173,11 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
         this.type.textContent = type;
     }
 
+    @Override
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+    }
+
     void onSelectChange(final JQuerySelectPickerEvent event) {
 
         final String constraintType = event.target.value;
@@ -191,7 +204,18 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Override
     public void onShow() {
-        setPickerValue(getSelectPicker(), getConstraintType());
+        final HTMLSelectElement selectElement = (HTMLSelectElement) getSelectPicker();
+        final HTMLOptionsCollection options = getSelectOptionsElement();
+        if (Objects.equals("Any", dataType.getType())) {
+            disableOptionElement(options.getAt(1));
+            disableOptionElement(options.getAt(3));
+        } else {
+            enableOptionElement(options.getAt(1));
+            enableOptionElement(options.getAt(3));
+        }
+
+        triggerPickerAction(selectElement, "refresh");
+        setPickerValue(selectElement, getConstraintType());
     }
 
     @Override
@@ -211,12 +235,18 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Override
     public void enableOkButton() {
-        okButton.classList.remove(DISABLED_CLASS);
+        okButton.removeAttribute(DISABLED);
+        getOkButtonClassList().remove(DISABLED);
     }
 
     @Override
     public void disableOkButton() {
-        okButton.classList.add(DISABLED_CLASS);
+        okButton.setAttribute(DISABLED, true);
+        getOkButtonClassList().add(DISABLED);
+    }
+
+    DOMTokenList getOkButtonClassList() {
+        return okButton.classList;
     }
 
     private String getConstraintType() {
@@ -248,9 +278,21 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
         return body.querySelector(".selectpicker");
     }
 
+    HTMLOptionsCollection getSelectOptionsElement() {
+        return ((HTMLSelectElement) getSelectPicker()).options;
+    }
+
     void triggerPickerAction(final Element element,
                              final String method) {
         JQuerySelectPicker.$(element).selectpicker(method);
+    }
+
+    void disableOptionElement(final HTMLOptionElement htmlOptionElement) {
+        htmlOptionElement.disabled = true;
+    }
+
+    void enableOptionElement(final HTMLOptionElement htmlOptionElement) {
+        htmlOptionElement.disabled = false;
     }
 
     /**

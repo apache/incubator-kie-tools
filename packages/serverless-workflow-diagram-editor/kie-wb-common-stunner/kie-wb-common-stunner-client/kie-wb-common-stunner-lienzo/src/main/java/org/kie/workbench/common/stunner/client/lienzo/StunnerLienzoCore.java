@@ -22,9 +22,11 @@ import javax.enterprise.context.ApplicationScoped;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @ApplicationScoped
 @EntryPoint
+@Bundle("resources/i18n/StunnerLienzoConstants.properties")
 public class StunnerLienzoCore {
 
     /**

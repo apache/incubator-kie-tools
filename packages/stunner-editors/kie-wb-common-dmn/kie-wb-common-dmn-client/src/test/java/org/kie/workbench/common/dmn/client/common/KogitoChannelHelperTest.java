@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.appformer.client.context.Channel.DEFAULT;
-import static org.appformer.client.context.Channel.DESKTOP;
 import static org.appformer.client.context.Channel.EMBEDDED;
 import static org.appformer.client.context.Channel.GITHUB;
 import static org.appformer.client.context.Channel.ONLINE;
@@ -52,8 +51,8 @@ public class KogitoChannelHelperTest {
 
     @Test
     public void testIsIncludedModelEnabled() {
-        Channel[] channels = {DEFAULT, DESKTOP, EMBEDDED, GITHUB, ONLINE, ONLINE_MULTI_FILE, VSCODE_DESKTOP, VSCODE_WEB};
-        boolean[] expected = {   true,   false,     true,  false,  false,              true,           true,       true};
+        Channel[] channels = {DEFAULT, EMBEDDED, GITHUB, ONLINE, ONLINE_MULTI_FILE, VSCODE_DESKTOP, VSCODE_WEB};
+        boolean[] expected = {   true,     true,  false,  false,              true,           true,       true};
 
         for(int i = 0; i < channels.length; i++) {
             testGenericChannelCheckFunction(channels[i], expected[i], kogitoChannelHelper::isIncludedModelEnabled);
@@ -62,8 +61,8 @@ public class KogitoChannelHelperTest {
 
     @Test
     public void testIsIncludedModelLinkEnabled() {
-        Channel[] channels = {DEFAULT, DESKTOP, EMBEDDED, GITHUB, ONLINE, ONLINE_MULTI_FILE, VSCODE_DESKTOP, VSCODE_WEB};
-        boolean[] expected = {  false,   false,    false,  false,  false,              true,           true,       true};
+        Channel[] channels = {DEFAULT, EMBEDDED, GITHUB, ONLINE, ONLINE_MULTI_FILE, VSCODE_DESKTOP, VSCODE_WEB};
+        boolean[] expected = {  false,    false,  false,  false,              true,           true,       true};
 
         for(int i = 0; i < channels.length; i++) {
             testGenericChannelCheckFunction(channels[i], expected[i], kogitoChannelHelper::isIncludedModelLinkEnabled);

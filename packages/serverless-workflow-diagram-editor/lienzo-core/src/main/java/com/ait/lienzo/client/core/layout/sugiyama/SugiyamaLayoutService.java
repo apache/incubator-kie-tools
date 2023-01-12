@@ -128,6 +128,8 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
 
             addEdges(layeredGraph, n);
 
+            layeredGraph.getVertices().add(n.getId());
+
             layeredGraph.setVertexSize(n.getId(), n.getWidth(), n.getHeight());
         }
 

@@ -51,6 +51,7 @@ public class CoreTranslationMessages {
     public static final String RESET = CORE_PREF + "reset";
     public static final String INCREASE = CORE_PREF + "increase";
     public static final String DECREASE = CORE_PREF + "decrease";
+    public static final String PREVIEW = CORE_PREF + "preview";
     public static final String FIT = CORE_PREF + "fit";
     public static final String ARE_YOU_SURE = CORE_PREF + "areYouSure";
     public static final String COMMAND_SUCCESS = COMMAND_PREF + "success";

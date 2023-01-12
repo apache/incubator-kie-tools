@@ -16,7 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/workspace/dist/vscode";
@@ -53,25 +53,25 @@ export async function activate(context: vscode.ExtensionContext) {
         type: "bpmn",
         filePathGlob: "**/*.bpmn?(2)",
         resourcesPathPrefix: "dist/webview/editors/bpmn",
-        envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/BpmnEditorEnvelopeApp.js" },
       }),
       new EnvelopeMapping({
         type: "dmn",
         filePathGlob: "**/*.dmn",
         resourcesPathPrefix: "dist/webview/editors/dmn",
-        envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/DmnEditorEnvelopeApp.js" },
       }),
       new EnvelopeMapping({
         type: "scesim",
         filePathGlob: "**/*.scesim",
         resourcesPathPrefix: "dist/webview/editors/scesim",
-        envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/SceSimEditorEnvelopeApp.js" },
       }),
       new EnvelopeMapping({
         type: "pmml",
         filePathGlob: "**/*.pmml",
         resourcesPathPrefix: "dist/webview/editors/pmml",
-        envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/PMMLEditorEnvelopeApp.js" },
       }),
     ]),
     backendProxy: backendProxy,

@@ -139,16 +139,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-svg-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -454,7 +444,6 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-core-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-client-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-widgets</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:sw-editor-api</compileSourcesArtifact>

@@ -22,12 +22,7 @@ import {
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import {
-  defaultConfig,
-  defaultServiceCatalogConfig,
-  testRelativeFunction1,
-  testRelativeService1,
-} from "./SwfLanguageServiceConfigs";
+import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
 const documentUri = "test.sw.yaml";
@@ -1143,6 +1138,94 @@ states:
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
       });
+    });
+  });
+
+  describe("diagnostic", () => {
+    const ls = new SwfYamlLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [] },
+      },
+      config: defaultConfig,
+    });
+
+    describe("using JSON format", () => {
+      test.each([
+        [
+          "unclosed brackets",
+          `id: jsongreet
+version: '1.0'
+specVersion: '0.8'
+name: Greeting workflow
+expressionLang: jsonpath
+description: JSON based greeting workflow
+start: HandleNewGreet
+functions: [{
+      "name": "printMessage",
+      "type": "custom",
+      "operation": "sysout"
+  }
+states:
+- name: 'HandleNewGreet'
+  type: inject
+  data: {}
+  end: true`,
+        ],
+      ])("%s", async (_description, content) => {
+        const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
+
+        expect(diagnostic.length).toMatchSnapshot();
+        expect(diagnostic).toMatchSnapshot();
+      });
+    });
+
+    test.each([
+      ["empty file", ``],
+      [
+        "missing state type",
+        `id: hello_world
+specVersion: "0.1"
+start: Inject Hello World
+states:
+  - name: Inject Hello World
+    duration: "PT15M"
+    end: true`,
+      ],
+      [
+        "wrong states type",
+        `id: hello_world
+specVersion: "0.1"
+states: Wrong states type`,
+      ],
+      [
+        "wrong start state",
+        `id: hello_world
+specVersion: "0.1"
+start: Wrong state name
+states:
+  - name: Inject Hello World
+    type: inject
+    data: {}
+    end: true`,
+      ],
+      [
+        "valid",
+        `id: hello_world
+specVersion: "0.1"
+start: Inject Hello World
+states:
+  - name: Inject Hello World
+    type: inject
+    data: {}
+    end: true`,
+      ],
+    ])("%s", async (_description, content) => {
+      const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
+
+      expect(diagnostic.length).toMatchSnapshot();
+      expect(diagnostic).toMatchSnapshot();
     });
   });
 });

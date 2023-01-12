@@ -70,8 +70,6 @@ import { ImportFromUrlCard } from "../importFromUrl/ImportFromUrlHomePageCard";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
-import { Alerts, AlertsController } from "../alerts/Alerts";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
@@ -505,7 +503,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   }, [models, otherFiles]);
 
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
-  const [alerts, alertsRef] = useController<AlertsController>();
 
   return (
     <PromiseStateWrapper
@@ -519,7 +516,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
       }
       resolved={(workspace) => (
         <>
-          <Alerts width={"100%"} ref={alertsRef} />
           <DrawerHead>
             <Flex>
               <FlexItem>
@@ -545,7 +541,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                   }
                 >
                   <NewFileDropdownMenu
-                    alerts={alerts}
                     workspaceDescriptor={workspace.descriptor}
                     destinationDirPath={""}
                     onAddFile={async () => setNewFileDropdownMenuOpen(false)}

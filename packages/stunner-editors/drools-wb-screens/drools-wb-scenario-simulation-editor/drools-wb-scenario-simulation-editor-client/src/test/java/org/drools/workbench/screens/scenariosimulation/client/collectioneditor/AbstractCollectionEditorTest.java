@@ -23,7 +23,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractCollectionEditorTest {

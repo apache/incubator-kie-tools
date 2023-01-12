@@ -284,7 +284,7 @@ public class DisplayerSettings {
     }
 
     public DisplayerSubType getSubtype() {
-        String strSubtype = settings.get(getSettingPath(DisplayerAttributeDef.SUBTYPE));
+        var strSubtype = settings.get(getSettingPath(DisplayerAttributeDef.SUBTYPE));
         return DisplayerSubType.getByName(strSubtype);
     }
 
@@ -303,8 +303,21 @@ public class DisplayerSettings {
         settings.put(getSettingPath(DisplayerAttributeDef.RENDERER), renderer);
     }
 
+    public void setMode(Mode mode) {
+        settings.put(getSettingPath(DisplayerAttributeDef.MODE), mode.name());
+    }
+
+    public Mode getMode() {
+        var modeStr = settings.get(getSettingPath(DisplayerAttributeDef.MODE));
+        return Mode.getByName(modeStr);
+    }
+
     public String getTitle() {
         return parseString(settings.get(getSettingPath(DisplayerAttributeDef.TITLE)));
+    }
+
+    public String getSubtitle() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.SUB_TITLE)));
     }
 
     public void setTitle(String title) {
@@ -312,7 +325,7 @@ public class DisplayerSettings {
     }
 
     public boolean isTitleVisible() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.TITLE_VISIBLE)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.TITLE_VISIBLE)), true);
     }
 
     public void setTitleVisible(boolean titleVisible) {
@@ -331,6 +344,18 @@ public class DisplayerSettings {
     public boolean isExcelExportAllowed() {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EXPORT_EXCEL))) || parseBoolean(
                 settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_XLS)));
+    }
+
+    public boolean isPngExportAllowed() {
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.EXPORT_TO_PNG)));
+    }
+
+    public boolean isEditAllowed() {
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.ALLOW_EDIT)));
+    }
+
+    public String getExtraConfiguration() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.EXTRA_CONFIGURATION)));
     }
 
     public void setExcelExportAllowed(boolean excelExportAllowed) {
@@ -515,7 +540,7 @@ public class DisplayerSettings {
     public Position getChartLegendPosition() {
         Position pos = Position.getByName(settings.get(getSettingPath(DisplayerAttributeDef.CHART_LEGENDPOSITION)));
         if (pos == null)
-            return Position.RIGHT;
+            return Position.BOTTOM;
         return pos;
     }
 
@@ -576,7 +601,7 @@ public class DisplayerSettings {
     }
 
     public boolean isXAxisShowLabels() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.XAXIS_SHOWLABELS)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.XAXIS_SHOWLABELS)), true);
     }
 
     public void setXAxisShowLabels(boolean axisShowLabels) {
@@ -600,7 +625,7 @@ public class DisplayerSettings {
     }
 
     public boolean isYAxisShowLabels() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.YAXIS_SHOWLABELS)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.YAXIS_SHOWLABELS)), true);
     }
 
     public void setYAxisShowLabels(boolean axisShowLabels) {
@@ -696,6 +721,18 @@ public class DisplayerSettings {
         return MapColorScheme.from(settings.get(getSettingPath(DisplayerAttributeDef.MAP_COLOR_SCHEME)));
     }
 
+    public long getBubbleMinRadius() {
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.BUBBLE_MIN_RADIUS)), 5);
+    }
+
+    public long getBubbleMaxRadius() {
+        return parseLong(settings.get(getSettingPath(DisplayerAttributeDef.BUBBLE_MAX_RADIUS)), 60);
+    }
+
+    public String getBubbleColor() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.BUBBLE_COLOR)));
+    }
+
     public String getComponentId() {
         var legacyComponentId = settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID_DEPRECATED));
         if (legacyComponentId != null) {
@@ -778,6 +815,11 @@ public class DisplayerSettings {
 
     private String removeComponentPrefix(String componentId, String key) {
         return key.replaceAll(componentId + ".", "");
+    }
+
+    public boolean isAttributeDefinedByUser(DisplayerAttributeDef attr) {
+        return settings.get(getSettingPath(attr)) != null;
+
     }
 
 }

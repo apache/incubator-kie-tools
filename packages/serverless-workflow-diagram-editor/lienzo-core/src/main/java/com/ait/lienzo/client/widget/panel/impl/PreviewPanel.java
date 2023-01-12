@@ -149,7 +149,22 @@ public class PreviewPanel extends ScalablePanel {
             }
         });
 
-        boundsChangedEventListener = panel.addBoundsChangedEventListener(event -> refresh());
+        boundsChangedEventListener = panel.addBoundsChangedEventListener(event -> {
+            if (!decorator.isDragging()) {
+                visibleScaleFactor
+                        .setX(1 / panel.getViewport().getTransform().getScaleX())
+                        .setY(1 / panel.getViewport().getTransform().getScaleY());
+
+                resize(panel.getWidePx(),
+                       panel.getHighPx());
+
+                // Use actual panel's scroll position.
+                scroll(panel.getHorizontalScrollRate(),
+                       panel.getVerticalScrollRate());
+
+                refresh();
+            }
+        });
 
         // Use actual panel's size.
         resize(panel.getWidePx(),
@@ -159,6 +174,9 @@ public class PreviewPanel extends ScalablePanel {
         scroll(panel.getHorizontalScrollRate(),
                panel.getVerticalScrollRate());
 
+        updatePanelScroll();
+
+        refresh();
         return this;
     }
 
@@ -218,7 +236,8 @@ public class PreviewPanel extends ScalablePanel {
 
     private void resize(final double width,
                         final double height) {
-        setDefaultBounds(Bounds.relativeBox(width, height));
+        setDefaultBounds(Bounds.relativeBox(observed.getLienzoPanel().getWidePx() * visibleScaleFactor.getX(),
+                                            observed.getLienzoPanel().getHighPx() * visibleScaleFactor.getY()));
         setVisibleBoundsSize(width,
                              height);
         refresh();
