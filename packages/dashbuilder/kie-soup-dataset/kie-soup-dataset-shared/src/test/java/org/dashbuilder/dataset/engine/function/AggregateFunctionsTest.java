@@ -336,4 +336,20 @@ public class AggregateFunctionsTest {
         Object result = function.aggregate(EMPTY_LIST);
         assertEquals(result, 0d);
     }
+
+    @Test
+    public void testMedianFunction() {
+        var function = new MedianFunction();
+        var values = List.of(1, 2, 3);
+        var result = function.aggregate(values);
+        assertEquals(result, 2d);
+
+        values = List.of(1, 4);
+        result = function.aggregate(values);
+        assertEquals(result, 2.5d);
+
+        values = List.of(1);
+        result = function.aggregate(values);
+        assertEquals(result, 1.0d);
+    }
 }

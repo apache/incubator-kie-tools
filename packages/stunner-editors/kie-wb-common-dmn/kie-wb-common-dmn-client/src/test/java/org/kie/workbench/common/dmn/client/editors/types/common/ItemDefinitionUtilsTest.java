@@ -24,6 +24,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
@@ -193,6 +194,20 @@ public class ItemDefinitionUtilsTest {
         final String actualText = utils.getConstraintText(itemDefinition);
 
         assertEquals(expectedText, actualText);
+    }
+
+    @Test
+    public void testGetConstraintType() {
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final UnaryTests allowedValues = mock(UnaryTests.class);
+        final ConstraintType expectedConstraintType = ConstraintType.RANGE;
+
+        when(itemDefinition.getAllowedValues()).thenReturn(allowedValues);
+        when(allowedValues.getConstraintType()).thenReturn(expectedConstraintType);
+
+        final ConstraintType actualConstraintType = utils.getConstraintType(itemDefinition);
+
+        assertEquals(expectedConstraintType, actualConstraintType);
     }
 
     private ItemDefinition makeItem(final String itemName) {

@@ -13,7 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-
-export interface DashbuilderEditorChannelApi extends KogitoEditorChannelApi {}
+export * from "./DashbuilderEditorChannelApiImpl";
