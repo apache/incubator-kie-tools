@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import {
   Masthead,
   MastheadBrand,
@@ -34,12 +35,14 @@ import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { useHistory } from "react-router";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
-import { OpenshiftDeploymentsDropdown } from "../../openshift/OpenshiftDeploymentsDropdown";
+import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { BarsIcon } from "@patternfly/react-icons";
 import { HomePageNav } from "../uiNav/HomePageNav";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
@@ -48,6 +51,11 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const navToggle = () => {
     setIsNavOpen(!isNavOpen);
   };
+
+  const isChromiumBased = useMemo(() => {
+    const agent = window.navigator.userAgent.toLowerCase();
+    return agent.indexOf("edg") > -1 || agent.indexOf("chrome") > -1;
+  }, []);
 
   const headerToolbar = (
     <Toolbar id="toolbar" isFullHeight isStatic>
@@ -66,6 +74,24 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
           <ToolbarItem>
             <KieSandboxExtendedServicesIcon />
           </ToolbarItem>
+          {!isChromiumBased && (
+            <ToolbarItem>
+              <Tooltip
+                className="kogito--editor__light-tooltip"
+                key={"not-chromium"}
+                content={"To get the best experience, please prefer using Chromium based browsers."}
+                flipBehavior={["left"]}
+                distance={20}
+              >
+                <ExclamationIcon
+                  data-testid="not-chromium-icon"
+                  className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated static-opacity"
+                  id="kie-sandbox-extended-services-not-chromium-icon"
+                  style={{ cursor: "pointer" }}
+                />
+              </Tooltip>
+            </ToolbarItem>
+          )}
         </ToolbarGroup>
       </ToolbarContent>
     </Toolbar>

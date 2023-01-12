@@ -15,10 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { useHistory } from "react-router";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
+import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import {
   Card,
   CardActions,
@@ -27,20 +30,13 @@ import {
   CardHeaderMain,
   CardTitle,
 } from "@patternfly/react-core/dist/js/components/Card";
-import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
-import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
-import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
-import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { FileLabel } from "../../workspace/components/FileLabel";
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import {
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+} from "@patternfly/react-core/dist/js/components/DataList";
 import {
   Drawer,
   DrawerActions,
@@ -52,37 +48,35 @@ import {
   DrawerPanelContent,
   DrawerSection,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { Link } from "react-router-dom";
-import { DeleteDropdownWithConfirmation } from "../../editor/DeleteDropdownWithConfirmation";
-import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
-import { QueryParams } from "../../navigation/Routes";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { RelativeDate } from "../../dates/RelativeDate";
-import {
-  DataList,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-} from "@patternfly/react-core/dist/js/components/DataList";
-import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
-import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { NewFileDropdownMenu } from "../../editor/NewFileDropdownMenu";
-import { Alerts, AlertsController } from "../../alerts/Alerts";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import { Alerts, AlertsController } from "../../alerts/Alerts";
+import { RelativeDate } from "../../dates/RelativeDate";
+import { DeleteDropdownWithConfirmation } from "../../editor/DeleteDropdownWithConfirmation";
+import { NewFileDropdownMenu } from "../../editor/NewFileDropdownMenu";
+import { isEditable, splitFiles } from "../../extension";
 import { useRoutes } from "../../navigation/Hooks";
+import { QueryParams } from "../../navigation/Routes";
+import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-<<<<<<< HEAD:packages/serverless-logic-web-tools/src/homepage/serverlessModels/ServerlessModels.tsx
-import { isEditable } from "../../extension";
-=======
-import { Showcase } from "./Showcase";
-import { FileTypes, splitFiles, SupportedFileExtensions } from "../extension";
-import { APP_NAME } from "../AppConstants";
->>>>>>> upstream/KOGITO-8015-feature-preview:packages/serverless-logic-web-tools/src/home/HomePage.tsx
+import { FileLabel } from "../../workspace/components/FileLabel";
+import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 
 export function ServerlessModels() {
   const routes = useRoutes();
@@ -135,7 +129,6 @@ export function ServerlessModels() {
                 <Text component={TextVariants.h1}>Recent models</Text>
               </TextContent>
               <br />
-<<<<<<< HEAD:packages/serverless-logic-web-tools/src/homepage/serverlessModels/ServerlessModels.tsx
             </DrawerSection>
             <DrawerContent
               panelContent={
@@ -220,38 +213,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
             <DrawerHead>
               <Flex>
                 <FlexItem>
-=======
-              <Divider inset={{ default: "insetXl" }} />
-              <Gallery
-                hasGutter={true}
-                // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
-                style={{ height: "calc(100% - 32px)" }}
-              >
-                <ImportFromUrlCard />
-                <UploadCard expandWorkspace={expandWorkspace} />
-              </Gallery>
-            </PageSection>
-          </GridItem>
-        </Grid>
-      </PageSection>
-      <PageSection isFilled={false} style={{ paddingRight: 0 }}>
-        <Showcase />
-      </PageSection>
-      <PageSection
-        isFilled={true}
-        variant={"light"}
-        hasOverflowScroll={false}
-        data-ouia-component-id={"recent-models-section"}
-      >
-        <PromiseStateWrapper
-          promise={workspaceDescriptorsPromise}
-          rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
-          resolved={(workspaceDescriptors) => {
-            return (
-              <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
-                <DrawerSection>
->>>>>>> upstream/KOGITO-8015-feature-preview:packages/serverless-logic-web-tools/src/home/HomePage.tsx
                   <TextContent>
                     <Text
                       component={TextVariants.h3}
@@ -316,7 +277,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                   toggleTextExpanded="Hide readonly files"
                   className={"plain"}
                 >
-<<<<<<< HEAD:packages/serverless-logic-web-tools/src/homepage/serverlessModels/ServerlessModels.tsx
                   <DataList aria-label="readonly-files-data-list">
                     {readonlyFiles.map((file) => (
                       <Link
@@ -338,50 +298,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
         )}
       />
     </DrawerPanelContent>
-=======
-                  <DrawerContentBody data-ouia-component-id={"recent-models-section-body"}>
-                    {workspaceDescriptors.length > 0 && (
-                      <Stack hasGutter={true} style={{ padding: "10px" }}>
-                        {workspaceDescriptors
-                          .sort((a, b) => (new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1))
-                          .map((workspace) => (
-                            <StackItem key={workspace.workspaceId}>
-                              <ErrorBoundary error={<WorkspaceCardError workspace={workspace} />}>
-                                <WorkspaceCard
-                                  workspaceId={workspace.workspaceId}
-                                  onSelect={() => expandWorkspace(workspace.workspaceId)}
-                                  isSelected={workspace.workspaceId === expandedWorkspaceId}
-                                />
-                              </ErrorBoundary>
-                            </StackItem>
-                          ))}
-                      </Stack>
-                    )}
-                    {workspaceDescriptors.length === 0 && (
-                      <Bullseye>
-                        <EmptyState>
-                          <EmptyStateIcon icon={CubesIcon} />
-                          <Title headingLevel="h4" size="lg" ouiaId={"empty-recent-models-title"}>
-                            {`Nothing here`}
-                          </Title>
-                          <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                        </EmptyState>
-                      </Bullseye>
-                    )}
-                  </DrawerContentBody>
-                </DrawerContent>
-              </Drawer>
-            );
-          }}
-        />
-      </PageSection>
-      {buildInfo && (
-        <div className={"kie-tools--build-info"}>
-          <Label>{buildInfo}</Label>
-        </div>
-      )}
-    </OnlineEditorPage>
->>>>>>> upstream/KOGITO-8015-feature-preview:packages/serverless-logic-web-tools/src/home/HomePage.tsx
   );
 }
 
@@ -611,193 +527,6 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   );
 }
 
-<<<<<<< HEAD:packages/serverless-logic-web-tools/src/homepage/serverlessModels/ServerlessModels.tsx
-=======
-export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
-  const routes = useRoutes();
-
-  return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true} ouiaId={`${props.title}-card`}>
-      <CardTitle>
-        <FileLabel style={{ fontSize: "0.8em" }} extension={props.extension} />
-      </CardTitle>
-      <CardBody>
-        <TextContent>
-          <Text component={TextVariants.p}>{props.description}</Text>
-        </TextContent>
-      </CardBody>
-      <CardFooter>
-        <Grid>
-          <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
-            <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
-              New {props.title}
-            </Button>
-          </Link>
-        </Grid>
-      </CardFooter>
-    </Card>
-  );
-}
-
-export function NewServerlessModelCard(props: {
-  title: string;
-  jsonExtension: SupportedFileExtensions;
-  yamlExtension: SupportedFileExtensions;
-  description: string;
-}) {
-  const routes = useRoutes();
-
-  return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true} ouiaId={`${props.title}-card`}>
-      <CardTitle>
-        <FileLabel style={{ fontSize: "0.8em" }} extension={props.jsonExtension} />
-      </CardTitle>
-      <CardBody>
-        <TextContent>
-          <Text component={TextVariants.p}>{props.description}</Text>
-        </TextContent>
-      </CardBody>
-      <CardFooter>
-        <Grid hasGutter>
-          <GridItem span={12}>New {props.title}</GridItem>
-          <GridItem span={6}>
-            <Link to={{ pathname: routes.newModel.path({ extension: props.jsonExtension }) }}>
-              <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.jsonExtension}-button`}>
-                JSON
-              </Button>
-            </Link>
-          </GridItem>
-          <GridItem span={6}>
-            <Link to={{ pathname: routes.newModel.path({ extension: props.yamlExtension }) }}>
-              <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.yamlExtension}-button`}>
-                YAML
-              </Button>
-            </Link>
-          </GridItem>
-        </Grid>
-      </CardFooter>
-    </Card>
-  );
-}
-
-export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
-  const routes = useRoutes();
-  const workspacePromise = useWorkspacePromise(props.workspaceId);
-
-  const { editableFiles, readonlyFiles } = useMemo(() => {
-    const allFiles = (workspacePromise.data?.files ?? []).sort((a, b) => a.relativePath.localeCompare(b.relativePath));
-    return splitFiles(allFiles);
-  }, [workspacePromise.data?.files]);
-
-  const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
-  const [alerts, alertsRef] = useController<AlertsController>();
-
-  return (
-    <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
-      <PromiseStateWrapper
-        promise={workspacePromise}
-        pending={
-          <DrawerPanelBody>
-            <Bullseye>
-              <Spinner />
-            </Bullseye>
-          </DrawerPanelBody>
-        }
-        resolved={(workspace) => (
-          <>
-            <Alerts width={"100%"} ref={alertsRef} />
-            <DrawerHead>
-              <Flex>
-                <FlexItem>
-                  <TextContent>
-                    <Text
-                      component={TextVariants.h3}
-                    >{`Editable files in '${workspacePromise.data?.descriptor.name}'`}</Text>
-                  </TextContent>
-                </FlexItem>
-                <FlexItem>
-                  <Dropdown
-                    isPlain={true}
-                    position={"left"}
-                    isOpen={isNewFileDropdownMenuOpen}
-                    toggle={
-                      <DropdownToggle
-                        className={"kie-tools--masthead-hoverable"}
-                        toggleIndicator={null}
-                        onToggle={setNewFileDropdownMenuOpen}
-                      >
-                        <PlusIcon />
-                      </DropdownToggle>
-                    }
-                  >
-                    <NewFileDropdownMenu
-                      alerts={alerts}
-                      workspaceId={workspace.descriptor.workspaceId}
-                      destinationDirPath={""}
-                      onAddFile={async () => setNewFileDropdownMenuOpen(false)}
-                    />
-                  </Dropdown>
-                </FlexItem>
-              </Flex>
-              {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
-                workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
-                <TextContent>
-                  <Text component={TextVariants.small}>
-                    <i>{workspace.descriptor.origin.url.toString()}</i>
-                  </Text>
-                </TextContent>
-              )}
-              <DrawerActions>
-                <DrawerCloseButton onClick={props.onClose} />
-              </DrawerActions>
-            </DrawerHead>
-            <DrawerPanelBody>
-              <DataList aria-label="models-data-list">
-                {editableFiles.map((file) => (
-                  <Link
-                    key={file.relativePath}
-                    to={routes.workspaceWithFilePath.path({
-                      workspaceId: workspace.descriptor.workspaceId ?? "",
-                      fileRelativePath: file.relativePathWithoutExtension,
-                      extension: file.extension,
-                    })}
-                  >
-                    <FileDataListItem file={file} />
-                  </Link>
-                ))}
-              </DataList>
-              <br />
-              {readonlyFiles.length > 0 && (
-                <ExpandableSection
-                  toggleTextCollapsed="View readonly files"
-                  toggleTextExpanded="Hide readonly files"
-                  className={"plain"}
-                >
-                  <DataList aria-label="readonly-files-data-list">
-                    {readonlyFiles.map((file) => (
-                      <Link
-                        key={file.relativePath}
-                        to={routes.workspaceWithFilePath.path({
-                          workspaceId: workspace.descriptor.workspaceId ?? "",
-                          fileRelativePath: file.relativePathWithoutExtension,
-                          extension: file.extension,
-                        })}
-                      >
-                        <FileDataListItem key={file.relativePath} file={file} />
-                      </Link>
-                    ))}
-                  </DataList>
-                </ExpandableSection>
-              )}
-            </DrawerPanelBody>
-          </>
-        )}
-      />
-    </DrawerPanelContent>
-  );
-}
-
->>>>>>> upstream/KOGITO-8015-feature-preview:packages/serverless-logic-web-tools/src/home/HomePage.tsx
 export function FileDataListItem(props: { file: WorkspaceFile }) {
   return (
     <DataListItem>

@@ -26,10 +26,10 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { FileTypes } from "../../extension";
 import { Sample, tagMap } from "./Types";
 
-export function SampleCard(props: { sample: Sample }) {
+export function SampleCard({ sample }: { sample: Sample }) {
   const routes = useRoutes();
 
-  const tag = useMemo(() => tagMap[props.sample.type], [props.sample.type]);
+  const tag = useMemo(() => tagMap[sample.type], [sample.type]);
 
   return (
     <Card isCompact={true} isFullHeight={true}>
@@ -44,12 +44,12 @@ export function SampleCard(props: { sample: Sample }) {
               &nbsp;&nbsp;<b>{tag.label}</b>
             </Label>
           </div>
-          <props.sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
+          <sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
         </GridItem>
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
-          <CardTitle data-ouia-component-type="sample-title">{props.sample.name}</CardTitle>
+          <CardTitle data-ouia-component-type="sample-title">{sample.name}</CardTitle>
           <CardBody isFilled={true}>
-            <Text component="p">{props.sample.description}</Text>
+            <Text component="p">{sample.description}</Text>
           </CardBody>
           <CardFooter style={{ alignItems: "baseline" }}>
             <Link
@@ -57,17 +57,17 @@ export function SampleCard(props: { sample: Sample }) {
                 pathname: routes.importModel.path({}),
                 search: routes.importModel.queryString({
                   url:
-                    props.sample.repoUrl ??
+                    sample.repoUrl ??
                     `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                      type: props.sample.type || FileTypes.SW_JSON,
-                      name: props.sample.fileName,
+                      type: sample.type || FileTypes.SW_JSON,
+                      name: sample.fileName,
                     })}`,
-                  renameWorkspace: props.sample.name,
-                  ...(props.sample.repoUrl ? { removeRemote: "true" } : {}),
+                  renameWorkspace: sample.name,
+                  ...(sample.repoUrl ? { removeRemote: "true" } : {}),
                 }),
               }}
             >
-              <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.fileName + `-try-swf-sample-button`}>
+              <Button variant={ButtonVariant.tertiary} ouiaId={sample.fileName + `-try-swf-sample-button`}>
                 Try it out!
               </Button>
             </Link>
