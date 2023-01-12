@@ -16,7 +16,8 @@ fi
 source "${script_dir_path}"/configure-maven.sh
 configure
 
-export MAVEN_OPTS="$("${KOGITO_HOME}"/launch/jvm-settings.sh)"
+# auto configure JVM settings
+source "${KOGITO_HOME}"/launch/jvm-settings.sh
 
 "${MAVEN_HOME}"/bin/mvn -U -B -s "${MAVEN_SETTINGS_PATH}" \
   io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":create ${QUARKUS_CREATE_ARGS} \
@@ -28,4 +29,6 @@ export MAVEN_OPTS="$("${KOGITO_HOME}"/launch/jvm-settings.sh)"
 
 cd "${PROJECT_ARTIFACT_ID}"
 
-"${MAVEN_HOME}"/bin/mvn ${MAVEN_ARGS_APPEND} -U -B clean install -DskipTests -s "${MAVEN_SETTINGS_PATH}" -Dquarkus.container-image.build=false
+# Quarkus version is enforced if some dependency pulled has older version of Quarkus set.
+# This avoids to have, for example, Quarkus BOMs or orther artifacts with multiple versions.
+"${MAVEN_HOME}"/bin/mvn ${MAVEN_ARGS_APPEND} -Dquarkus.version="${QUARKUS_VERSION}" -U -B clean install -DskipTests -s "${MAVEN_SETTINGS_PATH}" -Dquarkus.container-image.build=false

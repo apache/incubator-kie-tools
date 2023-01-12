@@ -9,4 +9,4 @@ Feature: SWF and Quarkus installation
 
   Scenario: verify if there is no dependencies with multiple versions in /home/kogito/.m2/repository
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/.m2/repository/io/quarkus/quarkus-arc  | wc -l' in container and immediately check its output for 1
+    Then run sh -c 'ls /home/kogito/.m2/repository/io/quarkus/quarkus-bom  | wc -l' in container and immediately check its output for 1

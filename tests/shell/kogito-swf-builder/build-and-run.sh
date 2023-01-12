@@ -12,7 +12,7 @@ ${_BUILDER} run -d --name ${container_name} -p 8080:8080 quay.io/kiegroup/swf-te
 
 set -x
 export _BUILDER; export container_name && timeout 10s bash -c 'result="unhealthy"; while [[ "$result" != "healthy" ]]; \
- do sleep 2 && echo "status: $result"; result=$(${_BUILDER} inspect -f {{.State.Health.Status}} ${container_name}); done'
+ do sleep 2 && result=$(${_BUILDER} inspect -f {{.State.Health.Status}} ${container_name}); echo "status: $result"; done'
 if [[ "$?" != 0 ]]; then
   echo "ERROR: Container status: $(${_BUILDER} inspect -f {{.State.Health.Status}} ${container_name})"
 else

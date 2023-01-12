@@ -19,40 +19,20 @@ teardown() {
     expected_status_code=0
     mkdir -p $KOGITO_HOME/my-app
 
-    run ${KOGITO_HOME}/launch/jvm-settings.sh $KOGITO_HOME/my-app
+    source ${KOGITO_HOME}/launch/jvm-settings.sh
 
-    echo "Output is: ${lines[@]}"
-    [[ "${lines[0]}" == *"INFO {jvm-settings} checking if .mvn/jvm.config exists."* ]]
-    [[ "${lines[1]}" == *"INFO {jvm-settings} .mvn/jvm.config does not exists, memory will be calculated based on container limits."* ]]
-    [[ "${lines[2]}" == *"-XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
-    [ "$status" = "${expected_status_code}" ]
-    echo "Result is [$status] and expected is [${expected_status_code}]" >&2
-}
-
-@test "run jvm-settings with no custom conf with no resource path parameter" {
-    expected_status_code=0
-    mkdir -p $KOGITO_HOME/my-app
-
-    run ${KOGITO_HOME}/launch/jvm-settings.sh
-
-    echo "Output is: ${lines[@]}"
-    [[ "${lines[0]}" == *"INFO {jvm-settings} resource directory is empty..."* ]]
-    [[ "${lines[1]}" == *"-XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
-    [ "$status" = "${expected_status_code}" ]
-    echo "Result is [$status] and expected is [${expected_status_code}]" >&2
+    echo "MAVEN_OPTS is: ${MAVEN_OPTS}"
+    [[ "${MAVEN_OPTS}" == *"-XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
 }
 
 @test "run jvm-settings with custom conf" {
     expected_status_code=0
     mkdir -p $KOGITO_HOME/my-app/.mvn
+    cd $KOGITO_HOME/my-app
     echo "-Xmx1024m -Xms512m -Xotherthing" > $KOGITO_HOME/my-app/.mvn/jvm.config
 
-    run ${KOGITO_HOME}/launch/jvm-settings.sh $KOGITO_HOME/my-app
+    source ${KOGITO_HOME}/launch/jvm-settings.sh
 
-    echo "Output is: ${lines[@]}"
-    [[ "${lines[0]}" == *"INFO {jvm-settings} checking if .mvn/jvm.config exists."* ]]
-    [[ "${lines[1]}" == *"INFO {jvm-settings} .mvn/jvm.config exists."* ]]
-    [[ "${lines[2]}" == *"-Xmx1024m -Xms512m -Xotherthing -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
-    [ "$status" = "${expected_status_code}" ]
-    echo "Result is [$status] and expected is [${expected_status_code}]" >&2
+    echo "MAVEN_OPTS is: ${MAVEN_OPTS}"
+    [[ "${MAVEN_OPTS}" == *"-Xmx1024m -Xms512m -Xotherthing -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
 }

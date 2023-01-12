@@ -52,7 +52,9 @@ mvn -U "${MAVEN_OPTIONS}" \
 
 echo "Build quarkus app"
 cd "serverless-workflow-project"
-mvn ${MAVEN_OPTIONS} -U clean install -DskipTests -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false
+# Quarkus version is enforced if some dependency pulled has older version of Quarkus set.
+# This avoids to have, for example, Quarkus BOMs or orther artifacts with multiple versions.
+mvn ${MAVEN_OPTIONS} -U clean install -DskipTests -Dquarkus.version="${quarkus_version}" -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false
 
 cd ${build_target_dir}
 

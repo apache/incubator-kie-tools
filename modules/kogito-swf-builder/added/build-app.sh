@@ -9,6 +9,7 @@ fi
 
 source "${script_dir_path}"/logging.sh
 
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
     export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -X --batch-mode" 
@@ -36,5 +37,7 @@ else
   log_warn "-> Nothing to copy from ${resources_path}"
 fi
 
-export MAVEN_OPTS="$("${KOGITO_HOME}"/launch/jvm-settings.sh `pwd`)"
+# auto configure JVM settings
+source "${KOGITO_HOME}"/launch/jvm-settings.sh
+
 "${MAVEN_HOME}"/bin/mvn ${MAVEN_ARGS_APPEND} -U -B clean install -DskipTests -s "${MAVEN_SETTINGS_PATH}" -Dquarkus.container-image.build=false
