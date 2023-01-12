@@ -5351,7 +5351,7 @@ importers:
       rimraf: ^3.0.2
       ts-jest: ^26.5.6
       typescript: ^4.4.2
-      vscode-extension-tester: ^5.2.0
+      vscode-extension-tester: 5.2.1
       vscode-test: ^1.6.1
       webpack: ^5.36.2
       webpack-cli: ^4.10.0
@@ -5403,7 +5403,7 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      vscode-extension-tester: 5.2.0_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 5.2.1_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -5526,7 +5526,7 @@ importers:
       rimraf: ^3.0.2
       selenium-webdriver: ^4.7.1
       typescript: ^4.4.2
-      vscode-extension-tester: ^5.2.0
+      vscode-extension-tester: 5.2.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -5581,7 +5581,7 @@ importers:
       rimraf: 3.0.2
       selenium-webdriver: 4.7.1
       typescript: 4.5.4
-      vscode-extension-tester: 5.2.0_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 5.2.1_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -5624,7 +5624,7 @@ importers:
       rimraf: ^3.0.2
       selenium-webdriver: ^4.7.1
       typescript: ^4.4.2
-      vscode-extension-tester: ^5.2.0
+      vscode-extension-tester: 5.2.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -5672,7 +5672,7 @@ importers:
       rimraf: 3.0.2
       selenium-webdriver: 4.7.1
       typescript: 4.5.4
-      vscode-extension-tester: 5.2.0_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 5.2.1_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -20923,9 +20923,9 @@ packages:
     dependencies:
       monaco-editor: 0.33.0
 
-  /monaco-page-objects/3.2.0_q5i3jimk2cqbtah5rxtxf42pcy:
+  /monaco-page-objects/3.2.1_q5i3jimk2cqbtah5rxtxf42pcy:
     resolution:
-      { integrity: sha512-2VE5SEMBnrSxKOMYuxmSsfiaRLHIRVId1vRZN+a0bBnRvFvfFKahLtTOTZ+ekK9u4W8VnXB9FwpRtasWmGCR1Q== }
+      { integrity: sha512-kzzzuLCNl4AdVjaVw+2V2rAF7ueYlepnh5Ssd/clyUwy2WQqLauCIqGkCIZPSvfRlK42y6abXPJ4c8YWPm12TQ== }
     peerDependencies:
       selenium-webdriver: ^4.6.1
     dependencies:
@@ -26786,20 +26786,20 @@ packages:
       yazl: 2.5.1
     dev: true
 
-  /vscode-extension-tester-locators/3.2.0_5ehi7z3xshn2aa5f6e6uuppf7q:
+  /vscode-extension-tester-locators/3.2.1_t55xzr6bjk54g3hrnvptclainy:
     resolution:
-      { integrity: sha512-38QImAUSiTh3xea5x7y5wOtTkOGHLdKgh6eIp8LEb5js83Ni9NHLO+STU3ScmmKtcUW6vdlA/Gc58lpuWptLjg== }
+      { integrity: sha512-wdiEZyRR2BiaZ4meG5TRHTZFkmgy8OLL45Frijv1T/oPmLAIlneL1LL9fQ8a9JvqKVeapvjvPwoXePDoHKPjbQ== }
     peerDependencies:
-      monaco-page-objects: ^3.2.0
+      monaco-page-objects: ^3.2.1
       selenium-webdriver: ^4.6.1
     dependencies:
-      monaco-page-objects: 3.2.0_q5i3jimk2cqbtah5rxtxf42pcy
+      monaco-page-objects: 3.2.1_q5i3jimk2cqbtah5rxtxf42pcy
       selenium-webdriver: 4.7.1
     dev: true
 
-  /vscode-extension-tester/5.2.0_jvempbdbjtvhoodinnen4jiyly:
+  /vscode-extension-tester/5.2.1_jvempbdbjtvhoodinnen4jiyly:
     resolution:
-      { integrity: sha512-ySXnPxY0StwOCrbrRqOHUMV8r5Z8rk7l9JZmcxAFUwa9LnGFncaOUY9r372rjmAyAyr4Txd5czHtuFxfXWRlBQ== }
+      { integrity: sha512-GEiZXfpAQx75P+ROrHwPESh0jC0TQ2KqOfWE5vb580uWxXmdVMRzoDvxo4I28BFze1nLqAsQ1puVQpaIjQq3pg== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
@@ -26813,13 +26813,13 @@ packages:
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.2.0_q5i3jimk2cqbtah5rxtxf42pcy
+      monaco-page-objects: 3.2.1_q5i3jimk2cqbtah5rxtxf42pcy
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.7.1
       targz: 1.0.1
       unzip-stream: 0.3.1
       vsce: 2.15.0
-      vscode-extension-tester-locators: 3.2.0_5ehi7z3xshn2aa5f6e6uuppf7q
+      vscode-extension-tester-locators: 3.2.1_t55xzr6bjk54g3hrnvptclainy
     transitivePeerDependencies:
       - bufferutil
       - typescript
