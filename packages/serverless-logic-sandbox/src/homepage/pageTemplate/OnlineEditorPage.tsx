@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { QuickStart, QuickStartContainer, QuickStartContainerProps } from "@patternfly/quickstarts";
+import { QuickStartContainer, QuickStartContainerProps } from "@patternfly/quickstarts";
 import {
   Brand,
   Button,
@@ -40,7 +40,7 @@ import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
-import * as GitHubQuickStart from "../../quickstarts-data/GitHub.json";
+import { GitHubTokenQuickStart } from "../../quickstarts-data";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 
@@ -58,7 +58,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const [allQuickStartStates, setAllQuickStartStates] = useState({});
 
   const drawerProps: QuickStartContainerProps = {
-    quickStarts: [GitHubQuickStart as QuickStart],
+    quickStarts: [GitHubTokenQuickStart],
     activeQuickStartID,
     allQuickStartStates,
     setActiveQuickStartID,
