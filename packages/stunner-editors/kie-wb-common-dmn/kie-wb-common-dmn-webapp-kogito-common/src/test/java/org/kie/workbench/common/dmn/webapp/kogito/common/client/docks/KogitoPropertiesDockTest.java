@@ -23,7 +23,7 @@ public class KogitoPropertiesDockTest extends BaseKogitoDockTest<KogitoPropertie
     @Override
     protected KogitoPropertiesDock makeDock() {
         return new KogitoPropertiesDock(uberfireDocks,
-                translationService);
+                                        translationService);
     }
 
     @Override

@@ -177,7 +177,6 @@ public class StunnerEditor {
             diagramPresenter = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
-
             view.clear();
         }
         return this;
