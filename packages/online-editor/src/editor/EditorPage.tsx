@@ -33,7 +33,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
-import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
@@ -48,6 +48,7 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
+import { BpmnRunnerProvider } from "./BpmnRunner/BpmnRunnerProvider";
 
 export interface Props {
   workspaceId: string;
@@ -286,6 +287,7 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     if (
       workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
+      workspaceFilePromise.data?.workspaceFile.extension === "bpmn" ||
       !workspaceFilePromise.data ||
       !editor?.isReady
     ) {
@@ -338,6 +340,80 @@ export function EditorPage(props: Props) {
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
 
+  const runnerForFileExtension = (file: { workspaceFile: WorkspaceFile; uniqueId: string }) => {
+    if (file.workspaceFile.extension.toLocaleLowerCase() == "dmn") {
+      return (
+        <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
+          <Page>
+            <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
+            <Divider />
+            <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+              <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
+                <EditorPageDockDrawer
+                  ref={editorPageDockRef}
+                  isEditorReady={editor?.isReady}
+                  workspaceFile={file.workspaceFile}
+                >
+                  {embeddedEditorFile && (
+                    <EmbeddedEditor
+                      /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                       * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                       */
+                      key={uniqueFileId}
+                      ref={editorRef}
+                      file={embeddedEditorFile}
+                      kogitoWorkspace_openFile={handleOpenFile}
+                      kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                      kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                      kogitoEditor_setContentError={handleSetContentError}
+                      editorEnvelopeLocator={editorEnvelopeLocator}
+                      channelType={ChannelType.ONLINE_MULTI_FILE}
+                      locale={locale}
+                    />
+                  )}
+                </EditorPageDockDrawer>
+              </DmnRunnerDrawer>
+            </PageSection>
+          </Page>
+        </DmnRunnerProvider>
+      );
+    } else {
+      return (
+        <BpmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
+          <Page>
+            <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
+            <Divider />
+            <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+              <EditorPageDockDrawer
+                ref={editorPageDockRef}
+                isEditorReady={editor?.isReady}
+                workspaceFile={file.workspaceFile}
+              >
+                {embeddedEditorFile && (
+                  <EmbeddedEditor
+                    /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                     * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                     */
+                    key={uniqueFileId}
+                    ref={editorRef}
+                    file={embeddedEditorFile}
+                    kogitoWorkspace_openFile={handleOpenFile}
+                    kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                    kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                    kogitoEditor_setContentError={handleSetContentError}
+                    editorEnvelopeLocator={editorEnvelopeLocator}
+                    channelType={ChannelType.ONLINE_MULTI_FILE}
+                    locale={locale}
+                  />
+                )}
+              </EditorPageDockDrawer>
+            </PageSection>
+          </Page>
+        </BpmnRunnerProvider>
+      );
+    }
+  };
+
   return (
     <OnlineEditorPage>
       <PromiseStateWrapper
@@ -358,39 +434,7 @@ export function EditorPage(props: Props) {
         )}
         resolved={(file) => (
           <>
-            <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-              <Page>
-                <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
-                <Divider />
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
-                  <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-                    <EditorPageDockDrawer
-                      ref={editorPageDockRef}
-                      isEditorReady={editor?.isReady}
-                      workspaceFile={file.workspaceFile}
-                    >
-                      {embeddedEditorFile && (
-                        <EmbeddedEditor
-                          /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                           * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                           */
-                          key={uniqueFileId}
-                          ref={editorRef}
-                          file={embeddedEditorFile}
-                          kogitoWorkspace_openFile={handleOpenFile}
-                          kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                          kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                          kogitoEditor_setContentError={handleSetContentError}
-                          editorEnvelopeLocator={editorEnvelopeLocator}
-                          channelType={ChannelType.ONLINE_MULTI_FILE}
-                          locale={locale}
-                        />
-                      )}
-                    </EditorPageDockDrawer>
-                  </DmnRunnerDrawer>
-                </PageSection>
-              </Page>
-            </DmnRunnerProvider>
+            {runnerForFileExtension(file)}
             <TextEditorModal
               editor={editor}
               workspaceFile={file.workspaceFile}
