@@ -19,13 +19,14 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.sw.definition.Metadata;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -58,8 +59,8 @@ public class StateShapeTest {
     private final String PARALLEL_COLOR = "#4CB140";
     private final String SLEEP_COLOR = "#5752D1";
     private final String ANSIBLE_COLOR = "#BB271A";
-
     private final String KAOTO_COLOR = "#332174";
+    private final String DEFAULT_EMPTY_COLOR = "#FFF";
 
     @Mock
     ResourceContentService kogitoService;
@@ -118,8 +119,8 @@ public class StateShapeTest {
         State state = createState(type);
 
         StateShape shape = new StateShape(state, kogitoService);
-        Assert.assertFalse(shape.getView().isIconEmpty());
-        Assert.assertEquals(color, shape.getView().getIconBackgroundColor());
+        assertFalse(shape.getView().isIconEmpty());
+        assertEquals(color, shape.getView().getIconBackgroundColor());
     }
 
     private State createState(String type) {
@@ -136,8 +137,8 @@ public class StateShapeTest {
         state.setMetadata(metadata);
 
         StateShape shape = new StateShape(state, kogitoService);
-        Assert.assertFalse(shape.getView().isIconEmpty());
-        Assert.assertEquals(color, shape.getView().getIconBackgroundColor());
+        assertFalse(shape.getView().isIconEmpty());
+        assertEquals(color, shape.getView().getIconBackgroundColor());
     }
 
     @Test
@@ -172,8 +173,8 @@ public class StateShapeTest {
         state.setMetadata(metadata);
 
         StateShape shape = new StateShape(state, kogitoService);
-        Assert.assertFalse(shape.getView().isIconEmpty());
-        Assert.assertNull(shape.getView().getIconBackgroundColor());
+        assertFalse(shape.getView().isIconEmpty());
+        assertEquals("#FFF", shape.getView().getIconBackgroundColor());
     }
 
     @Test
@@ -187,13 +188,13 @@ public class StateShapeTest {
         }));
 
         StateShape shape = new StateShape(state, kogitoService);
-        Assert.assertFalse(shape.getView().isIconEmpty());
-        Assert.assertEquals(INJECT_COLOR, shape.getView().getIconBackgroundColor());
+        assertFalse(shape.getView().isIconEmpty());
+        assertEquals(INJECT_COLOR, shape.getView().getIconBackgroundColor());
     }
 
     @Test
     public void scaleLargeWidthSmallHeightTest() {
-        Assert.assertEquals(2.0,
+        assertEquals(2.0,
                             StateShape.calculateIconScale((int) StateShapeView.STATE_SHAPE_ICON_RADIUS * 4,
                                                           (int) StateShapeView.STATE_SHAPE_ICON_RADIUS),
                             0.0);
@@ -201,7 +202,7 @@ public class StateShapeTest {
 
     @Test
     public void scaleLargeHeightSmallWidthTest() {
-        Assert.assertEquals(2.0,
+        assertEquals(2.0,
                             StateShape.calculateIconScale((int) StateShapeView.STATE_SHAPE_ICON_RADIUS,
                                                           (int) StateShapeView.STATE_SHAPE_ICON_RADIUS * 4),
                             0.0);
@@ -209,7 +210,7 @@ public class StateShapeTest {
 
     @Test
     public void scaleLargeWidthLargerHeightTest() {
-        Assert.assertEquals(0.5,
+        assertEquals(0.5,
                             StateShape.calculateIconScale((int) StateShapeView.STATE_SHAPE_ICON_RADIUS * 4,
                                                           (int) StateShapeView.STATE_SHAPE_ICON_RADIUS * 8),
                             0.0);
@@ -217,7 +218,7 @@ public class StateShapeTest {
 
     @Test
     public void scaleLargeHeightLargerWidthTest() {
-        Assert.assertEquals(0.5,
+        assertEquals(0.5,
                             StateShape.calculateIconScale((int) StateShapeView.STATE_SHAPE_ICON_RADIUS * 8,
                                                           (int) StateShapeView.STATE_SHAPE_ICON_RADIUS * 4),
                             0.0);
@@ -225,16 +226,16 @@ public class StateShapeTest {
 
     @Test
     public void base64StringFromLongPathGenerationTest() {
-        Assert.assertEquals("data:image/png;base64, " + IMAGE_DATA, StateShape.iconDataUri("path/to/image.png", IMAGE_DATA));
+        assertEquals("data:image/png;base64, " + IMAGE_DATA, StateShape.iconDataUri("path/to/image.png", IMAGE_DATA));
     }
 
     @Test
     public void base64StringFromRootGenerationTest() {
-        Assert.assertEquals("data:image/jpeg;base64, " + IMAGE_DATA, StateShape.iconDataUri("image.jpeg", IMAGE_DATA));
+        assertEquals("data:image/jpeg;base64, " + IMAGE_DATA, StateShape.iconDataUri("image.jpeg", IMAGE_DATA));
     }
 
     @Test
     public void base64StringFromIncorrectPathGenerationTest() {
-        Assert.assertEquals(IMAGE_DATA, StateShape.iconDataUri("imagejpeg", IMAGE_DATA));
+        assertEquals(IMAGE_DATA, StateShape.iconDataUri("imagejpeg", IMAGE_DATA));
     }
 }
