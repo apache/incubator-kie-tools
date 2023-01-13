@@ -33,9 +33,9 @@ export function DmnRunnerDockToggle(props: Props) {
         borderColor: "rgb(211, 211, 211)",
         padding: "1px",
       }}
-      buttonId={PanelId.DMN_RUNNER_TABULAR}
+      buttonId={PanelId.DMN_RUNNER_TABLE}
       isSelected={props.isSelected}
-      onChange={() => props.onChange(PanelId.DMN_RUNNER_TABULAR)}
+      onChange={() => props.onChange(PanelId.DMN_RUNNER_TABLE)}
       text={
         <div style={{ display: "flex" }}>
           <div style={{ paddingRight: "5px", width: "30px" }}>

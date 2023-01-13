@@ -328,7 +328,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
-    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
+    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
   }, [dmnRunnerDispatch, props.editorPageDock]);
 
   return (

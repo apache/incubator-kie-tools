@@ -36,7 +36,7 @@ import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExt
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 export enum PanelId {
-  DMN_RUNNER_TABULAR = "dmn-runner-tabular",
+  DMN_RUNNER_TABLE = "dmn-runner-table",
   NOTIFICATIONS_PANEL = "notifications-panel",
   NONE = "",
 }
@@ -150,10 +150,6 @@ export const EditorPageDockDrawer = React.forwardRef<
     [dmnRunnerState.mode, props.workspaceFile.extension]
   );
 
-  useEffect(() => {
-    setPanel(PanelId.NONE);
-  }, [props.workspaceFile.relativePath]);
-
   return (
     <>
       <Drawer isInline={true} position={"bottom"} isExpanded={panel !== PanelId.NONE}>
@@ -166,7 +162,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                     {panel === PanelId.NOTIFICATIONS_PANEL && (
                       <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
                     )}
-                    {panel === PanelId.DMN_RUNNER_TABULAR && isDmnTableMode && (
+                    {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && (
                       <DmnRunnerTable
                         workspaceFile={props.workspaceFile}
                         setPanelOpen={setPanel}
@@ -194,7 +190,7 @@ export const EditorPageDockDrawer = React.forwardRef<
       >
         <ToggleGroup>
           {isDmnTableMode && (
-            <DmnRunnerDockToggle isSelected={panel === PanelId.DMN_RUNNER_TABULAR} onChange={(id) => onToggle(id)} />
+            <DmnRunnerDockToggle isSelected={panel === PanelId.DMN_RUNNER_TABLE} onChange={(id) => onToggle(id)} />
           )}
           <NotificationsPanelDockToggle
             isDisabled={notificationsPanelIsDisabled}
