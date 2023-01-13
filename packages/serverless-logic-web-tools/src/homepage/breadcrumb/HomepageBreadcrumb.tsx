@@ -24,7 +24,9 @@ export function HomepageBreadcrumb(props: { paths: string[] }) {
   return (
     <Breadcrumb>
       {props.paths.map((path) => (
-        <BreadcrumbItem to={getPath(path)}>{path === "/" ? { path } : "Home"}</BreadcrumbItem>
+        <BreadcrumbItem key={path} to={getPath(path)}>
+          {path === "/" ? { path } : "Home"}
+        </BreadcrumbItem>
       ))}
       ;
     </Breadcrumb>
