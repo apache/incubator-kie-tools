@@ -84,6 +84,7 @@ public class SearchBarComponentViewTest {
     public void setup() {
 
         searchContainer.classList = mock(DOMTokenList.class);
+        searchButton.classList = mock(DOMTokenList.class);
         view = spy(new SearchBarComponentView(searchButton, searchContainer, prevElement, nextElement, closeSearch, inputElement, translationService, currentResult, totalOfResults));
 
         doNothing().when(view).disableSearch();
