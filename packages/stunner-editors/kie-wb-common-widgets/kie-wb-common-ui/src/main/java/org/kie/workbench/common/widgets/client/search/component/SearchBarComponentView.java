@@ -151,6 +151,7 @@ public class SearchBarComponentView implements SearchBarComponent.View {
 
     @Override
     public void disableSearch() {
+        searchButton.classList.add(HIDDEN);
         searchContainer.classList.add(HIDDEN);
         inputElement.value = "";
         presenter.closeIndex();
@@ -169,6 +170,7 @@ public class SearchBarComponentView implements SearchBarComponent.View {
     }
 
     private void enableSearch() {
+        searchButton.classList.remove(HIDDEN);
         searchContainer.classList.remove(HIDDEN);
         inputElement.focus();
     }
