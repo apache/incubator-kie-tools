@@ -24,6 +24,7 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useSettings } from "../../settings/SettingsContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { BpmnRunnerModelPayload, BpmnRunnerService } from "./BpmnRunnerService";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
