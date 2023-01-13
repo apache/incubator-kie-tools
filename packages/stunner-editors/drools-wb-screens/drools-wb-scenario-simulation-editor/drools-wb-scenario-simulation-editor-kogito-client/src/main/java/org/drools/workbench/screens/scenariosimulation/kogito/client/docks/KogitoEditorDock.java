@@ -96,7 +96,6 @@ public class KogitoEditorDock implements AuthoringEditorDock {
             if (activeDocks != null) {
                 uberfireDocks.remove(activeDocks);
             }
-
         } else {
             // first remove the existing docks
             if (activeDocks != null) {

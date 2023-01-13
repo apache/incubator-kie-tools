@@ -102,7 +102,6 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
 
         isOpened = false;
         uberfireDocks.close(getUberfireDock());
-        //destroy();
     }
 
     protected boolean isOpened() {
