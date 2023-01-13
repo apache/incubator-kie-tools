@@ -117,15 +117,6 @@ export function HomePage() {
     document.title = "KIE Sandbox :: Home";
   }, []);
 
-  useEffect(() => {
-    if (
-      workspaceDescriptorsPromise.data &&
-      !workspaceDescriptorsPromise.data.map((f) => f.workspaceId).includes(expandedWorkspaceId!)
-    ) {
-      closeExpandedWorkspace();
-    }
-  }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
-
   const buildInfo = useMemo(() => {
     return process.env["WEBPACK_REPLACE__buildInfo"];
   }, []);

@@ -129,7 +129,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
           }),
         });
       } finally {
-        // setUploading(UploadType.NONE);
+        setUploading(UploadType.NONE);
       }
     },
     [props, workspaces, history, routes]
