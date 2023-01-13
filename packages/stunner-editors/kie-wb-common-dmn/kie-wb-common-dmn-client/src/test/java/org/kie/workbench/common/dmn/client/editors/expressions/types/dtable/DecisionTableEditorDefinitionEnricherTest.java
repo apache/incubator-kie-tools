@@ -68,6 +68,8 @@ import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.ANY;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.NUMBER;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.STRING;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -900,6 +902,24 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         assertEquals(NUMBER.getName(), inputClause2.typeRef.getLocalPart());
     }
 
+    @Test
+    public void testAddInputClauseRequirement_simpleCustomType() {
+
+        final List<DecisionTableEditorDefinitionEnricher.ClauseRequirement> inputClauseRequirements = new ArrayList<>();
+        final String inputData = "InputData";
+        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
+        final ItemDefinition tSuperString = mockTSuperString();
+
+        enricher.addInputClauseRequirement(tSuperString, inputClauseRequirements, inputData);
+
+        assertEquals(1, inputClauseRequirements.size());
+
+        final DecisionTableEditorDefinitionEnricher.ClauseRequirement inputClause1 = inputClauseRequirements.get(0);
+
+        assertEquals("InputData", inputClause1.text);
+        assertEquals("tSuperString", inputClause1.typeRef.getLocalPart());
+    }
+
     private ItemDefinition mockTPersonStructure() {
         final ItemDefinition tPerson = mock(ItemDefinition.class);
         final ItemDefinition name = mock(ItemDefinition.class);
@@ -928,6 +948,20 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         mockItemDefinitionConstraint(age, "", ConstraintType.NONE);
 
         return tPerson;
+    }
+
+    private ItemDefinition mockTSuperString() {
+        
+        final ItemDefinition superString = mock(ItemDefinition.class);
+
+        when(superString.getName()).thenReturn(new Name("tSuperString"));
+        when(superString.getTypeRef()).thenReturn(STRING.asQName());
+        when(superString.getItemComponent()).thenReturn(emptyList());
+
+        doCallRealMethod().when(itemDefinitionUtils).normaliseTypeRef(any());
+        mockItemDefinitionConstraint(superString, "", ConstraintType.NONE);
+
+        return superString;
     }
 
     private void mockItemDefinitionConstraint(final ItemDefinition itemDefinition, final String constraint, final ConstraintType constraintType) {
