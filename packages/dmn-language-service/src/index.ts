@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ export class DmnLanguageService {
       .filter((e) => e !== null) as string[];
   }
 
-  // Receive all contents and paths and a node ID and returns the model that contains the node.
+  // Receive all contents, paths and a node ID and returns the model that contains the node.
   public getPathFromNodeId(resourceContents: { path: string; content?: string }[], nodeId: string): string {
     for (const resourceContent of resourceContents) {
       const xmlContent = this.parser.parseFromString(resourceContent.content ?? "", XML_MIME);
