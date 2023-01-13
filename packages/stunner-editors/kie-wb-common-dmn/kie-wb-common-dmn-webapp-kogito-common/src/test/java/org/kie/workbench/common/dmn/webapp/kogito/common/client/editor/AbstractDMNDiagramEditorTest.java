@@ -60,6 +60,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.client.promise.Promises;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
@@ -84,6 +85,9 @@ public class AbstractDMNDiagramEditorTest {
 
     @Mock
     private MultiPageEditorContainerView containerView;
+
+    @Mock
+    private MultiPageEditor multiPageEditor;
 
     @Mock
     private StunnerEditor stunnerEditor;
@@ -187,6 +191,8 @@ public class AbstractDMNDiagramEditorTest {
                                                       drdNameChanger,
                                                       confirmationDialog,
                                                       decisionNavigatorPresenter));
+
+        when(containerView.getMultiPage()).thenReturn(multiPageEditor);
     }
 
     @Test
