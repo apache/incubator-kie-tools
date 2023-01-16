@@ -375,7 +375,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             inputClauseRequirements.add(
                     new ClauseRequirement(
                             text,
-                            getQNameFromItemDefinitionName(itemDefinition),
+                            getQName(itemDefinition),
                             itemDefinitionUtils.getConstraintText(itemDefinition),
                             itemDefinitionUtils.getConstraintType(itemDefinition)
                     )
@@ -414,6 +414,15 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         };
 
         return isTypeRefCustomType;
+    }
+
+    private QName getQName(final ItemDefinition itemDefinition) {
+        if (!itemDefinitionUtils.findByName(itemDefinition.getName().getValue()).isEmpty()) {
+            return getQNameFromItemDefinitionName(itemDefinition);
+        } else {
+            return itemDefinition.getTypeRef();
+        }
+        
     }
 
     private QName getQNameFromItemDefinitionName(final ItemDefinition itemDefinition) {
