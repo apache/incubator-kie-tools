@@ -50,7 +50,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -71,6 +70,7 @@ import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.ST
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -910,6 +910,9 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
         final ItemDefinition tSuperString = mockTSuperString();
 
+        when(itemDefinitionUtils.findByName("tSuperString")).thenReturn(Optional.of(tSuperString));
+        doCallRealMethod().when(itemDefinitionUtils).normaliseTypeRef(any());
+
         enricher.addInputClauseRequirement(tSuperString, inputClauseRequirements, inputData);
 
         assertEquals(1, inputClauseRequirements.size());
@@ -918,6 +921,8 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         assertEquals("InputData", inputClause1.text);
         assertEquals("tSuperString", inputClause1.typeRef.getLocalPart());
+
+        reset(itemDefinitionUtils);
     }
 
     private ItemDefinition mockTPersonStructure() {
@@ -958,7 +963,6 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         when(superString.getTypeRef()).thenReturn(STRING.asQName());
         when(superString.getItemComponent()).thenReturn(emptyList());
 
-        doCallRealMethod().when(itemDefinitionUtils).normaliseTypeRef(any());
         mockItemDefinitionConstraint(superString, "", ConstraintType.NONE);
 
         return superString;
@@ -975,12 +979,14 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final ItemDefinition tPerson = mock(ItemDefinition.class);
         final String inputData = "InputData";
         final List<DecisionTableEditorDefinitionEnricher.ClauseRequirement> inputClauseRequirements = new ArrayList<>();
-        final ItemDefinitionUtils itemDefinitionUtils = new ItemDefinitionUtils(mock(DMNGraphUtils.class));
         final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
 
         when(tPerson.getName()).thenReturn(new Name(TYPE_PERSON));
         when(tPerson.getTypeRef()).thenReturn(null);
         when(tPerson.getItemComponent()).thenReturn(emptyList());
+
+        when(itemDefinitionUtils.findByName(TYPE_PERSON)).thenReturn(Optional.of(tPerson));
+        doCallRealMethod().when(itemDefinitionUtils).normaliseTypeRef(any());
 
         enricher.addInputClauseRequirement(tPerson, inputClauseRequirements, inputData);
 
@@ -988,6 +994,8 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         assertEquals("InputData", inputClauseRequirements.get(0).text);
         assertEquals(TYPE_PERSON, inputClauseRequirements.get(0).typeRef.getLocalPart());
+
+        reset(itemDefinitionUtils);
     }
 
     @Test
