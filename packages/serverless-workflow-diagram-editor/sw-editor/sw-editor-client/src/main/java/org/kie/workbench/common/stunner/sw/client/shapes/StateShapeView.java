@@ -76,6 +76,8 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
     }
 
     public void setIconPicture(Picture picture) {
+        backgroundCircle.setFillColor("#FFF");
+
         picture.setX(-STATE_SHAPE_ICON_RADIUS); // PathClipper is a circle with center at [0.0], we need to compensate radius
         picture.setY(-STATE_SHAPE_ICON_RADIUS); // on both X and Y axis.
 
@@ -88,12 +90,17 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
     public void setSvgIcon(String backgroundColor, String path) {
         backgroundCircle.setFillColor(backgroundColor);
 
-        iconImage.setScale(0.35, 0.35)
-                .setOffset(-17.00); // to compensate existing SVG logo paths settings
         iconImage.add(newMultiPath(path)
+                              .setScale(0.35)
+                              .setX(-11)
+                              .setY(-11)
                               .setFillColor("#fff")
                               .setStrokeColor("#fff")
                               .setStrokeWidth(2.00));
+    }
+
+    public String getIconBackgroundColor() {
+        return backgroundCircle.getFillColor();
     }
 
     public boolean isIconEmpty() {
