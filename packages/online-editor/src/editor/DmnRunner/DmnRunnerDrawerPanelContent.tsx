@@ -333,8 +333,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   return (
     <DrawerPanelContent
-      // cause a re render when inputs are updated
-      key={JSON.stringify(dmnRunnerState.inputRows)}
       id={"kogito-panel-content"}
       className={"kogito--editor__drawer-content-panel"}
       defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}

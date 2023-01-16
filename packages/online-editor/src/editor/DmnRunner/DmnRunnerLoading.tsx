@@ -38,7 +38,7 @@ export function DmnRunnerLoading(props: DmnRunnerLoading) {
 
   const loadingScreenClassName = useMemo(() => {
     if (dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows) {
-      return "kie-tools--dmn-runner-loading";
+      return "kie-tools__dmn-runner-loading";
     }
     return "";
   }, [dmnRunnerState.didUpdateInputRows, dmnRunnerState.didUpdateOutputRows]);
@@ -53,10 +53,11 @@ export function DmnRunnerLoading(props: DmnRunnerLoading) {
   return (
     <>
       {dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows && (
-        <div id="kie-tools--dmn-runner-loading-screen" className="kie-tools--dmn-runner-loading-screen">
+        <div id="kie-tools__dmn-runner-loading-screen" className="kie-tools__dmn-runner-loading-screen">
           <div
-            className={`kie-tools--dmn-runner-loading-screen ${loadingScreenClassName}`}
-            onAnimationEnd={onAnimationEnd}
+            className={`kie-tools__dmn-runner-loading-screen ${loadingScreenClassName}`}
+            // onAnimationEnd={onAnimationEnd}
+            onAnimationStart={onAnimationEnd}
           />
         </div>
       )}
