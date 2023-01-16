@@ -39,8 +39,7 @@ jobs:
 
       - name: Setup Minikube cluster
         # Should be set back with correct version once https://github.com/radtriste/setup-minikube/tree/issue_49 is done
-        # uses: medyagh/setup-minikube@v0.0.9
-        uses: radtriste/setup-minikube@issue_49
+        uses: medyagh/setup-minikube@v0.0.10
         with:
           addons: registry,metrics-server
           kubernetes-version: ${{ env.KUBERNETES_VERSION }}
