@@ -25,7 +25,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import elemental2.dom.HTMLElement;
-import elemental2.promise.IThenable;
 import elemental2.promise.Promise;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
