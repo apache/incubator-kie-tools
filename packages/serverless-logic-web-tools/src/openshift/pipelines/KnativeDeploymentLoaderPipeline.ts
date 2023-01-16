@@ -97,6 +97,7 @@ export class KnativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
             creationTimestamp: new Date(kns.metadata.creationTimestamp!),
             state: this.args.openShiftService.kubernetes.extractDeploymentState({ deployment, build }),
             workspaceName: kns.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
+            devMode: false,
           };
         });
     } catch (e) {

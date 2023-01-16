@@ -30,6 +30,7 @@ import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { useOpenShift } from "../OpenShiftContext";
 import { OpenShiftDeploymentDropdownItem } from "./OpenShiftDeploymentDropdownItem";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
+import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
@@ -76,15 +77,41 @@ export function OpenshiftDeploymentsDropdown() {
         </DropdownItem>,
       ];
     } else {
+      const items = [...common];
+
+      const sortedDeployments = openshift.deployments.sort(
+        (a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime()
+      );
+
+      const [devModeDeployments, userDeployments] = sortedDeployments.reduce(
+        ([devModeDeployments, userDeployments], d: WebToolsOpenShiftDeployedModel) =>
+          d.devMode ? [[...devModeDeployments, d], userDeployments] : [devModeDeployments, [...userDeployments, d]],
+        [[] as WebToolsOpenShiftDeployedModel[], [] as WebToolsOpenShiftDeployedModel[]]
+      );
+
+      if (devModeDeployments.length > 0) {
+        items.push(
+          <OpenShiftDeploymentDropdownItem
+            key={devModeDeployments[0].creationTimestamp.getTime()}
+            id={0}
+            deployment={devModeDeployments[0]}
+          />
+        );
+
+        if (userDeployments.length > 0) {
+          items.push(<DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />);
+        }
+      }
+
       return [
-        ...common,
-        openshift.deployments
+        ...items,
+        userDeployments
           .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
           .map((deployment, i) => {
             return (
               <OpenShiftDeploymentDropdownItem
                 key={deployment.creationTimestamp.getTime()}
-                id={i}
+                id={i + 1}
                 deployment={deployment}
               />
             );

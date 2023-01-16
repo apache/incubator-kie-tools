@@ -38,9 +38,22 @@ import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegistry/hooks/useVirtualServiceRegistryDependencies";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useDevMode } from "../../openshift/devMode/DevModeContext";
+import { AlertsController, useAlert } from "../../alerts/Alerts";
+import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
+import { isServerlessWorkflow } from "../../extension";
 
-export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
+interface Props {
+  alerts: AlertsController | undefined;
+  workspace: ActiveWorkspace;
+  workspaceFile: WorkspaceFile;
+}
+
+// TOOD CAPONETTO: Alerts can be moved to a context
+export function useDeployDropdownItems(props: Props) {
   const { i18n } = useAppI18n();
+  const devMode = useDevMode();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
@@ -48,6 +61,62 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
   });
+
+  const devModeReadyAlert = useAlert<{ routeUrl: string }>(
+    props.alerts,
+    useCallback(({ close }, { routeUrl }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="success"
+          title={`Your Dev Mode has been updated.`}
+          aria-live="polite"
+          data-testid="alert-dev-mode-updated"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+          actionLinks={
+            <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>Dev Mode Swagger UI</AlertActionLink>
+          }
+        />
+      );
+    }, [])
+  );
+
+  const uploadToDevModeSuccessAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        return (
+          <Alert
+            className="pf-u-mb-md"
+            variant="info"
+            title={`'${props.workspaceFile.nameWithoutExtension}' uploaded to your Dev Mode deployment. Please wait a few seconds for the Dev Mode deployment to be updated.`}
+            aria-live="polite"
+            data-testid="alert-upload-dev-mode"
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        );
+      },
+      [props.workspaceFile.nameWithoutExtension]
+    )
+  );
+
+  const uploadToDevModeErrorAlert = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="danger"
+          title={
+            "Something went wrong while uploading to the Dev Mode deployment. Check your OpenShift instance and then try again."
+          }
+          aria-live="polite"
+          data-testid="alert-upload-error"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
 
   const isKieSandboxExtendedServicesRunning = useMemo(
     () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
@@ -58,6 +127,8 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
     () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
     [settings.openshift.status]
   );
+
+  const isDevModeEnabled = useMemo(() => isServerlessWorkflow(props.workspaceFile.name), [props.workspaceFile.name]);
 
   const onSetup = useCallback(() => {
     settingsDispatch.open(SettingsTabs.OPENSHIFT);
@@ -71,6 +142,45 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
     kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
     kieSandboxExtendedServices.setModalOpen(true);
   }, [isKieSandboxExtendedServicesRunning, kieSandboxExtendedServices, openshift]);
+
+  const onDeployDevMode = useCallback(async () => {
+    if (isKieSandboxExtendedServicesRunning) {
+      const success = await devMode.upload([props.workspaceFile]);
+      if (success && devMode.endpoints) {
+        uploadToDevModeSuccessAlert.show();
+
+        // TODO CAPONETTO: improve it
+        const fetchDevModeDeploymentTask = window.setInterval(async () => {
+          try {
+            const isReady = await devMode.checkHealthReady();
+            if (!isReady) {
+              return;
+            }
+            uploadToDevModeSuccessAlert.close();
+            devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swaggerUi });
+          } catch (e) {
+            console.error(e);
+            uploadToDevModeSuccessAlert.close();
+            uploadToDevModeErrorAlert.show();
+          }
+          window.clearInterval(fetchDevModeDeploymentTask);
+        }, 2000);
+      } else {
+        uploadToDevModeErrorAlert.show();
+      }
+      return;
+    }
+    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
+    kieSandboxExtendedServices.setModalOpen(true);
+  }, [
+    devMode,
+    devModeReadyAlert,
+    isKieSandboxExtendedServicesRunning,
+    kieSandboxExtendedServices,
+    props.workspaceFile,
+    uploadToDevModeErrorAlert,
+    uploadToDevModeSuccessAlert,
+  ]);
 
   return useMemo(() => {
     return [
@@ -106,6 +216,23 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
                 </Flex>
               )}
             </DropdownItem>
+            {isDevModeEnabled && (
+              <DropdownItem
+                icon={<OpenshiftIcon />}
+                id="deploy-dev-mode-button"
+                key={`dropdown-deploy-dev-mode`}
+                component={"button"}
+                onClick={onDeployDevMode}
+                isDisabled={isKieSandboxExtendedServicesRunning && !isOpenShiftConnected}
+                ouiaId={"deploy-to-openshift-dev-mode-dropdown-button"}
+              >
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Upload <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b> to Dev Mode
+                  </FlexItem>
+                </Flex>
+              </DropdownItem>
+            )}
             {needsDependencyDeployment && (
               <>
                 <Divider />

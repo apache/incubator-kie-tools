@@ -41,6 +41,7 @@ export interface DeploymentStrategyArgs {
 export type WebToolsOpenShiftDeployedModel = OpenShiftDeployedModel & {
   uri: string;
   workspaceName: string;
+  devMode: boolean;
 };
 
 export type CompletedDeployOperation = string | undefined;
@@ -74,4 +75,10 @@ export type InitSwfDeployArgs = InitDeployArgs & {
   factoryArgs: DeploymentStrategyFactoryArgs & {
     kind: DeploymentStrategyKind.KOGITO_PROJECT | DeploymentStrategyKind.KOGITO_SWF_MODEL;
   };
+};
+
+export type DeployMode = "dev" | "user";
+
+export const AppLabelNames = {
+  DEV_MODE: "kogito.kie.org/dev-mode",
 };

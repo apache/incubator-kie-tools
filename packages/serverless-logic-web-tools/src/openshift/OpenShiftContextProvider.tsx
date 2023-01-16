@@ -27,6 +27,7 @@ import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
+import { DevModeDeploymentLoaderPipeline } from "./pipelines/DevModeDeploymentLoaderPipeline";
 
 interface Props {
   children: React.ReactNode;
@@ -51,6 +52,15 @@ export function OpenShiftContextProvider(props: Props) {
   const deploymentLoaderPipeline = useMemo(
     () =>
       new KnativeDeploymentLoaderPipeline({
+        namespace: settings.openshift.config.namespace,
+        openShiftService: settingsDispatch.openshift.service,
+      }),
+    [settings.openshift.config.namespace, settingsDispatch.openshift.service]
+  );
+
+  const devModeDeploymentLoaderPipeline = useMemo(
+    () =>
+      new DevModeDeploymentLoaderPipeline({
         namespace: settings.openshift.config.namespace,
         openShiftService: settingsDispatch.openshift.service,
       }),
@@ -120,23 +130,31 @@ export function OpenShiftContextProvider(props: Props) {
     }
 
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
+      const deploymentLoaderPromises = Promise.all([
+        deploymentLoaderPipeline.execute(),
+        devModeDeploymentLoaderPipeline.execute(),
+      ]).then((res) => res.flat());
+
       settingsDispatch.openshift.service
         .isConnectionEstablished(settings.openshift.config)
         .then((isConfigOk: boolean) => {
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-          return isConfigOk ? deploymentLoaderPipeline.execute() : [];
+          return isConfigOk ? deploymentLoaderPromises : [];
         })
-        .then((ds) => setDeployments(ds))
+        .then((ds) => setDeployments(ds.flat()))
         .catch((error) => console.error(error));
       return;
     }
 
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
-        deploymentLoaderPipeline
-          .execute()
+        const deploymentLoaderPromises = Promise.all([
+          deploymentLoaderPipeline.execute(),
+          devModeDeploymentLoaderPipeline.execute(),
+        ]).then((res) => res.flat());
+        deploymentLoaderPromises
           .then((ds) => setDeployments(ds))
           .catch((error) => {
             onDisconnect();
@@ -155,6 +173,7 @@ export function OpenShiftContextProvider(props: Props) {
     kieSandboxExtendedServices.status,
     onDisconnect,
     deploymentLoaderPipeline,
+    devModeDeploymentLoaderPipeline,
   ]);
 
   const value = useMemo(

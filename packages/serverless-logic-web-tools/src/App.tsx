@@ -26,6 +26,7 @@ import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
+import { DevModeContextProvider } from "./openshift/devMode/DevModeContextProvider";
 
 export const App = () => (
   <HashRouter>
@@ -40,6 +41,7 @@ export const App = () => (
         { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js", shouldRequireCommitMessage: false },
       ],
       [OpenShiftContextProvider, {}],
+      [DevModeContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
       [NavigationContextProvider, {}],
       [RoutesSwitch, {}]

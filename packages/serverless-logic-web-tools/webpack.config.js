@@ -35,6 +35,8 @@ module.exports = async (env) => {
     getSwfBuilderImageArgs();
   const [baseBuilderImageRegistry, baseBuilderImageAccount, baseBuilderImageName, baseBuilderImageTag] =
     getBaseBuilderImageArgs();
+  const [swfDevModeImageRegistry, swfDevModeImageAccount, swfDevModeImageName, swfDevModeImageTag] =
+    getSwfDevModeImageArgs();
   const [
     dashbuilderViewerImageRegistry,
     dashbuilderViewerImageAccount,
@@ -102,6 +104,7 @@ module.exports = async (env) => {
           WEBPACK_REPLACE__buildInfo: buildInfo,
           WEBPACK_REPLACE__swfBuilderImageFullUrl: `${swfBuilderImageRegistry}/${swfBuilderImageAccount}/${swfBuilderImageName}:${swfBuilderImageTag}`,
           WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
+          WEBPACK_REPLACE__devModeImageFullUrl: `${swfDevModeImageRegistry}/${swfDevModeImageAccount}/${swfDevModeImageName}:${swfDevModeImageTag}`,
           WEBPACK_REPLACE__dashbuilderViewerImageFullUrl: `${dashbuilderViewerImageRegistry}/${dashbuilderViewerImageAccount}/${dashbuilderViewerImageName}:${dashbuilderViewerImageTag}`,
           WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
           WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
@@ -212,6 +215,20 @@ function getSwfBuilderImageArgs() {
   console.info("Serverless Logic Web Tools :: SWF Builder Image Tag: " + swfBuilderImageTag);
 
   return [swfBuilderImageRegistry, swfBuilderImageAccount, swfBuilderImageName, swfBuilderImageTag];
+}
+
+function getSwfDevModeImageArgs() {
+  const swfDevModeImageRegistry = buildEnv.swfDevModeImageEnv.registry;
+  const swfDevModeImageAccount = buildEnv.swfDevModeImageEnv.account;
+  const swfDevModeImageName = buildEnv.swfDevModeImageEnv.name;
+  const swfDevModeImageTag = buildEnv.serverlessLogicWebTools.swfDevModeImage.tag;
+
+  console.info("Serverless Logic Web Tools :: Dev Mode Image Registry: " + swfDevModeImageRegistry);
+  console.info("Serverless Logic Web Tools :: Dev Mode Image Account: " + swfDevModeImageAccount);
+  console.info("Serverless Logic Web Tools :: Dev Mode Image Name: " + swfDevModeImageName);
+  console.info("Serverless Logic Web Tools :: Dev Mode Image Tag: " + swfDevModeImageTag);
+
+  return [swfDevModeImageRegistry, swfDevModeImageAccount, swfDevModeImageName, swfDevModeImageTag];
 }
 
 function getBaseBuilderImageArgs() {

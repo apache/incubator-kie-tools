@@ -22,6 +22,7 @@ module.exports = composeEnv(
   [
     require("@kie-tools/root-env/env"),
     require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env"),
+    require("@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env/env"),
     require("@kie-tools/serverless-logic-web-tools-base-builder-image-env/env"),
     require("@kie-tools/dashbuilder-viewer-image-env/env"),
   ],
@@ -63,6 +64,10 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag: {
+        default: "latest",
+        description: "",
+      },
       SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: {
         default: "https://cors.isomorphic-git.org",
         description: "",
@@ -89,6 +94,9 @@ module.exports = composeEnv(
           },
           dashbuilderViewerImage: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag),
+          },
+          swfDevModeImage: {
+            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag),
           },
           kieSandboxExtendedServices: {
             compatibleVersion: getOrDefault(

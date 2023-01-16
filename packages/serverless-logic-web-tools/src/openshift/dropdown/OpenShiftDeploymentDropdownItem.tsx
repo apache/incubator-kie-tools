@@ -34,6 +34,10 @@ interface Props {
 
 export function OpenShiftDeploymentDropdownItem(props: Props) {
   const deploymentName = useMemo(() => {
+    if (props.deployment.devMode) {
+      return "Dev Mode";
+    }
+
     const maxSize = 35;
 
     const workspaceName = props.deployment.workspaceName;
@@ -45,7 +49,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     const extension = extractExtension(workspaceName);
     const name = extension ? basename(workspaceName, `.${extension}`) : workspaceName;
     return `${name.substring(0, maxSize - extension.length)}...${extension}`;
-  }, [props.deployment.workspaceName]);
+  }, [props.deployment.devMode, props.deployment.workspaceName]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === OpenShiftDeploymentState.UP) {
@@ -109,7 +113,12 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
       id="openshift-deployment-item-button"
       key={`openshift-dropdown-item-${props.id}`}
       isDisabled={props.deployment.state === OpenShiftDeploymentState.ERROR}
-      onClick={() => window.open(props.deployment.routeUrl, "_blank")}
+      onClick={() =>
+        window.open(
+          props.deployment.devMode ? props.deployment.routeUrl + "/q/swagger-ui" : props.deployment.routeUrl,
+          "_blank"
+        )
+      }
       description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
       icon={stateIcon}
     >

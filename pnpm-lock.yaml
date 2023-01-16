@@ -5524,6 +5524,9 @@ importers:
       "@kie-tools/serverless-logic-web-tools-swf-builder-image-env":
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -5672,6 +5675,18 @@ importers:
         specifier: workspace:*
         version: link:../root-env
 
+  packages/serverless-logic-web-tools-swf-deployment-quarkus-app:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/serverless-logic-web-tools-swf-deployment-webapp:
     dependencies:
       "@kie-tools-core/i18n":
@@ -5780,6 +5795,30 @@ importers:
       webpack-merge:
         specifier: ^5.8.0
         version: 5.8.0
+
+  packages/serverless-logic-web-tools-swf-dev-mode-image:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-deployment-quarkus-app
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/serverless-logic-web-tools-swf-dev-mode-image-env:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
 
   packages/serverless-workflow-combined-editor:
     dependencies:
@@ -20865,7 +20904,7 @@ packages:
     resolution:
       { integrity: sha512-1IMnbjt4KzsQfnhnzNd8wUEgXZ44IzZaZmnLYx7D5FZlaHt2gW20Cri8Q+E/t5tIj4+epTBub+2Zxu/vNILzqQ== }
     dependencies:
-      micromatch: 4.0.5
+      micromatch: 4.0.4
     dev: true
 
   /flat-cache@3.0.4:
@@ -24612,6 +24651,15 @@ packages:
       to-regex: 3.0.2
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /micromatch@4.0.4:
+    resolution:
+      { integrity: sha512-pRmzw/XUcwXGpD9aI9q/0XOwLNygjETJ8y0ao0wdqprrzDa4YnxLcz7fQRZr8voh8V10kGhABbNcHVk5wHgWwg== }
+    engines: { node: ">=8.6" }
+    dependencies:
+      braces: 3.0.2
+      picomatch: 2.3.1
     dev: true
 
   /micromatch@4.0.5:

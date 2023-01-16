@@ -98,3 +98,23 @@ export class GetDeployment extends ResourceFetch {
     }`;
   }
 }
+
+export class UpdateDeployment extends ResourceFetch {
+  constructor(protected args: UniqueResourceFetchArgs & { descriptor: DeploymentDescriptor }) {
+    super(args);
+  }
+
+  public method(): HttpMethod {
+    return HttpMethod.PUT;
+  }
+
+  public body(): string {
+    return JSON.stringify(this.args.descriptor);
+  }
+
+  public endpoint(): string {
+    return `/${baseEndpoint(KubernetesApiVersions.DEPLOYMENT)}/namespaces/${this.args.namespace}/deployments/${
+      this.args.resourceName
+    }`;
+  }
+}

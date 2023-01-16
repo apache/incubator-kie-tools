@@ -19,10 +19,20 @@ import * as React from "react";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { AlertsController } from "../../alerts/Alerts";
 
-export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace }) {
+interface Props {
+  alerts: AlertsController | undefined;
+  workspace: ActiveWorkspace;
+  workspaceFile: WorkspaceFile;
+}
+
+export function KieSandboxExtendedServicesDropdownGroup(props: Props) {
   const deployDropdownItems = useDeployDropdownItems({
+    alerts: props.alerts,
     workspace: props.workspace,
+    workspaceFile: props.workspaceFile,
   });
 
   return (

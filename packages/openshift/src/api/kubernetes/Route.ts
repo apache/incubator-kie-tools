@@ -38,6 +38,22 @@ export class CreateRoute extends ResourceFetch {
   }
 }
 
+export class GetRoute extends ResourceFetch {
+  constructor(protected args: UniqueResourceFetchArgs) {
+    super(args);
+  }
+
+  public method(): HttpMethod {
+    return HttpMethod.GET;
+  }
+
+  public endpoint(): string {
+    return `/${baseEndpoint(KubernetesApiVersions.ROUTE)}/namespaces/${this.args.namespace}/routes/${
+      this.args.resourceName
+    }`;
+  }
+}
+
 export class ListRoutes extends ResourceFetch {
   public method(): HttpMethod {
     return HttpMethod.GET;

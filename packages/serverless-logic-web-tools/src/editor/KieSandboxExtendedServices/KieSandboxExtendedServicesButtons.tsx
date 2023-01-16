@@ -29,16 +29,22 @@ import { useSettings } from "../../settings/SettingsContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { AlertsController } from "../../alerts/Alerts";
 
 interface Props {
+  alerts: AlertsController | undefined;
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace;
+  workspaceFile: WorkspaceFile;
 }
 
 export function KieSandboxExtendedServicesButtons(props: Props) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const deployDropdownItems = useDeployDropdownItems({
+    alerts: props.alerts,
     workspace: props.workspace,
+    workspaceFile: props.workspaceFile,
   });
   const openshift = useOpenShift();
   const settings = useSettings();

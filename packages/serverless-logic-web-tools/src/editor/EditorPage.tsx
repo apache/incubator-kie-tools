@@ -403,7 +403,7 @@ export function EditorPage(props: Props) {
         ? (editor?.getEnvelopeServer()
             .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>)
         : undefined,
-    [editor]
+    [editor, embeddedEditorFile]
   );
 
   const onNotificationClick = useCallback(

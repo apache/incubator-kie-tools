@@ -1541,7 +1541,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     {canBeDeployed && (
                       <ToolbarItem visibility={hideWhenSmall}>
                         <KieSandboxExtendedServicesButtons
+                          alerts={props.alerts}
                           workspace={workspace}
+                          workspaceFile={props.workspaceFile}
                           editorPageDock={props.editorPageDock}
                         />
                       </ToolbarItem>
@@ -1714,7 +1716,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             : [
                                 <Divider key={"divider-2"} />,
                                 <KieSandboxExtendedServicesDropdownGroup
+                                  alerts={props.alerts}
                                   workspace={workspace}
+                                  workspaceFile={props.workspaceFile}
                                   key="kie-sandbox-extended-services-group"
                                 />,
                               ]),
