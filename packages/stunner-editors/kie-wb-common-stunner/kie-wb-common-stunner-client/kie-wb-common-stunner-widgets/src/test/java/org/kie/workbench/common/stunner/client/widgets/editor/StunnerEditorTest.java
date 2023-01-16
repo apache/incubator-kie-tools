@@ -183,7 +183,7 @@ public class StunnerEditorTest {
         tested.handleError(error);
         verify(parsingExceptionConsumer, never()).accept(any());
         verify(view, never()).setWidget(errorPage);
-        verify(exceptionConsumer, times(1)).accept(eq(e));
+        verify(exceptionConsumer, times(1)).accept(e);
     }
 
     @Test

@@ -17,9 +17,11 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwt.user.client.Random;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,10 +65,12 @@ import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -74,6 +78,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -196,6 +201,23 @@ public class AbstractDMNDiagramEditorTest {
     }
 
     @Test
+    public void onStartup() {
+        boolean isReadOnly = Random.nextBoolean();
+        when(stunnerEditor.isReadOnly()).thenReturn(isReadOnly);
+
+        editor.onStartup(mock(PlaceRequest.class));
+
+        verify(stunnerEditor, times(1)).setReadOnly(isReadOnly);
+        verify(guidedTourBridgeInitializer, times(1)).init();
+        verify(decisionNavigatorDock, times(1)).init();
+        verify(diagramPropertiesDock, times(1)).init();
+        verify(diagramPreviewAndExplorerDock, times(1)).init();
+        verify(multiPageEditor, times(1)).setTabBarVisible(true);
+        verify(stunnerEditor, times(1)).setParsingExceptionProcessor(isA(Consumer.class));
+        verify(searchBarComponent, times(1)).setSearchButtonVisibility(true);
+    }
+
+    @Test
     public void testOpen_WhenItHaveLayoutInformation() {
 
         final Diagram diagram = mock(Diagram.class);
@@ -207,6 +229,11 @@ public class AbstractDMNDiagramEditorTest {
         editor.open(diagram, callback);
 
         verify(feelInitializer).initializeFEELEditor();
+        verify(decisionNavigatorDock, times(1)).init();
+        verify(diagramPropertiesDock, times(1)).init();
+        verify(diagramPreviewAndExplorerDock, times(1)).init();
+        verify(multiPageEditor, times(1)).setTabBarVisible(true);
+        verify(searchBarComponent, times(1)).setSearchButtonVisibility(true);
         verify(editor, never()).showAutomaticLayoutDialog(diagram, callback);
         verify(editor).executeOpen(diagram, callback);
     }
@@ -223,6 +250,11 @@ public class AbstractDMNDiagramEditorTest {
         editor.open(diagram, callback);
 
         verify(feelInitializer).initializeFEELEditor();
+        verify(decisionNavigatorDock, times(1)).init();
+        verify(diagramPropertiesDock, times(1)).init();
+        verify(diagramPreviewAndExplorerDock, times(1)).init();
+        verify(multiPageEditor, times(1)).setTabBarVisible(true);
+        verify(searchBarComponent, times(1)).setSearchButtonVisibility(true);
         verify(editor).showAutomaticLayoutDialog(diagram, callback);
         verify(editor, never()).executeOpen(diagram, callback);
     }
@@ -471,4 +503,17 @@ public class AbstractDMNDiagramEditorTest {
                   decisionNavigatorPresenter);
         }
     }
+
+    @Test
+    public void onClose() {
+        editor.onClose();
+
+        verify(stunnerEditor, times(1)).close();
+        verify(decisionNavigatorDock, times(1)).destroy();
+        verify(decisionNavigatorDock, times(1)).resetContent();
+        verify(diagramPropertiesDock, times(1)).destroy();
+        verify(diagramPreviewAndExplorerDock, times(1)).destroy();
+        verify(dataTypesPage, times(1)).disableShortcuts();
+    }
+
 }
