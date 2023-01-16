@@ -84,7 +84,6 @@ public class SearchBarComponentViewTest {
     public void setup() {
 
         searchContainer.classList = mock(DOMTokenList.class);
-        searchButton.classList = mock(DOMTokenList.class);
         view = spy(new SearchBarComponentView(searchButton, searchContainer, prevElement, nextElement, closeSearch, inputElement, translationService, currentResult, totalOfResults));
 
         doNothing().when(view).disableSearch();
@@ -211,5 +210,25 @@ public class SearchBarComponentViewTest {
         totalOfResults.textContent = "something...";
         view.setTotalOfResultsNumber(42);
         assertEquals("42", totalOfResults.textContent);
+    }
+
+    @Test
+    public void testSetVisibilityTrue() {
+        DOMTokenList classList = mock(DOMTokenList.class);
+        searchButton.classList = classList;
+
+        view.setSearchButtonVisibility(true);
+
+        verify(classList, times(1)).remove(HIDDEN);
+    }
+
+    @Test
+    public void testSetVisibilityFalse() {
+        DOMTokenList classList = mock(DOMTokenList.class);
+        searchButton.classList = classList;
+
+        view.setSearchButtonVisibility(false);
+
+        verify(classList, times(1)).add(HIDDEN);
     }
 }

@@ -176,13 +176,14 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         ensureDocksAreInitialized();
         ensureTabBarVisibility(true);
         setParsingErrorBehavior();
+        searchBarComponent.setSearchButtonVisibility(true);
     }
 
     private void setParsingErrorBehavior() {
         stunnerEditor.setParsingExceptionProcessor(e -> {
             ensureDocksAreRemoved();
             ensureTabBarVisibility(false);
-            searchBarComponent.disableSearch();
+            searchBarComponent.setSearchButtonVisibility(false);
         });
     }
 
