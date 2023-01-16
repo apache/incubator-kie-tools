@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.search.component;
 
+import com.google.gwt.user.client.Random;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,6 +79,15 @@ public class SearchBarComponentTest {
 
         verify(index).search(term);
         verify(component).updateViewNumber();
+    }
+
+    @Test
+    public void testSetSearchButtonVisibility() {
+        final boolean visible = Random.nextBoolean();
+
+        component.setSearchButtonVisibility(visible);
+
+        verify(view).setSearchButtonVisibility(visible);
     }
 
     @Test

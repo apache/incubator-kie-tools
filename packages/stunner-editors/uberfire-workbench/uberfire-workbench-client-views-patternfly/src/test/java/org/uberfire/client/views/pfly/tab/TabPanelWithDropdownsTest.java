@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.google.common.collect.Multimap;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -174,10 +175,11 @@ public class TabPanelWithDropdownsTest {
     public void test() {
         final NavTabs tabBar = mock(NavTabs.class);
         doReturn(tabBar).when(tabPanel).getTabBar();
+        final boolean visible = Random.nextBoolean();
 
-        tabPanel.setTabBarVisible(false);
+        tabPanel.setTabBarVisible(visible);
 
-        verify(tabBar).setVisible(false);
+        verify(tabBar).setVisible(visible);
     }
 
 }
