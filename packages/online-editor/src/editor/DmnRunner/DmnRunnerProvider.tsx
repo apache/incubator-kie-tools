@@ -20,7 +20,10 @@ import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
-import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
+import {
+  DmnRunnerModelPayload,
+  KieSandboxExtendedServicesClient,
+} from "../KieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
@@ -69,7 +72,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [isExpanded]);
 
   const service = useMemo(
-    () => new DmnRunnerService(settings.kieSandboxExtendedServices.config.url.jitExecutor),
+    () => new KieSandboxExtendedServicesClient(settings.kieSandboxExtendedServices.config.url.jitExecutor),
     [settings.kieSandboxExtendedServices.config]
   );
 
@@ -140,7 +143,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
           ],
         };
 
-        service.validate(payload).then((validationResults) => {
+        service.validateDmn(payload).then((validationResults) => {
           const notifications: Notification[] = validationResults.map((validationResult: any) => ({
             type: "PROBLEM",
             path: "",

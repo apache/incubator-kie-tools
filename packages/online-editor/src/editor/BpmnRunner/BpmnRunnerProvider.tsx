@@ -23,7 +23,10 @@ import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandbox
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useSettings } from "../../settings/SettingsContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { BpmnRunnerModelPayload, BpmnRunnerService } from "./BpmnRunnerService";
+import {
+  BpmnRunnerModelPayload,
+  KieSandboxExtendedServicesClient,
+} from "../KieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 interface Props {
@@ -37,7 +40,7 @@ export function BpmnRunnerProvider(props: PropsWithChildren<Props>) {
   const settings = useSettings();
 
   const service = useMemo(
-    () => new BpmnRunnerService(settings.kieSandboxExtendedServices.config.url.jitExecutor),
+    () => new KieSandboxExtendedServicesClient(settings.kieSandboxExtendedServices.config.url.jitExecutor),
     [settings.kieSandboxExtendedServices.config]
   );
 
@@ -64,7 +67,7 @@ export function BpmnRunnerProvider(props: PropsWithChildren<Props>) {
           ],
         };
 
-        service.validate(payload).then((validationResults) => {
+        service.validateBpmn(payload).then((validationResults) => {
           const notifications: Notification[] = validationResults.map((validationResult: any) => ({
             type: "PROBLEM",
             path: payload.mainURI,

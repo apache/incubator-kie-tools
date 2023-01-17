@@ -27,8 +27,20 @@ export interface DmnRunnerModelPayload {
   context?: any;
 }
 
-export class DmnRunnerService {
+export interface BpmnRunnerModelResource {
+  URI: string;
+  content: string;
+}
+
+export interface BpmnRunnerModelPayload {
+  mainURI: string;
+  resources: BpmnRunnerModelResource[];
+  context?: any;
+}
+
+export class KieSandboxExtendedServicesClient {
   private readonly DMN_RUNNER_VALIDATE_URL: string;
+  private readonly BPMN_RUNNER_VALIDATE_URL: string;
   private readonly DMN_RUNNER_DMN_RESULT_URL: string;
   private readonly DMN_RUNNER_FORM_SCHEMA_URL: string;
 
@@ -36,6 +48,7 @@ export class DmnRunnerService {
     this.DMN_RUNNER_VALIDATE_URL = `${this.jitExecutorUrl}jitdmn/validate`;
     this.DMN_RUNNER_DMN_RESULT_URL = `${this.jitExecutorUrl}jitdmn/dmnresult`;
     this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.jitExecutorUrl}jitdmn/schema/form`;
+    this.BPMN_RUNNER_VALIDATE_URL = `${this.jitExecutorUrl}jitbpmn/validate`;
   }
 
   public async result(payload: DmnRunnerModelPayload): Promise<DmnResult> {
@@ -54,12 +67,27 @@ export class DmnRunnerService {
     return await response.json();
   }
 
-  public async validate(payload: DmnRunnerModelPayload): Promise<[]> {
+  public async validateDmn(payload: DmnRunnerModelPayload): Promise<[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
 
     const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return await response.json();
+  }
+
+  public async validateBpmn(payload: BpmnRunnerModelPayload): Promise<[]> {
+    if (!this.isPayloadValid(payload)) {
+      return [];
+    }
+
+    const response = await fetch(this.BPMN_RUNNER_VALIDATE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
