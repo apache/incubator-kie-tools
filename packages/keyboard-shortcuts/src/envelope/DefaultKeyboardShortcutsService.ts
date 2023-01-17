@@ -106,17 +106,17 @@ export class DefaultKeyboardShortcutsService {
         if (!keyboardEvent) {
           return true;
         }
-
+        const keyEventCode = KEY_CODES.get(keyboardEvent.key) || keyboardEvent.key;
         if (keyboardEvent.type === "keydown") {
-          if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent))) {
+          if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent, keyEventCode))) {
             console.debug(`Fired (down) [${combination}]!`);
             onKeyDown(keyboardEvent.target);
             return false;
           }
         } else if (keyboardEvent.type === "keyup") {
           if (
-            this.combinationKeySet(combination).has(MODIFIER_KEY_NAMES.get(keyboardEvent.code) ?? "") ||
-            this.combinationKeySet(combination).has(keyboardEvent.code)
+            this.combinationKeySet(combination).has(MODIFIER_KEY_NAMES.get(keyEventCode) ?? "") ||
+            this.combinationKeySet(combination).has(keyEventCode)
           ) {
             console.debug(`Fired (up) [${combination}]!`);
             onKeyUp(keyboardEvent.target);
@@ -153,8 +153,8 @@ export class DefaultKeyboardShortcutsService {
         if (!keyboardEvent) {
           return true;
         }
-
-        if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent))) {
+        const keyEventCode = KEY_CODES.get(keyboardEvent.key) || keyboardEvent.key;
+        if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent, keyEventCode))) {
           console.debug(`Fired (press) [${combination}]!`);
           onKeyPress(keyboardEvent.target);
           return false;
@@ -220,7 +220,7 @@ export class DefaultKeyboardShortcutsService {
     }
   }
 
-  private pressedKeySet(e: KeyboardEvent) {
+  private pressedKeySet(e: KeyboardEvent, keyEventCode: string) {
     const pressedKeySet = new Set();
     if (e.ctrlKey) {
       pressedKeySet.add(ModKeys.CTRL);
@@ -234,8 +234,8 @@ export class DefaultKeyboardShortcutsService {
     if (e.shiftKey) {
       pressedKeySet.add(ModKeys.SHIFT);
     }
-    if (Array.from(MODIFIER_KEY_NAMES.keys()).indexOf(e.code) === -1) {
-      pressedKeySet.add(e.code);
+    if (Array.from(MODIFIER_KEY_NAMES.keys()).indexOf(keyEventCode) === -1) {
+      pressedKeySet.add(keyEventCode);
     }
     return pressedKeySet;
   }
