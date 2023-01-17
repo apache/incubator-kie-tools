@@ -417,9 +417,12 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     }
 
     private QName getQName(final ItemDefinition itemDefinition) {
-        return Optional
-                .ofNullable(itemDefinition.getTypeRef())
-                .orElse(getQNameFromItemDefinitionName(itemDefinition));
+        if (!itemDefinitionUtils.findByName(itemDefinition.getName().getValue()).isEmpty()) {
+            return getQNameFromItemDefinitionName(itemDefinition);
+        } else {
+            return itemDefinition.getTypeRef();
+        }
+        
     }
 
     private QName getQNameFromItemDefinitionName(final ItemDefinition itemDefinition) {
