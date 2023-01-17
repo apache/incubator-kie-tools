@@ -14,30 +14,21 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
-  DecisionTableExpressionDefinitionBuiltInAggregation,
-  DmnBuiltInDataType,
-  DecisionTableExpressionDefinition,
-  generateUuid,
-  DecisionTableExpressionDefinitionHitPolicy,
   BeeTableHeaderVisibility,
   BeeTableOperation,
-  getNextAvailablePrefixedName,
   BeeTableOperationConfig,
+  DecisionTableExpressionDefinition,
+  DecisionTableExpressionDefinitionBuiltInAggregation,
+  DecisionTableExpressionDefinitionHitPolicy,
+  DmnBuiltInDataType,
+  generateUuid,
+  getNextAvailablePrefixedName,
 } from "../../api";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { getColumnsAtLastLevel, BeeTable, BeeTableColumnUpdate, BeeTableCellUpdate } from "../../table/BeeTable";
-import "./DecisionTableExpression.css";
-import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
-import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
@@ -47,7 +38,15 @@ import {
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
+import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, getColumnsAtLastLevel } from "../../table/BeeTable";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
+import "./DecisionTableExpression.css";
+import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 
 type ROWTYPE = any; // FIXME: Tiago
 
@@ -108,9 +107,11 @@ export function DecisionTableExpression(
   }, [i18n]);
 
   const setInputColumnWidth = useCallback(
-    (inputIndex: number) => (newWidth: number) => {
+    (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const newInputs = [...(prev.input ?? [])];
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(newInputs[inputIndex].width) : newWidthAction;
         newInputs[inputIndex].width = newWidth;
         return { ...prev, input: newInputs };
       });
@@ -119,9 +120,11 @@ export function DecisionTableExpression(
   );
 
   const setOutputColumnWidth = useCallback(
-    (outputIndex: number) => (newWidth: number) => {
+    (outputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const newOutputs = [...(prev.output ?? [])];
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(newOutputs[outputIndex].width) : newWidthAction;
         newOutputs[outputIndex].width = newWidth;
         return { ...prev, output: newOutputs };
       });
@@ -130,9 +133,11 @@ export function DecisionTableExpression(
   );
 
   const setAnnotationColumnWidth = useCallback(
-    (annotationIndex: number) => (newWidth: number) => {
+    (annotationIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const newAnnotations = [...(prev.annotations ?? [])];
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(newAnnotations[annotationIndex].width) : newWidthAction;
         newAnnotations[annotationIndex].width = newWidth;
         return { ...prev, annotations: newAnnotations };
       });
