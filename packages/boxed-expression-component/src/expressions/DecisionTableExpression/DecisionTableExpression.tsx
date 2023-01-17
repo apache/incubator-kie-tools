@@ -61,7 +61,7 @@ export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
 export function DecisionTableExpression(
-  decisionTableExpression: DecisionTableExpressionDefinition & { isHeadless: boolean }
+  decisionTableExpression: DecisionTableExpressionDefinition & { isNested: boolean }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
@@ -209,7 +209,7 @@ export function DecisionTableExpression(
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
-      accessor: decisionTableExpression.isHeadless ? decisionTableExpression.id : (decisionNodeId as any),
+      accessor: decisionTableExpression.isNested ? decisionTableExpression.id : (decisionNodeId as any),
       label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
       dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
@@ -238,7 +238,7 @@ export function DecisionTableExpression(
     decisionTableExpression.dataType,
     decisionTableExpression.id,
     decisionTableExpression.input,
-    decisionTableExpression.isHeadless,
+    decisionTableExpression.isNested,
     decisionTableExpression.name,
     decisionTableExpression.output,
     setAnnotationColumnWidth,
@@ -605,8 +605,8 @@ export function DecisionTableExpression(
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return decisionTableExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [decisionTableExpression.isHeadless]);
+    return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [decisionTableExpression.isNested]);
 
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>

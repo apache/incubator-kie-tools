@@ -46,7 +46,7 @@ export function FeelFunctionImplementationCell({ data, rowIndex }: BeeTableCellP
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ExpressionContainer expression={functionExpression.expression} isResetSupported={false} isHeadless={true} />
+        <ExpressionContainer expression={functionExpression.expression} isResetSupported={false} isNested={true} />
       </NestedExpressionDispatchContextProvider>
     </NestedExpressionContainerContext.Provider>
   );

@@ -46,7 +46,7 @@ type ROWTYPE = RelationExpressionDefinitionRow;
 
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
-export function RelationExpression(relationExpression: RelationExpressionDefinition & { isHeadless: boolean }) {
+export function RelationExpression(relationExpression: RelationExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -292,8 +292,8 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     [setExpression]
   );
   const beeTableHeaderVisibility = useMemo(() => {
-    return relationExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [relationExpression.isHeadless]);
+    return relationExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [relationExpression.isNested]);
 
   return (
     <div className={`relation-expression`}>

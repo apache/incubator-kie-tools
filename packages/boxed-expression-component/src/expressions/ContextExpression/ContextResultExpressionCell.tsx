@@ -22,7 +22,7 @@ export function ContextResultExpressionCell(props: { contextExpression: ContextE
 
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-      <ExpressionContainer expression={props.contextExpression.result} isResetSupported={true} isHeadless={true} />
+      <ExpressionContainer expression={props.contextExpression.result} isResetSupported={true} isNested={true} />
     </NestedExpressionDispatchContextProvider>
   );
 }

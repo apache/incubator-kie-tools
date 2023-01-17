@@ -55,7 +55,7 @@ const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export function ContextExpression(contextExpression: ContextExpressionDefinition & { isHeadless: boolean }) {
+export function ContextExpression(contextExpression: ContextExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -152,8 +152,8 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   );
 
   const headerVisibility = useMemo(() => {
-    return contextExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
-  }, [contextExpression.isHeadless]);
+    return contextExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
+  }, [contextExpression.isNested]);
 
   const updateEntry = useCallback(
     (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => {

@@ -41,7 +41,7 @@ import { ListItemCell } from "./ListItemCell";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export function ListExpression(listExpression: ListExpressionDefinition & { isHeadless: boolean }) {
+export function ListExpression(listExpression: ListExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -159,8 +159,8 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return listExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
-  }, [listExpression.isHeadless]);
+    return listExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [listExpression.isNested]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {

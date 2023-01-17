@@ -49,7 +49,7 @@ export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
 export type ROWTYPE = { functionExpression: FunctionExpressionDefinition };
 
-export function FunctionExpression(functionExpression: FunctionExpressionDefinition & { isHeadless: boolean }) {
+export function FunctionExpression(functionExpression: FunctionExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -111,8 +111,8 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
   }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
 
   const headerVisibility = React.useMemo(() => {
-    return functionExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [functionExpression.isHeadless]);
+    return functionExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [functionExpression.isNested]);
 
   const onFunctionKindSelect = React.useCallback(
     (kind: string) => {

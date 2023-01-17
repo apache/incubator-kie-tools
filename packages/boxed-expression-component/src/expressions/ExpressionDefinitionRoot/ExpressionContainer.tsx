@@ -25,13 +25,13 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 export interface ExpressionContainerProps {
   expression: ExpressionDefinition;
-  isHeadless: boolean;
+  isNested: boolean;
   isResetSupported: boolean;
 }
 
 export const ExpressionContainer: React.FunctionComponent<ExpressionContainerProps> = ({
   expression,
-  isHeadless,
+  isNested,
   isResetSupported,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,11 +43,11 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       setExpression((prev) => ({
         ...getDefaultExpressionDefinitionByLogicType(logicType, prev),
         logicType,
-        isHeadless,
+        isNested,
         id: prev.id ?? generateUuid(),
         name: prev.name ?? DEFAULT_EXPRESSION_NAME,
       })),
-    [isHeadless, setExpression]
+    [isNested, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {
@@ -69,7 +69,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         onLogicTypeReset={onLogicTypeReset}
         getPlacementRef={getPlacementRef}
         isResetSupported={isResetSupported}
-        isHeadless={isHeadless}
+        isNested={isNested}
       />
     </div>
   );

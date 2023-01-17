@@ -29,7 +29,7 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
 type ROWTYPE = any;
 
-export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isHeadless: boolean }) {
+export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isNested: boolean }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const getValue = useCallback(() => {
@@ -94,23 +94,18 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const beeTableRef = useRef<BeeTableRef>(null);
 
   useEffect(() => {
-    if (isPivoting) {
+    if (isPivoting || !literalExpression.isNested) {
       return;
     }
 
     const COLUMN_INDEX = 1;
     beeTableRef.current?.updateColumnResizingWidth(COLUMN_INDEX, (prev) => {
       return {
-        value: Math.max(
-          nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
-          // FIXME: Tiago -> Putting this here fixes the isHeadless=false case, but breaks the resizing on any cell.
-          // literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
-          minWidth
-        ),
+        value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidth),
         isPivoting: prev?.isPivoting ?? false,
       };
     });
-  }, [isPivoting, minWidth, nestedExpressionContainer.resizingWidth.value]);
+  }, [isPivoting, literalExpression.isNested, minWidth, nestedExpressionContainer.resizingWidth.value]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -131,8 +126,8 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   }, [literalExpression]);
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return literalExpression.isHeadless ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
-  }, [literalExpression.isHeadless]);
+    return literalExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [literalExpression.isNested]);
 
   const getColumnKey = useCallback((column: ReactTable.Column<ROWTYPE>) => {
     return column.label;

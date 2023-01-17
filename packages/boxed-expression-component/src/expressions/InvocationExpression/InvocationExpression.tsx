@@ -52,7 +52,7 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE = ExpressionDefinitionLogicType.Undefined;
 
-export function InvocationExpression(invocationExpression: InvocationExpressionDefinition & { isHeadless: boolean }) {
+export function InvocationExpression(invocationExpression: InvocationExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -173,8 +173,8 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
 
   const headerVisibility = useMemo(
     () =>
-      invocationExpression.isHeadless ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels,
-    [invocationExpression.isHeadless]
+      invocationExpression.isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels,
+    [invocationExpression.isNested]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {

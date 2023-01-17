@@ -59,7 +59,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
       <ExpressionContainer
         expression={contextEntries[rowIndex]?.entryExpression}
         isResetSupported={true}
-        isHeadless={true}
+        isNested={true}
       />
     </NestedExpressionDispatchContextProvider>
   );

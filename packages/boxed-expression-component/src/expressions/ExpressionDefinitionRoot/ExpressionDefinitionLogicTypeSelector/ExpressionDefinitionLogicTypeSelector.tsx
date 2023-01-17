@@ -50,7 +50,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
   getPlacementRef: () => HTMLDivElement;
   isResetSupported: boolean;
-  isHeadless: boolean;
+  isNested: boolean;
 }
 
 const NON_SELECTABLE_LOGIC_TYPES = new Set([ExpressionDefinitionLogicType.Undefined]);
@@ -65,7 +65,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   onLogicTypeReset,
   getPlacementRef,
   isResetSupported,
-  isHeadless,
+  isNested,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -80,25 +80,25 @@ export function ExpressionDefinitionLogicTypeSelector({
     const logicType = expression.logicType;
     switch (logicType) {
       case ExpressionDefinitionLogicType.Literal:
-        return <LiteralExpression {...expression} isHeadless={isHeadless} />;
+        return <LiteralExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.Relation:
-        return <RelationExpression {...expression} isHeadless={isHeadless} />;
+        return <RelationExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.Context:
-        return <ContextExpression {...expression} isHeadless={isHeadless} />;
+        return <ContextExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.DecisionTable:
-        return <DecisionTableExpression {...expression} isHeadless={isHeadless} />;
+        return <DecisionTableExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.Invocation:
-        return <InvocationExpression {...expression} isHeadless={isHeadless} />;
+        return <InvocationExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.List:
-        return <ListExpression {...expression} isHeadless={isHeadless} />;
+        return <ListExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.Function:
-        return <FunctionExpression {...expression} isHeadless={isHeadless} />;
+        return <FunctionExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.Undefined:
         return <></>; // Shouldn't ever reach this point, though
       default:
         assertUnreachable(logicType);
     }
-  }, [expression, isHeadless]);
+  }, [expression, isNested]);
 
   const getPopoverArrowPlacement = useCallback(() => {
     return getPlacementRef() as HTMLDivElement;
@@ -226,7 +226,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   }, []);
 
   const showExpressionHeader = useMemo(() => {
-    if (!isHeadless) {
+    if (!isNested) {
       return true;
     }
 
@@ -234,7 +234,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       expression.logicType !== ExpressionDefinitionLogicType.Literal &&
       !NON_SELECTABLE_LOGIC_TYPES.has(expression.logicType)
     );
-  }, [expression.logicType, isHeadless]);
+  }, [expression.logicType, isNested]);
 
   const contextMenuItems = useMemo(() => {
     return (
