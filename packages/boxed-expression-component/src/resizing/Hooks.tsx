@@ -107,7 +107,7 @@ export function useNestedExpressionContainerWithNestedExpressions({
   fixedColumnActualWidth,
   fixedColumnResizingWidth,
   fixedColumnMinWidth,
-  nestedExpressionMin,
+  nestedExpressionMinWidth,
   extraWidth,
   id,
 }: {
@@ -115,7 +115,7 @@ export function useNestedExpressionContainerWithNestedExpressions({
   fixedColumnActualWidth: number;
   fixedColumnResizingWidth: ResizingWidth;
   fixedColumnMinWidth: number;
-  nestedExpressionMin: number;
+  nestedExpressionMinWidth: number;
   extraWidth: number;
   id: string | undefined;
 }) {
@@ -132,14 +132,14 @@ export function useNestedExpressionContainerWithNestedExpressions({
     fixedColumnActualWidth,
     fixedColumnResizingWidth,
     fixedColumnMinWidth,
-    nestedExpressionMin,
+    nestedExpressionMinWidth,
     extraWidth
   );
 
   const maxNestedExpressionMinWidth = useNestedExpressionMinWidth(
     nestedExpressions,
     fixedColumnResizingWidth,
-    nestedExpressionMin,
+    nestedExpressionMinWidth,
     extraWidth
   );
 
@@ -149,16 +149,24 @@ export function useNestedExpressionContainerWithNestedExpressions({
     extraWidth
   );
 
+  const nestedExpressionContainer = useNestedExpressionContainer();
+
   const nestedExpressionContainerValue = useMemo<NestedExpressionContainerContextType>(() => {
     return {
       minWidth: maxNestedExpressionMinWidth,
       actualWidth: nestedExpressionActualWidth,
       resizingWidth: {
         value: nestedExpressionResizingWidthValue,
-        isPivoting,
+        isPivoting: isPivoting || nestedExpressionContainer.resizingWidth.isPivoting,
       },
     };
-  }, [maxNestedExpressionMinWidth, nestedExpressionActualWidth, nestedExpressionResizingWidthValue, isPivoting]);
+  }, [
+    maxNestedExpressionMinWidth,
+    nestedExpressionActualWidth,
+    nestedExpressionResizingWidthValue,
+    isPivoting,
+    nestedExpressionContainer.resizingWidth.isPivoting,
+  ]);
 
   const { updateResizingWidth } = useResizingWidthsDispatch();
 

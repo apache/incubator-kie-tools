@@ -87,7 +87,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
         fixedColumnActualWidth: parametersWidth,
         fixedColumnResizingWidth: parametersResizingWidth,
         fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
-        nestedExpressionMin: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
+        nestedExpressionMinWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
         extraWidth: INVOCATION_EXTRA_WIDTH,
         id: invocationExpression.id,
       };

@@ -98,10 +98,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setWidth?.(minWidth ?? DEFAULT_MIN_WIDTH);
+      // This is pretending we resized down.
+      onResizeStart(undefined, { size: { width: minWidth ?? DEFAULT_MIN_WIDTH } });
+      // Let React handle the state update above, then stop the resizing.
+      setTimeout(() => {
+        setResizingStop__data(minWidth ?? DEFAULT_MIN_WIDTH);
+      }, 0);
     },
-    [minWidth, setWidth]
+    [minWidth, onResizeStart]
   );
 
   const style = useMemo(() => {

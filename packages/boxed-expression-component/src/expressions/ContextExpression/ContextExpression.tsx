@@ -102,7 +102,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         fixedColumnActualWidth: entryInfoWidth,
         fixedColumnResizingWidth: entryInfoResizingWidth,
         fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-        nestedExpressionMin: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
         id: contextExpression.id,
       };

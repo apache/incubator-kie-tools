@@ -60,7 +60,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
         fixedColumnActualWidth: 0,
         fixedColumnResizingWidth: { value: 0, isPivoting: false },
         fixedColumnMinWidth: 0,
-        nestedExpressionMin: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
         id: listExpression.id,
       };
