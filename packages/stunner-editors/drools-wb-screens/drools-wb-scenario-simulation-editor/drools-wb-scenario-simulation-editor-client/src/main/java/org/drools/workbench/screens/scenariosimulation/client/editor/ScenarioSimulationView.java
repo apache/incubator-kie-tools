@@ -35,4 +35,6 @@ public interface ScenarioSimulationView extends KieEditorView,
     void setContentWidget(Widget widget);
 
     void setScenarioGridWidgetAsContent();
+
+    void setScenarioTabBarVisibility(boolean visible);
 }

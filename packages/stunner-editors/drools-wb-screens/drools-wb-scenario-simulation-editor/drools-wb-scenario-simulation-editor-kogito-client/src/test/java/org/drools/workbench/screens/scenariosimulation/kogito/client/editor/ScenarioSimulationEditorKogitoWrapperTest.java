@@ -298,7 +298,7 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(errorPageMock).setContent(ScenarioSimulationEditorConstants.INSTANCE.scenarioParsingErrorContent());
         verify(scenarioSimulationViewMock).setContentWidget(errorPageMock);
         verify(scenarioSimulationEditorPresenterMock, times(1)).hideDocks();
-        verify(multiPageEditorMock, times(1)).setTabBarVisible(false);
+        verify(scenarioSimulationViewMock, times(1)).setScenarioTabBarVisibility(false);
         verify(rejectCallbackFnMock, times(1)).onInvoke("Error message");
     }
 
@@ -345,7 +345,7 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         assertTrue(dataManagementStrategyCaptor.getValue() instanceof KogitoDMODataManagementStrategy);
         verify(scenarioSimulationViewMock, times(1)).setScenarioGridWidgetAsContent();
         verify(scenarioSimulationEditorPresenterMock, times(1)).showDocks();
-        verify(multiPageEditorMock, times(1)).setTabBarVisible(true);
+        verify(scenarioSimulationViewMock, times(1)).setScenarioTabBarVisibility(true);
     }
 
     @Test
@@ -359,7 +359,8 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         assertTrue(dataManagementStrategyCaptor.getValue() instanceof KogitoDMNDataManagementStrategy);
         verify(scenarioSimulationViewMock, times(1)).setScenarioGridWidgetAsContent();
         verify(scenarioSimulationEditorPresenterMock, times(1)).showDocks();
-        verify(multiPageEditorMock, times(1)).setTabBarVisible(true);    }
+        verify(scenarioSimulationViewMock, times(1)).setScenarioTabBarVisibility(true);
+    }
 
     @Test
     public void addBackgroundPage() {

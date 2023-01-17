@@ -206,13 +206,13 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         errorPage.setErrorContent(errorMessage);
         scenarioSimulationEditorPresenter.getView().setContentWidget(errorPage);
         scenarioSimulationEditorPresenter.hideDocks();
-        getWidget().getMultiPage().setTabBarVisible(false);
+        scenarioSimulationEditorPresenter.getView().setScenarioTabBarVisibility(false);
     }
 
     private void ensureScenarioGridIsSet() {
         scenarioSimulationEditorPresenter.getView().setScenarioGridWidgetAsContent();
         scenarioSimulationEditorPresenter.showDocks();
-        getWidget().getMultiPage().setTabBarVisible(true);
+        scenarioSimulationEditorPresenter.getView().setScenarioTabBarVisibility(true);
     }
 
     public void prepareContent(Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<String> success,
