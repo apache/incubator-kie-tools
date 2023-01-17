@@ -14,82 +14,48 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
-import * as React from "react";
-import { useCallback, useMemo } from "react";
-import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
   FunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
   generateUuid,
 } from "../../api";
+import { FeelFunctionImplementationCell } from "./FeelFunctionImplementationCell";
+import "./FunctionExpression.css";
+import { JavaFunctionBindingCell } from "./JavaFunctionBindingCell";
+import { PmmlFunctionBindingCell } from "./PmmlFunctionBindingCell";
+import * as React from "react";
+import _ from "lodash";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
-import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, FUNCTION_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthConstants";
-import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
+import { BeeTableColumnUpdate, BeeTable } from "../../table/BeeTable";
 import {
-  useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
+  useBoxedExpressionEditor,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
-import { FunctionDefinitionCell } from "./FunctionDefinitionCell";
-import { FunctionKindSelector } from "./FunctionKindSelector";
-import { javaContextExpression } from "./JavaFunctionExpression";
-import { ParametersPopover } from "./ParametersPopover";
-import { pmmlContextExpression } from "./PmmlFunctionExpression";
-import "./FunctionExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { FunctionKindSelector } from "./FunctionKindSelector";
+import { ParametersPopover } from "./ParametersPopover";
+import * as ReactTable from "react-table";
+import { JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH } from "../../resizing/WidthConstants";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
-export type ROWTYPE = ContextExpressionDefinitionEntry;
+export type ROWTYPE = { functionExpression: FunctionExpressionDefinition };
 
 export function FunctionExpression(functionExpression: FunctionExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const nestedFeelExpression = useMemo(() => {
-    return functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel
-      ? functionExpression.expression
-      : undefined;
-  }, [functionExpression]);
+  const { editorRef, decisionNodeId } = useBoxedExpressionEditor();
 
-  /// //////////////////////////////////////////////////////
-  /// ///////////// RESIZING WIDTHS ////////////////////////
-  /// //////////////////////////////////////////////////////
-
-  const nestedExpressions = useMemo(() => {
-    return nestedFeelExpression ? [nestedFeelExpression] : [];
-  }, [nestedFeelExpression]);
-
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
-    useMemo(() => {
-      return {
-        nestedExpressions,
-        fixedColumnActualWidth: 0,
-        fixedColumnResizingWidth: { value: 0, isPivoting: false },
-        fixedColumnMinWidth: 0,
-        nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-        extraWidth: FUNCTION_EXPRESSION_EXTRA_WIDTH,
-        id: functionExpression.id,
-      };
-    }, [nestedExpressions, functionExpression.id])
-  );
-
-  /// //////////////////////////////////////////////////////
-
-  const { editorRef, pmmlParams, decisionNodeId } = useBoxedExpressionEditor();
-
-  const parametersColumnHeader = useMemo(
+  const parametersColumnHeader = React.useMemo(
     () => (
       <PopoverMenu
         appendTo={() => editorRef.current!}
@@ -105,12 +71,12 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
               <>
                 <span>{"("}</span>
                 {functionExpression.formalParameters.map((parameter, i) => (
-                  <>
+                  <React.Fragment key={i}>
                     <span>{parameter.name}</span>
                     <span>{": "}</span>
                     <span className={"expression-info-data-type"}>({parameter.dataType})</span>
                     {i < functionExpression.formalParameters.length - 1 && <span>{", "}</span>}
-                  </>
+                  </React.Fragment>
                 ))}
                 <span>{")"}</span>
               </>
@@ -122,7 +88,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     [functionExpression.formalParameters, i18n.editParameters, editorRef]
   );
 
-  const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
+  const beeTableColumns = React.useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
@@ -144,11 +110,11 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     ];
   }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
 
-  const headerVisibility = useMemo(() => {
+  const headerVisibility = React.useMemo(() => {
     return functionExpression.isHeadless ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [functionExpression.isHeadless]);
 
-  const onFunctionKindSelect = useCallback(
+  const onFunctionKindSelect = React.useCallback(
     (kind: string) => {
       setExpression((prev) => {
         if (kind === FunctionExpressionDefinitionKind.Feel) {
@@ -164,6 +130,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Java,
             dataType: DmnBuiltInDataType.Undefined,
+            classAndMethodNamesWidth: JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
             formalParameters: [],
           };
         } else if (kind === FunctionExpressionDefinitionKind.Pmml) {
@@ -183,7 +150,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     [setExpression]
   );
 
-  const onColumnUpdates = useCallback(
+  const onColumnUpdates = React.useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
@@ -194,7 +161,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     [setExpression]
   );
 
-  const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
+  const beeTableOperationConfig = React.useMemo<BeeTableOperationConfig>(() => {
     return [
       {
         group: _.upperCase(i18n.function),
@@ -211,104 +178,77 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     ];
   }, [functionExpression.functionKind, i18n]);
 
-  const beeTableRows = useMemo(() => {
-    function rows(): ContextExpressionDefinitionEntry {
-      switch (functionExpression.functionKind) {
-        case FunctionExpressionDefinitionKind.Java: {
-          const javaEntryExpression = javaContextExpression(functionExpression, i18n);
-          return {
-            entryInfo: {
-              id: javaEntryExpression.id!,
-              name: javaEntryExpression.id!,
-              dataType: undefined as any, // FIXME: Tiago -> Not good.
-            },
-            entryExpression: javaEntryExpression,
-          };
-        }
-        case FunctionExpressionDefinitionKind.Pmml: {
-          const pmmlEntryExpression = pmmlContextExpression(functionExpression, i18n);
-          return {
-            entryInfo: {
-              id: pmmlEntryExpression.id!,
-              name: pmmlEntryExpression.id!,
-              dataType: undefined as any, // FIXME: Tiago -> Not good.
-            },
-            entryExpression: pmmlEntryExpression,
-          };
-        }
-        case FunctionExpressionDefinitionKind.Feel:
-        default: {
-          return {
-            entryInfo: {
-              id: functionExpression.expression.id!,
-              name: functionExpression.expression.id!,
-              dataType: undefined as any, // FIXME: Tiago -> Not good.
-            },
-            entryExpression: functionExpression.expression,
-          };
-        }
-      }
-    }
-    return [rows()];
-  }, [functionExpression, i18n]);
+  const beeTableRows = React.useMemo(() => {
+    return [
+      {
+        functionExpression: functionExpression,
+      },
+    ];
+  }, [functionExpression]);
 
-  const controllerCell = useMemo(
+  const controllerCell = React.useMemo(
     () => (
       <FunctionKindSelector
-        selectedFunctionKind={functionExpression.functionKind ?? FunctionExpressionDefinitionKind.Feel}
+        selectedFunctionKind={functionExpression.functionKind}
         onFunctionKindSelect={onFunctionKindSelect}
       />
     ),
     [functionExpression.functionKind, onFunctionKindSelect]
   );
 
-  const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
+  const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = React.useMemo(
     () => ({
-      parameters: (props) => <FunctionDefinitionCell {...props} />,
+      parameters: (props) => (
+        <>
+          {functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel && (
+            <FeelFunctionImplementationCell {...props} />
+          )}
+          {functionExpression.functionKind === FunctionExpressionDefinitionKind.Java && (
+            <JavaFunctionBindingCell {...props} />
+          )}
+          {functionExpression.functionKind === FunctionExpressionDefinitionKind.Pmml && (
+            <PmmlFunctionBindingCell {...props} />
+          )}
+        </>
+      ),
     }),
-    []
+    [functionExpression]
   );
 
-  const getRowKey = useCallback((r: ReactTable.Row<ROWTYPE>) => {
-    return r.original.entryInfo.id;
+  const getRowKey = React.useCallback((r: ReactTable.Row<ROWTYPE>) => {
+    return r.original.functionExpression.id;
   }, []);
 
-  const onRowReset = useCallback(() => {
+  const onRowReset = React.useCallback(() => {
     setExpression((prev) => {
-      if (functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel) {
-        return {
-          ...prev,
-          expression: {
-            id: generateUuid(),
-            logicType: ExpressionDefinitionLogicType.Undefined,
-            dataType: DmnBuiltInDataType.Undefined,
-          },
-        };
-      }
-
-      return prev;
+      return {
+        ...prev,
+        expression: {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
+        },
+      };
     });
-  }, [functionExpression.functionKind, setExpression]);
+  }, [setExpression]);
 
   return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div className={`function-expression ${functionExpression.id}`}>
-        <BeeTable
-          operationConfig={beeTableOperationConfig}
-          onColumnUpdates={onColumnUpdates}
-          getRowKey={getRowKey}
-          onRowReset={onRowReset}
-          columns={beeTableColumns}
-          rows={beeTableRows}
-          headerLevelCount={1}
-          headerVisibility={headerVisibility}
-          controllerCell={controllerCell}
-          cellComponentByColumnId={cellComponentByColumnId}
-          shouldRenderRowIndexColumn={true}
-          shouldShowRowsInlineControls={false}
-          shouldShowColumnsInlineControls={false}
-        />
-      </div>
-    </NestedExpressionContainerContext.Provider>
+    <div className={`function-expression ${functionExpression.id}`}>
+      <BeeTable
+        operationConfig={beeTableOperationConfig}
+        onColumnUpdates={onColumnUpdates}
+        getRowKey={getRowKey}
+        onRowReset={onRowReset}
+        columns={beeTableColumns}
+        rows={beeTableRows}
+        headerLevelCount={1}
+        headerVisibility={headerVisibility}
+        controllerCell={controllerCell}
+        cellComponentByColumnId={cellComponentByColumnId}
+        shouldRenderRowIndexColumn={true}
+        shouldShowRowsInlineControls={false}
+        shouldShowColumnsInlineControls={false}
+      />
+    </div>
   );
 }

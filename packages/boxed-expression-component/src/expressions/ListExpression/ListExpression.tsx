@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
+import { useCallback, useMemo } from "react";
 import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
@@ -32,14 +32,14 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, LIST_EXPRESSION_EXTRA_WIDTH } from "../../resizing/WidthConstants";
+import { LIST_EXPRESSION_EXTRA_WIDTH, LIST_ITEM_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ListItemCell } from "./ListItemCell";
-import "./ListExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import "./ListExpression.css";
+import { ListItemCell } from "./ListItemCell";
 
-type ROWTYPE = ContextExpressionDefinitionEntry;
+export type ROWTYPE = ContextExpressionDefinitionEntry;
 
 export function ListExpression(listExpression: ListExpressionDefinition & { isHeadless: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -49,22 +49,18 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const nestedExpressions = useMemo(() => {
-    return listExpression.items;
-  }, [listExpression.items]);
-
   const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
     useMemo(() => {
       return {
-        nestedExpressions,
+        nestedExpressions: listExpression.items,
         fixedColumnActualWidth: 0,
         fixedColumnResizingWidth: { value: 0, isPivoting: false },
         fixedColumnMinWidth: 0,
-        nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        nestedExpressionMinWidth: LIST_ITEM_EXPRESSION_MIN_WIDTH,
         extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
-        id: listExpression.id,
+        expression: listExpression,
       };
-    }, [nestedExpressions, listExpression.id])
+    }, [listExpression])
   );
 
   /// //////////////////////////////////////////////////////
@@ -105,7 +101,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isHe
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
-    return row.original.entryExpression.id!;
+    return row.original.entryExpression.id;
   }, []);
 
   const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(

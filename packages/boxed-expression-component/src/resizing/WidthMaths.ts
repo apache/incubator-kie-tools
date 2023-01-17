@@ -10,11 +10,17 @@ import {
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
   DEFAULT_MIN_WIDTH,
-  FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH,
   LIST_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+  FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
+  LIST_ITEM_EXPRESSION_MIN_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
@@ -44,27 +50,25 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
       return (
         Math.max(
-          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           ...[expression.expression].map((expression) => getExpressionMinWidth(expression))
-        ) + FUNCTION_EXPRESSION_EXTRA_WIDTH
+        ) + FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
-      // TODO: Tiago -> Fix.
       return (
-        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
-        CONTEXT_ENTRY_INFO_MIN_WIDTH +
-        CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 -
-        1
+        JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
+        JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
+        2 + // column borders
+        2 + // whole table borders
+        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-      // TODO: Tiago -> Fix.
       return (
-        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH +
-        CONTEXT_ENTRY_INFO_MIN_WIDTH +
-        CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 -
-        1
+        PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
+        PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
+        2 + // column borders
+        2 + // whole table borders
+        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
       );
     } else {
       throw new Error("Should never get here");
@@ -91,16 +95,14 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
   else if (expression.logicType === ExpressionDefinitionLogicType.List) {
     return (
       Math.max(
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        LIST_ITEM_EXPRESSION_MIN_WIDTH,
         ...(expression.items ?? []).map((expression) => getExpressionMinWidth(expression))
       ) + LIST_EXPRESSION_EXTRA_WIDTH
     );
   }
 
   // Others
-  else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteral) {
-    return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
+  else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
     return DEFAULT_MIN_WIDTH;
   } else {
     throw new Error("Shouldn't ever reach this point");
@@ -115,7 +117,7 @@ export function getExpressionResizingWidth(
     return getExpressionMinWidth(expression);
   }
 
-  const resizingWidth = resizingWidths.get(expression.id!)?.value;
+  const resizingWidth = resizingWidths.get(expression.id)?.value;
 
   // Literal
   if (expression.logicType === ExpressionDefinitionLogicType.Literal) {
@@ -184,16 +186,26 @@ export function getExpressionResizingWidth(
       return (
         resizingWidth ??
         Math.max(
-          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           ...[expression.expression].map((expression) => getExpressionResizingWidth(expression, resizingWidths))
-        ) + FUNCTION_EXPRESSION_EXTRA_WIDTH
+        ) + FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
-      // TODO: Tiago -> Fix.
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 - 1;
+      return (
+        JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
+        (expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
+        2 + // column borders
+        2 + // value column borders
+        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
+      );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
-      // TODO: Tiago -> Fix.
-      return CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH + CONTEXT_ENTRY_INFO_MIN_WIDTH + CONTEXT_EXPRESSION_EXTRA_WIDTH * 2 - 1;
+      return (
+        PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
+        PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
+        2 + // column borders
+        2 + // whole table borders
+        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
+      );
     } else {
       throw new Error("Should never get here");
     }
@@ -204,16 +216,14 @@ export function getExpressionResizingWidth(
     return (
       resizingWidth ??
       Math.max(
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+        LIST_ITEM_EXPRESSION_MIN_WIDTH,
         ...(expression.items ?? []).map((expression) => getExpressionResizingWidth(expression, resizingWidths))
       ) + LIST_EXPRESSION_EXTRA_WIDTH
     );
   }
 
   // Others
-  else if (expression.logicType === ExpressionDefinitionLogicType.PmmlLiteral) {
-    return resizingWidth ?? CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
+  else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
   } else {
     throw new Error("Shouldn't ever reach this point");

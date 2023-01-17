@@ -47,14 +47,15 @@
   -ms-user-select: none;
 }
 
-.expression-container .table-component table th.fixed-column {
-  font-weight: 400;
-  min-width: 60px;
-}
-
 .expression-container .table-component table th:not(.row-index-column) {
   text-align: center;
   background-color: #def3ff;
+}
+
+.expression-container .table-component table th.fixed-column {
+  font-weight: 400;
+  min-width: 60px;
+  background-color: initial;
 }
 
 .expression-container .table-component table th.no-clickable-cell:first-of-type .header-cell,

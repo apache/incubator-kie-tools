@@ -26,6 +26,8 @@ export interface ExpressionDefinitionBase {
   dataType: DmnBuiltInDataType;
 }
 
+// LITERAL EXPRESSION
+
 export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be LiteralExpression */
   logicType: ExpressionDefinitionLogicType.Literal;
@@ -35,23 +37,7 @@ export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
   width?: number;
 }
 
-export enum PmmlLiteralExpressionDefinitionKind {
-  Document,
-  Model,
-}
-
-export interface PmmlLiteralExpressionDefinition extends ExpressionDefinitionBase {
-  /** Logic type must be PmmlLiteralExpression */
-  logicType: ExpressionDefinitionLogicType.PmmlLiteral;
-  /** Dropdown's selected option */
-  selected?: string;
-  /** Label displayed (in italic style) when no options are available */
-  noOptionsLabel: string;
-  /** Property used for test purposes only */
-  testId?: string;
-  /** Kind  */
-  kind: PmmlLiteralExpressionDefinitionKind;
-}
+// RELATION EXPRESSION
 
 export interface RelationExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Relation */
@@ -79,6 +65,8 @@ export interface RelationExpressionDefinitionColumn {
   /** Column width */
   width?: number;
 }
+
+// CONTEXT EXPRESSION
 
 export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Context */
@@ -110,16 +98,7 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
   entryExpression: T;
 }
 
-// FIXME: Tiago -> Move
-export const getNextAvailablePrefixedName = (
-  names: string[],
-  namePrefix: string,
-  lastIndex: number = names.length
-): string => {
-  const candidate = `${namePrefix}-${lastIndex + 1}`;
-  const elemWithCandidateName = names.indexOf(candidate);
-  return elemWithCandidateName >= 0 ? getNextAvailablePrefixedName(names, namePrefix, lastIndex + 1) : candidate;
-};
+// DECISION TABLE EXPRESSION
 
 export interface DecisionTableExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Decision table */
@@ -211,18 +190,13 @@ export interface InvocationExpressionDefinition<T extends ExpressionDefinition =
   entryExpressionWidth?: number; // FIXME: Tiago -> Remove
 }
 
+// UNDEFINED EXPRESSION
+
 export interface UndefinedExpressionDefinition extends ExpressionDefinitionBase {
   logicType: ExpressionDefinitionLogicType.Undefined;
 }
 
-export type FunctionExpressionDefinition = ExpressionDefinitionBase & {
-  /** Logic type must be Function */
-  logicType: ExpressionDefinitionLogicType.Function;
-  /** List of parameters passed to the function */
-  formalParameters: ContextExpressionDefinitionEntryInfo[];
-  /** Parameters column width */
-  parametersWidth?: number; // FIXME: Tiago -> Remove
-} & (FeelFunctionExpressionDefinition | JavaFunctionExpressionDefinition | PmmlFunctionExpressionDefinition);
+// FUNCTION EXPRESSION
 
 export enum FunctionExpressionDefinitionKind {
   Feel = "FEEL",
@@ -230,35 +204,21 @@ export enum FunctionExpressionDefinitionKind {
   Pmml = "PMML",
 }
 
-export interface FeelFunctionExpressionDefinition {
+export interface FunctionExpressionDefinitionBase extends ExpressionDefinitionBase {
+  /** Logic type must be Function */
+  logicType: ExpressionDefinitionLogicType.Function;
+  /** List of parameters passed to the function */
+  formalParameters: ContextExpressionDefinitionEntryInfo[];
+}
+
+export type FeelFunctionExpressionDefinition = FunctionExpressionDefinitionBase & {
   /** Feel Function */
   functionKind: FunctionExpressionDefinitionKind.Feel;
   /** The Expression related to the function */
   expression: ExpressionDefinition;
-}
+};
 
-export interface JavaFunctionExpressionDefinition {
-  /** Java Function */
-  functionKind: FunctionExpressionDefinitionKind.Java;
-  /** Java class */
-  className?: string;
-  /** Method signature */
-  methodName?: string;
-  /** Class text field identifier */
-  classFieldId?: string;
-  /** Method text field identifier */
-  methodFieldId?: string;
-}
-
-export interface PmmlParam {
-  document: string;
-  modelsFromDocument?: {
-    model: string;
-    parametersFromModel?: ContextExpressionDefinitionEntryInfo[];
-  }[];
-}
-
-export interface PmmlFunctionExpressionDefinition {
+export type PmmlFunctionExpressionDefinition = FunctionExpressionDefinitionBase & {
   /** Pmml Function */
   functionKind: FunctionExpressionDefinitionKind.Pmml;
   /** Selected PMML document */
@@ -269,15 +229,59 @@ export interface PmmlFunctionExpressionDefinition {
   documentFieldId?: string;
   /** Model dropdown field identifier */
   modelFieldId?: string;
-}
+};
+
+export type JavaFunctionExpressionDefinition = FunctionExpressionDefinitionBase & {
+  /** Java Function */
+  functionKind: FunctionExpressionDefinitionKind.Java;
+  /** Java class */
+  className?: string;
+  /** Method signature */
+  methodName?: string;
+  /** Class text field identifier */
+  classFieldId?: string;
+  /** Method text field identifier */
+  methodFieldId?: string;
+  /** Width for the column with Java className and methodName strings */
+  classAndMethodNamesWidth?: number;
+};
+
+export type FunctionExpressionDefinition =
+  | FeelFunctionExpressionDefinition
+  | PmmlFunctionExpressionDefinition
+  | JavaFunctionExpressionDefinition;
+
+// ALL
 
 export type ExpressionDefinition =
   | LiteralExpressionDefinition
-  | PmmlLiteralExpressionDefinition
   | RelationExpressionDefinition
   | ContextExpressionDefinition
   | DecisionTableExpressionDefinition
   | ListExpressionDefinition
   | InvocationExpressionDefinition
   | UndefinedExpressionDefinition
-  | FunctionExpressionDefinition;
+  | FunctionExpressionDefinition
+  | PmmlFunctionExpressionDefinition
+  | JavaFunctionExpressionDefinition;
+
+// OTHER
+
+export interface PmmlParam {
+  document: string;
+  modelsFromDocument?: {
+    model: string;
+    parametersFromModel?: ContextExpressionDefinitionEntryInfo[];
+  }[];
+}
+
+// FIXME: Tiago -> Move
+export const getNextAvailablePrefixedName = (
+  names: string[],
+  namePrefix: string,
+  lastIndex: number = names.length
+): string => {
+  const candidate = `${namePrefix}-${lastIndex + 1}`;
+  const elemWithCandidateName = names.indexOf(candidate);
+  return elemWithCandidateName >= 0 ? getNextAvailablePrefixedName(names, namePrefix, lastIndex + 1) : candidate;
+};

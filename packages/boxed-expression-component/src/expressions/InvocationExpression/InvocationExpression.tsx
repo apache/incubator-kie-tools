@@ -76,22 +76,18 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const nestedExpressions = useMemo(() => {
-    return invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [];
-  }, [invocationExpression.bindingEntries]);
-
   const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
     useMemo(() => {
       return {
-        nestedExpressions,
+        nestedExpressions: invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [],
         fixedColumnActualWidth: parametersWidth,
         fixedColumnResizingWidth: parametersResizingWidth,
         fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
         nestedExpressionMinWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
         extraWidth: INVOCATION_EXTRA_WIDTH,
-        id: invocationExpression.id,
+        expression: invocationExpression,
       };
-    }, [nestedExpressions, parametersWidth, parametersResizingWidth, invocationExpression.id])
+    }, [parametersWidth, parametersResizingWidth, invocationExpression])
   );
 
   /// //////////////////////////////////////////////////////

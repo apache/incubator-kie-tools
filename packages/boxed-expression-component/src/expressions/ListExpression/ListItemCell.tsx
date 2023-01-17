@@ -5,8 +5,8 @@ import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ROWTYPE } from "../FunctionExpression";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
+import { ROWTYPE } from "./ListExpression";
 
 export function ListItemCell({ rowIndex, data: items }: BeeTableCellProps<ROWTYPE>) {
   const { setExpression } = useBoxedExpressionEditorDispatch();

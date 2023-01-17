@@ -90,23 +90,21 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const nestedExpressions = useMemo<ExpressionDefinition[]>(
-    () => [...contextExpression.contextEntries.map((e) => e.entryExpression), contextExpression.result],
-    [contextExpression.contextEntries, contextExpression.result]
-  );
-
   const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
     useMemo(() => {
       return {
-        nestedExpressions,
+        nestedExpressions: [
+          ...contextExpression.contextEntries.map((e) => e.entryExpression),
+          contextExpression.result,
+        ],
         fixedColumnActualWidth: entryInfoWidth,
         fixedColumnResizingWidth: entryInfoResizingWidth,
         fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
         nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
         extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
-        id: contextExpression.id,
+        expression: contextExpression,
       };
-    }, [contextExpression.id, entryInfoResizingWidth, entryInfoWidth, nestedExpressions])
+    }, [contextExpression, entryInfoResizingWidth, entryInfoWidth])
   );
 
   /// //////////////////////////////////////////////////////

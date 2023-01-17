@@ -27,7 +27,7 @@ export function useNestedExpressionResizingWidth(
     }
 
     const nestedPivotingExpression: ExpressionDefinition | undefined = nestedExpressions.filter(
-      ({ id }) => resizingWidths.get(id!)?.isPivoting ?? false
+      ({ id }) => resizingWidths.get(id)?.isPivoting ?? false
     )[0];
 
     if (nestedPivotingExpression) {
@@ -96,7 +96,7 @@ export function useNestedExpressionActualWidth(
     return Math.max(
       nestedExpressionContainer.actualWidth - fixedColumnActualWidth - extraWidth,
       ...nestedExpressions
-        .filter(({ id }) => !(resizingWidths.get(id!)?.isPivoting ?? false))
+        .filter(({ id }) => !(resizingWidths.get(id)?.isPivoting ?? false))
         .map((expression) => getExpressionResizingWidth(expression, new Map()))
     );
   }, [fixedColumnActualWidth, extraWidth, nestedExpressionContainer.actualWidth, nestedExpressions, resizingWidths]);
@@ -109,7 +109,7 @@ export function useNestedExpressionContainerWithNestedExpressions({
   fixedColumnMinWidth,
   nestedExpressionMinWidth,
   extraWidth,
-  id,
+  expression,
 }: {
   nestedExpressions: ExpressionDefinition[];
   fixedColumnActualWidth: number;
@@ -117,12 +117,12 @@ export function useNestedExpressionContainerWithNestedExpressions({
   fixedColumnMinWidth: number;
   nestedExpressionMinWidth: number;
   extraWidth: number;
-  id: string | undefined;
+  expression: ExpressionDefinition;
 }) {
   const { resizingWidths } = useResizingWidths();
   const isPivoting = useMemo<boolean>(() => {
     return (
-      fixedColumnResizingWidth.isPivoting || nestedExpressions.some(({ id }) => resizingWidths.get(id!)?.isPivoting)
+      fixedColumnResizingWidth.isPivoting || nestedExpressions.some(({ id }) => resizingWidths.get(id)?.isPivoting)
     );
   }, [fixedColumnResizingWidth.isPivoting, nestedExpressions, resizingWidths]);
 
@@ -171,12 +171,12 @@ export function useNestedExpressionContainerWithNestedExpressions({
   const { updateResizingWidth } = useResizingWidthsDispatch();
 
   useEffect(() => {
-    updateResizingWidth(id!, (prev) => ({
+    updateResizingWidth(expression.id, (prev) => ({
       value: fixedColumnResizingWidth.value + nestedExpressionResizingWidthValue + extraWidth,
       isPivoting,
     }));
   }, [
-    id,
+    expression.id,
     nestedExpressionResizingWidthValue,
     isPivoting,
     updateResizingWidth,

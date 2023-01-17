@@ -81,7 +81,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   //// RESIZING WIDTH
 
-  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(literalExpression.id!);
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(literalExpression.id);
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   const minWidth = useMemo(() => {
@@ -101,11 +101,21 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     const COLUMN_INDEX = 1;
     beeTableRef.current?.updateColumnResizingWidth(COLUMN_INDEX, (prev) => {
       return {
-        value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidth),
+        value: Math.max(
+          nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
+          literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+          minWidth
+        ),
         isPivoting: prev?.isPivoting ?? false,
       };
     });
-  }, [containerCellCoordinates?.rowIndex, isPivoting, minWidth, nestedExpressionContainer.resizingWidth.value]);
+  }, [
+    containerCellCoordinates,
+    isPivoting,
+    literalExpression.width,
+    minWidth,
+    nestedExpressionContainer.resizingWidth.value,
+  ]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [

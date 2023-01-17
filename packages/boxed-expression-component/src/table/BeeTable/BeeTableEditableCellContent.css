@@ -44,16 +44,11 @@
 }
 
 .expression-container .editable-cell .editable-cell-value {
-  padding: 0 5px;
   font-size: 13px;
   font-family: Menlo, Monaco, "Courier New", monospace;
   white-space: pre-line;
-}
-
-.expression-container .editable-cell .editable-cell-value {
   display: inline-block;
-  vertical-align: middle;
   line-height: normal;
   max-height: 100%;
-  padding: 2px 0;
+  padding: 8px;
 }

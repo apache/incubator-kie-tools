@@ -32,9 +32,11 @@ import {
 import { ContextExpression } from "../../ContextExpression";
 import { DecisionTableExpression } from "../../DecisionTableExpression";
 import { FunctionExpression } from "../../FunctionExpression";
+import { JavaFunctionBindingCell } from "../../FunctionExpression/JavaFunctionBindingCell";
+import { PmmlFunctionBindingCell } from "../../FunctionExpression/PmmlFunctionBindingCell";
 import { InvocationExpression } from "../../InvocationExpression";
 import { ListExpression } from "../../ListExpression";
-import { LiteralExpression, PmmlLiteralExpression } from "../../LiteralExpression";
+import { LiteralExpression } from "../../LiteralExpression";
 import { RelationExpression } from "../../RelationExpression";
 import "./ExpressionDefinitionLogicTypeSelector.css";
 
@@ -51,10 +53,10 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   isHeadless: boolean;
 }
 
-const NON_SELECTABLE_LOGIC_TYPES = [ExpressionDefinitionLogicType.Undefined, ExpressionDefinitionLogicType.PmmlLiteral];
+const NON_SELECTABLE_LOGIC_TYPES = new Set([ExpressionDefinitionLogicType.Undefined]);
 
 const SELECTABLE_LOGIC_TYPES = Object.values(ExpressionDefinitionLogicType).filter((logicType) => {
-  return !NON_SELECTABLE_LOGIC_TYPES.includes(logicType);
+  return !NON_SELECTABLE_LOGIC_TYPES.has(logicType);
 });
 
 export function ExpressionDefinitionLogicTypeSelector({
@@ -79,8 +81,6 @@ export function ExpressionDefinitionLogicTypeSelector({
     switch (logicType) {
       case ExpressionDefinitionLogicType.Literal:
         return <LiteralExpression {...expression} isHeadless={isHeadless} />;
-      case ExpressionDefinitionLogicType.PmmlLiteral:
-        return <PmmlLiteralExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.Relation:
         return <RelationExpression {...expression} isHeadless={isHeadless} />;
       case ExpressionDefinitionLogicType.Context:
@@ -156,8 +156,6 @@ export function ExpressionDefinitionLogicTypeSelector({
             FEEL
           </span>
         );
-      case ExpressionDefinitionLogicType.PmmlLiteral:
-        return ``;
       case ExpressionDefinitionLogicType.Context:
         return (
           <span>
@@ -234,7 +232,7 @@ export function ExpressionDefinitionLogicTypeSelector({
 
     return (
       expression.logicType !== ExpressionDefinitionLogicType.Literal &&
-      expression.logicType !== ExpressionDefinitionLogicType.PmmlLiteral
+      !NON_SELECTABLE_LOGIC_TYPES.has(expression.logicType)
     );
   }, [expression.logicType, isHeadless]);
 
@@ -311,6 +309,8 @@ export function ExpressionDefinitionLogicTypeSelector({
                       onToggle={setDropdownOpen}
                     >
                       {expression.logicType}
+                      {expression.logicType === ExpressionDefinitionLogicType.Function &&
+                        ` (${expression.functionKind})`}
                     </DropdownToggle>
                   }
                 >
