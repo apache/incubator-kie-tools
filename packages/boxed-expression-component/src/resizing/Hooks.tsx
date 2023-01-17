@@ -176,9 +176,7 @@ export function useNestedExpressionContainerWithNestedExpressions({
     extraWidth,
   ]);
 
-  const ret = useMemo(() => {
+  return useMemo(() => {
     return { nestedExpressionContainerValue };
   }, [nestedExpressionContainerValue]);
-
-  return ret;
 }
