@@ -21,7 +21,7 @@ import { CopyIcon, CutIcon, ListIcon, PasteIcon, TableIcon } from "@patternfly/r
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ExpressionDefinition, ExpressionDefinitionLogicType } from "../../../api";
+import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../../api";
 import { useCustomContextMenuHandler } from "../../../contextMenu";
 import { PopoverMenu } from "../../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../../i18n";
@@ -207,7 +207,14 @@ export function ExpressionDefinitionLogicTypeSelector({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const pasteExpression = useCallback(async () => {
-    const expression: ExpressionDefinition = JSON.parse(await navigator.clipboard.readText());
+    const expression: ExpressionDefinition = JSON.parse(await navigator.clipboard.readText(), (key, value) => {
+      // We can't allow ids to be repeated, so we generate new ids for every expression that is part of the pasted expression.
+      if (key === "id") {
+        return generateUuid();
+      } else {
+        return value;
+      }
+    });
     setExpression(expression);
     setDropdownOpen(false);
   }, [setExpression]);
