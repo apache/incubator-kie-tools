@@ -19,7 +19,8 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
-import com.ait.lienzo.client.core.shape.PolyLine;
+import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
@@ -38,12 +39,12 @@ public class TransitionView extends WiresConnectorViewExt<TransitionView> {
     }
 
     public TransitionView(String color, final double... points) {
-        this(createLine(new PolyLine(points), color));
+        this(createLine(new OrthogonalPolyLine(Point2DArray.fromArrayOfDouble(points)), color));
     }
 
     private TransitionView(final Object[] line) {
         super(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
-              (PolyLine) line[0],
+              (OrthogonalPolyLine) line[0],
               (MultiPathDecorator) line[1],
               (MultiPathDecorator) line[2]);
     }

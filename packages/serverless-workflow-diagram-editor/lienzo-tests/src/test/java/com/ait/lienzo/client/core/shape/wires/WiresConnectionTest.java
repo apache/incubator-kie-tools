@@ -36,6 +36,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+// TODO: Merge last changes from Kirill in this test class.
+
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectionTest {
 

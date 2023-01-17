@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ContentTraverseCallback;
@@ -53,6 +54,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.V
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.sw.autolayout.lienzo.LienzoAutoLayout;
+import org.kie.workbench.common.stunner.sw.definition.End;
 import org.uberfire.client.promise.Promises;
 
 public class AutoLayout {
@@ -87,8 +89,12 @@ public class AutoLayout {
                             new CompositeCommand.Builder<>()
                                     .addCommand(layoutCommands.build())
                                     .build();
-
                     all.execute(context);
+
+                    // TODO: Apply proprerly the orthogonal stuff, during marshalling/graph instances creation,
+                    //  instead of re-traversing all nodes/edges for the whole graph again.
+                    applyOrthogonalLinesBehaviour(graph);
+
                     resolve.onInvoke(parentNode);
                     return null;
                 }, error -> {
@@ -96,6 +102,98 @@ public class AutoLayout {
                     resolve.onInvoke(parentNode);
                     return null;
                 }));
+    }
+
+    @SuppressWarnings("all")
+    private static void applyOrthogonalLinesBehaviour(Graph graph) {
+        Iterable<Node> nodes = graph.nodes();
+        nodes.forEach(node -> {
+            if (node.getContent() instanceof View) {
+                List<Edge> outEdges = (List<Edge>) node.getOutEdges().stream()
+                        .filter(e -> ((Edge) e).getContent() instanceof ViewConnector)
+                        .collect(Collectors.toList());
+                final int outConnectionsSize = outEdges.size();
+                if (outConnectionsSize >= 1) {
+                    for (int i = 0; i < outConnectionsSize; i++) {
+                        Edge edge = outEdges.get(i);
+                        ViewConnector content = (ViewConnector) edge.getContent();
+                        MagnetConnection sourceConnection = (MagnetConnection) content.getSourceConnection().get();
+                        MagnetConnection targetConnection = (MagnetConnection) content.getTargetConnection().get();
+                        // Handle connection / nagnet default settings.
+                        sourceConnection.setAuto(false);
+                        sourceConnection.setIndex(0);
+                        targetConnection.setAuto(false);
+                        targetConnection.setIndex(0);
+
+                        org.kie.workbench.common.stunner.core.graph.content.view.Point2D sourceLocation = sourceConnection.getLocation();
+                        org.kie.workbench.common.stunner.core.graph.content.view.Point2D targetLocation = targetConnection.getLocation();
+                        ControlPoint[] controlPoints = content.getControlPoints();
+                        Node sourceNode = edge.getSourceNode();
+                        View sourceContent = (View) sourceNode.getContent();
+                        Bounds sourceBounds = sourceContent.getBounds();
+                        Node targetNode = edge.getTargetNode();
+                        View targetContent = (View) targetNode.getContent();
+                        Bounds targetBounds = targetContent.getBounds();
+
+                        // Handle backward connections to upper layer (may overlap with incoming connectors, if any).
+                        if (true) {
+                            if (controlPoints.length == 0) {
+                                boolean isBackwards = sourceBounds.getY() > targetBounds.getY();
+                                if (isBackwards) {
+                                    long inEdgesCount = ((List<Edge>) sourceNode.getInEdges()).stream()
+                                            .filter(e -> e.getContent() instanceof ViewConnector)
+                                            .count();
+                                    if (inEdgesCount > 0) {
+                                        sourceConnection.setIndex(4);
+                                        sourceConnection.setAuto(false);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Handle connectors crossing several (>1) layers.
+                        if (true) {
+                            if (controlPoints.length > 0) {
+                                // TODO: Just testing top<->bottom / left-> right direction here
+                                double maxx = 0;
+                                Object targetDefinition = targetContent.getDefinition();
+                                boolean isEnd = targetDefinition instanceof End;
+                                double padding = 20d;
+                                for (int j = 0; j < controlPoints.length; j++) {
+                                    // TODO: Use source node shape's absolute location instead
+                                    if (j == 0) {
+                                        boolean isTopBottom = sourceBounds.getY() < controlPoints[j].getLocation().getY();
+                                        double ty = sourceBounds.getY() + (isTopBottom ? sourceBounds.getHeight() + padding : -padding);
+                                        controlPoints[j].getLocation().setY(ty);
+                                        sourceConnection.setIndex(isTopBottom ? 3 : 1);
+                                        sourceConnection.setAuto(false);
+                                    }
+                                    if (j == controlPoints.length - 1) {
+                                        boolean isTopBottom = targetBounds.getY() < controlPoints[j].getLocation().getY();
+                                        double ty = targetBounds.getY() + (isTopBottom ? targetBounds.getHeight() + padding : -padding);
+                                        controlPoints[j].getLocation().setY(ty);
+                                        targetConnection.setIndex(isTopBottom ? 3 : 1);
+                                        sourceConnection.setAuto(false);
+                                    }
+                                    ControlPoint cp = controlPoints[j];
+                                    if (cp.getLocation().getX() > maxx) {
+                                        maxx = cp.getLocation().getX();
+                                        for (int k = j; k >= 0; k--) {
+                                            controlPoints[k].getLocation().setX(maxx);
+                                        }
+                                    }
+                                    cp.getLocation().setX(maxx);
+                                }
+                                content.setControlPoints(new ControlPoint[]{
+                                        controlPoints[0].copy(),
+                                        controlPoints[controlPoints.length - 1].copy()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     static void hideNodeIfIsNotConnected(final Layout layout,
@@ -231,6 +329,7 @@ public class AutoLayout {
         return Position.BELOW;
     }
 
+    // TODO: HERE: Only called when size(CPs)>2
     public static void createControlPoints(final Layout layout,
                                            final CompositeCommand.Builder layoutCommands) {
 
@@ -239,7 +338,10 @@ public class AutoLayout {
                 int index = -1;
                 for (final Point2D bendingPoint : outgoingEdge.getBendingPoints()) {
                     final org.kie.workbench.common.stunner.core.graph.content.view.Point2D point = new org.kie.workbench.common.stunner.core.graph.content.view.Point2D(bendingPoint.getX(), bendingPoint.getY());
-                    layoutCommands.addCommand(new AddControlPointCommand(outgoingEdge.getId(), new ControlPoint(point), ++index));
+                    ControlPoint cp = new ControlPoint(point);
+                    AddControlPointCommand command = new AddControlPointCommand(outgoingEdge.getId(), cp, ++index);
+                    layoutCommands.addCommand(command);
+                    DomGlobal.console.log("[" + command.getEdgeUUID() + ", " + index + ", " + cp.getLocation() + "]");
                 }
             }
         }
