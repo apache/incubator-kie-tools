@@ -22,6 +22,10 @@ export function useNestedExpressionResizingWidth(
   const pivotAwareNestedExpressionContainer = usePivotAwareNestedExpressionContainer(isPivoting);
 
   const nestedExpressionResizingWidthValue = useMemo<number>(() => {
+    if (nestedExpressionContainer.resizingWidth.isPivoting && !isPivoting) {
+      return nestedExpressionContainer.resizingWidth.value - fixedColumnResizingWidth.value - extraWidth;
+    }
+
     const nestedPivotingExpression: ExpressionDefinition | undefined = nestedExpressions.filter(
       ({ id }) => resizingWidths.get(id!)?.isPivoting ?? false
     )[0];
@@ -41,15 +45,18 @@ export function useNestedExpressionResizingWidth(
       nestedExpressionMinWidth
     );
   }, [
-    nestedExpressionMinWidth,
-    fixedColumnMinWidth,
+    nestedExpressionContainer.resizingWidth.isPivoting,
+    nestedExpressionContainer.resizingWidth.value,
+    nestedExpressionContainer.actualWidth,
+    isPivoting,
+    nestedExpressions,
     fixedColumnResizingWidth.value,
     fixedColumnActualWidth,
-    extraWidth,
-    nestedExpressionContainer.actualWidth,
-    nestedExpressions,
     pivotAwareNestedExpressionContainer.resizingWidth.value,
+    extraWidth,
+    nestedExpressionMinWidth,
     resizingWidths,
+    fixedColumnMinWidth,
   ]);
 
   return nestedExpressionResizingWidthValue;

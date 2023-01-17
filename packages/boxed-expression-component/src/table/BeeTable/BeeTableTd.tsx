@@ -75,6 +75,7 @@ export function BeeTableTd<R extends object>({
 
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
     columnIndex,
+    column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
     column.width ? Math.max(column.minWidth ?? 0, column.width ?? 0) : undefined
   );

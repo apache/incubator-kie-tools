@@ -61,7 +61,7 @@ declare module "react-table" {
     cellDelegate?: (id: string) => React.ReactNode;
 
     width?: number;
-    setWidth?(width: number): void;
+    setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>;
 
     columns?: Array<Column<D>>;
   }

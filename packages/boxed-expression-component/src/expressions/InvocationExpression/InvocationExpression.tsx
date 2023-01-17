@@ -101,11 +101,14 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   }, [invocationExpression.bindingEntries]);
 
   const setParametersWidth = useCallback(
-    (newParametersWidth) => {
-      setExpression((prev) => ({
-        ...prev,
-        entryInfoWidth: newParametersWidth,
-      }));
+    (newWidthAction: React.SetStateAction<number | undefined>) => {
+      setExpression((prev: InvocationExpressionDefinition) => {
+        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prev.entryInfoWidth) : newWidthAction;
+        return {
+          ...prev,
+          entryInfoWidth: newWidth,
+        };
+      });
     },
     [setExpression]
   );

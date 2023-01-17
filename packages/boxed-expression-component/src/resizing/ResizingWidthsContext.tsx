@@ -1,5 +1,15 @@
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+type ResizerRef = {
+  setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>;
+  resizingWidth: ResizingWidth | undefined;
+};
+
+const DEFAULT_RESIZING_WIDTH: ResizingWidth = {
+  value: -2,
+  isPivoting: false,
+};
 
 export function ResizingWidthsContextProvider({ children }: React.PropsWithChildren<{}>) {
   const [resizingWidths, setResizingWidths] = useState<ResizingWidthsContextType["resizingWidths"]>(new Map());
@@ -8,14 +18,26 @@ export function ResizingWidthsContextProvider({ children }: React.PropsWithChild
     return { resizingWidths };
   }, [resizingWidths]);
 
+  const refs = useRef<Set<ResizerRef>>(new Set());
+
   const dispatch = useMemo<ResizingWidthsDispatchContextType>(() => {
     return {
       updateResizingWidth: (id, getNewResizingWidth) => {
         setResizingWidths((prev) => {
           const n = new Map(prev);
-          n.set(id, getNewResizingWidth(n.get(id) ?? { value: -2, isPivoting: false }));
+          n.set(id, getNewResizingWidth(n.get(id) ?? DEFAULT_RESIZING_WIDTH));
           return n;
         });
+      },
+      registerResizerRef: (ref) => {
+        refs.current.add(ref);
+        return ref;
+      },
+      deregisterResizerRef: (ref) => {
+        refs.current.delete(ref);
+      },
+      getResizerRefs: () => {
+        return refs.current;
       },
     };
   }, []);
@@ -29,7 +51,10 @@ export function ResizingWidthsContextProvider({ children }: React.PropsWithChild
   );
 }
 
-export type ResizingWidth = { value: number; isPivoting: boolean };
+export type ResizingWidth = {
+  value: number;
+  isPivoting: boolean;
+};
 
 export type ResizingWidthsContextType = {
   resizingWidths: Map<string, ResizingWidth>;
@@ -37,6 +62,9 @@ export type ResizingWidthsContextType = {
 
 export type ResizingWidthsDispatchContextType = {
   updateResizingWidth(id: string, getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth): void;
+  registerResizerRef(ref: ResizerRef): ResizerRef;
+  deregisterResizerRef(ref: ResizerRef): void;
+  getResizerRefs(): Set<ResizerRef>;
 };
 
 const ResizingWidthsContext = React.createContext({} as ResizingWidthsContextType);
@@ -48,4 +76,15 @@ export function useResizingWidths() {
 
 export function useResizingWidthsDispatch() {
   return React.useContext(ResizingWidthsDispatchContext);
+}
+
+export function useResizerRef(resizerRef: ResizerRef) {
+  const { registerResizerRef, deregisterResizerRef } = useResizingWidthsDispatch();
+
+  useEffect(() => {
+    const ref = registerResizerRef(resizerRef);
+    return () => {
+      deregisterResizerRef(ref);
+    };
+  }, [deregisterResizerRef, registerResizerRef, resizerRef]);
 }

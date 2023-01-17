@@ -80,9 +80,11 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
   }, [relationExpression]);
 
   const setColumnWidth = useCallback(
-    (columnIndex: number) => (newWidth: number) => {
+    (columnIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       setExpression((prev: RelationExpressionDefinition) => {
         const newColumns = [...(prev.columns ?? [])];
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(newColumns[columnIndex].width) : newWidthAction;
         newColumns[columnIndex].width = newWidth;
         return { ...prev, columns: newColumns };
       });

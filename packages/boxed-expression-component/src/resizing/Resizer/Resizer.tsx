@@ -15,16 +15,16 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Resizable } from "react-resizable";
-import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
 
 export interface ResizerProps {
   minWidth: number | undefined;
   width: number | undefined;
-  setWidth: ((width: number | undefined) => void) | undefined;
+  setWidth: React.Dispatch<React.SetStateAction<number | undefined>> | undefined;
   resizingWidth: ResizingWidth | undefined;
   setResizingWidth: ((getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void) | undefined;
   setResizing?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,18 +38,48 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   setResizingWidth,
   setResizing,
 }) => {
+  //
+  // React batching strategy (begin)
+  //
+  // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setWidth`.
+  // Every call to `setWidth` mutates the expression, so batching is essential for performance reasons.
+  // This effect runs once when resizingStop__data is truthy. Then, after running, it sets resizingStop__data to a falsy value, which short-circuits it.
+  // This whole thing is responsible for allowing any cell to shrink the entire table when resized.
+
+  const { getResizerRefs } = useResizingWidthsDispatch();
+
+  const [resizingStop__data, setResizingStop__data] = useState(0);
+  const onResizeStop = useCallback((_, data) => {
+    setResizingStop__data(data.size.width);
+  }, []);
+
+  useEffect(() => {
+    if (!resizingStop__data) {
+      return;
+    }
+
+    for (const resizerRef of getResizerRefs()) {
+      resizerRef.setWidth?.((prev) => {
+        const prevWidth = prev ?? 0;
+        const resizingWidthValue = resizerRef.resizingWidth?.value ?? prevWidth;
+        return Math.min(resizingWidthValue, prevWidth);
+      });
+    }
+
+    setResizing?.(false);
+    setResizingWidth?.((prev) => ({ value: Math.floor(resizingStop__data), isPivoting: false }));
+    setWidth?.(resizingWidth?.value);
+
+    setResizingStop__data(0); // Prevent this effect from running after it ran. Let onResizeStop trigger it.
+  }, [getResizerRefs, resizingWidth?.value, resizingStop__data, setResizing, setResizingWidth, setWidth]);
+
+  //
+  // React batching strategy (end)
+  //
+
   const minConstraints = useMemo<[number, number]>(() => {
     return [minWidth ?? DEFAULT_MIN_WIDTH, 0];
   }, [minWidth]);
-
-  const onResizeStop = useCallback(
-    (_, data) => {
-      setResizing?.(false);
-      setResizingWidth?.((prev) => ({ value: Math.floor(data.size.width), isPivoting: false }));
-      setWidth?.(resizingWidth?.value);
-    },
-    [resizingWidth?.value, setResizing, setResizingWidth, setWidth]
-  );
 
   const onResize = useCallback(
     (_, data) => {

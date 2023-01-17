@@ -66,8 +66,11 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   );
 
   const setEntryInfoWidth = useCallback(
-    (newEntryInfoWidth: number) => {
-      setExpression((prev) => ({ ...prev, entryInfoWidth: newEntryInfoWidth }));
+    (newWidthAction: React.SetStateAction<number | undefined>) => {
+      setExpression((prev: ContextExpressionDefinition) => {
+        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prev.entryInfoWidth) : newWidthAction;
+        return { ...prev, entryInfoWidth: newWidth };
+      });
     },
     [setExpression]
   );

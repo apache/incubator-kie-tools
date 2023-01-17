@@ -63,8 +63,11 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   );
 
   const setWidth = useCallback(
-    (width) => {
-      setExpression((prev) => ({ ...prev, width }));
+    (newWidthAction: React.SetStateAction<number | undefined>) => {
+      setExpression((prev: LiteralExpressionDefinition) => {
+        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prev.width) : newWidthAction;
+        return { ...prev, width: newWidth };
+      });
     },
     [setExpression]
   );
@@ -96,13 +99,13 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     }
 
     const COLUMN_INDEX = 1;
-    beeTableRef.current?.updateResizingWidth(COLUMN_INDEX, (prev) => {
+    beeTableRef.current?.updateColumnResizingWidth(COLUMN_INDEX, (prev) => {
       return {
         value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidth),
         isPivoting: prev?.isPivoting ?? false,
       };
     });
-  }, [isPivoting, minWidth, nestedExpressionContainer.resizingWidth.value]);
+  }, [containerCellCoordinates?.rowIndex, isPivoting, minWidth, nestedExpressionContainer.resizingWidth.value]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [

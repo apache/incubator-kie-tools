@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { ResizingWidth, useResizingWidthsDispatch } from "./ResizingWidthsContext";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "./ResizingWidthsContext";
 
 // TYPES
 
@@ -9,15 +9,12 @@ export type BeeTableColumnResizingWidthsContextType = {
 };
 
 export interface BeeTableColumnResizingWidthsDispatchContextType {
-  updateResizingWidth(
+  updateColumnResizingWidth(
     columnIndex: number,
     getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth | undefined
   ): void;
-  subscribeToColumnResizingWidth(
-    columnIndex: number,
-    ref: BeeTableColumnResizingWidthRef
-  ): BeeTableColumnResizingWidthRef;
-  unsubscribeToColumnResizingWidth(columnIndex: number, ref: BeeTableColumnResizingWidthRef): void;
+  registerResizableColumnRef(columnIndex: number, ref: BeeTableColumnResizingWidthRef): BeeTableColumnResizingWidthRef;
+  deregisterResizableColumnRef(columnIndex: number, ref: BeeTableColumnResizingWidthRef): void;
 }
 
 export const BeeTableColumnResizingWidthsContext = React.createContext<BeeTableColumnResizingWidthsContextType>(
@@ -28,6 +25,7 @@ export const BeeTableColumnResizingWidthsDispatchContext =
 
 export interface BeeTableColumnResizingWidthRef {
   setResizingWidth?: React.Dispatch<React.SetStateAction<ResizingWidth | undefined>>;
+  setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 // PROVIDER
@@ -48,7 +46,7 @@ export const BeeTableColumnResizingWidthsContextProvider = React.forwardRef<MyRe
 
     const dispatch = useMemo<BeeTableColumnResizingWidthsDispatchContextType>(() => {
       return {
-        updateResizingWidth: (columnIndex, getNewResizingWidth) => {
+        updateColumnResizingWidth: (columnIndex, getNewResizingWidth) => {
           const newResizingWidth = getNewResizingWidth(undefined);
           for (const ref of refs.current.get(columnIndex) ?? []) {
             ref.setResizingWidth?.(newResizingWidth);
@@ -57,12 +55,12 @@ export const BeeTableColumnResizingWidthsContextProvider = React.forwardRef<MyRe
             onChange?.({ columnIndex, newResizingWidth });
           }
         },
-        subscribeToColumnResizingWidth: (columnIndex, ref) => {
+        registerResizableColumnRef: (columnIndex, ref) => {
           const prev = refs.current?.get(columnIndex) ?? new Set();
           refs.current?.set(columnIndex, new Set([...prev, ref]));
           return ref;
         },
-        unsubscribeToColumnResizingWidth: (columnIndex, ref) => {
+        deregisterResizableColumnRef: (columnIndex, ref) => {
           refs.current?.get(columnIndex)?.delete(ref);
         },
       };
@@ -86,8 +84,12 @@ export function useBeeTableColumnResizingWidthsDispatch() {
 
 // HOOKS
 
-export function useBeeTableColumnResizingWidth(columnIndex: number, initialResizingWidthValue?: number) {
-  const { subscribeToColumnResizingWidth, unsubscribeToColumnResizingWidth, updateResizingWidth } =
+export function useBeeTableColumnResizingWidth(
+  columnIndex: number,
+  setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>,
+  initialResizingWidthValue?: number
+) {
+  const { registerResizableColumnRef, deregisterResizableColumnRef, updateColumnResizingWidth } =
     useBeeTableColumnResizingWidthsDispatch();
 
   const initialResizingWidth: ResizingWidth | undefined = useMemo(() => {
@@ -103,23 +105,33 @@ export function useBeeTableColumnResizingWidth(columnIndex: number, initialResiz
 
   const [resizingWidth, setResizingWidth] = useState<ResizingWidth | undefined>(initialResizingWidth);
 
-  useEffect(() => {
-    updateResizingWidth(columnIndex, (prev) => initialResizingWidth);
-  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateResizingWidth]);
-
-  const _updateResizingWidth = useCallback(
-    (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      updateResizingWidth(columnIndex, getNewResizingWidth);
-    },
-    [columnIndex, updateResizingWidth]
+  useResizerRef(
+    useMemo(
+      () => ({
+        setWidth,
+        resizingWidth,
+      }),
+      [resizingWidth, setWidth]
+    )
   );
 
   useEffect(() => {
-    const ref = subscribeToColumnResizingWidth(columnIndex, { setResizingWidth });
+    updateColumnResizingWidth(columnIndex, (prev) => initialResizingWidth);
+  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateColumnResizingWidth]);
+
+  const _updateResizingWidth = useCallback(
+    (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
+      updateColumnResizingWidth(columnIndex, getNewResizingWidth);
+    },
+    [columnIndex, updateColumnResizingWidth]
+  );
+
+  useEffect(() => {
+    const ref = registerResizableColumnRef(columnIndex, { setResizingWidth, setWidth });
     return () => {
-      unsubscribeToColumnResizingWidth(columnIndex, ref);
+      deregisterResizableColumnRef(columnIndex, ref);
     };
-  }, [columnIndex, subscribeToColumnResizingWidth, unsubscribeToColumnResizingWidth]);
+  }, [columnIndex, setWidth, registerResizableColumnRef, deregisterResizableColumnRef]);
 
   return { resizingWidth, setResizingWidth: _updateResizingWidth };
 }

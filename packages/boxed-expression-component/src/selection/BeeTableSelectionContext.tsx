@@ -71,8 +71,8 @@ export interface BeeTableSelectionDispatchContextType {
     React.SetStateAction<(BeeTableSelectionActiveCell & { keepSelection?: boolean }) | undefined>
   >;
   setSelectionEnd: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell | undefined>>;
-  subscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): BeeTableCellRef;
-  unsubscribeToCellStatus(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): void;
+  registerCellRef(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): BeeTableCellRef;
+  deregisterCellRef(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): void;
 }
 
 export interface BeeTableCoordinatesContextType {
@@ -755,13 +755,13 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
           }
         });
       },
-      subscribeToCellStatus: (rowIndex, columnIndex, ref) => {
+      registerCellRef: (rowIndex, columnIndex, ref) => {
         refs.current?.set(rowIndex, refs.current?.get(rowIndex) ?? new Map());
         const prev = refs.current?.get(rowIndex)?.get(columnIndex) ?? new Set();
         refs.current?.get(rowIndex)?.set(columnIndex, new Set([...prev, ref]));
         return ref;
       },
-      unsubscribeToCellStatus: (rowIndex, columnIndex, ref) => {
+      deregisterCellRef: (rowIndex, columnIndex, ref) => {
         ref.setStatus?.(NEUTRAL_CELL_STATUS);
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
@@ -897,7 +897,7 @@ export function useBeeTableCoordinatesDispatch() {
 
 /**
  * This is done like this because if when we have every Th/Td observing { activeCell } from BeeTableSelectionContext,
- * performance suffers. Every component can subscribe to changes on the activeCell, and set their own state with a "copy" from the status.
+ * performance suffers. Every component can register a BeeTableCellRef and observe changes to it, then set their own state with a "copy" from the status.
  */
 export function useBeeTableCell(
   rowIndex: number,
@@ -905,20 +905,20 @@ export function useBeeTableCell(
   setValue?: BeeTableCellRef["setValue"],
   getValue?: BeeTableCellRef["getValue"]
 ) {
-  const { subscribeToCellStatus, unsubscribeToCellStatus } = useBeeTableSelectionDispatch();
+  const { registerCellRef, deregisterCellRef } = useBeeTableSelectionDispatch();
 
   const [status, setStatus] = useState<BeeTableCellStatus>(NEUTRAL_CELL_STATUS);
 
   useEffect(() => {
-    const ref = subscribeToCellStatus?.(rowIndex, columnIndex, {
+    const ref = registerCellRef?.(rowIndex, columnIndex, {
       setStatus,
       setValue,
       getValue,
     });
     return () => {
-      unsubscribeToCellStatus?.(rowIndex, columnIndex, ref);
+      deregisterCellRef?.(rowIndex, columnIndex, ref);
     };
-  }, [columnIndex, rowIndex, getValue, setValue, subscribeToCellStatus, unsubscribeToCellStatus]);
+  }, [columnIndex, rowIndex, getValue, setValue, registerCellRef, deregisterCellRef]);
 
   return status;
 }
