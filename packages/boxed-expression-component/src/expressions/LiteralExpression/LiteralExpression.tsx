@@ -103,19 +103,14 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       return {
         value: Math.max(
           nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH,
-          literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
+          // FIXME: Tiago -> Putting this here fixes the isHeadless=false case, but breaks the resizing on any cell.
+          // literalExpression.width ?? LITERAL_EXPRESSION_MIN_WIDTH,
           minWidth
         ),
         isPivoting: prev?.isPivoting ?? false,
       };
     });
-  }, [
-    containerCellCoordinates,
-    isPivoting,
-    literalExpression.width,
-    minWidth,
-    nestedExpressionContainer.resizingWidth.value,
-  ]);
+  }, [isPivoting, minWidth, nestedExpressionContainer.resizingWidth.value]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
