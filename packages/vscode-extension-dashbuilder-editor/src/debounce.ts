@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-export const COMMAND_IDS = {
-  openAsDashboard: "extension.kogito.dashbuilder.openAsDashboard",
-  setupAutomaticallyOpenDashboardEditorAlongsideTextEditor:
-    "extension.kogito.dashbuilder.setupAutomaticallyOpenDashboardEditorAlongsideTextEditor",
-  openAsSource: "extension.kogito.dashbuilder.openAsSource",
-  dashbuilderLsCommand: "extension.kogito.dashbuilder.ls.command"
-};
+export function debounce(cb: (...args: any[]) => any, delay: number) {
+  let timeout: any;
+
+  return (...args: any) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      cb(...args);
+    }, delay);
+  };
+}
