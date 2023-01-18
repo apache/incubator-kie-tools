@@ -32,7 +32,7 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
@@ -288,6 +288,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`context-expression ${contextExpression.id}`}>
         <BeeTable
+          resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={contextExpression.id}
           headerLevelCount={1}
           headerVisibility={headerVisibility}

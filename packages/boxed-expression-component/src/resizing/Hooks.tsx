@@ -204,17 +204,19 @@ export function useApportionedColumnWidthsIfNestedTable(
       return;
     }
 
-    const nextTotalWidth =
-      nestedExpressionContainer.resizingWidth.value - BEE_TABLE_ROW_INDEX_COLUMN_WIDTH - 1 - columns.length;
+    const extraWidthOnTable = BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + columns.length + 1;
+    const nextTotalWidth = nestedExpressionContainer.resizingWidth.value - extraWidthOnTable;
 
-    apportionColumnWidths(
+    const apportionedWidths = apportionColumnWidths(
       nextTotalWidth,
       columns.map(({ width }) => ({
         minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
         currentWidth: width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
       }))
-    ).forEach((nextWidth, index) => {
-      const columnIndex = index + 1;
+    );
+
+    apportionedWidths.forEach((nextWidth, index) => {
+      const columnIndex = index + 1; // +1 to compensate for rowIndex column
       beeTableRef.current?.updateColumnResizingWidth(columnIndex, (prev) => ({
         isPivoting: prev?.isPivoting ?? false,
         value: nextWidth,
@@ -226,18 +228,18 @@ export function useApportionedColumnWidthsIfNestedTable(
 // This code is an implementation of the Jefferson method for solving the Apportion problem.
 // See https://en.wikipedia.org/wiki/Mathematics_of_apportionment and https://en.wikipedia.org/wiki/D%27Hondt_method
 function apportionColumnWidths(
-  nextTotalWidth: number,
+  nextTotalWidth: number, // Analogous to "total seats"
   columns: { currentWidth: number; minWidth: number }[]
 ): number[] {
   // Calculate standard divisor (sd)
-  const currentTotalWidth = columns.reduce((acc, { currentWidth }) => acc + currentWidth, 0);
+  const currentTotalWidth = columns.reduce((acc, { currentWidth }) => acc + currentWidth, 0); // Analogous to "total population"
   const sd = currentTotalWidth / nextTotalWidth;
 
-  // Start nextWidths array with the minimum width of each column
-  const nextWidths = columns.map(({ minWidth }) => minWidth);
+  // Start apportionedWidths array with the minimum width of each column
+  const apportionedWidths = columns.map(({ minWidth }) => minWidth); // Analogous to seats count
 
   // Distribute widths between columns
-  let nextDistributedWidth = nextWidths.reduce((acc, n) => acc + n, 0);
+  let nextDistributedWidth = apportionedWidths.reduce((acc, n) => acc + n, 0); // Analogous to distributed seats count
   while (nextDistributedWidth !== nextTotalWidth) {
     let maxRemainder = 0;
     let maxRemainderIndex = 0;
@@ -245,22 +247,22 @@ function apportionColumnWidths(
     // Find column with the largest remainder
     for (let i = 0; i < columns.length; i++) {
       const quota = columns[i].currentWidth / sd;
-      const remainder = quota - nextWidths[i];
+      const remainder = quota - apportionedWidths[i];
       if (remainder > maxRemainder) {
         maxRemainder = remainder;
         maxRemainderIndex = i;
       }
     }
 
-    // Adjust nextWidth of column at maxReminderIndex
+    // Adjust apportionedWidth of column at maxReminderIndex
     if (nextDistributedWidth > nextTotalWidth) {
-      nextWidths[maxRemainderIndex]--;
+      apportionedWidths[maxRemainderIndex]--;
       nextDistributedWidth--;
     } else {
-      nextWidths[maxRemainderIndex]++;
+      apportionedWidths[maxRemainderIndex]++;
       nextDistributedWidth++;
     }
   }
 
-  return nextWidths;
+  return apportionedWidths;
 }

@@ -38,6 +38,7 @@ import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/Boxed
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -177,6 +178,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression.id} list-expression`}>
         <BeeTable<ROWTYPE>
+          resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={listExpression.id}
           headerVisibility={beeTableHeaderVisibility}
           cellComponentByColumnId={cellComponentByColumnId}

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "./ResizingWidthsContext";
+import { ResizerStopBehavior, ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "./ResizingWidthsContext";
 
 // TYPES
 
@@ -86,6 +86,7 @@ export function useBeeTableColumnResizingWidthsDispatch() {
 
 export function useBeeTableColumnResizingWidth(
   columnIndex: number,
+  resizerStopBehavior: ResizerStopBehavior,
   setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>,
   initialResizingWidthValue?: number
 ) {
@@ -110,8 +111,9 @@ export function useBeeTableColumnResizingWidth(
       () => ({
         setWidth,
         resizingWidth,
+        resizerStopBehavior,
       }),
-      [resizingWidth, setWidth]
+      [resizerStopBehavior, resizingWidth, setWidth]
     )
   );
 

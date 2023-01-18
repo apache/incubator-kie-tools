@@ -26,6 +26,7 @@ import { useBeeTableCoordinates, useBeeTableCell } from "../../selection/BeeTabl
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import "./LiteralExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 type ROWTYPE = any;
 
@@ -146,6 +147,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       <div className={"literal-expression-body-container"}>
         <div className={"equals-sign"}>{`=`}</div>
         <BeeTable
+          resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           forwardRef={beeTableRef}
           getColumnKey={getColumnKey}
           getRowKey={getRowKey}

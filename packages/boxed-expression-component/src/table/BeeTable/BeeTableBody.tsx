@@ -22,6 +22,7 @@ import * as ReactTable from "react-table";
 import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
 import { BeeTableCoordinatesContextProvider } from "../../selection/BeeTableSelectionContext";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableBodyProps<R extends object> {
   /** Table instance */
@@ -40,6 +41,8 @@ export interface BeeTableBodyProps<R extends object> {
   shouldRenderRowIndexColumn: boolean;
 
   shouldShowRowsInlineControls: boolean;
+
+  resizerStopBehavior: ResizerStopBehavior;
 }
 
 export function BeeTableBody<R extends object>({
@@ -51,6 +54,7 @@ export function BeeTableBody<R extends object>({
   onRowAdded,
   shouldRenderRowIndexColumn,
   shouldShowRowsInlineControls,
+  resizerStopBehavior,
 }: BeeTableBodyProps<R>) {
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
@@ -70,6 +74,7 @@ export function BeeTableBody<R extends object>({
               <React.Fragment key={getColumnKey(reactTableInstance.allColumns[cellIndex])}>
                 {((cell.column.isRowIndexColumn && shouldRenderRowIndexColumn) || !cell.column.isRowIndexColumn) && (
                   <BeeTableTd<R>
+                    resizerStopBehavior={resizerStopBehavior}
                     shouldShowRowsInlineControls={shouldShowRowsInlineControls}
                     columnIndex={cellIndex}
                     row={row}
@@ -102,7 +107,15 @@ export function BeeTableBody<R extends object>({
         </React.Fragment>
       );
     },
-    [reactTableInstance, getRowKey, getColumnKey, shouldRenderRowIndexColumn, shouldShowRowsInlineControls, onRowAdded]
+    [
+      reactTableInstance,
+      getRowKey,
+      getColumnKey,
+      shouldRenderRowIndexColumn,
+      resizerStopBehavior,
+      shouldShowRowsInlineControls,
+      onRowAdded,
+    ]
   );
 
   const additionalRowIndex = useMemo(() => {
@@ -129,6 +142,7 @@ export function BeeTableBody<R extends object>({
                 column={reactTableInstance.allColumns[0]}
                 isLastColumn={false}
                 isEmptyCell={true}
+                resizerStopBehavior={resizerStopBehavior}
               />
             </BeeTableCoordinatesContextProvider>
           )}
@@ -147,6 +161,7 @@ export function BeeTableBody<R extends object>({
                   columnIndex={columnIndex}
                   isLastColumn={elemIndex === additionalRow.length - 1}
                   isEmptyCell={false}
+                  resizerStopBehavior={resizerStopBehavior}
                 >
                   {elem}
                 </BeeTableTdForAdditionalRow>

@@ -27,6 +27,7 @@ import {
   useBeeTableCell,
 } from "../../selection/BeeTableSelectionContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableTdProps<R extends object> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -39,6 +40,7 @@ export interface BeeTableTdProps<R extends object> {
   row: ReactTable.Row<R>;
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
+  resizerStopBehavior: ResizerStopBehavior;
 }
 
 export type HoverInfo =
@@ -58,6 +60,7 @@ export function BeeTableTd<R extends object>({
   shouldUseCellDelegate,
   shouldRenderInlineButtons,
   shouldShowRowsInlineControls,
+  resizerStopBehavior,
   onRowAdded,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
@@ -75,6 +78,7 @@ export function BeeTableTd<R extends object>({
 
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
     columnIndex,
+    resizerStopBehavior,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
     column.width ? Math.max(column.minWidth ?? 0, column.width ?? 0) : undefined

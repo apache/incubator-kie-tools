@@ -7,6 +7,7 @@ import {
   BeeTableProps,
   PmmlFunctionExpressionDefinition,
 } from "../../api";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
@@ -78,6 +79,7 @@ export function PmmlFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
 
   return (
     <BeeTable<PMML_ROWTYPE>
+      resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
       columns={beeTableColumns}
       rows={beeTableRows}
       getRowKey={(r) => r.id}

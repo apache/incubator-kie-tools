@@ -21,6 +21,7 @@ import { useRef } from "react";
 import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableTdForAdditionalRowProps<R extends object> {
   children?: React.ReactElement;
@@ -29,6 +30,7 @@ export interface BeeTableTdForAdditionalRowProps<R extends object> {
   rowIndex: number;
   row: ReactTable.Row<R>;
   columnIndex: number;
+  resizerStopBehavior: ResizerStopBehavior;
   column: ReactTable.ColumnInstance<R>;
 }
 
@@ -39,11 +41,13 @@ export function BeeTableTdForAdditionalRow<R extends object>({
   column,
   rowIndex,
   isLastColumn,
+  resizerStopBehavior,
 }: BeeTableTdForAdditionalRowProps<R>) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
     columnIndex,
+    resizerStopBehavior,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
     column.width ? Math.max(column.minWidth ?? 0, column.width ?? 0) : undefined

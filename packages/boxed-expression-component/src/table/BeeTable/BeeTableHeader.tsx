@@ -24,6 +24,7 @@ import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEdito
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;
@@ -62,7 +63,9 @@ export interface BeeTableHeaderProps<R extends object> {
 
   shouldRenderRowIndexColumn: boolean;
 
-  shouldShowColumnsInlineControls: boolean;
+  shouldShowRowsInlineControls: boolean;
+
+  resizerStopBehavior: ResizerStopBehavior;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -75,7 +78,8 @@ export function BeeTableHeader<R extends object>({
   isEditableHeader,
   onColumnAdded,
   shouldRenderRowIndexColumn,
-  shouldShowColumnsInlineControls: shouldShowRowsInlineControls,
+  shouldShowRowsInlineControls,
+  resizerStopBehavior,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -166,6 +170,7 @@ export function BeeTableHeader<R extends object>({
         <React.Fragment key={getColumnKey(column)}>
           {!done.has(column) && (
             <BeeTableThResizable
+              resizerStopBehavior={resizerStopBehavior}
               rowSpan={rowSpan}
               isEditableHeader={isEditableHeader}
               shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
@@ -214,6 +219,7 @@ export function BeeTableHeader<R extends object>({
       shouldRenderRowIndexColumn,
       renderRowIndexColumn,
       getColumnKey,
+      resizerStopBehavior,
       isEditableHeader,
       shouldShowRowsInlineControls,
       getColumnLabel,

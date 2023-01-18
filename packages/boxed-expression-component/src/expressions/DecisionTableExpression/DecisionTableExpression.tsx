@@ -31,6 +31,7 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
@@ -152,11 +153,15 @@ export function DecisionTableExpression(
     [setExpression]
   );
 
+  /// //////////////////////////////////////////////////////
+  /// ///////////// RESIZING WIDTHS ////////////////////////
+  /// //////////////////////////////////////////////////////
+
+  const beeTableRef = useRef<BeeTableRef>(null);
   const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(
     decisionTableExpression.id
   );
 
-  const beeTableRef = useRef<BeeTableRef>(null);
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     isPivoting,
@@ -170,6 +175,8 @@ export function DecisionTableExpression(
       [decisionTableExpression.annotations, decisionTableExpression.input, decisionTableExpression.output]
     )
   );
+
+  /// //////////////////////////////////////////////////////
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
@@ -635,6 +642,7 @@ export function DecisionTableExpression(
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
+        resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS}
         forwardRef={beeTableRef}
         headerLevelCount={1}
         headerVisibility={beeTableHeaderVisibility}

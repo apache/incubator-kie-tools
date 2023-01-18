@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import * as ReactTable from "react-table";
+import { ResizerStopBehavior } from "../resizing/ResizingWidthsContext";
 import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
 
 export interface BeeTableCellProps<R extends object> {
@@ -72,6 +73,7 @@ export interface BeeTableProps<R extends object> {
   shouldRenderRowIndexColumn: boolean;
   shouldShowRowsInlineControls: boolean;
   shouldShowColumnsInlineControls: boolean;
+  resizerStopBehavior: ResizerStopBehavior;
 }
 
 /** Possible status for the visibility of the Table's Header */

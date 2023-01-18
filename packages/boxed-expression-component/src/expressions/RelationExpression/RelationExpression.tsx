@@ -15,9 +15,8 @@
  */
 
 import "@patternfly/react-styles/css/utilities/Text/text.css";
-import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -31,18 +30,17 @@ import {
   RelationExpressionDefinitionRow,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
+import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
+import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./RelationExpression.css";
-import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
 
@@ -94,10 +92,16 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     [setExpression]
   );
 
-  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(relationExpression.id);
+  /// //////////////////////////////////////////////////////
+  /// ///////////// RESIZING WIDTHS ////////////////////////
+  /// //////////////////////////////////////////////////////
 
   const beeTableRef = useRef<BeeTableRef>(null);
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(relationExpression.id);
+
   useApportionedColumnWidthsIfNestedTable(beeTableRef, isPivoting, relationExpression.isNested, columns);
+
+  /// //////////////////////////////////////////////////////
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -282,6 +286,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
   return (
     <div className={`relation-expression`}>
       <BeeTable
+        resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS}
         forwardRef={beeTableRef}
         headerLevelCount={1}
         editColumnLabel={i18n.editRelation}

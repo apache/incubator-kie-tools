@@ -1,12 +1,18 @@
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-type ResizerRef = {
+export enum ResizerStopBehavior {
+  SET_WIDTH_WHEN_SMALLER,
+  SET_WIDTH_ALWAYS,
+}
+
+export type ResizerRef = {
   setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>;
   resizingWidth: ResizingWidth | undefined;
+  resizerStopBehavior: ResizerStopBehavior;
 };
 
-const DEFAULT_RESIZING_WIDTH: ResizingWidth = {
+export const DEFAULT_RESIZING_WIDTH: ResizingWidth = {
   value: -2,
   isPivoting: false,
 };

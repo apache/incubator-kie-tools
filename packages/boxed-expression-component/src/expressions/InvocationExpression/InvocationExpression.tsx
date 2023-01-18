@@ -31,7 +31,7 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
   INVOCATION_PARAMETER_MIN_WIDTH,
@@ -288,6 +288,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`invocation-expression ${invocationExpression.id}`}>
         <BeeTable
+          resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={invocationExpression.id}
           headerLevelCount={2}
           headerVisibility={headerVisibility}

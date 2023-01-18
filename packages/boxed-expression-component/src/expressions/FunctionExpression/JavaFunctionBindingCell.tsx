@@ -6,6 +6,7 @@ import {
   BeeTableProps,
   JavaFunctionExpressionDefinition,
 } from "../../api";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
@@ -113,6 +114,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
 
   return (
     <BeeTable<JAVA_ROWTYPE>
+      resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
       columns={beeTableColumns}
       rows={beeTableRows}
       onCellUpdates={onCellUpdates}

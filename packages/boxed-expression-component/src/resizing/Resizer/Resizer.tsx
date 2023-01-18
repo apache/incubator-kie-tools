@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Resizable } from "react-resizable";
-import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { ResizerStopBehavior, ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
 
@@ -62,7 +62,13 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       resizerRef.setWidth?.((prev) => {
         const prevWidth = prev ?? 0;
         const resizingWidthValue = resizerRef.resizingWidth?.value ?? prevWidth;
-        return Math.min(resizingWidthValue, prevWidth);
+        if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_ALWAYS) {
+          return resizingWidthValue;
+        } else if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER) {
+          return Math.min(resizingWidthValue, prevWidth);
+        } else {
+          throw new Error("Shouldn't ever reach this point");
+        }
       });
     }
 

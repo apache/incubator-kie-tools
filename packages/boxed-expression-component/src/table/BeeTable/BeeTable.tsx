@@ -95,6 +95,7 @@ export function BeeTableInternal<R extends object>({
   shouldRenderRowIndexColumn,
   shouldShowRowsInlineControls,
   shouldShowColumnsInlineControls,
+  resizerStopBehavior,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -506,8 +507,9 @@ export function BeeTableInternal<R extends object>({
         ouiaId="expression-grid-table"
       >
         <BeeTableHeader<R>
+          resizerStopBehavior={resizerStopBehavior}
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
-          shouldShowColumnsInlineControls={shouldShowColumnsInlineControls}
+          shouldShowRowsInlineControls={shouldShowColumnsInlineControls}
           editColumnLabel={editColumnLabel}
           isEditableHeader={isEditableHeader}
           getColumnKey={onGetColumnKey}
@@ -519,6 +521,7 @@ export function BeeTableInternal<R extends object>({
           onColumnAdded={onColumnAdded2}
         />
         <BeeTableBody<R>
+          resizerStopBehavior={resizerStopBehavior}
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
           shouldShowRowsInlineControls={shouldShowRowsInlineControls}
           getColumnKey={onGetColumnKey}

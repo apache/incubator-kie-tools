@@ -23,6 +23,7 @@ import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefi
 import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
 import { BeeTableTh } from "./BeeTableTh";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
@@ -39,6 +40,7 @@ export interface BeeTableThResizableProps<R extends object> {
   reactTableInstance: ReactTable.TableInstance<R>;
   headerCellInfo: React.ReactElement;
   shouldShowColumnsInlineControls: boolean;
+  resizerStopBehavior: ResizerStopBehavior;
 }
 
 export function BeeTableThResizable<R extends object>({
@@ -48,11 +50,11 @@ export function BeeTableThResizable<R extends object>({
   rowSpan,
   isEditableHeader,
   getColumnKey,
-  getColumnLabel,
   onExpressionHeaderUpdated,
   onHeaderClick,
   headerCellInfo,
   onColumnAdded,
+  resizerStopBehavior,
   shouldShowColumnsInlineControls,
 }: BeeTableThResizableProps<R>) {
   const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
@@ -72,12 +74,9 @@ export function BeeTableThResizable<R extends object>({
     return onHeaderClick(columnKey);
   }, [columnKey, onHeaderClick]);
 
-  const columnLabel = useMemo(() => {
-    return getColumnLabel(column.groupType);
-  }, [column.groupType, getColumnLabel]);
-
   const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
     columnIndex,
+    resizerStopBehavior,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
     column.width ? Math.max(column.minWidth ?? 0, column.width ?? 0) : undefined

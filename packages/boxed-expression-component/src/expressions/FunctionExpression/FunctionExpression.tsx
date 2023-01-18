@@ -44,6 +44,7 @@ import { FunctionKindSelector } from "./FunctionKindSelector";
 import { ParametersPopover } from "./ParametersPopover";
 import * as ReactTable from "react-table";
 import { JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH } from "../../resizing/WidthConstants";
+import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
@@ -235,6 +236,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
   return (
     <div className={`function-expression ${functionExpression.id}`}>
       <BeeTable
+        resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         operationConfig={beeTableOperationConfig}
         onColumnUpdates={onColumnUpdates}
         getRowKey={getRowKey}
