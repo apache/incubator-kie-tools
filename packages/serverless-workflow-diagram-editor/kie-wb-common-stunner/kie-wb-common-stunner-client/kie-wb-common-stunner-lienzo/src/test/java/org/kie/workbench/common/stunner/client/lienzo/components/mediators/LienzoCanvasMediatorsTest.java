@@ -17,48 +17,41 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
+
+import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.mediator.MousePanMediator;
 import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.mediators.PanelMediators;
-import com.ait.lienzo.client.widget.panel.mediators.PanelPreviewMediator;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
-import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoCanvasNotification;
-import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyEventHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.core.validation.DiagramElementNameProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class LienzoCanvasMediatorsTest {
-
-    @Mock
-    private LienzoCanvasNotification notification;
 
     @Mock
     private PanelMediators mediators;
@@ -68,9 +61,6 @@ public class LienzoCanvasMediatorsTest {
 
     @Mock
     private MousePanMediator panMediator;
-
-    @Mock
-    private PanelPreviewMediator previewMediator;
 
     @Mock
     private LienzoCanvas canvas;
@@ -87,22 +77,16 @@ public class LienzoCanvasMediatorsTest {
     @Mock
     private Consumer<AbstractCanvas.Cursors> cursor;
 
-    @Mock
-    private TranslationService translationService;
-
-    @Mock
-    private ManagedInstance<DiagramElementNameProvider> elementNameProviders;
-
-    @Mock
-    private SessionManager sessionManager;
-
-    @Mock
-    private DefinitionUtils definitionUtils;
-
     private LienzoCanvasMediators tested;
 
     @Mock
     private KeyEventHandler keyEventHandler;
+
+    @Mock
+    private HTMLDivElement element;
+
+    @Mock
+    private Event<TogglePreviewEvent> togglePreviewEvent;
 
     @Before
     public void setUp() {
@@ -111,13 +95,12 @@ public class LienzoCanvasMediatorsTest {
         when(canvasView.getPanel()).thenReturn(panel);
         when(canvasView.getLienzoPanel()).thenReturn(panel);
         when(panel.getView()).thenReturn(panelView);
+        when(panelView.getElement()).thenReturn(element);
         when(mediators.getZoomMediator()).thenReturn(zoomMediator);
         when(mediators.getPanMediator()).thenReturn(panMediator);
-        when(mediators.getPreviewMediator()).thenReturn(previewMediator);
         tested = new LienzoCanvasMediators(keyEventHandler,
-                                           new ClientTranslationService(translationService, elementNameProviders, sessionManager, definitionUtils),
-                                           notification,
-                                           p -> mediators);
+                                           p -> mediators,
+                                           togglePreviewEvent);
         tested.init(() -> canvas);
         tested.cursor = cursor;
     }
@@ -126,9 +109,6 @@ public class LienzoCanvasMediatorsTest {
     @SuppressWarnings("unchecked")
     public void testInit() {
         assertEquals(mediators, tested.getMediators());
-        ArgumentCaptor<Supplier> panelCaptor = ArgumentCaptor.forClass(Supplier.class);
-        verify(notification, times(1)).init(panelCaptor.capture());
-        assertEquals(panel, panelCaptor.getValue().get());
         verify(zoomMediator, times(1)).setScaleAboutPoint(eq(true));
     }
 
@@ -139,21 +119,16 @@ public class LienzoCanvasMediatorsTest {
         verify(keyEventHandler, times(4)).addKeyShortcutCallback(callbackArgumentCaptor.capture());
         KeyboardControl.KeyShortcutCallback callback = callbackArgumentCaptor.getValue();
         callback.onKeyUp(KeyboardEvent.Key.ALT);
-        verify(mediators, times(1)).disablePreview();
         // CTRL.
-        when(mediators.enablePreview()).thenReturn(false);
         callback.onKeyShortcut(KeyboardEvent.Key.CONTROL);
-        verify(cursor, times(1)).accept(eq(LienzoCanvasMediators.CURSOR_DEFAULT));
+        verify(cursor, never()).accept(any());
         // ALT.
-        when(mediators.enablePreview()).thenReturn(false);
         callback.onKeyShortcut(KeyboardEvent.Key.ALT);
-        verify(cursor, times(1)).accept(eq(LienzoCanvasMediators.CURSOR_DEFAULT));
+        verify(cursor, never()).accept(any());
         // CTRL + ALT.
-        when(mediators.enablePreview()).thenReturn(true);
         callback.onKeyShortcut(KeyboardEvent.Key.CONTROL, KeyboardEvent.Key.ALT);
         callback.onKeyShortcut(KeyboardEvent.Key.ALT, KeyboardEvent.Key.CONTROL);
-        verify(cursor, times(2)).accept(eq(LienzoCanvasMediators.CURSOR_PREVIEW));
-        verify(notification, times(2)).show(eq(CoreTranslationMessages.MEDIATOR_PREVIEW));
+        verify(cursor, never()).accept(any());
     }
 
     @Test
@@ -166,7 +141,6 @@ public class LienzoCanvasMediatorsTest {
     public void testSetMaxScale() {
         tested.setMaxScale(3d);
         verify(zoomMediator, times(1)).setMaxScale(eq(3d));
-        verify(previewMediator, times(1)).setMaxScale(eq(3d));
     }
 
     @Test
@@ -181,14 +155,6 @@ public class LienzoCanvasMediatorsTest {
         verify(zoomMediator, atLeastOnce()).setScaleAboutPoint(eq(true));
         tested.setScaleAboutPoint(false);
         verify(zoomMediator, atLeastOnce()).setScaleAboutPoint(eq(false));
-    }
-
-    @Test
-    public void testDisable() {
-        tested.disable();
-        verify(mediators, times(1)).disablePreview();
-        verify(cursor, times(1)).accept(eq(LienzoCanvasMediators.CURSOR_DEFAULT));
-        verify(notification, times(1)).hide();
     }
 
     @Test

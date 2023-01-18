@@ -26,10 +26,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSu
 public class TransitionView extends WiresConnectorViewExt<TransitionView> {
 
     private static final double SELECTION_OFFSET = 30;
-    private static final double DECORATOR_WIDTH = 10;
-    private static final double DECORATOR_HEIGHT = 15;
+    private static final double DECORATOR_WIDTH = 8;
+    private static final double DECORATOR_HEIGHT = 12;
 
-    private static final double STROKE_WIDTH = 1.5;
+    private static final double STROKE_WIDTH = 2;
 
     private static final double[] DEFAULT_POLYLINE_POINTS = {0, 0, 100, 100};
 

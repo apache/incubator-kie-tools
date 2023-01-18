@@ -31,8 +31,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu.HEADERGIVENCONTEXTMENU_GRID_TITLE;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;

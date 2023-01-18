@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataType
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 

@@ -33,7 +33,7 @@ public class StringSelector extends BaseSelector {
 
     @Override
     public void setValue(final String value) {
-        super.setValue(convertFromString(value));
+        super.setValue(removeDoubleQuotesWrapper(value));
     }
 
     @Override
@@ -55,7 +55,10 @@ public class StringSelector extends BaseSelector {
         return prefix + value + suffix;
     }
 
-    private String convertFromString(final String value) {
-        return value.substring(1, value.length() - 1);
+    private String removeDoubleQuotesWrapper(final String value) {
+        if (isEmpty(value)) {
+            return "";
+        }
+        return value.replaceAll("(^\\\")|(\\\"$)", "");
     }
 }

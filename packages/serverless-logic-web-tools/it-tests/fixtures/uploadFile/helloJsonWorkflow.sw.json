@@ -1,0 +1,35 @@
+{
+  "id": "jsonhello",
+  "version": "1.0",
+  "name": "Hello JSON workflow",
+  "description": "JSON based hello workflow",
+  "start": "helloJsonState",
+  "specVersion": "0.8",
+  "functions": [
+    {
+      "name": "helloJsonFunction",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "helloJsonState",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "helloJsonAction",
+          "functionRef": {
+            "refName": "helloJsonFunction",
+            "arguments": {
+              "message": "${\"Hello \"+ .name + \"!\"}"
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": true
+      }
+    }
+  ]
+}

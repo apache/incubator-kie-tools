@@ -116,6 +116,16 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         return EMPTY;
     }
 
+    public double getInternalWidth() {
+        double width = maxBoundX() - minBoundX();
+        return width;
+    }
+
+    public double getInternalHeight() {
+        double height = maxBoundY() - minBoundY();
+        return height;
+    }
+
     @Override
     public Bounds getDefaultBounds() {
         return getVisibleBounds();
@@ -226,8 +236,10 @@ public class ScrollablePanel extends LienzoBoundsPanel {
     @Override
     protected void doDestroy() {
         removeHandlers();
-        resizeObserver.disconnect();
-        resizeObserver = null;
+        if (resizeObserver != null) {
+            resizeObserver.disconnect();
+            resizeObserver = null;
+        }
         rootPanel.remove();
         isMouseDown = false;
     }
@@ -437,7 +449,7 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         setVerticalScrollRate(0);
     }
 
-    private double calculateInternalScrollPanelWidth() {
+    public double calculateInternalScrollPanelWidth() {
         final double absWidth = maxBoundX() - minBoundX();
         if (getViewport() != null && deltaX() != 0) {
             final double scaleX = getViewport().getTransform().getScaleX();
@@ -447,7 +459,7 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         return 1;
     }
 
-    private double calculateInternalScrollPanelHeight() {
+    public double calculateInternalScrollPanelHeight() {
         final double absHeight = maxBoundY() - minBoundY();
         if (getViewport() != null && deltaY() != 0) {
             final double scaleY = getViewport().getTransform().getScaleY();

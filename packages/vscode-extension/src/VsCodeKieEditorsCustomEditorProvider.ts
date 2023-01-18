@@ -113,6 +113,6 @@ export class VsCodeKieEditorsCustomEditorProvider implements CustomEditorProvide
   }
 
   private resolveBackupUri(backupId: string | undefined): Uri | undefined {
-    return backupId ? Uri.parse(backupId) : undefined;
+    return backupId ? Uri.file(backupId) : undefined;
   }
 }

@@ -30,7 +30,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,18 +70,18 @@ public class ScenarioGridPanelTest extends AbstractScenarioSimulationTest {
         assertEquals(clickHandlerMock, scenarioGridPanelSpy.clickHandler);
         assertEquals(scenarioSimulationGridPanelMouseMoveHandlerMock, scenarioGridPanelSpy.mouseMoveHandler);
         verify(scenarioGridPanelSpy, times(1)).unregister();
-        verify(domElementContainerMock, times(1)).addDomHandler(eq(clickHandlerMock), eq(ClickEvent.getType()));
-        verify(domElementContainerMock, times(1)).addDomHandler(eq(clickHandlerMock), eq(ContextMenuEvent.getType()));
-        verify(scenarioGridLayerMock, times(1)).addNodeMouseOutHandler(eq(scenarioGridPanelSpy));
-        verify(scenarioGridLayerMock, times(1)).addNodeMouseMoveHandler(eq(scenarioSimulationGridPanelMouseMoveHandlerMock));
-        verify(scenarioGridLayerMock, times(1)).addNodeMouseWheelHandler(eq(scenarioGridPanelSpy));
-        verify(scrollPanelMock, times(1)).addDomHandler(eq(scenarioGridPanelSpy), eq(ScrollEvent.getType()));
+        verify(domElementContainerMock, times(1)).addDomHandler(clickHandlerMock, ClickEvent.getType());
+        verify(domElementContainerMock, times(1)).addDomHandler(clickHandlerMock, ContextMenuEvent.getType());
+        verify(scenarioGridLayerMock, times(1)).addNodeMouseOutHandler(scenarioGridPanelSpy);
+        verify(scenarioGridLayerMock, times(1)).addNodeMouseMoveHandler(scenarioSimulationGridPanelMouseMoveHandlerMock);
+        verify(scenarioGridLayerMock, times(1)).addNodeMouseWheelHandler(scenarioGridPanelSpy);
+        verify(scrollPanelMock, times(1)).addDomHandler(scenarioGridPanelSpy, ScrollEvent.getType());
     }
 
     @Test
     public void onNodeMouseWheel() {
         scenarioGridPanelSpy.onNodeMouseWheel(nodeMouseWheelEvent);
-        verify(scenarioGridModelMock, times(1)).destroyAllTextAreaDOMElementFactoryResources();
+        verify(scenarioGridModelMock, times(1)).flushAllTextAreaDOMElementFactoryResources();
     }
 
     @Test

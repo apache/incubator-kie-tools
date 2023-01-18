@@ -35,7 +35,7 @@ export class ServerlessWorkflowTextEditorResources extends BaseEditorResources {
     const swfTextEditorResources: ServerlessWorkflowResources = {
       baseCssResources: [],
       baseJsResources: [],
-      fontResources: [],
+      fontResources: this.getFontResources(),
       referencedCssResources: [],
       referencedJsResources: this.getReferencedJSPaths(args.resourcesPathPrefix),
       envelopeJsResource: this.createResource({ path: `dist/envelope/swf-text-editor-envelope.js` }),
@@ -69,8 +69,13 @@ export class ServerlessWorkflowTextEditorResources extends BaseEditorResources {
     return [];
   }
 
-  public getFontResources(resourcesPathPrefix: string, gwtModuleName: string) {
-    return [];
+  public getFontResources() {
+    return [
+      {
+        family: "codicon",
+        sources: [this.createFontSource(`dist/fonts/codicon.ttf`)],
+      },
+    ];
   }
 
   public getEditorResourcesPath() {

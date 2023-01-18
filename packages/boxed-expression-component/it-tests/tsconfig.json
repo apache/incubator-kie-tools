@@ -3,5 +3,5 @@
   "compilerOptions": {
     "types": ["cypress", "cypress-real-events"]
   },
-  "include": ["support", "integration"]
+  "include": ["support", "e2e"]
 }

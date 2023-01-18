@@ -66,6 +66,7 @@
       { "id": "@kie-tools/dashbuilder-component-echarts-base" },
       { "id": "@kie-tools/dashbuilder-component-dev" },
       { "id": "@kie-tools/dashbuilder-editor" },
+      { "id": "@kie-tools/dashbuilder-language-service" },
       { "id": "@kie-tools/dashbuilder-images" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
       { "id": "@kie-tools/dashbuilder-viewer" },
@@ -75,7 +76,6 @@
       { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
-      { "id": "@kie-tools/desktop" },
       { "id": "@kie-tools/dmn-dev-deployment-base-image" },
       { "id": "@kie-tools/dmn-dev-deployment-form-webapp" },
       { "id": "@kie-tools/dmn-dev-deployment-quarkus-app" },
@@ -99,7 +99,7 @@
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/unitables" },
-      { "id": "@kie-tools/serverless-logic-sandbox" },
+      { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
@@ -477,6 +477,10 @@
       },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-language-service", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-images", "target": "@kie-tools/dashbuilder", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
@@ -520,8 +524,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/desktop", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
-      { "source": "@kie-tools/desktop", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
         "source": "@kie-tools/dmn-dev-deployment-base-image",
         "target": "@kie-tools/dmn-dev-deployment-form-webapp",
@@ -611,28 +613,28 @@
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/openshift", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/openshift", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/text-editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/dashbuilder-viewer-image-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-sandbox",
+        "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
@@ -828,12 +830,12 @@
     ["@kie-tools/dashbuilder-component-victory-charts", "packages/dashbuilder-component-victory-charts"],
     ["@kie-tools/dashbuilder-editor", "packages/dashbuilder-editor"],
     ["@kie-tools/dashbuilder-images", "packages/dashbuilder-images"],
+    ["@kie-tools/dashbuilder-language-service", "packages/dashbuilder-language-service"],
     ["@kie-tools/dashbuilder-swf-monitoring-dashboard", "packages/dashbuilder-swf-monitoring-dashboard"],
     ["@kie-tools/dashbuilder-viewer", "packages/dashbuilder-viewer"],
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
-    ["@kie-tools/desktop", "packages/desktop"],
     ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
     ["@kie-tools/dmn-dev-deployment-base-image-env", "packages/dmn-dev-deployment-base-image-env"],
     ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],
@@ -872,7 +874,7 @@
     ["@kie-tools/pmml-editor-marshaller", "packages/pmml-editor-marshaller"],
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
-    ["@kie-tools/serverless-logic-sandbox", "packages/serverless-logic-sandbox"],
+    ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
     [
       "@kie-tools/serverless-logic-web-tools-base-builder-image",
       "packages/serverless-logic-web-tools-base-builder-image"

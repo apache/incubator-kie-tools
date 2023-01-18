@@ -62,6 +62,11 @@ public class ColumnIndexUtilities {
             if (candidateHeaderMetaData.size() - 1 < headerRowIndex) {
                 break;
             }
+            if (headerRowIndex == 0 && candidateHeaderMetaData.size() > 1) {
+                if (!Objects.equals(candidateHeaderMetaData.get(headerRowIndex).getColumnGroup(), headerMetaData.getColumnGroup())) {
+                    break;
+                }
+            } else
             if (!Objects.equals(candidateHeaderMetaData.get(headerRowIndex), headerMetaData)) {
                 break;
             }
@@ -87,6 +92,11 @@ public class ColumnIndexUtilities {
             if (candidateHeaderMetaData.size() - 1 < headerRowIndex) {
                 break;
             }
+            if (headerRowIndex == 0 && candidateHeaderMetaData.size() > 1) {
+                if (!Objects.equals(candidateHeaderMetaData.get(headerRowIndex).getColumnGroup(), headerMetaData.getColumnGroup())) {
+                    break;
+                }
+            } else
             if (!Objects.equals(candidateHeaderMetaData.get(headerRowIndex), headerMetaData)) {
                 break;
             }

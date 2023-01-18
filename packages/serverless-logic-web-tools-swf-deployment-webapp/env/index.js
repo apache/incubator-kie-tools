@@ -18,19 +18,17 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    SERVERLESS_LOGIC_SANDBOX__deploymentGtmId: {
+    SERVERLESS_LOGIC_WEB_TOOLS__swfDeploymentGtmId: {
       default: undefined,
       description: "",
     },
   }),
   get env() {
     return {
-      serverlessLogicSandboxDeploymentWebapp: {
-        deployment: {
-          gtmId: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__deploymentGtmId),
-          dev: {
-            port: 9021,
-          },
+      serverlessLogicWebToolsSwfDeploymentWebapp: {
+        gtmId: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDeploymentGtmId),
+        dev: {
+          port: 9021,
         },
       },
     };

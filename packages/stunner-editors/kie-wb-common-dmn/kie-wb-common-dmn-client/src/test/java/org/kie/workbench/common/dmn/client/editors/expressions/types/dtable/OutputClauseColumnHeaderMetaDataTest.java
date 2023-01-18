@@ -35,7 +35,7 @@ public class OutputClauseColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDa
     @Override
     protected OutputClauseColumnHeaderMetaData getHeaderMetaData() {
         return new OutputClauseColumnHeaderMetaData(hasValue,
-                                                    outputClause,
+                                                    () -> outputClause,
                                                     clearValueConsumer,
                                                     setValueConsumer,
                                                     setTypeRefConsumer,

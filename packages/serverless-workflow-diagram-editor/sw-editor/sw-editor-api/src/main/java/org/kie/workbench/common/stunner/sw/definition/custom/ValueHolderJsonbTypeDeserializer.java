@@ -35,8 +35,13 @@ public class ValueHolderJsonbTypeDeserializer extends JsonbDeserializer<ValueHol
                     Js.asPropertyMap(holder).set(v, ((JsonObject) value).getString(v));
                 } else if (jsonValue.getValueType() == JsonValue.ValueType.NUMBER) {
                     Js.asPropertyMap(holder).set(v, ((JsonObject) value).getJsonNumber(v).numberValue());
+                } else if (jsonValue.getValueType() == JsonValue.ValueType.ARRAY) {
+                    Js.asPropertyMap(holder).set(v,jsonValue.asJsonArray());
+                } else if (jsonValue.getValueType() == JsonValue.ValueType.TRUE) {
+                    Js.asPropertyMap(holder).set(v, true);
+                } else if (jsonValue.getValueType() == JsonValue.ValueType.FALSE) {
+                    Js.asPropertyMap(holder).set(v, false);
                 } else {
-                    // and so on
                     Js.asPropertyMap(holder).set(v, (((JsonObject) value).get(v)));
                 }
             }

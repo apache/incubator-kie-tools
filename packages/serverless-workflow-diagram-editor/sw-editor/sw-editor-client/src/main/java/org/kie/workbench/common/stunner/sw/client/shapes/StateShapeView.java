@@ -18,7 +18,10 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.PathPartListPathClipper;
+import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -28,49 +31,18 @@ import com.ait.lienzo.shared.core.types.TextBaseLine;
 
 public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView> {
 
-    private Group iconCircle;
-
+    private Group iconImage;
     private Circle backgroundCircle;
 
+    private final static double STATE_SHAPE_WIDTH = 250;
+    private final static double STATE_SHAPE_HEIGHT = 90;
+    public final static double STATE_SHAPE_ICON_RADIUS = 25;
+
     public StateShapeView(String name) {
-        this(new MultiPath()
-                     .rect(0, 0, 250, 90)
-                     .setCornerRadius(5.00)
-                     .setDraggable(false)
-                     .setAlpha(1.00)
-                     .setListening(true)
-                     .setScale(1.00, 1.00)
-                     .setOffset(0.00, 0.00)
-                     .setStrokeWidth(2.00)
-                     .setFillColor("#fff")
-                     .setStrokeColor("#ccc")
-                     .setStrokeWidth(2.00)
-                     .setStrokeAlpha(1)
-                     .moveToBottom()
-                     .setListening(true), name);
-    }
-
-    public StateShapeView(MultiPath path, String name) {
-        super(path);
+        super(new MultiPath()
+                      .rect(0, 0, STATE_SHAPE_WIDTH, STATE_SHAPE_HEIGHT)
+                      .setCornerRadius(5.00));
         initialize(name);
-    }
-
-    public void addIconElement(String path) {
-        iconCircle.add(new MultiPath(path)
-                               .setDraggable(false)
-                               .setX(0.00)
-                               .setY(0.00)
-                               .setAlpha(1.00)
-                               .setListening(false)
-                               .setScale(1.00, 1.00)
-                               .setOffset(0.00, 0.00)
-                               .setFillColor("#fff")
-                               .setStrokeColor("#fff")
-                               .setStrokeWidth(2.00));
-    }
-
-    public void setIconBackground(String color) {
-        backgroundCircle.setFillColor(color);
     }
 
     private void initialize(String name) {
@@ -88,36 +60,50 @@ public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView>
         TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 160, 44));
 
         title.setWrapper(textWrapper);
-
         addChild(title);
-        addChild(createIconCircle());
-    }
-
-    private Group createIconCircle() {
-        Group icon = new Group();
-        backgroundCircle = new Circle(25.00)
-                .setDraggable(false)
+        Group icon = newGroup()
                 .setX(45.00)
-                .setY(46.00)
-                .setAlpha(1.00)
-                .setListening(false)
-                .setScale(1.00, 1.00)
-                .setOffset(0.00, 0.00)
+                .setY(46.00);
+        icon.setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR);
+        addChild(icon);
+
+        backgroundCircle = newCircle(STATE_SHAPE_ICON_RADIUS)
                 .setStrokeColor("#d5d5d5");
         icon.add(backgroundCircle);
-        iconCircle = new Group()
-                .setDraggable(false)
-                .setX(0.00)
-                .setY(0.00)
-                .setAlpha(1.00)
-                .setListening(false)
-                .setScale(0.35, 0.35)
-                .setOffset(52.00, 53.00)
-                .setListening(false);
 
-        icon.add(iconCircle);
-        icon.setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR);
+        iconImage = newGroup();
+        icon.add(iconImage);
+    }
 
-        return icon;
+    public void setIconPicture(Picture picture) {
+        backgroundCircle.setFillColor("#FFF");
+
+        picture.setX(-STATE_SHAPE_ICON_RADIUS); // PathClipper is a circle with center at [0.0], we need to compensate radius
+        picture.setY(-STATE_SHAPE_ICON_RADIUS); // on both X and Y axis.
+
+        IPathClipper pathClipper = new PathPartListPathClipper(newCircle(24.4)); // icon radius -0.6 to compensate Stroke
+        pathClipper.setActive(true);
+        iconImage.setPathClipper(pathClipper);
+        iconImage.add(picture);
+    }
+
+    public void setSvgIcon(String backgroundColor, String path) {
+        backgroundCircle.setFillColor(backgroundColor);
+
+        iconImage.add(newMultiPath(path)
+                              .setScale(0.35)
+                              .setX(-11)
+                              .setY(-11)
+                              .setFillColor("#fff")
+                              .setStrokeColor("#fff")
+                              .setStrokeWidth(2.00));
+    }
+
+    public String getIconBackgroundColor() {
+        return backgroundCircle.getFillColor();
+    }
+
+    public boolean isIconEmpty() {
+        return iconImage.getChildNodes().isEmpty();
     }
 }

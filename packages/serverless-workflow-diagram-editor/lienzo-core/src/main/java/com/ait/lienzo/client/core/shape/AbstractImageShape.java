@@ -144,7 +144,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         return m_proxy.toDataURL(filtered);
     }
 
-    protected void setImageShapeLoadedHandler(final ImageShapeLoadedHandler<T> handler) {
+    public void setImageShapeLoadedHandler(final ImageShapeLoadedHandler<T> handler) {
         m_proxy.setImageShapeLoadedHandler(handler);
     }
 

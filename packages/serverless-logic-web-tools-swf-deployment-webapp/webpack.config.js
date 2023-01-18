@@ -61,13 +61,13 @@ module.exports = async (env, argv) => {
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.serverlessLogicSandboxDeploymentWebapp.deployment.dev.port,
+      port: buildEnv.serverlessLogicWebToolsSwfDeploymentWebapp.dev.port,
     },
   });
 };
 
 function getGtmResource() {
-  const gtmId = buildEnv.serverlessLogicSandboxDeploymentWebapp.deployment.gtmId;
+  const gtmId = buildEnv.serverlessLogicWebToolsSwfDeploymentWebapp.gtmId;
   console.info(`Google Tag Manager :: ID: ${gtmId}`);
 
   if (!gtmId) {

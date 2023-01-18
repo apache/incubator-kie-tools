@@ -24,7 +24,6 @@ public enum Channel {
     ONLINE("ONLINE"),
     VSCODE("VSCODE"),
     GITHUB("GITHUB"),
-    DESKTOP("DESKTOP"),
     EMBEDDED("EMBEDDED"),
     ONLINE_MULTI_FILE("ONLINE_MULTI_FILE");
 

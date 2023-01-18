@@ -15,8 +15,6 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.layer;
 
-import java.util.Set;
-
 import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
@@ -75,17 +73,6 @@ public interface GridLayer extends GridSelectionManager,
      * @return
      */
     Layer batch(final GridLayerRedrawManager.PrioritizedCommand command);
-
-    /**
-     * Gets a collection of all connectors used to connect all {@link GridWidget} together.
-     * @return A {@link Set} of connectors.
-     */
-    Set<IPrimitive<?>> getGridWidgetConnectors();
-
-    /**
-     * Refreshes all connectors used to connect all {@link GridWidget} together.
-     */
-    void refreshGridWidgetConnectors();
 
     /**
      * Moves the specified GridWidget into view without scrolling the Canvas.

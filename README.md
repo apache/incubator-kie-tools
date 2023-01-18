@@ -108,15 +108,9 @@ The KIE Tools project contains several applications. To develop each one of them
 
 #### Serverless Logic Web Tools
 
-1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-sandbox`.
+1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-web-tools`.
 1. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
 1. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
-
-#### Desktop app (DMN and BPMN)
-
-1. After you've successfully built the project following the instructions above, go to `packages/desktop`.
-2. To start the application in development mode, you can run `pnpm start`. If you make changes and want to reload the app, run `pnpm build:dev && pnpm start`. This will recompile the module and restart the Electron app. Remember: if you make changes to other modules, you have to build them too!
-3. To build and package the application for production (i.e. generating an executable), you can run `pnpm build:prod`. This will pack the application for the current OS. If you want to pack the application for a different OS, run `pnpm pack:linux`, for example. See `package.json` for more details.
 
 #### Standalone Editors (DMN and BPMN)
 

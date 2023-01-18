@@ -24,7 +24,7 @@ import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { DashbuilderEditor } from "./DashbuilderEditor";
-import { DashbuilderEditorChannelApi } from "./DashbuilderEditorChannelApi";
+import { DashbuilderEditorChannelApi } from "../api/DashbuilderEditorChannelApi";
 
 export class DashbuilderEditorView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;

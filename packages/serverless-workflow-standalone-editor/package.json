@@ -22,7 +22,6 @@
     "build:productization": "pnpm build:prod",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "postreport": "jrm ./dist-it-tests/junit-transformed.xml \"./dist-it-tests/junit-report*.xml\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "devDependencies": {
@@ -55,15 +54,10 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/underscore": "^1.11.2",
     "copy-webpack-plugin": "^11.0.0",
-    "cypress": "^11.0.1",
-    "cypress-file-upload": "^5.0.8",
-    "cypress-iframe": "^1.0.1",
-    "cypress-log-to-output": "^1.1.2",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
-    "junit-report-merger": "^2.2.2",
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.33.0",
     "monaco-yaml": "^4.0.0",

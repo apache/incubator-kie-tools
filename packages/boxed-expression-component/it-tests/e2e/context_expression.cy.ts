@@ -41,17 +41,14 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
 
     // Invoke Logic type selector for first context entry
-    cy.ouiaId("expression-row-0").within(($row) => {
-      cy.ouiaId("expression-column-2").click();
-    });
+    cy.ouiaId("expression-row-0").ouiaId("expression-column-2").click();
 
     // Set first context entry as Decision Table
     cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
 
     // Change First context entry to return boolean
-    cy.ouiaId("expression-row-0").within(($row) => {
-      cy.ouiaId("expression-column-1").contains("ContextEntry-1").click();
-    });
+    cy.ouiaId("expression-row-0").ouiaId("expression-column-1").contains("ContextEntry-1").click();
+
     cy.ouiaId("edit-expression-data-type").within(($container) => {
       cy.get("span.pf-c-select__toggle-text").click({ force: true });
     });
@@ -130,7 +127,7 @@ describe("Context Expression Tests", () => {
 });
 
 describe("Context Expression Tests :: Nested Relations", () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
 
     // Entry point for each new expression
@@ -192,7 +189,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
     });
   });
 
-  it("Context Expression keyboard navigation", () => {
+  it("Context Expression keyboard navigation and navigate inside nested tables", () => {
     // right click on the first data cell
     cy.contains("td", "ContextEntry-1").as("firstCell").rightclick();
 
@@ -213,9 +210,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
     // check if the expression cell of the 2nd row is focused
     cy.ouiaId("expression-row-1").ouiaId("expression-column-2").should("be.focused");
-  });
 
-  it("Navigate inside nested tables", () => {
     // from the 3rd cell navigate inside the nested table and left to the edge
     cy.ouiaId("expression-row-0")
       .ouiaId("expression-column-2")

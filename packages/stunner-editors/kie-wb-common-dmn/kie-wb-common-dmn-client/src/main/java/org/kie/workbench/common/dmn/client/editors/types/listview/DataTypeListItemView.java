@@ -184,10 +184,11 @@ public class DataTypeListItemView implements DataTypeListItem.View,
         final AtomicInteger i = new AtomicInteger(1);
 
         asDownArrow(getArrow());
+        final int childrenCount = getChildren(parent).length;
         forEachChildElement(parent, child -> {
 
             show(child);
-            double positionY = parentPositionY + (i.getAndIncrement() / 10.0);
+            double positionY = parentPositionY + (i.getAndIncrement() / (childrenCount + 1.0));
             presenter.setPositionY(child, positionY);
 
             return !isCollapsed(child.querySelector(ARROW_BUTTON_SELECTOR));

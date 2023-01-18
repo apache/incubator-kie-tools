@@ -29,10 +29,11 @@ public enum AggregateFunctionType {
     AVERAGE,
     SUM,
     MIN,
-    MAX;
+    MAX,
+    MEDIAN;
 
     private static AggregateFunctionType[] _typeArray = values();
-    private static List<AggregateFunctionType> _numericOnly = Arrays.asList(AVERAGE, SUM, MAX, MIN);
+    private static List<AggregateFunctionType> _numericOnly = Arrays.asList(AVERAGE, MEDIAN, SUM, MAX, MIN);
 
     public int getIndex() {
         for (int i = 0; i < _typeArray.length; i++) {

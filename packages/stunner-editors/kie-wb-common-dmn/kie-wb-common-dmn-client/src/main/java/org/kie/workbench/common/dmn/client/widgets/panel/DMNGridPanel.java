@@ -20,10 +20,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
@@ -44,22 +41,8 @@ public class DMNGridPanel extends GridLienzoPanel {
               gridLayer);
         this.mousePanMediator = mousePanMediator;
 
-        getDomElementContainer().addDomHandler(destroyDOMElements(),
-                                               MouseWheelEvent.getType());
         getDomElementContainer().addDomHandler(contextMenuHandler,
                                                ContextMenuEvent.getType());
-    }
-
-    private MouseWheelHandler destroyDOMElements() {
-        return (event) -> getDefaultGridLayer()
-                .getGridWidgets()
-                .forEach(gridWidget -> gridWidget
-                        .getModel()
-                        .getColumns()
-                        .stream()
-                        .filter(gridColumn -> gridColumn instanceof HasDOMElementResources)
-                        .map(gridColumn -> ((HasDOMElementResources) gridColumn))
-                        .forEach(HasDOMElementResources::destroyResources));
     }
 
     @Override

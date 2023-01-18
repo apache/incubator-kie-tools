@@ -21,6 +21,7 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.user.client.Element;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,9 @@ public class CellEditorControlsTest {
     @Mock
     private HasCellEditorControls.Editor editor;
 
+    @Mock
+    private Element gridElement;
+
     private CellEditorControlsView.Presenter controls;
 
     @Before
@@ -60,6 +64,7 @@ public class CellEditorControlsTest {
         this.controls.setGridPanelSupplier(Optional.of(() -> gridPanel));
 
         doReturn(viewport).when(gridPanel).getViewport();
+        doReturn(gridElement).when(gridPanel).getElement();
         doReturn(transform).when(viewport).getTransform();
     }
 
@@ -78,6 +83,26 @@ public class CellEditorControlsTest {
         verify(view).show(eq(editor),
                           eq(-145),
                           eq(-270));
+    }
+
+    @Test
+    public void testShowWhenNotEnoughPlace() {
+        doReturn(1.0).when(transform).getScaleX();
+        doReturn(0.0).when(transform).getTranslateX();
+        doReturn(50).when(gridPanel).getAbsoluteLeft();
+
+        doReturn(1.0).when(transform).getScaleY();
+        doReturn(0.0).when(transform).getTranslateY();
+        doReturn(10).when(gridPanel).getAbsoluteTop();
+
+        doReturn(500).when(gridElement).getAbsoluteBottom();
+
+        controls.show(editor, 10, 450);
+
+        verify(view)
+                .show(eq(editor),
+                        eq(60),
+                        eq(210)); // 450 + 10 - CellEditorControls.BIGGEST_MENU_HEIGHT_PX
     }
 
     @Test

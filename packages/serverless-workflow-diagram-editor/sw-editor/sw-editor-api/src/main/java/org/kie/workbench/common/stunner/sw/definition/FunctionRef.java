@@ -21,7 +21,6 @@ import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.ArgumentsValueHolderJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ValueHolderJsonbTypeDeserializer;
 
 @JSONMapper
 @JsType
@@ -32,8 +31,8 @@ public class FunctionRef {
     private FunctionRefType invoke;
 
     @JsonbTypeSerializer(ArgumentsValueHolderJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ValueHolderJsonbTypeDeserializer.class)
-    private ValueHolder arguments;
+    @JsonbTypeDeserializer(ArgumentsValueHolderJsonbTypeSerializer.class)
+    private Object arguments;
 
     public final String getRefName() {
         return refName;
@@ -59,11 +58,11 @@ public class FunctionRef {
         this.invoke = invoke;
     }
 
-    public final ValueHolder getArguments() {
+    public final Object getArguments() {
         return arguments;
     }
 
-    public final void setArguments(ValueHolder arguments) {
+    public final void setArguments(Object arguments) {
         this.arguments = arguments;
     }
 }

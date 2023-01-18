@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
@@ -66,6 +67,13 @@ public class ItemDefinitionUtils {
                 .map(UnaryTests::getText)
                 .orElse(new Text())
                 .getValue();
+    }
+
+    public ConstraintType getConstraintType(final ItemDefinition itemDefinition) {
+        return Optional
+                .ofNullable(itemDefinition.getAllowedValues())
+                .map(UnaryTests::getConstraintType)
+                .orElse(ConstraintType.NONE);
     }
 
     public QName normaliseTypeRef(final QName typeRef) {

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { assert } from "chai";
+import { assert, expect } from "chai";
+import { Key } from "selenium-webdriver";
 import {
   ActivityBar,
   By,
@@ -23,6 +24,7 @@ import {
   SideBarView,
   until,
   ViewControl,
+  ViewItem,
   ViewSection,
   VSBrowser,
   WebDriver,
@@ -120,7 +122,7 @@ export default class VSCodeTestHelper {
         await fileItem.click();
       }
     }
-    await sleep(3000);
+    await sleep(5000);
 
     const editorGroups = await this.workbench.getEditorView().getEditorGroups();
     // should be always two groups, one text editor and one swf editor
@@ -136,6 +138,49 @@ export default class VSCodeTestHelper {
     webviews.push(webviewLeft, webviewRight);
 
     return Promise.resolve(webviews);
+  };
+
+  /**
+   * Renames file in SideBarView.
+   *
+   * Expects SideBarView is defined and open.
+   * To define SideBarView a folder needs to be opened using openFolder function.
+   *
+   * You can specify the relative path to root directory in fileName. For example: "/a/b/filename.sw.json".
+   * You can also specify the relative path in newFileName. The path of the new file will be relative to directory where the original file resides.
+   *
+   * Always use "/" separator in paths.
+   *
+   * @param fileName name of the file with or without path to rename
+   * @param newFileName new name of the file with or without path
+   */
+  public renameFile = async (fileName: string, newFileName: string) => {
+    let fileNameToRename: string | undefined = fileName;
+
+    if (fileName.includes("/")) {
+      const pathPieces = fileName.split("/");
+      fileNameToRename = pathPieces.pop();
+      await this.workspaceSectionView.openItem(...pathPieces);
+    }
+
+    let fileItem: ViewItem | undefined;
+
+    if (fileNameToRename != undefined) {
+      fileItem = await this.workspaceSectionView.findItem(fileNameToRename);
+    }
+
+    const menu = await fileItem?.openContextMenu();
+    await menu?.select("Rename...");
+
+    const inputElement = await this.workspaceSectionView.findElement(By.xpath('.//input[@type="text"]'));
+    await inputElement.sendKeys(Key.chord(Key.CONTROL, "a"));
+    await inputElement.sendKeys(newFileName);
+    await inputElement.sendKeys(Key.ENTER);
+
+    // Check the presence of renamed item
+    const renamedFileName = newFileName.includes("/") ? newFileName.split("/").pop() : newFileName;
+    expect(renamedFileName).to.exist;
+    expect(await this.workspaceSectionView.findItem(renamedFileName as string)).to.exist;
   };
 
   /**
