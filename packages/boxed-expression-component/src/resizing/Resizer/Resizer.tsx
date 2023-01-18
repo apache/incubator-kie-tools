@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Resizable } from "react-resizable";
-import { ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
 
@@ -39,7 +39,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   setResizing,
 }) => {
   //
-  // React batching strategy (begin)
+  // onResizeStop batching strategy (begin)
   //
   // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setWidth`.
   // Every call to `setWidth` mutates the expression, so batching is essential for performance reasons.
@@ -70,11 +70,11 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     setResizingWidth?.((prev) => ({ value: Math.floor(resizingStop__data), isPivoting: false }));
     setWidth?.(resizingWidth?.value);
 
-    setResizingStop__data(0); // Prevent this effect from running after it ran. Let onResizeStop trigger it.
+    setResizingStop__data(0); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
   }, [getResizerRefs, resizingWidth?.value, resizingStop__data, setResizing, setResizingWidth, setWidth]);
 
   //
-  // React batching strategy (end)
+  // onResizeStop batching strategy (end)
   //
 
   const minConstraints = useMemo<[number, number]>(() => {

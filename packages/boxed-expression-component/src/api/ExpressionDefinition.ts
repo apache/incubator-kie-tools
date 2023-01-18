@@ -63,7 +63,7 @@ export interface RelationExpressionDefinitionColumn {
   /** Column data type */
   dataType: DmnBuiltInDataType;
   /** Column width */
-  width?: number;
+  width: number | undefined;
 }
 
 // CONTEXT EXPRESSION
@@ -143,7 +143,7 @@ export interface DecisionTableExpressionDefinitionClause {
   /** Clause data type */
   dataType: DmnBuiltInDataType;
   /** Clause width */
-  width?: number;
+  width: number | undefined;
 }
 
 export interface DecisionTableExpressionDefinitionAnnotation {
@@ -152,7 +152,7 @@ export interface DecisionTableExpressionDefinitionAnnotation {
   /** Annotation name */
   name: string;
   /** Annotation width */
-  width?: number;
+  width: number | undefined;
 }
 
 export interface DecisionTableExpressionDefinitionRule {

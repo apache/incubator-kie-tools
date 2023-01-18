@@ -25,7 +25,6 @@ import {
   ContextExpressionDefinition,
   ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  ExpressionDefinition,
   ExpressionDefinitionLogicType,
   generateUuid,
   getNextAvailablePrefixedName,
@@ -36,20 +35,20 @@ import { NestedExpressionContainerContext } from "../../resizing/NestedExpressio
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_EXPRESSION_EXTRA_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
-import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBeeTableCell, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
+import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
-import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 import "./ContextExpression.css";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 

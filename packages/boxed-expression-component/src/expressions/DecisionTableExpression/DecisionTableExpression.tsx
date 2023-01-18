@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -30,6 +30,7 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
+import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
 import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
@@ -38,7 +39,13 @@ import {
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, getColumnsAtLastLevel } from "../../table/BeeTable";
+import {
+  BeeTable,
+  BeeTableCellUpdate,
+  BeeTableColumnUpdate,
+  BeeTableRef,
+  getColumnsAtLastLevel,
+} from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
@@ -145,7 +152,24 @@ export function DecisionTableExpression(
     [setExpression]
   );
 
-  const { onColumnResizingWidthChange } = usePublishedBeeTableColumnResizingWidths(decisionTableExpression.id);
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(
+    decisionTableExpression.id
+  );
+
+  const beeTableRef = useRef<BeeTableRef>(null);
+  useApportionedColumnWidthsIfNestedTable(
+    beeTableRef,
+    isPivoting,
+    decisionTableExpression.isNested,
+    useMemo(
+      () => [
+        ...(decisionTableExpression.input ?? []),
+        ...(decisionTableExpression.output ?? []),
+        ...(decisionTableExpression.annotations ?? []),
+      ],
+      [decisionTableExpression.annotations, decisionTableExpression.input, decisionTableExpression.output]
+    )
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
@@ -611,6 +635,7 @@ export function DecisionTableExpression(
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
+        forwardRef={beeTableRef}
         headerLevelCount={1}
         headerVisibility={beeTableHeaderVisibility}
         editColumnLabel={getEditColumnLabel}

@@ -15,6 +15,7 @@
  */
 
 import "@patternfly/react-styles/css/utilities/Text/text.css";
+import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
@@ -41,6 +42,7 @@ import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTabl
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./RelationExpression.css";
+import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
 
@@ -91,29 +93,11 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     },
     [setExpression]
   );
-  const beeTableRef = useRef<BeeTableRef>(null);
 
-  const nestedExpressionContainer = useNestedExpressionContainer();
   const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(relationExpression.id);
 
-  // FIXME: Tiago -> Proportional resizing of columns.
-  // useEffect(() => {
-  //   if (isPivoting) {
-  //     return;
-  //   }
-
-  //   const widthToDistribute =
-  //     nestedExpressionContainer.resizingWidth.value - BEE_TABLE_ROW_INDEX_COLUMN_WIDTH - 1 - columns.length;
-
-  //   columns.forEach((c, index) => {
-  //     beeTableRef.current?.updateResizingWidth(index + 1, (prev) => {
-  //       return {
-  //         isPivoting: false,
-  //         value: widthToDistribute / columns.length,
-  //       };
-  //     });
-  //   });
-  // }, [columns, isPivoting, nestedExpressionContainer.resizingWidth.value]);
+  const beeTableRef = useRef<BeeTableRef>(null);
+  useApportionedColumnWidthsIfNestedTable(beeTableRef, isPivoting, relationExpression.isNested, columns);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [

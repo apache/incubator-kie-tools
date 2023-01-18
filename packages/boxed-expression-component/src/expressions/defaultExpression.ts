@@ -149,19 +149,19 @@ export function getDefaultExpressionDefinitionByLogicType(
           id: generateUuid(),
           name: "column-1",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+          width: 100,
         },
         {
           id: generateUuid(),
           name: "column-2",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+          width: 300,
         },
         {
           id: generateUuid(),
           name: "column-3",
           dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+          width: 200,
         },
       ],
       rows: [
