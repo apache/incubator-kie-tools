@@ -618,23 +618,13 @@ section.kie-tools--settings-tab {
   z-index: 999;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 10;
 }
 
 .kie-tools__dmn-runner-loading {
-  animation-name: fade-out;
-  animation-duration: 400ms;
+  animation-name: highlight;
+  animation-duration: 600ms;
   background-color: white;
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
 }
 
 .kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel .pf-c-drawer__splitter.pf-m-vertical {

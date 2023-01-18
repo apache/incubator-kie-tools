@@ -52,15 +52,6 @@ export function DmnRunnerLoading(props: DmnRunnerLoading) {
 
   return (
     <>
-      {dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows && (
-        <div id="kie-tools__dmn-runner-loading-screen" className="kie-tools__dmn-runner-loading-screen">
-          <div
-            className={`kie-tools__dmn-runner-loading-screen ${loadingScreenClassName}`}
-            // onAnimationEnd={onAnimationEnd}
-            onAnimationStart={onAnimationEnd}
-          />
-        </div>
-      )}
       <React.Fragment key={loadingScreenClassName}>{props.children}</React.Fragment>
     </>
   );
