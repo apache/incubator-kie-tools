@@ -51,6 +51,9 @@ public class ExternalDataSetClientProvider {
 
     @Inject
     CSVParser csvParser;
+    
+    @Inject
+    ExternalDataCallbackCoordinator dataSetCallbackCoordinator;
 
     ExternalDataSetJSONParser externalParser;
 
@@ -76,7 +79,7 @@ public class ExternalDataSetClientProvider {
             if (def.getContent() != null && def.getUrl() == null) {
                 register(lookup, listener, def.getContent(), SupportedMimeType.JSON);
             } else {
-                fetch(def, lookup, listener);
+                dataSetCallbackCoordinator.getCallback(def, listener, callback -> fetch(def, lookup, callback));                
             }
         } else {
             listener.notFound();
