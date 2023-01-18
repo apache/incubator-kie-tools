@@ -21,9 +21,9 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import {
-  DmnRunnerModelPayload,
+  KieSandboxExtendedServicesModelPayload,
   KieSandboxExtendedServicesClient,
-} from "../KieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
@@ -33,7 +33,6 @@ import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
@@ -94,7 +93,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         mainURI: props.workspaceFile.relativePath,
         resources,
         context: formData,
-      } as DmnRunnerModelPayload;
+      } as KieSandboxExtendedServicesModelPayload;
     },
     [props.workspaceFile, workspaces]
   );
@@ -119,42 +118,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         setError(true);
       });
   }, [extendedServices.status, props.workspaceFile.extension, preparePayload, service]);
-
-  useEffect(() => {
-    if (props.workspaceFile.extension !== "dmn") {
-      return;
-    }
-
-    if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-      props.editorPageDock?.setNotifications(i18n.terms.validation, "", []);
-      return;
-    }
-
-    props.workspaceFile
-      .getFileContents()
-      .then((fileContents) => {
-        const payload: DmnRunnerModelPayload = {
-          mainURI: props.workspaceFile.relativePath,
-          resources: [
-            {
-              URI: props.workspaceFile.relativePath,
-              content: decoder.decode(fileContents),
-            },
-          ],
-        };
-
-        service.validateDmn(payload).then((validationResults) => {
-          const notifications: Notification[] = validationResults.map((validationResult: any) => ({
-            type: "PROBLEM",
-            path: "",
-            severity: validationResult.severity,
-            message: `${validationResult.messageType}: ${validationResult.message}`,
-          }));
-          props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-        });
-      })
-      .catch((err) => console.error(err));
-  }, [props.workspaceFile, props.editorPageDock, extendedServices.status, service, i18n.terms.validation]);
 
   useEffect(() => {
     if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {

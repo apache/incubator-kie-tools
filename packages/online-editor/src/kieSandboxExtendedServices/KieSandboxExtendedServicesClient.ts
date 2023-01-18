@@ -16,25 +16,14 @@
 
 import { DmnResult, DmnSchema } from "@kie-tools/form-dmn";
 
-export interface DmnRunnerModelResource {
+export interface KieSandboxExtendedServicesModelResource {
   URI: string;
   content: string;
 }
 
-export interface DmnRunnerModelPayload {
+export interface KieSandboxExtendedServicesModelPayload {
   mainURI: string;
-  resources: DmnRunnerModelResource[];
-  context?: any;
-}
-
-export interface BpmnRunnerModelResource {
-  URI: string;
-  content: string;
-}
-
-export interface BpmnRunnerModelPayload {
-  mainURI: string;
-  resources: BpmnRunnerModelResource[];
+  resources: KieSandboxExtendedServicesModelResource[];
   context?: any;
 }
 
@@ -51,7 +40,7 @@ export class KieSandboxExtendedServicesClient {
     this.BPMN_RUNNER_VALIDATE_URL = `${this.jitExecutorUrl}jitbpmn/validate`;
   }
 
-  public async result(payload: DmnRunnerModelPayload): Promise<DmnResult> {
+  public async result(payload: KieSandboxExtendedServicesModelPayload): Promise<DmnResult> {
     if (!this.isPayloadValid(payload)) {
       return { messages: [] };
     }
@@ -67,7 +56,7 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateDmn(payload: DmnRunnerModelPayload): Promise<[]> {
+  public async validateDmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
@@ -82,7 +71,7 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateBpmn(payload: BpmnRunnerModelPayload): Promise<[]> {
+  public async validateBpmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
@@ -97,7 +86,7 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async formSchema(payload: DmnRunnerModelPayload): Promise<DmnSchema> {
+  public async formSchema(payload: KieSandboxExtendedServicesModelPayload): Promise<DmnSchema> {
     if (!this.isPayloadValid(payload)) {
       return {};
     }
@@ -125,7 +114,7 @@ export class KieSandboxExtendedServicesClient {
     );
   }
 
-  private isPayloadValid(payload: DmnRunnerModelPayload): boolean {
+  private isPayloadValid(payload: KieSandboxExtendedServicesModelPayload): boolean {
     return payload.resources.every((resource) => resource.content !== "");
   }
 }
