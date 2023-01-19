@@ -2,17 +2,17 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useEffect, useMemo } from "react";
-import { EditorPageDockDrawerRef } from "../editor/EditorPageDockDrawer";
+import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { useOnlineI18n } from "../i18n";
 import { useSettings } from "../settings/SettingsContext";
 import {
   KieSandboxExtendedServicesClient,
   KieSandboxExtendedServicesModelPayload,
-} from "./KieSandboxExtendedServicesClient";
-import { useExtendedServices } from "./KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
+} from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
-export function useKieSandboxExtendedServicesForValidation(
+export function useFileValidation(
   workspaceFile: WorkspaceFile | undefined,
   editorPageDock: EditorPageDockDrawerRef | undefined
 ) {

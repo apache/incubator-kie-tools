@@ -33,7 +33,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
@@ -48,8 +48,7 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { useKieSandboxExtendedServicesForValidation } from "../kieSandboxExtendedServices/useKieSandboxExtendedServices";
+import { useFileValidation } from "./Validation";
 
 export interface Props {
   workspaceId: string;
@@ -341,7 +340,7 @@ export function EditorPage(props: Props) {
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
 
-  useKieSandboxExtendedServicesForValidation(workspaceFilePromise.data?.workspaceFile, editorPageDock);
+  useFileValidation(workspaceFilePromise.data?.workspaceFile, editorPageDock);
 
   return (
     <OnlineEditorPage>
