@@ -75,12 +75,8 @@ export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   contextEntries: ContextExpressionDefinitionEntry[];
   /** Context result */
   result: ExpressionDefinition;
-  /** False, to avoid the rendering of the result section */
-  renderResult?: boolean; // FIXME: Tiago -> This has to go. Not functional. UI.
   /** Entry info width */
   entryInfoWidth?: number;
-  /** Entry expression width */
-  entryExpressionWidth?: number; // FIXME: Tiago -> Remove
 }
 
 export interface ContextExpressionDefinitionEntryInfo {
@@ -171,8 +167,6 @@ export interface ListExpressionDefinition extends ExpressionDefinitionBase {
   logicType: ExpressionDefinitionLogicType.List;
   /** List items */
   items: ExpressionDefinition[];
-  /** Optional width for this list expression */
-  width?: number; // FIXME: Tiago -> Remove
 }
 
 export interface InvocationExpressionDefinition<T extends ExpressionDefinition = ExpressionDefinition>
@@ -185,9 +179,8 @@ export interface InvocationExpressionDefinition<T extends ExpressionDefinition =
   // FIXME: Tiago -> Rename to argumentEntries
   bindingEntries?: ContextExpressionDefinitionEntry<T>[];
   /** Entry info width */
-  entryInfoWidth?: number; // Rename to parametersInfoColumnWidth?
-  /** Entry expression width */
-  entryExpressionWidth?: number; // FIXME: Tiago -> Remove
+  // FIXME: Tiago -> Rename to parametersInfoColumnWidth?
+  entryInfoWidth?: number;
 }
 
 // UNDEFINED EXPRESSION

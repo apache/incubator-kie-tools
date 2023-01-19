@@ -198,14 +198,21 @@ export function useApportionedColumnWidthsIfNestedTable(
   columns: Array<{ width: number | undefined }>
 ) {
   const nestedExpressionContainer = useNestedExpressionContainer();
+  const pivotAwareNestedExpressionContainer = usePivotAwareNestedExpressionContainer(isPivoting);
 
   useEffect(() => {
     if (isPivoting || !isNested) {
+      // If it's growing, then do nothing, as it's already working as expected.
+      // If it's shrinking the whole table to less than minWidth, redistribute the width between the other columns to the right, filling all space.
+      // If it's the last column to the right, do not allow shrinking the whole table to less than minWidth.
       return;
     }
 
     const extraWidthOnTable = BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + columns.length + 1;
-    const nextTotalWidth = nestedExpressionContainer.resizingWidth.value - extraWidthOnTable;
+    const nextTotalWidth = Math.max(
+      nestedExpressionContainer.minWidth - extraWidthOnTable,
+      nestedExpressionContainer.resizingWidth.value - extraWidthOnTable
+    );
 
     const apportionedWidths = apportionColumnWidths(
       nextTotalWidth,
@@ -216,13 +223,20 @@ export function useApportionedColumnWidthsIfNestedTable(
     );
 
     apportionedWidths.forEach((nextWidth, index) => {
-      const columnIndex = index + 1; // +1 to compensate for rowIndex column
+      const columnIndex = index + 1; // + 1 to compensate for rowIndex column
       beeTableRef.current?.updateColumnResizingWidth(columnIndex, (prev) => ({
         isPivoting: prev?.isPivoting ?? false,
         value: nextWidth,
       }));
     });
-  }, [columns, isPivoting, nestedExpressionContainer.resizingWidth.value, isNested, beeTableRef]);
+  }, [
+    columns,
+    isPivoting,
+    nestedExpressionContainer.resizingWidth.value,
+    isNested,
+    beeTableRef,
+    nestedExpressionContainer.minWidth,
+  ]);
 }
 
 // This code is an implementation of the Jefferson method for solving the Apportion problem.

@@ -195,12 +195,10 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   }, []);
 
   const beeTableAdditionalRow = useMemo(() => {
-    return contextExpression.renderResult ?? true
-      ? [
-          <ContextResultInfoCell key={"context-result-info"} />,
-          <ContextResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
-        ]
-      : undefined;
+    return [
+      <ContextResultInfoCell key={"context-result-info"} />,
+      <ContextResultExpressionCell key={"context-result-expression"} contextExpression={contextExpression} />,
+    ];
   }, [contextExpression]);
 
   const getDefaultContextEntry = useCallback(
