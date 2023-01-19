@@ -69,7 +69,7 @@ module.exports = composeEnv(
         default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
         description: "Extended Services URL.",
       },
-      ONLINE_EDITOR__customCommitMessages: {
+      ONLINE_EDITOR__requireCustomCommitMessages: {
         default: true,
         description: "Allows users to type a custom commit message when sycing with git.",
       },
@@ -101,7 +101,7 @@ module.exports = composeEnv(
           },
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
-          customCommitMessages: getOrDefault(this.vars.ONLINE_EDITOR__customCommitMessages),
+          requireCustomCommitMessages: getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessages),
         },
         devDeployments: {
           onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__onlineEditorUrl),

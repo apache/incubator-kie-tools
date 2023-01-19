@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
-import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { LocalFile } from "../worker/api/LocalFile";
 import { GistOrigin, GitHubOrigin } from "../worker/api/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 
-interface Props {
-  children: React.ReactNode;
-  workspacesSharedWorkerScriptUrl: string;
-}
+type Props =
+  | {
+      children: React.ReactNode;
+      workspacesSharedWorkerScriptUrl: string;
+      shouldRequireCommitMessage?: false;
+      commitMessageValidatorUrl?: string;
+    }
+  | {
+      children: React.ReactNode;
+      workspacesSharedWorkerScriptUrl: string;
+      shouldRequireCommitMessage: true;
+      requestCommitMessageCallback?: () => Promise<string>;
+      commitMessageValidatorUrl?: string;
+    };
 
 export function WorkspacesContextProvider(props: Props) {
   const workspacesSharedWorker = useMemo(
@@ -138,11 +148,30 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createSavePoint = useCallback(
-    async (args: { workspaceId: string; gitConfig?: { email: string; name: string } }, commitMessage?: string) =>
-      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
-      ),
-    [workspacesSharedWorker]
+    async (args: { workspaceId: string; gitConfig?: { email: string; name: string }; commitMessage?: string }) => {
+      if (!(await hasLocalChanges(args))) {
+        return;
+      }
+      if (props.shouldRequireCommitMessage && !args.commitMessage) {
+        if (!props.requestCommitMessageCallback) {
+          throw new Error("Missing requestCommitMessageCallback!");
+        }
+        let commitMessage: string;
+        try {
+          commitMessage = await props.requestCommitMessageCallback();
+        } catch (e) {
+          throw new Error("No commit message!");
+        }
+        return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit({ ...args, commitMessage })
+        );
+      } else {
+        return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
+        );
+      }
+    },
+    [props, workspacesSharedWorker, hasLocalChanges]
   );
 
   const getGitServerRefs = useCallback(

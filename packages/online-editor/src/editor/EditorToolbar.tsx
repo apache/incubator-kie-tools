@@ -1024,26 +1024,62 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     { durationInSeconds: 2 }
   );
 
+  const commitFailAlert = useGlobalAlert(
+    useCallback(({ close }, staticArgs: { reason: string }) => {
+      return (
+        <Alert
+          variant="danger"
+          title={`Failed to commit: ${staticArgs.reason}`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const nothingToCommitAlert = useGlobalAlert(
+    useCallback(() => {
+      return <Alert variant="info" title={"Nothing to commit."} />;
+    }, []),
+    { durationInSeconds: 4 }
+  );
+
   const createSavePointDropdownItem = useMemo(() => {
     return (
       <DropdownItem
         key={"commit-dropdown-item"}
         icon={<SaveIcon />}
         onClick={async () => {
+          if (!(await workspaces.hasLocalChanges({ workspaceId: props.workspaceFile.workspaceId }))) {
+            nothingToCommitAlert.show();
+            return;
+          }
           comittingAlert.show();
-          await workspaces.createSavePoint({
-            workspaceId: props.workspaceFile.workspaceId,
-            gitConfig,
-          });
-          comittingAlert.close();
-          commitSuccessAlert.show();
+          try {
+            await workspaces.createSavePoint({
+              workspaceId: props.workspaceFile.workspaceId,
+              gitConfig,
+            });
+            comittingAlert.close();
+            commitSuccessAlert.show();
+          } catch (e) {
+            comittingAlert.close();
+            commitFailAlert.show({ reason: e.message });
+          }
         }}
         description={"Create a save point"}
       >
         Commit
       </DropdownItem>
     );
-  }, [comittingAlert, workspaces, props.workspaceFile.workspaceId, gitConfig, commitSuccessAlert]);
+  }, [
+    workspaces,
+    props.workspaceFile.workspaceId,
+    comittingAlert,
+    nothingToCommitAlert,
+    gitConfig,
+    commitSuccessAlert,
+    commitFailAlert,
+  ]);
 
   const pushSuccessAlert = useGlobalAlert(
     useCallback(() => {

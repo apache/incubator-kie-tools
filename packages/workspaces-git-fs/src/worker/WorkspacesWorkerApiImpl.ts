@@ -436,6 +436,20 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
+  public async kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: {
+    workspaceId: string;
+  }): Promise<string[]> {
+    const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
+      return await this.args.services.gitService.unstagedModifiedFileRelativePaths({
+        fs,
+        dir: workspaceRootDirPath,
+        exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
+      });
+    });
+  }
+
   public async kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
@@ -449,20 +463,18 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
 
     const defaultCommitMessage = `Changes from ${this.args.appName}`;
 
+    const fileRelativePaths = await this.kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths({
+      workspaceId: args.workspaceId,
+    });
+
+    if (fileRelativePaths.length === 0) {
+      console.debug("Nothing to commit.");
+      return;
+    }
+
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
-        const fileRelativePaths = await this.args.services.gitService.unstagedModifiedFileRelativePaths({
-          fs,
-          dir: workspaceRootDirPath,
-          exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
-        });
-
-        if (fileRelativePaths.length === 0) {
-          console.debug("Nothing to commit.");
-          return;
-        }
-
         await Promise.all(
           fileRelativePaths.map(async (relativePath) => {
             if (
@@ -491,7 +503,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           fs,
           dir: workspaceRootDirPath,
           targetBranch: descriptor.origin.branch,
-          message: defaultCommitMessage,
+          message: args.commitMessage ?? defaultCommitMessage,
           author: {
             name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
             email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
