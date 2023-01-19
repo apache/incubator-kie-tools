@@ -179,7 +179,8 @@ export function DecisionTableExpression(
         ...(decisionTableExpression.annotations ?? []),
       ],
       [decisionTableExpression.annotations, decisionTableExpression.input, decisionTableExpression.output]
-    )
+    ),
+    decisionTableExpression.rules ?? []
   );
 
   /// //////////////////////////////////////////////////////
@@ -670,7 +671,7 @@ export function DecisionTableExpression(
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
-        lastColumnMinWidth={lastColumnMinWidth}
+        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Tiago -> What to do?
       />
     </div>
   );

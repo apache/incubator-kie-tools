@@ -107,7 +107,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
 
   const lastColumnMinWidth = useNestedTableLastColumnMinWidth(columnResizingWidths);
 
-  useApportionedColumnWidthsIfNestedTable(beeTableRef, isPivoting, relationExpression.isNested, columns);
+  useApportionedColumnWidthsIfNestedTable(beeTableRef, isPivoting, relationExpression.isNested, columns, rows);
 
   /// //////////////////////////////////////////////////////
 
@@ -314,7 +314,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
-        lastColumnMinWidth={lastColumnMinWidth}
+        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Tiago -> What to do?
       />
     </div>
   );

@@ -24,12 +24,12 @@ const buildEnv = env;
 
 module.exports = (env) =>
   merge(common(env), {
-    mode: "development",
+    mode: "production",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
     },
     output: {
-      path: path.resolve("../dist-dev"),
+      path: path.resolve(__dirname, "../dist-dev"),
     },
     plugins: [
       new CopyPlugin({

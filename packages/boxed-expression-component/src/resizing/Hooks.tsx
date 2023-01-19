@@ -195,7 +195,8 @@ export function useApportionedColumnWidthsIfNestedTable(
   beeTableRef: React.RefObject<BeeTableRef>,
   isPivoting: boolean,
   isNested: boolean,
-  columns: Array<{ width: number | undefined }>
+  columns: Array<{ width: number | undefined }>,
+  rows: any[] //FIXME: Tiago -> This is a hack to recalculate the positions when the row number changes.
 ) {
   const nestedExpressionContainer = useNestedExpressionContainer();
 
@@ -231,6 +232,7 @@ export function useApportionedColumnWidthsIfNestedTable(
     nestedExpressionContainer.resizingWidth.value,
     isNested,
     beeTableRef,
+    rows,
     nestedExpressionContainer.minWidth,
   ]);
 }
@@ -281,6 +283,11 @@ export function useNestedTableLastColumnMinWidth(columnResizingWidths: Map<numbe
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   return useMemo(() => {
+    // Prevents it from calculating before it's filled.
+    if (columnResizingWidths.size <= 1) {
+      return;
+    }
+
     const extraWidthOnTable = columnResizingWidths.size;
 
     const widthOfAllColumnsExceptLastOne = [...columnResizingWidths.entries()].reduce(
