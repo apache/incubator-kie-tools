@@ -126,18 +126,16 @@ export const EditorPageDockDrawer = React.forwardRef<
   const extendedServices = useExtendedServices();
   const notificationsPanelIsDisabled = useMemo(() => {
     return (
-      props.workspaceFile.extension.toLowerCase() === "bpmn" ||
-      (props.workspaceFile.extension.toLowerCase() === "dmn" &&
-        extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING)
+      (props.workspaceFile.extension.toLowerCase() === "dmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn") &&
+      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     );
   }, [extendedServices.status, props.workspaceFile.extension]);
 
   const notificationsPanelDisabledReason = useMemo(() => {
-    if (props.workspaceFile.extension.toLowerCase() === "bpmn") {
-      return "BPMN Editor doesn't have access to Problems tab";
-    }
     if (
-      props.workspaceFile.extension.toLowerCase() === "dmn" &&
+      (props.workspaceFile.extension.toLowerCase() === "dmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn") &&
       extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     ) {
       return "In order to have access to Problems tab you need to use the KIE Sandbox Extended Services";
