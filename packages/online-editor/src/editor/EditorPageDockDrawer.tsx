@@ -42,7 +42,6 @@ export enum PanelId {
 }
 
 interface EditorPageDockDrawerProps {
-  isEditorReady?: boolean;
   workspaceFile: WorkspaceFile;
 }
 
@@ -157,21 +156,16 @@ export const EditorPageDockDrawer = React.forwardRef<
           panelContent={
             panel !== PanelId.NONE && (
               <DrawerPanelContent style={{ height: "100%" }} isResizable={true}>
-                {props.isEditorReady && (
-                  <>
-                    {panel === PanelId.NOTIFICATIONS_PANEL && (
-                      <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
-                    )}
-                    {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && (
-                      <DmnRunnerTable
-                        workspaceFile={props.workspaceFile}
-                        setPanelOpen={setPanel}
-                        isReady={props.isEditorReady}
-                        dmnRunnerResults={dmnRunnerResults}
-                        setDmnRunnerResults={setDmnRunnerResults}
-                      />
-                    )}
-                  </>
+                {panel === PanelId.NOTIFICATIONS_PANEL && (
+                  <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
+                )}
+                {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && (
+                  <DmnRunnerTable
+                    workspaceFile={props.workspaceFile}
+                    setPanelOpen={setPanel}
+                    dmnRunnerResults={dmnRunnerResults}
+                    setDmnRunnerResults={setDmnRunnerResults}
+                  />
                 )}
               </DrawerPanelContent>
             )

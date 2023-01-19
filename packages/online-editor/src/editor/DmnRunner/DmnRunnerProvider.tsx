@@ -38,6 +38,7 @@ import { DmnLanguageService } from "@kie-tools/dmn-language-service/src";
 import { ResourceContent } from "@kie-tools-core/workspace/dist/api";
 
 interface Props {
+  isEditorReady?: boolean;
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspaceFile: WorkspaceFile;
 }
@@ -50,14 +51,16 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const extendedServices = useExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
-  const {
-    inputRows,
-    setInputRows,
-    didUpdateInputRows,
-    setDidUpdateInputRows,
-    didUpdateOutputRows,
-    setDidUpdateOutputRows,
-  } = useDmnRunnerInputs(props.workspaceFile);
+  const { inputRows, setInputRows } = useDmnRunnerInputs(props.workspaceFile);
+
+  const [isVisible, setVisible] = useState<boolean>(false);
+  useEffect(() => {
+    if (props.isEditorReady) {
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
+  }, [props.isEditorReady]);
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
@@ -262,11 +265,9 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setExpanded,
       setError,
       setInputRows,
-      setDidUpdateInputRows,
-      setDidUpdateOutputRows,
       setMode,
     }),
-    [preparePayload, setDidUpdateInputRows, setDidUpdateOutputRows, setInputRows]
+    [preparePayload, setInputRows]
   );
 
   const dmnRunnerState = useMemo(
@@ -274,26 +275,14 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       currentInputRowIndex,
       error,
       inputRows,
-      didUpdateInputRows,
       isExpanded,
+      isVisible,
       jsonSchema,
       mode,
-      didUpdateOutputRows,
       service,
       status,
     }),
-    [
-      currentInputRowIndex,
-      didUpdateInputRows,
-      didUpdateOutputRows,
-      error,
-      inputRows,
-      isExpanded,
-      jsonSchema,
-      mode,
-      service,
-      status,
-    ]
+    [currentInputRowIndex, error, inputRows, isExpanded, isVisible, jsonSchema, mode, service, status]
   );
 
   return (

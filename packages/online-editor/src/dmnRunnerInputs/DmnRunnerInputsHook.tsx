@@ -28,10 +28,6 @@ import { usePreviousRef } from "@kie-tools-core/react-hooks/dist/usePreviousRef"
 interface DmnRunnerInputs {
   inputRows: Array<InputRow>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  didUpdateInputRows: boolean;
-  setDidUpdateInputRows: React.Dispatch<React.SetStateAction<boolean>>;
-  didUpdateOutputRows: boolean;
-  setDidUpdateOutputRows: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInputs {
@@ -40,9 +36,6 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   const [inputRows, setInputRows] = useState<Array<InputRow>>(EMPTY_DMN_RUNNER_INPUTS);
   const lastInputRows = useRef<string>(JSON.stringify(EMPTY_DMN_RUNNER_INPUTS));
   const previousInputRows = usePreviousRef(inputRows);
-
-  const [didUpdateInputRows, setDidUpdateInputRows] = useState<boolean>(false);
-  const [didUpdateOutputRows, setDidUpdateOutputRows] = useState<boolean>(false);
 
   // TODO: Use useCompanionFsFile for keeping the `inputRows` up to date with updates made to it.
   //   I.e. When the DMN Runner Inputs file is changed
@@ -81,7 +74,6 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
             // Triggered by the other tab
             lastInputRows.current = companionEvent.content;
             setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
-            setDidUpdateInputRows(true);
           }
         };
 
@@ -93,14 +85,6 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
       [dmnRunnerInputsService, workspaceFile]
     )
   );
-
-  useEffect(() => {
-    if (!workspaceFile.relativePath) {
-      return;
-    }
-
-    setDidUpdateInputRows(true);
-  }, [workspaceFile.relativePath]);
 
   // On first render load the inputs;
   useCancelableEffect(
@@ -169,9 +153,5 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   return {
     inputRows,
     setInputRows: setInputRowsAndUpdatePersistence,
-    didUpdateInputRows,
-    setDidUpdateInputRows,
-    didUpdateOutputRows,
-    setDidUpdateOutputRows,
   };
 }

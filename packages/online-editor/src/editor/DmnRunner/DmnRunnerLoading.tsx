@@ -15,8 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
-import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
+import { useDmnRunnerState } from "./DmnRunnerContext";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 interface DmnRunnerLoading {
   children?: React.ReactNode;
@@ -24,35 +25,20 @@ interface DmnRunnerLoading {
 
 export function DmnRunnerLoading(props: DmnRunnerLoading) {
   const dmnRunnerState = useDmnRunnerState();
-  const dmnRunnerDispatch = useDmnRunnerDispatch();
-
-  const onAnimationEnd = useCallback(
-    (e: React.AnimationEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dmnRunnerDispatch.setDidUpdateInputRows(false);
-      dmnRunnerDispatch.setDidUpdateOutputRows(false);
-    },
-    [dmnRunnerDispatch]
-  );
-
-  const loadingScreenClassName = useMemo(() => {
-    if (dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows) {
-      return "kie-tools__dmn-runner-loading";
-    }
-    return "";
-  }, [dmnRunnerState.didUpdateInputRows, dmnRunnerState.didUpdateOutputRows]);
-
-  // Reset outputRowsUpdate when inputRowsUpdate is false
-  useEffect(() => {
-    if (!dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows) {
-      dmnRunnerDispatch.setDidUpdateOutputRows(false);
-    }
-  }, [dmnRunnerDispatch, dmnRunnerState.didUpdateInputRows, dmnRunnerState.didUpdateOutputRows]);
 
   return (
     <>
-      <React.Fragment key={loadingScreenClassName}>{props.children}</React.Fragment>
+      {dmnRunnerState.isVisible ? (
+        props.children
+      ) : (
+        <Bullseye>
+          <TextContent>
+            <Bullseye />
+            <br />
+            <Text component={TextVariants.p}>{`Waiting for Editor to be ready...`}</Text>
+          </TextContent>
+        </Bullseye>
+      )}
     </>
   );
 }

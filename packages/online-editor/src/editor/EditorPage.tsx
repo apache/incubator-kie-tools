@@ -358,17 +358,17 @@ export function EditorPage(props: Props) {
         )}
         resolved={(file) => (
           <>
-            <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
+            <DmnRunnerProvider
+              workspaceFile={file.workspaceFile}
+              editorPageDock={editorPageDock}
+              isEditorReady={editor?.isReady}
+            >
               <Page>
                 <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
                 <Divider />
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
                   <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-                    <EditorPageDockDrawer
-                      ref={editorPageDockRef}
-                      isEditorReady={editor?.isReady}
-                      workspaceFile={file.workspaceFile}
-                    >
+                    <EditorPageDockDrawer ref={editorPageDockRef} workspaceFile={file.workspaceFile}>
                       {embeddedEditorFile && (
                         <EmbeddedEditor
                           /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.

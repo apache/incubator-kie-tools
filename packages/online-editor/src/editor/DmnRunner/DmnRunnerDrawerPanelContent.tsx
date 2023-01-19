@@ -148,7 +148,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const updateDmnRunnerResults = useCallback(
     async (formInputs: InputRow, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
@@ -175,10 +174,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }
           return result.decisionResults;
         });
-
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (e) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         setDmnRunnerResults(undefined);
       }
     },
