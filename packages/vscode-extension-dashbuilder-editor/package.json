@@ -107,7 +107,8 @@
       "yaml.schemas": {
         "https://dashbuilder.org/schemas/0.1/dashbuilder.json": [
           "**/*.dash.yml",
-          "**/*.dash.yaml"
+          "**/*.dash.yaml",
+          "**/*.dash.json"
         ]
       }
     },

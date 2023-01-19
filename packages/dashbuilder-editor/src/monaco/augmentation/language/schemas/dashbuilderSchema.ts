@@ -299,8 +299,8 @@ export const DASHBUILDER_SCHEMA = {
         pattern: {
           type: "string",
         },
-        required: ["id", "name", "expression", "pattern"],
       },
+      required: ["id", "name", "expression", "pattern"],
       title: "SettingsColumn",
     },
     SettingsTable: {

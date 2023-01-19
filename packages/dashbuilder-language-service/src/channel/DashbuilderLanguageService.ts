@@ -117,8 +117,7 @@ export class DashbuilderLanguageService {
       return [];
     }
     const rootNode = this.parseContent(args.content);
-    const loadErrors = !rootNode ? load(args.content, { schema: JSON.stringify(DASHBUILDER_SCHEMA) }).errors : [];
-
+    const loadErrors = !rootNode ? load(args.content).errors : [];
     //check the syntax
     if (loadErrors.length > 0) {
       const error = loadErrors[0];
@@ -147,7 +146,7 @@ export class DashbuilderLanguageService {
       args.content
     );
 
-    return await this.getSchemaDiagnostics(textDocument, ["*.dash.yaml", "*.dash.yml"]);
+    return await this.getSchemaDiagnostics(textDocument, ["*.dash.yaml", "*.dash.yml", "*.dash.json"]);
   }
 
   private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
