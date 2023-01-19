@@ -101,7 +101,8 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
   const beeTableRef = useRef<BeeTableRef>(null);
   const { onColumnResizingWidthChange, columnResizingWidths, isPivoting } = usePublishedBeeTableResizableColumns(
     relationExpression.id,
-    columns.length
+    columns.length,
+    true
   );
 
   const lastColumnMinWidth = useNestedTableLastColumnMinWidth(columnResizingWidths);

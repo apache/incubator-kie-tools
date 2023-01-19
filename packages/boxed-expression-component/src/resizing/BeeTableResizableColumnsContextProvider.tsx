@@ -137,7 +137,7 @@ export function useBeeTableResizableCell(
   return { resizingWidth, setResizingWidth: _updateResizingWidth };
 }
 
-export function usePublishedBeeTableResizableColumns(id: string, columnCount: number) {
+export function usePublishedBeeTableResizableColumns(id: string, columnCount: number, hasRowIndexColumn: boolean) {
   const [columnResizingWidths, setColumnResizingWidths] = useState<Map<number, ResizingWidth>>(new Map());
 
   const isPivoting = useMemo(() => {
@@ -146,9 +146,12 @@ export function usePublishedBeeTableResizableColumns(id: string, columnCount: nu
 
   // Reset `columnResizingWidths` when the column count changes. This fixes the case of deleting/inserting columns.
   useEffect(() => {
-    // Add the fixed-width rowIndex column.
-    setColumnResizingWidths(new Map([[0, { isPivoting: false, value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH }]]));
-  }, [columnCount]);
+    setColumnResizingWidths(
+      hasRowIndexColumn //
+        ? new Map([[0, { isPivoting: false, value: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH }]])
+        : new Map()
+    );
+  }, [columnCount, hasRowIndexColumn]);
 
   const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
     setColumnResizingWidths((prev) => {

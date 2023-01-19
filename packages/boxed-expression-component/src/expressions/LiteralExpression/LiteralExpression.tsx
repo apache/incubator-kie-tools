@@ -84,7 +84,12 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableResizableColumns(literalExpression.id, 1);
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableResizableColumns(
+    literalExpression.id,
+    1,
+    false
+  );
+
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   const minWidth = useMemo(() => {

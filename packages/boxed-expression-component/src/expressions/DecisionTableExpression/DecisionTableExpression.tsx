@@ -162,7 +162,8 @@ export function DecisionTableExpression(
     decisionTableExpression.id,
     (decisionTableExpression.input ?? []).length +
       (decisionTableExpression.output ?? []).length +
-      (decisionTableExpression.annotations ?? []).length
+      (decisionTableExpression.annotations ?? []).length,
+    true
   );
 
   const lastColumnMinWidth = useNestedTableLastColumnMinWidth(columnResizingWidths);
