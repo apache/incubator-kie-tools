@@ -55,8 +55,10 @@ public class ExternalDataCallbackCoordinatorTest {
     public void testOnDataSet() {
         var dataset = mock(DataSet.class);
         var queuedCallback = (QueuedDataSetReadyCallback) coordinator.getCallback(def, c1, e -> {
+        }, () -> {
         });
         coordinator.getCallback(def, c2, e -> {
+        }, () -> {
         });
         assertEquals(1, coordinator.queueMap.size());
         assertEquals(2, queuedCallback.queue.size());
@@ -76,9 +78,11 @@ public class ExternalDataCallbackCoordinatorTest {
         var c2 = mock(DataSetReadyCallback.class);
         var error = mock(ClientRuntimeError.class);
         var queuedCallback = (QueuedDataSetReadyCallback) coordinator.getCallback(def, c1, e -> {
+        }, () -> {
         });
 
         coordinator.getCallback(def, c2, e -> {
+        }, () -> {
         });
 
         assertEquals(2, queuedCallback.queue.size());
@@ -95,9 +99,11 @@ public class ExternalDataCallbackCoordinatorTest {
     @Test
     public void testNotFound() {
         var queuedCallback = (QueuedDataSetReadyCallback) coordinator.getCallback(def, c1, e -> {
+        }, () -> {
         });
 
         coordinator.getCallback(def, c2, e -> {
+        }, () -> {
         });
 
         assertEquals(queuedCallback.queue.size(), 2);
@@ -115,11 +121,13 @@ public class ExternalDataCallbackCoordinatorTest {
     public void testCallbackOnError() {
         var dataset = mock(DataSet.class);
         var queuedCallback = (QueuedDataSetReadyCallback) coordinator.getCallback(def, c1, e -> {
+        }, () -> {
         });
 
         doThrow(new RuntimeException()).when(c1).callback(any());
 
         coordinator.getCallback(def, c2, e -> {
+        }, () -> {
         });
         assertEquals(1, coordinator.queueMap.size());
         assertEquals(queuedCallback.queue.size(), 2);

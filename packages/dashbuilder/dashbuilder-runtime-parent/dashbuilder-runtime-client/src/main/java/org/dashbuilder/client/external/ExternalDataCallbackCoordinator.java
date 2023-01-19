@@ -46,9 +46,13 @@ public class ExternalDataCallbackCoordinator {
 
     public DataSetReadyCallback getCallback(DataSetDef def,
                                             DataSetReadyCallback callback,
-                                            Consumer<DataSetReadyCallback> action) {
+                                            Consumer<DataSetReadyCallback> action,
+                                            Runnable cleanUp) {
         if (!queueMap.containsKey(def)) {
-            var _queuedCallback = new QueuedDataSetReadyCallback(() -> queueMap.remove(def));
+            var _queuedCallback = new QueuedDataSetReadyCallback(() -> {
+                queueMap.remove(def);
+                cleanUp.run();
+            });
             queueMap.put(def, _queuedCallback);
             action.accept(_queuedCallback);
         }

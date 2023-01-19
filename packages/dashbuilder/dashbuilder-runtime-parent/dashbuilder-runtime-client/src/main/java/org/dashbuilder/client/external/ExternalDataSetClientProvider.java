@@ -35,6 +35,7 @@ import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
+import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
@@ -51,7 +52,7 @@ public class ExternalDataSetClientProvider {
 
     @Inject
     CSVParser csvParser;
-    
+
     @Inject
     ExternalDataCallbackCoordinator dataSetCallbackCoordinator;
 
@@ -77,9 +78,46 @@ public class ExternalDataSetClientProvider {
         if (defOp.isPresent()) {
             var def = defOp.get();
             if (def.getContent() != null && def.getUrl() == null) {
-                register(lookup, listener, def.getContent(), SupportedMimeType.JSON);
+                register(def, new DataSetReadyCallback() {
+
+                    @Override
+                    public boolean onError(ClientRuntimeError error) {
+                        return listener.onError(error);
+                    }
+
+                    @Override
+                    public void notFound() {
+                        listener.notFound();
+
+                    }
+
+                    @Override
+                    public void callback(DataSet dataSet) {
+                        doLookup(lookup, listener);
+                    }
+                }, def.getContent(), SupportedMimeType.JSON);
+
             } else {
-                dataSetCallbackCoordinator.getCallback(def, listener, callback -> fetch(def, lookup, callback));                
+                dataSetCallbackCoordinator.getCallback(def,
+                        new DataSetReadyCallback() {
+
+                            @Override
+                            public boolean onError(ClientRuntimeError error) {
+                                return listener.onError(error);
+                            }
+
+                            @Override
+                            public void notFound() {
+                                listener.notFound();
+                            }
+
+                            @Override
+                            public void callback(DataSet dataSet) {
+                                doLookup(lookup, listener);
+                            }
+                        },
+                        callback -> fetch(def, callback),
+                        () -> handleCache(def.getUUID()));
             }
         } else {
             listener.notFound();
@@ -108,7 +146,7 @@ public class ExternalDataSetClientProvider {
         externalDataSets.clear();
     }
 
-    private void fetch(ExternalDataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) {
+    private void fetch(ExternalDataSetDef def, DataSetReadyCallback callback) {
         var req = RequestInit.create();
         if (def.getHeaders() != null) {
             var headers = new Headers();
@@ -120,42 +158,36 @@ public class ExternalDataSetClientProvider {
             var contentType = response.headers.get(HttpHeaders.CONTENT_TYPE);
             var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, def.getUrl())
                     .orElse(DEFAULT_TYPE);
-            response.text().then(responseText -> {
+            return response.text().then(responseText -> {
                 if (response.status == HttpResponseCodes.SC_OK) {
-                    return register(lookup,
-                            listener,
-                            responseText,
-                            mimeType);
+                    return register(def, callback, responseText, mimeType);
+                } else {
+                    return notAbleToRetrieveDataSet(def, callback);
                 }
-                return notAbleToRetrieveDataSet(def, listener);
 
-            }, error -> notAbleToRetrieveDataSet(def, listener));
-            return null;
-        }).catch_(e -> notAbleToRetrieveDataSet(def, listener));
+            }, error -> notAbleToRetrieveDataSet(def, callback));
+        }).catch_(e -> notAbleToRetrieveDataSet(def, callback));
     }
 
-    private IThenable<Object> register(final DataSetLookup lookup,
-                                       final DataSetReadyCallback listener,
+    private IThenable<Object> register(ExternalDataSetDef def,
+                                       final DataSetReadyCallback callback,
                                        final String responseText,
                                        final SupportedMimeType contentType) {
-        var uuid = lookup.getDataSetUUID();
-        var def = externalDataSets.get(uuid);
         var content = contentType.tranformer.apply(responseText);
 
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
             try {
                 content = applyExpression(def.getExpression(), content);
             } catch (Exception e) {
-                listener.onError(new ClientRuntimeError("Error evaluating dataset expression", e));
+                callback.onError(new ClientRuntimeError("Error evaluating dataset expression", e));
                 return null;
             }
         }
-
         var dataSet = DataSetFactory.newEmptyDataSet();
         try {
             dataSet = externalParser.parseDataSet(content);
         } catch (Exception e) {
-            listener.onError(new ClientRuntimeError("Error parsing dataset: " + e.getMessage(), e));
+            callback.onError(new ClientRuntimeError("Error parsing dataset: " + e.getMessage(), e));
             return null;
         }
 
@@ -168,18 +200,19 @@ public class ExternalDataSetClientProvider {
             }
         }
 
-        dataSet.setUUID(uuid);
+        dataSet.setUUID(def.getUUID());
         clientDataSetManager.registerDataSet(dataSet);
-        var lookupResult = DataSetFactory.newEmptyDataSet();
-        try {
-            lookupResult = clientDataSetManager.lookupDataSet(lookup);
-        } catch (Exception e) {
-            listener.onError(new ClientRuntimeError("Error during dataset lookup: " + e.getMessage(), e));
-            return null;
-        }
-        handleCache(uuid);
-        listener.callback(lookupResult);
+        callback.callback(dataSet);
         return null;
+    }
+
+    private void doLookup(DataSetLookup lookup, DataSetReadyCallback listener) {
+        try {
+            var result = clientDataSetManager.lookupDataSet(lookup);
+            listener.callback(result);
+        } catch (Exception e) {
+            listener.onError(new ClientRuntimeError("Error during data set lookup", e));
+        }
     }
 
     private void handleCache(String uuid) {
