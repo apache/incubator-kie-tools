@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
+import { KieSandboxExtendedServicesClient } from "./KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 
 export enum DependentFeature {
@@ -29,6 +30,7 @@ export interface KieSandboxExtendedServicesContextType {
   setStatus: React.Dispatch<KieSandboxExtendedServicesStatus>;
   config: ExtendedServicesConfig;
   saveNewConfig: React.Dispatch<ExtendedServicesConfig>;
+  client: KieSandboxExtendedServicesClient;
   version: string;
   outdated: boolean;
   isModalOpen: boolean;
