@@ -122,7 +122,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
         relativePath: newRelativePath,
       });
 
-      const hasForbiddenCharacters = !/^[\w\d_.\-()\s]+$/gi.test(newFileNameWithoutExtension);
+      const hasForbiddenCharacters = !/^[\w\d_.'\-()\s]+$/gi.test(newFileNameWithoutExtension);
 
       setNewFileNameValid(!hasConflictingFileName && !hasForbiddenCharacters);
     },
