@@ -20,21 +20,16 @@ import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
-import {
-  KieSandboxExtendedServicesModelPayload,
-  KieSandboxExtendedServicesClient,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
-import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
@@ -44,13 +39,12 @@ interface Props {
 }
 
 export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
-  const { i18n } = useOnlineI18n();
   const queryParams = useQueryParams();
   const history = useHistory();
   const routes = useRoutes();
   const extendedServices = useExtendedServices();
   const workspaces = useWorkspaces();
-  const settings = useSettings();
+
   const {
     inputRows,
     setInputRows,
@@ -70,10 +64,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
   }, [isExpanded]);
 
-  const service = useMemo(
-    () => new KieSandboxExtendedServicesClient(settings.kieSandboxExtendedServices.config.url.jitExecutor),
-    [settings.kieSandboxExtendedServices.config]
-  );
+  const service = extendedServices.client;
 
   const preparePayload = useCallback(
     async (formData?: InputRow) => {
