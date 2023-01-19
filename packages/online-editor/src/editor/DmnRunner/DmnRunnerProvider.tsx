@@ -64,8 +64,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
   }, [isExpanded]);
 
-  const service = extendedServices.client;
-
   const preparePayload = useCallback(
     async (formData?: InputRow) => {
       const files = (
@@ -100,7 +98,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
     preparePayload()
       .then((payload) => {
-        service.formSchema(payload).then((jsonSchema) => {
+        extendedServices.client.formSchema(payload).then((jsonSchema) => {
           setJsonSchema(jsonSchema);
         });
       })
@@ -108,7 +106,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         console.error(err);
         setError(true);
       });
-  }, [extendedServices.status, props.workspaceFile.extension, preparePayload, service]);
+  }, [extendedServices.status, extendedServices.client, props.workspaceFile.extension, preparePayload]);
 
   useEffect(() => {
     if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
@@ -175,7 +173,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       jsonSchema,
       mode,
       didUpdateOutputRows,
-      service,
       status,
     }),
     [
@@ -187,7 +184,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       isExpanded,
       jsonSchema,
       mode,
-      service,
       status,
     ]
   );

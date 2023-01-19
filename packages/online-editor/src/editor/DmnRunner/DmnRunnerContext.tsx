@@ -17,10 +17,7 @@
 import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 import * as React from "react";
 import { useContext } from "react";
-import {
-  KieSandboxExtendedServicesModelPayload,
-  KieSandboxExtendedServicesClient,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
@@ -32,7 +29,6 @@ export interface DmnRunnerContextType {
   jsonSchema?: DmnSchema;
   mode: DmnRunnerMode;
   didUpdateOutputRows: boolean;
-  service: KieSandboxExtendedServicesClient;
   status: DmnRunnerStatus;
 }
 
