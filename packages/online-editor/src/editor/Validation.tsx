@@ -1,7 +1,7 @@
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { useOnlineI18n } from "../i18n";
 import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
@@ -48,7 +48,7 @@ export function useFileValidation(
           extendedServices.client.validateBpmn(payload).then((validationResults) => {
             const notifications: Notification[] = validationResults.map((validationResult: any) => ({
               type: "PROBLEM",
-              path: payload.mainURI,
+              path: "",
               severity: "ERROR",
               message: validationResult,
             }));
