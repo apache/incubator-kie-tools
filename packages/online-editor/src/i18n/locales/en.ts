@@ -266,6 +266,13 @@ export const en: OnlineI18n = {
     inputHelper: "Commit message cannot be empty",
     placeholder: "Commit message",
   },
+  commitModal: {
+    title: "Input custom commit message",
+    description: "Write a brief summary of the changes made to the workspace, ideally up to 72 characters.",
+    commit: "Commit",
+    inputHelper: "Commit message cannot be empty",
+    placeholder: "Commit message",
+  },
   homePage: {
     uploadFile: {
       header: "Edit existing file",

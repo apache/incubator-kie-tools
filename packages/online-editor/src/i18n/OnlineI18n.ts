@@ -230,6 +230,13 @@ interface OnlineDictionary extends ReferenceDictionary {
     inputHelper: string;
     placeholder: string;
   };
+  commitModal: {
+    title: string;
+    description: string;
+    commit: string;
+    inputHelper: string;
+    placeholder: string;
+  };
   homePage: {
     uploadFile: {
       header: string;
