@@ -4,11 +4,7 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { useEffect, useMemo } from "react";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { useOnlineI18n } from "../i18n";
-import { useSettings } from "../settings/SettingsContext";
-import {
-  KieSandboxExtendedServicesClient,
-  KieSandboxExtendedServicesModelPayload,
-} from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
@@ -18,12 +14,6 @@ export function useFileValidation(
 ) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
-  const settings = useSettings();
-
-  const service = useMemo(
-    () => new KieSandboxExtendedServicesClient(settings.kieSandboxExtendedServices.config.url.jitExecutor),
-    [settings.kieSandboxExtendedServices.config]
-  );
 
   useEffect(() => {
     if (!workspaceFile) {
@@ -55,7 +45,7 @@ export function useFileValidation(
         };
 
         if (workspaceFile.extension.toLowerCase() === "bpmn") {
-          service.validateBpmn(payload).then((validationResults) => {
+          extendedServices.client.validateBpmn(payload).then((validationResults) => {
             const notifications: Notification[] = validationResults.map((validationResult: any) => ({
               type: "PROBLEM",
               path: payload.mainURI,
@@ -66,7 +56,7 @@ export function useFileValidation(
           });
         }
         if (workspaceFile.extension.toLowerCase() === "dmn") {
-          service.validateDmn(payload).then((validationResults) => {
+          extendedServices.client.validateDmn(payload).then((validationResults) => {
             const notifications: Notification[] = validationResults.map((validationResult: any) => ({
               type: "PROBLEM",
               path: "",
@@ -78,5 +68,5 @@ export function useFileValidation(
         }
       })
       .catch((err) => console.error(err));
-  }, [workspaceFile, editorPageDock, extendedServices.status, service, i18n.terms.validation]);
+  }, [workspaceFile, editorPageDock, extendedServices.status, extendedServices.client, i18n.terms.validation]);
 }
