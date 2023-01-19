@@ -28,16 +28,16 @@ export interface KieSandboxExtendedServicesModelPayload {
 }
 
 export class KieSandboxExtendedServicesClient {
-  private readonly DMN_RUNNER_VALIDATE_URL: string;
-  private readonly BPMN_RUNNER_VALIDATE_URL: string;
-  private readonly DMN_RUNNER_DMN_RESULT_URL: string;
-  private readonly DMN_RUNNER_FORM_SCHEMA_URL: string;
+  private readonly DMN_JIT_EXECUTOR_VALIDATE_URL: string;
+  private readonly DMN_JIT_EXECUTOR_DMN_RESULT_URL: string;
+  private readonly DMN_JIT_EXECUTOR_FORM_SCHEMA_URL: string;
+  private readonly BPMN_JIT_EXECUTOR_VALIDATE_URL: string;
 
   constructor(private readonly jitExecutorUrl: string) {
-    this.DMN_RUNNER_VALIDATE_URL = `${this.jitExecutorUrl}jitdmn/validate`;
-    this.DMN_RUNNER_DMN_RESULT_URL = `${this.jitExecutorUrl}jitdmn/dmnresult`;
-    this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.jitExecutorUrl}jitdmn/schema/form`;
-    this.BPMN_RUNNER_VALIDATE_URL = `${this.jitExecutorUrl}jitbpmn/validate`;
+    this.DMN_JIT_EXECUTOR_VALIDATE_URL = `${this.jitExecutorUrl}jitdmn/validate`;
+    this.DMN_JIT_EXECUTOR_DMN_RESULT_URL = `${this.jitExecutorUrl}jitdmn/dmnresult`;
+    this.DMN_JIT_EXECUTOR_FORM_SCHEMA_URL = `${this.jitExecutorUrl}jitdmn/schema/form`;
+    this.BPMN_JIT_EXECUTOR_VALIDATE_URL = `${this.jitExecutorUrl}jitbpmn/validate`;
   }
 
   public async result(payload: KieSandboxExtendedServicesModelPayload): Promise<DmnResult> {
@@ -45,7 +45,7 @@ export class KieSandboxExtendedServicesClient {
       return { messages: [] };
     }
 
-    const response = await fetch(this.DMN_RUNNER_DMN_RESULT_URL, {
+    const response = await fetch(this.DMN_JIT_EXECUTOR_DMN_RESULT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export class KieSandboxExtendedServicesClient {
       return [];
     }
 
-    const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
+    const response = await fetch(this.DMN_JIT_EXECUTOR_VALIDATE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export class KieSandboxExtendedServicesClient {
       return [];
     }
 
-    const response = await fetch(this.BPMN_RUNNER_VALIDATE_URL, {
+    const response = await fetch(this.BPMN_JIT_EXECUTOR_VALIDATE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export class KieSandboxExtendedServicesClient {
       return {};
     }
 
-    const response = await fetch(this.DMN_RUNNER_FORM_SCHEMA_URL, {
+    const response = await fetch(this.DMN_JIT_EXECUTOR_FORM_SCHEMA_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
