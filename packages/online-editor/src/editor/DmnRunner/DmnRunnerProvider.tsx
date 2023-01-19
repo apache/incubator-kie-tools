@@ -221,10 +221,27 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   ]);
 
   useEffect(() => {
-    if (queryParams.has(QueryParams.DMN_RUNNER_IS_OPEN)) {
-      const isOpen = queryParams.getBoolean(QueryParams.DMN_RUNNER_IS_OPEN);
-      if (isOpen !== undefined) {
-        setExpanded(isOpen);
+    if (queryParams.has(QueryParams.DMN_RUNNER_IS_EXPANDED)) {
+      const isExpanded = queryParams.getBoolean(QueryParams.DMN_RUNNER_IS_EXPANDED);
+      if (isExpanded !== undefined) {
+        setExpanded(isExpanded);
+      }
+    }
+
+    if (queryParams.has(QueryParams.DMN_RUNNER_MODE)) {
+      const mode = queryParams.getString(QueryParams.DMN_RUNNER_MODE);
+      if (mode === "form") {
+        setMode(DmnRunnerMode.FORM);
+      }
+      if (mode === "table") {
+        setMode(DmnRunnerMode.TABLE);
+      }
+    }
+
+    if (queryParams.has(QueryParams.DMN_RUNNER_ROW)) {
+      const row = queryParams.getNumber(QueryParams.DMN_RUNNER_ROW);
+      if (row !== undefined) {
+        setCurrentInputRowIndex(row);
       }
     }
 

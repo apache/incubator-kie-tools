@@ -34,6 +34,8 @@ import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { QueryParams } from "../navigation/Routes";
 
 export enum PanelId {
   DMN_RUNNER_TABLE = "dmn-runner-table",
@@ -63,6 +65,7 @@ export const EditorPageDockDrawer = React.forwardRef<
   const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
+  const queryParams = useQueryParams();
 
   const notificationsPanelTabNames = useMemo(() => {
     if (
@@ -148,6 +151,26 @@ export const EditorPageDockDrawer = React.forwardRef<
     () => dmnRunnerState.mode === DmnRunnerMode.TABLE && props.workspaceFile.extension.toLowerCase() === "dmn",
     [dmnRunnerState.mode, props.workspaceFile.extension]
   );
+
+  useEffect(() => {
+    if (
+      queryParams.has(QueryParams.PROBLEMS_IS_EXPANDED) ||
+      (queryParams.has(QueryParams.DMN_RUNNER_MODE) && queryParams.has(QueryParams.DMN_RUNNER_IS_EXPANDED))
+    ) {
+      const isProblemsExpanded = queryParams.getBoolean(QueryParams.PROBLEMS_IS_EXPANDED);
+      if (isProblemsExpanded === true) {
+        setPanel(PanelId.NOTIFICATIONS_PANEL);
+        return;
+      }
+      const isRunnerExpanded = queryParams.getBoolean(QueryParams.DMN_RUNNER_IS_EXPANDED);
+      const mode = queryParams.getString(QueryParams.DMN_RUNNER_MODE);
+      if (mode === "table" && isRunnerExpanded === true) {
+        setPanel(PanelId.DMN_RUNNER_TABLE);
+        return;
+      }
+      setPanel(PanelId.NONE);
+    }
+  }, [queryParams]);
 
   return (
     <>

@@ -20,11 +20,14 @@ export enum QueryParams {
   SETTINGS = "settings",
   URL = "url",
   BRANCH = "branch",
-  DMN_RUNNER_FORM_INPUTS = "formInputs",
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
   CONFIRM = "confirm",
-  DMN_RUNNER_IS_OPEN = "runnerIsOpen",
+  PROBLEMS_IS_EXPANDED = "problemsIsExpanded",
+  DMN_RUNNER_FORM_INPUTS = "formInputs",
+  DMN_RUNNER_MODE = "runnerMode",
+  DMN_RUNNER_IS_EXPANDED = "runnerIsExpanded",
+  DMN_RUNNER_ROW = "runnerRow",
 }
 
 export enum PathParams {
@@ -82,6 +85,7 @@ export class Route<
 export interface QueryParamsImpl<Q extends string> {
   has(name: Q): boolean;
   getString(name: Q): string | undefined;
+  getNumber(name: Q): number | undefined;
   getBoolean(name: Q): boolean | undefined;
   with(name: Q, value: string | undefined): QueryParamsImpl<Q>;
   without(name: Q): QueryParamsImpl<Q>;
@@ -94,6 +98,17 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
     getString: (name) => {
       const val = new URLSearchParams(queryString).get(name);
       return !val ? undefined : decodeURIComponent(val);
+    },
+    getNumber: (name) => {
+      const val = new URLSearchParams(queryString).get(name);
+      if (!val) {
+        return undefined;
+      }
+      const number = parseInt(decodeURIComponent(val), 10);
+      if (isNaN(number)) {
+        return undefined;
+      }
+      return number;
     },
     getBoolean: (name) => {
       const val = new URLSearchParams(queryString).get(name);
@@ -138,8 +153,11 @@ export const routes = {
     queryParams:
       | QueryParams.URL
       | QueryParams.SETTINGS
+      | QueryParams.PROBLEMS_IS_EXPANDED
       | QueryParams.DMN_RUNNER_FORM_INPUTS
-      | QueryParams.DMN_RUNNER_IS_OPEN;
+      | QueryParams.DMN_RUNNER_IS_EXPANDED
+      | QueryParams.DMN_RUNNER_MODE
+      | QueryParams.DMN_RUNNER_ROW;
   }>(({ extension }) => `/editor/${extension}`),
 
   newModel: new Route<{
