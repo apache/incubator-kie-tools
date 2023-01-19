@@ -244,6 +244,67 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     selectionRef.current = selection;
   }, [selection]);
 
+  //
+  // paste batching strategy (begin)
+  //
+  // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setValue`.
+  // Every call to `setValue` mutates the expression, so batching is essential for performance reasons.
+  // This effect runs once when pasteData is truthy. Then, after running, it sets pasteData to a falsy value, which short-circuits it.
+  //
+  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers.
+  const [pasteData, setPasteData] = useState("");
+  useEffect(() => {
+    if (!pasteData) {
+      return;
+    }
+
+    const clipboardValue = pasteData;
+
+    if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
+      return;
+    }
+
+    const clipboardMatrix = clipboardValue
+      .split(CLIPBOARD_ROW_SEPARATOR)
+      .map((r) => r.split(CLIPBOARD_COLUMN_SEPARATOR));
+
+    const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
+
+    const pasteEndRow = Math.max(endRow, startRow + clipboardMatrix.length - 1);
+    const pasteEndColumn = Math.max(endColumn, startColumn + clipboardMatrix[0].length - 1);
+
+    for (let r = startRow; r <= pasteEndRow; r++) {
+      for (let c = startColumn; c <= pasteEndColumn; c++) {
+        refs.current
+          ?.get(r)
+          ?.get(c)
+          ?.forEach((e) => e.setValue?.(clipboardMatrix[r - startRow]?.[c - startColumn]));
+      }
+    }
+
+    _setSelection({
+      active: {
+        rowIndex: startRow,
+        columnIndex: startColumn,
+        isEditing: false,
+      },
+      selectionStart: {
+        rowIndex: startRow,
+        columnIndex: startColumn,
+        isEditing: false,
+      },
+      selectionEnd: {
+        rowIndex: pasteEndRow,
+        columnIndex: pasteEndColumn,
+        isEditing: false,
+      },
+    });
+
+    setPasteData("");
+  }, [pasteData]);
+
+  // paste batching strategy (end)
+
   const value = useMemo(() => {
     return {
       activeCell: selection.active,
@@ -581,52 +642,9 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         navigator.clipboard.writeText(clipboardValue);
       },
       paste: () => {
-        // FIXME: Tiago -> This is currenty very slow, as React 17 state updates are not
-        //                 batched, causing every pasted cell to trigger an isolated setState.
-        //                 Upgrading to React 18 should fix this slowness.
-
         // FIXME: Tiago -> Add new columns and rows, based on the clipboard's size.
-
         navigator.clipboard.readText().then((clipboardValue) => {
-          if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
-            return;
-          }
-
-          const clipboardMatrix = clipboardValue
-            .split(CLIPBOARD_ROW_SEPARATOR)
-            .map((r) => r.split(CLIPBOARD_COLUMN_SEPARATOR));
-
-          const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
-
-          const pasteEndRow = Math.max(endRow, startRow + clipboardMatrix.length - 1);
-          const pasteEndColumn = Math.max(endColumn, startColumn + clipboardMatrix[0].length - 1);
-
-          for (let r = startRow; r <= pasteEndRow; r++) {
-            for (let c = startColumn; c <= pasteEndColumn; c++) {
-              refs.current
-                ?.get(r)
-                ?.get(c)
-                ?.forEach((e) => e.setValue?.(clipboardMatrix[r - startRow]?.[c - startColumn]));
-            }
-          }
-
-          _setSelection({
-            active: {
-              rowIndex: startRow,
-              columnIndex: startColumn,
-              isEditing: false,
-            },
-            selectionStart: {
-              rowIndex: startRow,
-              columnIndex: startColumn,
-              isEditing: false,
-            },
-            selectionEnd: {
-              rowIndex: pasteEndRow,
-              columnIndex: pasteEndColumn,
-              isEditing: false,
-            },
-          });
+          setPasteData(clipboardValue);
         });
       },
       erase: () => {

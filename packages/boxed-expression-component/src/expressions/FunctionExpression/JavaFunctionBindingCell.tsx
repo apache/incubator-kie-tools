@@ -53,7 +53,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
     [setExpression]
   );
 
-  const setJavaBindingsWidth = useCallback(
+  const setClassAndMethodNamesWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
       setExpression((prev: JavaFunctionExpressionDefinition) => {
         const newWidth =
@@ -83,11 +83,11 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
         dataType: undefined as any,
         isRowIndexColumn: false,
         width: functionExpression.classAndMethodNamesWidth,
-        setWidth: setJavaBindingsWidth,
+        setWidth: setClassAndMethodNamesWidth,
         minWidth: JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
       },
     ],
-    [functionExpression.classAndMethodNamesWidth, setJavaBindingsWidth]
+    [functionExpression.classAndMethodNamesWidth, setClassAndMethodNamesWidth]
   );
 
   const beeTableRows = useMemo(() => {

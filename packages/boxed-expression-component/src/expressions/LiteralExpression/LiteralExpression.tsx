@@ -80,7 +80,9 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     [setValue]
   );
 
-  //// RESIZING WIDTH
+  /// //////////////////////////////////////////////////////
+  /// ///////////// RESIZING WIDTHS ////////////////////////
+  /// //////////////////////////////////////////////////////
 
   const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(literalExpression.id);
   const nestedExpressionContainer = useNestedExpressionContainer();
@@ -107,6 +109,8 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
       };
     });
   }, [isPivoting, literalExpression.isNested, minWidth, nestedExpressionContainer.resizingWidth.value]);
+
+  /// //////////////////////////////////////////////////////
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [

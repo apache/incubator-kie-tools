@@ -44,6 +44,9 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setWidth`.
   // Every call to `setWidth` mutates the expression, so batching is essential for performance reasons.
   // This effect runs once when resizingStop__data is truthy. Then, after running, it sets resizingStop__data to a falsy value, which short-circuits it.
+  //
+  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers.
+  //
   // This whole thing is responsible for allowing any cell to shrink the entire table when resized.
 
   const { getResizerRefs } = useResizingWidthsDispatch();
