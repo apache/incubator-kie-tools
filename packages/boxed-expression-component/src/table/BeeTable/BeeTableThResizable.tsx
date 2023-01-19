@@ -21,7 +21,7 @@ import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContextProvider";
 import { BeeTableTh } from "./BeeTableTh";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
@@ -41,6 +41,7 @@ export interface BeeTableThResizableProps<R extends object> {
   headerCellInfo: React.ReactElement;
   shouldShowColumnsInlineControls: boolean;
   resizerStopBehavior: ResizerStopBehavior;
+  lastColumnMinWidth?: number;
 }
 
 export function BeeTableThResizable<R extends object>({
@@ -56,6 +57,7 @@ export function BeeTableThResizable<R extends object>({
   onColumnAdded,
   resizerStopBehavior,
   shouldShowColumnsInlineControls,
+  lastColumnMinWidth,
 }: BeeTableThResizableProps<R>) {
   const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
 
@@ -74,12 +76,12 @@ export function BeeTableThResizable<R extends object>({
     return onHeaderClick(columnKey);
   }, [columnKey, onHeaderClick]);
 
-  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
+  const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
     columnIndex,
     resizerStopBehavior,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
-    column.width ? Math.max(column.minWidth ?? 0, column.width ?? 0) : undefined
+    column.width ? Math.max(lastColumnMinWidth ?? column.minWidth ?? 0, column.width ?? 0) : undefined
   );
 
   return (
@@ -115,7 +117,7 @@ export function BeeTableThResizable<R extends object>({
         )}
       </div>
       <Resizer
-        minWidth={column.minWidth}
+        minWidth={lastColumnMinWidth ?? column.minWidth}
         width={column.width}
         setWidth={column.setWidth}
         resizingWidth={resizingWidth}

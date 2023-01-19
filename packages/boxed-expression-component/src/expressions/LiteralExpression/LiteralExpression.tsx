@@ -21,8 +21,8 @@ import { BeeTableHeaderVisibility, LiteralExpressionDefinition } from "../../api
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
-import { useBeeTableCoordinates, useBeeTableCell } from "../../selection/BeeTableSelectionContext";
+import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import "./LiteralExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
@@ -45,7 +45,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   );
 
   const { containerCellCoordinates } = useBeeTableCoordinates();
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     containerCellCoordinates?.rowIndex ?? 0,
     containerCellCoordinates?.columnIndex ?? 0,
     setValue,
@@ -84,7 +84,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(literalExpression.id);
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableResizableColumns(literalExpression.id, 1);
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   const minWidth = useMemo(() => {

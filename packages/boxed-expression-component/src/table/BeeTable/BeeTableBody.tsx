@@ -43,6 +43,8 @@ export interface BeeTableBodyProps<R extends object> {
   shouldShowRowsInlineControls: boolean;
 
   resizerStopBehavior: ResizerStopBehavior;
+
+  lastColumnMinWidth?: number;
 }
 
 export function BeeTableBody<R extends object>({
@@ -55,6 +57,7 @@ export function BeeTableBody<R extends object>({
   shouldRenderRowIndexColumn,
   shouldShowRowsInlineControls,
   resizerStopBehavior,
+  lastColumnMinWidth,
 }: BeeTableBodyProps<R>) {
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
@@ -88,6 +91,9 @@ export function BeeTableBody<R extends object>({
                         ? reactTableInstance.allColumns[cellIndex].isRowIndexColumn
                         : cellIndex === 1
                     }
+                    lastColumnMinWidth={
+                      cellIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
+                    }
                   />
                 )}
               </React.Fragment>
@@ -115,6 +121,7 @@ export function BeeTableBody<R extends object>({
       resizerStopBehavior,
       shouldShowRowsInlineControls,
       onRowAdded,
+      lastColumnMinWidth,
     ]
   );
 
@@ -162,6 +169,7 @@ export function BeeTableBody<R extends object>({
                   isLastColumn={elemIndex === additionalRow.length - 1}
                   isEmptyCell={false}
                   resizerStopBehavior={resizerStopBehavior}
+                  lastColumnMinWidth={columnIndex === additionalRow.length - 1 ? lastColumnMinWidth : undefined}
                 >
                   {elem}
                 </BeeTableTdForAdditionalRow>

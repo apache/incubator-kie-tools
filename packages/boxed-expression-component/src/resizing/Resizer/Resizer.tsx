@@ -112,7 +112,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       // Let React handle the state update above, then stop the resizing.
       setTimeout(() => {
         setResizingStop__data(minWidth ?? DEFAULT_MIN_WIDTH);
-      }, 0);
+      }, 100);
     },
     [minWidth, onResizeStart]
   );

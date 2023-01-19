@@ -22,7 +22,7 @@ import * as ReactTable from "react-table";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
-  useBeeTableCell,
+  useBeeTableSelectableCellRef,
   useBeeTableSelectionDispatch,
 } from "../../selection/BeeTableSelectionContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
@@ -124,7 +124,7 @@ export function BeeTableTh<R extends object>({
     [hoverInfo]
   );
 
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     rowIndex,
     columnIndex,
     undefined,

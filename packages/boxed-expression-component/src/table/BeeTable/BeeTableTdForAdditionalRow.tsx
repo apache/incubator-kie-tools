@@ -19,7 +19,7 @@ import * as ReactTable from "react-table";
 import * as React from "react";
 import { useRef } from "react";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContextProvider";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
@@ -32,6 +32,7 @@ export interface BeeTableTdForAdditionalRowProps<R extends object> {
   columnIndex: number;
   resizerStopBehavior: ResizerStopBehavior;
   column: ReactTable.ColumnInstance<R>;
+  lastColumnMinWidth?: number;
 }
 
 export function BeeTableTdForAdditionalRow<R extends object>({
@@ -42,15 +43,16 @@ export function BeeTableTdForAdditionalRow<R extends object>({
   rowIndex,
   isLastColumn,
   resizerStopBehavior,
+  lastColumnMinWidth,
 }: BeeTableTdForAdditionalRowProps<R>) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
-  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
+  const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
     columnIndex,
     resizerStopBehavior,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
-    column.width ? Math.max(column.minWidth ?? 0, column.width ?? 0) : undefined
+    column.width ? Math.max(lastColumnMinWidth ?? column.minWidth ?? 0, column.width ?? 0) : undefined
   );
 
   const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(tdRef, rowIndex, columnIndex);
@@ -78,7 +80,7 @@ export function BeeTableTdForAdditionalRow<R extends object>({
       <div style={{ width: resizingWidth?.value }}>{children}</div>
 
       <Resizer
-        minWidth={column.minWidth}
+        minWidth={lastColumnMinWidth ?? column.minWidth}
         width={column.width}
         setWidth={column.setWidth}
         resizingWidth={resizingWidth}

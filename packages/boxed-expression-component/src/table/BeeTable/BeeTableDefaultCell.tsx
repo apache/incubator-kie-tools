@@ -2,7 +2,11 @@ import * as React from "react";
 import { useMemo, useCallback } from "react";
 import { BeeTableCellUpdate } from ".";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
-import { useBeeTableSelectionDispatch, SelectionPart, useBeeTableCell } from "../../selection/BeeTableSelectionContext";
+import {
+  useBeeTableSelectionDispatch,
+  SelectionPart,
+  useBeeTableSelectableCellRef,
+} from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
 
 export function BeeTableDefaultCell<R extends object>({
@@ -60,7 +64,12 @@ export function BeeTableDefaultCell<R extends object>({
     return cellProps.value;
   }, [cellProps.value]);
 
-  const { isActive, isEditing } = useBeeTableCell(cellProps.row.index, columnIndex, onCellChanged, getValue);
+  const { isActive, isEditing } = useBeeTableSelectableCellRef(
+    cellProps.row.index,
+    columnIndex,
+    onCellChanged,
+    getValue
+  );
 
   const navigateVertically = useCallback(
     (args: { isShiftPressed: boolean }) => {

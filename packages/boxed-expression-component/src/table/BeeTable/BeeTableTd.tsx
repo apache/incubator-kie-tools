@@ -20,11 +20,11 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableColumnResizingWidth } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
+import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContextProvider";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
-  useBeeTableCell,
+  useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
@@ -41,6 +41,7 @@ export interface BeeTableTdProps<R extends object> {
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
   resizerStopBehavior: ResizerStopBehavior;
+  lastColumnMinWidth?: number;
 }
 
 export type HoverInfo =
@@ -62,6 +63,7 @@ export function BeeTableTd<R extends object>({
   shouldShowRowsInlineControls,
   resizerStopBehavior,
   onRowAdded,
+  lastColumnMinWidth,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -76,12 +78,12 @@ export function BeeTableTd<R extends object>({
     return row.cells[columnIndex];
   }, [columnIndex, row]);
 
-  const { resizingWidth, setResizingWidth } = useBeeTableColumnResizingWidth(
+  const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
     columnIndex,
     resizerStopBehavior,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
-    column.width ? Math.max(column.minWidth ?? 0, column.width ?? 0) : undefined
+    column.width ? Math.max(lastColumnMinWidth ?? column.minWidth ?? 0, column.width ?? 0) : undefined
   );
 
   const rowIndexLabel = useMemo(() => {
@@ -95,7 +97,7 @@ export function BeeTableTd<R extends object>({
     return undefined;
   }, [column.isRowIndexColumn, rowIndexLabel]);
 
-  useBeeTableCell(rowIndex, columnIndex, undefined, getValue);
+  useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, getValue);
 
   const tdContent = useMemo(() => {
     return shouldUseCellDelegate && column.cellDelegate
@@ -192,14 +194,14 @@ export function BeeTableTd<R extends object>({
             <div
               style={{
                 width: resizingWidth?.value,
-                minWidth: cell.column.minWidth,
+                minWidth: lastColumnMinWidth ?? cell.column.minWidth,
               }}
             >
               {tdContent}
             </div>
             {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
               <Resizer
-                minWidth={cell.column.minWidth}
+                minWidth={lastColumnMinWidth ?? cell.column.minWidth}
                 width={cell.column.width}
                 setWidth={cell.column.setWidth}
                 resizingWidth={resizingWidth}

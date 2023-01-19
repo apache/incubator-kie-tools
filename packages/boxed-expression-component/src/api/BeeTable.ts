@@ -74,6 +74,7 @@ export interface BeeTableProps<R extends object> {
   shouldShowRowsInlineControls: boolean;
   shouldShowColumnsInlineControls: boolean;
   resizerStopBehavior: ResizerStopBehavior;
+  lastColumnMinWidth?: number;
 }
 
 /** Possible status for the visibility of the Table's Header */

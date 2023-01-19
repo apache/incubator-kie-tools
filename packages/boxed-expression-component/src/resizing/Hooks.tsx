@@ -198,13 +198,9 @@ export function useApportionedColumnWidthsIfNestedTable(
   columns: Array<{ width: number | undefined }>
 ) {
   const nestedExpressionContainer = useNestedExpressionContainer();
-  const pivotAwareNestedExpressionContainer = usePivotAwareNestedExpressionContainer(isPivoting);
 
   useEffect(() => {
     if (isPivoting || !isNested) {
-      // If it's growing, then do nothing, as it's already working as expected.
-      // If it's shrinking the whole table to less than minWidth, redistribute the width between the other columns to the right, filling all space.
-      // If it's the last column to the right, do not allow shrinking the whole table to less than minWidth.
       return;
     }
 
@@ -279,4 +275,24 @@ function apportionColumnWidths(
   }
 
   return apportionedWidths;
+}
+
+export function useNestedTableLastColumnMinWidth(columnResizingWidths: Map<number, ResizingWidth>) {
+  const nestedExpressionContainer = useNestedExpressionContainer();
+
+  return useMemo(() => {
+    const extraWidthOnTable = columnResizingWidths.size;
+
+    const widthOfAllColumnsExceptLastOne = [...columnResizingWidths.entries()].reduce(
+      (acc, [columnIndex, { value }]) => {
+        return columnIndex === columnResizingWidths.size - 1 ? acc : acc + value;
+      },
+      0
+    );
+
+    return Math.max(
+      RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      nestedExpressionContainer.minWidth - extraWidthOnTable - widthOfAllColumnsExceptLastOne
+    );
+  }, [columnResizingWidths, nestedExpressionContainer.minWidth]);
 }

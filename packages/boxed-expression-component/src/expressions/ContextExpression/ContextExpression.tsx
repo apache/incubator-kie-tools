@@ -38,7 +38,7 @@ import {
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableCell, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCellRef, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -321,7 +321,7 @@ export function ContextResultInfoCell() {
     return value;
   }, [value]);
 
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     containerCellCoordinates?.rowIndex ?? 0,
     containerCellCoordinates?.columnIndex ?? 0,
     undefined,

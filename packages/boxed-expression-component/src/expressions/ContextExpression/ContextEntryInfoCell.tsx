@@ -18,7 +18,7 @@ import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinit
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as _ from "lodash";
-import { useBeeTableCell } from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { DEFAULT_EXPRESSION_NAME, ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
 import "./ContextEntryInfoCell.css";
 
@@ -56,7 +56,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     [onEntryUpdate, rowIndex, entry, entryExpression, entryInfo]
   );
 
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     rowIndex,
     columnIndex,
     undefined,

@@ -29,8 +29,8 @@ import {
   getNextAvailablePrefixedName,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { usePublishedBeeTableColumnResizingWidths } from "../../resizing/BeeTableColumnResizingWidthsContextProvider";
-import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
+import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import { useApportionedColumnWidthsIfNestedTable, useNestedTableLastColumnMinWidth } from "../../resizing/Hooks";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
@@ -158,9 +158,14 @@ export function DecisionTableExpression(
   /// //////////////////////////////////////////////////////
 
   const beeTableRef = useRef<BeeTableRef>(null);
-  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableColumnResizingWidths(
-    decisionTableExpression.id
+  const { onColumnResizingWidthChange, columnResizingWidths, isPivoting } = usePublishedBeeTableResizableColumns(
+    decisionTableExpression.id,
+    (decisionTableExpression.input ?? []).length +
+      (decisionTableExpression.output ?? []).length +
+      (decisionTableExpression.annotations ?? []).length
   );
+
+  const lastColumnMinWidth = useNestedTableLastColumnMinWidth(columnResizingWidths);
 
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
@@ -642,7 +647,9 @@ export function DecisionTableExpression(
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
-        resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS}
+        resizerStopBehavior={
+          isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
+        }
         forwardRef={beeTableRef}
         headerLevelCount={1}
         headerVisibility={beeTableHeaderVisibility}
@@ -662,6 +669,7 @@ export function DecisionTableExpression(
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
+        lastColumnMinWidth={lastColumnMinWidth}
       />
     </div>
   );

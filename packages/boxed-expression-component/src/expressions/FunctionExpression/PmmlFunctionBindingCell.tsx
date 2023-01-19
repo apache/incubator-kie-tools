@@ -12,7 +12,7 @@ import {
   PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableCell } from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -99,7 +99,7 @@ function PmmlFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
 
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     props.rowIndex,
     props.columnIndex,
     undefined,
@@ -145,7 +145,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
 
   const [isSelectOpen, setSelectOpen] = React.useState(false);
 
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     props.rowIndex,
     props.columnIndex,
     undefined,
@@ -210,7 +210,7 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
     [pmmlFunctionExpression.document, pmmlParams]
   );
 
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     props.rowIndex,
     props.columnIndex,
     undefined,

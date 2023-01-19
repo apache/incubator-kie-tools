@@ -66,6 +66,7 @@ export interface BeeTableHeaderProps<R extends object> {
   shouldShowRowsInlineControls: boolean;
 
   resizerStopBehavior: ResizerStopBehavior;
+  lastColumnMinWidth?: number;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -80,6 +81,7 @@ export function BeeTableHeader<R extends object>({
   shouldRenderRowIndexColumn,
   shouldShowRowsInlineControls,
   resizerStopBehavior,
+  lastColumnMinWidth,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -185,6 +187,9 @@ export function BeeTableHeader<R extends object>({
               onExpressionHeaderUpdated={({ name, dataType }) =>
                 onExpressionHeaderUpdated(column, columnIndex)({ name, dataType })
               }
+              lastColumnMinWidth={
+                columnIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
+              }
               headerCellInfo={
                 <div
                   className="expression-info header-cell-info"
@@ -226,6 +231,7 @@ export function BeeTableHeader<R extends object>({
       onHeaderClick,
       reactTableInstance,
       onColumnAdded,
+      lastColumnMinWidth,
       onExpressionHeaderUpdated,
     ]
   );

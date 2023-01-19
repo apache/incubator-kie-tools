@@ -71,8 +71,8 @@ export interface BeeTableSelectionDispatchContextType {
     React.SetStateAction<(BeeTableSelectionActiveCell & { keepSelection?: boolean }) | undefined>
   >;
   setSelectionEnd: React.Dispatch<React.SetStateAction<BeeTableSelectionActiveCell | undefined>>;
-  registerCellRef(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): BeeTableCellRef;
-  deregisterCellRef(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): void;
+  registerSelectableCellRef(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): BeeTableCellRef;
+  deregisterSelectableCellRef(rowIndex: number, columnIndex: number, ref: BeeTableCellRef): void;
 }
 
 export interface BeeTableCoordinatesContextType {
@@ -773,13 +773,13 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
           }
         });
       },
-      registerCellRef: (rowIndex, columnIndex, ref) => {
+      registerSelectableCellRef: (rowIndex, columnIndex, ref) => {
         refs.current?.set(rowIndex, refs.current?.get(rowIndex) ?? new Map());
         const prev = refs.current?.get(rowIndex)?.get(columnIndex) ?? new Set();
         refs.current?.get(rowIndex)?.set(columnIndex, new Set([...prev, ref]));
         return ref;
       },
-      deregisterCellRef: (rowIndex, columnIndex, ref) => {
+      deregisterSelectableCellRef: (rowIndex, columnIndex, ref) => {
         ref.setStatus?.(NEUTRAL_CELL_STATUS);
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
@@ -917,26 +917,26 @@ export function useBeeTableCoordinatesDispatch() {
  * This is done like this because if when we have every Th/Td observing { activeCell } from BeeTableSelectionContext,
  * performance suffers. Every component can register a BeeTableCellRef and observe changes to it, then set their own state with a "copy" from the status.
  */
-export function useBeeTableCell(
+export function useBeeTableSelectableCellRef(
   rowIndex: number,
   columnIndex: number,
   setValue?: BeeTableCellRef["setValue"],
   getValue?: BeeTableCellRef["getValue"]
 ) {
-  const { registerCellRef, deregisterCellRef } = useBeeTableSelectionDispatch();
+  const { registerSelectableCellRef, deregisterSelectableCellRef } = useBeeTableSelectionDispatch();
 
   const [status, setStatus] = useState<BeeTableCellStatus>(NEUTRAL_CELL_STATUS);
 
   useEffect(() => {
-    const ref = registerCellRef?.(rowIndex, columnIndex, {
+    const ref = registerSelectableCellRef?.(rowIndex, columnIndex, {
       setStatus,
       setValue,
       getValue,
     });
     return () => {
-      deregisterCellRef?.(rowIndex, columnIndex, ref);
+      deregisterSelectableCellRef?.(rowIndex, columnIndex, ref);
     };
-  }, [columnIndex, rowIndex, getValue, setValue, registerCellRef, deregisterCellRef]);
+  }, [columnIndex, rowIndex, getValue, setValue, registerSelectableCellRef, deregisterSelectableCellRef]);
 
   return status;
 }
@@ -964,7 +964,7 @@ export function useBeeTableSelectableCell(
   rowIndex: number,
   columnIndex: number
 ) {
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableCell(rowIndex, columnIndex);
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableSelectableCellRef(rowIndex, columnIndex);
 
   const cssClasses = useMemo(() => {
     return `

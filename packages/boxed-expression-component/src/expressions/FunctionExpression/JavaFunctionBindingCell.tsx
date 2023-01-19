@@ -11,7 +11,7 @@ import {
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableCell } from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ROWTYPE } from "./FunctionExpression";
@@ -135,7 +135,7 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
 
-  useBeeTableCell(
+  useBeeTableSelectableCellRef(
     props.rowIndex,
     props.columnIndex,
     undefined,
