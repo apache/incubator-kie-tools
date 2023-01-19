@@ -16,11 +16,10 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
-
-public class EndShape extends NodeShapeImpl {
+public class EndShape extends ServerlessWorkflowShape<EndShapeView> {
 
     public EndShape() {
         super(new EndShapeView().asAbstractShape());
+        getShape().getShapeView().setController(this);
     }
 }

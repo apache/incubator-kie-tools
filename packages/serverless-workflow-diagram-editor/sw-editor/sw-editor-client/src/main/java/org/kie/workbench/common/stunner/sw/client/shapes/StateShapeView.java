@@ -29,19 +29,19 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 
-public class StateShapeView extends ServerlessWorkflowBasicShape<StateShapeView> {
+public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> {
 
     private Group iconImage;
     private Circle backgroundCircle;
-
-    private final static double STATE_SHAPE_WIDTH = 250;
-    private final static double STATE_SHAPE_HEIGHT = 90;
+    protected final static double STATE_SHAPE_WIDTH = 250;
+    protected final static double STATE_SHAPE_HEIGHT = 90;
     public final static double STATE_SHAPE_ICON_RADIUS = 25;
+    public final static double STATE_CORNER_RADIUS = 5.00;
 
     public StateShapeView(String name) {
         super(new MultiPath()
                       .rect(0, 0, STATE_SHAPE_WIDTH, STATE_SHAPE_HEIGHT)
-                      .setCornerRadius(5.00));
+                      .setCornerRadius(STATE_CORNER_RADIUS));
         initialize(name);
     }
 
