@@ -1040,7 +1040,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     useCallback(() => {
       return <Alert variant="info" title={"Nothing to commit."} />;
     }, []),
-    { durationInSeconds: 4 }
+    { durationInSeconds: 2 }
   );
 
   const createSavePointDropdownItem = useMemo(() => {

@@ -27,7 +27,7 @@ export type PromiseModalChildren<T> = ({
 
 export type PromiseModalProps<T> = Omit<ModalProps, "isOpen" | "ref" | "children"> & {
   children: PromiseModalChildren<T>;
-  customRef: Ref<PromiseModalController<T>>;
+  promiseModalRef: Ref<PromiseModalController<T>>;
 };
 
 export interface PromiseModalController<T> {
@@ -68,10 +68,10 @@ export const PromiseModal = <T,>(props: PromiseModalProps<T>) => {
     close();
   }, [close, promiseCallbacks]);
 
-  const { children, customRef, ...modalProps } = props;
+  const { children, promiseModalRef, ...modalProps } = props;
 
   useImperativeHandle(
-    customRef,
+    promiseModalRef,
     () => ({
       open,
       close,
