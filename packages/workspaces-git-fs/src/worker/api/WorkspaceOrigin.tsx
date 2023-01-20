@@ -27,22 +27,14 @@ const gitBasedTypeKeys = [WorkspaceKind.GIT, WorkspaceKind.BITBUCKET_SNIPPET, Wo
 export type WorkspaceKindGitBased = (typeof gitBasedTypeKeys)[number];
 
 export const isGitBasedWorkspaceKind = (maybeGitBasedType: WorkspaceKind | undefined): boolean => {
-  if (maybeGitBasedType === undefined) {
-    return false;
-  }
-  const gitBasedType = gitBasedTypeKeys.find((validKey) => validKey === maybeGitBasedType);
-  return !!gitBasedType;
+  return gitBasedTypeKeys.some((k) => k === maybeGitBasedType);
 };
 
 const gistLikeTypeKeys = [WorkspaceKind.GITHUB_GIST, WorkspaceKind.BITBUCKET_SNIPPET] as const;
 export type WorkspaceKindGistLike = (typeof gistLikeTypeKeys)[number];
 
 export const isGistLikeWorkspaceKind = (maybeGistLikeType: WorkspaceKind | undefined): boolean => {
-  if (maybeGistLikeType === undefined) {
-    return false;
-  }
-  const gistLikeType = gistLikeTypeKeys.find((validKey) => validKey === maybeGistLikeType);
-  return !!gistLikeType;
+  return gistLikeTypeKeys.some((k) => k === maybeGistLikeType);
 };
 
 export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
