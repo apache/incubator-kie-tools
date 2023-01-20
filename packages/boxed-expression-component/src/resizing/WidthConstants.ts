@@ -53,6 +53,19 @@ export const FEEL_FUNCTION_EXPRESSION_MIN_WIDTH = 210;
 
 export const PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH = 210;
 export const PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH = 120;
+export const PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH =
+  FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH +
+  1 + // 1px for border-left,
+  1 + // 1px for border-right of first column,
+  1 + // 1px for border-left of each normal column. since we only have one, its 1.
+  1; // 1px for border-right of last column
 
 export const JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH = 210;
 export const JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH = 120;
+
+export const JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH =
+  FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH +
+  1 + // 1px for border-left,
+  1 + // 1px for border-right of first column,
+  1 + // 1px for border-left of each normal column. since we only have one, its 1.
+  1; // 1px for border-right of last column

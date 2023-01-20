@@ -24,7 +24,7 @@ const buildEnv = env;
 
 module.exports = (env) =>
   merge(common(env), {
-    mode: "production",
+    mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
     },

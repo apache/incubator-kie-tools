@@ -195,9 +195,11 @@ export function useApportionedColumnWidthsIfNestedTable(
   beeTableRef: React.RefObject<BeeTableRef>,
   isPivoting: boolean,
   isNested: boolean,
-  columns: Array<{ width: number | undefined }>,
+  extraWidth: number,
+  columns: Array<{ width: number | undefined; isFrozen?: boolean }>,
   rows: any[] //FIXME: Tiago -> This is a hack to recalculate the positions when the row number changes.
 ) {
+  const minWidth = RELATION_EXPRESSION_COLUMN_MIN_WIDTH; // FIXME: Tiago -> Maybe this should be a parameter?
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   useEffect(() => {
@@ -205,21 +207,31 @@ export function useApportionedColumnWidthsIfNestedTable(
       return;
     }
 
-    const extraWidthOnTable = BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + columns.length + 1;
-    const nextTotalWidth = Math.max(
-      nestedExpressionContainer.minWidth - extraWidthOnTable,
-      nestedExpressionContainer.resizingWidth.value - extraWidthOnTable
+    const fixedWidthAmount = columns.reduce(
+      (acc, { isFrozen, width }) => (isFrozen ? acc + (width ?? minWidth) : acc),
+      0
     );
+    const nextTotalWidth =
+      Math.max(
+        nestedExpressionContainer.minWidth - extraWidth,
+        nestedExpressionContainer.resizingWidth.value - extraWidth
+      ) - fixedWidthAmount;
 
     const apportionedWidths = apportionColumnWidths(
       nextTotalWidth,
-      columns.map(({ width }) => ({
-        minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-        currentWidth: width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      columns.map(({ width, isFrozen }) => ({
+        minWidth,
+        currentWidth: width ?? minWidth,
+        isFrozen: isFrozen ?? false,
       }))
     );
 
     apportionedWidths.forEach((nextWidth, index) => {
+      if (columns[index].isFrozen) {
+        console.info(nextWidth);
+        return;
+      }
+
       const columnIndex = index + 1; // + 1 to compensate for rowIndex column
       beeTableRef.current?.updateColumnResizingWidth(columnIndex, (prev) => ({
         isPivoting: prev?.isPivoting ?? false,
@@ -234,6 +246,8 @@ export function useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     rows,
     nestedExpressionContainer.minWidth,
+    minWidth,
+    extraWidth,
   ]);
 }
 
@@ -241,14 +255,17 @@ export function useApportionedColumnWidthsIfNestedTable(
 // See https://en.wikipedia.org/wiki/Mathematics_of_apportionment and https://en.wikipedia.org/wiki/D%27Hondt_method
 function apportionColumnWidths(
   nextTotalWidth: number, // Analogous to "total seats"
-  columns: { currentWidth: number; minWidth: number }[]
+  columns: { currentWidth: number; minWidth: number; isFrozen: boolean }[]
 ): number[] {
   // Calculate standard divisor (sd)
-  const currentTotalWidth = columns.reduce((acc, { currentWidth }) => acc + currentWidth, 0); // Analogous to "total population"
+  const currentTotalWidth = columns.reduce(
+    (acc, { currentWidth, isFrozen }) => (isFrozen ? acc : acc + currentWidth),
+    0
+  ); // Analogous to "total population"
   const sd = currentTotalWidth / nextTotalWidth;
 
   // Start apportionedWidths array with the minimum width of each column
-  const apportionedWidths = columns.map(({ minWidth }) => minWidth); // Analogous to seats count
+  const apportionedWidths = columns.map(({ minWidth, isFrozen }) => (isFrozen ? 0 : minWidth)); // Analogous to seats count
 
   // Distribute widths between columns
   let nextDistributedWidth = apportionedWidths.reduce((acc, n) => acc + n, 0); // Analogous to distributed seats count
@@ -258,6 +275,9 @@ function apportionColumnWidths(
 
     // Find column with the largest remainder
     for (let i = 0; i < columns.length; i++) {
+      if (columns[i].isFrozen) {
+        continue;
+      }
       const quota = columns[i].currentWidth / sd;
       const remainder = quota - apportionedWidths[i];
       if (remainder > maxRemainder) {

@@ -33,6 +33,7 @@ import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableRes
 import { useApportionedColumnWidthsIfNestedTable, useNestedTableLastColumnMinWidth } from "../../resizing/Hooks";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
@@ -157,12 +158,19 @@ export function DecisionTableExpression(
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
+  const columns = useMemo(
+    () => [
+      ...(decisionTableExpression.input ?? []),
+      ...(decisionTableExpression.output ?? []),
+      ...(decisionTableExpression.annotations ?? []),
+    ],
+    [decisionTableExpression.annotations, decisionTableExpression.input, decisionTableExpression.output]
+  );
+
   const beeTableRef = useRef<BeeTableRef>(null);
   const { onColumnResizingWidthChange, columnResizingWidths, isPivoting } = usePublishedBeeTableResizableColumns(
     decisionTableExpression.id,
-    (decisionTableExpression.input ?? []).length +
-      (decisionTableExpression.output ?? []).length +
-      (decisionTableExpression.annotations ?? []).length,
+    columns.length,
     true
   );
 
@@ -172,14 +180,8 @@ export function DecisionTableExpression(
     beeTableRef,
     isPivoting,
     decisionTableExpression.isNested,
-    useMemo(
-      () => [
-        ...(decisionTableExpression.input ?? []),
-        ...(decisionTableExpression.output ?? []),
-        ...(decisionTableExpression.annotations ?? []),
-      ],
-      [decisionTableExpression.annotations, decisionTableExpression.input, decisionTableExpression.output]
-    ),
+    BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + columns.length + 1, //1px for each column border-left, 1px for the last column border-right.
+    columns,
     decisionTableExpression.rules ?? []
   );
 

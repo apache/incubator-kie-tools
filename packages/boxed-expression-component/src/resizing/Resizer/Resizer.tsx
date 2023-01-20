@@ -128,7 +128,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   return (
     <div>
-      {/* {width && (
+      {width && (
         <div className="pf-c-drawer" style={{ position: "absolute", left: width - 8 }}>
           <div className={`pf-c-drawer__splitter pf-m-vertical actual`}>
             <div className={`pf-c-drawer__splitter-handle`} />
@@ -142,7 +142,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             <div className={`pf-c-drawer__splitter-handle`} />
           </div>
         </div>
-      )} */}
+      )}
 
       {width && resizingWidth && (
         <Resizable
@@ -156,7 +156,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           axis={"x"}
           handle={
             <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>
-              <div className={`pf-c-drawer__splitter pf-m-vertical`}>
+              <div className={`pf-c-drawer__splitter pf-m-vertical ${debuggingHandleClassNames}`}>
                 <div className={`pf-c-drawer__splitter-handle`} />
               </div>
             </div>

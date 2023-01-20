@@ -21,6 +21,8 @@ import {
   PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
   LIST_ITEM_EXPRESSION_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
@@ -191,20 +193,16 @@ export function getExpressionResizingWidth(
         ) + FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
-      return (
-        JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
-        (expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
-        2 + // column borders
-        2 + // value column borders
-        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
-      );
+      const variableWidth =
+        resizingWidth ?? expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH;
+
+      return variableWidth + JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH + JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH;
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
       return (
+        resizingWidth ??
         PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
-        PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
-        2 + // column borders
-        2 + // whole table borders
-        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
+          PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
+          PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
     } else {
       throw new Error("Should never get here");

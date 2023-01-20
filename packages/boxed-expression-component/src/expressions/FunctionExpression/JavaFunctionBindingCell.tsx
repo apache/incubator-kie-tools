@@ -1,18 +1,26 @@
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
   BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableProps,
   JavaFunctionExpressionDefinition,
 } from "../../api";
+import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import {
+  useApportionedColumnWidthsIfNestedTable,
+  useNestedExpressionContainerWithNestedExpressions,
+  useNestedTableLastColumnMinWidth,
+} from "../../resizing/Hooks";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { BeeTable, BeeTableCellUpdate } from "../../table/BeeTable";
+import { BeeTable, BeeTableCellUpdate, BeeTableRef } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ROWTYPE } from "./FunctionExpression";
 import "./JavaFunctionBindingCell.css";
@@ -24,7 +32,9 @@ export type JAVA_ROWTYPE = {
 };
 
 export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<ROWTYPE>) {
-  const functionExpression = data[rowIndex].functionExpression as JavaFunctionExpressionDefinition;
+  const functionExpression = data[rowIndex].functionExpression as JavaFunctionExpressionDefinition & {
+    isNested: boolean;
+  };
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -112,8 +122,41 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
     []
   );
 
+  /// //////////////////////////////////////////////////////
+  /// ///////////// RESIZING WIDTHS ////////////////////////
+  /// //////////////////////////////////////////////////////
+
+  const columns = useMemo(
+    () => [
+      { width: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH, isFrozen: true },
+      { width: functionExpression.classAndMethodNamesWidth },
+    ],
+    [functionExpression.classAndMethodNamesWidth]
+  );
+
+  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableResizableColumns(
+    functionExpression.id,
+    columns.length,
+    false
+  );
+
+  const beeTableRef = useRef<BeeTableRef>(null);
+
+  useApportionedColumnWidthsIfNestedTable(
+    beeTableRef,
+    isPivoting,
+    functionExpression.isNested,
+    JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+    columns,
+    useMemo(() => [], []) // rows
+  );
+
+  /// //////////////////////////////////////////////////////
+
   return (
     <BeeTable<JAVA_ROWTYPE>
+      forwardRef={beeTableRef}
+      onColumnResizingWidthChange={onColumnResizingWidthChange}
       resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
       columns={beeTableColumns}
       rows={beeTableRows}
