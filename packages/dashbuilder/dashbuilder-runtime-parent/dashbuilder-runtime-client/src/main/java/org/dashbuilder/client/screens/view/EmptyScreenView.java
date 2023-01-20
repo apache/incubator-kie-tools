@@ -65,4 +65,14 @@ public class EmptyScreenView implements EmptyScreen.View {
         subTitleParagraph.textContent = AppConstants.INSTANCE.emptyEditorMode();
     }
 
+    @Override
+    public void noModel() {
+        subTitleParagraph.textContent = AppConstants.INSTANCE.emptyClientMode();
+    }
+
+    @Override
+    public void modelId(String modelId) {
+        subTitleParagraph.innerHTML = AppConstants.INSTANCE.emptyWithImportId(modelId);
+    }
+
 }

@@ -7,6 +7,9 @@ dashbuilder = {
 	dashboards: [ "dashboard1.yaml", "dashboard2.json"],
 
 	// base path to look for dashboards. Default is /
-	path: "/path"
+	path: "/path",
+	
+	// if true, then model from external urls will be allowed
+	allowExternal: true
 */
 };
