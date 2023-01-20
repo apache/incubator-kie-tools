@@ -106,6 +106,11 @@ export class DefaultKeyboardShortcutsService {
         if (!keyboardEvent) {
           return true;
         }
+
+        //TODO: Временный обход проблемы с неверным кодом в keyboardEvent.code (code всегда == escape).
+        // Ориентируемся на значение полученное в keyboardEvent.key и из KEY_CODES берем подходящий code клавиши,
+        // если такой нет, то берем сам keyboardEvent.key
+        // Получение правильного code будет исправлено в WEBBPMNEXT-8471.
         const keyEventCode = KEY_CODES.get(keyboardEvent.key) || keyboardEvent.key;
         if (keyboardEvent.type === "keydown") {
           if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent, keyEventCode))) {
