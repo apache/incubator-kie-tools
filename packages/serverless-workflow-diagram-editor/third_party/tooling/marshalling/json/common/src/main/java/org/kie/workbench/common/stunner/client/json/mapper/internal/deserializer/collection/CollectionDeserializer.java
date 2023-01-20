@@ -24,6 +24,7 @@ import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.array.AbstractArrayJsonDeserializer;
 
+
 public class CollectionDeserializer<C extends Collection<T>, T>
     extends AbstractArrayJsonDeserializer<C> {
 

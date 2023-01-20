@@ -20,7 +20,6 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeSerializer;
 
 @JSONMapper
@@ -36,8 +35,8 @@ public class SubFlowRef {
 
     //TODO custom ser/deser because of continue is reserved java lit
     @JsonbTypeSerializer(SubflowExecutionTypeJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(SubflowExecutionTypeJsonbTypeDeserializer.class)
-    public SubflowExecutionType onParentComplete;
+    @JsonbTypeDeserializer(SubflowExecutionTypeJsonbTypeSerializer.class)
+    private SubflowExecutionType onParentComplete;
 
     public final String getWorkflowId() {
         return workflowId;

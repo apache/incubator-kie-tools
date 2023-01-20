@@ -20,7 +20,6 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowExecTimeoutJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowExecTimeoutJsonSerializer;
 
 @JSONMapper
@@ -28,16 +27,12 @@ import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowExecTimeout
 public class WorkflowTimeouts {
 
     @JsonbTypeSerializer(WorkflowExecTimeoutJsonSerializer.class)
-    @JsonbTypeDeserializer(WorkflowExecTimeoutJsonDeserializer.class)
-    public Object workflowExecTimeout;
-
-    public String stateExecTimeout;
-
-    public String actionExecTimeout;
-
-    public String branchExecTimeout;
-
-    public String eventTimeout;
+    @JsonbTypeDeserializer(WorkflowExecTimeoutJsonSerializer.class)
+    private Object workflowExecTimeout;
+    private String stateExecTimeout;
+    private String actionExecTimeout;
+    private String branchExecTimeout;
+    private String eventTimeout;
 
     public final Object getWorkflowExecTimeout() {
         return workflowExecTimeout;

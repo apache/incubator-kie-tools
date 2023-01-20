@@ -16,23 +16,56 @@
 
 package org.kie.workbench.common.stunner.sw.definition.custom;
 
+import java.lang.reflect.Type;
+
+import jakarta.json.JsonValue;
+import jakarta.json.bind.serializer.DeserializationContext;
+import jakarta.json.bind.serializer.JsonbDeserializer;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonParser;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd_JsonDeserializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd_JsonSerializerImpl;
 
-public class StateEndDefinitionJsonbTypeSerializer implements JsonbSerializer<Object> {
+
+public class StateEndDefinitionJsonbTypeSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object> {
 
     private static final StateEnd_JsonSerializerImpl serializer =
             StateEnd_JsonSerializerImpl.INSTANCE;
 
+    private static final StateEnd_JsonDeserializerImpl deserializer =
+            StateEnd_JsonDeserializerImpl.INSTANCE;
+
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof Boolean) {
-            generator.write("end", ((Boolean) obj));
+            generator.write(((Boolean) obj));
         } else if (obj instanceof StateEnd) {
-            serializer.serialize((StateEnd) obj, "end", generator, ctx);
+            JsonGenerator jsonGenerator = generator.writeStartObject();
+            serializer.serialize((StateEnd) obj, jsonGenerator, ctx);
+            jsonGenerator.writeEnd();
         }
+    }
+
+    @Override
+    public Object deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
+        JsonValue value = parser.getValue();
+        if(value != null) {
+            if (value.getValueType() != JsonValue.ValueType.NULL) {
+                if (value.getValueType() == JsonValue.ValueType.TRUE
+                        || value.getValueType() == JsonValue.ValueType.FALSE) {
+                    if (value.getValueType() == JsonValue.ValueType.TRUE) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
+                    return deserializer.deserialize(parser, ctx, rtType);
+                }
+            }
+        }
+        return null;
     }
 }

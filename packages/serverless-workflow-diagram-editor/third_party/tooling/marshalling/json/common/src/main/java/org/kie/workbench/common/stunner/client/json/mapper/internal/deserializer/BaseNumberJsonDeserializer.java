@@ -24,6 +24,7 @@ import jakarta.json.JsonValue;
 import jakarta.json.JsonValueDecorator;
 import jakarta.json.bind.serializer.DeserializationContext;
 
+
 public abstract class BaseNumberJsonDeserializer<N extends Number> extends JsonbDeserializer<N> {
 
   public static final class BigDecimalJsonDeserializer

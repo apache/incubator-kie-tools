@@ -19,12 +19,13 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
 
 @JsType
+@JSONMapper
 public class State {
 
     public String name;
@@ -35,13 +36,13 @@ public class State {
 
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
-    public Object transition;
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    private Object transition;
 
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
-    public Object end;
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
+    private Object end;
 
     public ErrorTransition[] onErrors;
 
@@ -49,7 +50,9 @@ public class State {
 
     public StateDataFilter stateDataFilter;
 
-    public WorkflowTimeouts timeouts;
+    @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
+    @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
+    private Object timeouts;
 
     public State() {
         this.name = "State";
@@ -125,11 +128,11 @@ public class State {
         this.stateDataFilter = stateDataFilter;
     }
 
-    public WorkflowTimeouts getTimeouts() {
+    public Object getTimeouts() {
         return timeouts;
     }
 
-    public void setTimeouts(WorkflowTimeouts timeouts) {
+    public void setTimeouts(Object timeouts) {
         this.timeouts = timeouts;
     }
 }

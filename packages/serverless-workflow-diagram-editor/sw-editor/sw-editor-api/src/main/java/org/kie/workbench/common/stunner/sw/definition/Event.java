@@ -20,7 +20,6 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
 
 @JSONMapper
@@ -40,8 +39,8 @@ public class Event {
     public Correlation[] correlation;
 
     @JsonbTypeSerializer(WorkflowFunctionsJsonSerializer.class)
-    @JsonbTypeDeserializer(WorkflowFunctionsJsonDeserializer.class)
-    public Object functions;
+    @JsonbTypeDeserializer(WorkflowFunctionsJsonSerializer.class)
+    private Object functions;
 
     public final String getName() {
         return name;

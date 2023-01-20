@@ -19,9 +19,7 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonSerializer;
 
 @JsType
@@ -32,14 +30,14 @@ public class ActionNode {
     public String name;
 
     @JsonbTypeSerializer(FunctionRefJsonSerializer.class)
-    @JsonbTypeDeserializer(FunctionRefJsonDeserializer.class)
-    public Object functionRef;
+    @JsonbTypeDeserializer(FunctionRefJsonSerializer.class)
+    private Object functionRef;
 
     public ActionEventRef eventRef;
 
     @JsonbTypeSerializer(SubFlowRefJsonSerializer.class)
-    @JsonbTypeDeserializer(SubFlowRefJsonDeserializer.class)
-    public Object subFlowRef;
+    @JsonbTypeDeserializer(SubFlowRefJsonSerializer.class)
+    private Object subFlowRef;
 
     public String retryRef;
 

@@ -20,7 +20,6 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeSerializer;
 
 @JSONMapper
@@ -32,8 +31,8 @@ public class StateEnd {
     public Boolean compensate;
 
     @JsonbTypeSerializer(ContinueAsJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ContinueAsJsonbTypeDeserializer.class)
-    public Object continueAs;
+    @JsonbTypeDeserializer(ContinueAsJsonbTypeSerializer.class)
+    private Object continueAs;
 
     public ProducedEvent[] produceEvents;
 

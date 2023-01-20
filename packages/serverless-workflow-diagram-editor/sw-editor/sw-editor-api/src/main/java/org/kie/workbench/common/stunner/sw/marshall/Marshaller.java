@@ -414,7 +414,7 @@ public class Marshaller {
         Workflow bean = marshallNode(context, node);
         String raw = mapper.toJSON(bean);
         String result = MarshallerUtils.onPostSerialize(raw, bean);
-        return promises.resolve(result);
+        return promises.resolve(raw);
     }
 
     @FunctionalInterface

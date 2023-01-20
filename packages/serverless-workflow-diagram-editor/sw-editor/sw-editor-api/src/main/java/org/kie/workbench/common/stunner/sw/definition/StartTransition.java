@@ -19,15 +19,14 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 @JsType
 public class StartTransition {
 
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
-    public Object transition;
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    private Object transition;
 
     public StartTransition() {
     }

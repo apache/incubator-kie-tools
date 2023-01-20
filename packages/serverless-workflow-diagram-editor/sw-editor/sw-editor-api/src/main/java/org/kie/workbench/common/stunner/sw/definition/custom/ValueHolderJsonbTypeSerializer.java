@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.sw.definition.custom;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import elemental2.core.JsNumber;
@@ -24,24 +25,26 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonNumber;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
+import jakarta.json.bind.serializer.DeserializationContext;
+import jakarta.json.bind.serializer.JsonbDeserializer;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonParser;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.sw.definition.ValueHolder;
 
 
-public class ValueHolderJsonbTypeSerializer implements JsonbSerializer<ValueHolder> {
-
-    private final String objName;
-
-    public ValueHolderJsonbTypeSerializer(String objName) {
-        this.objName = objName;
-    }
+public class ValueHolderJsonbTypeSerializer implements JsonbDeserializer<ValueHolder>, JsonbSerializer<ValueHolder> {
 
     @Override
     public void serialize(ValueHolder obj, JsonGenerator generator, SerializationContext ctx) {
-        writeObject(generator, objName, obj);
+        if(obj == null) {
+            return;
+        }
+        JsonGenerator jsonGenerator = generator.writeStartObject();
+        writeObject(jsonGenerator, null, obj);
+        jsonGenerator.writeEnd();
     }
 
     private void writeObject(JsonGenerator generator, String objName, Object obj) {
@@ -50,7 +53,7 @@ public class ValueHolderJsonbTypeSerializer implements JsonbSerializer<ValueHold
         }
         List<Reflect.OwnKeysArrayUnionType> keys = Reflect.ownKeys(obj).asList();
         if (!keys.isEmpty()) {
-            JsonGenerator objBuilder = generator.writeStartObject(objName);
+            JsonGenerator objBuilder = objName == null ? generator : generator.writeStartObject(objName);
             for (Reflect.OwnKeysArrayUnionType k : keys) {
                 String key = k.asString();
                 Object jsonValue = Js.asPropertyMap(obj).get(key);
@@ -103,5 +106,33 @@ public class ValueHolderJsonbTypeSerializer implements JsonbSerializer<ValueHold
             }
             objBuilder.writeEnd();
         }
+    }
+
+    @Override
+    public ValueHolder deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
+        JsonValue value = parser.getValue();
+        if(value != null) {
+            if (value.getValueType() != JsonValue.ValueType.NULL) {
+                ValueHolder holder = new ValueHolder();
+                for (String v : ((JsonObject) value).keySet()) {
+                    JsonValue jsonValue = ((JsonObject) value).get(v);
+                    if (jsonValue.getValueType() == JsonValue.ValueType.STRING) {
+                        Js.asPropertyMap(holder).set(v, ((JsonObject) value).getString(v));
+                    } else if (jsonValue.getValueType() == JsonValue.ValueType.NUMBER) {
+                        Js.asPropertyMap(holder).set(v, ((JsonObject) value).getJsonNumber(v).numberValue());
+                    } else if (jsonValue.getValueType() == JsonValue.ValueType.ARRAY) {
+                        Js.asPropertyMap(holder).set(v, jsonValue.asJsonArray());
+                    } else if (jsonValue.getValueType() == JsonValue.ValueType.TRUE) {
+                        Js.asPropertyMap(holder).set(v, true);
+                    } else if (jsonValue.getValueType() == JsonValue.ValueType.FALSE) {
+                        Js.asPropertyMap(holder).set(v, false);
+                    } else {
+                        Js.asPropertyMap(holder).set(v, (((JsonObject) value).get(v)));
+                    }
+                }
+                return holder;
+            }
+        }
+        return null;
     }
 }
