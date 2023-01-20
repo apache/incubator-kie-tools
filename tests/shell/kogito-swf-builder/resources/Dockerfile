@@ -1,9 +1,14 @@
 FROM quay.io/kiegroup/kogito-swf-builder:2.0 AS builder
 
+# Kogito user
+USER 1001
+
+ARG QUARKUS_PACKAGE_TYPE="jar"
+ARG SCRIPT_DEBUG="true"
+ARG MAVEN_DOWNLOAD_OUTPUT="true"
+
 # Copy from build context to resources directory
 COPY * ./resources/
-
-ARG SCRIPT_DEBUG=false
 
 # Build app with given resources
 RUN "${KOGITO_HOME}"/launch/build-app.sh './resources'
@@ -11,7 +16,9 @@ RUN "${KOGITO_HOME}"/launch/build-app.sh './resources'
 #=============================
 # Runtime Run
 #=============================
-FROM registry.access.redhat.com/ubi8/openjdk-11:latest
+FROM registry.access.redhat.com/ubi8/openjdk-11-runtime:latest
+
+ARG QUARKUS_LAUNCH_DEVMODE=false
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 # Default name is 'serverless-workflow-project'

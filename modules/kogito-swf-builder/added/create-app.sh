@@ -31,4 +31,9 @@ cd "${PROJECT_ARTIFACT_ID}"
 
 # Quarkus version is enforced if some dependency pulled has older version of Quarkus set.
 # This avoids to have, for example, Quarkus BOMs or orther artifacts with multiple versions.
-"${MAVEN_HOME}"/bin/mvn ${MAVEN_ARGS_APPEND} -Dquarkus.version="${QUARKUS_VERSION}" -U -B clean install -DskipTests -s "${MAVEN_SETTINGS_PATH}" -Dquarkus.container-image.build=false
+"${MAVEN_HOME}"/bin/mvn -U -B ${MAVEN_ARGS_APPEND} \
+  -s "${MAVEN_SETTINGS_PATH}" \
+  -Dquarkus.version="${QUARKUS_VERSION}" \
+  -DskipTests \
+  -Dquarkus.container-image.build=false \
+   clean install

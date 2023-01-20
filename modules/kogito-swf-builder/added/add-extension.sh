@@ -21,7 +21,10 @@ cd "${PROJECT_ARTIFACT_ID}"
 # auto configure JVM settings
 source "${KOGITO_HOME}"/launch/jvm-settings.sh
 
-"${MAVEN_HOME}"/bin/mvn -U -B -s "${MAVEN_SETTINGS_PATH}" \
-  io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":add-extension ${QUARKUS_ADD_EXTENSION_ARGS}\
+"${MAVEN_HOME}"/bin/mvn -U -B ${MAVEN_ARGS_APPEND} \
+  -s "${MAVEN_SETTINGS_PATH}" \
+  -Dquarkus.version="${QUARKUS_VERSION}" \
   -DplatformVersion="${QUARKUS_VERSION}" \
-  -Dextensions="${extensions}"
+  -Dextensions="${extensions}" \
+  ${QUARKUS_ADD_EXTENSION_ARGS} \
+  io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":add-extension

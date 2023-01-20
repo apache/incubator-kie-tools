@@ -41,20 +41,25 @@ mkdir -p ${mvn_local_repo}
 set -x
 echo "Create quarkus project to path ${build_target_dir}"
 cd ${build_target_dir}
-mvn -U "${MAVEN_OPTIONS}" \
-    io.quarkus.platform:quarkus-maven-plugin:"${quarkus_version}":create \
+mvn -U ${MAVEN_OPTIONS} \
     -Dmaven.repo.local=${mvn_local_repo} \
     -DprojectGroupId="org.acme" \
     -DprojectArtifactId="serverless-workflow-project" \
     -DprojectVersionId="1.0.0-SNAPSHOT" \
     -DplatformVersion="${quarkus_version}" \
-    -Dextensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing"
+    -Dextensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing" \
+    io.quarkus.platform:quarkus-maven-plugin:"${quarkus_version}":create
 
 echo "Build quarkus app"
 cd "serverless-workflow-project"
 # Quarkus version is enforced if some dependency pulled has older version of Quarkus set.
 # This avoids to have, for example, Quarkus BOMs or orther artifacts with multiple versions.
-mvn ${MAVEN_OPTIONS} -U clean install -DskipTests -Dquarkus.version="${quarkus_version}" -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false
+mvn -U ${MAVEN_OPTIONS} \
+    -DskipTests \
+    -Dquarkus.version="${quarkus_version}" \
+    -Dmaven.repo.local=${mvn_local_repo} \
+    -Dquarkus.container-image.build=false \
+    clean install
 
 cd ${build_target_dir}
 
@@ -65,6 +70,12 @@ rm -rfv serverless-workflow-project/src/main/docker
 rm -rfv serverless-workflow-project/.mvn/wrapper
 rm -rfv serverless-workflow-project/mvnw*
 rm -rfv serverless-workflow-project/src/test
+
+# Maven useless files
+# Needed to avoid Maven to automatically redownload from original Maven repository ...
+find ${mvn_local_repo} -name _remote.repositories -type f -delete
+find ${mvn_local_repo} -name _maven.repositories -type f -delete
+find ${mvn_local_repo} -name *.lastUpdated -type f -delete
 
 echo "Zip and copy scaffold project"
 zip -r kogito-swf-builder-quarkus-app.zip serverless-workflow-project/ 
