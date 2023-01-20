@@ -34,10 +34,13 @@ export const WorkspacesContextProviderWrapper: FunctionComponent = (props) => {
       workspacesSharedWorkerScriptUrl={"workspace/worker/sharedWorker.js"}
       shouldRequireCommitMessage={env.KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES}
       requestCommitMessageCallback={promiseModalController ? () => promiseModalController.open() : undefined}
-      // commitMessageValidatorUrl={}
     >
       {props.children}
-      <PromiseModal<string> title={i18n.commitModal.title} variant={ModalVariant.medium} customRef={promiseModalRef}>
+      <PromiseModal<string>
+        title={i18n.commitModal.title}
+        variant={ModalVariant.medium}
+        promiseModalRef={promiseModalRef}
+      >
         {({ onReturn, onClose }) => <WorkspaceCommitModal onReturn={onReturn} onClose={onClose} />}
       </PromiseModal>
     </WorkspacesContextProvider>
