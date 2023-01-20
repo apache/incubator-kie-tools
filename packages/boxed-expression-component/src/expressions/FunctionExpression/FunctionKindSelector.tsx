@@ -35,21 +35,19 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
   selectedFunctionKind,
   onFunctionKindSelect,
 }) => {
-  const { i18n } = useBoxedExpressionEditorI18n();
-  const boxedExpressionEditor = useBoxedExpressionEditor();
+  const { editorRef } = useBoxedExpressionEditor();
 
   const functionKindSelectionCallback = useCallback(
     (hide: () => void) => (event?: React.MouseEvent, itemId?: string | number) => {
-      boxedExpressionEditor.beeGwtService?.notifyUserAction();
       onFunctionKindSelect(itemId as FunctionExpressionDefinitionKind);
       hide();
     },
-    [boxedExpressionEditor.beeGwtService, onFunctionKindSelect]
+    [onFunctionKindSelect]
   );
 
   return (
     <PopoverMenu
-      appendTo={boxedExpressionEditor.editorRef?.current ?? undefined}
+      appendTo={editorRef?.current ?? undefined}
       className="function-kind-popover"
       position={PopoverPosition.leftEnd}
       hasAutoWidth={true}

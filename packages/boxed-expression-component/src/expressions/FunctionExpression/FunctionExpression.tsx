@@ -54,7 +54,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const { editorRef, decisionNodeId } = useBoxedExpressionEditor();
+  const { editorRef } = useBoxedExpressionEditor();
 
   const parametersColumnHeader = React.useMemo(
     () => (
@@ -93,7 +93,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     return [
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: decisionNodeId as any,
+        accessor: "function-expression" as any, // FIXME: Tiago -> ?
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
@@ -109,7 +109,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
         ],
       },
     ];
-  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
+  }, [functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
 
   const headerVisibility = React.useMemo(() => {
     return functionExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;

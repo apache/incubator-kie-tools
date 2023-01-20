@@ -48,10 +48,7 @@ import {
   BeeTableRef,
   getColumnsAtLastLevel,
 } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import "./DecisionTableExpression.css";
@@ -73,7 +70,6 @@ export function DecisionTableExpression(
   decisionTableExpression: DecisionTableExpressionDefinition & { isNested: boolean }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const generateOperationConfig = useCallback(
@@ -249,7 +245,7 @@ export function DecisionTableExpression(
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: "Outputs",
-      accessor: decisionTableExpression.isNested ? decisionTableExpression.id : (decisionNodeId as any),
+      accessor: "decision-table-expression" as any, // FIXME: Tiago -> ?
       label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
       dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
@@ -273,12 +269,9 @@ export function DecisionTableExpression(
 
     return [inputSection, outputSection, annotationSection];
   }, [
-    decisionNodeId,
     decisionTableExpression.annotations,
     decisionTableExpression.dataType,
-    decisionTableExpression.id,
     decisionTableExpression.input,
-    decisionTableExpression.isNested,
     decisionTableExpression.name,
     decisionTableExpression.output,
     setAnnotationColumnWidth,

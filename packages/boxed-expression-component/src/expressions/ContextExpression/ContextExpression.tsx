@@ -40,10 +40,7 @@ import {
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
@@ -56,7 +53,6 @@ type ROWTYPE = ContextExpressionDefinitionEntry;
 
 export function ContextExpression(contextExpression: ContextExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const entryInfoWidth = useMemo(
@@ -111,7 +107,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: decisionNodeId as any,
+        accessor: "context-expression" as any, // FIXME: Tiago -> ?
         label: contextExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
         dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
@@ -137,7 +133,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         ],
       },
     ];
-  }, [decisionNodeId, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
+  }, [contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {

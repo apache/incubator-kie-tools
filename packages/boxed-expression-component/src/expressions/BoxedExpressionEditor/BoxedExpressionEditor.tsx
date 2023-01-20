@@ -43,8 +43,6 @@ export interface BoxedExpressionEditorProps {
   pmmlParams?: PmmlParam[];
 }
 
-const isRunnerTable = false;
-
 export function BoxedExpressionEditor({
   dataTypes,
   decisionNodeId,

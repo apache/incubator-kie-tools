@@ -62,12 +62,12 @@ export function ExpressionDefinitionHeaderMenu({
   onExpressionHeaderUpdated,
   position,
 }: ExpressionDefinitionHeaderMenuProps) {
-  const boxedExpressionEditor = useBoxedExpressionEditor();
+  const { editorRef, beeGwtService } = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
 
   nameField = nameField ?? i18n.name;
   dataTypeField = dataTypeField ?? i18n.dataType;
-  appendTo = appendTo ?? boxedExpressionEditor.editorRef?.current ?? undefined;
+  appendTo = appendTo ?? editorRef?.current ?? undefined;
 
   const [dataType, setDataType] = useState(selectedDataType);
   const [expressionName, setExpressionName] = useState(selectedExpressionName);
@@ -91,15 +91,13 @@ export function ExpressionDefinitionHeaderMenu({
     setDataType(dataType);
   }, []);
 
-  const openManageDataType = useCallback(
-    () => boxedExpressionEditor.beeGwtService?.openManageDataType(),
-    [boxedExpressionEditor.beeGwtService]
-  );
+  const openManageDataType = useCallback(() => {
+    return beeGwtService?.openManageDataType();
+  }, [beeGwtService]);
 
   const saveExpression = useCallback(() => {
-    boxedExpressionEditor.beeGwtService?.notifyUserAction();
     onExpressionHeaderUpdated({ name: expressionName, dataType: dataType });
-  }, [boxedExpressionEditor.beeGwtService, expressionName, onExpressionHeaderUpdated, dataType]);
+  }, [expressionName, onExpressionHeaderUpdated, dataType]);
 
   const resetFormData = useCallback(() => {
     setExpressionName(selectedExpressionName);

@@ -14,37 +14,31 @@
  * limitations under the License.
  */
 
-import "./ParametersPopover.css";
-import * as _ from "lodash";
-import { DataTypeSelector } from "../ExpressionDefinitionHeaderMenu";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
 import {
-  DmnBuiltInDataType,
   ContextExpressionDefinitionEntryInfo,
-  getNextAvailablePrefixedName,
-  generateUuid,
+  DmnBuiltInDataType,
   FunctionExpressionDefinition,
+  generateUuid,
+  getNextAvailablePrefixedName,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { DataTypeSelector } from "../ExpressionDefinitionHeaderMenu";
+import "./ParametersPopover.css";
 
 export interface ParametersPopoverProps {
   parameters: ContextExpressionDefinitionEntryInfo[];
 }
 
 export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> = ({ parameters }) => {
-  const { beeGwtService } = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const addParameter = useCallback(() => {
-    beeGwtService?.notifyUserAction();
     setExpression((prev: FunctionExpressionDefinition) => {
       const newParameters = [
         ...prev.formalParameters,
@@ -63,7 +57,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
         formalParameters: newParameters,
       };
     });
-  }, [beeGwtService, setExpression]);
+  }, [setExpression]);
 
   return (
     <div className="parameters-editor" onMouseDown={(e) => e.stopPropagation()}>

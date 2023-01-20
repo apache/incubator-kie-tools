@@ -141,6 +141,7 @@ packages/stunner-editors/**/src/main/webapp/WEB-INF/lib/
 packages/stunner-editors/**/src/main/webapp/WEB-INF/model/
 packages/stunner-editors/**/src/main/webapp/model/
 packages/stunner-editors/**/kie-wb-common-dmn-webapp
+packages/stunner-editors/.idea
 
 # serverless-workflow-diagram-editor
 packages/serverless-workflow-diagram-editor/**/dependency-reduced-pom.xml
@@ -258,3 +259,4 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
