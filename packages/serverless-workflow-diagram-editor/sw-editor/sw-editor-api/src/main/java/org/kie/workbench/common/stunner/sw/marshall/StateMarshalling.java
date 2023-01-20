@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
@@ -45,7 +46,6 @@ import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeUnmarshaller;
 
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
-import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.marshallEdge;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallEdge;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
@@ -71,8 +71,12 @@ public interface StateMarshalling {
                 // Parse end.
                 boolean end = getEnd(state.getEnd());
                 if (end) {
+                    final End endBean = new End();
+                    String endName = name + "_end";
+                    Node endNode = context.addNode(endName, endBean);
+
                     final Transition tend = new Transition();
-                    tend.setTo(STATE_END);
+                    tend.setTo(endName);
                     Edge tendEdge = unmarshallEdge(context, tend);
                 }
 

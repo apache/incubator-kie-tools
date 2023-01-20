@@ -71,6 +71,8 @@ import com.ait.lienzo.client.core.event.NodeTouchMoveEvent;
 import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
 import com.ait.lienzo.client.core.event.NodeTouchStartEvent;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
+import com.ait.lienzo.client.core.event.OrthogonalPolylinePointsChangedEvent;
+import com.ait.lienzo.client.core.event.OrthogonalPolylinePointsChangedHandler;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
@@ -1095,6 +1097,11 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     @Override
     public HandlerRegistration addNodeDragStartHandler(final NodeDragStartHandler handler) {
         return addEnsureHandler(NodeDragStartEvent.getType(), handler);
+    }
+
+    @Override
+    public HandlerRegistration addOrthogonalPolylinePointsChangedHandler(OrthogonalPolylinePointsChangedHandler handler) {
+        return addEnsureHandler(OrthogonalPolylinePointsChangedEvent.getType(), handler);
     }
 
     @Override

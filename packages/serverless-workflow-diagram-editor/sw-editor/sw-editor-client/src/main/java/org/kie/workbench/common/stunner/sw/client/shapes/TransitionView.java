@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
+import com.ait.lienzo.client.core.event.OrthogonalPolylinePointsChangedEvent;
+import com.ait.lienzo.client.core.event.OrthogonalPolylinePointsChangedHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabel;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.tools.client.event.INodeEvent;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
@@ -47,6 +51,8 @@ public class TransitionView extends WiresConnectorViewExt<TransitionView> {
               (OrthogonalPolyLine) line[0],
               (MultiPathDecorator) line[1],
               (MultiPathDecorator) line[2]);
+
+        initHandlers((OrthogonalPolyLine) line[0]);
     }
 
     static Object[] createLine(AbstractDirectionalMultiPointShape<?> line, String color) {
@@ -67,6 +73,25 @@ public class TransitionView extends WiresConnectorViewExt<TransitionView> {
         final MultiPathDecorator tailDecorator = new MultiPathDecorator(tail);
 
         return new Object[]{line, headDecorator, tailDecorator};
+    }
+
+    private void initHandlers(final OrthogonalPolyLine line) {
+        OrthogonalPolylinePointsChangedHandler handler = new OrthogonalPolylinePointsChangedHandler() {
+            @Override
+            public INodeEvent.Type<OrthogonalPolylinePointsChangedHandler> getType() {
+                return new INodeEvent.Type<>();
+            }
+
+            @Override
+            public void onOrthogonalPointsChanged(OrthogonalPolylinePointsChangedEvent event) {
+                final WiresConnectorLabel label = getLabel();
+                if (null != label) {
+                    label.setOrthogonalPoints(event.getOrthogonalPoints().asList());
+                }
+            }
+        };
+
+        line.addOrthogonalPolylinePointsChangedHandler(handler);
     }
 
     private static MultiPath getArrowMultiPath() {

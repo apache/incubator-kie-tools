@@ -60,7 +60,7 @@ public class OperationStateMarshallingTest extends BaseMarshallingTest {
         assertTrue(hasIncomingEdges("State1"));
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
-        assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
+        assertTrue(hasOutgoingEdgeTo("State1", "State1_end"));
         assertDefinitionReferencedInNode(state.getActions()[0], "Call Function 1");
     }
 }
