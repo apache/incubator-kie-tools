@@ -40,10 +40,10 @@ public class CollectionJsonSerializer<T> extends JsonSerializer<Collection<T>> {
 
   @Override
   public void serialize(
-          Collection<T> collection,
-          String property,
-          JsonGenerator generator,
-          SerializationContext ctx) {
+      Collection<T> collection,
+      String property,
+      JsonGenerator generator,
+      SerializationContext ctx) {
     if (collection != null && !collection.isEmpty()) {
       JsonGenerator builder = generator.writeStartArray(property);
       JsonSerializationContext jsonSerializationContext = (JsonSerializationContext) ctx;
@@ -59,6 +59,6 @@ public class CollectionJsonSerializer<T> extends JsonSerializer<Collection<T>> {
 
   @Override
   public void serialize(Collection<T> obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException("62");
+    throw new UnsupportedOperationException();
   }
 }

@@ -21,11 +21,12 @@ import java.util.List;
 import jakarta.json.JsonException;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer;
+
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.IntegerJsonDeserializer;
 
 public class PrimitiveIntegerArrayJsonDeserializer extends AbstractArrayJsonDeserializer<int[]> {
 
-  private final BaseNumberJsonDeserializer.IntegerJsonDeserializer deser = new BaseNumberJsonDeserializer.IntegerJsonDeserializer();
+  private final IntegerJsonDeserializer deser = new IntegerJsonDeserializer();
 
   @Override
   public int[] deserialize(JsonValue json, DeserializationContext ctx) throws JsonException {

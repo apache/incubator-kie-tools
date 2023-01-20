@@ -19,20 +19,18 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 @JsType
 public class DefaultConditionTransition {
 
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     public Object end;
 
     public DefaultConditionTransition() {

@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.client.json.mapper.apt.definition.Proper
 import org.kie.workbench.common.stunner.client.json.mapper.apt.logger.TreeLogger;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.AbstractBeanJsonDeserializer;
 
+
 public class DeserializerGenerator extends AbstractGenerator {
 
   private ConstructorDeclaration constructor;

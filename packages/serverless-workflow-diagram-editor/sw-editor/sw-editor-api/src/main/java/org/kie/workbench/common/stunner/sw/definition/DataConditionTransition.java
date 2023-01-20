@@ -19,9 +19,7 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 @JsType
@@ -32,12 +30,12 @@ public class DataConditionTransition {
     public String condition;
 
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
-    public Object transition;
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    private Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class) //end of bool
-    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
-    public Object end;
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
+    private Object end;
 
     public DataConditionTransition() {
     }

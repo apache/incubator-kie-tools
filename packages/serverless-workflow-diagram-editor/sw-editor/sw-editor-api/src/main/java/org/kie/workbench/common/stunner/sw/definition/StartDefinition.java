@@ -20,7 +20,6 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeSerializer;
 
 @JSONMapper
@@ -30,8 +29,8 @@ public class StartDefinition {
     public String stateName;
 
     @JsonbTypeSerializer(ScheduleJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ScheduleJsonbTypeDeserializer.class)
-    public Object schedule;
+    @JsonbTypeDeserializer(ScheduleJsonbTypeSerializer.class)
+    private Object schedule;
 
     public final String getStateName() {
         return stateName;
