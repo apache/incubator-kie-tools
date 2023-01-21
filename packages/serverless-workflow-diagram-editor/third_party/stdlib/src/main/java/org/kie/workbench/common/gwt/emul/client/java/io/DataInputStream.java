@@ -15,8 +15,6 @@
  */
 package java.io;
 
-import com.google.gwt.corp.compatibility.Numbers;
-
 public class DataInputStream extends InputStream implements DataInput {
 
   private final InputStream is;
@@ -144,4 +142,5 @@ public class DataInputStream extends InputStream implements DataInput {
     // note: This is actually a valid implementation of this method, rendering it quite useless...
     return 0;
   }
+
 }

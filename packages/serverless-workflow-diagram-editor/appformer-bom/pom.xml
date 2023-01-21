@@ -477,6 +477,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+        <artifactId>stdlib</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
         <artifactId>common</artifactId>
         <version>${project.version}</version>
@@ -487,7 +493,24 @@
         <artifactId>processor</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
+        <artifactId>common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
+        <artifactId>processor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling</groupId>
+        <artifactId>eo-yaml</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>

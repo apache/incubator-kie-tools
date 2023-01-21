@@ -15,8 +15,6 @@
  */
 package java.io;
 
-import com.google.gwt.corp.compatibility.Numbers;
-
 public class DataOutputStream extends OutputStream implements DataOutput {
 
   OutputStream os;
