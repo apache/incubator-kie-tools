@@ -31,9 +31,10 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
     (e) => {
       e.preventDefault();
       e.stopPropagation();
-      if (!commitMessage) return;
+      if (!commitMessage) {
+        return;
+      }
       onReturn(commitMessage);
-      setCommitMessage("");
     },
     [commitMessage, onReturn]
   );

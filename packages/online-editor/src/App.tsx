@@ -36,7 +36,7 @@ import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 import { AuthSessionsContextProvider } from "./authSessions/AuthSessionsContext";
 import { AccountsContextProvider } from "./accounts/AccountsContext";
 import { GlobalAlertsContextProvider } from "./alerts";
-import { WorkspacesContextProviderWrapper } from "./workspace/components/WorkspacesContextProviderWrapper";
+import { WorkspacesContextProviderWithCustomCommitMessagesModal } from "./workspace/components/WorkspacesContextProviderWithCustomCommitMessagesModal";
 
 export function App() {
   return (
@@ -50,7 +50,7 @@ export function App() {
         [AuthSessionsContextProvider, {}],
         [AccountsContextProvider, {}],
         [GlobalAlertsContextProvider, []],
-        [WorkspacesContextProviderWrapper, {}],
+        [WorkspacesContextProviderWithCustomCommitMessagesModal, {}],
         [DmnRunnerInputsDispatchContextProvider, {}],
         [DevDeploymentsContextProvider, {}],
         [NavigationContextProvider, {}],

@@ -15,34 +15,39 @@
  */
 
 import * as React from "react";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useMemo } from "react";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
-import { PromiseModal, PromiseModalController } from "./PromiseModal";
+import { PromiseModal, PromiseModalRef } from "./PromiseModal";
 import { WorkspaceCommitModal } from "./WorkspaceCommitModal";
 import { ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useOnlineI18n } from "../../i18n";
 
-export const WorkspacesContextProviderWrapper: FunctionComponent = (props) => {
+export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionComponent = (props) => {
   const { env } = useEnv();
   const { i18n } = useOnlineI18n();
-  const [promiseModalController, promiseModalRef] = useController<PromiseModalController<string>>();
+  const [promiseModalController, promiseModalRef] = useController<PromiseModalRef<string>>();
+
+  const onCommitMessageRequest = useMemo(
+    () => (promiseModalController ? () => promiseModalController.open() : undefined),
+    [promiseModalController]
+  );
 
   return (
-    <WorkspacesContextProvider
-      workspacesSharedWorkerScriptUrl={"workspace/worker/sharedWorker.js"}
-      shouldRequireCommitMessage={env.KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES}
-      requestCommitMessageCallback={promiseModalController ? () => promiseModalController.open() : undefined}
-    >
-      {props.children}
-      <PromiseModal<string>
-        title={i18n.commitModal.title}
-        variant={ModalVariant.medium}
-        promiseModalRef={promiseModalRef}
-      >
+    <>
+      {onCommitMessageRequest && (
+        <WorkspacesContextProvider
+          workspacesSharedWorkerScriptUrl={"workspace/worker/sharedWorker.js"}
+          shouldRequireCommitMessage={env.KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES}
+          onCommitMessageRequest={onCommitMessageRequest}
+        >
+          {props.children}
+        </WorkspacesContextProvider>
+      )}
+      <PromiseModal<string> title={i18n.commitModal.title} variant={ModalVariant.medium} forwardRef={promiseModalRef}>
         {({ onReturn, onClose }) => <WorkspaceCommitModal onReturn={onReturn} onClose={onClose} />}
       </PromiseModal>
-    </WorkspacesContextProvider>
+    </>
   );
 };

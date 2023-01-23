@@ -23,20 +23,18 @@ import { GistOrigin, GitHubOrigin } from "../worker/api/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 
-type Props =
+type Props = {
+  children: React.ReactNode;
+  workspacesSharedWorkerScriptUrl: string;
+} & (
   | {
-      children: React.ReactNode;
-      workspacesSharedWorkerScriptUrl: string;
-      shouldRequireCommitMessage?: false;
-      commitMessageValidatorUrl?: string;
+      shouldRequireCommitMessage: false;
     }
   | {
-      children: React.ReactNode;
-      workspacesSharedWorkerScriptUrl: string;
       shouldRequireCommitMessage: true;
-      requestCommitMessageCallback?: () => Promise<string>;
-      commitMessageValidatorUrl?: string;
-    };
+      onCommitMessageRequest: () => Promise<string>;
+    }
+);
 
 export function WorkspacesContextProvider(props: Props) {
   const workspacesSharedWorker = useMemo(
@@ -153,12 +151,9 @@ export function WorkspacesContextProvider(props: Props) {
         return;
       }
       if (props.shouldRequireCommitMessage && !args.commitMessage) {
-        if (!props.requestCommitMessageCallback) {
-          throw new Error("Missing requestCommitMessageCallback!");
-        }
         let commitMessage: string;
         try {
-          commitMessage = await props.requestCommitMessageCallback();
+          commitMessage = await props.onCommitMessageRequest();
         } catch (e) {
           throw new Error("No commit message!");
         }

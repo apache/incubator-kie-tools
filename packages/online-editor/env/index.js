@@ -71,7 +71,7 @@ module.exports = composeEnv(
       },
       ONLINE_EDITOR__requireCustomCommitMessages: {
         default: true,
-        description: "Allows users to type a custom commit message when sycing with git.",
+        description: "Require users to type a custom commit message when creating a new commit.",
       },
       DMN_DEV_DEPLOYMENT__baseImageTag: {
         default: "latest",

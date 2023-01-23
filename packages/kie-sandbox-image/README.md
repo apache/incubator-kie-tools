@@ -54,11 +54,12 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-   |                Name                 |                                                     Description                                                      | Default                                                           |
-   | :---------------------------------: | :------------------------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------- |
-   | `KIE_SANDBOX_EXTENDED_SERVICES_URL` |                              The URL that points to the KIE Sandbox Extended Services.                               | See [defaultEnvJson.ts](../online-editor/build/defaultEnvJson.ts) |
-   |  `KIE_SANDBOX_GIT_CORS_PROXY_URL`   |                    The URL that points to the Git CORS proxy for interacting with Git providers.                     | See [defaultEnvJson.ts](../online-editor/build/defaultEnvJson.ts) |
-   |    `KIE_SANDBOX_AUTH_PROVIDERS`     | Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more. | See [defaultEnvJson.ts](../online-editor/build/defaultEnvJson.ts) |
+   |                     Name                     |                                                     Description                                                      |                               Default                               |
+   | :------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
+   |     `KIE_SANDBOX_EXTENDED_SERVICES_URL`      |                              The URL that points to the KIE Sandbox Extended Services.                               | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |       `KIE_SANDBOX_GIT_CORS_PROXY_URL`       |                    The URL that points to the Git CORS proxy for interacting with Git providers.                     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   | `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES` |                      Require users to type a custom commit message when creating a new commit.                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |         `KIE_SANDBOX_AUTH_PROVIDERS`         | Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
 
    ### Examples
 
@@ -68,20 +69,27 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       podman run -t -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
-   1. Enabling authentication with a GitHub Enterprise Server instance.
+   2. Enabling authentication with a GitHub Enterprise Server instance.
 
       ```bash
       podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{"id":"github_at_my_company","domain":"github.my-company.com","supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"],"type":"github","name":"GitHub @ MyCompany","enabled":true, "group":"git" }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
-1. Write a custom `Containerfile/Dockerfile` from the image:
+   3. Requiring users to input a custom commit message on every commit.
+
+      ```bash
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES='true' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      ```
+
+2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
    FROM quay.io/kie-tools/kie-sandbox-image:latest
 
    ENV KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value>
    ENV KIE_SANDBOX_GIT_CORS_PROXY_URL=<my_value>
+   ENV KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES=<my_value>
    ENV KIE_SANDBOX_AUTH_PROVIDERS=<my_value>
    ```
 
-1. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
+3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
