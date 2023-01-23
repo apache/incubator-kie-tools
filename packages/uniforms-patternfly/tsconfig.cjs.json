@@ -4,7 +4,8 @@
     "baseUrl": "src",
     "outDir": "dist/cjs",
     "rootDir": "src",
-    "module": "CommonJS",
+    "module": "commonjs",
+    "target": "es6",
     "esModuleInterop": true,
     "moduleResolution": "node"
   },

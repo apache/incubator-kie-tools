@@ -315,6 +315,71 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
+  examples/uniforms-patternfly:
+    specifiers:
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@kie-tools/uniforms-patternfly": workspace:*
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/react": ^17.0.6
+      "@types/react-dom": ^17.0.5
+      "@types/react-router": ^5.1.14
+      "@types/react-router-dom": ^5.1.7
+      "@types/simpl-schema": ^1.12.0
+      ajv: ^6.12.6
+      copy-webpack-plugin: ^11.0.0
+      graphql: ^15.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-router-dom: ^5.2.1
+      rimraf: ^3.0.2
+      simpl-schema: ^1.12.0
+      typescript: ^4.4.2
+      uniforms: ^3.10.2
+      uniforms-bridge-graphql: 3.10.2
+      uniforms-bridge-json-schema: 3.10.2
+      uniforms-bridge-simple-schema: 3.10.2
+      uniforms-bridge-simple-schema-2: 3.10.2
+      webpack: ^5.36.2
+      webpack-cli: ^4.10.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.8.0
+    dependencies:
+      "@kie-tools-core/patternfly-base": link:../../packages/patternfly-base
+      "@kie-tools/uniforms-patternfly": link:../../packages/uniforms-patternfly
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      ajv: 6.12.6
+      graphql: 15.8.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      simpl-schema: 1.12.0
+      uniforms: 3.10.2_react@17.0.2
+      uniforms-bridge-graphql: 3.10.2_react@17.0.2
+      uniforms-bridge-json-schema: 3.10.2_react@17.0.2
+      uniforms-bridge-simple-schema: 3.10.2_react@17.0.2
+      uniforms-bridge-simple-schema-2: 3.10.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/webpack-base": link:../../packages/webpack-base
+      "@kie-tools/root-env": link:../../packages/root-env
+      "@kie-tools/tsconfig": link:../../packages/tsconfig
+      "@types/react": 17.0.21
+      "@types/react-dom": 17.0.8
+      "@types/react-router": 5.1.14
+      "@types/react-router-dom": 5.1.7
+      "@types/simpl-schema": 1.12.2
+      copy-webpack-plugin: 11.0.0_webpack@5.70.0
+      react-router-dom: 5.3.0_react@17.0.2
+      rimraf: 3.0.2
+      typescript: 4.8.4
+      webpack: 5.70.0_webpack-cli@4.10.0
+      webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
+      webpack-merge: 5.8.0
+
   examples/webapp:
     specifiers:
       "@kie-tools-core/editor": workspace:*
@@ -18041,17 +18106,6 @@ packages:
     dependencies:
       tabbable: 5.1.5
 
-  /follow-redirects/1.14.9:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: true
-
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -18623,6 +18677,12 @@ packages:
       lodash: 4.17.21
     dev: false
 
+  /graphql/15.8.0:
+    resolution:
+      { integrity: sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw== }
+    engines: { node: ">= 10.x" }
+    dev: false
+
   /graphviz/0.0.9:
     resolution:
       { integrity: sha512-SmoY2pOtcikmMCqCSy2NO1YsRfu9OO0wpTlOYW++giGjfX1a6gax/m1Fo8IdUd0/3H15cTOfR1SMKwohj4LKsg== }
@@ -19060,7 +19120,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -27635,6 +27695,31 @@ packages:
     engines: { node: ">=4" }
     dev: true
 
+  /uniforms-bridge-graphql/3.10.2_react@17.0.2:
+    resolution:
+      { integrity: sha512-vPib/RSdX2uIIfdd1C//+hY7egGK9FaKvN8BD9vUFTslG+ZMdxpuSRtcXaeeKHTcLPMmAAZI8f2m1tyDPOGe2A== }
+    dependencies:
+      graphql: 15.8.0
+      invariant: 2.2.4
+      lodash: 4.17.21
+      tslib: 2.3.1
+      uniforms: 3.10.2_react@17.0.2
+    transitivePeerDependencies:
+      - react
+    dev: false
+
+  /uniforms-bridge-json-schema/3.10.2_react@17.0.2:
+    resolution:
+      { integrity: sha512-J2RG0WQrMH39M9124lhopXnbR/ycuLJk9IkA/ix9Dxpk1dQ7EuHLg/CeXTeZTeQiF2KZrKMYXxUswEmFh7kIMQ== }
+    dependencies:
+      invariant: 2.2.4
+      lodash: 4.17.21
+      tslib: 2.3.1
+      uniforms: 3.10.2_react@17.0.2
+    transitivePeerDependencies:
+      - react
+    dev: false
+
   /uniforms-bridge-json-schema/3.6.2:
     resolution:
       { integrity: sha512-NI9qfFpImxsljw+k17D/QEAQwKlQHVtJlTVRlcMI00pHf3bx+3Kg2E3f/b5OLHKiM0eK3xF1hldBU0zpopuw3g== }
@@ -27670,7 +27755,6 @@ packages:
       uniforms: 3.10.2_react@17.0.2
     transitivePeerDependencies:
       - react
-    dev: true
 
   /uniforms-bridge-simple-schema-2/3.6.2_react@17.0.2:
     resolution:
@@ -27681,6 +27765,18 @@ packages:
       simpl-schema: 1.12.0
       tslib: 2.3.1
       uniforms: 3.6.2_react@17.0.2
+    transitivePeerDependencies:
+      - react
+    dev: false
+
+  /uniforms-bridge-simple-schema/3.10.2_react@17.0.2:
+    resolution:
+      { integrity: sha512-eMC+W+8L0IsYH/8tQoi9okLWzqN+ffAl4B9XEdJabnQN7ECWNNuJBhOrlNBNdYWJtbG/gJkptib/bcCbZ8lv/w== }
+    dependencies:
+      invariant: 2.2.4
+      lodash: 4.17.21
+      tslib: 2.3.1
+      uniforms: 3.10.2_react@17.0.2
     transitivePeerDependencies:
       - react
     dev: false

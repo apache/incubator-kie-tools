@@ -4,7 +4,8 @@
     "baseUrl": "src",
     "outDir": "dist/esm",
     "rootDir": "src",
-    "module": "ES6",
+    "module": "es6",
+    "target": "es6",
     "esModuleInterop": true,
     "moduleResolution": "node"
   },
