@@ -1,8 +1,0 @@
-{
-  "files": [],
-  "references": [
-    { "path": "tsconfig.es5.json" },
-    { "path": "tsconfig.es6.json" },
-    { "path": "tsconfig.esm.json" },
-  ]
-}

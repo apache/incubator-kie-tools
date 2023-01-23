@@ -1,15 +1,26 @@
-import React, {
-  Children,
-  cloneElement,
-  isValidElement,
-  ReactNode,
-} from 'react';
-import { Split, SplitItem, Tooltip } from '@patternfly/react-core';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms';
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import ListItemField from './ListItemField';
-import ListAddField from './ListAddField';
+import * as React from "react";
+import { Children, cloneElement, isValidElement, ReactNode } from "react";
+import { Split, SplitItem, Tooltip } from "@patternfly/react-core";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
+import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
+import ListItemField from "./ListItemField";
+import ListAddField from "./ListAddField";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -24,14 +35,14 @@ export type ListFieldProps = HTMLFieldProps<
   }
 >;
 
-declare module 'uniforms' {
+declare module "uniforms" {
   interface FilterDOMProps {
     wrapperCol: never;
     labelCol: never;
   }
 }
 
-filterDOMProps.register('minCount', 'wrapperCol', 'labelCol');
+filterDOMProps.register("minCount", "wrapperCol", "labelCol");
 
 function ListField({
   children = <ListItemField name="$" />,
@@ -66,7 +77,7 @@ function ListField({
         </SplitItem>
         <SplitItem isFilled />
         <SplitItem>
-          <ListAddField name={'$'} initialCount={initialCount} />
+          <ListAddField name={"$"} initialCount={initialCount} />
         </SplitItem>
       </Split>
 
@@ -74,9 +85,9 @@ function ListField({
         {value?.map((item, itemIndex) =>
           Children.map(children, (child, childIndex) =>
             isValidElement(child)
-              ? cloneElement(child, {
+              ? cloneElement(child as React.ReactElement<{ name: string }, string>, {
                   key: `${itemIndex}-${childIndex}`,
-                  name: child.props.name?.replace('$', '' + itemIndex),
+                  name: child.props.name?.replace("$", "" + itemIndex),
                   ...itemProps,
                 })
               : child

@@ -1,22 +1,40 @@
-import invariant from 'invariant';
-import { createAutoField } from 'uniforms';
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import BoolField from './BoolField';
-import DateField from './DateField';
-import ListField from './ListField';
-import NestField from './NestField';
-import NumField from './NumField';
-import RadioField from './RadioField';
-import SelectField from './SelectField';
-import TextField from './TextField';
+import { createAutoField } from "uniforms";
+
+import BoolField from "./BoolField";
+import DateField from "./DateField";
+import ListField from "./ListField";
+import NestField from "./NestField";
+import NumField from "./NumField";
+import RadioField from "./RadioField";
+import SelectCheckboxField from "./SelectCheckboxField";
+import SelectInputsField from "./SelectInputsField";
+import TextField from "./TextField";
 
 export type AutoFieldProps = Parameters<typeof AutoField>[0];
 
-const AutoField = createAutoField(props => {
+const AutoField = createAutoField((props) => {
   if (props.allowedValues) {
     return props.checkboxes && props.fieldType !== Array
       ? RadioField
-      : SelectField;
+      : props.checkboxes
+      ? SelectCheckboxField
+      : SelectInputsField;
   }
 
   switch (props.fieldType) {
@@ -34,7 +52,7 @@ const AutoField = createAutoField(props => {
       return TextField;
   }
 
-  return invariant(false, 'Unsupported field type: %s', props.fieldType);
+  return new Error(`Unsupported field type: ${props.fieldType}`) as any;
 });
 
 export default AutoField;

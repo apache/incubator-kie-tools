@@ -108,6 +108,8 @@ digraph G {
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/uniforms-patternfly" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -122,7 +124,6 @@ digraph G {
   "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-scripts/bootstrap" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/run-script-if" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/sparse-checkout" [ style = "dashed", color = "black" ];
@@ -342,6 +343,11 @@ digraph G {
   "@kie-tools/uniforms-bootstrap4-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-bootstrap4-codegen" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-bootstrap4-codegen" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];

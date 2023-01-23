@@ -1,39 +1,49 @@
-import React, { useCallback, useMemo } from 'react';
-import { connectField, FieldProps } from 'uniforms';
-import {
-  DatePicker,
-  Flex,
-  FlexItem,
-  InputGroup,
-  TextInputProps,
-  TimePicker,
-} from '@patternfly/react-core';
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import wrapField from './wrapField';
+import * as React from "react";
+import { useCallback, useMemo } from "react";
+import { connectField, FieldProps } from "uniforms";
+import { DatePicker, Flex, FlexItem, InputGroup, TextInputProps, TimePicker } from "@patternfly/react-core";
+
+import wrapField from "./wrapField";
 
 export type DateFieldProps = FieldProps<
   Date,
   TextInputProps,
   {
-    inputRef: React.RefObject<HTMLInputElement>;
+    inputRef?: React.RefObject<HTMLInputElement>;
     max?: string;
     min?: string;
   }
 >;
 
-const DateConstructor = (typeof global === 'object' ? global : window).Date;
+const DateConstructor = (typeof global === "object" ? global : window).Date;
 
 function DateField(props: DateFieldProps) {
   const parseDate = useCallback(() => {
     if (!props.value) {
-      return '';
+      return "";
     }
     return props.value.toISOString().slice(0, -14);
   }, [props.value]);
 
   const parseTime = useCallback(() => {
     if (!props.value) {
-      return '';
+      return "";
     }
     return `${props.value.getUTCHours()}:${props.value.getUTCMinutes()}`;
   }, [props.value]);
@@ -45,9 +55,9 @@ function DateField(props: DateFieldProps) {
       } else {
         const newDate = new DateConstructor(date);
         const time = parseTime();
-        if (time !== '') {
-          newDate.setUTCHours(parseInt(time?.split(':')[0]));
-          newDate.setUTCMinutes(parseInt(time?.split(':')[1]?.split(' ')[0]));
+        if (time !== "") {
+          newDate.setUTCHours(parseInt(time?.split(":")[0]));
+          newDate.setUTCMinutes(parseInt(time?.split(":")[1]?.split(" ")[0]));
         } else {
           newDate.setUTCHours(0);
           newDate.setUTCMinutes(0);
@@ -62,7 +72,7 @@ function DateField(props: DateFieldProps) {
     if (props.value) {
       if (props.min) {
         const minDate = new Date(props.min);
-        if (minDate.toString() === 'Invalid Date') {
+        if (minDate.toString() === "Invalid Date") {
           return false;
         } else if (props.value < minDate) {
           return `Should be after ${minDate.toISOString()}`;
@@ -70,7 +80,7 @@ function DateField(props: DateFieldProps) {
       }
       if (props.max) {
         const maxDate = new Date(props.max);
-        if (maxDate.toString() === 'Invalid Date') {
+        if (maxDate.toString() === "Invalid Date") {
           return false;
         } else if (props.value > maxDate) {
           return `Should be before ${maxDate.toISOString()}`;
@@ -87,9 +97,9 @@ function DateField(props: DateFieldProps) {
         if (hours && minutes) {
           newDate.setUTCHours(hours);
           newDate.setUTCMinutes(minutes);
-        } else if (time !== '') {
-          const localeHours = parseInt(time?.split(':')[0]);
-          const localeMinutes = parseInt(time?.split(':')[1]?.split(' ')[0]);
+        } else if (time !== "") {
+          const localeHours = parseInt(time?.split(":")[0]);
+          const localeMinutes = parseInt(time?.split(":")[1]?.split(" ")[0]);
           if (!isNaN(localeHours) && !isNaN(localeMinutes)) {
             newDate.setUTCHours(localeHours);
             newDate.setUTCMinutes(localeMinutes);
@@ -105,23 +115,17 @@ function DateField(props: DateFieldProps) {
   );
 
   return wrapField(
-    props,
-    <Flex
-      style={{ margin: 0 }}
-      direction={{ default: 'column' }}
-      id={props.id}
-      name={props.name}
-      ref={props.inputRef}
-    >
+    props as any,
+    <Flex style={{ margin: 0 }} direction={{ default: "column" }} id={props.id} name={props.name} ref={props.inputRef}>
       <FlexItem style={{ margin: 0 }}>
-        <InputGroup style={{ background: 'transparent' }}>
+        <InputGroup style={{ background: "transparent" }}>
           <DatePicker
             id={`date-picker-${props.id}`}
             data-testid={`date-picker`}
             isDisabled={props.disabled}
             name={props.name}
             onChange={onDateChange}
-            value={parseDate() ?? ''}
+            value={parseDate() ?? ""}
           />
           <TimePicker
             id={`time-picker-${props.id}`}
@@ -129,8 +133,8 @@ function DateField(props: DateFieldProps) {
             isDisabled={props.disabled || !props.value}
             name={props.name}
             onChange={onTimeChange}
-            style={{ width: '120px' }}
-            value={parseTime() ?? ''}
+            style={{ width: "120px" }}
+            value={parseTime() ?? ""}
             is24Hour
           />
         </InputGroup>
@@ -139,9 +143,9 @@ function DateField(props: DateFieldProps) {
         <div
           id={`${props.id}-invalid-date-time`}
           style={{
-            fontSize: '0.875rem',
-            color: '#c9190b',
-            marginTop: '0.25rem',
+            fontSize: "0.875rem",
+            color: "#c9190b",
+            marginTop: "0.25rem",
           }}
         >
           {isInvalid}

@@ -1,8 +1,24 @@
-import React from 'react';
-import { Radio as RadioField, RadioProps } from '@patternfly/react-core';
-import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms';
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import wrapField from './wrapField';
+import * as React from "react";
+import { Radio as RadioField } from "@patternfly/react-core";
+import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
+
+import wrapField from "./wrapField";
 
 export type RadioFieldProps = HTMLFieldProps<
   string,
@@ -12,12 +28,12 @@ export type RadioFieldProps = HTMLFieldProps<
     allowedValues: string[];
     onChange: (value: string) => void;
     value?: string;
-    disabled: boolean;
+    disabled?: boolean;
   }
 >;
 
 const Radio = (props: RadioFieldProps) => {
-  filterDOMProps.register('checkboxes', 'decimal');
+  filterDOMProps.register("checkboxes", "decimal");
   return wrapField(
     props,
     <div {...filterDOMProps(props)}>

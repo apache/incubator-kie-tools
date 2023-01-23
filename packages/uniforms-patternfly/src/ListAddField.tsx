@@ -1,14 +1,24 @@
-import React from 'react';
-import cloneDeep from 'lodash/cloneDeep';
-import { Button, ButtonProps } from '@patternfly/react-core';
-import { PlusCircleIcon } from '@patternfly/react-icons';
-import {
-  connectField,
-  FieldProps,
-  filterDOMProps,
-  joinName,
-  useField,
-} from 'uniforms';
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import * as React from "react";
+import cloneDeep from "lodash/cloneDeep";
+import { Button, ButtonProps } from "@patternfly/react-core";
+import { PlusCircleIcon } from "@patternfly/react-icons";
+import { connectField, FieldProps, filterDOMProps, joinName, useField } from "uniforms";
 
 export type ListAddFieldProps = FieldProps<
   unknown,
@@ -22,32 +32,20 @@ export type ListAddFieldProps = FieldProps<
   }
 >;
 
-function ListAdd({
-  disabled = false,
-  name,
-  value,
-  ...props
-}: ListAddFieldProps) {
+function ListAdd({ disabled = false, name, value, ...props }: ListAddFieldProps) {
   const nameParts = joinName(null, name);
   const parentName = joinName(nameParts.slice(0, -1));
-  const parent = useField<{ maxCount?: number }, unknown[]>(
-    parentName,
-    {},
-    { absoluteName: true }
-  )[0];
+  const parent = useField<{ maxCount?: number }, unknown[]>(parentName, {}, { absoluteName: true })[0];
 
-  const limitNotReached =
-    !disabled && !(parent.maxCount! <= parent.value!.length);
+  const limitNotReached = !disabled && !(parent.maxCount! <= parent.value!.length);
 
   return (
     <Button
       variant="plain"
-      style={{ paddingLeft: '0', paddingRight: '0' }}
+      style={{ paddingLeft: "0", paddingRight: "0" }}
       disabled={!limitNotReached}
       onClick={() => {
-        !disabled &&
-          limitNotReached &&
-          parent.onChange(parent.value!.concat([cloneDeep(value)]));
+        !disabled && limitNotReached && parent.onChange(parent.value!.concat([cloneDeep(value)]));
       }}
       {...filterDOMProps(props)}
     >
@@ -58,5 +56,5 @@ function ListAdd({
 
 export default connectField<ListAddFieldProps>(ListAdd, {
   initialValue: false,
-  kind: 'leaf',
+  kind: "leaf",
 });
