@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
