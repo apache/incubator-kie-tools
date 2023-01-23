@@ -139,9 +139,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
     [location, isRouteInSettingsSection]
   );
 
-  const sidebar = (
-    <PageSidebar nav={<HomePageNav pathname={location.pathname}></HomePageNav>} isNavOpen={isNavOpen} theme="dark" />
-  );
+  const sidebar = <PageSidebar nav={pageNav} isNavOpen={isNavOpen} theme="dark" />;
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;
