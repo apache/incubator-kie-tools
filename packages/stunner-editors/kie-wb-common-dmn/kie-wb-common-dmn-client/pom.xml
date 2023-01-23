@@ -295,7 +295,7 @@
       <artifactId>kie-dmn-feel-gwt-functions</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
       </exclusions>
@@ -336,12 +336,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.antlr</groupId>
+      <groupId>org.antlr4gwt</groupId>
       <artifactId>antlr4gwt-runtime</artifactId>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4gwt-annotations</artifactId>
         </exclusion>
         <exclusion>
