@@ -17,6 +17,7 @@ package builder
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/kiegroup/container-builder/api"
@@ -88,9 +89,24 @@ func (b *Builder) ScheduleNewBuildWithContainerFile(workflowName string, imageTa
 }
 
 func (b *Builder) ScheduleNewKanikoBuildWithContainerFile(workflowName string, imageTag string, workflowDefinition []byte, build api.BuildSpec) (*api.Build, error) {
-	ib := b.getImageBuilderForKaniko(workflowName, imageTag, workflowDefinition, build.Tasks[0].Kaniko)
-	ib.WithTimeout(5 * time.Minute)
-	return b.BuildImage(ib.Build())
+	if task, found := findKanikoTask(build.Tasks); !found {
+		return nil, fmt.Errorf("Unable to find KanikoTask in Build CR for workflow %s", workflowName)
+	} else {
+		ib := b.getImageBuilderForKaniko(workflowName, imageTag, workflowDefinition, task)
+		ib.WithTimeout(5 * time.Minute)
+		return b.BuildImage(ib.Build())
+	}
+}
+
+func findKanikoTask(tasks []api.Task) (*api.KanikoTask, bool) {
+	if tasks != nil && len(tasks) > 0 {
+		for _, task := range tasks {
+			if task.Kaniko != nil {
+				return task.Kaniko, true
+			}
+		}
+	}
+	return nil, false
 }
 
 func (b *Builder) ReconcileBuild(build *api.Build, cli client.Client) (*api.Build, error) {
