@@ -120,7 +120,7 @@ export async function setupDashboardEditorControls(args: {
   args.context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async () => {
       await vscode.commands.executeCommand("vscode.open", getFilePathFromGlobalState(args.context), {
-        viewColumn: vscode.ViewColumn.One, // Not ideal, but works well enough.
+        viewColumn: vscode.ViewColumn.One,
         preserveFocus: false,
         background: false,
       });
