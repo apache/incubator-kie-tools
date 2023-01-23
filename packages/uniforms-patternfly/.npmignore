@@ -1,0 +1,14 @@
+__tests__
+__mocks__
+.vscode
+.circleci
+examples
+coverage
+jest.config.js
+.prettierignore
+.prettierrc.json
+.eslintignore
+.eslintrc.json
+.babelrc.json
+setupEnzyme.js
+transform.js
