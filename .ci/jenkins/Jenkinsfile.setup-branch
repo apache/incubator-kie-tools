@@ -49,6 +49,42 @@ pipeline {
             }
         }
 
+        stage('Clean release notes') {
+            when {
+                expression { isMainBranch() }
+            }
+            steps {
+                script {
+                    String releaseNotesFilename = 'RELEASE_NOTES.md'
+                    dir(getRepoName()) {
+                        sh "rm -rf ${releaseNotesFilename}"
+                        writeFile(file: releaseNotesFilename, text: getCleanedReleaseNotes())
+                    }
+                }
+            }
+        }
+
+        stage('Update branch') {
+            steps {
+                script {
+                    sh '''
+                        git checkout -- go.mod
+                        git checkout -- go.sum
+                    '''
+                    if (githubscm.isThereAnyChanges()) {
+                        githubscm.commitChanges("[${helper.getBuildBranch()}] Update version to ${helper.getProjectVersion()}", {
+                            sh '''
+                                git add .
+                            '''
+                        })
+                        githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
+                    } else {
+                        println '[WARN] no changes to commit'
+                    }
+                }
+            }
+        }
+
         stage('Build Kogito Operator') {
             steps {
                 sh "make container-build BUILDER=${env.CONTAINER_ENGINE}"
@@ -79,27 +115,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Update branch') {
-            steps {
-                script {
-                    sh '''
-                        git checkout -- go.mod
-                        git checkout -- go.sum
-                    '''
-                    if (githubscm.isThereAnyChanges()) {
-                        githubscm.commitChanges("[${helper.getBuildBranch()}] Update version to ${helper.getProjectVersion()}", {
-                            sh '''
-                                git add .
-                            '''
-                        })
-                        githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
-                    } else {
-                        println '[WARN] no changes to commit'
-                    }
-                }
-            }
-        }
     }
     post {
         unsuccessful {
@@ -124,4 +139,20 @@ void sendNotification() {
 
 String getOperatorVersion() {
     return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
+}
+
+boolean isMainBranch() {
+    return env.IS_MAIN_BRANCH?.toBoolean()
+}
+
+String getCleanedReleaseNotes() {
+    return '''
+<!-- Keep them in alphabetical order -->
+## Enhancements
+
+## Bug Fixes
+
+## Known Issues
+
+'''
 }
