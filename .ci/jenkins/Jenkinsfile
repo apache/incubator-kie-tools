@@ -61,10 +61,10 @@ pipeline {
                 script {
                     //Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
                     if (env.MAVEN_MIRROR_URL != '') {
-                        sh 'python3 scripts/update-tests.py --ignore-self-signed-cert'
+                        runPythonCommand('python3 scripts/update-tests.py --ignore-self-signed-cert')
                     }
 
-                    sh 'make clone-repos'
+                    runPythonCommand('make clone-repos')
                 }
             }
         }
@@ -156,11 +156,11 @@ void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
 }
 
 void buildImage(String imageName) {
-    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true ignore_tag=${isProdCI()}"
+    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true ignore_tag=${isProdCI()}")
 }
 
 void testImage(String imageName) {
-    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true ignore_tag=${isProdCI()}"
+    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true ignore_tag=${isProdCI()}")
 }
 
 String getMakeBuildImageArgs() {
@@ -201,9 +201,13 @@ String[] getImages() {
     if (isProdCI()) {
         listCmd += ' arg=--prod'
     }
-    return sh(script: "${listCmd} | tr '\\n' ','", returnStdout: true).trim().split(',')
+    return runPythonCommand("${listCmd} | tr '\\n' ','", true).trim().split(',')
 }
 
 boolean isProdCI() {
     return env.PROD_CI ? env.PROD_CI.toBoolean() : false
+}
+
+void runPythonCommand(String cmd, boolean stdout = false) {
+    return sh(script: "source ~/virtenvs/cekit/bin/activate && ${cmd}", returnStdout: stdout)
 }
