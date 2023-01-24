@@ -228,7 +228,6 @@ export function useApportionedColumnWidthsIfNestedTable(
 
     apportionedWidths.forEach((nextWidth, index) => {
       if (columns[index].isFrozen) {
-        console.info(nextWidth);
         return;
       }
 

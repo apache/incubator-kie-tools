@@ -18,7 +18,6 @@
  * This interface defines all the API methods which BoxedExpressionEditor component can use to dialog with GWT Layer
  */
 export interface BeeGwtService {
-  notifyUserAction: () => void; // That's for the undo/redo stack.
   openManageDataType: () => void; // Just open the data types tab
   onLogicTypeSelect: (selectedLogicType: string) => void; // FIXME: Tiago -> Rename to "onRootExpressionLogicTypeSelected"
   selectObject: (uuid?: string) => void; // Changes the Properties panel

@@ -12,6 +12,7 @@ import {
   useNestedExpressionContainerWithNestedExpressions,
   useNestedTableLastColumnMinWidth,
 } from "../../resizing/Hooks";
+import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
@@ -77,6 +78,16 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
     [setExpression]
   );
 
+  const nestedExpressionContainer = useNestedExpressionContainer();
+  const minWidth = useMemo(() => {
+    return Math.max(
+      nestedExpressionContainer.minWidth -
+        JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH -
+        JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+      JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH
+    );
+  }, [nestedExpressionContainer]);
+
   const beeTableColumns = useMemo(
     () => [
       {
@@ -94,10 +105,10 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
         isRowIndexColumn: false,
         width: functionExpression.classAndMethodNamesWidth,
         setWidth: setClassAndMethodNamesWidth,
-        minWidth: JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+        minWidth,
       },
     ],
-    [functionExpression.classAndMethodNamesWidth, setClassAndMethodNamesWidth]
+    [functionExpression.classAndMethodNamesWidth, minWidth, setClassAndMethodNamesWidth]
   );
 
   const beeTableRows = useMemo(() => {

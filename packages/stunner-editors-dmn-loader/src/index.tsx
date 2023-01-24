@@ -98,12 +98,11 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       default:
         assertUnreachable(logicType);
     }
+
+    window.beeApiWrapper?.notifyUserAction();
   }, [expression]);
 
   const beeGwtService: BeeGwtService = {
-    notifyUserAction(): void {
-      window.beeApiWrapper?.notifyUserAction();
-    },
     openManageDataType(): void {
       window.beeApiWrapper?.openManageDataType();
     },
