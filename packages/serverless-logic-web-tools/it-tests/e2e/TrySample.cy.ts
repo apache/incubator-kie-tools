@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const ctrlOrCmd = Cypress.platform ? "Cmd" : "Ctrl";
+const ctrlOrCmd = Cypress.platform === "darwin" ? "Cmd" : "Ctrl";
 
 describe("Serverless Logic Web Tools - Try samples test", () => {
   beforeEach(() => {
