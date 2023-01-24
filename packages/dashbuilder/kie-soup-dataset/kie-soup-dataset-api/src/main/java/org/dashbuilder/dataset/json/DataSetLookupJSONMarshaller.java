@@ -530,7 +530,7 @@ public class DataSetLookupJSONMarshaller {
         if (groupFunctionsJson == null) {
             return null;
         }
-        List<GroupFunction> groupFunctions = new ArrayList<GroupFunction>(groupFunctionsJson.length());
+        var groupFunctions = new ArrayList<GroupFunction>(groupFunctionsJson.length());
         for (int i = 0; i < groupFunctionsJson.length(); i++) {
             groupFunctions.add(parseGroupFunction(groupFunctionsJson.getObject(i)));
         }
@@ -545,13 +545,14 @@ public class DataSetLookupJSONMarshaller {
         var sourceId = groupFunctionJson.getString(keySet(SOURCE));
         var functionTypeStr = groupFunctionJson.getString(keySet(FUNCTION));
         var functionType = AggregateFunctionType.getByName(functionTypeStr);
+        var columnId = groupFunctionJson.getString(keySet(COLUMN));
         if (functionTypeStr != null && functionType == null) {
             throw new IllegalArgumentException("Function " + functionTypeStr +
                     " is invalid. The following values are supported for \"function\": \n" + enumToString(
                             AggregateFunctionType.values()));
         }
         groupFunction.setSourceId(sourceId);
-        groupFunction.setColumnId(groupFunctionJson.getString(keySet(COLUMN)));
+        groupFunction.setColumnId(columnId);
         groupFunction.setFunction(functionType);
         return groupFunction;
     }

@@ -257,7 +257,7 @@ public class ScenarioSimulationUtils {
         ScenarioSimulationBuilders.HeaderBuilder headerBuilder = ScenarioSimulationBuilders.HeaderBuilder.get(factoryHeader);
 
         headerBuilder.setColumnId(columnId);
-
+        headerBuilder.setColumnGroup(columnGroup);
         headerBuilder.setColumnTitle(columnGroup);
         headerBuilder.setReadOnly(true);
 

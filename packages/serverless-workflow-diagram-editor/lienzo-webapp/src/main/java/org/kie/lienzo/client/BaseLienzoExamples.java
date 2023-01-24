@@ -81,6 +81,7 @@ public class BaseLienzoExamples {
 
     public void createTest(Example test) {
         HTMLDivElement e1 = (HTMLDivElement) document.createElement("div");
+        e1.setAttribute("class", "menu");
         elemental2.dom.Text e1Text = document.createTextNode(test.getTitle());
         e1.appendChild(e1Text);
         e1.addEventListener("click", evt -> {

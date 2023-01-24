@@ -33,14 +33,16 @@ LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_Q
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),arm64)
 	GOARCH = arm64
+	BIN_BUILD_DARWIN=$(BIN_DARWIN_ARM64)
 else
 	GOARCH = amd64
+	BIN_BUILD_DARWIN=$(BIN_DARWIN_AMD64)
 endif
 
 build-all: build-linux-amd64 build-darwin-amd64 build-darwin-arm64 build-win32-amd64
 
 build-darwin:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_DARWIN_AMD64) $(MAIN_PATH)
+	CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_BUILD_DARWIN) $(MAIN_PATH)
 
 build-darwin-amd64:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_DARWIN_AMD64) $(MAIN_PATH)

@@ -21,7 +21,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import * as path from "path";
 import * as fs from "fs";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
         type: "base64png",
         filePathGlob: "**/*.base64png",
         resourcesPathPrefix: "dist/",
-        envelopePath: "dist/envelope/index.js",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/envelope/index.js" },
       }),
     ]),
     backendProxy: backendProxy,

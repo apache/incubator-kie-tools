@@ -61,8 +61,6 @@ public class C3LineChartDisplayer extends C3XYDisplayer<C3LineChartDisplayer.Vie
     @Override
     public DisplayerConstraints createDisplayerConstraints() {
         DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
-                .setGroupRequired(true)
-                .setGroupColumn(true)
                 .setMaxGroups(1)
                 .setMinColumns(2)
                 .setMaxColumns(10)

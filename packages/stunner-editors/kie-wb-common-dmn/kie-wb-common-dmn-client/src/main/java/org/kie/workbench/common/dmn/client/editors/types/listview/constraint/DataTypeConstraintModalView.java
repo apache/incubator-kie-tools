@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
@@ -52,7 +53,7 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 @Dependent
 public class DataTypeConstraintModalView implements DataTypeConstraintModal.View {
 
-    private static final String DISABLED_CLASS = "disabled";
+    private static final String DISABLED = "disabled";
 
     @DataField("header")
     private final HTMLDivElement header;
@@ -234,12 +235,18 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Override
     public void enableOkButton() {
-        okButton.classList.remove(DISABLED_CLASS);
+        okButton.removeAttribute(DISABLED);
+        getOkButtonClassList().remove(DISABLED);
     }
 
     @Override
     public void disableOkButton() {
-        okButton.classList.add(DISABLED_CLASS);
+        okButton.setAttribute(DISABLED, true);
+        getOkButtonClassList().add(DISABLED);
+    }
+
+    DOMTokenList getOkButtonClassList() {
+        return okButton.classList;
     }
 
     private String getConstraintType() {

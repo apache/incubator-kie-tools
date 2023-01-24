@@ -1141,7 +1141,7 @@ public class SQLDataSetProvider implements DataSetProvider, DataSetDefRegistryLi
                 IntervalBuilder intervalBuilder = intervalBuilderLocator.lookup(ColumnType.DATE, dateGroupColumn.getColumnGroup().getStrategy());
                 IntervalList intervalList = intervalBuilder.build(dateGroupColumn);
                 if (intervalList.size() > dataSet.getRowCount() && dataSet.getRowCountNonTrimmed() < 0) {
-                    List values = dateGroupColumn.getValues();
+                    List<?> values = dateGroupColumn.getValues();
                     int valueIdx = 0;
 
                     for (int intervalIdx = 0; intervalIdx < intervalList.size(); intervalIdx++) {

@@ -24,7 +24,7 @@ import org.mockito.Mock;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TEXT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TITLE_TEXT;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

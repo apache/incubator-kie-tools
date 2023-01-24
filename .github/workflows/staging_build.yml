@@ -177,12 +177,12 @@ jobs:
           DMN_DEV_DEPLOYMENT__gtmId: ""
           DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
-          SERVERLESS_LOGIC_SANDBOX__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
-          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
-          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
-          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
-          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
-          SERVERLESS_LOGIC_SANDBOX__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+          SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
+          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+          SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
         run: |
           pnpm -r build:prod
 
@@ -340,7 +340,7 @@ jobs:
           git commit -m "Deploy ${{ inputs.tag }}-prerelease (staging)"
           git push origin main
 
-      - name: "STAGING: Deploy Serverless Logic Sandbox to serverless-logic-sandbox-deployment (Ubuntu only)"
+      - name: "STAGING: Deploy Serverless Logic Web Tools to serverless-logic-sandbox-deployment (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/serverless-logic-sandbox-deployment
         env:
@@ -349,8 +349,8 @@ jobs:
           echo "Reset deployment dir"
           rm -rf $DEPLOYMENT_DIR
 
-          echo "Copy Serverless Logic Sandbox resources to the deployment dir"
-          cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist $DEPLOYMENT_DIR
+          echo "Copy Serverless Logic Web Tools resources to the deployment dir"
+          cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools/dist $DEPLOYMENT_DIR
 
           echo "Commit changes and push"
           git add $DEPLOYMENT_DIR
@@ -363,9 +363,9 @@ jobs:
         run: |
           zip -r dist.zip dist/*
 
-      - name: "STAGING: Compress Serverless Logic Sandbox (Ubuntu only)"
+      - name: "STAGING: Compress Serverless Logic Web Tools (Ubuntu only)"
         if: runner.os == 'Linux'
-        working-directory: ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox
+        working-directory: ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools
         run: |
           zip -r dist.zip dist/*
 
@@ -380,15 +380,15 @@ jobs:
           asset_name: STAGING__online_editor_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload Serverless Logic Sandbox (Ubuntu only)"
+      - name: "STAGING: Upload Serverless Logic Web Tools (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist.zip
-          asset_name: STAGING__serverless_logic_sandbox_${{ inputs.tag }}.zip
+          asset_path: ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools/dist.zip
+          asset_name: STAGING__serverless_logic_web_tools_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension (dev) (Ubuntu only)"
@@ -521,43 +521,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
           asset_name: STAGING__chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload Desktop App for Linux (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
-          asset_name: STAGING__business_modeler_preview_linux_${{ inputs.tag }}.tar.gz
-          asset_content_type: application/tar+gzip
-
-      - name: "STAGING: Upload Desktop App for macOS (macOS only)"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
-          asset_name: STAGING__business_modeler_preview_macos_${{ inputs.tag }}.zip
-          asset_content_type: application/zip
-
-      - name: "STAGING: Compress Desktop App (Windows only)"
-        if: runner.os == 'Windows'
-        run: "Compress-Archive -Path \"kie-tools\\packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"kie-tools\\packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
-
-      - name: "STAGING: Upload Desktop App for Windows (Windows only)"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: "${{ github.workspace }}/kie-tools/packages/desktop/out/Business Modeler Preview-win32-x64.zip"
-          asset_name: "STAGING__business_modeler_preview_windows_${{ inputs.tag }}.zip"
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Extended Services for Linux (Ubuntu only)"

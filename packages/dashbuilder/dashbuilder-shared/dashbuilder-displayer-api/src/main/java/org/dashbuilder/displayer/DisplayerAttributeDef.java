@@ -20,13 +20,17 @@ public class DisplayerAttributeDef {
     public static final DisplayerAttributeDef TYPE = new DisplayerAttributeDef("type");
     public static final DisplayerAttributeDef SUBTYPE = new DisplayerAttributeDef("subtype");
     public static final DisplayerAttributeDef RENDERER = new DisplayerAttributeDef("renderer");
+    public static final DisplayerAttributeDef EXTRA_CONFIGURATION = new DisplayerAttributeDef("extraConfiguration");
 
     public static final DisplayerAttributeDef COLUMN_EXPRESSION = new DisplayerAttributeDef("expression", DisplayerAttributeGroupDef.COLUMNS_GROUP);
     public static final DisplayerAttributeDef COLUMN_PATTERN = new DisplayerAttributeDef("pattern", DisplayerAttributeGroupDef.COLUMNS_GROUP);
     public static final DisplayerAttributeDef COLUMN_EMPTY = new DisplayerAttributeDef("empty", DisplayerAttributeGroupDef.COLUMNS_GROUP);
 
     public static final DisplayerAttributeDef TITLE = new DisplayerAttributeDef("title", DisplayerAttributeGroupDef.GENERAL_GROUP);
+    public static final DisplayerAttributeDef SUB_TITLE = new DisplayerAttributeDef("subtitle", DisplayerAttributeGroupDef.GENERAL_GROUP);
     public static final DisplayerAttributeDef TITLE_VISIBLE = new DisplayerAttributeDef("visible", DisplayerAttributeGroupDef.GENERAL_GROUP);
+    public static final DisplayerAttributeDef MODE = new DisplayerAttributeDef("mode", DisplayerAttributeGroupDef.GENERAL_GROUP);
+    public static final DisplayerAttributeDef ALLOW_EDIT = new DisplayerAttributeDef("allowEdit", DisplayerAttributeGroupDef.GENERAL_GROUP);
 
     /**
      * @deprecated Replaced by {@link #EXPORT_TO_CSV}. (Kept for backward compatibility)
@@ -42,6 +46,7 @@ public class DisplayerAttributeDef {
 
     public static final DisplayerAttributeDef EXPORT_TO_CSV = new DisplayerAttributeDef("export_csv", DisplayerAttributeGroupDef.EXPORT_GROUP);
     public static final DisplayerAttributeDef EXPORT_TO_XLS = new DisplayerAttributeDef("export_xls", DisplayerAttributeGroupDef.EXPORT_GROUP);
+    public static final DisplayerAttributeDef EXPORT_TO_PNG = new DisplayerAttributeDef("png", DisplayerAttributeGroupDef.EXPORT_GROUP);
 
     public static final DisplayerAttributeDef REFRESH_STALE_DATA = new DisplayerAttributeDef("staleData", DisplayerAttributeGroupDef.REFRESH_GROUP);
     public static final DisplayerAttributeDef REFRESH_INTERVAL = new DisplayerAttributeDef("interval", DisplayerAttributeGroupDef.REFRESH_GROUP);
@@ -97,6 +102,11 @@ public class DisplayerAttributeDef {
     public static final DisplayerAttributeDef JS_TEMPLATE = new DisplayerAttributeDef("javascript", DisplayerAttributeGroupDef.HTML_GROUP);
     
     public static final DisplayerAttributeDef MAP_COLOR_SCHEME = new DisplayerAttributeDef("color_scheme", DisplayerAttributeGroupDef.MAP_GROUP);
+    
+    
+    public static final DisplayerAttributeDef BUBBLE_MIN_RADIUS = new DisplayerAttributeDef("minRadius", DisplayerAttributeGroupDef.BUBBLE_GROUP);
+    public static final DisplayerAttributeDef BUBBLE_MAX_RADIUS = new DisplayerAttributeDef("maxRadius", DisplayerAttributeGroupDef.BUBBLE_GROUP);
+    public static final DisplayerAttributeDef BUBBLE_COLOR = new DisplayerAttributeDef("color", DisplayerAttributeGroupDef.BUBBLE_GROUP);
 
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID_DEPRECATED = new DisplayerAttributeDef("external_component_id");
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID = new DisplayerAttributeDef("component");
@@ -122,6 +132,10 @@ public class DisplayerAttributeDef {
         if (parent != null) {
             parent.addChild(this);
         }
+    }
+    
+    public String getId() {
+        return id;
     }
 
     public String getFullId() {

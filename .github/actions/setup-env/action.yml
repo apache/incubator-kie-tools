@@ -54,13 +54,31 @@ runs:
         pnpm -r exec 'bash' '-c' 'echo -B -ntp > .mvn/maven.config'
         pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
 
+    - name: "Install Fluxbox (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Install Fluxbox (Ubuntu only)"
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          sudo apt-get -y install fluxbox > /dev/null 2>&1
+        fi
+
     - name: "Start Xvfb (Ubuntu only)"
       shell: bash
       run: |
         echo "STEP: Start Xvfb (Ubuntu only)"
         cd ${{ inputs.working_dir }}
         if [ "${{ runner.os }}" == "Linux" ]; then
-            /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+            /usr/bin/Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+        fi
+
+    - name: "Start Fluxbox (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Start Fluxbox (Ubuntu only)"
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+            fluxbox -display :99 > /dev/null 2>&1 &
         fi
 
     - name: "Configure Pagefile (Windows only)"

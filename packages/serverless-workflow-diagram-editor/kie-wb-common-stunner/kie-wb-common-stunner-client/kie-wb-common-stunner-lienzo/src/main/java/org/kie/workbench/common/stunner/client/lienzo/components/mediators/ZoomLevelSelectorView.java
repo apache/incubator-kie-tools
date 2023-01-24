@@ -50,6 +50,10 @@ public class ZoomLevelSelectorView
 
     @Inject
     @DataField
+    Button previewButton;
+
+    @Inject
+    @DataField
     Button decreaseButton;
 
     @Inject
@@ -92,6 +96,7 @@ public class ZoomLevelSelectorView
     @Override
     public void init(final ZoomLevelSelector presenter) {
         this.presenter = presenter;
+        setTooltip(previewButton, translationService.getNotNullValue(CoreTranslationMessages.PREVIEW));
         setTooltip(resetButton, translationService.getNotNullValue(CoreTranslationMessages.RESET));
         setTooltip(increaseButton, translationService.getNotNullValue(CoreTranslationMessages.INCREASE));
         setTooltip(decreaseButton, translationService.getNotNullValue(CoreTranslationMessages.DECREASE));
@@ -131,6 +136,16 @@ public class ZoomLevelSelectorView
     @Override
     public void dropUp() {
         dropDownPanelGroup.setClassName(dropDownPanelGroup.getClassName() + " " + CSS_DROP_UP);
+    }
+
+    @Override
+    public void updatePreviewButton(boolean enabled) {
+        previewButton.setDisabled(!enabled);
+    }
+
+    @EventHandler("previewButton")
+    void onPreview(ClickEvent event) {
+        presenter.onPreview();
     }
 
     @EventHandler("increaseButton")

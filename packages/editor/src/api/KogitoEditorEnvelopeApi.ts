@@ -30,10 +30,10 @@ export enum ChannelType {
   VSCODE_WEB = "VSCODE_WEB",
   ONLINE = "ONLINE",
   GITHUB = "GITHUB",
-  DESKTOP = "DESKTOP",
   EMBEDDED = "EMBEDDED",
   OTHER = "OTHER",
   ONLINE_MULTI_FILE = "ONLINE_MULTI_FILE",
+  STANDALONE = "STANDALONE",
 }
 
 export interface EditorInitArgs {

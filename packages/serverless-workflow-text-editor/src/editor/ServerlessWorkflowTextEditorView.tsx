@@ -17,12 +17,14 @@
 import { Editor, EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { Position } from "monaco-editor";
 import * as React from "react";
 import { ServerlessWorkflowTextEditorChannelApi } from "../api";
 import { ServerlessWorkflowTextEditor } from "./ServerlessWorkflowTextEditor";
 
 export interface ServerlessWorkflowTextEditorApi extends Editor {
   moveCursorToNode(nodeName: string): void;
+  moveCursorToPosition(position: Position): void;
 }
 
 export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextEditorApi {
@@ -87,5 +89,9 @@ export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextE
 
   public moveCursorToNode(nodeName: string): void {
     this.editorRef.current?.moveCursorToNode(nodeName);
+  }
+
+  public moveCursorToPosition(position: Position): void {
+    this.editorRef.current?.moveCursorToPosition(position);
   }
 }

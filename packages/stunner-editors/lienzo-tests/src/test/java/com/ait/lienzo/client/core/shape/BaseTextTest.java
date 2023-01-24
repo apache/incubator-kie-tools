@@ -26,8 +26,8 @@ import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 

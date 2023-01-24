@@ -37,9 +37,11 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLICK_POINT_X;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_HEIGHT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -159,6 +161,33 @@ public class ScenarioContextMenuRegistryTest extends AbstractScenarioSimulationG
                                          clickPointX,
                                          clickPointY,
                                          0);
+        verify(scenarioGridMock, times(1)).setSelectedCell(eq(0), eq(0));
+    }
+
+    @Test
+    public void testManageBodyRightClickNotEnoughSpaceForMenu() {
+        final int clickPointX = (int) CLICK_POINT_X;
+        final int clickPointY = (int) (GRID_HEIGHT - 10);
+        final double widgetHeight = GRID_HEIGHT;
+        final double rowHeight = widgetHeight - HEADER_HEIGHT;
+        doReturn(clickPointX).when(contextNativeEventMock).getClientX();
+        doReturn(clickPointY).when(contextNativeEventMock).getClientY();
+        doReturn(widgetHeight).when(scenarioGridMock).getHeight();
+        doReturn(1).when(scenarioGridModelMock).getRowCount();
+        final GridRow gridRowMock = mock(GridRow.class);
+        doReturn(gridRowMock).when(scenarioGridModelMock).getRow(0);
+        doReturn(rowHeight).when(gridRowMock).getHeight();
+        assertThat(scenarioContextMenuRegistry.manageRightClick(scenarioGridMock, contextMenuEventMock))
+                .as("Click to expect/given body cell")
+                .isTrue();
+        verify(scenarioGridMock, times(1)).clearSelections();
+
+        final int expectedClickPointY = 260; // clickPointY - Scenario.ContextMenuRegistry.BIGGEST_MENU_HEIGHT_PX
+        verify(gridContextMenuMock)
+                .show(GridWidget.SIMULATION,
+                        clickPointX,
+                        expectedClickPointY,
+                        0);
         verify(scenarioGridMock, times(1)).setSelectedCell(eq(0), eq(0));
     }
 }

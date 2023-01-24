@@ -188,8 +188,6 @@ public class BaseGridWidget extends Group implements GridWidget {
         final List<NodeMouseEventHandler> handlers = new ArrayList<>();
         handlers.add(new DefaultGridWidgetCellSelectorMouseEventHandler(selectionManager));
         handlers.add(new DefaultGridWidgetCollapsedCellMouseEventHandler(renderer));
-        handlers.add(new DefaultGridWidgetLinkedColumnMouseEventHandler(selectionManager,
-                                                                        renderer));
         return handlers;
     }
 

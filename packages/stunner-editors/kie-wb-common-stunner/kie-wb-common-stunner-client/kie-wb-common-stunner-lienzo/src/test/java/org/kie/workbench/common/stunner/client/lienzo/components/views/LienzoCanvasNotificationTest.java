@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

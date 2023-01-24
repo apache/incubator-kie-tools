@@ -28,9 +28,9 @@ export type KubernetesKind =
   | "Service"
   | "Route";
 
-export type KNativeKind = "KafkaSource" | "Service";
+export type KnativeKind = "KafkaSource" | "Service";
 
-export type ResourceKind = KubernetesKind | KNativeKind;
+export type ResourceKind = KubernetesKind | KnativeKind;
 
 export type IpProtocol = "TCP" | "UDP" | "SCTP";
 
@@ -284,17 +284,17 @@ export interface KafkaSourceDescriptor extends ResourceDescriptor {
   spec: KafkaSourceSpec;
 }
 
-// KNativeService
+// KnativeService
 
-export interface KNativeServiceSpec {
+export interface KnativeServiceSpec {
   template: PodTemplate;
 }
 
-export interface KNativeServiceDescriptor extends ResourceDescriptor {
-  spec: KNativeServiceSpec;
+export interface KnativeServiceDescriptor extends ResourceDescriptor {
+  spec: KnativeServiceSpec;
   status?: {
     url: string;
   };
 }
 
-export type KNativeServiceGroupDescriptor = ResourceGroupDescriptor<KNativeServiceDescriptor>;
+export type KnativeServiceGroupDescriptor = ResourceGroupDescriptor<KnativeServiceDescriptor>;

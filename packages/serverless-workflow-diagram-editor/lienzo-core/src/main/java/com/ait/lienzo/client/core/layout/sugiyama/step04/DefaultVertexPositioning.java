@@ -62,7 +62,7 @@ public class DefaultVertexPositioning implements VertexPositioning {
 
         final Set<VertexPosition> vertices = getVertices(layered);
 
-        arrangeVertices(layered.getLayers(), arrangement, graph);
+        arrangeVertices(layered.getLayers(), arrangement, layered);
 
         convertVirtualVerticesToBendingPoints(graph.getEdges(), vertices);
 
@@ -167,7 +167,6 @@ public class DefaultVertexPositioning implements VertexPositioning {
                     .findFirst();
 
             if (nextEdge.isPresent()) {
-                bendingPoints.add(createBendingPoint(virtualVertices.get(nextVertexId)));
                 addBendingPoints(nextVertexId, edges, virtualVertices, bendingPoints, nextEdge.get());
             }
         }
@@ -193,24 +192,36 @@ public class DefaultVertexPositioning implements VertexPositioning {
 
     void arrangeVertices(final List<GraphLayer> layers,
                          final LayerArrangement arrangement,
-                         final ReorderedGraph graph) {
+                         final LayeredGraph graph) {
 
         final HashMap<Integer, Integer> layersWidth = createHashForLayersWidth();
 
         int largestWidth = calculateLayersWidth(layers, layersWidth);
 
         // center everything based on largest width
-        final HashMap<Integer, Integer> layersStartX = getLayersStartX(layers.size(), layersWidth, largestWidth);
+        final HashMap<Integer, Integer> layersStartX = getLayersStartX(graph, layersWidth, largestWidth);
 
         int y = DEFAULT_LAYER_VERTICAL_PADDING;
-        if (arrangement == LayerArrangement.TopDown) {
+        if (arrangement == LayerArrangement.BottomUp) {
             for (int i = 0; i < layers.size(); i++) {
                 y = distributeVertices(layers, layersStartX, y, i, graph);
             }
-        } else if (arrangement == LayerArrangement.BottomUp) {
+        } else if (arrangement == LayerArrangement.TopDown) {
             for (int i = layers.size() - 1; i >= 0; i--) {
                 y = distributeVertices(layers, layersStartX, y, i, graph);
             }
+        }
+    }
+
+    void orderNodesInFirstLayer(final GraphLayer layer, String startingVertexId) {
+        final Optional<VertexPosition> startNode = layer.getVertices()
+                .stream().filter(v -> Objects.equals(v.getId(), startingVertexId))
+                .findFirst();
+
+        if (startNode.isPresent()) {
+            final VertexPosition start = startNode.get();
+            layer.getVertices().remove(start);
+            layer.getVertices().add(0, start);
         }
     }
 
@@ -218,19 +229,43 @@ public class DefaultVertexPositioning implements VertexPositioning {
         return new HashMap<>();
     }
 
-    HashMap<Integer, Integer> getLayersStartX(final int layersCount,
+    HashMap<Integer, Integer> getLayersStartX(final LayeredGraph graph,
                                               final HashMap<Integer, Integer> layersWidth,
                                               final int largestWidth) {
+
+        final List<GraphLayer> layers = graph.getLayers();
+        if (!layers.isEmpty()) {
+            orderNodesInFirstLayer(layers.get(layers.size() - 1), graph.getStartingVertexId());
+        }
         final HashMap<Integer, Integer> layersStartX = new HashMap<>();
-        for (int i = 0; i < layersCount; i++) {
-            final int middle = largestWidth / 2;
+        final int middle = largestWidth / 2;
+
+        // We ignore the layer with Start node
+        for (int i = 0; i < layers.size() - 1; i++) {
             final int layerWidth = layersWidth.get(i);
             final int firstHalf = layerWidth / 2;
             int startPoint = middle - firstHalf;
             startPoint += DEFAULT_LAYER_HORIZONTAL_PADDING;
             layersStartX.put(i, startPoint);
         }
+
+        setTopLayerStartX(layers, layersStartX, middle);
+
         return layersStartX;
+    }
+
+    private void setTopLayerStartX(final List<GraphLayer> layers,
+                                   final HashMap<Integer, Integer> layersStartX,
+                                   final int middle) {
+        if (layers.isEmpty()) {
+            return;
+        }
+        final GraphLayer startLayer = layers.get(layers.size() - 1);
+        final int middleOfStart = startLayer.getVertices().get(0).getWidth() / 2;
+
+        // The startX of the first layer is the middle of the diagram
+        int start = middle - middleOfStart + DEFAULT_LAYER_HORIZONTAL_PADDING;
+        layersStartX.put(layers.size() - 1, start);
     }
 
     int calculateLayersWidth(final List<GraphLayer> layers,

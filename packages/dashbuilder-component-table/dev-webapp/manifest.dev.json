@@ -18,11 +18,23 @@
     },
     {
       "key": "selectable",
-      "value": "truess"
+      "value": "true"
     },
     {
       "key": "linkColumn",
       "value": "Country"
+    },
+    {
+      "key": "hideHeader",
+      "value": "_true"
+    },
+    {
+      "key": "linkTargetSelf",
+      "value": "_true"
+    },
+    {
+      "key": "mode",
+      "value": "dark"
     },
     {
       "key": "linkTemplate",

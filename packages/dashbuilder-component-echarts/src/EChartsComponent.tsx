@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ComponentController, DataSet } from "@kie-tools/dashbuilder-component-api";
+import { ComponentController, DataSet, MessageProperty } from "@kie-tools/dashbuilder-component-api";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ECharts, Props as EChartsProps } from "@kie-tools/dashbuilder-component-echarts-base";
 
@@ -23,27 +23,16 @@ interface Props {
   controller: ComponentController;
 }
 
-const INIT_OPTIONS = {
-  tooltip: {},
-  xAxis: { type: "category" },
-  yAxis: {},
-  series: [],
-};
-
 export function EChartsComponent(props: Props) {
   const [echartsProps, setEchartsProps] = useState<EChartsProps>();
   useEffect(() => {
-    props.controller.setOnInit((params: Map<string, any>) => {
-      setEchartsProps({ option: INIT_OPTIONS, params: params });
-    });
-
     props.controller.setOnDataSet((_dataset: DataSet, params: Map<string, any>) => {
       const option: any = {
         dataset: {
           source: [_dataset.columns.map((c) => c.settings.columnName), ..._dataset.data],
         },
       };
-      setEchartsProps({ option: option, params: params });
+      setEchartsProps({ option: option, params: params, theme: params.get(MessageProperty.MODE) });
     });
   }, [props.controller]);
 

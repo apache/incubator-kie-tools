@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
+import {
+  EditorEnvelopeLocator,
+  EnvelopeContentType,
+  EnvelopeMapping,
+} from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 
 export class EditorEnvelopeLocatorFactory {
   public create(args: { targetOrigin: string }) {
@@ -23,19 +27,19 @@ export class EditorEnvelopeLocatorFactory {
         type: "bpmn",
         filePathGlob: "**/*.bpmn?(2)",
         resourcesPathPrefix: "gwt-editors/bpmn",
-        envelopePath: "bpmn-envelope.html",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "bpmn-envelope.html" },
       }),
       new EnvelopeMapping({
         type: "dmn",
         filePathGlob: "**/*.dmn",
         resourcesPathPrefix: "gwt-editors/dmn",
-        envelopePath: "dmn-envelope.html",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dmn-envelope.html" },
       }),
       new EnvelopeMapping({
         type: "pmml",
         filePathGlob: "**/*.pmml",
         resourcesPathPrefix: "",
-        envelopePath: "pmml-envelope.html",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "pmml-envelope.html" },
       }),
     ]);
   }

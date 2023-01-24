@@ -49,6 +49,9 @@ import static org.mockito.Mockito.when;
 public class ZoomLevelSelectorViewTest {
 
     @Mock
+    private Button previewButton;
+
+    @Mock
     private Button decreaseButton;
 
     @Mock
@@ -95,6 +98,7 @@ public class ZoomLevelSelectorViewTest {
     @Before
     public void setUp() {
         tested = new ZoomLevelSelectorView();
+        tested.previewButton = previewButton;
         tested.decreaseButton = decreaseButton;
         tested.increaseButton = increaseButton;
         tested.resetButton = resetButton;

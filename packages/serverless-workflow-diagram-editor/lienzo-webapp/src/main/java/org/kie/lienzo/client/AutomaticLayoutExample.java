@@ -192,6 +192,7 @@ public class AutomaticLayoutExample extends BaseExample implements Example {
         }
 
         layer.refresh();
+        layer.batch();
     }
 
     private AbstractLayoutService createLayoutService() {

@@ -28,17 +28,19 @@ import org.junit.Before;
 import org.mockito.AdditionalMatchers;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLICK_POINT_X;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_HEIGHT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_WIDTH;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_ROW_HEIGHT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.OFFSET_X;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_COLUMN_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_ROW_INDEX;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -97,5 +99,7 @@ public abstract class AbstractScenarioSimulationGridHandlerTest extends Abstract
         when(scenarioGridRendererHelperMock.getColumnInformation(AdditionalMatchers.or(eq(0.0), eq(CLICK_POINT_X))))
                 .thenReturn(columnInformation);
         when(scenarioRenderingInformationMock.getFloatingBlockInformation()).thenReturn(floatingBlockInformationMock);
+
+        when(scenarioRenderingInformationMock.getBounds()).thenReturn(new BaseBounds(0, 0, GRID_WIDTH, GRID_HEIGHT));
     }
 }

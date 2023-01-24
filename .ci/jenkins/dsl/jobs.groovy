@@ -1,8 +1,4 @@
 
-import org.kie.jenkins.jobdsl.model.Folder
-import org.kie.jenkins.jobdsl.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.Utils
-
 /////////////////////////////////////////////////////////////////
 // This file is used for generating Jenkins jobs
 // Its placement and structure is a "convention" in kiegroup
@@ -14,6 +10,9 @@ import org.kie.jenkins.jobdsl.Utils
 // Or the same file in other repositories like:
 //  - https://github.com/kiegroup/kogito-runtimes/tree/main/.ci/jenkins/dsl
 /////////////////////////////////////////////////////////////////
+
+import org.kie.jenkins.jobdsl.KogitoJobTemplate
+import org.kie.jenkins.jobdsl.Utils
 
 Map getMultijobPRConfig() {
     return [
@@ -40,5 +39,5 @@ setupMultijobPrDefaultChecks()
 /////////////////////////////////////////////////////////////////
 
 void setupMultijobPrDefaultChecks() {
-    KogitoJobTemplate.createPerRepoPRJobs(this, Folder.PULLREQUEST) { jobFolder -> return getMultijobPRConfig() }
+    KogitoJobTemplate.createPerRepoPRJobs(this, '') { jobFolder -> return getMultijobPRConfig() }
 }

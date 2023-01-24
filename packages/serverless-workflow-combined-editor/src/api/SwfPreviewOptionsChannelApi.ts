@@ -16,8 +16,10 @@
 
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
+export type editorDisplayOptions = "full" | "diagram" | "text";
 export interface SwfPreviewOptions {
-  diagramDefaultWidth?: string;
+  defaultWidth?: string;
+  editorMode?: editorDisplayOptions;
 }
 
 export interface SwfPreviewOptionsChannelApi {

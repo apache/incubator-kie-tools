@@ -15,6 +15,8 @@
  */
 
 import { setDiagnosticsOptions } from "monaco-yaml";
+import { DASHBUILDER_SCHEMA } from "../schemas";
+import { JSONSchema7 } from "json-schema";
 
 export function initYamlSchemaDiagnostics() {
   setDiagnosticsOptions({
@@ -22,6 +24,12 @@ export function initYamlSchemaDiagnostics() {
     completion: true,
     validate: true,
     format: true,
-    schemas: [],
+    schemas: [
+      {
+        uri: "https://dashbuilder.org/schemas/0.1/dashbuilder.json",
+        fileMatch: ["*"],
+        schema: DASHBUILDER_SCHEMA as JSONSchema7,
+      },
+    ],
   });
 }

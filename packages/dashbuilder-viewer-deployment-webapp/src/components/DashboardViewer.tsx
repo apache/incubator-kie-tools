@@ -18,7 +18,12 @@ import * as React from "react";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { useState, useMemo, useCallback } from "react";
-import { ChannelType, EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorEnvelopeLocator,
+  EnvelopeMapping,
+  EnvelopeContentType,
+} from "@kie-tools-core/editor/dist/api";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { Dashboard } from "../data";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
@@ -39,7 +44,7 @@ export function DashboardViewer(props: DashboardViewerProps) {
           type: "dash",
           filePathGlob: "**/*.dash.+(yml|yaml)",
           resourcesPathPrefix: "",
-          envelopePath: "dashbuilder-viewer-envelope.html",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "dashbuilder-viewer-envelope.html" },
         }),
       ]),
     []

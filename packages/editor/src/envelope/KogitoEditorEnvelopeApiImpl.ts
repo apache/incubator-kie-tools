@@ -192,6 +192,20 @@ export class KogitoEditorEnvelopeApiImpl<
       this.registerDefaultShortcuts(initArgs);
     });
   }
+
+  /**
+   * Gets the view's editor or throws an error.
+   *
+   * @returns the editor
+   * @throws {"Editor not found"} if the editor is not found
+   */
+  protected getEditorOrThrowError(): E {
+    const editor = this.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor;
+  }
 }
 
 function sanitize(str: string): string {

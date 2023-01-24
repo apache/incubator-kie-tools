@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.user.client.Command;
 import org.junit.Test;
@@ -49,9 +48,6 @@ public class GridWidgetEnterPinnedModeAnimationTest {
     private GridWidget widget;
 
     @Mock
-    private IPrimitive<?> primitive;
-
-    @Mock
     private Command command;
 
     @Test
@@ -62,22 +58,17 @@ public class GridWidgetEnterPinnedModeAnimationTest {
         final Set<GridWidget> gridWidgets = new HashSet<GridWidget>() {{
             add(widget);
         }};
-        final Set<IPrimitive<?>> gridWidgetConnectors = new HashSet<IPrimitive<?>>() {{
-            add(primitive);
-        }};
         final List<Command> onEnterPinnedModeCommands = new ArrayList<Command>() {{
             add(command);
         }};
         final GridWidgetEnterPinnedModeAnimation animation = new GridWidgetEnterPinnedModeAnimation(gridWidget,
                                                                                                     gridWidgets,
-                                                                                                    gridWidgetConnectors,
                                                                                                     onStartCommand,
                                                                                                     onEnterPinnedModeCommands);
 
         animation.doClose();
 
         verify(widget).setVisible(false);
-        verify(primitive).setVisible(false);
         verify(layer).setListening(true);
         verify(layer).batch();
         verify(command).execute();

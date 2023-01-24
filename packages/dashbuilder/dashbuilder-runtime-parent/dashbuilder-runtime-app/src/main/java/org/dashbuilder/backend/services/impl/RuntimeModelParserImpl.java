@@ -47,6 +47,7 @@ import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.marshalling.LayoutTemplateJSONMarshaller;
 import org.dashbuilder.shared.model.DataSetContent;
 import org.dashbuilder.shared.model.DataSetContentType;
+import org.dashbuilder.shared.model.GlobalSettings;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.service.RuntimeModelParser;
 import org.dashbuilder.shared.service.RuntimeModelRegistry;
@@ -147,7 +148,8 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         var externalDefs = getExternalDefs(datasetContents);
         var navTree = runtimeNavigationBuilder.build(navTreeOp, layoutTemplates);
 
-        return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis(), externalDefs, Collections.emptyMap());
+        return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis(), externalDefs, Collections
+                .emptyMap(), new GlobalSettings());
     }
 
     void extractComponentFile(String modelId, InputStream zis, String name) throws IOException {

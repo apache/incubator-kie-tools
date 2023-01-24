@@ -1,3 +1,12 @@
+# 0.26.0 (alpha)
+
+- [KOGITO-8119](https://issues.redhat.com/browse/KOGITO-8119) - [DMN Editor] Import Java classes thrown an exception in Windows
+- [DROOLS-3703](https://issues.redhat.com/browse/DROOLS-3703) - Disable Enumeration and Range constraint for Any DataType
+- [kie-issues#28](https://github.com/kiegroup/kie-issues/issues/28) - DMN Editor - Three undos are required to remove a newly added node
+- [kie-issues#6](https://github.com/kiegroup/kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
+- [kie-issues#46](https://github.com/kiegroup/kie-issues/issues/46) - Disable OK button properly in DMN Data Type Constraint modal
+- [KOGITO-6974](https://issues.redhat.com/browse/KOGITO-6974) - Stunner Editors - Line control points are enabled in view only mode, but they should not
+
 # 0.25.0 (alpha)
 
 - [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
