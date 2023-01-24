@@ -66,7 +66,11 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       dataType: prev.dataType,
       logicType: ExpressionDefinitionLogicType.Undefined,
     }));
-  }, [setExpression]);
+
+    if (!isNested) {
+      window.beeApiWrapper?.resetExpressionDefinition(expression);
+    }
+  }, [expression, isNested, setExpression]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 

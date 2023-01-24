@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useBoxedExpressionEditor } from "../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { ResizingWidth } from "../resizing/ResizingWidthsContext";
 
@@ -205,6 +206,8 @@ export function BeeTableCoordinatesContextProvider({
 export function BeeTableSelectionContextProvider({ children }: React.PropsWithChildren<{}>) {
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
 
+  const { beeGwtService } = useBoxedExpressionEditor();
+
   const [_selection, _setSelection] = useState<BeeTableSelection>(NEUTRAL_SELECTION);
   const [_currentDepth, _setCurrentDepth] =
     useState<{ active: number | undefined; max: number }>(INITIAL_CURRENT_DEPTH);
@@ -230,6 +233,13 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   const isSelectionHere = useMemo(() => {
     return coincides(parentActiveCell, containerCellCoordinates) && isParentSelectionThere;
   }, [containerCellCoordinates, isParentSelectionThere, parentActiveCell]);
+
+  // FIXME: Tiago -> Missing UUID.
+  // useEffect(() => {
+  //   if (isSelectionHere) {
+  //     beeGwtService?.selectObject();
+  //   }
+  // }, [beeGwtService, isSelectionHere]);
 
   const selection = useMemo(() => {
     if (depth === activeDepth && isSelectionHere) {

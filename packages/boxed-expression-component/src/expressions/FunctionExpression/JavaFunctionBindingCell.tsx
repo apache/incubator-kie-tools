@@ -7,18 +7,13 @@ import {
   JavaFunctionExpressionDefinition,
 } from "../../api";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContextProvider";
-import {
-  useApportionedColumnWidthsIfNestedTable,
-  useNestedExpressionContainerWithNestedExpressions,
-  useNestedTableLastColumnMinWidth,
-} from "../../resizing/Hooks";
+import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
-  JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
-  JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
-  FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH,
   JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableRef } from "../../table/BeeTable";
@@ -79,7 +74,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
   );
 
   const nestedExpressionContainer = useNestedExpressionContainer();
-  const minWidth = useMemo(() => {
+  const classAndMethodNamesMinWidth = useMemo(() => {
     return Math.max(
       nestedExpressionContainer.minWidth -
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH -
@@ -105,10 +100,10 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
         isRowIndexColumn: false,
         width: functionExpression.classAndMethodNamesWidth,
         setWidth: setClassAndMethodNamesWidth,
-        minWidth,
+        minWidth: classAndMethodNamesMinWidth,
       },
     ],
-    [functionExpression.classAndMethodNamesWidth, minWidth, setClassAndMethodNamesWidth]
+    [functionExpression.classAndMethodNamesWidth, classAndMethodNamesMinWidth, setClassAndMethodNamesWidth]
   );
 
   const beeTableRows = useMemo(() => {

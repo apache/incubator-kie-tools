@@ -133,7 +133,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
           isRowIndexColumn: false,
           minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
           setWidth: setColumnWidth(columnIndex),
-          width: column.width,
+          width: column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
         })),
       },
     ];

@@ -25,7 +25,7 @@ import {
   JavaCodeCompletionService,
 } from "@kie-tools/import-java-classes-component";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import {
@@ -65,42 +65,10 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   const [expression, setExpression] = useState<ExpressionDefinition>(expressionDefinition);
 
   useEffect(() => {
+    console.info("DMN Editor changed the expression. Updating internal state with:");
+    console.info(JSON.stringify(expressionDefinition));
     setExpression(expressionDefinition);
   }, [expressionDefinition]);
-
-  useEffect(() => {
-    const logicType = expression.logicType;
-    switch (logicType) {
-      case ExpressionDefinitionLogicType.Literal:
-        window.beeApiWrapper?.broadcastLiteralExpressionDefinition?.(expression);
-        break;
-      case ExpressionDefinitionLogicType.Relation:
-        window.beeApiWrapper?.broadcastRelationExpressionDefinition?.(expression);
-        break;
-      case ExpressionDefinitionLogicType.Context:
-        window.beeApiWrapper?.broadcastContextExpressionDefinition?.(expression);
-        break;
-      case ExpressionDefinitionLogicType.DecisionTable:
-        window.beeApiWrapper?.broadcastDecisionTableExpressionDefinition?.(expression);
-        break;
-      case ExpressionDefinitionLogicType.Invocation:
-        window.beeApiWrapper?.broadcastInvocationExpressionDefinition?.(expression);
-        break;
-      case ExpressionDefinitionLogicType.List:
-        window.beeApiWrapper?.broadcastListExpressionDefinition?.(expression);
-        break;
-      case ExpressionDefinitionLogicType.Function:
-        window.beeApiWrapper?.broadcastFunctionExpressionDefinition?.(expression);
-        break;
-      case ExpressionDefinitionLogicType.Undefined:
-        window.beeApiWrapper?.resetExpressionDefinition(expression);
-        break;
-      default:
-        assertUnreachable(logicType);
-    }
-
-    window.beeApiWrapper?.notifyUserAction();
-  }, [expression]);
 
   const beeGwtService: BeeGwtService = {
     openManageDataType(): void {
@@ -114,17 +82,62 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     },
   };
 
-  useElementsThatStopKeyboardEventsPropagation(
-    window,
-    useMemo(() => [".boxed-expression-provider"], [])
+  const setExpressionNotifyingUserAction = useCallback(
+    (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
+      setExpression((prev) => {
+        const n = typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
+
+        console.info("Notifying DMN Editor that expression changed with:");
+        console.info(JSON.stringify(n));
+        const logicType = n.logicType;
+        switch (logicType) {
+          case ExpressionDefinitionLogicType.Literal:
+            window.beeApiWrapper?.broadcastLiteralExpressionDefinition?.(n);
+            break;
+          case ExpressionDefinitionLogicType.Relation:
+            window.beeApiWrapper?.broadcastRelationExpressionDefinition?.(n);
+            break;
+          case ExpressionDefinitionLogicType.Context:
+            window.beeApiWrapper?.broadcastContextExpressionDefinition?.(n);
+            break;
+          case ExpressionDefinitionLogicType.DecisionTable:
+            window.beeApiWrapper?.broadcastDecisionTableExpressionDefinition?.(n);
+            break;
+          case ExpressionDefinitionLogicType.Invocation:
+            window.beeApiWrapper?.broadcastInvocationExpressionDefinition?.(n);
+            break;
+          case ExpressionDefinitionLogicType.List:
+            window.beeApiWrapper?.broadcastListExpressionDefinition?.(n);
+            break;
+          case ExpressionDefinitionLogicType.Function:
+            window.beeApiWrapper?.broadcastFunctionExpressionDefinition?.(n);
+            break;
+          case ExpressionDefinitionLogicType.Undefined:
+            // Ignore
+            break;
+          default:
+            assertUnreachable(logicType);
+        }
+
+        console.info("Notifying user action...");
+        window.beeApiWrapper?.notifyUserAction();
+        return n;
+      });
+    },
+    []
   );
+
+  // useElementsThatStopKeyboardEventsPropagation(
+  //   window,
+  //   useMemo(() => [".boxed-expression-provider"], [])
+  // );
 
   return (
     <BoxedExpressionEditor
       beeGwtService={beeGwtService}
       decisionNodeId={decisionNodeId}
       expressionDefinition={expression}
-      setExpressionDefinition={setExpression}
+      setExpressionDefinition={setExpressionNotifyingUserAction}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
