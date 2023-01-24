@@ -331,7 +331,6 @@ importers:
       "@types/simpl-schema": ^1.12.0
       ajv: ^6.12.6
       copy-webpack-plugin: ^11.0.0
-      graphql: ^15.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router-dom: ^5.2.1
@@ -339,10 +338,9 @@ importers:
       simpl-schema: ^1.12.0
       typescript: ^4.4.2
       uniforms: ^3.10.2
-      uniforms-bridge-graphql: 3.10.2
-      uniforms-bridge-json-schema: 3.10.2
-      uniforms-bridge-simple-schema: 3.10.2
-      uniforms-bridge-simple-schema-2: 3.10.2
+      uniforms-bridge-json-schema: ^3.10.2
+      uniforms-bridge-simple-schema: ^3.10.2
+      uniforms-bridge-simple-schema-2: ^3.10.2
       webpack: ^5.36.2
       webpack-cli: ^4.10.0
       webpack-dev-server: ^4.7.3
@@ -353,12 +351,10 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       ajv: 6.12.6
-      graphql: 15.8.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       simpl-schema: 1.12.0
       uniforms: 3.10.2_react@17.0.2
-      uniforms-bridge-graphql: 3.10.2_react@17.0.2
       uniforms-bridge-json-schema: 3.10.2_react@17.0.2
       uniforms-bridge-simple-schema: 3.10.2_react@17.0.2
       uniforms-bridge-simple-schema-2: 3.10.2_react@17.0.2
@@ -18677,12 +18673,6 @@ packages:
       lodash: 4.17.21
     dev: false
 
-  /graphql/15.8.0:
-    resolution:
-      { integrity: sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw== }
-    engines: { node: ">= 10.x" }
-    dev: false
-
   /graphviz/0.0.9:
     resolution:
       { integrity: sha512-SmoY2pOtcikmMCqCSy2NO1YsRfu9OO0wpTlOYW++giGjfX1a6gax/m1Fo8IdUd0/3H15cTOfR1SMKwohj4LKsg== }
@@ -27694,19 +27684,6 @@ packages:
       { integrity: sha512-5Zfuy9q/DFr4tfO7ZPeVXb1aPoeQSdeFMLpYuFebehDAhbuevLs5yxSZmIFN1tP5F9Wl4IpJrYojg85/zgyZHQ== }
     engines: { node: ">=4" }
     dev: true
-
-  /uniforms-bridge-graphql/3.10.2_react@17.0.2:
-    resolution:
-      { integrity: sha512-vPib/RSdX2uIIfdd1C//+hY7egGK9FaKvN8BD9vUFTslG+ZMdxpuSRtcXaeeKHTcLPMmAAZI8f2m1tyDPOGe2A== }
-    dependencies:
-      graphql: 15.8.0
-      invariant: 2.2.4
-      lodash: 4.17.21
-      tslib: 2.3.1
-      uniforms: 3.10.2_react@17.0.2
-    transitivePeerDependencies:
-      - react
-    dev: false
 
   /uniforms-bridge-json-schema/3.10.2_react@17.0.2:
     resolution:

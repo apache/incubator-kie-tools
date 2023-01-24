@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,53 +16,40 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { Brand, Nav, NavItem, NavList, Page, PageHeader } from "@patternfly/react-core";
-import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
-import { Home } from "./Home";
 import "../static/resources/styles.css";
+import { useState } from "react";
+import { Brand, Nav, NavItem, NavList, Page, PageHeader } from "@patternfly/react-core";
+import { Form } from "./Form";
 
-enum Location {
-  HOME = "/",
+export enum SchemaType {
+  JsonSchema,
+  SimpleSchema,
 }
 
 export function App() {
-  /**
-   * State which determines what is the current route.
-   */
-  const [location, setLocation] = useState(Location.HOME);
-
-  /**
-   * On the first render, the location state is determined by the current URL.
-   */
-  useEffect(() => {
-    setLocation(window.location.hash.slice(1) as Location); //Remove trailing '#' from route to match the Location enum.
-  });
+  const [schemaType, setSchemaType] = useState<SchemaType>(SchemaType.JsonSchema);
 
   return (
-    <Router>
-      <Page
-        header={
-          <PageHeader
-            logo={<Brand src={"logo.png"} alt="Logo" />}
-            topNav={
-              <Nav onSelect={(e) => setLocation(e.itemId as Location)} aria-label="Nav" variant="horizontal">
-                <NavList>
-                  <NavItem itemId={Location.HOME} isActive={location === Location.HOME}>
-                    <Link to={Location.HOME}>Home</Link>
-                  </NavItem>
-                </NavList>
-              </Nav>
-            }
-          />
-        }
-      >
-        <Switch>
-          <Route exact={true} path={"/"}>
-            <Home />
-          </Route>
-        </Switch>
-      </Page>
-    </Router>
+    <Page
+      header={
+        <PageHeader
+          logo={<Brand src={"logo.png"} alt="Logo" />}
+          topNav={
+            <Nav onSelect={(e) => setSchemaType(e.itemId as SchemaType)} aria-label="Nav" variant="horizontal">
+              <NavList>
+                <NavItem itemId={SchemaType.JsonSchema} isActive={schemaType === SchemaType.JsonSchema}>
+                  JSON Schema
+                </NavItem>
+                <NavItem itemId={SchemaType.SimpleSchema} isActive={schemaType === SchemaType.SimpleSchema}>
+                  Simple Schema
+                </NavItem>
+              </NavList>
+            </Nav>
+          }
+        />
+      }
+    >
+      <Form schemaType={schemaType} />
+    </Page>
   );
 }

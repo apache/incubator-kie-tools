@@ -15,7 +15,23 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
 
-ReactDOM.render(<App />, document.getElementById("app"));
+interface Props {
+  model: any;
+}
+
+export function CodeBlock(props: Props) {
+  if (!props.model)
+    return (
+      <>
+        <span></span>
+      </>
+    );
+
+  return (
+    <div style={{ marginBottom: "1em" }}>
+      <h2>Result:</h2>
+      <pre style={{ background: "#eee", padding: "1rem" }}>{JSON.stringify(props.model, null, 2)}</pre>
+    </div>
+  );
+}
