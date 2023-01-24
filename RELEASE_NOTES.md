@@ -7,4 +7,3 @@
 [KOGITO-8421](https://issues.redhat.com/browse/KOGITO-8421) - [SW] Ensure that the Kogito SW builder image has the correct Quarkus version
 
 ## Known Issues
-

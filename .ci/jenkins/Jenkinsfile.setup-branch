@@ -103,6 +103,34 @@ pipeline {
                 }
             }
         }
+        stage('Clean release notes') {
+            when {
+                expression { isMainBranch() }
+            }
+            steps {
+                script {
+                    String releaseNotesFilename = 'RELEASE_NOTES.md'
+                    dir(getRepoName()) {
+                        sh "rm -rf ${releaseNotesFilename}"
+                        writeFile(file: releaseNotesFilename, text: getCleanedReleaseNotes())
+                    }
+                }
+            }
+        }
+        stage('Update branch') {
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        if (githubscm.isThereAnyChanges()) {
+                            githubscm.commitChanges("[${getBuildBranch()}] Update version to ${getKogitoVersion()}")
+                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
+                    }
+                }
+            }
+        }
         stage('Build Images') {
             steps {
                 script {
@@ -160,20 +188,6 @@ pipeline {
 
                         if (isQuayRegistry()) {
                             makeQuayImagesPublic()
-                        }
-                    }
-                }
-            }
-        }
-        stage('Update branch') {
-            steps {
-                script {
-                    dir(getRepoName()) {
-                        if (githubscm.isThereAnyChanges()) {
-                            githubscm.commitChanges("[${getBuildBranch()}] Update version to ${getKogitoVersion()}")
-                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
-                        } else {
-                            println '[WARN] no changes to commit'
                         }
                     }
                 }
@@ -447,6 +461,10 @@ String[] getImages() {
     return runPythonCommand("make list | tr '\\n' ','", true).trim().split(',')
 }
 
+boolean isMainBranch() {
+    return env.IS_MAIN_BRANCH?.toBoolean()
+}
+
 MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
@@ -455,6 +473,18 @@ MavenCommand getMavenCommand(String directory) {
 
 String getDroolsTargetBranch() {
     return util.calculateTargetReleaseBranch(getBuildBranch(), 7)
+}
+
+String getCleanedReleaseNotes() {
+    return '''
+<!-- Keep them in alphabetical order -->
+## Enhancements
+
+## Bug Fixes
+
+## Known Issues
+
+'''
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
