@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+const ctrlOrCmd = Cypress.platform ? "Cmd" : "Ctrl";
+
 describe("Serverless Logic Web Tools - Try samples test", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -51,7 +53,7 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
         cy.ouia({ ouiaId: "keyboard-shortcuts-icon" }).click();
         cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box")
           .should("contain.text", "Keyboard shortcuts")
-          .should("contain.text", "Ctrl + Z")
+          .should("contain.text", `${ctrlOrCmd} + Z`)
           .should("contain.text", "Undo last edit");
         cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box .pf-c-button").click();
       });
@@ -74,7 +76,7 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
           cy.ouia({ ouiaId: "keyboard-shortcuts-icon" }).click();
           cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box")
             .should("contain.text", "Keyboard shortcuts")
-            .should("contain.text", "Ctrl + Alt")
+            .should("contain.text", `${ctrlOrCmd} + Alt`)
             .should("contain.text", "Hold to Preview");
           cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box .pf-c-button").click();
         });
@@ -107,7 +109,7 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
       cy.ouia({ ouiaId: "keyboard-shortcuts-icon" }).click();
       cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box")
         .should("contain.text", "Keyboard shortcuts")
-        .should("contain.text", "Shift + Ctrl + Z")
+        .should("contain.text", `Shift + ${ctrlOrCmd} + Z`)
         .should("contain.text", "Redo last edit");
       cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box .pf-c-button").click();
 
