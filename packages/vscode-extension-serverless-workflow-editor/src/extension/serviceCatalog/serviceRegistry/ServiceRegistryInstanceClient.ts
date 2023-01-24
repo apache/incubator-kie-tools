@@ -17,10 +17,9 @@
 import { ArtifactsApi, ArtifactType, Configuration, SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import { AuthProvider } from "./auth";
 import {
-  SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
+  SwfCatalogSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import { OpenAPIV3 } from "openapi-types";
@@ -68,7 +67,7 @@ export class ServiceRegistryInstanceClient {
         const response = await artifactsApi.getLatestArtifact(spec.groupId ?? "", spec.id);
 
         const swfFunctions = extractFunctions(response.data as OpenAPIV3.Document, {
-          type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+          type: SwfCatalogSourceType.SERVICE_REGISTRY,
           registry: this.name,
           serviceId: spec.id,
         });
@@ -81,7 +80,7 @@ export class ServiceRegistryInstanceClient {
           source: {
             registry: this.name,
             url: `${this.args.url}/groups/${spec.groupId}/artifacts/${spec.id}`,
-            type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+            type: SwfCatalogSourceType.SERVICE_REGISTRY,
             id: spec.id,
           },
         };

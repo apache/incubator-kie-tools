@@ -15,3 +15,5 @@
  */
 
 export { parseOpenApi } from "./openapi";
+export { parseAsyncApi } from "./asyncapi";
+export { parseApiContent } from "./parseApiContent";

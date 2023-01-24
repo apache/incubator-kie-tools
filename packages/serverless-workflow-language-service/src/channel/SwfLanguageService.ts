@@ -16,9 +16,8 @@
 
 import {
   SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionSourceType,
+  SwfCatalogSourceType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
@@ -227,19 +226,19 @@ export class SwfLanguageService {
   ): Promise<string> {
     const { specsDirRelativePosixPath } = await this.args.config.getSpecsDirPosixPaths(document);
 
-    if (func.source.type === SwfServiceCatalogFunctionSourceType.LOCAL_FS) {
+    if (func.source.type === SwfCatalogSourceType.LOCAL_FS) {
       const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
       const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
     } else if (
       (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
-      containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
-      func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+      containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
+      func.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
     ) {
       return `${containingService.source.url}#${func.name}`;
     } else if (
-      containingService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY &&
-      func.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+      containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
+      func.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
     ) {
       const serviceFileName = await this.args.serviceCatalog.getServiceFileNameFromSwfServiceCatalogServiceId(
         containingService.source.registry,

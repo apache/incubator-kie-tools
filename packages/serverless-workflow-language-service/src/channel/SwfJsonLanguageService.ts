@@ -71,7 +71,9 @@ export class SwfJsonLanguageService {
   }
 
   parseContent(content: string): SwfLsNode | undefined {
-    return jsonc.parseTree(content);
+    const tempContent = jsonc.parseTree(content);
+    console.log("parseContent", tempContent);
+    return tempContent;
   }
 
   public async getCompletionItems(args: {
@@ -80,6 +82,7 @@ export class SwfJsonLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
+    console.log("completion args", args);
     return this.ls.getCompletionItems({
       ...args,
       rootNode: this.parseContent(args.content),

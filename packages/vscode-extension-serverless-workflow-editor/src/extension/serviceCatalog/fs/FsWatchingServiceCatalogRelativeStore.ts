@@ -15,9 +15,18 @@
  */
 
 import * as vscode from "vscode";
-import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import {
+  parseOpenApi,
+  parseAsyncApi,
+  parseApiContent,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { SwfServiceCatalogServiceSource } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import {
+  SwfServiceCatalogService,
+  SwfCatalogSourceType,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
+import path = require("path");
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
@@ -122,6 +131,7 @@ export class FsWatchingServiceCatalogRelativeStore {
                 const fileUri = specsDirAbsolutePosixPathUri.with({
                   path: specsDirAbsolutePosixPathUri.path + "/" + fileName,
                 });
+                console.log("readServiceFile", fileUri, fileName, args);
                 promises.push(this.readServiceFile(fileUri, fileName, args.specsDirAbsolutePosixPath));
               });
 
@@ -147,13 +157,24 @@ export class FsWatchingServiceCatalogRelativeStore {
   private async readServiceFile(fileUri: vscode.Uri, fileName: string, specsDirAbsolutePosixPath: string) {
     const rawData = await vscode.workspace.fs.readFile(fileUri);
     try {
-      return [
-        parseOpenApi({
-          specsDirAbsolutePosixPath,
+      const serviceSource = path.join(specsDirAbsolutePosixPath, fileName);
+      console.log("source-posix", serviceSource);
+      const test = SwfCatalogSourceType;
+      console.log("typeTest", test);
+      const source: SwfServiceCatalogServiceSource = {
+        type: SwfCatalogSourceType?.LOCAL_FS,
+        absoluteFilePath: serviceSource,
+      };
+
+      const tempFunctions = [
+        parseApiContent({
           serviceFileName: fileName,
           serviceFileContent: new TextDecoder("utf-8").decode(rawData),
+          source,
         }),
       ];
+      console.log("finalFunctions", tempFunctions);
+      return tempFunctions;
     } catch (e) {
       console.error(e);
       return [];
