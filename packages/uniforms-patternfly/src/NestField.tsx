@@ -17,12 +17,11 @@
 import * as React from "react";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
-
 import AutoField from "./AutoField";
 
 export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { helperText?: string; itemProps?: object }>;
 
-const Nest = ({
+function NestField({
   children,
   error,
   errorMessage,
@@ -33,7 +32,7 @@ const Nest = ({
   showInlineError,
   disabled,
   ...props
-}: NestFieldProps) => {
+}: NestFieldProps) {
   return (
     <Card {...filterDOMProps(props)}>
       <CardBody className="pf-c-form">
@@ -46,6 +45,6 @@ const Nest = ({
       </CardBody>
     </Card>
   );
-};
+}
 
-export default connectField(Nest);
+export default connectField(NestField);

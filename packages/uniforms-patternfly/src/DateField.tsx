@@ -22,7 +22,6 @@ import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup
 import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
 import { TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-
 import wrapField from "./wrapField";
 
 export type DateFieldProps = FieldProps<
@@ -92,7 +91,7 @@ function DateField(props: DateFieldProps) {
       }
     }
     return false;
-  }, [props.value]);
+  }, [props.value, props.min, props.max]);
 
   const onTimeChange = useCallback(
     (time: string, hours?: number, minutes?: number) => {

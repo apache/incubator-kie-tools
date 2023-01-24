@@ -15,26 +15,20 @@
  */
 
 import { createAutoField } from "uniforms";
-
 import BoolField from "./BoolField";
 import DateField from "./DateField";
 import ListField from "./ListField";
 import NestField from "./NestField";
 import NumField from "./NumField";
 import RadioField from "./RadioField";
-import SelectCheckboxField from "./SelectCheckboxField";
-import SelectInputsField from "./SelectInputsField";
+import SelectField from "./SelectField";
 import TextField from "./TextField";
 
 export type AutoFieldProps = Parameters<typeof AutoField>[0];
 
 const AutoField = createAutoField((props) => {
   if (props.allowedValues) {
-    return props.checkboxes && props.fieldType !== Array
-      ? RadioField
-      : props.checkboxes
-      ? SelectCheckboxField
-      : SelectInputsField;
+    return props.checkboxes && props.fieldType !== Array ? RadioField : SelectField;
   }
 
   switch (props.fieldType) {

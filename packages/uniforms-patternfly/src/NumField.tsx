@@ -18,7 +18,6 @@ import * as React from "react";
 import { Ref } from "react";
 import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { connectField } from "uniforms";
-
 import wrapField from "./wrapField";
 
 export type NumFieldProps = {
@@ -31,7 +30,7 @@ export type NumFieldProps = {
   error?: boolean;
 } & Omit<TextInputProps, "isDisabled">;
 
-const Num = (props: NumFieldProps) => {
+function NumField(props: NumFieldProps) {
   const onChange = (value: string, event: React.FormEvent<HTMLInputElement>) => {
     const parse = props.decimal ? parseFloat : parseInt;
     const v = parse((event.target as any).value);
@@ -55,6 +54,6 @@ const Num = (props: NumFieldProps) => {
       validated={props.error ? "error" : "default"}
     />
   );
-};
+}
 
-export default connectField(Num);
+export default connectField(NumField);

@@ -16,9 +16,10 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { Checkbox, CheckboxProps } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { Radio, RadioProps } from "@patternfly/react-core/dist/js/components/Radio";
-import { connectField, FieldProps, filterDOMProps } from "uniforms";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
+import { filterDOMProps } from "uniforms";
+import { CheckboxesProps } from "./SelectField";
 
 function xor<T>(item: T, array: T[]) {
   const index = array.indexOf(item);
@@ -28,19 +29,6 @@ function xor<T>(item: T, array: T[]) {
 
   return array.slice(0, index).concat(array.slice(index + 1));
 }
-
-type CheckboxesProps = FieldProps<
-  string | string[],
-  CheckboxProps | RadioProps,
-  {
-    fieldType?: typeof Array | any;
-    onChange: (value?: string | string[]) => void;
-    transform?: (value?: string) => string;
-    allowedValues: string[];
-    id?: string;
-    disabled?: boolean;
-  }
->;
 
 filterDOMProps.register("autoValue");
 
@@ -76,4 +64,4 @@ function SelectCheckboxField(props: CheckboxesProps) {
   );
 }
 
-export default connectField<CheckboxesProps>(SelectCheckboxField);
+export default SelectCheckboxField;

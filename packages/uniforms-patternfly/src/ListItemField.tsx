@@ -17,7 +17,6 @@
 import * as React from "react";
 import { ReactNode } from "react";
 import { connectField } from "uniforms";
-
 import AutoField from "./AutoField";
 import ListDelField from "./ListDelField";
 
@@ -26,7 +25,7 @@ export type ListItemFieldProps = {
   value?: unknown;
 };
 
-function ListItem({ children = <AutoField label={null} name={""} /> }: ListItemFieldProps) {
+function ListItemField({ children = <AutoField label={null} name={""} /> }: ListItemFieldProps) {
   return (
     <div
       style={{
@@ -43,6 +42,6 @@ function ListItem({ children = <AutoField label={null} name={""} /> }: ListItemF
   );
 }
 
-export default connectField<ListItemFieldProps>(ListItem, {
+export default connectField<ListItemFieldProps>(ListItemField, {
   initialValue: false,
 });

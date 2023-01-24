@@ -18,34 +18,12 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Select,
-  SelectDirection,
   SelectOption,
   SelectOptionObject,
-  SelectProps,
   SelectVariant,
 } from "@patternfly/react-core/dist/js/components/Select";
-import { connectField, FieldProps, filterDOMProps } from "uniforms";
-
 import wrapField from "./wrapField";
-
-filterDOMProps.register("autoValue");
-
-type SelectInputProps = FieldProps<
-  string | string[],
-  SelectProps,
-  {
-    required?: boolean;
-    fieldType?: typeof Array | any;
-    onChange: (value?: string | string[] | number | number[]) => void;
-    placeholder?: string;
-    allowedValues?: (string | number)[];
-    disabled?: boolean;
-    error?: boolean;
-    transform?: (value?: string | number) => string | number;
-    direction?: SelectDirection;
-    menuAppendTo?: HTMLElement;
-  }
->;
+import { SelectInputProps } from "./SelectField";
 
 function isSelectOptionObject(
   toBeDetermined: string | number | SelectOptionObject
@@ -143,4 +121,4 @@ function SelectInputsField(props: SelectInputProps) {
   );
 }
 
-export default connectField<SelectInputProps>(SelectInputsField);
+export default SelectInputsField;

@@ -18,7 +18,6 @@ import * as React from "react";
 import { Checkbox, CheckboxProps } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Switch, SwitchProps } from "@patternfly/react-core/dist/js/components/Switch";
 import { connectField, FieldProps } from "uniforms";
-
 import wrapField from "./wrapField";
 
 enum ComponentType {
@@ -35,7 +34,7 @@ export type BoolFieldProps = FieldProps<
   }
 >;
 
-function Bool({ appearance, disabled, id, inputRef, label, name, onChange, value, ...props }: BoolFieldProps) {
+function BoolField({ appearance, disabled, id, inputRef, label, name, onChange, value, ...props }: BoolFieldProps) {
   const Component = appearance === ComponentType.switch ? Switch : Checkbox;
   return wrapField(
     { id, ...props },
@@ -51,6 +50,6 @@ function Bool({ appearance, disabled, id, inputRef, label, name, onChange, value
   );
 }
 
-Bool.defaultProps = { appearance: ComponentType.checkbox };
+BoolField.defaultProps = { appearance: ComponentType.checkbox };
 
-export default connectField(Bool);
+export default connectField(BoolField);

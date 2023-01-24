@@ -29,7 +29,7 @@ export type LongTextFieldProps = HTMLFieldProps<
   }
 >;
 
-const LongText = ({
+function LongTextField({
   disabled,
   id,
   inputRef,
@@ -39,20 +39,22 @@ const LongText = ({
   placeholder,
   value,
   ...props
-}: LongTextFieldProps) => (
-  <div {...filterDOMProps(props)}>
-    {label && <label htmlFor={id}>{label}</label>}
-    <TextArea
-      id={id}
-      disabled={disabled}
-      name={name}
-      aria-label={name}
-      onChange={(value, event) => onChange(event.target.value)}
-      placeholder={placeholder}
-      ref={inputRef}
-      value={value ?? ""}
-    />
-  </div>
-);
+}: LongTextFieldProps) {
+  return (
+    <div {...filterDOMProps(props)}>
+      {label && <label htmlFor={id}>{label}</label>}
+      <TextArea
+        id={id}
+        disabled={disabled}
+        name={name}
+        aria-label={name}
+        onChange={(value, event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        ref={inputRef}
+        value={value ?? ""}
+      />
+    </div>
+  );
+}
 
-export default connectField(LongText);
+export default connectField(LongTextField);

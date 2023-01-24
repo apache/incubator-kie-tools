@@ -16,7 +16,6 @@
 
 import { ComponentType, createElement } from "react";
 import { useForm } from "uniforms";
-
 import AutoField from "./AutoField";
 
 export type AutoFieldsProps = {
@@ -26,13 +25,7 @@ export type AutoFieldsProps = {
   omitFields?: string[];
 };
 
-export default function AutoFields({
-  autoField = AutoField,
-  element = "div",
-  fields,
-  omitFields = [],
-  ...props
-}: AutoFieldsProps) {
+function AutoFields({ autoField = AutoField, element = "div", fields, omitFields = [], ...props }: AutoFieldsProps) {
   const { schema } = useForm();
 
   return createElement(
@@ -43,3 +36,5 @@ export default function AutoFields({
       .map((field) => createElement(autoField!, { key: field, name: field }))
   );
 }
+
+export default AutoFields;

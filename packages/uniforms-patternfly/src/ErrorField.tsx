@@ -16,19 +16,23 @@
 
 import * as React from "react";
 import { HTMLProps } from "react";
-import { connectField, filterDOMProps } from "uniforms";
+import { connectField, filterDOMProps, Override } from "uniforms";
 
-export type ErrorFieldProps = {
-  error?: any;
-  errorMessage?: string;
-} & HTMLProps<HTMLDivElement>;
+export type ErrorFieldProps = Override<
+  HTMLProps<HTMLDivElement>,
+  {
+    error?: any;
+    errorMessage?: string;
+  }
+>;
 
-const Error = ({ children, error, errorMessage, ...props }: ErrorFieldProps) =>
-  !error ? null : (
+function ErrorField({ children, error, errorMessage, ...props }: ErrorFieldProps) {
+  return !error ? null : (
     <div {...filterDOMProps(props)}>{children ? children : <div style={{ margin: "3px" }}>{errorMessage}</div>}</div>
   );
+}
 
-Error.defaultProps = {
+ErrorField.defaultProps = {
   style: {
     backgroundColor: "rgba(255, 85, 0, 0.2)",
     border: "1px solid rgb(255, 85, 0)",
@@ -38,4 +42,4 @@ Error.defaultProps = {
   },
 };
 
-export default connectField(Error, { initialValue: false });
+export default connectField<ErrorFieldProps>(ErrorField, { initialValue: false });

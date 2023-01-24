@@ -20,7 +20,6 @@ import { DatePicker } from "@patternfly/react-core/dist/js/components/DatePicker
 import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
 import { connectField, filterDOMProps } from "uniforms";
-
 import wrapField from "./wrapField";
 
 export type TextFieldProps = {
@@ -37,7 +36,7 @@ export type TextFieldProps = {
 
 const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?/;
 
-const Text = (props: TextFieldProps) => {
+function TextField(props: TextFieldProps) {
   const isDateInvalid = useMemo(() => {
     if (typeof props.value === "string" && (props.type === "date" || props.field?.format === "date")) {
       const date = new Date(props.value);
@@ -92,7 +91,7 @@ const Text = (props: TextFieldProps) => {
       }
     }
     return false;
-  }, [props.type, props.field, props.value, props.max, props.min]);
+  }, [props.type, props.field, props.value, props.max, props.min, parseTime]);
 
   const onDateChange = useCallback(
     (value: string) => {
@@ -174,6 +173,6 @@ const Text = (props: TextFieldProps) => {
       />
     )
   );
-};
+}
 
-export default connectField(Text);
+export default connectField(TextField);

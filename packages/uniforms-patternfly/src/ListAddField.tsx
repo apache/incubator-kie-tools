@@ -32,7 +32,7 @@ export type ListAddFieldProps = FieldProps<
   }
 >;
 
-function ListAdd({ disabled = false, name, value, ...props }: ListAddFieldProps) {
+function ListAddField({ disabled = false, name, value, ...props }: ListAddFieldProps) {
   const nameParts = joinName(null, name);
   const parentName = joinName(nameParts.slice(0, -1));
   const parent = useField<{ maxCount?: number }, unknown[]>(parentName, {}, { absoluteName: true })[0];
@@ -54,7 +54,7 @@ function ListAdd({ disabled = false, name, value, ...props }: ListAddFieldProps)
   );
 }
 
-export default connectField<ListAddFieldProps>(ListAdd, {
+export default connectField<ListAddFieldProps>(ListAddField, {
   initialValue: false,
   kind: "leaf",
 });

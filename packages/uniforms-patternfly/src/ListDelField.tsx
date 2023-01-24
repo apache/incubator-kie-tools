@@ -22,7 +22,7 @@ import { connectField, FieldProps, filterDOMProps, joinName, useField } from "un
 
 export type ListDelFieldProps = FieldProps<unknown, ButtonProps, { icon?: ReactNode }>;
 
-function ListDel({ name, disabled, ...props }: ListDelFieldProps) {
+function ListDelField({ name, disabled, ...props }: ListDelFieldProps) {
   const nameParts = joinName(null, name);
   const nameIndex = +nameParts[nameParts.length - 1];
   const parentName = joinName(nameParts.slice(0, -1));
@@ -47,7 +47,7 @@ function ListDel({ name, disabled, ...props }: ListDelFieldProps) {
   );
 }
 
-export default connectField<ListDelFieldProps>(ListDel, {
+export default connectField<ListDelFieldProps>(ListDelField, {
   initialValue: false,
   kind: "leaf",
 });
