@@ -14,31 +14,12 @@
  * limitations under the License.
  */
 
-import {
-  ContextExpressionDefinition,
-  DecisionTableExpressionDefinition,
-  ExpressionDefinition,
-  FunctionExpressionDefinition,
-  InvocationExpressionDefinition,
-  ListExpressionDefinition,
-  LiteralExpressionDefinition,
-  RelationExpressionDefinition,
-} from "./ExpressionDefinition";
-
 /**
  * This interface defines all the API methods which BoxedExpressionEditor component can use to dialog with GWT Layer
  */
 export interface BeeGwtService {
-  resetExpressionDefinition: (definition: ExpressionDefinition) => void;
-  broadcastLiteralExpressionDefinition: (definition: LiteralExpressionDefinition) => void;
-  broadcastRelationExpressionDefinition: (definition: RelationExpressionDefinition) => void;
-  broadcastContextExpressionDefinition: (definition: ContextExpressionDefinition) => void;
-  broadcastListExpressionDefinition: (definition: ListExpressionDefinition) => void;
-  broadcastInvocationExpressionDefinition: (definition: InvocationExpressionDefinition) => void;
-  broadcastFunctionExpressionDefinition: (definition: FunctionExpressionDefinition) => void;
-  broadcastDecisionTableExpressionDefinition: (definition: DecisionTableExpressionDefinition) => void;
-  notifyUserAction: () => void;
-  openManageDataType: () => void;
-  onLogicTypeSelect: (selectedLogicType: string) => void;
-  selectObject: (uuid?: string) => void;
+  notifyUserAction: () => void; // That's for the undo/redo stack.
+  openManageDataType: () => void; // Just open the data types tab
+  onLogicTypeSelect: (selectedLogicType: string) => void; // FIXME: Tiago -> Rename to "onRootExpressionLogicTypeSelected"
+  selectObject: (uuid?: string) => void; // Changes the Properties panel
 }

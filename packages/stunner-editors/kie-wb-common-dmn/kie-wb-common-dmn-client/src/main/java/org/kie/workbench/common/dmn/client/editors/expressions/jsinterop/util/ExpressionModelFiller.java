@@ -134,7 +134,7 @@ public class ExpressionModelFiller {
     public static void fillFunctionExpression(final FunctionDefinition functionExpression, final FunctionProps functionProps) {
         final FunctionDefinition.Kind functionKind = FunctionDefinition.Kind.fromValue(functionProps.functionKind);
         functionExpression.setId(new Id(functionProps.id));
-        functionExpression.getComponentWidths().set(1, functionProps.parametersWidth);
+        functionExpression.getComponentWidths().set(1, functionProps.classAndMethodNamesWidth);
         functionExpression.getFormalParameter().clear();
         functionExpression.getFormalParameter().addAll(formalParametersConvertForFunctionExpression(functionProps));
         functionExpression.setKind(functionKind);
@@ -146,7 +146,7 @@ public class ExpressionModelFiller {
         if (StringUtils.nonEmpty(decisionTableProps.hitPolicy)) {
             decisionTableExpression.setHitPolicy(HitPolicy.fromValue(decisionTableProps.hitPolicy));
         }
-        if (StringUtils.nonEmpty(decisionTableProps.aggregation)) {
+        if (StringUtils.nonEmpty(decisionTableProps.aggregation) && !decisionTableProps.aggregation.equals("?")) {
             decisionTableExpression.setAggregation(BuiltinAggregator.fromCode(decisionTableProps.aggregation));
         }
         decisionTableExpression.getAnnotations().clear();

@@ -98,7 +98,7 @@ public class ExpressionPropsFiller {
                                           outputConvertForDecisionTableProps(decisionTableExpression, expressionName, dataType),
                                           rulesConvertForDecisionTableProps(decisionTableExpression));
         }
-        return new ExpressionProps(expressionId, expressionName, dataType, null);
+        return new ExpressionProps(expressionId, expressionName, dataType, UNDEFINED.getText());
     }
 
     public static ExpressionProps buildAndFillJsInteropProp(final Expression wrappedExpression, final String expressionName, final String dataType) {

@@ -22,9 +22,9 @@ import java.util.Optional;
 public enum ExpressionType {
 
     UNDEFINED("<Undefined>"),
-    LITERAL_EXPRESSION("Literal expression"),
+    LITERAL_EXPRESSION("Literal"),
     CONTEXT("Context"),
-    DECISION_TABLE("Decision Table"),
+    DECISION_TABLE("Decision table"),
     RELATION("Relation"),
     FUNCTION("Function"),
     FUNCTION_JAVA("Function Java"),

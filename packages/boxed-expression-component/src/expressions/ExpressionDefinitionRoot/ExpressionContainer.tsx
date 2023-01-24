@@ -19,7 +19,10 @@ import * as React from "react";
 import { useCallback, useRef } from "react";
 import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
 import * as _ from "lodash";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 
@@ -36,18 +39,25 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const { beeGwtService } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onLogicTypeSelected = useCallback(
-    (logicType) =>
+    (logicType) => {
+      if (!isNested) {
+        beeGwtService?.onLogicTypeSelect(logicType);
+        return;
+      }
+
       setExpression((prev) => ({
         ...getDefaultExpressionDefinitionByLogicType(logicType, prev),
         logicType,
         isNested,
         id: prev.id ?? generateUuid(),
         name: prev.name ?? DEFAULT_EXPRESSION_NAME,
-      })),
-    [isNested, setExpression]
+      }));
+    },
+    [beeGwtService, isNested, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {

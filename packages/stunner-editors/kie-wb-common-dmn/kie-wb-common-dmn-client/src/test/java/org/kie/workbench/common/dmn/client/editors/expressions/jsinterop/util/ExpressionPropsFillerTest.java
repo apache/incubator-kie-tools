@@ -215,7 +215,7 @@ public class ExpressionPropsFillerTest {
         assertFormalParameters((PmmlFunctionProps) expressionProps);
         assertThat(((PmmlFunctionProps) expressionProps).document).isEqualTo(documentName);
         assertThat(((PmmlFunctionProps) expressionProps).model).isEqualTo(modelName);
-        assertThat(((PmmlFunctionProps) expressionProps).parametersWidth).isEqualTo(pmmlFunctionExpression.getComponentWidths().get(1));
+        assertThat(((PmmlFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(pmmlFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test
@@ -240,7 +240,7 @@ public class ExpressionPropsFillerTest {
         assertFormalParameters((JavaFunctionProps) expressionProps);
         assertThat(((JavaFunctionProps) expressionProps).className).isEqualTo(className);
         assertThat(((JavaFunctionProps) expressionProps).methodName).isEqualTo(methodName);
-        assertThat(((JavaFunctionProps) expressionProps).parametersWidth).isEqualTo(javaFunctionExpression.getComponentWidths().get(1));
+        assertThat(((JavaFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(javaFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test
@@ -258,7 +258,7 @@ public class ExpressionPropsFillerTest {
         assertThat(((FeelFunctionProps) expressionProps).functionKind).isEqualTo(FunctionDefinition.Kind.FEEL.name());
         assertFormalParameters((FeelFunctionProps) expressionProps);
         assertThat(((FeelFunctionProps) expressionProps).expression).isExactlyInstanceOf(RelationProps.class);
-        assertThat(((FeelFunctionProps) expressionProps).parametersWidth).isEqualTo(feelFunctionExpression.getComponentWidths().get(1));
+        assertThat(((FeelFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(feelFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test

@@ -26,7 +26,10 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.Anchor;
@@ -386,6 +389,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     void loadNewBoxedExpressionEditor() {
+        ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
+        DomGlobal.console.info(JsonUtils.stringify((JavaScriptObject) (Object) expression));
         String decisionNodeId = null;
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
@@ -395,7 +400,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         DMNLoader.renderBoxedExpressionEditor(
                 ".kie-dmn-new-expression-editor",
                 decisionNodeId,
-                ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
+                expression,
                 concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
                 hasExpression.isClearSupported(),
                 buildPmmlParams()

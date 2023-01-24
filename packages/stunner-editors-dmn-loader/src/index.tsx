@@ -17,7 +17,7 @@
 import {
   BoxedExpressionEditor,
   BoxedExpressionEditorProps,
-} from "@kie-tools/boxed-expression-component/dist/components";
+} from "@kie-tools/boxed-expression-component/dist/expressions";
 import {
   ImportJavaClasses,
   GWTLayerService,
@@ -50,7 +50,7 @@ export interface BoxedExpressionEditorWrapperProps {
    * Each expression (internally) has a `noClearAction` property (ExpressionDefinition interface).
    * You can set directly it for enabling or not the clear button for such expression.
    * */
-  isClearSupportedOnRootExpression?: boolean;
+  isResetSupportedOnRootExpression?: boolean;
   /** PMML parameters */
   pmmlParams?: PmmlParam[];
 }
@@ -59,19 +59,47 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   decisionNodeId,
   expressionDefinition,
   dataTypes,
-  isClearSupportedOnRootExpression,
+  isResetSupportedOnRootExpression,
   pmmlParams,
 }: BoxedExpressionEditorProps) => {
-  const [updatedExpressionDefinition, setUpdatedExpressionDefinition] =
-    useState<ExpressionDefinition>(expressionDefinition);
+  const [expression, setExpression] = useState<ExpressionDefinition>(expressionDefinition);
 
   useEffect(() => {
-    setUpdatedExpressionDefinition({ logicType: ExpressionDefinitionLogicType.Undefined });
-    setTimeout(() => setUpdatedExpressionDefinition(expressionDefinition), 0);
+    setExpression(expressionDefinition);
   }, [expressionDefinition]);
 
-  // The wrapper defines these function in order to keep expression definition state updated,
-  // And to propagate such definition to DMN Editor (GWT world), by calling beeApiWrapper APIs
+  useEffect(() => {
+    const logicType = expression.logicType;
+    switch (logicType) {
+      case ExpressionDefinitionLogicType.Literal:
+        window.beeApiWrapper?.broadcastLiteralExpressionDefinition?.(expression);
+        break;
+      case ExpressionDefinitionLogicType.Relation:
+        window.beeApiWrapper?.broadcastRelationExpressionDefinition?.(expression);
+        break;
+      case ExpressionDefinitionLogicType.Context:
+        window.beeApiWrapper?.broadcastContextExpressionDefinition?.(expression);
+        break;
+      case ExpressionDefinitionLogicType.DecisionTable:
+        window.beeApiWrapper?.broadcastDecisionTableExpressionDefinition?.(expression);
+        break;
+      case ExpressionDefinitionLogicType.Invocation:
+        window.beeApiWrapper?.broadcastInvocationExpressionDefinition?.(expression);
+        break;
+      case ExpressionDefinitionLogicType.List:
+        window.beeApiWrapper?.broadcastListExpressionDefinition?.(expression);
+        break;
+      case ExpressionDefinitionLogicType.Function:
+        window.beeApiWrapper?.broadcastFunctionExpressionDefinition?.(expression);
+        break;
+      case ExpressionDefinitionLogicType.Undefined:
+        window.beeApiWrapper?.resetExpressionDefinition(expression);
+        break;
+      default:
+        assertUnreachable(logicType);
+    }
+  }, [expression]);
+
   const beeGwtService: BeeGwtService = {
     notifyUserAction(): void {
       window.beeApiWrapper?.notifyUserAction();
@@ -85,38 +113,6 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     selectObject(uuid: string): void {
       window.beeApiWrapper?.selectObject(uuid);
     },
-    resetExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.resetExpressionDefinition?.(definition);
-    },
-    broadcastLiteralExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.broadcastLiteralExpressionDefinition?.(definition);
-    },
-    broadcastRelationExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.broadcastRelationExpressionDefinition?.(definition);
-    },
-    broadcastContextExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.broadcastContextExpressionDefinition?.(definition);
-    },
-    broadcastListExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.broadcastListExpressionDefinition?.(definition);
-    },
-    broadcastInvocationExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.broadcastInvocationExpressionDefinition?.(definition);
-    },
-    broadcastFunctionExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.broadcastFunctionExpressionDefinition?.(definition);
-    },
-    broadcastDecisionTableExpressionDefinition: (definition) => {
-      setUpdatedExpressionDefinition(definition);
-      window.beeApiWrapper?.broadcastDecisionTableExpressionDefinition?.(definition);
-    },
   };
 
   useElementsThatStopKeyboardEventsPropagation(
@@ -128,9 +124,10 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     <BoxedExpressionEditor
       beeGwtService={beeGwtService}
       decisionNodeId={decisionNodeId}
-      expressionDefinition={updatedExpressionDefinition}
+      expressionDefinition={expression}
+      setExpressionDefinition={setExpression}
       dataTypes={dataTypes}
-      isClearSupportedOnRootExpression={isClearSupportedOnRootExpression}
+      isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
     />
   );
@@ -141,7 +138,7 @@ const renderBoxedExpressionEditor = (
   decisionNodeId: string,
   expressionDefinition: ExpressionDefinition,
   dataTypes: DmnDataType[],
-  isClearSupportedOnRootExpression: boolean,
+  isResetSupportedOnRootExpression: boolean,
   pmmlParams: PmmlParam[]
 ) => {
   ReactDOM.render(
@@ -149,7 +146,7 @@ const renderBoxedExpressionEditor = (
       decisionNodeId={decisionNodeId}
       expressionDefinition={expressionDefinition}
       dataTypes={dataTypes}
-      isClearSupportedOnRootExpression={isClearSupportedOnRootExpression}
+      isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
     />,
     document.querySelector(selector)
@@ -181,3 +178,7 @@ const renderImportJavaClasses = (selector: string) => {
 };
 
 export { renderBoxedExpressionEditor, renderImportJavaClasses };
+
+function assertUnreachable(logicType: never) {
+  throw new Error("Shouldn't reach this point.");
+}

@@ -93,14 +93,6 @@ const INITIAL_EXPRESSION: ExpressionDefinition = {
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
 const beeGwtService: BeeGwtService = {
-  resetExpressionDefinition: (definition) => {},
-  broadcastLiteralExpressionDefinition: (definition) => {},
-  broadcastRelationExpressionDefinition: (definition) => {},
-  broadcastContextExpressionDefinition: (definition) => {},
-  broadcastListExpressionDefinition: (definition) => {},
-  broadcastInvocationExpressionDefinition: (definition) => {},
-  broadcastFunctionExpressionDefinition: (definition) => {},
-  broadcastDecisionTableExpressionDefinition: (definition) => {},
   notifyUserAction(): void {},
   openManageDataType(): void {},
   onLogicTypeSelect(): void {},
