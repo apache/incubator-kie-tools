@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import cloneDeep from "lodash/cloneDeep";
-import { Button, ButtonProps } from "@patternfly/react-core";
-import { PlusCircleIcon } from "@patternfly/react-icons";
+import { Button, ButtonProps } from "@patternfly/react-core/dist/js/components/Button";
+import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { connectField, FieldProps, filterDOMProps, joinName, useField } from "uniforms";
 
 export type ListAddFieldProps = FieldProps<

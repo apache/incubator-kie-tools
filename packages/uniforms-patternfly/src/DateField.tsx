@@ -17,7 +17,11 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { connectField, FieldProps } from "uniforms";
-import { DatePicker, Flex, FlexItem, InputGroup, TextInputProps, TimePicker } from "@patternfly/react-core";
+import { DatePicker } from "@patternfly/react-core/dist/js/components/DatePicker";
+import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
+import { TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 import wrapField from "./wrapField";
 

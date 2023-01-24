@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import { Button, ButtonProps } from "@patternfly/react-core";
-import { Override, HTMLFieldProps, useForm } from "uniforms";
+import { Button, ButtonProps } from "@patternfly/react-core/dist/js/components/Button";
+import { Override, useForm } from "uniforms";
 
 export type SubmitFieldProps = Override<ButtonProps, { inputRef?: React.RefObject<HTMLButtonElement> }>;
 

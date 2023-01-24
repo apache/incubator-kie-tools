@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { TextArea } from "@patternfly/react-core";
+import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 
 export type LongTextFieldProps = HTMLFieldProps<

@@ -23,7 +23,7 @@ import {
   SelectOptionObject,
   SelectProps,
   SelectVariant,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/Select";
 import { connectField, FieldProps, filterDOMProps } from "uniforms";
 
 import wrapField from "./wrapField";

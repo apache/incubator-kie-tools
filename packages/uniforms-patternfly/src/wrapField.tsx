@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { FormGroup, FormGroupProps } from "@patternfly/react-core";
+import { FormGroup, FormGroupProps } from "@patternfly/react-core/dist/js/components/Form";
 import { filterDOMProps } from "uniforms";
 
 declare module "uniforms" {

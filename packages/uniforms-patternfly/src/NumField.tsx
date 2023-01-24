@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Ref } from "react";
-import { TextInput, TextInputProps } from "@patternfly/react-core";
+import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { connectField } from "uniforms";
 
 import wrapField from "./wrapField";

@@ -16,7 +16,8 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { Checkbox, CheckboxProps, Radio, RadioProps } from "@patternfly/react-core";
+import { Checkbox, CheckboxProps } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { Radio, RadioProps } from "@patternfly/react-core/dist/js/components/Radio";
 import { connectField, FieldProps, filterDOMProps } from "uniforms";
 
 function xor<T>(item: T, array: T[]) {

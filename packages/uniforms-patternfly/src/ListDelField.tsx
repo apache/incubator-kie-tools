@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { ReactNode } from "react";
-import { Button, ButtonProps } from "@patternfly/react-core";
-import { MinusCircleIcon } from "@patternfly/react-icons";
+import { Button, ButtonProps } from "@patternfly/react-core/dist/js/components/Button";
+import { MinusCircleIcon } from "@patternfly/react-icons/dist/js/icons/minus-circle-icon";
 import { connectField, FieldProps, filterDOMProps, joinName, useField } from "uniforms";
 
 export type ListDelFieldProps = FieldProps<unknown, ButtonProps, { icon?: ReactNode }>;

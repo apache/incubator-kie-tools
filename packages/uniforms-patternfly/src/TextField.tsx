@@ -16,7 +16,9 @@
 
 import * as React from "react";
 import { Ref, useCallback, useMemo } from "react";
-import { DatePicker, TextInput, TextInputProps, TimePicker } from "@patternfly/react-core";
+import { DatePicker } from "@patternfly/react-core/dist/js/components/DatePicker";
+import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
+import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
 import { connectField, filterDOMProps } from "uniforms";
 
 import wrapField from "./wrapField";

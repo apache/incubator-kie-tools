@@ -15,7 +15,8 @@
  */
 
 import * as React from "react";
-import { Checkbox, CheckboxProps, Switch, SwitchProps } from "@patternfly/react-core";
+import { Checkbox, CheckboxProps } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { Switch, SwitchProps } from "@patternfly/react-core/dist/js/components/Switch";
 import { connectField, FieldProps } from "uniforms";
 
 import wrapField from "./wrapField";

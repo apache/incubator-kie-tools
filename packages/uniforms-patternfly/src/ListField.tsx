@@ -16,8 +16,9 @@
 
 import * as React from "react";
 import { Children, cloneElement, isValidElement, ReactNode } from "react";
-import { Split, SplitItem, Tooltip } from "@patternfly/react-core";
-import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 import ListItemField from "./ListItemField";
 import ListAddField from "./ListAddField";
