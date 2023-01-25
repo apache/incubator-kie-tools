@@ -18,6 +18,7 @@ import {
   isOpenShiftConnectionValid,
   OpenShiftConnection,
 } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -28,13 +29,14 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useAppI18n } from "../../i18n";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { QuickStartIds } from "../../quickstarts-data";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
 
@@ -53,6 +55,7 @@ export function OpenShiftSettingsSimpleConfig() {
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   useEffect(() => {
     setConfig(settings.openshift.config);
@@ -298,6 +301,17 @@ export function OpenShiftSettingsSimpleConfig() {
               </Button>
             </InputGroupText>
           </InputGroup>
+          <br />
+          <Button
+            isInline={true}
+            key="quickstart"
+            variant="link"
+            onClick={() => {
+              qsContext.setActiveQuickStartID?.(QuickStartIds.OpenShiftIntegrationQuickStart);
+            }}
+          >
+            Need help getting started? Follow our quickstart guide.
+          </Button>
         </FormGroup>
         <ActionGroup>
           <Button

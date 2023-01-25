@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-export enum QuickStartNames {
-  GitHubTokenQuickStart = "github-token-quick-start",
-}
+import { GitHubTokenQuickStart } from "./GitHubTokenQuickStart";
+import { OpenShiftIntegrationQuickStart } from "./OpenShiftIntegrationQuickStart";
 
-export { GitHubTokenQuickStart } from "./GitHubTokenQuickStart";
+export const QuickStartIds: { [key: string]: string } = {
+  GitHubTokenQuickStart: GitHubTokenQuickStart.metadata.name,
+  OpenShiftIntegrationQuickStart: OpenShiftIntegrationQuickStart.metadata.name,
+};
+
+export { GitHubTokenQuickStart, OpenShiftIntegrationQuickStart };

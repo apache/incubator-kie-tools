@@ -31,7 +31,7 @@ import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
-import { QuickStartNames } from "../../quickstarts-data";
+import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -226,7 +226,7 @@ export function GitHubSettings(props: { pageContainerRef?: React.RefObject<HTMLD
               key="quickstart"
               variant="link"
               onClick={() => {
-                qsContext.setActiveQuickStartID?.(QuickStartNames.GitHubTokenQuickStart);
+                qsContext.setActiveQuickStartID?.(QuickStartIds.GitHubTokenQuickStart);
               }}
             >
               Need help getting started? Follow our quickstart guide.
