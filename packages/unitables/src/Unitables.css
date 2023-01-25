@@ -1,0 +1,8 @@
+.standalone-bee-table .pf-c-select .pf-c-select__toggle::before {
+  border-style: hidden;
+}
+
+.standalone-bee-table .pf-c-form-control {
+  border-style: hidden;
+  outline: none;
+}
