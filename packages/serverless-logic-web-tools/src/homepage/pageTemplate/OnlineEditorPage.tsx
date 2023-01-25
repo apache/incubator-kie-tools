@@ -32,7 +32,7 @@ import {
   SkipToContent,
 } from "@patternfly/react-core";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
-import { useHistory } from "react-router";
+import { useHistory, useRouteMatch } from "react-router";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
@@ -40,6 +40,7 @@ import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationIcon, BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 
@@ -47,6 +48,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
   const [isNavOpen, setIsNavOpen] = useState(true);
+  const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
   const navToggle = () => {
     setIsNavOpen(!isNavOpen);
   };
@@ -127,9 +129,17 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   );
   const location = useLocation();
 
-  const sidebar = (
-    <PageSidebar nav={<HomePageNav pathname={location.pathname}></HomePageNav>} isNavOpen={isNavOpen} theme="dark" />
+  const pageNav = useMemo(
+    () =>
+      !isRouteInSettingsSection ? (
+        <HomePageNav pathname={location.pathname}></HomePageNav>
+      ) : (
+        <SettingsPageNav pathname={location.pathname}></SettingsPageNav>
+      ),
+    [location, isRouteInSettingsSection]
   );
+
+  const sidebar = <PageSidebar nav={pageNav} isNavOpen={isNavOpen} theme="dark" />;
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;

@@ -15,6 +15,7 @@
  */
 
 const IS_HASH_ROUTER = true;
+const SETTINGS_ROUTE = "/settings";
 
 export enum QueryParams {
   SETTINGS = "settings",
@@ -127,6 +128,17 @@ export const routes = {
     ({ workspaceId, fileRelativePath, extension }) =>
       `/${workspaceId}/file/${fileRelativePath}${extension ? "." + extension : ""}`
   ),
+
+  settings: {
+    home: new Route<{}>(() => SETTINGS_ROUTE),
+    github: new Route<{}>(() => `${SETTINGS_ROUTE}/github`),
+    openshift: new Route<{}>(() => `${SETTINGS_ROUTE}/openshift`),
+    kie_sandbox_extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/kie_sandbox_extended_services`),
+    service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/serviceAccount`),
+    service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/serviceRegistry`),
+    kafka: new Route<{}>(() => `${SETTINGS_ROUTE}/kafka`),
+    feature_preview: new Route<{}>(() => `${SETTINGS_ROUTE}/featurePreview`),
+  },
 
   static: {
     sample: new Route<{ pathParams: "type" | "name" }>(({ type, name }) => `samples/${name}/${name}.${type}`),
