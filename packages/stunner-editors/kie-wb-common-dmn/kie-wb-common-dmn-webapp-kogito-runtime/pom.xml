@@ -494,7 +494,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -510,7 +510,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -525,7 +525,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -535,7 +535,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.antlr</groupId>
+      <groupId>org.antlr4gwt</groupId>
       <artifactId>antlr4gwt-runtime</artifactId>
       <scope>provided</scope>
       <exclusions>
