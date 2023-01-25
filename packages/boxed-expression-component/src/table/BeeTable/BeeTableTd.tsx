@@ -99,12 +99,6 @@ export function BeeTableTd<R extends object>({
 
   useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, getValue);
 
-  const tdContent = useMemo(() => {
-    return shouldUseCellDelegate && column.cellDelegate
-      ? column.cellDelegate?.(`cell-delegate-${rowIndex}`)
-      : cell.render("Cell");
-  }, [cell, rowIndex, shouldUseCellDelegate, column]);
-
   useEffect(() => {
     function onEnter(e: MouseEvent) {
       e.stopPropagation();
@@ -195,9 +189,13 @@ export function BeeTableTd<R extends object>({
               style={{
                 width: resizingWidth?.value,
                 minWidth: lastColumnMinWidth ?? cell.column.minWidth,
+                minHeight: `60px`,
+                outline: "none",
               }}
             >
-              {tdContent}
+              {shouldUseCellDelegate && column.cellDelegate
+                ? column.cellDelegate?.(`cell-delegate-${rowIndex}`)
+                : cell.render("Cell")}
             </div>
             {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
               <Resizer

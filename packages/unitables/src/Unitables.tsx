@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
 import { Button } from "@patternfly/react-core";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -24,17 +23,14 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import * as React from "react";
-import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import nextId from "react-id-generator";
 import * as ReactTable from "react-table";
-import { BeeTableWrapper } from "./bee";
+import { UnitablesBeeTable } from "./bee";
 import { UnitablesI18n } from "./i18n";
 import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 import { useUnitablesInputs } from "./UnitablesInputs";
-
-export interface UnitablesApi {
-  operationHandler: (tableOperation: BeeTableOperation, rowIndex: number) => void;
-}
+import "./Unitables.css";
 
 interface Props {
   jsonSchema: object;
@@ -47,16 +43,15 @@ interface Props {
   rowCount: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   propertiesEntryPath: string;
-  onRowNumberUpdate: (rowQtt: number, operation?: BeeTableOperation, rowIndex?: number) => void;
   inputsContainerRef: React.RefObject<HTMLDivElement>;
 }
 
-export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRef) => {
+export const Unitables = (props: Props) => {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
   const inputColumnsCache = useRef<ReactTable.Column[]>([]);
 
-  const { inputs, inputRows, updateInputCellsWidth, operationHandler } = useUnitablesInputs(
+  const { inputs, inputRows } = useUnitablesInputs(
     props.jsonSchemaBridge,
     props.inputRows,
     props.setInputRows,
@@ -74,33 +69,56 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
     inputErrorBoundaryRef.current?.reset();
   }, [props.jsonSchemaBridge]);
 
-  useImperativeHandle(forwardRef, () => ({ operationHandler }), [operationHandler]);
-
   const config = useMemo(
     () => ({
-      type: "inputs" as const,
       inputs: inputs,
       rows: inputRows,
     }),
     [inputRows, inputs]
   );
 
+  const searchRecursively = useCallback((child: any) => {
+    if (!child) {
+      return;
+    }
+    if (child.tagName === "svg") {
+      return;
+    }
+    if (child.style) {
+      child.style.height = "60px";
+    }
+    if (!child.childNodes) {
+      return;
+    }
+    child.childNodes.forEach(searchRecursively);
+  }, []);
+
+  useLayoutEffect(() => {
+    const tbody = document.getElementsByTagName("tbody")[0];
+    const inputsCells = Array.from(tbody.getElementsByTagName("td"));
+    inputsCells.shift();
+    inputsCells.forEach((inputCell) => {
+      searchRecursively(inputCell.childNodes[0]);
+    });
+  }, [config, searchRecursively]);
+
   return (
     <>
       {inputs && shouldRender && inputRows && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
           <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
-              <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
+            <div style={{ display: "flex", flexDirection: "column", marginTop: "7px" }}>
+              <div style={{ width: "60px", height: "64px", visibility: "hidden" }}>{" # "}</div>
+              <div style={{ width: "60px", height: "64px", visibility: "hidden" }}>{" # "}</div>
               {Array.from(Array(props.rowCount)).map((e, rowIndex) => (
                 <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
                   <div
                     style={{
-                      width: "50px",
+                      width: "60px",
                       height: "62px",
                       display: "flex",
                       alignItems: "center",
+                      justifyContent: "center",
                       paddingTop: "8px",
                     }}
                   >
@@ -115,7 +133,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
                 </Tooltip>
               ))}
             </div>
-            <BeeTableWrapper i18n={props.i18n} config={config} id={inputUid} />
+            <UnitablesBeeTable i18n={props.i18n} config={config} id={inputUid} />
           </div>
         </ErrorBoundary>
       )}
@@ -123,7 +141,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
   );
-});
+};
 
 function InputError() {
   return (

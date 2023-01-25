@@ -636,26 +636,8 @@ section.kie-tools--settings-tab {
 .kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel .pf-c-drawer__panel-main {
   overflow: scroll;
 }
-
-.kie-tools--dmn-runner-table--drawer .pf-c-drawer__main {
-  overflow: scroll;
-}
-
 .kie-tools--dmn-runner-table--drawer .pf-c-drawer__content {
   overflow: scroll !important;
-  /*direction: rtl;*/
-}
-
-.kie-tools--dmn-runner-table--drawer .pf-c-drawer__content .boxed-expression-provider {
-  /*direction: ltr;*/
-}
-
-.kie-tools--dmn-runner-table--drawer .pf-c-drawer__content .decision-table-expression {
-  margin-right: -9px;
-}
-
-.expression-container .expression-container-box {
-  margin-top: -11px;
 }
 
 .kie-tools--file-switcher-no-padding-menu-item {

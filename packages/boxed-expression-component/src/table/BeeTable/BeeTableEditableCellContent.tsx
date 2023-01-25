@@ -166,7 +166,7 @@ export function BeeTableEditableCellContent({
       <div
         ref={editableCellRef}
         tabIndex={-1}
-        style={{ minHeight: `${cellHeight}px`, outline: "none" }}
+        style={{ height: `${cellHeight}px`, outline: "none" }}
         className={cssClass}
         // FIXME: Tiago -> Extracting this to a useCallback breaks it.
         onKeyDown={(e) => {
