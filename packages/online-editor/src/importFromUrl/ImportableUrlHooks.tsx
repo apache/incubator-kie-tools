@@ -44,6 +44,7 @@ export enum UrlType {
   GIST_DOT_GITHUB_DOT_COM,
   BITBUCKET_DOT_ORG,
   BITBUCKET_DOT_ORG_SNIPPET,
+  BITBUCKET_DOT_ORG_SNIPPET_FILE,
 
   //single file
   GIST_DOT_GITHUB_DOT_COM_FILE,
@@ -76,7 +77,8 @@ export function isSingleFile(urlType: UrlType) {
     urlType === UrlType.FILE ||
     urlType === UrlType.GIST_DOT_GITHUB_DOT_COM_FILE ||
     urlType === UrlType.GITHUB_DOT_COM_FILE ||
-    urlType === UrlType.BITBUCKET_DOT_ORG_FILE
+    urlType === UrlType.BITBUCKET_DOT_ORG_FILE ||
+    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE
   );
 }
 
@@ -137,10 +139,19 @@ export type ImportableUrl =
   | {
       type: UrlType.BITBUCKET_DOT_ORG_SNIPPET;
       error?: undefined;
-      snippetId?: string;
-      snippetName?: string;
+      snippetId: string;
+      snippetName: string;
       url: URL;
       org: string;
+    }
+  | {
+      type: UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE;
+      error?: undefined;
+      snippetId: string;
+      snippetName: string;
+      url: URL;
+      org: string;
+      filename: string;
     }
   | {
       type: UrlType.NOT_SUPPORTED;
@@ -280,10 +291,18 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         exact: true,
         strict: true,
       });
-      if (snippetMatch) {
+      if (snippetMatch && url.hash) {
+        return ifAllowed({
+          type: UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE,
+          url: url,
+          snippetId: snippetMatch.params.snippetId,
+          snippetName: snippetMatch.params.snippetName,
+          org: snippetMatch.params.org,
+          filename: url.hash.replace("#file-", ""),
+        });
+      } else if (snippetMatch) {
         const newURL = new URL(url);
         newURL.pathname = `/snippets/${snippetMatch.params.org}/${snippetMatch.params.snippetId}/${snippetMatch.params.snippetName}.git`;
-        console.log(newURL);
         return ifAllowed({
           type: UrlType.BITBUCKET_DOT_ORG_SNIPPET,
           url: newURL,

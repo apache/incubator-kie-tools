@@ -36,9 +36,11 @@ import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { useBitbucketClient } from "../bitbucket/Hooks";
 import { GithubIcon, BitbucketIcon } from "@patternfly/react-icons";
 import { useGitHubClient } from "../github/Hooks";
-import { SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
+import { isSupportedGitAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { switchExpression } from "../switchExpression/switchExpression";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { useOnlineI18n } from "../i18n";
 
 export interface CreateRepositoryResponse {
   cloneUrl: string;
@@ -68,6 +70,7 @@ export function CreateGitRepositoryModal(props: {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.name));
+  const { i18n } = useOnlineI18n();
 
   useEffect(() => {
     setName(getSuggestedRepositoryName(props.workspace.name));
@@ -118,26 +121,23 @@ export function CreateGitRepositoryModal(props: {
 
   const create = useCallback(async () => {
     try {
-      if (!authInfo || !gitConfig) {
+      if (!authInfo || !gitConfig || !isSupportedGitAuthProviderType(authProvider?.type)) {
         return;
       }
 
       setError(undefined);
       setLoading(true);
 
-      const createRepositoryCommand: () => Promise<CreateRepositoryResponse> = switchExpression(
-        authProvider?.type as SupportedGitAuthProviders,
-        {
-          bitbucket: createBitbucketRepository,
-          github: createGitHubRepository,
-        }
-      );
+      const createRepositoryCommand: () => Promise<CreateRepositoryResponse> = switchExpression(authProvider?.type, {
+        bitbucket: createBitbucketRepository,
+        github: createGitHubRepository,
+      });
 
       if (!createRepositoryCommand) {
         throw new Error("Undefined create repository command for auth type " + authProvider?.type);
       }
       const { cloneUrl, htmlUrl: websiteUrl } = await createRepositoryCommand();
-      const initializeEmptyRepositoryCommand = switchExpression(authProvider?.type as SupportedGitAuthProviders, {
+      const initializeEmptyRepositoryCommand = switchExpression(authProvider?.type, {
         bitbucket: pushEmptyCommitIntoBitbucket,
         default: async (): Promise<void> => {},
       });
@@ -160,7 +160,7 @@ export function CreateGitRepositoryModal(props: {
         remote: GIT_ORIGIN_REMOTE_NAME,
         ref: props.workspace.origin.branch,
         remoteRef: `refs/heads/${props.workspace.origin.branch}`,
-        force: switchExpression(authProvider?.type as SupportedGitAuthProviders, {
+        force: switchExpression(authProvider?.type, {
           github: false,
           bitbucket: true,
         }),
@@ -209,24 +209,24 @@ export function CreateGitRepositoryModal(props: {
     }
   }, [isNameValid]);
 
+  if (!authProvider?.type || !isSupportedGitAuthProviderType(authProvider?.type)) {
+    return <></>;
+  }
   return (
     <Modal
       variant={ModalVariant.medium}
-      aria-label={`Create a new ${authProvider?.type} repository`}
+      aria-label={i18n.createGitRepositoryModal[authProvider.type].createRepository}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      title={`Create ${authProvider?.type} repository`}
-      titleIconVariant={
-        authProvider &&
-        switchExpression(authProvider.type as SupportedGitAuthProviders, {
-          bitbucket: BitbucketIcon,
-          github: GithubIcon,
-        })
-      }
-      description={`The contents of '${props.workspace.name}' will be all in the new ${authProvider?.type} Repository.`}
+      title={i18n.createGitRepositoryModal[authProvider.type].createRepository}
+      titleIconVariant={switchExpression(authProvider.type, {
+        bitbucket: BitbucketIcon,
+        github: GithubIcon,
+      })}
+      description={i18n.createGitRepositoryModal[authProvider.type].description(props.workspace.name)}
       actions={[
         <Button isLoading={isLoading} key="create" variant="primary" onClick={create} isDisabled={!isNameValid}>
-          Create
+          {i18n.createGitRepositoryModal.form.buttonCreate}
         </Button>,
       ]}
     >
@@ -244,18 +244,16 @@ export function CreateGitRepositoryModal(props: {
           <FormAlert>
             <Alert
               variant="danger"
-              title={`Error creating ${authProvider?.type} Repository. ${error}`}
+              title={i18n.createGitRepositoryModal[authProvider.type].error.formAlert(error)}
               isInline={true}
             />
             <br />
           </FormAlert>
         )}
         <FormGroup
-          label="Name"
+          label={i18n.createGitRepositoryModal.form.nameField.label}
           isRequired={true}
-          helperTextInvalid={
-            "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."
-          }
+          helperTextInvalid={i18n.createGitRepositoryModal.form.nameField.hint}
           helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
           helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="repository-name"
@@ -265,7 +263,7 @@ export function CreateGitRepositoryModal(props: {
             id={"repo-name"}
             validated={validated}
             isRequired={true}
-            placeholder={"Name"}
+            placeholder={i18n.createGitRepositoryModal.form.nameField.label}
             value={name}
             onChange={setName}
           />
@@ -283,10 +281,10 @@ export function CreateGitRepositoryModal(props: {
             label={
               <>
                 <UsersIcon />
-                &nbsp;&nbsp; Public
+                &nbsp;&nbsp; {i18n.createGitRepositoryModal.form.visibility.public.label}
               </>
             }
-            description={"Anyone on the internet can see this repository. You choose who can commit."}
+            description={i18n.createGitRepositoryModal.form.visibility.public.description}
             onChange={() => setPrivate(false)}
           />
           <br />
@@ -297,10 +295,10 @@ export function CreateGitRepositoryModal(props: {
             label={
               <>
                 <LockIcon />
-                &nbsp;&nbsp; Private
+                &nbsp;&nbsp; {i18n.createGitRepositoryModal.form.visibility.private.label}
               </>
             }
-            description={"You choose who can see and commit to this repository."}
+            description={i18n.createGitRepositoryModal.form.visibility.private.description}
             onChange={() => setPrivate(true)}
           />
         </FormGroup>

@@ -28,7 +28,9 @@ export enum AuthProviderType {
 
 const supportedGitAuthProvidersKeys = [AuthProviderType.bitbucket, AuthProviderType.github] as const;
 export type SupportedGitAuthProviders = typeof supportedGitAuthProvidersKeys[number];
-export const isSupportedGitAuthProviderType = (maybeSupportedTypeKey: AuthProviderType | undefined): boolean => {
+export const isSupportedGitAuthProviderType = (
+  maybeSupportedTypeKey: AuthProviderType | undefined
+): maybeSupportedTypeKey is SupportedGitAuthProviders => {
   return supportedGitAuthProvidersKeys.some((k) => k === maybeSupportedTypeKey);
 };
 
@@ -61,6 +63,8 @@ export type AuthProvider = OpenShiftAuthProvider | GitAuthProvider;
 const gistEnabledTypeConfigKeys = [AuthProviderType.github, AuthProviderType.bitbucket] as const;
 export type GistEnabledAuthProviderType = typeof gistEnabledTypeConfigKeys[number];
 
-export const isGistEnabledAuthProviderType = (maybeGistEnabledTypeKey: AuthProviderType | undefined): boolean => {
+export const isGistEnabledAuthProviderType = (
+  maybeGistEnabledTypeKey: AuthProviderType | undefined
+): maybeGistEnabledTypeKey is GistEnabledAuthProviderType => {
   return gistEnabledTypeConfigKeys.some((k) => k === maybeGistEnabledTypeKey);
 };

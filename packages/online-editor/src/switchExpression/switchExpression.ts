@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
-
 export type SwitchExpressionValue = string | number | symbol;
 
 export type PartialWithMandatoryDefault<K extends SwitchExpressionValue, V> =

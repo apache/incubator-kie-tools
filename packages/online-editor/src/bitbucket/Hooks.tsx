@@ -80,7 +80,7 @@ export class BitbucketClient implements BitbucketClientApi {
   headers: Record<string, string>;
   username?: string;
 
-  request = (props: {
+  request = async (props: {
     urlContext: string;
     method?: string;
     body?: any;

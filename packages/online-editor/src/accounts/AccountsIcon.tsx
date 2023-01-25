@@ -24,7 +24,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { useCallback } from "react";
-import { ConnectToGitHubSection } from "./github/ConnectToGitHubSection";
+import { ConnectToGitSection } from "./git/ConnectToGitSection";
 import { AuthProvidersGallery } from "../authProviders/AuthProvidersGallery";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { AuthSessionsList } from "../authSessions/AuthSessionsList";
@@ -41,7 +41,6 @@ import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { ConnectToBitbucketSection } from "./bitbucket/ConnectToBitbucketSection";
 
 export function AccountsIcon() {
   const accounts = useAccounts();
@@ -219,10 +218,10 @@ export function AccountsIcon() {
                   />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
-                  <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />
+                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
-                  <ConnectToBitbucketSection authProvider={accounts.selectedAuthProvider} />
+                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
               </>

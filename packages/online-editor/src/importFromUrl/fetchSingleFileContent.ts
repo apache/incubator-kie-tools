@@ -42,9 +42,31 @@ export async function fetchSingleFileContent(
     }
     const json = await repoResponse.json();
     if (!json.links) {
-      throw new Error("Unexpected contents of Bitbucket reponse - missing links property.");
+      throw new Error("Unexpected contents of Bitbucket response - missing links property.");
     }
     rawUrl = new URL(json.links.self.href);
+  }
+  if (importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE) {
+    const snippetResponse = await bitbucketClient.getSnippet(importableUrl.org, importableUrl.snippetId);
+    if (!snippetResponse.ok) {
+      throw new Error(
+        `Couldn't get Bitbucket snippet contents: ${snippetResponse.status} ${snippetResponse.statusText}`
+      );
+    }
+    const json = await snippetResponse.json();
+    if (!json.files) {
+      throw new Error("Unexpected contents of Bitbucket response - missing files property.");
+    }
+    if (!(importableUrl.filename in json.files)) {
+      throw new Error(
+        `Unexpected contents of Bitbucket response - file ${importableUrl.filename} is not in the response.`
+      );
+    }
+    const links = json.files[importableUrl.filename].links;
+    if (!links) {
+      throw new Error("Unexpected contents of Bitbucket response - missing links property.");
+    }
+    rawUrl = new URL(links.self.href);
   }
 
   const response = await fetch(rawUrl.toString());

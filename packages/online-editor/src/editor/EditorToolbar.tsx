@@ -179,7 +179,7 @@ export function EditorToolbar(props: Props) {
   const { authSession, authInfo, gitConfig } = useAuthSession(workspacePromise.data?.descriptor.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
 
-  const octokit = useGitHubClient(authSession);
+  const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
 
   const canPushToGitRepository = useMemo(
@@ -253,7 +253,7 @@ export function EditorToolbar(props: Props) {
           return;
         }
 
-        octokit.gists.get({ gist_id: gistId }).then(({ data: gist }) => {
+        gitHubClient.gists.get({ gist_id: gistId }).then(({ data: gist }) => {
           if (canceled.get()) {
             return;
           }
@@ -263,7 +263,7 @@ export function EditorToolbar(props: Props) {
           }
         });
       },
-      [gitHubGist, workspaceImportableUrl, octokit.gists]
+      [gitHubGist, workspaceImportableUrl, gitHubClient.gists]
     )
   );
 
@@ -292,7 +292,7 @@ export function EditorToolbar(props: Props) {
     )
   );
 
-  const successfullyCreateGistOrSnippetAlert = useGlobalAlert(
+  const successfullyCreatedGistOrSnippetAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         if (!isGistLikeWorkspaceKind(workspacePromise.data?.descriptor.origin.kind)) {
@@ -303,7 +303,7 @@ export function EditorToolbar(props: Props) {
         return (
           <Alert
             variant="success"
-            title={switchExpression(workspacePromise.data?.descriptor.origin.kind as WorkspaceKindGistLike, {
+            title={switchExpression(workspacePromise.data?.descriptor.origin.kind, {
               GITHUB_GIST: i18n.editorPage.alerts.createGist,
               BITBUCKET_SNIPPET: i18n.editorPage.alerts.createSnippet,
             })}
@@ -341,7 +341,7 @@ export function EditorToolbar(props: Props) {
               <>
                 <Spinner size={"sm"} />
                 &nbsp;&nbsp; Updating{" "}
-                {switchExpression(workspacePromise.data?.descriptor.origin.kind as WorkspaceKindGistLike, {
+                {switchExpression(workspacePromise.data?.descriptor.origin.kind, {
                   BITBUCKET_SNIPPET: "Snippet",
                   GITHUB_GIST: "Gist",
                 })}
@@ -369,7 +369,7 @@ export function EditorToolbar(props: Props) {
     }
   }, [isGistOrSnippetLoading, loadingGistOrSnippetAlert]);
 
-  const successfullyUpdateGistOrSnippetAlert = useGlobalAlert(
+  const successfullyUpdatedGistOrSnippetAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         if (!isGistLikeWorkspaceKind(workspacePromise.data?.descriptor.origin.kind)) {
@@ -380,7 +380,7 @@ export function EditorToolbar(props: Props) {
         return (
           <Alert
             variant="success"
-            title={switchExpression(workspacePromise.data?.descriptor.origin.kind as WorkspaceKindGistLike, {
+            title={switchExpression(workspacePromise.data?.descriptor.origin.kind, {
               GITHUB_GIST: i18n.editorPage.alerts.updateGist,
               BITBUCKET_SNIPPET: i18n.editorPage.alerts.updateSnippet,
             })}
@@ -495,9 +495,9 @@ export function EditorToolbar(props: Props) {
       setSyncGistOrSnippetDropdownOpen(false);
     }
 
-    successfullyUpdateGistOrSnippetAlert.show();
+    successfullyUpdatedGistOrSnippetAlert.show();
   }, [
-    successfullyUpdateGistOrSnippetAlert,
+    successfullyUpdatedGistOrSnippetAlert,
     authInfo,
     workspacePromise.data,
     workspaces,
@@ -547,7 +547,12 @@ export function EditorToolbar(props: Props) {
 
   const updateGistOrSnippet = useCallback(async () => {
     try {
-      if (!authInfo || !workspacePromise.data) {
+      if (
+        !authInfo ||
+        !workspacePromise.data ||
+        !isGistEnabledAuthProviderType(authProvider?.type) ||
+        !isGistLikeWorkspaceKind(workspacePromise.data.descriptor.origin.kind)
+      ) {
         return;
       }
       setGistOrSnippetLoading(true);
@@ -578,11 +583,12 @@ export function EditorToolbar(props: Props) {
       setSyncGistOrSnippetDropdownOpen(false);
     }
 
-    successfullyUpdateGistOrSnippetAlert.show();
+    successfullyUpdatedGistOrSnippetAlert.show();
   }, [
-    successfullyUpdateGistOrSnippetAlert,
+    successfullyUpdatedGistOrSnippetAlert,
     authInfo,
     workspacePromise.data,
+    authProvider?.type,
     workspaces,
     props.workspaceFile.workspaceId,
     gitConfig,
@@ -590,7 +596,7 @@ export function EditorToolbar(props: Props) {
   ]);
 
   const createGitHubGist: () => Promise<CreateRepositoryResponse> = useCallback(async () => {
-    const gist = await octokit.gists.create({
+    const gist = await gitHubClient.gists.create({
       description: workspacePromise.data?.descriptor.name ?? "",
       public: true,
 
@@ -611,7 +617,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       throw new Error("Gist creation failed.");
     }
     return { cloneUrl: gist.data.git_push_url, htmlUrl: gist.data.html_url };
-  }, [octokit.gists, workspacePromise.data?.descriptor.name]);
+  }, [gitHubClient.gists, workspacePromise.data?.descriptor.name]);
 
   const createBitbucketSnippet: () => Promise<CreateRepositoryResponse> = useCallback(async () => {
     const response = await bitbucketClient.createSnippet("KIE Sandbox Snippet", {
@@ -705,7 +711,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
         authInfo,
       });
 
-      successfullyCreateGistOrSnippetAlert.show();
+      successfullyCreatedGistOrSnippetAlert.show();
 
       return;
     } catch (err) {
@@ -722,7 +728,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
     workspaces,
     props.workspaceFile.workspaceId,
     gitConfig,
-    successfullyCreateGistOrSnippetAlert,
+    successfullyCreatedGistOrSnippetAlert,
     errorAlert,
   ]);
 
@@ -735,7 +741,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       setGistOrSnippetLoading(true);
 
       // Fork Gist
-      const gist = await octokit.gists.fork({
+      const gist = await gitHubClient.gists.fork({
         gist_id: gitHubGist.id,
       });
 
@@ -786,7 +792,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
     authInfo,
     gitHubGist,
     workspacePromise.data,
-    octokit.gists,
+    gitHubClient.gists,
     workspaces,
     props.workspaceFile.workspaceId,
     gitConfig,

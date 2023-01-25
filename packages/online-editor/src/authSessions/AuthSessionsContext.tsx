@@ -21,13 +21,14 @@ import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCach
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import * as React from "react";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getGithubInstanceApiUrl } from "../github/Hooks";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { fetchAuthenticatedGitHubUser } from "../accounts/github/ConnectToGitHubSection";
+import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
+import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
+import { switchExpression } from "../switchExpression/switchExpression";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -134,9 +135,14 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
           [...(authSessions?.values() ?? [])].map(async (authSession) => {
             if (authSession.type === "git") {
               const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId);
-              if (authProvider?.type === "github") {
+              if (isSupportedGitAuthProviderType(authProvider?.type)) {
                 try {
-                  await fetchAuthenticatedGitHubUser(authSession.token, getGithubInstanceApiUrl(authProvider.domain));
+                  const fetchUser = switchExpression(authProvider?.type, {
+                    bitbucket: async () =>
+                      fetchAuthenticatedBitbucketUser(authSession.login, authSession.token, authProvider?.domain),
+                    github: async () => fetchAuthenticatedGitHubUser(authSession.token, authProvider?.domain),
+                  });
+                  await fetchUser();
                   return [authSession.id, AuthSessionStatus.VALID];
                 } catch (e) {
                   return [authSession.id, AuthSessionStatus.INVALID];

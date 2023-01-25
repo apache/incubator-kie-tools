@@ -18,6 +18,7 @@ import { OnlineI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
+import { names } from "@kie-tools/i18n-common-dictionary/dist/names";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -187,34 +188,75 @@ export const en: OnlineI18n = {
     embedCode: "Embed code",
     copiedToClipboard: "Copied to clipboard",
   },
-  githubTokenModal: {
-    header: {
-      title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
-      subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`,
+  connectToGitModal: {
+    github: {
+      header: {
+        title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
+        subtitle: `Set up your ${en_common.names.github} token so you can interact with GitHub.`,
+      },
+      footer: {
+        createNewToken: "Generate new token",
+        placeHolder: "Paste your token here",
+      },
+      body: {
+        learnMore: `Learn more about ${en_common.names.github} tokens`,
+        note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+      },
+      validation: {
+        scopes: {
+          helper: "Your token must include the 'repo' and 'gist' scopes.",
+        },
+      },
+      form: {
+        token: {
+          label: "Personal Access Token (classic)",
+          placeHolder: "Paste your GitHub token here",
+        },
+      },
     },
-    footer: {
-      createNewToken: "Generate new token",
-      placeHolder: "Paste your token here",
+    bitbucket: {
+      header: {
+        title: `${en_common.names.bitbucket} ${en_common.names.oauth} ${en_common.terms.token}`,
+        subtitle: `Set up your ${en_common.names.bitbucket} App Password so you can interact with Bitbucket.`,
+      },
+      footer: {
+        createNewToken: "Generate new App Passord",
+        placeHolder: "Paste your App Password here",
+      },
+      body: {
+        learnMore: `Learn more about ${en_common.names.bitbucket} App Passwords`,
+        note: `You should provide a token with the ${"'snippet'".bold()} permission.`,
+      },
+      validation: {
+        scopes: {
+          helper: "Your token must include the 'account', 'repository' and 'snippet' scopes.",
+        },
+      },
+      form: {
+        username: {
+          label: "Bitbucket username",
+          placeHolder: "Paste your Bitbucket username here",
+        },
+        token: {
+          label: "Bitbucket App Password",
+          placeHolder: "Paste your Bitbucket App Password here",
+        },
+      },
     },
-    body: {
+    auth: {
       disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
-      learnMore: `Learn more about ${en_common.names.github} tokens`,
-      note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+      error: {
+        alreadyLoggedIn: "You're already logged in with this Token.",
+        oauthScopes: (requiredScopes: string) =>
+          `Make sure your Token includes the necessary OAuth2 scopes: ${requiredScopes}`,
+      },
     },
-  },
-  bitbucketTokenModal: {
-    header: {
-      title: `${en_common.names.bitbucket} ${en_common.names.oauth} ${en_common.terms.token}`,
-      subtitle: `Set up your ${en_common.names.bitbucket} token so you can create and update gist.`,
+    navigation: {
+      continue: "Continue",
+      seeConnectedAccounts: "See connected accounts",
     },
-    footer: {
-      createNewToken: "Generate new token",
-      placeHolder: "Paste your token here",
-    },
-    body: {
-      disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
-      learnMore: `Learn more about ${en_common.names.bitbucket} tokens`,
-      note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+    status: {
+      loading: "Loading...",
     },
   },
   homePage: {
@@ -479,6 +521,43 @@ export const en: OnlineI18n = {
     modal: {
       initial: {
         subHeader: `Augment the ${en_common.names.dmn} editor`,
+      },
+    },
+  },
+  createGitRepositoryModal: {
+    form: {
+      buttonCreate: "Create",
+      nameField: {
+        label: "Name",
+        hint: "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed.",
+      },
+      visibility: {
+        public: {
+          label: "Public",
+          description: "Anyone on the internet can see this repository. You choose who can commit.",
+        },
+        private: {
+          label: "Private",
+          description: "You choose who can see and commit to this repository.",
+        },
+      },
+    },
+    bitbucket: {
+      repository: `${en_common.names.bitbucket} repository`,
+      createRepository: `Create ${en_common.names.bitbucket} repository`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} repository.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.bitbucket} repository. ${error}`,
+      },
+    },
+    github: {
+      repository: `${en_common.names.github} repository`,
+      createRepository: `Create ${en_common.names.github} repository`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.github} repository.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.github} repository. ${error}`,
       },
     },
   },

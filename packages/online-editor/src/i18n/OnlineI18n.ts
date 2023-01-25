@@ -17,6 +17,7 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
+import { SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
 
 interface OnlineDictionary extends ReferenceDictionary {
   editorPage: {
@@ -176,34 +177,50 @@ interface OnlineDictionary extends ReferenceDictionary {
     embedCode: string;
     copiedToClipboard: string;
   };
-  githubTokenModal: {
-    header: {
-      title: string;
-      subtitle: string;
+  connectToGitModal: {
+    [key in SupportedGitAuthProviders]: {
+      header: {
+        title: string;
+        subtitle: string;
+      };
+      footer: {
+        createNewToken: string;
+        placeHolder: string;
+      };
+      body: {
+        learnMore: string;
+        note: string;
+      };
+      validation: {
+        scopes: {
+          helper: string;
+        };
+      };
+      form: {
+        username?: {
+          label: string;
+          placeHolder: string;
+        };
+        token: {
+          label: string;
+          placeHolder: string;
+        };
+      };
     };
-    footer: {
-      createNewToken: string;
-      placeHolder: string;
-    };
-    body: {
+  } & {
+    auth: {
       disclaimer: string;
-      learnMore: string;
-      note: string;
+      error: {
+        alreadyLoggedIn: string;
+        oauthScopes: (scopes: string) => string;
+      };
     };
-  };
-  bitbucketTokenModal: {
-    header: {
-      title: string;
-      subtitle: string;
+    status: {
+      loading: string;
     };
-    footer: {
-      createNewToken: string;
-      placeHolder: string;
-    };
-    body: {
-      disclaimer: string;
-      learnMore: string;
-      note: string;
+    navigation: {
+      seeConnectedAccounts: string;
+      continue: string;
     };
   };
   homePage: {
@@ -428,6 +445,34 @@ interface OnlineDictionary extends ReferenceDictionary {
     modal: {
       initial: {
         subHeader: string;
+      };
+    };
+  };
+  createGitRepositoryModal: {
+    [key in SupportedGitAuthProviders]: {
+      repository: string;
+      createRepository: string;
+      description: (workspace: string) => string;
+      error: {
+        formAlert: (error: string) => string;
+      };
+    };
+  } & {
+    form: {
+      buttonCreate: string;
+      nameField: {
+        label: string;
+        hint: string;
+      };
+      visibility: {
+        public: {
+          label: string;
+          description: string;
+        };
+        private: {
+          label: string;
+          description: string;
+        };
       };
     };
   };

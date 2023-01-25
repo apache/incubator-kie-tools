@@ -36,8 +36,8 @@ export function useGitHubClient(authSession: AuthSession | undefined): Octokit {
   }, [authProviders, authSession]);
 }
 
-export const getGithubInstanceApiUrl = (domain: string) => {
-  if (domain === "github.com") {
+export const getGithubInstanceApiUrl = (domain?: string) => {
+  if (!domain || domain === "github.com") {
     return undefined;
   }
   return `https://${domain}/api/v3`;
