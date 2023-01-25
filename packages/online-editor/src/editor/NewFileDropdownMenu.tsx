@@ -166,6 +166,7 @@ export function NewFileDropdownMenu(props: {
         UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
         UrlType.GITHUB_DOT_COM_FILE,
         UrlType.BITBUCKET_DOT_ORG_FILE,
+        UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE,
       ],
       []
     )
