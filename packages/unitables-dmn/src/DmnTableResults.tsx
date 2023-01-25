@@ -15,102 +15,61 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import nextId from "react-id-generator";
-import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import * as ReactTable from "react-table";
-import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
-import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
-import {
-  BeeTableOperation,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-} from "@kie-tools/boxed-expression-component/dist/api";
-import { DecisionResult } from "./DmnTypes";
-import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { ErrorBoundary } from "@kie-tools/form";
 import { BeeTableWrapper } from "@kie-tools/unitables/dist/bee";
-import { UnitablesOutputRows, UnitablesCell } from "@kie-tools/unitables";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import { useEffect, useMemo, useRef, useState } from "react";
+import nextId from "react-id-generator";
+import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
+import { DecisionResult } from "./DmnTypes";
 import { DmnUnitablesI18n } from "./i18n";
+import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 
 interface Props {
   i18n: DmnUnitablesI18n;
   results?: Array<DecisionResult[] | undefined>;
-  rowCount: number;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
-  onRowNumberUpdate: (rowQtt: number, tableOperation: BeeTableOperation, rowIndex: number) => void;
 }
 
-export function DmnTableResults(props: Props) {
+export function DmnTableResults({ i18n, results, jsonSchemaBridge }: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const outputColumnsCache = useRef<ReactTable.Column[]>([]);
-
   const [outputError, setOutputError] = useState<boolean>(false);
 
-  const { outputs, outputRules, updateOutputCellsWidth } = useDmnBoxedOutputs(
-    props.jsonSchemaBridge,
-    props.results,
-    props.rowCount,
-    outputColumnsCache
-  );
-
-  const onOutputColumnsUpdate = useCallback(
-    (columns: ReactTable.Column[]) => {
-      outputColumnsCache.current = columns;
-      updateOutputCellsWidth(outputs);
-    },
-    [outputs, updateOutputCellsWidth]
-  );
+  const { outputs } = useDmnBoxedOutputs(jsonSchemaBridge, results);
 
   useEffect(() => {
     outputErrorBoundaryRef.current?.reset();
   }, [outputs]);
 
-  const outputEntriesLength = useMemo(
-    () => outputRules.reduce((length, rules) => length + (rules.outputEntries?.length ?? 0), 0),
-    [outputRules]
-  );
-
   const config = useMemo(() => {
     return {
       type: "outputs" as const,
-      rows: outputRules,
+      rows: (results ?? []).map((result) => ({
+        outputEntries: (result ?? []).map(({ result }) => {
+          return result as string; // FIXME: Tiago -> This `string` here is absolutely wrong.
+        }),
+      })),
       outputs,
     };
-  }, [outputRules, outputs]);
+  }, [outputs, results]);
 
-  const expressionDefinition = useMemo<ExpressionDefinition>(() => {
-    return { logicType: ExpressionDefinitionLogicType.Undefined };
-  }, []);
-
-  const dataTypes = useMemo(() => {
-    return [];
-  }, []);
+  // FIXME: Tiago -> Weird error happening without this. Column headers grow in size inexplicably.
+  const key = useMemo(() => {
+    console.info(JSON.stringify(config));
+    return Date.now() + config.outputs.length;
+  }, [config]);
 
   return (
     <>
       {outputError ? (
         outputError
-      ) : outputEntriesLength > 0 ? (
+      ) : config.outputs.length > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
-          <BoxedExpressionEditorContextProvider
-            expressionDefinition={expressionDefinition}
-            isRunnerTable={true}
-            decisionNodeId={outputUid}
-            dataTypes={dataTypes}
-          >
-            <BeeTableWrapper
-              i18n={props.i18n}
-              onColumnsUpdate={onOutputColumnsUpdate}
-              config={config}
-              id={outputUid}
-              onRowNumberUpdate={props.onRowNumberUpdate}
-            />
-          </BoxedExpressionEditorContextProvider>
+          <BeeTableWrapper i18n={i18n} config={config} id={outputUid} key={key} />
         </ErrorBoundary>
       ) : (
         <EmptyState>

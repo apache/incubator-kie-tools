@@ -30,7 +30,7 @@ export interface DecisionResultMessage {
   level: string;
 }
 
-export type Result = boolean | number | null | object | object[] | string;
+export type Result = string | boolean | number | null | object | Result[];
 
 export type DmnSchemaProperties = { "x-dmn-type": string; type: string; $ref: string };
 

@@ -16,12 +16,13 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+// import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { EditorEnvelopeLocatorFactory } from "../EditorEnvelopeLocatorFactory";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn" | "DMN" | "pmml" | "PMML";
 
-export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
+// FIXME: Tiago -> Chaging `any` to `EditorEnvelopeLocator` breaks --env live
+export const EditorEnvelopeLocatorContext = React.createContext<any>({} as any);
 
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
   const value = useMemo(

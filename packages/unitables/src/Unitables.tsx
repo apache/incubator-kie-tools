@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { UnitablesI18n } from "./i18n";
-import * as ReactTable from "react-table";
-import { useUnitablesInputs } from "./UnitablesInputs";
-import {
-  BeeTableOperation,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-} from "@kie-tools/boxed-expression-component/dist/api";
-import { BoxedExpressionEditorContextProvider } from "@kie-tools/boxed-expression-component/dist/components/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import nextId from "react-id-generator";
-import { BeeTableWrapper } from "./bee";
-import { UnitablesInputRows } from "./UnitablesTypes";
+import { BeeTableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
+import { Button } from "@patternfly/react-core";
+import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Button } from "@patternfly/react-core";
-import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
-import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
+import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
+import * as React from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import nextId from "react-id-generator";
+import * as ReactTable from "react-table";
+import { BeeTableWrapper } from "./bee";
+import { UnitablesI18n } from "./i18n";
+import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
+import { useUnitablesInputs } from "./UnitablesInputs";
 
 export interface UnitablesApi {
   operationHandler: (tableOperation: BeeTableOperation, rowIndex: number) => void;
@@ -75,15 +69,6 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
   const inputUid = useMemo(() => nextId(), []);
   const shouldRender = useMemo(() => (inputs?.length ?? 0) > 0, [inputs]);
 
-  // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
-  const onInputColumnsUpdate = useCallback(
-    (columns: ReactTable.Column[]) => {
-      inputColumnsCache.current = columns;
-      updateInputCellsWidth(inputs);
-    },
-    [inputs, updateInputCellsWidth]
-  );
-
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
     inputErrorBoundaryRef.current?.reset();
@@ -100,59 +85,38 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
     [inputRows, inputs]
   );
 
-  const expressionDefinition = useMemo<ExpressionDefinition>(() => {
-    return { logicType: ExpressionDefinitionLogicType.Undefined };
-  }, []);
-
-  const dataTypes = useMemo(() => {
-    return [];
-  }, []);
-
   return (
     <>
       {inputs && shouldRender && inputRows && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
-          <BoxedExpressionEditorContextProvider
-            expressionDefinition={expressionDefinition}
-            isRunnerTable={true}
-            decisionNodeId={inputUid}
-            dataTypes={dataTypes}
-          >
-            <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
-                <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
-                {Array.from(Array(props.rowCount)).map((e, rowIndex) => (
-                  <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
-                    <div
-                      style={{
-                        width: "50px",
-                        height: "62px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingTop: "8px",
-                      }}
+          <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
+              <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
+              {Array.from(Array(props.rowCount)).map((e, rowIndex) => (
+                <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
+                  <div
+                    style={{
+                      width: "50px",
+                      height: "62px",
+                      display: "flex",
+                      alignItems: "center",
+                      paddingTop: "8px",
+                    }}
+                  >
+                    <Button
+                      className={"kie-tools--masthead-hoverable"}
+                      variant={ButtonVariant.plain}
+                      onClick={() => props.openRow(rowIndex)}
                     >
-                      <Button
-                        className={"kie-tools--masthead-hoverable"}
-                        variant={ButtonVariant.plain}
-                        onClick={() => props.openRow(rowIndex)}
-                      >
-                        <ListIcon />
-                      </Button>
-                    </div>
-                  </Tooltip>
-                ))}
-              </div>
-              <BeeTableWrapper
-                i18n={props.i18n}
-                onRowNumberUpdate={props.onRowNumberUpdate}
-                onColumnsUpdate={onInputColumnsUpdate}
-                config={config}
-                id={inputUid}
-              />
+                      <ListIcon />
+                    </Button>
+                  </div>
+                </Tooltip>
+              ))}
             </div>
-          </BoxedExpressionEditorContextProvider>
+            <BeeTableWrapper i18n={props.i18n} config={config} id={inputUid} />
+          </div>
         </ErrorBoundary>
       )}
 

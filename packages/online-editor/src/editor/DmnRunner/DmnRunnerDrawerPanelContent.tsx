@@ -279,7 +279,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         return newData;
       });
     },
+<<<<<<< HEAD
     [dmnRunnerState.currentInputRowIndex, setInputRows]
+=======
+    [dmnRunnerDispatch, dmnRunnerState.currentInputRowIndex]
+>>>>>>> 03007f2aa5 (DMN Runner table outputs working)
   );
 
   const [selectedRow, selectRow] = useState<string>("");
@@ -303,7 +307,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [dmnRunnerState.inputRows, setCurrentInputRowIndex]
+    [dmnRunnerState.inputRows, setCurrentInputRowIndex, selectRow]
   );
 
   const onAddNewRow = useCallback(() => {

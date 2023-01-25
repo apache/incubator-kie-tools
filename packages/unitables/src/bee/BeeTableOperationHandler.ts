@@ -62,7 +62,7 @@ export function useTableOperationHandler(
             return updatedInputs;
           });
           break;
-        case BeeTableOperation.RowClear:
+        case BeeTableOperation.RowReset:
           setInputRows?.((previousInputs: Array<object>) => {
             const updatedInputs = [...previousInputs];
             updatedInputs[rowIndex] = { ...defaultInputValues };

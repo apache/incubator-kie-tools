@@ -17,10 +17,8 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import * as ReactTable from "react-table";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
-import { UnitablesOutputRows } from "@kie-tools/unitables/dist/UnitablesTypes";
-import { DecisionResult, DmnSchemaProperties, Result } from "./DmnTypes";
+import { DecisionResult, DmnSchemaProperties } from "./DmnTypes";
 import { CELL_MINIMUM_WIDTH } from "@kie-tools/unitables/dist/bee";
 
 interface OutputField {
@@ -49,48 +47,8 @@ export function isOutputWithInsideProperties(
 
 export function useDmnBoxedOutputs(
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge,
-  results: Array<DecisionResult[] | undefined> | undefined,
-  rowCount: number,
-  outputColumnsCache: React.MutableRefObject<ReactTable.Column[]>
+  results: Array<DecisionResult[] | undefined> | undefined
 ) {
-  const updateOutputCellsWidth = useCallback(
-    (outputs: OutputFields[]) => {
-      outputColumnsCache.current?.forEach((cachedColumn) => {
-        if (cachedColumn.groupType === "output") {
-          const outputToUpdate = outputs.find((e) => e.name === cachedColumn.label);
-          if (outputToUpdate && isOutputWithInsideProperties(outputToUpdate) && cachedColumn?.columns) {
-            outputToUpdate.insideProperties.forEach((insideProperty: any) => {
-              if (insideProperty !== null && typeof insideProperty === "object") {
-                Object.keys(insideProperty).map((insidePropertyKey: keyof OutputTypesField) => {
-                  const columnFound = cachedColumn.columns?.find(
-                    (nestedColumn) => nestedColumn.label === insidePropertyKey
-                  );
-                  if (columnFound) {
-                    insideProperty[insidePropertyKey] = {
-                      value: insideProperty[insidePropertyKey],
-                      width: columnFound.width,
-                    };
-                  }
-                });
-              } else if (insideProperty) {
-                const columnFound = cachedColumn.columns?.find(
-                  (nestedColumn) => nestedColumn.label === insideProperty.name
-                );
-                if (columnFound) {
-                  insideProperty.width = columnFound.width;
-                }
-              }
-            });
-          }
-          if (outputToUpdate) {
-            outputToUpdate.width = cachedColumn.width;
-          }
-        }
-      });
-    },
-    [outputColumnsCache]
-  );
-
   const deepFlattenOutput = useCallback((acc: any, entry: string, value: object) => {
     return Object.entries(value).map(([deepEntry, deepValue]) => {
       if (typeof deepValue === "object" && deepValue !== null) {
@@ -131,10 +89,11 @@ export function useDmnBoxedOutputs(
     []
   );
 
-  const { outputs, outputRules } = useMemo(() => {
+  const { outputs } = useMemo(() => {
     const decisionResults = results?.filter((result) => result !== undefined);
+
     if (jsonSchemaBridge === undefined || decisionResults === undefined) {
-      return { outputs: [] as OutputFields[], outputRules: [] as UnitablesOutputRows[] };
+      return { outputs: [] as OutputFields[] };
     }
 
     // generate a map that contains output types
@@ -188,65 +147,15 @@ export function useDmnBoxedOutputs(
       new Map<string, OutputFields>()
     );
 
-    const outputEntries = decisionResults.reduce((acc: Result[], decisionResult: DecisionResult[] | undefined) => {
-      if (decisionResult) {
-        const outputResults = decisionResult.map(({ result, decisionName }) => {
-          if (result === null || typeof result !== "object") {
-            const dmnRunnerClause = outputMap.get(decisionName);
-            if (dmnRunnerClause && isOutputWithInsideProperties(dmnRunnerClause)) {
-              return dmnRunnerClause.insideProperties.reduce((acc, insideProperty) => {
-                acc[insideProperty.name] = "null";
-                return acc;
-              }, {} as Record<string, any>);
-            }
-          }
-          if (result === null) {
-            return "null";
-          }
-          if (result === true) {
-            return "true";
-          }
-          if (result === false) {
-            return "false";
-          }
-          if (typeof result === "object") {
-            return Object.entries(result).reduce((flattenObject: Record<string, string>, [entry, value]) => {
-              if (typeof value === "object" && value !== null) {
-                deepFlattenOutput(flattenObject, entry, value);
-              } else {
-                flattenObject[entry] = value as string;
-              }
-              return flattenObject;
-            }, {});
-          }
-          return result;
-        });
-        return [...acc, outputResults];
-      }
-      return acc;
-    }, []);
-
-    const outputRules: UnitablesOutputRows[] = Array.from(Array(rowCount)).map((e, i) => ({
-      outputEntries: (outputEntries?.[i] as string[]) ?? [],
-    }));
-
-    const outputs = Array.from(outputMap.values());
-    updateOutputCellsWidth(outputs);
-    return { outputs, outputRules };
-  }, [
-    deepFlattenOutput,
-    deepGenerateOutputTypesMapFields,
-    jsonSchemaBridge,
-    results,
-    rowCount,
-    updateOutputCellsWidth,
-  ]);
-
-  return useMemo(() => {
     return {
-      outputs,
-      outputRules,
-      updateOutputCellsWidth,
+      outputs: [...outputMap.values()],
     };
-  }, [outputRules, outputs, updateOutputCellsWidth]);
+  }, [deepGenerateOutputTypesMapFields, jsonSchemaBridge, results]);
+
+  return useMemo(
+    () => ({
+      outputs,
+    }),
+    [outputs]
+  );
 }

@@ -634,7 +634,10 @@ section.kie-tools--settings-tab {
 }
 
 .kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel .pf-c-drawer__panel-main {
-  margin-left: -69px;
+  overflow: scroll;
+}
+
+.kie-tools--dmn-runner-table--drawer .pf-c-drawer__main {
   overflow: scroll;
 }
 
