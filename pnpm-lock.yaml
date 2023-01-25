@@ -5351,7 +5351,7 @@ importers:
       rimraf: ^3.0.2
       ts-jest: ^26.5.6
       typescript: ^4.4.2
-      vscode-extension-tester: 5.2.1
+      vscode-extension-tester: 5.3.0
       vscode-test: ^1.6.1
       webpack: ^5.36.2
       webpack-cli: ^4.10.0
@@ -5403,7 +5403,7 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
-      vscode-extension-tester: 5.2.1_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 5.3.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -5526,7 +5526,7 @@ importers:
       rimraf: ^3.0.2
       selenium-webdriver: ^4.7.1
       typescript: ^4.4.2
-      vscode-extension-tester: 5.2.1
+      vscode-extension-tester: 5.3.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -5581,7 +5581,7 @@ importers:
       rimraf: 3.0.2
       selenium-webdriver: 4.7.1
       typescript: 4.5.4
-      vscode-extension-tester: 5.2.1_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 5.3.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -5624,7 +5624,7 @@ importers:
       rimraf: ^3.0.2
       selenium-webdriver: ^4.7.1
       typescript: ^4.4.2
-      vscode-extension-tester: 5.2.1
+      vscode-extension-tester: 5.3.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -5672,7 +5672,7 @@ importers:
       rimraf: 3.0.2
       selenium-webdriver: 4.7.1
       typescript: 4.5.4
-      vscode-extension-tester: 5.2.1_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 5.3.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.10.0
       webpack-cli: 4.10.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -11117,6 +11117,35 @@ packages:
       yazl: 2.5.1
     dev: true
 
+  /@vscode/vsce/2.16.0:
+    resolution:
+      { integrity: sha512-BhJ0zO7UxShLFBZM6jwOLt1ZVoqQ4r5Lj/kHNeYp0ICPXhz/erqBSMQnHkRgkjn2L/bh+TYFGkZyguhu/SKsjw== }
+    engines: { node: ">= 14" }
+    hasBin: true
+    dependencies:
+      azure-devops-node-api: 11.0.1
+      chalk: 2.4.2
+      cheerio: 1.0.0-rc.10
+      commander: 6.2.1
+      glob: 7.2.0
+      hosted-git-info: 4.1.0
+      leven: 3.1.0
+      markdown-it: 12.3.2
+      mime: 1.6.0
+      minimatch: 3.0.5
+      parse-semver: 1.1.1
+      read: 1.0.7
+      semver: 5.7.1
+      tmp: 0.2.1
+      typed-rest-client: 1.8.4
+      url-join: 4.0.1
+      xml2js: 0.4.23
+      yauzl: 2.10.0
+      yazl: 2.5.1
+    optionalDependencies:
+      keytar: 7.7.0
+    dev: true
+
   /@webassemblyjs/ast/1.11.1:
     resolution:
       { integrity: sha512-ukBh14qFLjxTQNTXocdyksN5QdM28S1CxHt2rdskFyL+xFV7VremuBLVbmCePj+URalXBENx/9Lm7lnhihtCSw== }
@@ -13322,6 +13351,12 @@ packages:
     engines: { node: ">= 0.8" }
     dependencies:
       delayed-stream: 1.0.0
+
+  /commander/10.0.0:
+    resolution:
+      { integrity: sha512-zS5PnTI22FIRM6ylNW8G4Ap0IEOyk62fhLSD0+uHRT9McRCLGpkVNvao4bjimpK/GShynyQkFFxHhwMcETmduA== }
+    engines: { node: ">=14" }
+    dev: true
 
   /commander/2.11.0:
     resolution:
@@ -16940,6 +16975,16 @@ packages:
       universalify: 2.0.0
     dev: true
 
+  /fs-extra/11.1.0:
+    resolution:
+      { integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw== }
+    engines: { node: ">=14.14" }
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs-extra/7.0.1:
     resolution:
       { integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw== }
@@ -17209,6 +17254,18 @@ packages:
   /glob/8.0.3:
     resolution:
       { integrity: sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ== }
+    engines: { node: ">=12" }
+    dependencies:
+      fs.realpath: 1.0.0
+      inflight: 1.0.6
+      inherits: 2.0.4
+      minimatch: 5.1.0
+      once: 1.4.0
+    dev: true
+
+  /glob/8.1.0:
+    resolution:
+      { integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ== }
     engines: { node: ">=12" }
     dependencies:
       fs.realpath: 1.0.0
@@ -20923,20 +20980,20 @@ packages:
     dependencies:
       monaco-editor: 0.33.0
 
-  /monaco-page-objects/3.2.1_q5i3jimk2cqbtah5rxtxf42pcy:
+  /monaco-page-objects/3.3.0_2c5qhodnv52miozqlmn2mmm6wm:
     resolution:
-      { integrity: sha512-kzzzuLCNl4AdVjaVw+2V2rAF7ueYlepnh5Ssd/clyUwy2WQqLauCIqGkCIZPSvfRlK42y6abXPJ4c8YWPm12TQ== }
+      { integrity: sha512-BnyE3MYuKhcqqhkAdVWNDSS8wWaPSKPz9PDb2KovBqeTnzbiZ4R5SpupsupJe23Fg9QwKCXe06EcYU2ofwKyAA== }
     peerDependencies:
       selenium-webdriver: ^4.6.1
+      typescript: ">=4.6.2"
     dependencies:
       clipboardy: 2.3.0
       clone-deep: 4.0.1
       compare-versions: 5.0.1
-      fs-extra: 10.1.0
-      selenium-webdriver: 4.7.1
+      fs-extra: 11.1.0
+      selenium-webdriver: 4.8.0
       ts-essentials: 9.3.0_typescript@4.5.4
-    transitivePeerDependencies:
-      - typescript
+      typescript: 4.5.4
     dev: true
 
   /monaco-worker-manager/2.0.1_monaco-editor@0.33.0:
@@ -24276,6 +24333,19 @@ packages:
       - utf-8-validate
     dev: true
 
+  /selenium-webdriver/4.8.0:
+    resolution:
+      { integrity: sha512-s/HL8WNwy1ggHR244+tAhjhyKMJnZLt1HKJ6Gn7nQgVjB/ybDF+46Uui0qI2J7AjPNJzlUmTncdC/jg/kKkn0A== }
+    engines: { node: ">= 14.20.0" }
+    dependencies:
+      jszip: 3.10.1
+      tmp: 0.2.1
+      ws: 8.12.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: true
+
   /selfsigned/2.0.0:
     resolution:
       { integrity: sha512-cUdFiCbKoa1mZ6osuJs2uDHrs0k0oprsKveFiiaBKCNq3SYyb5gs2HxhQyDNLCmL51ZZThqi4YNDpCK6GOP1iQ== }
@@ -26757,72 +26827,44 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vsce/2.15.0:
+  /vscode-extension-tester-locators/3.3.0_uesc2kg7tcvmuropzf2xkvkrym:
     resolution:
-      { integrity: sha512-P8E9LAZvBCQnoGoizw65JfGvyMqNGlHdlUXD1VAuxtvYAaHBKLBdKPnpy60XKVDAkQCfmMu53g+gq9FM+ydepw== }
-    engines: { node: ">= 14" }
-    deprecated: vsce has been renamed to @vscode/vsce. Install using @vscode/vsce instead.
-    hasBin: true
-    dependencies:
-      azure-devops-node-api: 11.0.1
-      chalk: 2.4.2
-      cheerio: 1.0.0-rc.10
-      commander: 6.2.1
-      glob: 7.2.0
-      hosted-git-info: 4.1.0
-      keytar: 7.7.0
-      leven: 3.1.0
-      markdown-it: 12.3.2
-      mime: 1.6.0
-      minimatch: 3.0.5
-      parse-semver: 1.1.1
-      read: 1.0.7
-      semver: 5.7.1
-      tmp: 0.2.1
-      typed-rest-client: 1.8.4
-      url-join: 4.0.1
-      xml2js: 0.4.23
-      yauzl: 2.10.0
-      yazl: 2.5.1
-    dev: true
-
-  /vscode-extension-tester-locators/3.2.1_t55xzr6bjk54g3hrnvptclainy:
-    resolution:
-      { integrity: sha512-wdiEZyRR2BiaZ4meG5TRHTZFkmgy8OLL45Frijv1T/oPmLAIlneL1LL9fQ8a9JvqKVeapvjvPwoXePDoHKPjbQ== }
+      { integrity: sha512-rpeuCVNTxy5fGy2lQKPNUBCt6/7nSJBZY91J2MtwVYv1Nj6VbVZl38JNq7KAM9J+7pNSPYLsFAmHB2NzLWkD5g== }
     peerDependencies:
-      monaco-page-objects: ^3.2.1
+      monaco-page-objects: ^3.3.0
       selenium-webdriver: ^4.6.1
     dependencies:
-      monaco-page-objects: 3.2.1_q5i3jimk2cqbtah5rxtxf42pcy
-      selenium-webdriver: 4.7.1
+      monaco-page-objects: 3.3.0_2c5qhodnv52miozqlmn2mmm6wm
+      selenium-webdriver: 4.8.0
     dev: true
 
-  /vscode-extension-tester/5.2.1_jvempbdbjtvhoodinnen4jiyly:
+  /vscode-extension-tester/5.3.0_jvempbdbjtvhoodinnen4jiyly:
     resolution:
-      { integrity: sha512-GEiZXfpAQx75P+ROrHwPESh0jC0TQ2KqOfWE5vb580uWxXmdVMRzoDvxo4I28BFze1nLqAsQ1puVQpaIjQq3pg== }
+      { integrity: sha512-AWUJkeEsKCxQniD2p1N6gtnLHilgAtz0FszRfqL898z4ZJuySmkKD2+GOuqeacU/PjmSEsVd3h8BcxyvDswcVw== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
+      typescript: ">=4.6.2"
     dependencies:
       "@types/selenium-webdriver": 4.1.9
-      commander: 9.4.1
+      "@vscode/vsce": 2.16.0
+      commander: 10.0.0
       compare-versions: 5.0.1
-      fs-extra: 10.1.0
-      glob: 8.0.3
+      fs-extra: 11.1.0
+      glob: 8.1.0
       got: 11.8.6
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.2.1_q5i3jimk2cqbtah5rxtxf42pcy
+      monaco-page-objects: 3.3.0_2c5qhodnv52miozqlmn2mmm6wm
       sanitize-filename: 1.6.3
-      selenium-webdriver: 4.7.1
+      selenium-webdriver: 4.8.0
       targz: 1.0.1
+      typescript: 4.5.4
       unzip-stream: 0.3.1
-      vsce: 2.15.0
-      vscode-extension-tester-locators: 3.2.1_t55xzr6bjk54g3hrnvptclainy
+      vscode-extension-tester-locators: 3.3.0_uesc2kg7tcvmuropzf2xkvkrym
     transitivePeerDependencies:
       - bufferutil
-      - typescript
       - utf-8-validate
     dev: true
 
@@ -27482,6 +27524,20 @@ packages:
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: true
+
+  /ws/8.12.0:
+    resolution:
+      { integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig== }
+    engines: { node: ">=10.0.0" }
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ">=5.0.2"
     peerDependenciesMeta:
       bufferutil:
         optional: true
