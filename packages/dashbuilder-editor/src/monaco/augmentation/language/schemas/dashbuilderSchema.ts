@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         span: {
-          type: "integer",
+          type: ["integer", "string"],
         },
         components: {
           type: "array",
@@ -140,17 +140,34 @@ export const DASHBUILDER_SCHEMA = {
     },
     ColumnComponent: {
       type: "object",
-      properties: {
-        html: {
-          type: "string",
+      anyOf: [
+        {
+          properties: {
+            html: {
+              type: "string",
+            },
+            type: {
+              $ref: "#/definitions/NavComponentTypes",
+            },
+            settings: {
+              $ref: "#/definitions/DisplayerSettings",
+            },
+          },
         },
-        type: {
-          $ref: "#/definitions/NavComponentTypes",
+        {
+          properties: {
+            html: {
+              type: "string",
+            },
+            type: {
+              type: "string",
+            },
+            settings: {
+              $ref: "#/definitions/DisplayerSettings",
+            },
+          },
         },
-        settings: {
-          $ref: "#/definitions/DisplayerSettings",
-        },
-      },
+      ],
       title: "ColumnComponent",
     },
     Dataset: {
@@ -177,7 +194,7 @@ export const DASHBUILDER_SCHEMA = {
           minLength: 1,
         },
         cacheEnabled: {
-          type: "boolean",
+          type: ["boolean", "string"],
         },
         refreshTime: {
           type: "string",
@@ -269,16 +286,16 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         enabled: {
-          type: "boolean",
+          type: ["boolean", "string"],
         },
         listening: {
-          type: "boolean",
+          type: ["boolean", "string"],
         },
         notification: {
-          type: "boolean",
+          type: ["boolean", "string"],
         },
         selfapply: {
-          type: "boolean",
+          type: ["boolean", "string"],
         },
       },
       required: ["enabled", "listening", "notification", "selfapply"],
@@ -323,7 +340,7 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         enabled: {
-          type: "boolean",
+          type: ["boolean", "string"],
         },
         columnId: {
           type: "string",
@@ -509,12 +526,11 @@ export const DASHBUILDER_SCHEMA = {
           type: "string",
         },
       },
-      required: ["page"],
       title: "Child",
     },
     DataSetType: {
       type: "string",
-      enum: ["LABEL", "NUMBER", "TEXT", "DATE"],
+      enum: ["LABEL", "NUMBER", "TEXT", "DATE", "label", "number", "text", "date", "Label", "Number", "Text", "Date"],
       title: "Type",
     },
     FunctionList: {
@@ -546,39 +562,39 @@ export const DASHBUILDER_SCHEMA = {
           type: "string",
         },
         width: {
-          type: "number",
+          type: ["number", "string"],
         },
         height: {
-          type: "number",
+          type: ["number", "string"],
         },
         zoom: {
-          type: "boolean",
+          type: ["number", "string"],
         },
         margin: {
           type: "object",
           properties: {
             right: {
-              type: "number",
+              type: ["number", "string"],
             },
             top: {
-              type: "number",
+              type: ["number", "string"],
             },
             bottom: {
-              type: "number",
+              type: ["number", "string"],
             },
             left: {
-              type: "number",
+              type: ["number", "string"],
             },
           },
         },
         resizable: {
-          type: "boolean",
+          type: ["boolean", "string"],
         },
         legend: {
           type: "object",
           properties: {
             show: {
-              type: "boolean",
+              type: ["boolean", "string"],
             },
             position: {
               type: "string",
@@ -590,10 +606,10 @@ export const DASHBUILDER_SCHEMA = {
           type: "object",
           properties: {
             x: {
-              type: "boolean",
+              type: ["boolean", "string"],
             },
             y: {
-              type: "boolean",
+              type: ["boolean", "string"],
             },
           },
         },
@@ -601,7 +617,7 @@ export const DASHBUILDER_SCHEMA = {
           type: "object",
           properties: {
             visible: {
-              type: "boolean",
+              type: ["boolean", "string"],
             },
             title: {
               type: "string",
@@ -613,9 +629,7 @@ export const DASHBUILDER_SCHEMA = {
     CustomProperties: {
       type: "object",
       description: "The properties can be CSS properties, such as width/height, background color, color and more.",
-      additionalProperties: {
-        type: "string",
-      },
+      additionalProperties: {},
     },
     DisplayerSettings: {
       type: "object",
@@ -646,17 +660,16 @@ export const DASHBUILDER_SCHEMA = {
           type: "object",
           properties: {
             multiple: {
-              type: "boolean",
+              type: ["boolean", "string"],
             },
             inputs_show: {
-              type: "boolean",
+              type: ["boolean", "string"],
             },
           },
           required: ["multiple", "inputs_show"],
           title: "selector",
         },
         echarts: {
-          type: "string",
           title: "echarts",
         },
         general: {
@@ -716,7 +729,7 @@ export const DASHBUILDER_SCHEMA = {
           $ref: "#/definitions/MeterTypes",
         },
         component: {
-          oneOf: [
+          anyOf: [
             {
               type: "string",
             },
@@ -886,7 +899,6 @@ export const DASHBUILDER_SCHEMA = {
           },
         },
       ],
-      required: ["lookup"],
       title: "DisplayerSettings",
     },
     SettingsExternal: {
@@ -913,41 +925,90 @@ export const DASHBUILDER_SCHEMA = {
         "METRIC",
         "METERCHART",
         "MAP",
+        "TABLE",
+        "barchart",
+        "linechart",
+        "areachart",
+        "piechart",
+        "bubblechart",
+        "scatterchart",
+        "selector",
+        "metric",
+        "meterchart",
+        "map",
+        "table",
+        "Barchart",
+        "Linechart",
+        "Areachart",
+        "Piechart",
+        "Bubblechart",
+        "Scatterchart",
+        "Selector",
+        "Metric",
+        "Meterchart",
+        "Map",
+        "Table",
       ],
       additionalProperties: false,
       title: "ChartType",
     },
     BarChartTypes: {
       type: "string",
-      enum: ["COLUMN", "BAR", "STACKED", "COLUMN_STACKED", "BAR_STACKED"],
+      enum: [
+        "COLUMN",
+        "BAR",
+        "STACKED",
+        "COLUMN_STACKED",
+        "BAR_STACKED",
+        "column",
+        "bar",
+        "stacked",
+        "column_stacked",
+        "bar_stacked",
+        "Column",
+        "Bar",
+        "Stacked",
+        "Column_Stacked",
+        "Bar_Stacked",
+      ],
       default: "COLUMN",
       additionalProperties: false,
       title: "BarChartTypes",
     },
     LineChartTypes: {
       type: "string",
-      enum: ["LINE", "SMOOTH"],
+      enum: ["LINE", "SMOOTH", "line", "smooth", "Line", "Smooth"],
       default: "LINE",
       additionalProperties: false,
       title: "LineChartTypes",
     },
     AreaChartTypes: {
       type: "string",
-      enum: ["AREA", "AREA_STACKED"],
+      enum: ["AREA", "AREA_STACKED", "area", "area_stacked", "Area", "Area_Stacked"],
       default: "AREA",
       additionalProperties: false,
       title: "AreaChartChartTypes",
     },
     PieChartTypes: {
       type: "string",
-      enum: ["PIE", "DONUT"],
+      enum: ["PIE", "DONUT", "pie", "donut", "Pie", "Donut"],
       default: "PIE",
       additionalProperties: false,
       title: "PieChartChartTypes",
     },
     SelectorTypes: {
       type: "string",
-      enum: ["SELECTOR_LABELS", "SELECTOR_DROPDOWN", "SELECTOR_SLIDER"],
+      enum: [
+        "SELECTOR_LABELS",
+        "SELECTOR_DROPDOWN",
+        "SELECTOR_SLIDER",
+        "selector_labels",
+        "selector_dropdown",
+        "selector_slider",
+        "Selector_Labels",
+        "Selector_Dropdown",
+        "Selector_Slider",
+      ],
       additionalProperties: false,
       title: "SelectorTypes",
     },
@@ -979,7 +1040,26 @@ export const DASHBUILDER_SCHEMA = {
     },
     NavComponentTypes: {
       type: "string",
-      enum: ["TILES", "CAROUSEL", "TREE", "MENU", "TABS", "DIV"],
+      enum: [
+        "TILES",
+        "CAROUSEL",
+        "TREE",
+        "MENU",
+        "TABS",
+        "DIV",
+        "tiles",
+        "carousel",
+        "tree",
+        "menu",
+        "tabs",
+        "div",
+        "Tiles",
+        "Carousel",
+        "Tree",
+        "Menu",
+        "Tabs",
+        "Div",
+      ],
       additionalProperties: false,
     },
     SettingsComponent: {
