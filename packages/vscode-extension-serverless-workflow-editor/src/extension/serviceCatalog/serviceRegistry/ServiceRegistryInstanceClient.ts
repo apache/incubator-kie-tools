@@ -18,12 +18,10 @@ import { ArtifactsApi, ArtifactType, Configuration, SearchedArtifact } from "@rh
 import { AuthProvider } from "./auth";
 import {
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceType,
   SwfCatalogSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
-import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
+import { parseApiContent } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 
 export class ServiceRegistryInstanceClient {
   constructor(
@@ -59,33 +57,25 @@ export class ServiceRegistryInstanceClient {
     try {
       const response = await artifactsApi.searchArtifacts();
       const artifacts: SearchedArtifact[] = response.data.artifacts ?? [];
-      const specs: SearchedArtifact[] = artifacts.filter(
-        (artifact) => artifact.type === ArtifactType.Openapi && artifact.groupId
-      );
+      const specs: SearchedArtifact[] = artifacts.filter((artifact) => artifact.groupId);
 
       for (const spec of specs) {
         const response = await artifactsApi.getLatestArtifact(spec.groupId ?? "", spec.id);
-
-        const swfFunctions = extractFunctions(response.data as OpenAPIV3.Document, {
-          type: SwfCatalogSourceType.SERVICE_REGISTRY,
-          registry: this.name,
-          serviceId: spec.id,
-        });
-
-        const swfService: SwfServiceCatalogService = {
-          name: spec.id,
-          rawContent: yaml.stringify(response.data),
-          type: SwfServiceCatalogServiceType.rest,
-          functions: swfFunctions,
-          source: {
-            registry: this.name,
-            url: `${this.args.url}/groups/${spec.groupId}/artifacts/${spec.id}`,
-            type: SwfCatalogSourceType.SERVICE_REGISTRY,
-            id: spec.id,
-          },
-        };
-
-        swfServices.push(swfService);
+        try {
+          const swfService: SwfServiceCatalogService = parseApiContent({
+            source: {
+              registry: this.name,
+              url: `${this.args.url}/groups/${spec.groupId}/artifacts/${spec.id}`,
+              type: SwfCatalogSourceType.SERVICE_REGISTRY,
+              id: spec.id,
+            },
+            serviceFileName: `${this.name}.yaml`,
+            serviceFileContent: yaml.stringify(response.data),
+          });
+          swfServices.push(swfService);
+        } catch (e) {
+          console.error(e);
+        }
       }
     } catch (err) {
       console.debug(`Cannot load services: ${err}`);

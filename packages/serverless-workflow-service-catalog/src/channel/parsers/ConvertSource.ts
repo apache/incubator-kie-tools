@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogService, SwfServiceCatalogServiceSource } from "../../api";
+import { SwfCatalogSourceType, SwfServiceCatalogFunctionSource, SwfServiceCatalogServiceSource } from "../../api";
 
-export interface ArgsType {
-  source: SwfServiceCatalogServiceSource;
-  serviceFileName: string;
-  serviceFileContent: string;
-}
+export function convertSource(catalogSource: SwfServiceCatalogServiceSource): SwfServiceCatalogFunctionSource {
+  if (catalogSource?.type === SwfCatalogSourceType.LOCAL_FS) {
+    return {
+      type: catalogSource.type,
+      serviceFileAbsolutePath: catalogSource.absoluteFilePath,
+    };
+  }
 
-export interface SpecParser<T> {
-  canParse(content: any): boolean;
-  parse(content: T, args: ArgsType): SwfServiceCatalogService;
+  return {
+    type: catalogSource.type,
+    registry: catalogSource.registry,
+    serviceId: catalogSource.id,
+  };
 }

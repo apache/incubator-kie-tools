@@ -48,9 +48,7 @@ export const getFileLanguage = (fileName: string): FileLanguage | null => {
  * @throws Error if it can't be determined
  */
 export const getFileLanguageOrThrow = (fileName: string): FileLanguage => {
-  console.log("fileName", fileName);
   const fileLanguage = getFileLanguage(fileName);
-  console.log("fileLanguage", fileLanguage);
   if (!fileLanguage) {
     throw new Error("Couldn't determine FileLanguage for " + fileName);
   }

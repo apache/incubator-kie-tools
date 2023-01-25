@@ -23,11 +23,9 @@ import {
   SwfServiceCatalogServiceSource,
   SwfServiceCatalogServiceType,
 } from "../../api";
-import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
-import { posix as posixPath } from "path";
 import { get } from "lodash";
-import { convertSource } from "./util";
+import { convertSource } from "./ConvertSource";
 
 const APPLICATION_JSON = "application/json";
 
@@ -45,7 +43,6 @@ export function parseOpenApi(
   serviceOpenApiDocument: OpenAPIV3.Document
 ): SwfServiceCatalogService {
   const swfServiceCatalogFunctions = extractFunctions(serviceOpenApiDocument, convertSource(args.source));
-  console.log("in open api logic", swfServiceCatalogFunctions);
   return {
     name: serviceOpenApiDocument.info.title ?? args.serviceFileName,
     type: SwfServiceCatalogServiceType.rest,
@@ -74,11 +71,10 @@ function extractPathItemFunctions(
   source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
   const swfServiceCatalogFunctions: SwfServiceCatalogFunction[] = [];
-  console.log("extractPathItemFunctions-openapi", pathItem, endpoint, serviceOpenApiDocument, source);
+
   Object.values(pathItem)
     .filter((pathOperation) => pathOperation.operationId)
     .forEach((pathOperation: OpenAPIV3.OperationObject) => {
-      console.log("pathOperation", pathOperation);
       const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
 
       const name = pathOperation.operationId as string;
@@ -130,7 +126,6 @@ function extractFunctionArgumentsFromRequestBody(
   functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
 ) {
   const schemaObject: OpenAPIV3.SchemaObject = extractSchemaObject(schema, doc);
-  console.log("schemaObject-openapi", schemaObject);
   if (schemaObject.properties) {
     Object.entries(schemaObject.properties).forEach(
       ([propertyName, propertySchema]: [string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject]) => {

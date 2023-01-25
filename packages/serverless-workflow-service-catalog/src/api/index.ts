@@ -16,4 +16,4 @@
 
 export * from "./types";
 export * from "./SwfServiceCatalogChannelApi";
-// export * from './asyncapitypes';
+export * from "./asyncapitypes";

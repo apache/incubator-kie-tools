@@ -38,7 +38,6 @@ export class SwfServiceCatalogSupportActions {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    console.log("args.containingService.source", args.containingService.source);
     if (args.containingService.source.type === SwfCatalogSourceType.LOCAL_FS) {
       return;
     }

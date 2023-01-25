@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import { Channel } from "@asyncapi/parser";
-import { posix as posixPath } from "path";
-import * as yaml from "js-yaml";
-import * as AsyncApi from "../../api/asyncapitypes";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionArgumentType,
@@ -27,10 +23,8 @@ import {
   SwfServiceCatalogServiceSource,
   SwfServiceCatalogServiceType,
 } from "../../api";
-import { get } from "lodash";
-import { convertSource } from "./util";
-
-type AsyncapiPathOperations = Pick<Channel, "subscribe" | "publish">;
+import { convertSource } from "./ConvertSource";
+import * as AsyncApi from "../../api/asyncapitypes";
 
 export function parseAsyncApi(
   args: {
@@ -41,8 +35,6 @@ export function parseAsyncApi(
   serviceAsyncApiDocument: AsyncApi.AsyncAPIDocument
 ): SwfServiceCatalogService {
   const swfServiceCatalogFunctions = extractFunctions(serviceAsyncApiDocument, convertSource(args.source));
-
-  console.log("in Async api logic", swfServiceCatalogFunctions);
 
   return {
     name: serviceAsyncApiDocument.info.title ?? args.serviceFileName,
@@ -62,7 +54,7 @@ export function extractFunctions(
       return extractChannelItemFunctions(channelItem, endpoint, serviceAsyncApiDocument, source);
     }
   );
-  console.log("extractFunctions", swfServiceCatalogFunctions);
+
   return [].concat.apply([], swfServiceCatalogFunctions);
 }
 
@@ -73,21 +65,18 @@ function extractChannelItemFunctions(
   source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
   const swfServiceCatalogFunctions: SwfServiceCatalogFunction[] = [];
-  console.log("extractPathItemFunctions-asyncapi", channelItem, endpoint, serviceAsyncApiDocument, source);
+
+  const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
+
+  // Looking at operation params
+  if (channelItem.parameters) {
+    extractFunctionArgumentsFromParams(channelItem?.parameters, functionArguments);
+  }
   Object.values(channelItem)
     .filter((channelOperation: AsyncApi.OperationObject) => channelOperation.operationId)
     .forEach((channelOperation: any) => {
-      console.log("channelOperation", channelOperation);
       const body = channelOperation.message;
-
       const name = channelOperation.operationId as string;
-
-      const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
-
-      // Looking at operation params
-      if (channelOperation.parameters) {
-        extractFunctionArgumentsFromParams(channelOperation.parameters, functionArguments);
-      }
 
       // Looking only at application/json mime types, we might consider others.
       if (body) {
@@ -97,27 +86,22 @@ function extractChannelItemFunctions(
       const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
         source,
         name,
-        type: SwfServiceCatalogFunctionType.rest,
+        type: SwfServiceCatalogFunctionType.asyncapi,
         arguments: functionArguments,
       };
-      console.log("async catalog function object", swfServiceCatalogFunction);
       swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
-      console.log("async catalog function array", swfServiceCatalogFunctions);
     });
-  console.log("extractPathItemFunctions", swfServiceCatalogFunctions);
   return swfServiceCatalogFunctions;
 }
 
 function extractFunctionArgumentsFromParams(
-  channelParams: (AsyncApi.ReferenceObject | AsyncApi.ParametersObject)[],
+  channelParams: any,
   functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
 ) {
-  console.log("extractFunctionArgumentsFromParams", channelParams, functionParams);
-  channelParams.forEach((channelParam) => {
-    const description = get(channelParam, "description");
-    const type = get(channelParam, "schema.type");
-    if (description && type) {
-      functionParams[description] = resolveArgumentType(type);
+  const paramNames = Object.keys(channelParams);
+  paramNames.forEach((paramName) => {
+    if (channelParams && paramName) {
+      functionParams[paramName] = resolveArgumentType(channelParams[paramName]?.schema?.type);
     }
   });
 }
@@ -127,9 +111,7 @@ function extractFunctionArgumentsFromRequestBody(
   doc: AsyncApi.AsyncAPIDocument,
   functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
 ) {
-  console.log("extractFunctionArgumentsFromRequestBody", message, doc, functionParams);
   const schemaObject: AsyncApi.SchemaObject = extractMessageObject(message, doc);
-  console.log("schemaObject-asyncapi", schemaObject);
   if (schemaObject.properties) {
     Object.entries(schemaObject.properties).forEach(
       ([propertyName, propertySchema]: [string, AsyncApi.ReferenceObject | AsyncApi.SchemaObject]) => {

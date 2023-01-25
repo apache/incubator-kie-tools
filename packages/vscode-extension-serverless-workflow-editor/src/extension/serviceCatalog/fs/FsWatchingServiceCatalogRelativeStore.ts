@@ -15,11 +15,7 @@
  */
 
 import * as vscode from "vscode";
-import {
-  parseOpenApi,
-  parseAsyncApi,
-  parseApiContent,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { parseApiContent } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { SwfServiceCatalogServiceSource } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import {
   SwfServiceCatalogService,
@@ -131,7 +127,6 @@ export class FsWatchingServiceCatalogRelativeStore {
                 const fileUri = specsDirAbsolutePosixPathUri.with({
                   path: specsDirAbsolutePosixPathUri.path + "/" + fileName,
                 });
-                console.log("readServiceFile", fileUri, fileName, args);
                 promises.push(this.readServiceFile(fileUri, fileName, args.specsDirAbsolutePosixPath));
               });
 
@@ -158,23 +153,18 @@ export class FsWatchingServiceCatalogRelativeStore {
     const rawData = await vscode.workspace.fs.readFile(fileUri);
     try {
       const serviceSource = path.join(specsDirAbsolutePosixPath, fileName);
-      console.log("source-posix", serviceSource);
-      const test = SwfCatalogSourceType;
-      console.log("typeTest", test);
       const source: SwfServiceCatalogServiceSource = {
         type: SwfCatalogSourceType?.LOCAL_FS,
         absoluteFilePath: serviceSource,
       };
 
-      const tempFunctions = [
+      return [
         parseApiContent({
           serviceFileName: fileName,
           serviceFileContent: new TextDecoder("utf-8").decode(rawData),
           source,
         }),
       ];
-      console.log("finalFunctions", tempFunctions);
-      return tempFunctions;
     } catch (e) {
       console.error(e);
       return [];
