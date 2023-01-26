@@ -61,8 +61,7 @@ export class DmnLanguageService {
   public async getAllImportedModelsResources(
     workspaces: WorkspacesContextType,
     workspaceId: string,
-    models: string[],
-    resources: ResourceContent[] = []
+    models: string[]
   ): Promise<ResourceContent[]> {
     // get imported models resources
     const importedModels = this.getImportedModels(models);
@@ -88,6 +87,6 @@ export class DmnLanguageService {
       }
       return [...importedModelsResources];
     }
-    return resources;
+    return [];
   }
 }

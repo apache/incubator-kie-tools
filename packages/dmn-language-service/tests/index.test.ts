@@ -18,6 +18,7 @@ import { DmnLanguageService } from "../src";
 import { readFile } from "fs/promises";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const tests = [
   { modelPath: "./fixtures/model.dmn", expected: ["recursive.dmn", "nested.dmn"] },
@@ -28,8 +29,12 @@ const tests = [
 describe("DmnLanguageService", () => {
   const service = new DmnLanguageService();
 
-  tests.forEach(({ modelPath, expected }) => {
-    it("getImportedModels", () => {
+  it("getImportedModels - empty string", () => {
+    expect(service.getImportedModels("")).toEqual([]);
+  });
+
+  it("getImportedModels", () => {
+    tests.forEach(({ modelPath, expected }) => {
       const path = resolve(__dirname, modelPath);
       const file = readFileSync(path, "utf8");
       expect(service.getImportedModels(file)).toEqual(expected);
@@ -46,5 +51,18 @@ describe("DmnLanguageService", () => {
     ).map((e) => e.toString("utf8"));
 
     expect(service.getImportedModels(files)).toEqual(tests.flatMap((e) => e.expected));
+  });
+
+  it("getAllImportedModelsResources - empty", async () => {
+    const workspaces: any = {
+      resourceContentGet: () =>
+        new Promise((res) => ({
+          path: "",
+          content: "",
+          type: ContentType.TEXT,
+        })),
+    };
+
+    expect(await service.getAllImportedModelsResources(workspaces, "", [""])).toEqual([]);
   });
 });
