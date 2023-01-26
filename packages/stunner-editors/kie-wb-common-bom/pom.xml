@@ -135,12 +135,6 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.editors</groupId>
-        <artifactId>kie-wb-common-dmn-webapp-kogito-testing</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>kie-wb-common-forms</artifactId>
         <version>${project.version}</version>
       </dependency>
