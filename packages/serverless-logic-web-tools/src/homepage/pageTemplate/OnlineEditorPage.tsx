@@ -65,6 +65,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     allQuickStartStates,
     setActiveQuickStartID,
     setAllQuickStartStates,
+    useQueryParams: false,
   };
 
   const isChromiumBased = useMemo(() => {

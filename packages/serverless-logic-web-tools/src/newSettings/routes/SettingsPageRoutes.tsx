@@ -25,19 +25,24 @@ import { ApacheKafkaSettings } from "../kafka/ApacheKafkaSettings";
 import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
+import { SettingsPageProps } from "../types";
 
-export function SettingsPageRoutes(props: { pageContainerRef?: React.RefObject<HTMLDivElement> }) {
+export function SettingsPageRoutes(props: {} & SettingsPageProps) {
   const routes = useRoutes();
+  const settingsPageProps: SettingsPageProps = {
+    pageContainerRef: props.pageContainerRef,
+  };
+
   return (
     <Switch>
       <Route path={routes.settings.github.path({})}>
-        <GitHubSettings pageContainerRef={props.pageContainerRef} />
+        <GitHubSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.kie_sandbox_extended_services.path({})}>
         <KieSandboxExtendedServicesSettings />
       </Route>
       <Route path={routes.settings.openshift.path({})}>
-        <OpenShiftSettings />
+        <OpenShiftSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.service_account.path({})}>
         <ServiceAccountSettings />

@@ -33,6 +33,7 @@ import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
 import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
+import { SettingsPageProps } from "../types";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
@@ -50,7 +51,7 @@ enum GitHubTokenScope {
   REPO = "repo",
 }
 
-export function GitHubSettings(props: { pageContainerRef?: React.RefObject<HTMLDivElement> }) {
+export function GitHubSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
@@ -182,13 +183,13 @@ export function GitHubSettings(props: { pageContainerRef?: React.RefObject<HTMLD
         </PageSection>
       </PageSection>
 
-      {props.pageContainerRef?.current && (
+      {props.pageContainerRef.current && (
         <Modal
           title="Create new token"
           isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
           onClose={handleModalToggle}
           variant={ModalVariant.large}
-          appendTo={props.pageContainerRef.current || document.body}
+          appendTo={props.pageContainerRef.current}
         >
           <Form onSubmit={(e) => e.preventDefault()}>
             <h3>
