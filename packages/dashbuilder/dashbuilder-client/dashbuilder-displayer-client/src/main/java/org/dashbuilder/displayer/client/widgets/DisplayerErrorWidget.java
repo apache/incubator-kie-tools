@@ -18,6 +18,7 @@ package org.dashbuilder.displayer.client.widgets;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.HTMLAnchorElement;
@@ -56,22 +57,35 @@ public class DisplayerErrorWidget extends Composite {
     @DataField
     private HTMLAnchorElement chevronDown;
 
+    @Inject
+    @DataField
+    private HTMLAnchorElement refreshLink;
+
     public void show(String message, Throwable t) {
         errorBody.textContent = message;
         errorDetails.value = buildErrorDetails(t);
     }
 
+    public void setRefreshAction(Runnable refreshAction) {
+        refreshLink.style.visibility = Visibility.VISIBLE.getCssName();
+        refreshLink.onclick = e -> {
+            refreshAction.run();
+            return null;
+        };
+    }
+
     private String buildErrorDetails(Throwable t) {
-        StringBuilder sb = new StringBuilder();
-        Throwable cause = t.getCause();
+        var sb = new StringBuilder();
+        if (t != null) {
+            var cause = t.getCause();
 
-        sb.append(t.getMessage());
+            sb.append(t.getMessage());
 
-        while (cause != null) {
-            sb.append("\n  Caused by: " + cause.getMessage());
-            cause = cause.getCause();
+            while (cause != null) {
+                sb.append("\n  Caused by: " + cause.getMessage());
+                cause = cause.getCause();
+            }
         }
-
         return sb.toString();
     }
 

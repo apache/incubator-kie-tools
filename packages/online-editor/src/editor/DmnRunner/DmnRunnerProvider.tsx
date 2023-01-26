@@ -20,19 +20,16 @@ import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
-import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
+import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
-import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service/src";
 import { ResourceContent } from "@kie-tools-core/workspace/dist/api";
@@ -44,14 +41,11 @@ interface Props {
 }
 
 export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
-  const { i18n } = useOnlineI18n();
   const queryParams = useQueryParams();
   const history = useHistory();
   const routes = useRoutes();
   const extendedServices = useExtendedServices();
   const workspaces = useWorkspaces();
-  const settings = useSettings();
-  const { inputRows, setInputRows } = useDmnRunnerInputs(props.workspaceFile);
 
   const [isVisible, setVisible] = useState<boolean>(false);
   useEffect(() => {
@@ -61,6 +55,8 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setVisible(false);
     }
   }, [props.isEditorReady]);
+
+  const { inputRows, setInputRows } = useDmnRunnerInputs(props.workspaceFile);
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
@@ -72,11 +68,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const status = useMemo(() => {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
   }, [isExpanded]);
-
-  const service = useMemo(
-    () => new DmnRunnerService(settings.kieSandboxExtendedServices.config.url.jitExecutor),
-    [settings.kieSandboxExtendedServices.config]
-  );
 
   // recursively get imported models
   const getAllImportedModelsResources = useCallback(
@@ -128,7 +119,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         mainURI: props.workspaceFile.relativePath,
         resources: dmnResources,
         context: formData,
-      } as DmnRunnerModelPayload;
+      } as KieSandboxExtendedServicesModelPayload;
     },
     [props.workspaceFile, workspaces, dmnLanguageService, getAllImportedModelsResources]
   );
@@ -144,7 +135,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
     preparePayload()
       .then((payload) => {
-        service.formSchema(payload).then((jsonSchema) => {
+        extendedServices.client.formSchema(payload).then((jsonSchema) => {
           setJsonSchema(jsonSchema);
         });
       })
@@ -152,73 +143,73 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         console.error(err);
         setError(true);
       });
-  }, [extendedServices.status, props.workspaceFile.extension, preparePayload, service]);
+  }, [extendedServices.status, extendedServices.client, props.workspaceFile.extension, preparePayload]);
 
-  useEffect(() => {
-    if (props.workspaceFile.extension !== "dmn") {
-      return;
-    }
+  // useEffect(() => {
+  //   if (props.workspaceFile.extension !== "dmn") {
+  //     return;
+  //   }
 
-    if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-      props.editorPageDock?.setNotifications(i18n.terms.validation, "", []);
-      return;
-    }
+  //   if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
+  //     props.editorPageDock?.setNotifications(i18n.terms.validation, "", []);
+  //     return;
+  //   }
 
-    workspaces
-      .resourceContentGet({
-        workspaceId: props.workspaceFile.workspaceId,
-        relativePath: props.workspaceFile.relativePath,
-      })
-      .then((currentResourceContent) => {
-        if (!currentResourceContent) {
-          throw new Error("Missing resource content from current file");
-        }
-        const importedModels = dmnLanguageService.getImportedModels(currentResourceContent.content ?? "");
-        getAllImportedModelsResources(importedModels)
-          .then((importedModelsResources) => {
-            const resources = [currentResourceContent, ...importedModelsResources];
-            const payload: DmnRunnerModelPayload = {
-              mainURI: props.workspaceFile.relativePath,
-              resources: resources.map((resources) => ({
-                URI: resources.path,
-                content: resources.content ?? "",
-              })),
-            };
+  //   workspaces
+  //     .resourceContentGet({
+  //       workspaceId: props.workspaceFile.workspaceId,
+  //       relativePath: props.workspaceFile.relativePath,
+  //     })
+  //     .then((currentResourceContent) => {
+  //       if (!currentResourceContent) {
+  //         throw new Error("Missing resource content from current file");
+  //       }
+  //       const importedModels = dmnLanguageService.getImportedModels(currentResourceContent.content ?? "");
+  //       getAllImportedModelsResources(importedModels)
+  //         .then((importedModelsResources) => {
+  //           const resources = [currentResourceContent, ...importedModelsResources];
+  //           const payload: DmnRunnerModelPayload = {
+  //             mainURI: props.workspaceFile.relativePath,
+  //             resources: resources.map((resources) => ({
+  //               URI: resources.path,
+  //               content: resources.content ?? "",
+  //             })),
+  //           };
 
-            service.validate(payload).then((validationResults) => {
-              const notifications: Notification[] = validationResults.map((validationResult) => {
-                let path = payload.resources.length > 1 ? validationResult.path : "";
-                if (
-                  validationResult.severity === "ERROR" &&
-                  validationResult.sourceId === null &&
-                  validationResult.messageType === "REQ_NOT_FOUND"
-                ) {
-                  const nodeId = validationResult.message.split("'")[1] ?? "";
-                  path = dmnLanguageService.getPathFromNodeId(resources, nodeId);
-                }
-                return {
-                  type: "PROBLEM",
-                  path,
-                  severity: validationResult.severity,
-                  message: `${validationResult.messageType}: ${validationResult.message}`,
-                };
-              });
-              props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-            });
-          })
-          .catch((err) => console.error(err));
-      })
-      .catch((err) => console.error(err));
-  }, [
-    workspaces,
-    getAllImportedModelsResources,
-    dmnLanguageService,
-    props.workspaceFile,
-    props.editorPageDock,
-    extendedServices.status,
-    service,
-    i18n.terms.validation,
-  ]);
+  //           service.validate(payload).then((validationResults) => {
+  //             const notifications: Notification[] = validationResults.map((validationResult) => {
+  //               let path = payload.resources.length > 1 ? validationResult.path : "";
+  //               if (
+  //                 validationResult.severity === "ERROR" &&
+  //                 validationResult.sourceId === null &&
+  //                 validationResult.messageType === "REQ_NOT_FOUND"
+  //               ) {
+  //                 const nodeId = validationResult.message.split("'")[1] ?? "";
+  //                 path = dmnLanguageService.getPathFromNodeId(resources, nodeId);
+  //               }
+  //               return {
+  //                 type: "PROBLEM",
+  //                 path,
+  //                 severity: validationResult.severity,
+  //                 message: `${validationResult.messageType}: ${validationResult.message}`,
+  //               };
+  //             });
+  //             props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
+  //           });
+  //         })
+  //         .catch((err) => console.error(err));
+  //     })
+  //     .catch((err) => console.error(err));
+  // }, [
+  //   workspaces,
+  //   getAllImportedModelsResources,
+  //   dmnLanguageService,
+  //   props.workspaceFile,
+  //   props.editorPageDock,
+  //   extendedServices.status,
+  //   service,
+  //   i18n.terms.validation,
+  // ]);
 
   useEffect(() => {
     if (queryParams.has(QueryParams.DMN_RUNNER_IS_EXPANDED)) {
@@ -296,10 +287,9 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       isVisible,
       jsonSchema,
       mode,
-      service,
       status,
     }),
-    [currentInputRowIndex, error, inputRows, isExpanded, isVisible, jsonSchema, mode, service, status]
+    [currentInputRowIndex, error, inputRows, isExpanded, isVisible, jsonSchema, mode, status]
   );
 
   return (

@@ -29,7 +29,10 @@ import "./App.scss";
 
 export type ServerlessWorkflowType = "yml" | "yaml";
 
-const TEST_CONTENT = `pages:
+const TEST_CONTENT = `
+global:
+    mode: dark
+pages:
 - components:
     - html: <h1>Welcome to Dashbuilder!</h1>`;
 

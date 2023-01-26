@@ -17,7 +17,7 @@
 import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
+import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
@@ -28,12 +28,11 @@ export interface DmnRunnerContextType {
   isVisible: boolean;
   jsonSchema?: DmnSchema;
   mode: DmnRunnerMode;
-  service: DmnRunnerService;
   status: DmnRunnerStatus;
 }
 
 export interface DmnRunnerCallbacksContextType {
-  preparePayload: (formData?: InputRow) => Promise<DmnRunnerModelPayload>;
+  preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;

@@ -35,6 +35,7 @@ import { useOnlineI18n } from "../../i18n";
 import { Unitables, UnitablesApi } from "@kie-tools/unitables/dist/Unitables";
 import { DmnTableResults } from "@kie-tools/unitables-dmn/dist/DmnTableResults";
 import { DmnUnitablesValidator } from "@kie-tools/unitables-dmn/dist/DmnUnitablesValidator";
+import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 
 interface Props {
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
@@ -44,6 +45,7 @@ interface Props {
 }
 
 export function DmnRunnerTable(props: Props) {
+  const extendedServices = useExtendedServices();
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
   const [rowCount, setRowCount] = useState<number>(dmnRunnerState.inputRows?.length ?? 1);
@@ -92,7 +94,7 @@ export function DmnRunnerTable(props: Props) {
             if (payload === undefined) {
               return;
             }
-            return dmnRunnerState.service.result(payload);
+            return extendedServices.client.result(payload);
           })
         );
         if (canceled.get()) {
@@ -114,7 +116,7 @@ export function DmnRunnerTable(props: Props) {
         return undefined;
       }
     },
-    [dmnRunnerDispatch, dmnRunnerState.service, props.setDmnRunnerResults]
+    [props.setDmnRunnerResults, dmnRunnerDispatch, extendedServices.client]
   );
 
   // Debounce to avoid multiple updates caused by uniforms library

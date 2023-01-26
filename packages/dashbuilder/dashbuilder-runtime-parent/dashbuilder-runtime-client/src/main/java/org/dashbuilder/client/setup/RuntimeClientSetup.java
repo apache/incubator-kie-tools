@@ -27,6 +27,9 @@ import jsinterop.annotations.JsType;
 public interface RuntimeClientSetup {
 
     @JsProperty
+    boolean getAllowExternal();
+
+    @JsProperty
     String getMode();
 
     @JsProperty

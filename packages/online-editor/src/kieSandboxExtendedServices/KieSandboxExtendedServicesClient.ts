@@ -17,14 +17,14 @@
 import { DmnResult, DmnSchema } from "@kie-tools/form-dmn";
 import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api/NotificationSeverity";
 
-export interface DmnRunnerModelResource {
+export interface KieSandboxExtendedServicesModelResource {
   URI: string;
   content: string;
 }
 
-export interface DmnRunnerModelPayload {
+export interface KieSandboxExtendedServicesModelPayload {
   mainURI: string;
-  resources: DmnRunnerModelResource[];
+  resources: KieSandboxExtendedServicesModelResource[];
   context?: any;
 }
 
@@ -37,23 +37,25 @@ export interface JitExecutorValidateResponse {
   level: string;
 }
 
-export class DmnRunnerService {
-  private readonly DMN_RUNNER_VALIDATE_URL: string;
-  private readonly DMN_RUNNER_DMN_RESULT_URL: string;
-  private readonly DMN_RUNNER_FORM_SCHEMA_URL: string;
+export class KieSandboxExtendedServicesClient {
+  private readonly DMN_JIT_EXECUTOR_VALIDATE_URL: string;
+  private readonly DMN_JIT_EXECUTOR_DMN_RESULT_URL: string;
+  private readonly DMN_JIT_EXECUTOR_FORM_SCHEMA_URL: string;
+  private readonly BPMN_JIT_EXECUTOR_VALIDATE_URL: string;
 
   constructor(private readonly jitExecutorUrl: string) {
-    this.DMN_RUNNER_VALIDATE_URL = `${this.jitExecutorUrl}jitdmn/validate`;
-    this.DMN_RUNNER_DMN_RESULT_URL = `${this.jitExecutorUrl}jitdmn/dmnresult`;
-    this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.jitExecutorUrl}jitdmn/schema/form`;
+    this.DMN_JIT_EXECUTOR_VALIDATE_URL = `${this.jitExecutorUrl}jitdmn/validate`;
+    this.DMN_JIT_EXECUTOR_DMN_RESULT_URL = `${this.jitExecutorUrl}jitdmn/dmnresult`;
+    this.DMN_JIT_EXECUTOR_FORM_SCHEMA_URL = `${this.jitExecutorUrl}jitdmn/schema/form`;
+    this.BPMN_JIT_EXECUTOR_VALIDATE_URL = `${this.jitExecutorUrl}jitbpmn/validate`;
   }
 
-  public async result(payload: DmnRunnerModelPayload): Promise<DmnResult> {
+  public async result(payload: KieSandboxExtendedServicesModelPayload): Promise<DmnResult> {
     if (!this.isPayloadValid(payload)) {
       return { messages: [] };
     }
 
-    const response = await fetch(this.DMN_RUNNER_DMN_RESULT_URL, {
+    const response = await fetch(this.DMN_JIT_EXECUTOR_DMN_RESULT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,12 +66,12 @@ export class DmnRunnerService {
     return await response.json();
   }
 
-  public async validate(payload: DmnRunnerModelPayload): Promise<JitExecutorValidateResponse[]> {
+  public async validateDmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
 
-    const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
+    const response = await fetch(this.DMN_JIT_EXECUTOR_VALIDATE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,12 +81,27 @@ export class DmnRunnerService {
     return await response.json();
   }
 
-  public async formSchema(payload: DmnRunnerModelPayload): Promise<DmnSchema> {
+  public async validateBpmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
+    if (!this.isPayloadValid(payload)) {
+      return [];
+    }
+
+    const response = await fetch(this.BPMN_JIT_EXECUTOR_VALIDATE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return await response.json();
+  }
+
+  public async formSchema(payload: KieSandboxExtendedServicesModelPayload): Promise<DmnSchema> {
     if (!this.isPayloadValid(payload)) {
       return {};
     }
 
-    const response = await fetch(this.DMN_RUNNER_FORM_SCHEMA_URL, {
+    const response = await fetch(this.DMN_JIT_EXECUTOR_FORM_SCHEMA_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,7 +124,7 @@ export class DmnRunnerService {
     );
   }
 
-  private isPayloadValid(payload: DmnRunnerModelPayload): boolean {
+  private isPayloadValid(payload: KieSandboxExtendedServicesModelPayload): boolean {
     return payload.resources.every((resource) => resource.content !== "");
   }
 }

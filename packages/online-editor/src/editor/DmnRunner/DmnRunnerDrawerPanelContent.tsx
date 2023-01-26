@@ -50,6 +50,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
+import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -74,6 +75,7 @@ interface DmnRunnerStylesConfig {
 }
 
 export function DmnRunnerDrawerPanelContent(props: Props) {
+  const extendedServices = useExtendedServices();
   const { i18n, locale } = useOnlineI18n();
   const formRef = useRef<HTMLFormElement>(null);
   const dmnRunnerState = useDmnRunnerState();
@@ -153,7 +155,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
       try {
         const payload = await dmnRunnerDispatch.preparePayload(formInputs);
-        const result = await dmnRunnerState.service.result(payload);
+        const result = await extendedServices.client.result(payload);
         if (canceled.get()) {
           return;
         }
@@ -178,7 +180,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         setDmnRunnerResults(undefined);
       }
     },
-    [dmnRunnerState.service, dmnRunnerState.status, dmnRunnerDispatch, setExecutionNotifications]
+    [extendedServices.client, dmnRunnerState.status, dmnRunnerDispatch, setExecutionNotifications]
   );
 
   // Update outputs column on form change
