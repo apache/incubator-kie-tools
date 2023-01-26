@@ -31,8 +31,7 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
-import { DmnLanguageService } from "@kie-tools/dmn-language-service/src";
-import { ResourceContent } from "@kie-tools-core/workspace/dist/api";
+import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 
 interface Props {
   isEditorReady?: boolean;
@@ -69,34 +68,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
   }, [isExpanded]);
 
-  // recursively get imported models
-  const getAllImportedModelsResources = useCallback(
-    async (importedModels?: string[], resources: ResourceContent[] = []): Promise<ResourceContent[]> => {
-      if (importedModels && importedModels.length > 0) {
-        // get impoted models resources
-        const importedModelsResources = (
-          await Promise.all(
-            importedModels.map((importedModel) => {
-              return workspaces.resourceContentGet({
-                workspaceId: props.workspaceFile.workspaceId,
-                relativePath: importedModel,
-              });
-            })
-          )
-        ).filter((e) => e !== undefined) as ResourceContent[];
-
-        const contents = importedModelsResources.map((resources) => resources.content ?? "");
-        const importedFiles = dmnLanguageService.getImportedModels(contents);
-        if (importedFiles.length > 0) {
-          return [...importedModelsResources, ...(await getAllImportedModelsResources(importedFiles))];
-        }
-        return [...importedModelsResources];
-      }
-      return resources;
-    },
-    [workspaces, props.workspaceFile.workspaceId, dmnLanguageService]
-  );
-
   const preparePayload = useCallback(
     async (formData?: InputRow) => {
       const currentResourceContent = await workspaces.resourceContentGet({
@@ -108,8 +79,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         throw new Error("Missing resource content from current file");
       }
 
-      const importedModels = dmnLanguageService.getImportedModels(currentResourceContent?.content ?? "");
-      const importedModelsResources = await getAllImportedModelsResources(importedModels);
+      const importedModelsResources = await dmnLanguageService.getAllImportedModelsResources(
+        workspaces,
+        props.workspaceFile.workspaceId,
+        [currentResourceContent?.content ?? ""]
+      );
       const dmnResources = [currentResourceContent, ...importedModelsResources].map((resources) => ({
         URI: resources.path,
         content: resources.content ?? "",
@@ -121,7 +95,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         context: formData,
       } as KieSandboxExtendedServicesModelPayload;
     },
-    [props.workspaceFile, workspaces, dmnLanguageService, getAllImportedModelsResources]
+    [props.workspaceFile, workspaces, dmnLanguageService]
   );
 
   useEffect(() => {
@@ -144,72 +118,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         setError(true);
       });
   }, [extendedServices.status, extendedServices.client, props.workspaceFile.extension, preparePayload]);
-
-  // useEffect(() => {
-  //   if (props.workspaceFile.extension !== "dmn") {
-  //     return;
-  //   }
-
-  //   if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-  //     props.editorPageDock?.setNotifications(i18n.terms.validation, "", []);
-  //     return;
-  //   }
-
-  //   workspaces
-  //     .resourceContentGet({
-  //       workspaceId: props.workspaceFile.workspaceId,
-  //       relativePath: props.workspaceFile.relativePath,
-  //     })
-  //     .then((currentResourceContent) => {
-  //       if (!currentResourceContent) {
-  //         throw new Error("Missing resource content from current file");
-  //       }
-  //       const importedModels = dmnLanguageService.getImportedModels(currentResourceContent.content ?? "");
-  //       getAllImportedModelsResources(importedModels)
-  //         .then((importedModelsResources) => {
-  //           const resources = [currentResourceContent, ...importedModelsResources];
-  //           const payload: DmnRunnerModelPayload = {
-  //             mainURI: props.workspaceFile.relativePath,
-  //             resources: resources.map((resources) => ({
-  //               URI: resources.path,
-  //               content: resources.content ?? "",
-  //             })),
-  //           };
-
-  //           service.validate(payload).then((validationResults) => {
-  //             const notifications: Notification[] = validationResults.map((validationResult) => {
-  //               let path = payload.resources.length > 1 ? validationResult.path : "";
-  //               if (
-  //                 validationResult.severity === "ERROR" &&
-  //                 validationResult.sourceId === null &&
-  //                 validationResult.messageType === "REQ_NOT_FOUND"
-  //               ) {
-  //                 const nodeId = validationResult.message.split("'")[1] ?? "";
-  //                 path = dmnLanguageService.getPathFromNodeId(resources, nodeId);
-  //               }
-  //               return {
-  //                 type: "PROBLEM",
-  //                 path,
-  //                 severity: validationResult.severity,
-  //                 message: `${validationResult.messageType}: ${validationResult.message}`,
-  //               };
-  //             });
-  //             props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-  //           });
-  //         })
-  //         .catch((err) => console.error(err));
-  //     })
-  //     .catch((err) => console.error(err));
-  // }, [
-  //   workspaces,
-  //   getAllImportedModelsResources,
-  //   dmnLanguageService,
-  //   props.workspaceFile,
-  //   props.editorPageDock,
-  //   extendedServices.status,
-  //   service,
-  //   i18n.terms.validation,
-  // ]);
 
   useEffect(() => {
     if (queryParams.has(QueryParams.DMN_RUNNER_IS_EXPANDED)) {

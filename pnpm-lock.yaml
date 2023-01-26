@@ -1984,6 +1984,7 @@ importers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
       "@kie-tools-core/workspace": workspace:*
+      "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
@@ -1995,6 +1996,7 @@ importers:
       typescript: ^4.4.2
     dependencies:
       "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
     devDependencies:
       "@babel/core": 7.16.12
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12

@@ -340,7 +340,7 @@ export function EditorPage(props: Props) {
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
 
-  useFileValidation(workspaceFilePromise.data?.workspaceFile, editorPageDock);
+  useFileValidation(workspaces, workspaceFilePromise.data?.workspaceFile, editorPageDock);
 
   return (
     <OnlineEditorPage>

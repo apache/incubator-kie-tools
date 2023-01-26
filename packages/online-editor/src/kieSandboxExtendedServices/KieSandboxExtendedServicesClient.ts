@@ -28,7 +28,7 @@ export interface KieSandboxExtendedServicesModelPayload {
   context?: any;
 }
 
-export interface JitExecutorValidateResponse {
+export interface KieSandboxExtendedServicesValidateResponse {
   severity: NotificationSeverity;
   message: string;
   messageType: string;
@@ -66,7 +66,9 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateDmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
+  public async validateDmn(
+    payload: KieSandboxExtendedServicesModelPayload
+  ): Promise<KieSandboxExtendedServicesValidateResponse[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
@@ -81,7 +83,9 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateBpmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
+  public async validateBpmn(
+    payload: KieSandboxExtendedServicesModelPayload
+  ): Promise<KieSandboxExtendedServicesValidateResponse[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
