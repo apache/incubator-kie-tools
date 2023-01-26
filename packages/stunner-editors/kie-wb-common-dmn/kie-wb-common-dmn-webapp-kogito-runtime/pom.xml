@@ -35,9 +35,8 @@
     <kogito.large.model.it.tests>**/large/model/*IT.java</kogito.large.model.it.tests>
     <kogito.backward.compatibility.it.tests>**/backward/compatibility/*IT.java</kogito.backward.compatibility.it.tests>
     <kogito.selenium.it.tests>**/selenium/*IT.java</kogito.selenium.it.tests>
-    <gwt.helper.rootDirectories>
-      ${project.parent.basedir}/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/kie-wb-common-stunner-client/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/kie-wb-common-stunner-core/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/kie-wb-common-stunner-extensions/
-    </gwt.helper.rootDirectories>
+    <gwt.helper.rootDirectories>${project.parent.basedir}/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/</gwt.helper.rootDirectories>
+    <gwt.helper.excludes>BPMN,Bpmn,Emf,Emulation</gwt.helper.excludes>
 
     <!-- this module is just and "integration" of components, to minimize CI times, we skip sonar here -->
     <sonar.skip>true</sonar.skip>
@@ -626,6 +625,7 @@
               <goal>add-source</goal>
             </goals>
             <configuration>
+              <excludes>${gwt.helper.excludes}</excludes> <!-- will include all GWT module whose configuration file name match that pattern -->
               <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
             </configuration>
           </execution>
