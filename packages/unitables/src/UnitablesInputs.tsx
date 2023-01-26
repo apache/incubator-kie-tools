@@ -36,105 +36,67 @@ export function usePrevious<T>(value: T) {
 const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
   path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc[key], obj);
 
-export function useUnitablesInputs(
+export function useUnitablesColumns(
   jsonSchemaBridge: UnitablesJsonSchemaBridge,
   inputRows: Array<object>,
   setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>,
   rowCount: number,
   formsDivRendered: boolean,
-  inputColumnsCache: React.MutableRefObject<ReactTable.Column[]>,
   propertiesEntryPath = "definitions"
 ) {
-  const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);
-  const previousBridge = usePrevious(jsonSchemaBridge);
-
-  const defaultInputValues = useMemo(
-    () =>
-      Object.keys(jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
-        const field = jsonSchemaBridge.getField(property);
-        if (field.default) {
-          acc[`${property}`] = field.default;
-        }
-        return acc;
-      }, {} as Record<string, any>),
-    [jsonSchemaBridge]
-  );
+  // const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);
 
   // Check differences on schema and delete inputs from cells that were deleted.
-  useEffect(() => {
-    if (previousBridge === undefined) {
-      return;
-    }
-    setInputRows((inputRows) => {
-      const newInputRows = [...inputRows];
-      const propertiesDifference = diff(
-        getObjectByPath(previousBridge?.schema ?? {}, propertiesEntryPath) ?? {},
-        getObjectByPath(jsonSchemaBridge?.schema ?? {}, propertiesEntryPath) ?? {}
-      );
+  // const previousBridge = usePrevious(jsonSchemaBridge);
 
-      const updatedData = newInputRows.map((inputRow) => {
-        return Object.entries(propertiesDifference).reduce(
-          (row, [property, value]) => {
-            if (Object.keys(row).length === 0) {
-              return row;
-            }
-            if (!value || value.type || value.$ref) {
-              delete row[property];
-            }
-            if (value?.format) {
-              row[property] = undefined;
-            }
-            return row;
-          },
-          { ...defaultInputValues, ...inputRow }
-        );
-      });
+  // const defaultInputValues = useMemo(
+  //   () =>
+  //     Object.keys(jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, key) => {
+  //       const field = jsonSchemaBridge.getField(key);
+  //       if (field.default) {
+  //         acc[key] = field.default;
+  //       }
+  //       return acc;
+  //     }, {} as Record<string, any>),
+  //   [jsonSchemaBridge]
+  // );
 
-      return updatedData;
-    });
-  }, [defaultInputValues, jsonSchemaBridge, previousBridge, setInputRows, propertiesEntryPath]);
+  // useEffect(() => {
+  //   if (previousBridge === undefined) {
+  //     return;
+  //   }
+  //   setInputRows((inputRows) => {
+  //     const newInputRows = [...inputRows];
+  //     const propertiesDifference = diff(
+  //       getObjectByPath(previousBridge?.schema ?? {}, propertiesEntryPath) ?? {},
+  //       getObjectByPath(jsonSchemaBridge?.schema ?? {}, propertiesEntryPath) ?? {}
+  //     );
 
-  const updateInputCellsWidth = useCallback(
-    (inputs: InputFields[]) => {
-      inputColumnsCache.current?.map((inputColumn) => {
-        if (inputColumn.groupType === "input") {
-          const inputToUpdate = inputs.find((e) => e.name === inputColumn.label);
-          if (inputToUpdate && isInputWithInsideProperties(inputToUpdate)) {
-            if (inputColumn?.columns) {
-              inputToUpdate.insideProperties.forEach((insideProperty) => {
-                const columnFound = inputColumn.columns?.find(
-                  (nestedColumn) => nestedColumn.label === insideProperty.name
-                );
-                if (columnFound && columnFound.width) {
-                  insideProperty.width = columnFound.width;
-                }
-              });
-            } else if (inputColumn.width) {
-              inputToUpdate.insideProperties.forEach((insideProperty) => {
-                const width = inputColumn.width ? inputColumn.width / inputToUpdate.insideProperties.length : 0;
-                if (width < UNITABLES_COLUMN_MIN_WIDTH) {
-                  insideProperty.width = UNITABLES_COLUMN_MIN_WIDTH;
-                } else {
-                  insideProperty.width = width;
-                }
-              });
-            }
-          }
-          if (inputToUpdate && inputColumn.width && inputColumn.width > inputToUpdate.width) {
-            inputToUpdate.width = inputColumn.width;
-          }
-        }
-      });
-    },
-    [inputColumnsCache]
-  );
+  //     const updatedData = newInputRows.map((inputRow) => {
+  //       return Object.entries(propertiesDifference).reduce(
+  //         (row, [property, value]) => {
+  //           if (Object.keys(row).length === 0) {
+  //             return row;
+  //           }
+  //           if (!value || value.type || value.$ref) {
+  //             delete row[property];
+  //           }
+  //           if (value?.format) {
+  //             row[property] = undefined;
+  //           }
+  //           return row;
+  //         },
+  //         { ...defaultInputValues, ...inputRow }
+  //       );
+  //     });
 
-  // Generate inputs header. Uses the input cache to update the input header cell width.
+  //     return updatedData;
+  //   });
+  // }, [defaultInputValues, jsonSchemaBridge, previousBridge, setInputRows, propertiesEntryPath]);
+
   const inputs = useMemo(() => {
-    const newInputs = jsonSchemaBridge.getBoxedHeaderInputs();
-    updateInputCellsWidth(newInputs);
-    return newInputs;
-  }, [jsonSchemaBridge, updateInputCellsWidth]);
+    return jsonSchemaBridge.getBoxedHeaderInputs();
+  }, [jsonSchemaBridge]);
 
   const onModelUpdate = useCallback(
     (model: object, index) => {
@@ -147,27 +109,33 @@ export function useUnitablesInputs(
     [setInputRows]
   );
 
+  const inputEntriesLength = useMemo(
+    () =>
+      inputs?.reduce(
+        (length, input) => (isInputWithInsideProperties(input) ? length + input.insideProperties.length : length + 1),
+        0
+      ),
+    [inputs]
+  );
+
   // Inputs form
-  const inputRules: UnitablesInputRows[] = useMemo(() => {
+  const beeTableRows: UnitablesInputRows[] = useMemo(() => {
     if (jsonSchemaBridge === undefined || !formsDivRendered) {
       return [] as UnitablesInputRows[];
     }
-    const inputEntriesLength = inputs?.reduce(
-      (length, input) => (isInputWithInsideProperties(input) ? length + input.insideProperties.length : length + 1),
-      0
-    );
+
     const inputEntries = Array.from(Array(inputEntriesLength));
 
     return Array.from(Array(rowCount)).map((e, rowIndex) => {
       return {
         inputEntries,
         rowDelegate: ({ children }: PropsWithChildren<{}>) => {
-          const unitablesRowRef = React.createRef<UnitablesRowApi>();
-          rowsRef.set(rowIndex, unitablesRowRef);
+          // const unitablesRowRef = React.createRef<UnitablesRowApi>();
+          // rowsRef.set(rowIndex, unitablesRowRef);
           return (
             <UnitablesRow
               key={rowIndex}
-              ref={unitablesRowRef}
+              // ref={unitablesRowRef}
               formId={FORMS_ID}
               rowIndex={rowIndex}
               model={inputRows[rowIndex]}
@@ -180,14 +148,13 @@ export function useUnitablesInputs(
         },
       } as UnitablesInputRows;
     });
-  }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, inputRows, onModelUpdate]);
+  }, [jsonSchemaBridge, formsDivRendered, inputEntriesLength, rowCount, inputRows, onModelUpdate]);
 
   return useMemo(() => {
     return {
       jsonSchemaBridge,
       inputs,
-      inputRows: inputRules,
-      updateInputCellsWidth,
+      inputRows: beeTableRows,
     };
-  }, [inputRules, inputs, jsonSchemaBridge, updateInputCellsWidth]);
+  }, [beeTableRows, inputs, jsonSchemaBridge]);
 }

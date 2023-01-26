@@ -29,53 +29,43 @@ import * as ReactTable from "react-table";
 import { UnitablesBeeTable } from "./bee";
 import { UnitablesI18n } from "./i18n";
 import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
-import { useUnitablesInputs } from "./UnitablesInputs";
+import { useUnitablesColumns } from "./UnitablesInputs";
 import "./Unitables.css";
 
 interface Props {
   jsonSchema: object;
-  inputRows: Array<object>;
-  setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>;
+  rows: Array<object>;
+  setRows: React.Dispatch<React.SetStateAction<Array<object>>>;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
   i18n: UnitablesI18n;
-  rowCount: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   propertiesEntryPath: string;
-  inputsContainerRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefObject<HTMLDivElement>;
+  scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
 export const Unitables = (props: Props) => {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-  const inputColumnsCache = useRef<ReactTable.Column[]>([]);
 
-  const { inputs, inputRows } = useUnitablesInputs(
+  const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
+
+  const { inputs, inputRows: beeTableRows } = useUnitablesColumns(
     props.jsonSchemaBridge,
-    props.inputRows,
-    props.setInputRows,
-    props.rowCount,
+    props.rows,
+    props.setRows,
+    props.rows.length,
     formsDivRendered,
-    inputColumnsCache,
     props.propertiesEntryPath
   );
 
   const inputUid = useMemo(() => nextId(), []);
-  const shouldRender = useMemo(() => (inputs?.length ?? 0) > 0, [inputs]);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
     inputErrorBoundaryRef.current?.reset();
   }, [props.jsonSchemaBridge]);
-
-  const config = useMemo(
-    () => ({
-      inputs: inputs,
-      rows: inputRows,
-    }),
-    [inputRows, inputs]
-  );
 
   // Set input heights (begin)
   const searchRecursively = useCallback((child: any) => {
@@ -95,26 +85,26 @@ export const Unitables = (props: Props) => {
   }, []);
 
   useLayoutEffect(() => {
-    const tbody = document.getElementsByTagName("tbody")[0];
-    const inputsCells = Array.from(tbody.getElementsByTagName("td"));
+    const tbody = props.containerRef.current?.getElementsByTagName("tbody")[0];
+    const inputsCells = Array.from(tbody?.getElementsByTagName("td") ?? []);
     inputsCells.shift();
     inputsCells.forEach((inputCell) => {
       searchRecursively(inputCell.childNodes[0]);
     });
-  }, [config, searchRecursively]);
+  }, [beeTableRows, props.containerRef, searchRecursively]);
   // Set input heights (end)
 
   return (
     <>
-      {inputs && shouldRender && inputRows && (
+      {inputs.length > 0 && beeTableRows.length > 0 && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
-          <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
+          <div style={{ display: "flex" }} ref={props.containerRef}>
             <div style={{ display: "flex", flexDirection: "column", marginTop: "5px", paddingLeft: "5px" }}>
               <OutsideRowMenu height={64} isFirstChild={true}>{`#`}</OutsideRowMenu>
               <OutsideRowMenu height={65} borderBottomSizeBasis={2}>{`#`}</OutsideRowMenu>
-              {Array.from(Array(props.rowCount)).map((e, rowIndex) => (
+              {Array.from(Array(props.rows.length)).map((e, rowIndex) => (
                 <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
-                  <OutsideRowMenu height={61} isLastChild={rowIndex === props.rowCount - 1}>
+                  <OutsideRowMenu height={61} isLastChild={rowIndex === props.rows.length - 1}>
                     <Button
                       className={"kie-tools--masthead-hoverable"}
                       variant={ButtonVariant.plain}
@@ -126,7 +116,14 @@ export const Unitables = (props: Props) => {
                 </Tooltip>
               ))}
             </div>
-            <UnitablesBeeTable i18n={props.i18n} config={config} id={inputUid} />
+            <UnitablesBeeTable
+              scrollableParentRef={props.scrollableParentRef}
+              i18n={props.i18n}
+              rows={beeTableRows}
+              columns={inputs}
+              id={inputUid}
+              setRows={props.setRows}
+            />
           </div>
         </ErrorBoundary>
       )}

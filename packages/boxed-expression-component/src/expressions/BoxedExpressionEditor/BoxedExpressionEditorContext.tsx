@@ -26,6 +26,7 @@ export interface BoxedExpressionEditorContextType {
   // Plumbing
   beeGwtService?: BeeGwtService;
   editorRef: React.RefObject<HTMLDivElement>;
+  scrollableParentRef: React.RefObject<HTMLElement>;
 
   // Props
   decisionNodeId: string;
@@ -64,6 +65,7 @@ export function BoxedExpressionEditorContextProvider({
   beeGwtService,
   children,
   pmmlParams,
+  scrollableParentRef,
 }: React.PropsWithChildren<BoxedExpressionEditorProps>) {
   const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
 
@@ -82,6 +84,7 @@ export function BoxedExpressionEditorContextProvider({
         //plumbing
         beeGwtService, // FIXME: Tiago -> Move to a separate context
         editorRef,
+        scrollableParentRef,
 
         // props
         decisionNodeId,

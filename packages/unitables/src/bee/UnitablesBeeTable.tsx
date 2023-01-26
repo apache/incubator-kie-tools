@@ -25,7 +25,7 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable/StandaloneBeeTable";
-import { UnitablesCell, UnitablesInputRows } from "../UnitablesTypes";
+import { UnitablesBeeTableColumn, UnitablesInputRows as UnitablesRow } from "../UnitablesTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
@@ -33,20 +33,20 @@ import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/
 
 export const UNITABLES_COLUMN_MIN_WIDTH = 150;
 
-type ROWTYPE = any; // FIXME: Tiago
+type ROWTYPE = UnitablesRow & { id: string };
 
 const EMPTY_SYMBOL = "";
 
 export interface UnitablesBeeTable {
   id: string;
   i18n: BoxedExpressionEditorI18n;
-  config: {
-    rows: UnitablesInputRows[];
-    inputs: UnitablesCell[];
-  };
+  rows: UnitablesRow[];
+  setRows: React.Dispatch<React.SetStateAction<Array<object>>>;
+  columns: UnitablesBeeTableColumn[];
+  scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
-export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
+export function UnitablesBeeTable({ id, i18n, columns, rows, setRows, scrollableParentRef }: UnitablesBeeTable) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
@@ -74,7 +74,7 @@ export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     // Inputs
-    return config.inputs.map((inputRow) => {
+    return columns.map((inputRow) => {
       if (inputRow.insideProperties) {
         return {
           originalId: uuid + `input-${inputRow.name}`,
@@ -110,10 +110,10 @@ export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
         };
       }
     });
-  }, [config.inputs, uuid]);
+  }, [columns, uuid]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return config.rows.map((row, rowIndex) => {
+    return rows.map((row, rowIndex) => {
       const rowArray = row.inputEntries.reduce((acc, entry) => {
         if (Array.isArray(entry)) {
           return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
@@ -134,7 +134,7 @@ export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
         return tableRow;
       }, {});
     });
-  }, [config.rows, beeTableColumns, uuid]);
+  }, [rows, beeTableColumns, uuid]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
@@ -144,8 +144,28 @@ export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
     return row.original.id;
   }, []);
 
+  const onRowAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      setRows((prev) => {
+        const n = [...(prev ?? [])];
+        n.splice(
+          args.beforeIndex,
+          0,
+          Object.keys(prev[0]).reduce((acc, k) => {
+            acc[k] = undefined;
+            return acc;
+          }, {} as any)
+        );
+
+        return n;
+      });
+    },
+    [setRows]
+  );
+
   return (
     <StandaloneBeeTable
+      scrollableParentRef={scrollableParentRef}
       getColumnKey={getColumnKey}
       getRowKey={getRowKey}
       tableId={id}
@@ -160,6 +180,7 @@ export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
       shouldRenderRowIndexColumn={true}
       shouldShowRowsInlineControls={true}
       shouldShowColumnsInlineControls={false}
+      onRowAdded={onRowAdded}
       resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS}
     />
   );

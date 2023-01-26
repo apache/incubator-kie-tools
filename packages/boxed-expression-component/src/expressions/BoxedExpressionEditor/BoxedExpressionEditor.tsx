@@ -41,6 +41,8 @@ export interface BoxedExpressionEditorProps {
   dataTypes: DmnDataType[];
   /** PMML parameters */
   pmmlParams?: PmmlParam[];
+  //
+  scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
 export function BoxedExpressionEditor({
@@ -50,6 +52,7 @@ export function BoxedExpressionEditor({
   setExpressionDefinition,
   beeGwtService,
   isResetSupportedOnRootExpression,
+  scrollableParentRef,
   pmmlParams,
 }: BoxedExpressionEditorProps) {
   return (
@@ -60,6 +63,7 @@ export function BoxedExpressionEditor({
       ctx={BoxedExpressionEditorI18nContext}
     >
       <BoxedExpressionEditorContextProvider
+        scrollableParentRef={scrollableParentRef}
         beeGwtService={beeGwtService}
         decisionNodeId={decisionNodeId}
         expressionDefinition={expressionDefinition}

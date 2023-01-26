@@ -132,8 +132,11 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   //   useMemo(() => [".boxed-expression-provider"], [])
   // );
 
+  const emptyRef = React.useRef<HTMLElement>(null);
+
   return (
     <BoxedExpressionEditor
+      scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
       decisionNodeId={decisionNodeId}
       expressionDefinition={expression}

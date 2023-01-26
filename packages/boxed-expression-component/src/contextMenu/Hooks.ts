@@ -24,9 +24,9 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
   yPos: string;
   isOpen: boolean;
 } {
-  const { setCurrentlyOpenContextMenu, currentlyOpenContextMenu } = useBoxedExpressionEditor();
+  const { setCurrentlyOpenContextMenu, currentlyOpenContextMenu, editorRef, scrollableParentRef } =
+    useBoxedExpressionEditor();
 
-  // FIXME: Tiago -> Maybe using window.scrollX/Y is not the best, as other elements might have the scroll added to it.
   const [scroll, setScroll] = useState({ x: 0, y: 0 });
 
   // FIXME: Tiago -> Need to calculate the context menu length for it to not be hidden by the borders of the screen.
@@ -52,26 +52,42 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
     (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      setPosition({ x: e.pageX, y: e.pageY });
-      setScroll({ x: window.scrollX, y: window.scrollY });
+      setPosition({
+        x:
+          e.pageX +
+          (scrollableParentRef.current?.offsetLeft ?? 0) -
+          (scrollableParentRef.current?.getBoundingClientRect().left ?? 0),
+        y:
+          e.pageY +
+          (scrollableParentRef.current?.offsetTop ?? 0) -
+          (scrollableParentRef.current?.getBoundingClientRect().top ?? 0),
+      });
+      setScroll({
+        x: scrollableParentRef.current?.scrollLeft ? 0 : window.scrollX,
+        y: scrollableParentRef.current?.scrollTop ? 0 : window.scrollY,
+      });
       setCurrentlyOpenContextMenu(id);
     },
-    [id, setCurrentlyOpenContextMenu]
+    [id, scrollableParentRef, setCurrentlyOpenContextMenu]
   );
 
   useEffect(() => {
     function onScroll(e: UIEvent) {
       if (currentlyOpenContextMenu === id) {
-        setScroll({ x: window.scrollX, y: window.scrollY });
+        setScroll({
+          x: (e.target as HTMLElement).scrollLeft ? 0 : window.scrollX,
+          y: (e.target as HTMLElement).scrollTop ? 0 : window.scrollY,
+        });
       }
     }
 
-    window.addEventListener("scroll", onScroll);
+    const target = scrollableParentRef.current ?? window;
+    target?.addEventListener("scroll", onScroll);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      target?.removeEventListener("scroll", onScroll);
     };
-  }, [currentlyOpenContextMenu, id]);
+  }, [currentlyOpenContextMenu, editorRef, id, scrollableParentRef]);
 
   useEffect(() => {
     setOpen(id === currentlyOpenContextMenu);

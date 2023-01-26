@@ -39,60 +39,12 @@ type OutputTypesFields = OutputTypesField | OutputWithInsideProperties;
 type OutputFields = OutputField | OutputWithInsideProperties;
 type OutputTypesAndNormalFields = OutputTypesFields | OutputFields;
 
-export function isOutputWithInsideProperties(
-  toBeDetermined: OutputTypesAndNormalFields
-): toBeDetermined is OutputWithInsideProperties {
-  return (toBeDetermined as OutputWithInsideProperties).insideProperties !== undefined;
-}
-
 export function useDmnRunnerOutputs(
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined
 ) {
-  const deepFlattenOutput = useCallback((acc: any, entry: string, value: object) => {
-    return Object.entries(value).map(([deepEntry, deepValue]) => {
-      if (typeof deepValue === "object" && deepValue !== null) {
-        deepFlattenOutput(acc, deepEntry, deepValue);
-      }
-      acc[`${entry}-${deepEntry}`] = deepValue;
-      return acc;
-    });
-  }, []);
-
-  const deepGenerateOutputTypesMapFields = useCallback(
-    (
-      outputTypeMap: Map<string, OutputTypesFields>,
-      properties: DmnSchemaProperties[],
-      jsonSchemaBridge: DmnUnitablesJsonSchemaBridge
-    ) => {
-      return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
-        if (property["x-dmn-type"]) {
-          const dataType = jsonSchemaBridge.getBoxedDataType(property).dataType;
-          outputTypeMap.set(name, { type: property.type, dataType, name });
-          return { name, type: property.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH, dataType };
-        }
-        const path: string[] = property.$ref.split("/").slice(1); // remove #
-        const data = path.reduce(
-          (acc: { [x: string]: object }, property: string) => acc[property],
-          jsonSchemaBridge.schema
-        );
-        const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
-        if (data.properties) {
-          const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
-          outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
-        } else {
-          outputTypeMap.set(name, { type: data.type, dataType, name });
-        }
-        return { name, dataType: data.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } as OutputTypesField;
-      });
-    },
-    []
-  );
-
   const { outputs } = useMemo(() => {
-    const decisionResults = results?.filter((result) => result !== undefined);
-
-    if (jsonSchemaBridge === undefined || decisionResults === undefined) {
+    if (jsonSchemaBridge === undefined || results === undefined) {
       return { outputs: [] as OutputFields[] };
     }
 
@@ -101,16 +53,29 @@ export function useDmnRunnerOutputs(
       (outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnSchemaProperties]) => {
         if (properties["x-dmn-type"]) {
           const dataType = jsonSchemaBridge.getBoxedDataType(properties).dataType;
-          outputTypeMap.set(name, { type: properties.type, dataType, name });
+          outputTypeMap.set(name, {
+            type: properties.type,
+            dataType,
+            name,
+          });
         } else {
           const path = properties.$ref.split("/").slice(1); // remove #
           const data = path.reduce((acc: any, property: string) => acc[property], jsonSchemaBridge.schema);
           const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
           if (data.properties) {
             const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
-            outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
+            outputTypeMap.set(name, {
+              type: data.type,
+              insideProperties,
+              dataType,
+              name,
+            });
           } else {
-            outputTypeMap.set(name, { type: data.type, dataType, name });
+            outputTypeMap.set(name, {
+              type: data.type,
+              dataType,
+              name,
+            });
           }
         }
 
@@ -120,6 +85,7 @@ export function useDmnRunnerOutputs(
     );
 
     // generate outputs
+    const decisionResults = results?.filter((result) => result !== undefined);
     const outputMap = decisionResults.reduce(
       (acc: Map<string, OutputFields>, decisionResult: DecisionResult[] | undefined) => {
         if (decisionResult) {
@@ -131,7 +97,7 @@ export function useDmnRunnerOutputs(
                 name: decisionName,
                 dataType,
                 insideProperties: data.insideProperties,
-                width: data.insideProperties.reduce((acc: number, column: any) => acc + column.width, 0),
+                width: data.insideProperties.reduce((acc, column: any) => acc + column.width, 0),
               });
             } else {
               acc.set(decisionName, {
@@ -150,7 +116,7 @@ export function useDmnRunnerOutputs(
     return {
       outputs: [...outputMap.values()],
     };
-  }, [deepGenerateOutputTypesMapFields, jsonSchemaBridge, results]);
+  }, [jsonSchemaBridge, results]);
 
   return useMemo(
     () => ({
@@ -158,4 +124,47 @@ export function useDmnRunnerOutputs(
     }),
     [outputs]
   );
+}
+
+function deepGenerateOutputTypesMapFields(
+  outputTypeMap: Map<string, OutputTypesFields>,
+  properties: DmnSchemaProperties[],
+  jsonSchemaBridge: DmnUnitablesJsonSchemaBridge
+) {
+  return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
+    if (property["x-dmn-type"]) {
+      const dataType = jsonSchemaBridge.getBoxedDataType(property).dataType;
+      outputTypeMap.set(name, { type: property.type, dataType, name });
+      return { name, type: property.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH, dataType };
+    }
+    const path: string[] = property.$ref.split("/").slice(1); // remove #
+    const data = path.reduce(
+      (acc: { [x: string]: object }, property: string) => acc[property],
+      jsonSchemaBridge.schema
+    );
+    const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
+    if (data.properties) {
+      const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
+      outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
+    } else {
+      outputTypeMap.set(name, { type: data.type, dataType, name });
+    }
+    return { name, dataType: data.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } as OutputTypesField;
+  });
+}
+
+function deepFlattenOutput(acc: any, entry: string, value: object) {
+  return Object.entries(value).map(([deepEntry, deepValue]) => {
+    if (typeof deepValue === "object" && deepValue !== null) {
+      deepFlattenOutput(acc, deepEntry, deepValue);
+    }
+    acc[`${entry}-${deepEntry}`] = deepValue;
+    return acc;
+  });
+}
+
+export function isOutputWithInsideProperties(
+  toBeDetermined: OutputTypesAndNormalFields
+): toBeDetermined is OutputWithInsideProperties {
+  return (toBeDetermined as OutputWithInsideProperties).insideProperties !== undefined;
 }

@@ -36,7 +36,7 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable/StandaloneBeeTable";
-import { UnitablesCell } from "@kie-tools/unitables/dist/UnitablesTypes";
+import { UnitablesBeeTableColumn } from "@kie-tools/unitables/dist/UnitablesTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
@@ -46,9 +46,10 @@ interface Props {
   i18n: DmnUnitablesI18n;
   results: Array<DecisionResult[] | undefined> | undefined;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
+  scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
-export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results }: Props) {
+export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrollableParentRef }: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [outputError, setOutputError] = useState<boolean>(false);
@@ -59,24 +60,29 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results }: Props
     outputErrorBoundaryRef.current?.reset();
   }, [outputs]);
 
-  const config = useMemo(() => {
-    return {
-      outputs,
-      rows: (results ?? []).map((result) => ({
+  const rows = useMemo(
+    () =>
+      (results ?? []).map((result) => ({
         outputEntries: (result ?? []).map(({ result }) => {
           return result as string; // FIXME: Tiago -> This `string` here is absolutely wrong.
         }),
       })),
-    };
-  }, [outputs, results]);
+    [results]
+  );
 
   return (
     <>
       {outputError ? (
         outputError
-      ) : config.outputs.length > 0 ? (
+      ) : outputs.length > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
-          <OutputsBeeTable i18n={i18n} config={config} id={outputUid} />
+          <OutputsBeeTable
+            scrollableParentRef={scrollableParentRef}
+            i18n={i18n}
+            outputs={outputs}
+            rows={rows}
+            id={outputUid}
+          />
         </ErrorBoundary>
       ) : (
         <EmptyState>
@@ -119,15 +125,12 @@ const EMPTY_SYMBOL = "";
 export interface OutputsTableProps {
   id: string;
   i18n: BoxedExpressionEditorI18n;
-  config: {
-    rows: {
-      outputEntries: string[];
-    }[];
-    outputs?: UnitablesCell[];
-  };
+  rows: { outputEntries: string[] }[];
+  outputs?: UnitablesBeeTableColumn[];
+  scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
-export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
+export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: OutputsTableProps) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
@@ -143,9 +146,13 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
   }, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    return (config.rows?.[0]?.outputEntries ?? []).flatMap((outputEntry, outputIndex) => {
+    return (rows?.[0]?.outputEntries ?? []).flatMap((outputEntry, outputIndex) => {
+      if (outputEntry === null || outputEntry === undefined) {
+        return [];
+      }
+
       // Lists
-      const output = config.outputs?.[outputIndex];
+      const output = outputs?.[outputIndex];
       if (Array.isArray(outputEntry)) {
         console.info("TIAGO-A:" + outputEntry);
         return [
@@ -230,12 +237,14 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
         ];
       }
     });
-  }, [config.outputs, config.rows, uuid]);
+  }, [outputs, rows, uuid]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return config.rows.map((row, rowIndex) => {
+    return rows.map((row, rowIndex) => {
       const rowArray = row.outputEntries.reduce((acc, entry) => {
-        if (Array.isArray(entry)) {
+        if (entry == null || entry === undefined) {
+          return acc;
+        } else if (Array.isArray(entry)) {
           return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
         } else if (typeof entry === "object") {
           return [
@@ -253,7 +262,7 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
         return tableRow;
       }, {});
     });
-  }, [config.rows, beeTableColumns, uuid]);
+  }, [rows, beeTableColumns, uuid]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
@@ -265,6 +274,7 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
 
   return (
     <StandaloneBeeTable
+      scrollableParentRef={scrollableParentRef}
       getColumnKey={getColumnKey}
       getRowKey={getRowKey}
       tableId={id}

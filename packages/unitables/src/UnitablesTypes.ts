@@ -17,7 +17,7 @@
 import * as React from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
-export interface UnitablesCell {
+export interface UnitablesBeeTableColumn {
   name: string;
   dataType: DmnBuiltInDataType;
   width?: number | string;

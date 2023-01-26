@@ -125,10 +125,12 @@ export const App: React.FunctionComponent = () => {
     setExpressionString(JSON.stringify(expression));
   }, [expression]);
 
+  const emptyRef = React.useRef<HTMLElement>(null);
   return (
     // <div className="showcase">
     //   <div className="boxed-expression">
     <BoxedExpressionEditor
+      scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
       decisionNodeId="_00000000-0000-0000-0000-000000000000"
       expressionDefinition={expression}

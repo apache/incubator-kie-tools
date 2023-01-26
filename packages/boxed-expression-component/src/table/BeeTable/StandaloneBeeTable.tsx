@@ -17,7 +17,9 @@ import {
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
 import { BeeTable } from "./BeeTable";
 
-export function StandaloneBeeTable<R extends object>(props: BeeTableProps<R>) {
+export function StandaloneBeeTable<R extends object>(
+  props: BeeTableProps<R> & { scrollableParentRef: React.RefObject<HTMLElement> }
+) {
   const dataTypes = useMemo(() => {
     return [];
   }, []);
@@ -45,6 +47,7 @@ export function StandaloneBeeTable<R extends object>(props: BeeTableProps<R>) {
             ctx={BoxedExpressionEditorI18nContext}
           >
             <BoxedExpressionEditorContextProvider
+              scrollableParentRef={props.scrollableParentRef}
               dataTypes={dataTypes}
               decisionNodeId={""}
               expressionDefinition={expression}
