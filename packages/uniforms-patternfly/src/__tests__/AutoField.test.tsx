@@ -20,9 +20,9 @@ import { createContext } from "./_createContext";
 import { render } from "./_render";
 import { screen } from "@testing-library/react";
 
-test("<AutoField> - works", () => {
-  render(<AutoField data-testid="auto-field" name="x" />, createContext({ x: { type: String } }));
-  expect(screen.getByTestId("auto-field")).toHaveLength(1);
+test("<AutoField> - works - default field", () => {
+  render(<AutoField name="x" />, createContext({ x: { type: String } }));
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders RadioField", () => {
@@ -37,10 +37,10 @@ test("<AutoField> - renders RadioField", () => {
     })
   );
 
-  expect(screen.getByTestId("radio-field")).toHaveLength(1);
+  expect(screen.getByTestId("radio-field")).toBeInTheDocument();
 });
 
-test("<AutoField> - renders SelectField", () => {
+test("<AutoField> - renders SelectField - input", () => {
   render(
     <AutoField name="x" />,
     createContext({
@@ -49,37 +49,49 @@ test("<AutoField> - renders SelectField", () => {
     })
   );
 
-  expect(screen.getByTestId("select-input-field")).toHaveLength(1);
+  expect(screen.getByTestId("select-input-field")).toBeInTheDocument();
+});
+
+test("<AutoField> - renders SelectField - checkbox", () => {
+  render(
+    <AutoField name="x" checkboxes={true} />,
+    createContext({
+      x: { type: Array, allowedValues: ["x", "y"] },
+      "x.$": { type: String },
+    })
+  );
+
+  expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders DateField", () => {
   render(<AutoField name="x" />, createContext({ x: { type: Date } }));
-  expect(screen.getByTestId("date-field")).toHaveLength(1);
+  expect(screen.getByTestId("date-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders ListField", () => {
   render(<AutoField name="x" />, createContext({ x: { type: Array }, "x.$": { type: String } }));
-  expect(screen.getByTestId("list-field")).toHaveLength(1);
+  expect(screen.getByTestId("list-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders NumField", () => {
   render(<AutoField name="x" />, createContext({ x: { type: Number } }));
-  expect(screen.getByTestId("num-field")).toHaveLength(1);
+  expect(screen.getByTestId("num-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders NestField", () => {
   render(<AutoField name="x" />, createContext({ x: { type: Object } }));
-  expect(screen.getByTestId("nest-field")).toHaveLength(1);
+  expect(screen.getByTestId("nest-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders TextField", () => {
   render(<AutoField name="x" />, createContext({ x: { type: String } }));
-  expect(screen.getByTestId("text-field")).toHaveLength(1);
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders BoolField", () => {
   render(<AutoField name="x" />, createContext({ x: { type: Boolean } }));
-  expect(screen.getByTestId("bool-field")).toHaveLength(1);
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders Component (model)", () => {

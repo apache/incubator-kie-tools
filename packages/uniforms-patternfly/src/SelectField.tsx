@@ -42,9 +42,9 @@ type SelectFieldProps = CheckboxesProps | SelectInputProps;
 
 function SelectField(props: SelectFieldProps) {
   if (props.checkboxes) {
-    return SelectCheckboxField;
+    return <SelectCheckboxField data-testid={"select-checkbox-field"} {...props} />;
   }
-  return SelectInputsField;
+  return <SelectInputsField data-testid={"select-input-field"} {...props} />;
 }
 
 export default connectField<SelectFieldProps>(SelectField as any);

@@ -36,7 +36,7 @@ function SelectCheckboxField(props: CheckboxesProps) {
   const Group = useMemo(() => (props.fieldType === Array ? Checkbox : Radio), [props]);
 
   return (
-    <div data-testid={"select-checkbox-field"} {...filterDOMProps(props)}>
+    <div {...filterDOMProps(props)}>
       {props.label && <label>{props.label}</label>}
       {props.allowedValues!.map((item: string, index: number) => {
         return (

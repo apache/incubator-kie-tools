@@ -103,7 +103,6 @@ function SelectInputsField(props: SelectInputProps) {
   return wrapField(
     props as any,
     <Select
-      data-testid={"select-input-field"}
       isDisabled={props.disabled}
       id={props.id}
       variant={props.fieldType === Array ? SelectVariant.typeaheadMulti : SelectVariant.single}

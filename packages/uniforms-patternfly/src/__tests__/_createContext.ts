@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Context, randomIds } from "uniforms";
-import createSchema from "./_createSchema";
+import { createSchema } from "./_createSchema";
 
 const randomId = randomIds();
 
