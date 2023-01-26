@@ -42,7 +42,11 @@ import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
-import { GitHubTokenQuickStart, OpenShiftIntegrationQuickStart } from "../../quickstarts-data";
+import {
+  ApplicationServicesIntegrationQuickStart,
+  GitHubTokenQuickStart,
+  OpenShiftIntegrationQuickStart,
+} from "../../quickstarts-data";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 
@@ -60,7 +64,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const [allQuickStartStates, setAllQuickStartStates] = useState({});
 
   const drawerProps: QuickStartContainerProps = {
-    quickStarts: [GitHubTokenQuickStart, OpenShiftIntegrationQuickStart],
+    quickStarts: [GitHubTokenQuickStart, OpenShiftIntegrationQuickStart, ApplicationServicesIntegrationQuickStart],
     activeQuickStartID,
     allQuickStartStates,
     setActiveQuickStartID,

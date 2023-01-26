@@ -45,7 +45,7 @@ export function SettingsPageRoutes(props: {} & SettingsPageProps) {
         <OpenShiftSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.service_account.path({})}>
-        <ServiceAccountSettings />
+        <ServiceAccountSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.service_registry.path({})}>
         <ServiceRegistrySettings />

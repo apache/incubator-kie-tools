@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+import { ApplicationServicesIntegrationQuickStart } from "./ApplicationServicesIntegrationQuickStart";
 import { GitHubTokenQuickStart } from "./GitHubTokenQuickStart";
 import { OpenShiftIntegrationQuickStart } from "./OpenShiftIntegrationQuickStart";
 
 export const QuickStartIds: { [key: string]: string } = {
   GitHubTokenQuickStart: GitHubTokenQuickStart.metadata.name,
   OpenShiftIntegrationQuickStart: OpenShiftIntegrationQuickStart.metadata.name,
+  ApplicationServicesIntegrationQuickStart: ApplicationServicesIntegrationQuickStart.metadata.name,
 };
 
-export { GitHubTokenQuickStart, OpenShiftIntegrationQuickStart };
+export { GitHubTokenQuickStart, OpenShiftIntegrationQuickStart, ApplicationServicesIntegrationQuickStart };

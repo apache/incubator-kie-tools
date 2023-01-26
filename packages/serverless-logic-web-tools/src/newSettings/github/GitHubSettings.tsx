@@ -226,9 +226,7 @@ export function GitHubSettings(props: SettingsPageProps) {
               isInline={true}
               key="quickstart"
               variant="link"
-              onClick={() => {
-                qsContext.setActiveQuickStartID?.(QuickStartIds.GitHubTokenQuickStart);
-              }}
+              onClick={() => qsContext.setActiveQuickStartID?.(QuickStartIds.GitHubTokenQuickStart)}
             >
               Need help getting started? Follow our quickstart guide.
             </Button>
