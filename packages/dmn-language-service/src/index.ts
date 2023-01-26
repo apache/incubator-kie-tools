@@ -21,7 +21,6 @@ const DMN_IMPORT = "dmn:import";
 const DMN_INPUT_DATA = "dmn:inputData";
 const XML_MIME = "text/xml";
 const LOCATION_URI_ATTRIBUTE = "locationURI";
-const ID_ATTRIBUTE = "id";
 
 export class DmnLanguageService {
   private readonly parser = new DOMParser();
