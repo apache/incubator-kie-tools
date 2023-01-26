@@ -120,6 +120,7 @@ function TextField(props: TextFieldProps) {
     props.type === "date" || props.field?.format === "date" ? (
       <>
         <DatePicker
+          data-testid={"text-field"}
           name={props.name}
           isDisabled={props.disabled}
           onChange={onDateChange}
@@ -161,6 +162,7 @@ function TextField(props: TextFieldProps) {
       </>
     ) : (
       <TextInput
+        data-testid={"text-field"}
         name={props.name}
         isDisabled={props.disabled}
         validated={props.error ? "error" : "default"}

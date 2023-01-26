@@ -41,7 +41,7 @@ function LongTextField({
   ...props
 }: LongTextFieldProps) {
   return (
-    <div {...filterDOMProps(props)}>
+    <div data-testid={"long-text-field"} {...filterDOMProps(props)}>
       {label && <label htmlFor={id}>{label}</label>}
       <TextArea
         id={id}

@@ -119,7 +119,14 @@ function DateField(props: DateFieldProps) {
 
   return wrapField(
     props as any,
-    <Flex style={{ margin: 0 }} direction={{ default: "column" }} id={props.id} name={props.name} ref={props.inputRef}>
+    <Flex
+      data-testid={"date-field"}
+      style={{ margin: 0 }}
+      direction={{ default: "column" }}
+      id={props.id}
+      name={props.name}
+      ref={props.inputRef}
+    >
       <FlexItem style={{ margin: 0 }}>
         <InputGroup style={{ background: "transparent" }}>
           <DatePicker

@@ -15,20 +15,23 @@
  */
 
 module.exports = {
-  collectCoverageFrom: ["src/*.{ts,tsx}"],
-  moduleNameMapper: {
-    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-    "^uniforms$": "<rootDir>/node_modules/uniforms/src",
-    "^uniforms/es5$": "<rootDir>/node_modules/uniforms/src",
-    "^uniforms-bridge-simple-schema-2$": "<rootDir>/node_modules/uniforms-bridge-simple-schema-2/src",
-    "^uniforms-patternfly$": "<rootDir>/src",
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.esm.json",
+    },
   },
-  setupFiles: ["<rootDir>/setupEnzyme.js"],
-  testMatch: ["**/__tests__/**/!(_)*.{ts,tsx}", "!**/*.d.ts", "!**/helpers/*.ts"],
-  moduleDirectories: ["node_modules", "<rootDir>/src"],
-  preset: "ts-jest",
-  transformIgnorePatterns: ["node_modules/(?!uniforms)"],
+  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
+  moduleDirectories: ["node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
-    "^.+\\.(js|ts|tsx)$": "./transform.js",
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
+    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.template?$": "jest-raw-loader",
+    "^.+\\.txt?$": "jest-raw-loader",
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
   },
 };

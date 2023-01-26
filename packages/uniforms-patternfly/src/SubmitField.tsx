@@ -25,6 +25,7 @@ function SubmitField({ disabled, inputRef, value, ...props }: SubmitFieldProps) 
 
   return (
     <Button
+      data-testid={"submit-field"}
       isDisabled={disabled === undefined ? !!(error || state.disabled) : disabled}
       type="submit"
       ref={inputRef}

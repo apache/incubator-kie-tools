@@ -34,7 +34,7 @@ function NestField({
   ...props
 }: NestFieldProps) {
   return (
-    <Card {...filterDOMProps(props)}>
+    <Card data-testid={"nest-field"} {...filterDOMProps(props)}>
       <CardBody className="pf-c-form">
         {label && (
           <label>

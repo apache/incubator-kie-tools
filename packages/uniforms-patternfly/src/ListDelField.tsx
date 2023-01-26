@@ -32,6 +32,7 @@ function ListDelField({ name, disabled, ...props }: ListDelFieldProps) {
 
   return (
     <Button
+      data-testid={"list-del-field"}
       disabled={!limitNotReached || disabled}
       variant="plain"
       style={{ paddingLeft: "0", paddingRight: "0" }}

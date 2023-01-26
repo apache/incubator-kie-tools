@@ -41,6 +41,7 @@ function ListAddField({ disabled = false, name, value, ...props }: ListAddFieldP
 
   return (
     <Button
+      data-testid={"list-add-field"}
       variant="plain"
       style={{ paddingLeft: "0", paddingRight: "0" }}
       disabled={!limitNotReached}

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { Context, randomIds, BaseForm, BaseFormProps, BaseFormState } from "uniforms";
-
-import createSchema from "./_createSchema";
 import * as React from "react";
+import { Context, randomIds } from "uniforms";
+import createSchema from "./_createSchema";
 
 const randomId = randomIds();
 
-export default function createContext(schema?: {}, context?: Partial<Context<any>>): { context: Context<any> } {
+export function createContext(schema?: {}, context?: Partial<Context<any>>): { context: Context<any> } {
   return {
     context: {
       changed: false,

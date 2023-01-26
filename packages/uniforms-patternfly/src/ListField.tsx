@@ -59,7 +59,7 @@ function ListField({
   ...props
 }: ListFieldProps) {
   return (
-    <div {...filterDOMProps(props)}>
+    <div data-testid={"list-field"} {...filterDOMProps(props)}>
       <Split hasGutter>
         <SplitItem>
           {label && (

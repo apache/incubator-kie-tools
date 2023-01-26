@@ -35,7 +35,7 @@ function RadioField(props: RadioFieldProps) {
   filterDOMProps.register("checkboxes", "decimal");
   return wrapField(
     props,
-    <div {...filterDOMProps(props)}>
+    <div data-testid={"radio-field"} {...filterDOMProps(props)}>
       {props.allowedValues?.map((item) => (
         <React.Fragment key={item}>
           <Radio

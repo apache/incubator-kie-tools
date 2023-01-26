@@ -28,6 +28,7 @@ export type ListItemFieldProps = {
 function ListItemField({ children = <AutoField label={null} name={""} /> }: ListItemFieldProps) {
   return (
     <div
+      data-testid={"list-item-field"}
       style={{
         marginBottom: "1rem",
         display: "flex",

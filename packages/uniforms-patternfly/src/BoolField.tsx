@@ -39,6 +39,7 @@ function BoolField({ appearance, disabled, id, inputRef, label, name, onChange, 
   return wrapField(
     { id, ...props },
     <Component
+      data-testid={"bool-field"}
       isChecked={value ?? false}
       isDisabled={disabled}
       id={id}
