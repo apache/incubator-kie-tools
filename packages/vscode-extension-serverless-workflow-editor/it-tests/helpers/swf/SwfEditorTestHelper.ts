@@ -25,7 +25,29 @@ import { By, WebView } from "vscode-extension-tester";
 export default class SwfEditorTestHelper {
   constructor(private readonly webview: WebView) {}
 
-  public async getAllStateNodes(): Promise<WebElement[]> {
+  public async getAllNodeIds(): Promise<string[]> {
+    await this.switchToEditorFrame();
+    const driver = this.webview.getDriver();
+    const nodeIds = (await driver.executeScript("return window.frames.canvas.getNodeIds()")) as string[];
+    await this.switchBack();
+    return Promise.resolve(nodeIds);
+  }
+
+  public async getWorkbenchPanelViewElement(): Promise<WebElement> {
+    await this.switchToEditorFrame();
+    const result = await this.webview.findWebElement(By.xpath(".//div[@class='qe-static-workbench-panel-view']"));
+    await this.switchBack();
+    return Promise.resolve(result);
+  }
+
+  public async getCanvasPanelElement(): Promise<WebElement> {
+    await this.switchToEditorFrame();
+    const result = await this.webview.findWebElement(By.xpath(".//div[@class='canvas-panel']"));
+    await this.switchBack();
+    return Promise.resolve(result);
+  }
+
+  public async getAllNodesInMermaidDiagram(): Promise<WebElement[]> {
     await this.switchToEditorFrame();
     const result = await this.webview.findWebElements(
       By.xpath(".//*[name()='svg']//*[name()='g' and (@class='node statediagram-state' or @class='node default')]")
