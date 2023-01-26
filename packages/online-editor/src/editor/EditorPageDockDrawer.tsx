@@ -129,7 +129,8 @@ export const EditorPageDockDrawer = React.forwardRef<
   const notificationsPanelIsDisabled = useMemo(() => {
     return (
       (props.workspaceFile.extension.toLowerCase() === "dmn" ||
-        props.workspaceFile.extension.toLowerCase() === "bpmn") &&
+        props.workspaceFile.extension.toLowerCase() === "bpmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn2") &&
       extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     );
   }, [extendedServices.status, props.workspaceFile.extension]);
@@ -137,7 +138,8 @@ export const EditorPageDockDrawer = React.forwardRef<
   const notificationsPanelDisabledReason = useMemo(() => {
     if (
       (props.workspaceFile.extension.toLowerCase() === "dmn" ||
-        props.workspaceFile.extension.toLowerCase() === "bpmn") &&
+        props.workspaceFile.extension.toLowerCase() === "bpmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn2") &&
       extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     ) {
       return "In order to have access to Problems tab you need to use the KIE Sandbox Extended Services";

@@ -29,7 +29,10 @@ export function useFileValidation(
     if (!workspaceFile) {
       return;
     }
-    if (workspaceFile.extension.toLocaleLowerCase() !== "bpmn") {
+    if (
+      workspaceFile.extension.toLocaleLowerCase() !== "bpmn" &&
+      workspaceFile.extension.toLocaleLowerCase() !== "bpmn2"
+    ) {
       return;
     }
 
