@@ -288,6 +288,7 @@ export function EditorPage(props: Props) {
     if (
       workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
       workspaceFilePromise.data?.workspaceFile.extension === "bpmn" ||
+      workspaceFilePromise.data?.workspaceFile.extension === "bpmn2" ||
       !workspaceFilePromise.data ||
       !editor?.isReady
     ) {
