@@ -17,22 +17,29 @@ set -e
 script_dir_path=`dirname "${BASH_SOURCE[0]}"`
 source ${script_dir_path}/env.sh
 
+imageTag='quay.io/kiegroup/kogito-serverless-operator'
 old_version=$(getOperatorVersion)
 new_version=$1
 
-if [ -z "$new_version" ]; then
+if [ -z "${new_version}" ]; then
   echo "Please inform the new version. Use X.X.X"
   exit 1
 fi
 
-sed -i "s/$old_version/$new_version/g" config/manager/kustomization.yaml Makefile
+snapshot=$(if [[ "${new_version}" == *snapshot ]]; then echo 'true'; else echo 'false'; fi)
+
+echo "Set new version to ${new_version} (set nightly image tag ? ${snapshot})"
+
+sed -i "s|VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
+sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
+
+if [ "${snapshot}" = 'true' ]; then
+  imageTag="${imageTag}-nightly"
+fi
+sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}|g" Makefile
+sed -i "s|newName:.*|newName: ${imageTag}|g" config/manager/kustomization.yaml
 
 make vet
-
-# replace in csv file
-# sed -i "s|replaces: kogito-operator.*|replaces: kogito-operator.v$(getLatestOlmReleaseVersion)|g" "$(getCsvFile)"
-sed -i "s/$old_version/$new_version/g" "$(getCsvFile)"
-
 make bundle
 
-echo "Version bumped from $old_version to $new_version"
+echo "Version bumped to ${new_version}"

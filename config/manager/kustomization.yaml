@@ -19,7 +19,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: controller
-  newName: quay.io/kiegroup/kogito-serverless-operator
+  newName: quay.io/kiegroup/kogito-serverless-operator-nightly
   newTag: 2.0.0-snapshot
 # Patching the manager deployment file to add an env var with the operator namespace in
 patchesJson6902:

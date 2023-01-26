@@ -159,15 +159,24 @@ pipeline {
                 script {
                     helper.loginRegistry()
 
+                    // If not release, push built image
+                    // So the user using the `operator.yaml on branch can use an existing image`
+                    if (!helper.isRelease()) {
+                        container.pushImage(getBuiltImage())
+                    }
+
+                    // Tag with given parameter tag
                     container.tagImage(getBuiltImage(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
                     container.pushImage(helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
 
+                    // Tag with `latest` tag if asked for as parameter
                     if (helper.isDeployLatestTag()) {
                         String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, 'latest')
                         container.tagImage(getBuiltImage(), finalFullImage)
                         container.pushImage(finalFullImage)
                     }
 
+                    // Tag with reduced tag, aka X.Y, if it can be guessed from given tag parameter
                     String reducedTag = helper.getReducedTag()
                     if (reducedTag) {
                         String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, reducedTag)

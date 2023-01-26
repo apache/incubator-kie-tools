@@ -29,7 +29,7 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
 # kiegroup.org/kogito-serverless-operator-bundle:$VERSION and kiegroup.org/kogito-serverless-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= quay.io/kiegroup/kogito-serverless-operator
+IMAGE_TAG_BASE ?= quay.io/kiegroup/kogito-serverless-operator-nightly
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -290,8 +290,9 @@ clean:
 
 .PHONY: bump-version
 new_version = ""
+snapshot = ""
 bump-version:
-	./hack/bump-version.sh $(new_version)
+	./hack/bump-version.sh $(new_version) $(snapshot)
 
 install-operator-sdk:
 	./hack/ci/install-operator-sdk.sh
