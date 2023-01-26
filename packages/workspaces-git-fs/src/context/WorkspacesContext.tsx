@@ -214,7 +214,7 @@ export interface WorkspacesContextType {
 
   getWorkspace(args: { workspaceId: string }): Promise<WorkspaceDescriptor>;
 
-  initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
+  initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch?: string }): Promise<void>;
 
   initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
 
