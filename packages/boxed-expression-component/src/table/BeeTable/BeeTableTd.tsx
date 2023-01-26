@@ -21,13 +21,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
 import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContextProvider";
-import {
-  BeeTableCellCoordinates,
-  BeeTableCoordinatesContextProvider,
-  useBeeTableSelectableCellRef,
-} from "../../selection/BeeTableSelectionContext";
+import { BeeTableCellCoordinates, BeeTableCoordinatesContextProvider } from "../../selection/BeeTableSelectionContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { generateUuid } from "../../api";
 
 export interface BeeTableTdProps<R extends object> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -96,8 +93,6 @@ export function BeeTableTd<R extends object>({
     }
     return undefined;
   }, [column.isRowIndexColumn, rowIndexLabel]);
-
-  useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, getValue);
 
   useEffect(() => {
     function onEnter(e: MouseEvent) {
@@ -168,7 +163,19 @@ export function BeeTableTd<R extends object>({
     [columnIndex, rowIndex]
   );
 
-  const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(tdRef, rowIndex, columnIndex);
+  const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(
+    tdRef,
+    rowIndex,
+    columnIndex,
+    undefined,
+    getValue
+  );
+
+  const tdContent = useMemo(() => {
+    return shouldUseCellDelegate && column.cellDelegate
+      ? column.cellDelegate?.(`cell-delegate-${rowIndex}-${generateUuid()}`)
+      : cell.render("Cell");
+  }, [cell, column, rowIndex, shouldUseCellDelegate]);
 
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
@@ -193,9 +200,7 @@ export function BeeTableTd<R extends object>({
                 outline: "none",
               }}
             >
-              {shouldUseCellDelegate && column.cellDelegate
-                ? column.cellDelegate?.(`cell-delegate-${rowIndex}`)
-                : cell.render("Cell")}
+              {tdContent}
             </div>
             {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
               <Resizer

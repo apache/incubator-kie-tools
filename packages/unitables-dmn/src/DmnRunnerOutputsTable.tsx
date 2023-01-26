@@ -20,9 +20,9 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import nextId from "react-id-generator";
-import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
+import { useDmnRunnerOutputs as useDmnRunnerOutputs } from "./DmnRunnerOutputs";
 import { DecisionResult } from "./DmnTypes";
 import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
@@ -32,6 +32,7 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperationConfig,
   DmnBuiltInDataType,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable/StandaloneBeeTable";
@@ -39,19 +40,20 @@ import { UnitablesCell } from "@kie-tools/unitables/dist/UnitablesTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
+import "./DmnRunnerOutputsTable.css";
 
 interface Props {
   i18n: DmnUnitablesI18n;
-  results?: Array<DecisionResult[] | undefined>;
+  results: Array<DecisionResult[] | undefined> | undefined;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
 }
 
-export function DmnRunnerOutputsTable({ i18n, results, jsonSchemaBridge }: Props) {
+export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results }: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [outputError, setOutputError] = useState<boolean>(false);
 
-  const { outputs } = useDmnBoxedOutputs(jsonSchemaBridge, results);
+  const { outputs } = useDmnRunnerOutputs(jsonSchemaBridge, results);
 
   useEffect(() => {
     outputErrorBoundaryRef.current?.reset();
@@ -68,19 +70,13 @@ export function DmnRunnerOutputsTable({ i18n, results, jsonSchemaBridge }: Props
     };
   }, [outputs, results]);
 
-  // FIXME: Tiago -> Weird error happening without this. Column headers grow in size inexplicably.
-  const key = useMemo(() => {
-    console.info(JSON.stringify(config));
-    return Date.now() + config.outputs.length;
-  }, [config]);
-
   return (
     <>
       {outputError ? (
         outputError
       ) : config.outputs.length > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
-          <OutputsBeeTable i18n={i18n} config={config} id={outputUid} key={key} />
+          <OutputsBeeTable i18n={i18n} config={config} id={outputUid} />
         </ErrorBoundary>
       ) : (
         <EmptyState>
@@ -113,7 +109,7 @@ function OutputError() {
   );
 }
 
-export const CELL_MINIMUM_WIDTH = 150;
+export const DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH = 150;
 
 type ROWTYPE = any; // FIXME: Tiago
 
@@ -142,6 +138,10 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
     [i18n]
   );
 
+  const uuid = useMemo(() => {
+    return generateUuid();
+  }, []);
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return (config.rows?.[0]?.outputEntries ?? []).flatMap((outputEntry, outputIndex) => {
       // Lists
@@ -150,18 +150,22 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
         console.info("TIAGO-A:" + outputEntry);
         return [
           {
+            originalId: uuid + `${output?.name}}`,
             label: `${output?.name}`,
             accessor: `output-array-parent-${output?.name}` as any,
             dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
+            groupType: "dmn-runner-output",
             width: undefined,
             columns: outputEntry.map((entry, entryIndex) => ({
+              originalId: uuid + `${entryIndex}`,
               label: `[${entryIndex}]`,
               accessor: `output-array-${entryIndex}` as any,
               dataType: undefined as any,
+              groupType: "dmn-runner-output",
               isRowIndexColumn: false,
-              width: CELL_MINIMUM_WIDTH,
-              minWidth: CELL_MINIMUM_WIDTH,
+              width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+              minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             })),
           },
         ];
@@ -171,23 +175,27 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
         console.info("TIAGO-B:" + outputEntry);
         return [
           {
+            originalId: uuid + `${output?.name}`,
             label: output?.name ?? "",
             accessor: `output-object-parent-${output?.name}` as any,
             dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
+            groupType: "dmn-runner-output",
             width: undefined,
-            minWidth: CELL_MINIMUM_WIDTH,
+            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: Object.keys(outputEntry).map((entryKey) => {
               const filteredOutputs = output?.insideProperties?.find((property) =>
                 Object.values(property).find((value) => value === entryKey)
               );
               return {
+                originalId: uuid + `${entryKey}`,
                 label: entryKey,
                 accessor: `output-object-${entryKey}` as any,
                 dataType: filteredOutputs?.dataType ?? DmnBuiltInDataType.Undefined,
                 isRowIndexColumn: false,
-                width: CELL_MINIMUM_WIDTH,
-                minWidth: CELL_MINIMUM_WIDTH,
+                groupType: "dmn-runner-output",
+                width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
               };
             }),
           },
@@ -198,30 +206,34 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
         console.info("TIAGO-C:" + outputEntry);
         return [
           {
+            originalId: uuid + `-parent-${output?.name}`,
             label: "",
             accessor: `output-parent-${output?.name}` as any,
             dataType: undefined as any,
             isRowIndexColumn: false,
+            groupType: "dmn-runner-output",
             width: undefined,
-            minWidth: CELL_MINIMUM_WIDTH,
+            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
+                originalId: uuid + `${output?.name}`,
                 label: output?.name ?? "",
                 accessor: `output-${output?.name}` as any,
                 dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
                 isRowIndexColumn: false,
-                width: CELL_MINIMUM_WIDTH,
-                minWidth: CELL_MINIMUM_WIDTH,
+                groupType: "dmn-runner-output",
+                width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
               },
             ],
           },
         ];
       }
     });
-  }, [config]);
+  }, [config.outputs, config.rows, uuid]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return config.rows.map((row) => {
+    return config.rows.map((row, rowIndex) => {
       const rowArray = row.outputEntries.reduce((acc, entry) => {
         if (Array.isArray(entry)) {
           return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
@@ -237,13 +249,24 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
 
       return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: any, column, columnIndex) => {
         tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;
+        tableRow.id = uuid + "-" + rowIndex;
         return tableRow;
       }, {});
     });
-  }, [config, beeTableColumns]);
+  }, [config.rows, beeTableColumns, uuid]);
+
+  const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
+    return column.originalId ?? column.id;
+  }, []);
+
+  const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return row.original.id;
+  }, []);
 
   return (
     <StandaloneBeeTable
+      getColumnKey={getColumnKey}
+      getRowKey={getRowKey}
       tableId={id}
       isEditableHeader={false}
       headerLevelCount={1}
@@ -251,9 +274,10 @@ export function OutputsBeeTable({ id, i18n, config }: OutputsTableProps) {
       operationConfig={beeTableOperationConfig}
       columns={beeTableColumns}
       rows={beeTableRows}
+      isReadOnly={true}
       enableKeyboardNavigation={true}
       shouldRenderRowIndexColumn={false}
-      shouldShowRowsInlineControls={true}
+      shouldShowRowsInlineControls={false}
       shouldShowColumnsInlineControls={false}
       resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS}
     />

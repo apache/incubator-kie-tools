@@ -640,6 +640,10 @@ section.kie-tools--settings-tab {
   overflow: scroll !important;
 }
 
+.kie-tools--dmn-runner-table--drawer .pf-c-drawer__content::-webkit-scrollbar {
+  display: none;
+}
+
 .kie-tools--file-switcher-no-padding-menu-item {
   padding: 0;
 }

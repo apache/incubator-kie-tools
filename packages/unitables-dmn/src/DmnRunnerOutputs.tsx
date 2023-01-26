@@ -19,7 +19,7 @@ import { useCallback, useMemo } from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { DecisionResult, DmnSchemaProperties } from "./DmnTypes";
-import { CELL_MINIMUM_WIDTH } from "@kie-tools/unitables/dist/bee";
+import { DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } from "./DmnRunnerOutputsTable";
 
 interface OutputField {
   dataType: DmnBuiltInDataType;
@@ -45,7 +45,7 @@ export function isOutputWithInsideProperties(
   return (toBeDetermined as OutputWithInsideProperties).insideProperties !== undefined;
 }
 
-export function useDmnBoxedOutputs(
+export function useDmnRunnerOutputs(
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined
 ) {
@@ -69,7 +69,7 @@ export function useDmnBoxedOutputs(
         if (property["x-dmn-type"]) {
           const dataType = jsonSchemaBridge.getBoxedDataType(property).dataType;
           outputTypeMap.set(name, { type: property.type, dataType, name });
-          return { name, type: property.type, width: CELL_MINIMUM_WIDTH, dataType };
+          return { name, type: property.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH, dataType };
         }
         const path: string[] = property.$ref.split("/").slice(1); // remove #
         const data = path.reduce(
@@ -83,7 +83,7 @@ export function useDmnBoxedOutputs(
         } else {
           outputTypeMap.set(name, { type: data.type, dataType, name });
         }
-        return { name, dataType: data.type, width: CELL_MINIMUM_WIDTH } as OutputTypesField;
+        return { name, dataType: data.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } as OutputTypesField;
       });
     },
     []
@@ -137,7 +137,7 @@ export function useDmnBoxedOutputs(
               acc.set(decisionName, {
                 name: decisionName,
                 dataType,
-                width: CELL_MINIMUM_WIDTH,
+                width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
               });
             }
           });

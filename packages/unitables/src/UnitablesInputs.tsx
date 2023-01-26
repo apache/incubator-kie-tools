@@ -21,7 +21,7 @@ import { diff } from "deep-object-diff";
 import { FORMS_ID, InputFields, isInputWithInsideProperties, UnitablesJsonSchemaBridge } from "./uniforms";
 import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
 import { UnitablesInputRows } from "./UnitablesTypes";
-import { CELL_MINIMUM_WIDTH } from "./bee";
+import { UNITABLES_COLUMN_MIN_WIDTH } from "./bee";
 
 export function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -112,8 +112,8 @@ export function useUnitablesInputs(
             } else if (inputColumn.width) {
               inputToUpdate.insideProperties.forEach((insideProperty) => {
                 const width = inputColumn.width ? inputColumn.width / inputToUpdate.insideProperties.length : 0;
-                if (width < CELL_MINIMUM_WIDTH) {
-                  insideProperty.width = CELL_MINIMUM_WIDTH;
+                if (width < UNITABLES_COLUMN_MIN_WIDTH) {
+                  insideProperty.width = UNITABLES_COLUMN_MIN_WIDTH;
                 } else {
                   insideProperty.width = width;
                 }
@@ -138,10 +138,10 @@ export function useUnitablesInputs(
 
   const onModelUpdate = useCallback(
     (model: object, index) => {
-      setInputRows?.((previousData) => {
-        const newData = [...previousData];
-        newData[index] = model;
-        return newData;
+      setInputRows?.((prev) => {
+        const n = [...prev];
+        n[index] = model;
+        return n;
       });
     },
     [setInputRows]
@@ -157,14 +157,16 @@ export function useUnitablesInputs(
       0
     );
     const inputEntries = Array.from(Array(inputEntriesLength));
+
     return Array.from(Array(rowCount)).map((e, rowIndex) => {
       return {
         inputEntries,
-        rowDelegate: ({ children }: PropsWithChildren<any>) => {
+        rowDelegate: ({ children }: PropsWithChildren<{}>) => {
           const unitablesRowRef = React.createRef<UnitablesRowApi>();
           rowsRef.set(rowIndex, unitablesRowRef);
           return (
             <UnitablesRow
+              key={rowIndex}
               ref={unitablesRowRef}
               formId={FORMS_ID}
               rowIndex={rowIndex}

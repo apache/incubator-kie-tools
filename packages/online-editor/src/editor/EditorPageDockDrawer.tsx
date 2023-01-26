@@ -60,7 +60,6 @@ export const EditorPageDockDrawer = React.forwardRef<
   const { i18n } = useOnlineI18n();
   const dmnRunnerState = useDmnRunnerState();
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
-  const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
   const extendedServices = useExtendedServices();
@@ -158,7 +157,7 @@ export const EditorPageDockDrawer = React.forwardRef<
     ) {
       setPanel(PanelId.NONE);
     }
-  }, [extendedServices.status, props.workspaceFile.relativePath]);
+  }, [extendedServices.status, panel, props.workspaceFile.relativePath]);
 
   return (
     <>
@@ -172,10 +171,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                 )}
                 {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && (
                   <DmnRunnerTable
-                    workspaceFile={props.workspaceFile}
                     setPanelOpen={setPanel}
-                    dmnRunnerResults={dmnRunnerResults}
-                    setDmnRunnerResults={setDmnRunnerResults}
                   />
                 )}
               </DrawerPanelContent>

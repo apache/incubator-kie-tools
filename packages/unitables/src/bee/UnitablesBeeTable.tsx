@@ -16,11 +16,12 @@
 
 import * as React from "react";
 import * as ReactTable from "react-table";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   BeeTableOperation,
   BeeTableHeaderVisibility,
   BeeTableOperationConfig,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable/StandaloneBeeTable";
@@ -30,9 +31,9 @@ import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 
-export const CELL_MINIMUM_WIDTH = 150;
+export const UNITABLES_COLUMN_MIN_WIDTH = 150;
 
-type BTWROW = any; // FIXME: Tiago
+type ROWTYPE = any; // FIXME: Tiago
 
 const EMPTY_SYMBOL = "";
 
@@ -62,50 +63,57 @@ export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
     [i18n]
   );
 
+  const uuid = useMemo(() => {
+    return generateUuid();
+  }, []);
+
   const editColumnLabel = useMemo(() => {
     const editColumnLabel: { [columnGroupType: string]: string } = {};
     return editColumnLabel;
   }, []);
 
-  const beeTableColumns = useMemo<ReactTable.Column<BTWROW>[]>(() => {
+  const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     // Inputs
     return config.inputs.map((inputRow) => {
       if (inputRow.insideProperties) {
         return {
+          originalId: uuid + `input-${inputRow.name}`,
           label: inputRow.name,
           accessor: `input-${inputRow.name}` as any,
           dataType: inputRow.dataType,
           isRowIndexColumn: false,
           width: undefined,
-          minWidth: CELL_MINIMUM_WIDTH,
+          minWidth: UNITABLES_COLUMN_MIN_WIDTH,
           columns: inputRow.insideProperties.map((insideProperty) => {
             return {
+              originalId: uuid + `input-${insideProperty.name}`,
               label: insideProperty.name,
               accessor: `input-${insideProperty.name}` as any,
               dataType: insideProperty.dataType,
               isRowIndexColumn: false,
               width: insideProperty.width,
-              minWidth: CELL_MINIMUM_WIDTH,
+              minWidth: UNITABLES_COLUMN_MIN_WIDTH,
               cellDelegate: insideProperty.cellDelegate,
             };
           }),
         };
       } else {
         return {
+          originalId: uuid + `input-${inputRow.name}`,
           label: inputRow.name,
           accessor: `input-${inputRow.name}` as any,
           dataType: inputRow.dataType,
           isRowIndexColumn: false,
           width: inputRow.width as number,
-          minWidth: CELL_MINIMUM_WIDTH,
+          minWidth: UNITABLES_COLUMN_MIN_WIDTH,
           cellDelegate: inputRow.cellDelegate,
         };
       }
     });
-  }, [config]);
+  }, [config.inputs, uuid]);
 
-  const beeTableRows = useMemo<BTWROW[]>(() => {
-    return config.rows.map((row) => {
+  const beeTableRows = useMemo<ROWTYPE[]>(() => {
+    return config.rows.map((row, rowIndex) => {
       const rowArray = row.inputEntries.reduce((acc, entry) => {
         if (Array.isArray(entry)) {
           return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
@@ -122,13 +130,24 @@ export function UnitablesBeeTable({ id, i18n, config }: UnitablesBeeTable) {
       return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: any, column, columnIndex) => {
         tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;
         tableRow.rowDelegate = row.rowDelegate;
+        tableRow.id = uuid + "-" + rowIndex;
         return tableRow;
       }, {});
     });
-  }, [config, beeTableColumns]);
+  }, [config.rows, beeTableColumns, uuid]);
+
+  const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
+    return column.originalId ?? column.id;
+  }, []);
+
+  const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return row.original.id;
+  }, []);
 
   return (
     <StandaloneBeeTable
+      getColumnKey={getColumnKey}
+      getRowKey={getRowKey}
       tableId={id}
       isEditableHeader={false}
       headerLevelCount={1}

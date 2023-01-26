@@ -164,16 +164,14 @@ export function DevDeploymentsDropdown() {
         return [
           deployments.data
             .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
-            .map((deployment, i) => {
-              return (
-                <DevDeploymentsDropdownItem
-                  key={deployment.creationTimestamp.getTime()}
-                  id={i}
-                  deployment={deployment}
-                  cloudAuthSession={authSession}
-                />
-              );
-            }),
+            .map((deployment, i) => (
+              <DevDeploymentsDropdownItem
+                key={deployment.creationTimestamp.getTime()}
+                id={i}
+                deployment={deployment}
+                cloudAuthSession={authSession}
+              />
+            )),
           <Divider key={"delete-all-separator"} inset={{ default: "insetMd" }} />,
           <DropdownItem
             key={"delete-all-deployments-dropdown-button"}

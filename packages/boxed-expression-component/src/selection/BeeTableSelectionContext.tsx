@@ -784,12 +784,14 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         });
       },
       registerSelectableCellRef: (rowIndex, columnIndex, ref) => {
+        console.info(`Registering: ${rowIndex},${columnIndex}`);
         refs.current?.set(rowIndex, refs.current?.get(rowIndex) ?? new Map());
         const prev = refs.current?.get(rowIndex)?.get(columnIndex) ?? new Set();
         refs.current?.get(rowIndex)?.set(columnIndex, new Set([...prev, ref]));
         return ref;
       },
       deregisterSelectableCellRef: (rowIndex, columnIndex, ref) => {
+        console.info(`Deregistering: ${rowIndex},${columnIndex}`);
         ref.setStatus?.(NEUTRAL_CELL_STATUS);
         refs.current?.get(rowIndex)?.get(columnIndex)?.delete(ref);
       },
@@ -972,9 +974,16 @@ function isSelectionExpanded(selection: BeeTableSelection) {
 export function useBeeTableSelectableCell(
   cellRef: React.RefObject<HTMLTableCellElement>,
   rowIndex: number,
-  columnIndex: number
+  columnIndex: number,
+  setValue?: BeeTableCellRef["setValue"],
+  getValue?: BeeTableCellRef["getValue"]
 ) {
-  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableSelectableCellRef(rowIndex, columnIndex);
+  const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableSelectableCellRef(
+    rowIndex,
+    columnIndex,
+    setValue,
+    getValue
+  );
 
   const cssClasses = useMemo(() => {
     return `

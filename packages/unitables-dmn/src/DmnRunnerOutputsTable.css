@@ -1,0 +1,4 @@
+.expression-container .standalone-bee-table table thead th.dmn-runner-output,
+.expression-container .standalone-bee-table table thead th.dmn-runner-output .add-column-button {
+  background-color: #bee1f4;
+}

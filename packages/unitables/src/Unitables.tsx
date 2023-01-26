@@ -77,6 +77,7 @@ export const Unitables = (props: Props) => {
     [inputRows, inputs]
   );
 
+  // Set input heights (begin)
   const searchRecursively = useCallback((child: any) => {
     if (!child) {
       return;
@@ -101,27 +102,19 @@ export const Unitables = (props: Props) => {
       searchRecursively(inputCell.childNodes[0]);
     });
   }, [config, searchRecursively]);
+  // Set input heights (end)
 
   return (
     <>
       {inputs && shouldRender && inputRows && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
           <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
-            <div style={{ display: "flex", flexDirection: "column", marginTop: "7px" }}>
-              <div style={{ width: "60px", height: "64px", visibility: "hidden" }}>{" # "}</div>
-              <div style={{ width: "60px", height: "64px", visibility: "hidden" }}>{" # "}</div>
+            <div style={{ display: "flex", flexDirection: "column", marginTop: "5px", paddingLeft: "5px" }}>
+              <OutsideRowMenu height={64} isFirstChild={true}>{`#`}</OutsideRowMenu>
+              <OutsideRowMenu height={65} borderBottomSizeBasis={2}>{`#`}</OutsideRowMenu>
               {Array.from(Array(props.rowCount)).map((e, rowIndex) => (
                 <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
-                  <div
-                    style={{
-                      width: "60px",
-                      height: "62px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      paddingTop: "8px",
-                    }}
-                  >
+                  <OutsideRowMenu height={61} isLastChild={rowIndex === props.rowCount - 1}>
                     <Button
                       className={"kie-tools--masthead-hoverable"}
                       variant={ButtonVariant.plain}
@@ -129,7 +122,7 @@ export const Unitables = (props: Props) => {
                     >
                       <ListIcon />
                     </Button>
-                  </div>
+                  </OutsideRowMenu>
                 </Tooltip>
               ))}
             </div>
@@ -155,6 +148,37 @@ function InputError() {
           <p>An error has happened while trying to show your inputs</p>
         </EmptyStateBody>
       </EmptyState>
+    </div>
+  );
+}
+
+function OutsideRowMenu({
+  children,
+  height,
+  isLastChild = false,
+  isFirstChild = false,
+  borderBottomSizeBasis = 1,
+}: React.PropsWithChildren<{
+  height: number;
+  isLastChild?: boolean;
+  isFirstChild?: boolean;
+  borderBottomSizeBasis?: number;
+}>) {
+  return (
+    <div
+      style={{
+        width: "60px",
+        height: `${height + (isFirstChild ? 3 : 0) + (isLastChild ? 2 : 0)}px`,
+        display: "flex",
+        fontSize: "14px",
+        alignItems: "center",
+        justifyContent: "center",
+        borderBottom: `${isLastChild ? 3 : borderBottomSizeBasis}px solid lightgray`,
+        borderTop: `${isFirstChild ? 3 : 0}px solid lightgray`,
+        borderLeft: "3px solid lightgray",
+      }}
+    >
+      {children}
     </div>
   );
 }

@@ -34,49 +34,57 @@ export interface UnitablesRowApi {
   reset: (defaultValues?: object) => void;
 }
 
-export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>((props, forwardRef) => {
-  const [model, setModel] = useState<object>(props.model);
-  const autoRowRef = useRef<HTMLFormElement>(null);
+export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>(
+  ({ children, formId, rowIndex, jsonSchemaBridge, model, onModelUpdate }, forwardRef) => {
+    const [_model, _setModel] = useState<object>(model);
+    const autoRowRef = useRef<HTMLFormElement>(null);
 
-  const onSubmit = useCallback((model: object) => {
-    setModel(model);
-    props.onModelUpdate(model);
-  }, []);
+    const onSubmit = useCallback(
+      (model: object) => {
+        _setModel(model);
+        onModelUpdate(model);
+      },
+      [onModelUpdate]
+    );
 
-  const onValidate = useCallback((model: object, error: object) => {
-    setModel(model);
-    props.onModelUpdate(model);
-  }, []);
+    const onValidate = useCallback(
+      (model: object, error: object) => {
+        _setModel(model);
+        onModelUpdate(model);
+      },
+      [onModelUpdate]
+    );
 
-  useImperativeHandle(forwardRef, () => ({
-    submit: () => autoRowRef.current?.submit(),
-    reset: (defaultValues?: object) => setModel({ ...defaultValues }),
-  }));
+    useImperativeHandle(forwardRef, () => ({
+      submit: () => autoRowRef.current?.submit(),
+      reset: (defaultValues?: object) => _setModel({ ...defaultValues }),
+    }));
 
-  return (
-    <>
-      <AutoRow
-        ref={autoRowRef}
-        schema={props.jsonSchemaBridge}
-        autosave={true}
-        autosaveDelay={200}
-        model={model}
-        onSubmit={(model: object) => onSubmit(model)}
-        onValidate={(model: object, error: object) => onValidate(model, error)}
-        placeholder={true}
-      >
-        <UniformsContext.Consumer>
-          {(ctx: any) => (
-            <>
-              {createPortal(
-                <form id={`unitables-row-${props.rowIndex}`} onSubmit={(data) => ctx?.onSubmit(data)} />,
-                document.getElementById(props.formId)!
-              )}
-              {props.children}
-            </>
-          )}
-        </UniformsContext.Consumer>
-      </AutoRow>
-    </>
-  );
-});
+    return (
+      <>
+        <AutoRow
+          ref={autoRowRef}
+          schema={jsonSchemaBridge}
+          autosave={true}
+          autosaveDelay={200}
+          model={_model}
+          onSubmit={(model: object) => onSubmit(model)}
+          onValidate={(model: object, error: object) => onValidate(model, error)}
+          placeholder={true}
+        >
+          <UniformsContext.Consumer>
+            {(uniformsContext) => (
+              <>
+                {createPortal(
+                  <form id={`unitables-row-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
+                  document.getElementById(formId)!
+                )}
+                {children}
+              </>
+            )}
+          </UniformsContext.Consumer>
+        </AutoRow>
+      </>
+    );
+  }
+);

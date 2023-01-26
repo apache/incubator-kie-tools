@@ -21,7 +21,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import * as React from "react";
 import { joinName } from "uniforms";
 import { AutoField } from "./AutoField";
-import { CELL_MINIMUM_WIDTH } from "../bee";
+import { UNITABLES_COLUMN_MIN_WIDTH } from "../bee";
 
 export const FORMS_ID = "unitables-forms";
 
@@ -99,29 +99,32 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
 
     switch (type) {
       case "<Undefined>":
-        return { dataType: DmnBuiltInDataType.Undefined, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.Undefined, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "Any":
-        return { dataType: DmnBuiltInDataType.Any, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.Any, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "boolean":
-        return { dataType: DmnBuiltInDataType.Boolean, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.Boolean, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "context":
-        return { dataType: DmnBuiltInDataType.Context, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.Context, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "date":
         return { dataType: DmnBuiltInDataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
       case "date and time":
         return { dataType: DmnBuiltInDataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
       case "days and time duration":
-        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "number":
-        return { dataType: DmnBuiltInDataType.Number, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.Number, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "string":
-        return { dataType: DmnBuiltInDataType.String, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.String, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "time":
-        return { dataType: DmnBuiltInDataType.Time, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.Time, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "years and months duration":
-        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: CELL_MINIMUM_WIDTH };
+        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: UNITABLES_COLUMN_MIN_WIDTH };
       default:
-        return { dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined, width: CELL_MINIMUM_WIDTH };
+        return {
+          dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
+          width: UNITABLES_COLUMN_MIN_WIDTH,
+        };
     }
   }
 
@@ -150,7 +153,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     return {
       ...this.getBoxedDataType(field),
       name: UnitablesJsonSchemaBridge.removeInputName(joinedName),
-      cellDelegate: (id: string) => AutoField({ key: joinedName, name: joinedName, form: id }),
+      cellDelegate: (id) => <AutoField key={joinedName} name={joinedName} form={id} />,
     } as InputField;
   }
 

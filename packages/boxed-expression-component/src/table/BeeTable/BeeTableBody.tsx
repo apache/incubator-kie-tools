@@ -73,8 +73,9 @@ export function BeeTableBody<R extends object>({
           style={{ display: "flex" }}
         >
           {row.cells.map((cell, cellIndex) => {
+            const columnKey = getColumnKey(reactTableInstance.allColumns[cellIndex]);
             return (
-              <React.Fragment key={getColumnKey(reactTableInstance.allColumns[cellIndex])}>
+              <React.Fragment key={columnKey}>
                 {((cell.column.isRowIndexColumn && shouldRenderRowIndexColumn) || !cell.column.isRowIndexColumn) && (
                   <BeeTableTd<R>
                     resizerStopBehavior={resizerStopBehavior}

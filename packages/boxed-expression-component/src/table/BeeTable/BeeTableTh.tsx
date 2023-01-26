@@ -124,7 +124,8 @@ export function BeeTableTh<R extends object>({
     [hoverInfo]
   );
 
-  useBeeTableSelectableCellRef(
+  const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(
+    thRef,
     rowIndex,
     columnIndex,
     undefined,
@@ -136,8 +137,6 @@ export function BeeTableTh<R extends object>({
       }
     }, [column.dataType, column.label])
   );
-
-  const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(thRef, rowIndex, columnIndex);
 
   const coordinates = useMemo<BeeTableCellCoordinates>(
     () => ({
