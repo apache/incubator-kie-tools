@@ -70,7 +70,7 @@ module.exports = composeEnv(
         description: "Extended Services URL.",
       },
       ONLINE_EDITOR__requireCustomCommitMessages: {
-        default: true,
+        default: false,
         description: "Require users to type a custom commit message when creating a new commit.",
       },
       DMN_DEV_DEPLOYMENT__baseImageTag: {
