@@ -21,6 +21,7 @@ export function useFileValidation(
     }
     if (
       workspaceFile.extension.toLocaleLowerCase() !== "bpmn" &&
+      workspaceFile.extension.toLocaleLowerCase() !== "bpmn2" &&
       workspaceFile.extension.toLocaleLowerCase() !== "dmn"
     ) {
       return;
@@ -44,7 +45,7 @@ export function useFileValidation(
           ],
         };
 
-        if (workspaceFile.extension.toLowerCase() === "bpmn") {
+        if (workspaceFile.extension.toLowerCase() === "bpmn" || workspaceFile.extension.toLowerCase() === "bpmn2") {
           extendedServices.client.validateBpmn(payload).then((validationResults) => {
             const notifications: Notification[] = validationResults.map((validationResult: any) => ({
               type: "PROBLEM",
