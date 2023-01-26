@@ -65,4 +65,24 @@ describe("DmnLanguageService", () => {
 
     expect(await service.getAllImportedModelsResources(workspaces, "", [""])).toEqual([]);
   });
+
+  it("getAllImportedModelsResources - get resources", async () => {
+    const pathRecursive = resolve(__dirname, "./fixtures/recursive.dmn");
+    const fileRecursive = readFileSync(pathRecursive, "utf8");
+
+    const pathNested = resolve(__dirname, "./fixtures/nested.dmn");
+    const fileNested = readFileSync(pathNested, "utf8");
+
+    const expected = {
+      path: pathNested,
+      content: fileNested,
+      type: ContentType.TEXT,
+    };
+
+    const workspaces: any = {
+      resourceContentGet: () => new Promise((res) => res(expected)),
+    };
+
+    expect(await service.getAllImportedModelsResources(workspaces, "random-id", [fileRecursive])).toEqual([expected]);
+  });
 });
