@@ -15,9 +15,8 @@
  */
 
 import {
-  SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
+  SwfCatalogSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
@@ -239,7 +238,7 @@ export class SwfServiceCatalogStore {
     url: string;
   }): SwfServiceCatalogService {
     const functions = extractFunctions(args.artifact.content, {
-      type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+      type: SwfCatalogSourceType.SERVICE_REGISTRY,
       registry: args.registry,
       serviceId: args.serviceId,
     });
@@ -253,7 +252,7 @@ export class SwfServiceCatalogStore {
         url: args.url,
         id: args.serviceId,
         registry: args.registry,
-        type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+        type: SwfCatalogSourceType.SERVICE_REGISTRY,
       },
     };
   }

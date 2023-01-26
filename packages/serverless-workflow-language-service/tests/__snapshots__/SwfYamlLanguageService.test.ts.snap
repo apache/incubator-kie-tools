@@ -854,7 +854,7 @@ Array [
                 "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
                 "source": Object {
                   "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
+                  "type": "LOCAL_FS",
                 },
                 "type": "rest",
               },
@@ -863,7 +863,7 @@ Array [
             "rawContent": "",
             "source": Object {
               "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
+              "type": "LOCAL_FS",
             },
             "type": "rest",
           },
@@ -943,7 +943,7 @@ Array [
                 "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
                 "source": Object {
                   "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
+                  "type": "LOCAL_FS",
                 },
                 "type": "rest",
               },
@@ -952,7 +952,7 @@ Array [
             "rawContent": "",
             "source": Object {
               "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
+              "type": "LOCAL_FS",
             },
             "type": "rest",
           },
@@ -1032,7 +1032,7 @@ Array [
                 "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
                 "source": Object {
                   "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
+                  "type": "LOCAL_FS",
                 },
                 "type": "rest",
               },
@@ -1041,7 +1041,7 @@ Array [
             "rawContent": "",
             "source": Object {
               "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
+              "type": "LOCAL_FS",
             },
             "type": "rest",
           },
@@ -1119,7 +1119,7 @@ Array [
                 "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
                 "source": Object {
                   "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
+                  "type": "LOCAL_FS",
                 },
                 "type": "rest",
               },
@@ -1128,7 +1128,7 @@ Array [
             "rawContent": "",
             "source": Object {
               "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
+              "type": "LOCAL_FS",
             },
             "type": "rest",
           },
@@ -1208,7 +1208,7 @@ Array [
                 "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
                 "source": Object {
                   "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
+                  "type": "LOCAL_FS",
                 },
                 "type": "rest",
               },
@@ -1217,7 +1217,7 @@ Array [
             "rawContent": "",
             "source": Object {
               "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
+              "type": "LOCAL_FS",
             },
             "type": "rest",
           },
@@ -1299,7 +1299,7 @@ Array [
                 "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
                 "source": Object {
                   "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
+                  "type": "LOCAL_FS",
                 },
                 "type": "rest",
               },
@@ -1308,7 +1308,7 @@ Array [
             "rawContent": "",
             "source": Object {
               "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
+              "type": "LOCAL_FS",
             },
             "type": "rest",
           },
@@ -1386,7 +1386,7 @@ Array [
                 "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
                 "source": Object {
                   "serviceFileAbsolutePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-                  "type": 1,
+                  "type": "LOCAL_FS",
                 },
                 "type": "rest",
               },
@@ -1395,7 +1395,7 @@ Array [
             "rawContent": "",
             "source": Object {
               "absoluteFilePath": "/Users/tiago/Desktop/testRelativeService1.yml",
-              "type": 1,
+              "type": "LOCAL_FS",
             },
             "type": "rest",
           },
