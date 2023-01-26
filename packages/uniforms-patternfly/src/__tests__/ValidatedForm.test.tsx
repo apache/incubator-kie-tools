@@ -15,14 +15,12 @@
  */
 
 import * as React from "react";
-import { BaseForm } from "../src";
+import { ValidatedForm } from "..";
+import { createSchema } from "./_createSchema";
+import { render } from "./_render";
+import { screen } from "@testing-library/react";
 
-import createSchema from "./_createSchema";
-import mount from "./_mount";
-
-test("<BaseForm> - works", () => {
-  const element = <BaseForm schema={createSchema()} />;
-  const wrapper = mount(element);
-
-  expect(wrapper.find(BaseForm)).toHaveLength(1);
+test("<ValidatedForm> - works", () => {
+  render(<ValidatedForm schema={createSchema()} />);
+  expect(screen.getByTestId("base-form")).toBeInTheDocument();
 });

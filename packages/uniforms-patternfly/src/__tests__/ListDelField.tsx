@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import { merge } from "lodash";
-import { ListDelField } from "../src";
+import { ListDelField } from "../";
 import { Button } from "@patternfly/react-core";
-
-import createContext from "./_createContext";
-import mount from "./_mount";
+import { screen } from "@testing-library/react";
+import { createContext } from "./_createContext";
+import { render } from "./_render";
 
 const onChange = jest.fn();
 const context = (schema?: {}) =>
@@ -35,31 +35,31 @@ beforeEach(() => {
 
 test("<ListDelField> - works", () => {
   const element = <ListDelField name="x.1" />;
-  const wrapper = mount(element, context());
+  render(element, context());
 
-  expect(wrapper.find(ListDelField)).toHaveLength(1);
+  expect(screen(ListDelField)).toHaveLength(1);
 });
 
 test("<ListDelField> - prevents onClick when disabled", () => {
   const element = <ListDelField name="x.1" disabled />;
-  const wrapper = mount(element, context());
+  render(element, context());
 
-  expect(wrapper.find(Button).simulate("click")).toBeTruthy();
+  expect(screen(Button).simulate("click")).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
 test("<ListDelField> - prevents onClick when limit reached", () => {
   const element = <ListDelField name="x.1" />;
-  const wrapper = mount(element, context({ x: { minCount: 3 } }));
+  render(element, context({ x: { minCount: 3 } }));
 
-  expect(wrapper.find(Button).simulate("click")).toBeTruthy();
+  expect(screen(Button).simulate("click")).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
 test("<ListDelField> - correctly reacts on click", () => {
   const element = <ListDelField name="x.1" />;
-  const wrapper = mount(element, context());
+  render(element, context());
 
-  expect(wrapper.find(Button).simulate("click")).toBeTruthy();
+  expect(screen(Button).simulate("click")).toBeTruthy();
   expect(onChange).toHaveBeenLastCalledWith("x", ["x", "z"]);
 });

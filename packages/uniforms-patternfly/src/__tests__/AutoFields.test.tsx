@@ -15,22 +15,19 @@
  */
 
 import * as React from "react";
-import { AutoFields } from "../src";
-
-import createContext from "./_createContext";
-import mount from "./_mount";
+import { AutoFields } from "..";
+import { createContext } from "./_createContext";
+import { render } from "./_render";
+import { screen } from "@testing-library/react";
 
 test("<AutoFields> - works", () => {
-  const element = <AutoFields />;
-  const wrapper = mount(element, createContext({ x: { type: String } }));
-
-  expect(wrapper.find("AutoFields")).toHaveLength(1);
+  render(<AutoFields />, createContext({ x: { type: String } }));
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
 });
 
 test("<AutoFields> - render all fields by default", () => {
-  const element = <AutoFields />;
-  const wrapper = mount(
-    element,
+  render(
+    <AutoFields />,
     createContext({
       x: { type: String },
       y: { type: String },
@@ -38,13 +35,12 @@ test("<AutoFields> - render all fields by default", () => {
     })
   );
 
-  expect(wrapper.find("input")).toHaveLength(3);
+  expect(screen.getAllByTestId("text-field")).toHaveLength(3);
 });
 
 test("<AutoFields> - renders only specified fields", () => {
-  const element = <AutoFields fields={["x", "y"]} />;
-  const wrapper = mount(
-    element,
+  render(
+    <AutoFields fields={["x", "y"]} />,
     createContext({
       x: { type: String },
       y: { type: String },
@@ -52,13 +48,13 @@ test("<AutoFields> - renders only specified fields", () => {
     })
   );
 
-  expect(wrapper.find("input").someWhere((e) => e.prop("name") === "z")).toBe(false);
+  expect(screen.getAllByTestId("text-field")).toHaveLength(2);
+  expect(screen.queryByLabelText("z")).toBeNull();
 });
 
 test("<AutoFields> - does not render ommited fields", () => {
-  const element = <AutoFields omitFields={["x"]} />;
-  const wrapper = mount(
-    element,
+  render(
+    <AutoFields omitFields={["x"]} />,
     createContext({
       x: { type: String },
       y: { type: String },
@@ -66,15 +62,15 @@ test("<AutoFields> - does not render ommited fields", () => {
     })
   );
 
-  expect(wrapper.find("input").someWhere((e) => e.prop("name") === "x")).toBe(false);
+  expect(screen.getAllByTestId("text-field")).toHaveLength(2);
+  expect(screen.queryByLabelText("x")).toBeNull();
 });
 
 test("<AutoFields> - works with custom component", () => {
   const Component = jest.fn(() => null);
 
-  const element = <AutoFields autoField={Component} />;
-  mount(
-    element,
+  render(
+    <AutoFields autoField={Component} />,
     createContext({
       x: { type: String },
       y: { type: String },
@@ -86,9 +82,8 @@ test("<AutoFields> - works with custom component", () => {
 });
 
 test("<AutoFields> - wraps fields in specified element", () => {
-  const element = <AutoFields element="section" />;
-  const wrapper = mount(
-    element,
+  render(
+    <AutoFields element="section" />,
     createContext({
       x: { type: String },
       y: { type: String },
@@ -96,5 +91,5 @@ test("<AutoFields> - wraps fields in specified element", () => {
     })
   );
 
-  expect(wrapper.find("section").find("input")).toHaveLength(3);
+  expect(screen.getAllByTestId("text-field")).toHaveLength(3);
 });

@@ -27,7 +27,7 @@ function Patternfly(parent: any): any {
     render() {
       return (
         <context.Provider value={this.getContext()}>
-          <Form {...this.getNativeFormProps()} />
+          <Form data-testid="base-form" {...this.getNativeFormProps()} />
         </context.Provider>
       );
     }

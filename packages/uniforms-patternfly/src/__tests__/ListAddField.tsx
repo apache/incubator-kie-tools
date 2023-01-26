@@ -17,10 +17,10 @@
 import * as React from "react";
 import merge from "lodash/merge";
 import { Button } from "@patternfly/react-core";
-import { ListAddField } from "../src";
-
-import createContext from "./_createContext";
-import mount from "./_mount";
+import { ListAddField } from "../";
+import { screen } from "@testing-library/react";
+import { createContext } from "./_createContext";
+import { render } from "./_render";
 
 const onChange = jest.fn();
 const context = (schema?: {}) =>
@@ -31,31 +31,31 @@ beforeEach(() => {
 });
 test("<ListAddField> - works", () => {
   const element = <ListAddField name="x.$" />;
-  const wrapper = mount(element, context());
+  render(element, context());
 
-  expect(wrapper.find(ListAddField)).toHaveLength(1);
+  expect(screen(ListAddField)).toHaveLength(1);
 });
 
 test("<ListAddField> - prevents onClick when disabled", () => {
   const element = <ListAddField name="x.1" disabled />;
-  const wrapper = mount(element, context());
+  render(element, context());
 
-  expect(wrapper.find(Button).simulate("click")).toBeTruthy();
+  expect(screen(Button).simulate("click")).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
 test("<ListAddField> - prevents onClick when limit reached", () => {
   const element = <ListAddField name="x.1" />;
-  const wrapper = mount(element, context({ x: { maxCount: 0 } }));
+  render(element, context({ x: { maxCount: 0 } }));
 
-  expect(wrapper.find(Button).simulate("click")).toBeTruthy();
+  expect(screen(Button).simulate("click")).toBeTruthy();
   expect(onChange).not.toHaveBeenCalled();
 });
 
 test("<ListAddField> - correctly reacts on click", () => {
   const element = <ListAddField name="x.1" value="y" />;
-  const wrapper = mount(element, context());
+  render(element, context());
 
-  expect(wrapper.find(Button).simulate("click")).toBeTruthy();
+  expect(screen(Button).simulate("click")).toBeTruthy();
   expect(onChange).toHaveBeenLastCalledWith("x", ["y"]);
 });

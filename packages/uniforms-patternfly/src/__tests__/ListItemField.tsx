@@ -15,23 +15,23 @@
  */
 
 import * as React from "react";
-import { AutoField, ListItemField } from "../src";
-
-import createContext from "./_createContext";
-import mount from "./_mount";
+import { AutoField, ListItemField } from "../";
+import { screen } from "@testing-library/react";
+import { createContext } from "./_createContext";
+import { render } from "./_render";
 
 test("<ListItemField> - works", () => {
   const element = <ListItemField name="x.1" />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find(ListItemField)).toHaveLength(1);
+  expect(screen(ListItemField)).toHaveLength(1);
 });
 
 test("<ListItemField> - renders AutoField", () => {
   const element = <ListItemField name="x.1" />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find(AutoField)).toHaveLength(1);
+  expect(screen(AutoField)).toHaveLength(1);
 });
 
 test("<ListItemField> - renders children if specified", () => {
@@ -49,8 +49,8 @@ test("<ListItemField> - renders children if specified", () => {
 
 test("<ListItemField> - renders ListDelField", () => {
   const element = <ListItemField name="x.1" />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find("ListDel")).toHaveLength(1);
-  expect(wrapper.find("ListDel").prop("name")).toBe("x.1");
+  expect(screen("ListDel")).toHaveLength(1);
+  expect(screen("ListDel").prop("name")).toBe("x.1");
 });

@@ -15,45 +15,45 @@
  */
 
 import * as React from "react";
-import { ListField } from "../src";
-
-import createContext from "./_createContext";
-import mount from "./_mount";
+import { ListField } from "../";
+import { screen } from "@testing-library/react";
+import { createContext } from "./_createContext";
+import { render } from "./_render";
 
 test("<ListField> - works", () => {
   const element = <ListField name="x" />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find(ListField)).toHaveLength(1);
+  expect(screen(ListField)).toHaveLength(1);
 });
 
 test("<ListField> - renders ListAddField", () => {
   const element = <ListField name="x" label="ListFieldLabel" />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find("ListAdd")).toHaveLength(1);
-  expect(wrapper.find("ListAdd").prop("name")).toBe("x.$");
+  expect(screen("ListAdd")).toHaveLength(1);
+  expect(screen("ListAdd").prop("name")).toBe("x.$");
 });
 
 test("<ListField> - renders correct label (specified)", () => {
   const element = <ListField name="x" label="ListFieldLabel" />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find("label").at(0).text()).toEqual(expect.stringContaining("ListFieldLabel"));
+  expect(screen("label").at(0).text()).toEqual(expect.stringContaining("ListFieldLabel"));
 });
 
 test("<ListField> - renders correct numer of items with initialCount (specified)", () => {
   const element = <ListField name="x" initialCount={3} />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find("input")).toHaveLength(3);
+  expect(screen("input")).toHaveLength(3);
 });
 
 test("<ListField> - passes itemProps to its children", () => {
   const element = <ListField name="x" initialCount={3} itemProps={{ "data-xyz": 1 }} />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find("ListItemField").first().prop("data-xyz")).toBe(1);
+  expect(screen("ListItemField").first().prop("data-xyz")).toBe(1);
 });
 
 test("<ListField> - renders children (specified)", () => {
@@ -77,16 +77,16 @@ test("<ListField> - renders children with correct name (children)", () => {
       {/* <Child name="$" /> */}
     </ListField>
   );
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find(Child).at(0).prop("name")).toBe("0");
-  expect(wrapper.find(Child).at(1).prop("name")).toBe("1");
+  expect(screen(Child).at(0).prop("name")).toBe("0");
+  expect(screen(Child).at(1).prop("name")).toBe("1");
 });
 
 test("<ListField> - renders children with correct name (value)", () => {
   const element = <ListField name="x" initialCount={2} />;
-  const wrapper = mount(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
+  render(element, createContext({ x: { type: Array }, "x.$": { type: String } }));
 
-  expect(wrapper.find("ListItemField").at(0).prop("name")).toBe("0");
-  expect(wrapper.find("ListItemField").at(1).prop("name")).toBe("1");
+  expect(screen("ListItemField").at(0).prop("name")).toBe("0");
+  expect(screen("ListItemField").at(1).prop("name")).toBe("1");
 });

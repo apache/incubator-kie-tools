@@ -15,14 +15,12 @@
  */
 
 import * as React from "react";
-import { ValidatedQuickForm } from "../src";
-
-import createSchema from "./_createSchema";
-import mount from "./_mount";
+import { ValidatedQuickForm } from "..";
+import { screen } from "@testing-library/react";
+import { createSchema } from "./_createSchema";
+import { render } from "./_render";
 
 test("<ValidatedQuickForm> - works", () => {
-  const element = <ValidatedQuickForm schema={createSchema()} />;
-  const wrapper = mount(element);
-
-  expect(wrapper.find(ValidatedQuickForm)).toHaveLength(1);
+  render(<ValidatedQuickForm schema={createSchema()} />);
+  expect(screen.getByTestId("base-form")).toBeInTheDocument();
 });

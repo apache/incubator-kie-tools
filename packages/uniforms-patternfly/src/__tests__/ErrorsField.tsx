@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
-import { ErrorsField } from "../src";
-
-import createContext from "./_createContext";
-import mount from "./_mount";
+import { ErrorsField } from "../";
+import { screen } from "@testing-library/react";
+import { createContext } from "./_createContext";
+import { render } from "./_render";
 
 const error = {
   error: "validation-error",
@@ -33,30 +33,24 @@ const error = {
 
 test("<ErrorsField> - works", () => {
   const element = <ErrorsField name="x" />;
-  const wrapper = mount(element, createContext({ x: { type: String } }));
+  render(element, createContext({ x: { type: String } }));
 
-  expect(wrapper.find(ErrorsField)).toHaveLength(1);
+  expect(screen(ErrorsField)).toHaveLength(1);
 });
 
 test("<ErrorsField> - renders list of correct error messages (context)", () => {
   const element = <ErrorsField name="x" />;
-  const wrapper = mount(
-    element,
-    createContext({ x: { type: String }, y: { type: String }, z: { type: String } }, { error })
-  );
+  render(element, createContext({ x: { type: String }, y: { type: String }, z: { type: String } }, { error }));
 
-  expect(wrapper.find("li")).toHaveLength(3);
-  expect(wrapper.find("li").at(0).text()).toBe("X is required");
-  expect(wrapper.find("li").at(1).text()).toBe("Y is required");
-  expect(wrapper.find("li").at(2).text()).toBe("Z is required");
+  expect(screen("li")).toHaveLength(3);
+  expect(screen("li").at(0).text()).toBe("X is required");
+  expect(screen("li").at(1).text()).toBe("Y is required");
+  expect(screen("li").at(2).text()).toBe("Z is required");
 });
 
 test("<ErrorsField> - renders children (specified)", () => {
   const element = <ErrorsField name="x" children="Error message list" />;
-  const wrapper = mount(
-    element,
-    createContext({ x: { type: String }, y: { type: String }, z: { type: String } }, { error })
-  );
+  render(element, createContext({ x: { type: String }, y: { type: String }, z: { type: String } }, { error }));
 
-  expect(wrapper.find(ErrorsField).text()).toEqual(expect.stringContaining("Error message list"));
+  expect(screen(ErrorsField).text()).toEqual(expect.stringContaining("Error message list"));
 });

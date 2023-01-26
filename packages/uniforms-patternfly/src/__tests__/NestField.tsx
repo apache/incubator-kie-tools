@@ -16,14 +16,14 @@
 
 import * as React from "react";
 import { Card } from "@patternfly/react-core";
-import { AutoField, NestField } from "../src";
-
-import createContext from "./_createContext";
-import mount from "./_mount";
+import { AutoField, NestField } from "../";
+import { screen } from "@testing-library/react";
+import { createContext } from "./_createContext";
+import { render } from "./_render";
 
 test("<NestField> - renders an <AutoField> for each field", () => {
   const element = <NestField name="x" />;
-  const wrapper = mount(
+  render(
     element,
     createContext({
       x: { type: Object },
@@ -32,7 +32,7 @@ test("<NestField> - renders an <AutoField> for each field", () => {
     })
   );
 
-  expect(wrapper.find(AutoField)).toHaveLength(2);
+  expect(screen(AutoField)).toHaveLength(2);
   // expect(
   //   wrapper
   //     .find(AutoField)
@@ -53,7 +53,7 @@ test("<NestField> - renders custom content if given", () => {
       <article data-test="content" />
     </NestField>
   );
-  const wrapper = mount(
+  render(
     element,
     createContext({
       x: { type: Object },
@@ -62,14 +62,14 @@ test("<NestField> - renders custom content if given", () => {
     })
   );
 
-  expect(wrapper.find(AutoField)).toHaveLength(0);
-  expect(wrapper.find("article").at(1)).toHaveLength(1);
-  expect(wrapper.find("article").at(1).prop("data-test")).toBe("content");
+  expect(screen(AutoField)).toHaveLength(0);
+  expect(screen("article").at(1)).toHaveLength(1);
+  expect(screen("article").at(1).prop("data-test")).toBe("content");
 });
 
 test("<NestField> - renders a label", () => {
   const element = <NestField name="x" label="y" />;
-  const wrapper = mount(
+  render(
     element,
     createContext({
       x: { type: Object },
@@ -78,13 +78,13 @@ test("<NestField> - renders a label", () => {
     })
   );
 
-  expect(wrapper.find("label")).toHaveLength(3);
-  expect(wrapper.find("label").at(0).text()).toBe("y");
+  expect(screen("label")).toHaveLength(3);
+  expect(screen("label").at(0).text()).toBe("y");
 });
 
 test("<NestField> - renders a wrapper with unknown props", () => {
   const element = <NestField name="x" data-x="x" data-y="y" data-z="z" />;
-  const wrapper = mount(
+  render(
     element,
     createContext({
       x: { type: Object },
@@ -93,7 +93,7 @@ test("<NestField> - renders a wrapper with unknown props", () => {
     })
   );
 
-  expect(wrapper.find(Card).at(0).prop("data-x")).toBe("x");
-  expect(wrapper.find(Card).at(0).prop("data-y")).toBe("y");
-  expect(wrapper.find(Card).at(0).prop("data-z")).toBe("z");
+  expect(screen(Card).at(0).prop("data-x")).toBe("x");
+  expect(screen(Card).at(0).prop("data-y")).toBe("y");
+  expect(screen(Card).at(0).prop("data-z")).toBe("z");
 });

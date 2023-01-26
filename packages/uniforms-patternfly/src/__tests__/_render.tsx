@@ -18,7 +18,7 @@ import * as React from "react";
 import { context } from "uniforms";
 import { render as testingLibraryRender } from "@testing-library/react";
 
-export function render(node: React.ReactElement, options: any) {
+export function render(node: React.ReactElement, options?: any) {
   if (options === undefined) {
     return testingLibraryRender(node);
   }
