@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.definition.custom;
+package org.kie.workbench.common.stunner.sw.definition.custom.json;
 
 import java.lang.reflect.Type;
 
@@ -27,28 +27,29 @@ import jakarta.json.stream.JsonGenerator;
 import jakarta.json.stream.JsonParser;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.ContinueAs;
-import org.kie.workbench.common.stunner.sw.definition.ContinueAs_JsonDeserializerImpl;
-import org.kie.workbench.common.stunner.sw.definition.ContinueAs_JsonSerializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
+import org.kie.workbench.common.stunner.sw.definition.SubFlowRef_JsonDeserializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.SubFlowRef_JsonSerializerImpl;
 
-public class ContinueAsJsonbTypeSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object> {
-    private static final ContinueAs_JsonSerializerImpl serializer =
-            ContinueAs_JsonSerializerImpl.INSTANCE;
+
+public class SubFlowRefJsonSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object> {
+    private static final SubFlowRef_JsonSerializerImpl serializerSubFlowRef =
+            SubFlowRef_JsonSerializerImpl.INSTANCE;
 
     private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
 
-    private static final ContinueAs_JsonDeserializerImpl deserializer =
-            ContinueAs_JsonDeserializerImpl.INSTANCE;
+    private static final SubFlowRef_JsonDeserializerImpl deserializerSubFlowRef =
+            SubFlowRef_JsonDeserializerImpl.INSTANCE;
 
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
-            stringJsonSerializer.serialize((String) obj,  generator, ctx);
-        } else if (obj instanceof ContinueAs) {
+            stringJsonSerializer.serialize((String) obj, generator, ctx);
+        } else if (obj instanceof SubFlowRef) {
             JsonGenerator jsonGenerator = generator.writeStartObject();
-            serializer.serialize((ContinueAs) obj, jsonGenerator, ctx);
+            serializerSubFlowRef.serialize((SubFlowRef) obj,  jsonGenerator, ctx);
             jsonGenerator.writeEnd();
         }
     }
@@ -61,10 +62,9 @@ public class ContinueAsJsonbTypeSerializer implements JsonbDeserializer<Object>,
                 if (value.getValueType() == JsonValue.ValueType.STRING) {
                     return stringJsonDeserializer.deserialize(value, ctx);
                 } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
-                    return deserializer.deserialize(parser, ctx, rtType);
+                    return deserializerSubFlowRef.deserialize(parser, ctx, rtType);
                 }
             }
         }
-        return null;
-    }
+        return null;    }
 }

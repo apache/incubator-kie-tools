@@ -20,9 +20,14 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.ScheduleJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ScheduleYamlTypeSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class StartDefinition {
 
@@ -30,6 +35,8 @@ public class StartDefinition {
 
     @JsonbTypeSerializer(ScheduleJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(ScheduleJsonbTypeSerializer.class)
+    @YamlTypeSerializer(ScheduleYamlTypeSerializer.class)
+    @YamlTypeDeserializer(ScheduleYamlTypeSerializer.class)
     private Object schedule;
 
     public final String getStateName() {

@@ -20,10 +20,12 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.NumCompletedJsonTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.NumCompletedJsonTypeSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class ParallelState extends State {
 
