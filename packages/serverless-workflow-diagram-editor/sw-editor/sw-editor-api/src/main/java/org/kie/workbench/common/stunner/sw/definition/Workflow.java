@@ -20,15 +20,26 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ErrorJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.EventJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ValueHolderJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.ErrorJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.EventJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.StartDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.StateJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.ValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowFunctionsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowTimeoutsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ErrorYamlSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.EventYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StartDefinitionYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StateYamlSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ValueHolderYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowFunctionsYamlSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowTimeoutsYamlSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
 public class Workflow {
@@ -47,34 +58,48 @@ public class Workflow {
 
     @JsonbTypeSerializer(ValueHolderJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(ValueHolderJsonbTypeSerializer.class)
+    @YamlTypeSerializer(ValueHolderYamlTypeSerializer.class)
+    @YamlTypeDeserializer(ValueHolderYamlTypeSerializer.class)
     private ValueHolder constants;
 
     @JsonbTypeSerializer(StartDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StartDefinitionJsonbTypeSerializer.class)
+    @YamlTypeSerializer(StartDefinitionYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StartDefinitionYamlTypeSerializer.class)
     private Object start;
 
     @JsonbTypeSerializer(EventJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(EventJsonbTypeSerializer.class)
+    @YamlTypeSerializer(EventYamlTypeSerializer.class)
+    @YamlTypeDeserializer(EventYamlTypeSerializer.class)
     private Object events; //TODO array or string
 
     @JsonbTypeSerializer(StateJsonSerializer.class)
     @JsonbTypeDeserializer(StateJsonSerializer.class)
+    @YamlTypeSerializer(StateYamlSerializer.class)
+    @YamlTypeDeserializer(StateYamlSerializer.class)
     private State[] states;
 
     public Boolean keepActive;
 
     @JsonbTypeSerializer(WorkflowFunctionsJsonSerializer.class)
     @JsonbTypeDeserializer(WorkflowFunctionsJsonSerializer.class)
+    @YamlTypeSerializer(WorkflowFunctionsYamlSerializer.class)
+    @YamlTypeDeserializer(WorkflowFunctionsYamlSerializer.class)
     private Object functions;
 
     public Boolean autoRetries;
 
     @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
+    @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
+    @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
     private Object timeouts;
 
     @JsonbTypeSerializer(ErrorJsonSerializer.class)
     @JsonbTypeDeserializer(ErrorJsonSerializer.class)
+    @YamlTypeSerializer(ErrorYamlSerializer.class)
+    @YamlTypeDeserializer(ErrorYamlSerializer.class)
     private Object errors;
 
     public Retry[] retries;

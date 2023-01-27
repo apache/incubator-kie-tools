@@ -18,8 +18,10 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class CallbackState extends State {
 

@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.definition.custom;
+package org.kie.workbench.common.stunner.sw.definition.custom.json;
 
 import java.lang.reflect.Type;
 
@@ -27,29 +27,25 @@ import jakarta.json.stream.JsonGenerator;
 import jakarta.json.stream.JsonParser;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.WorkflowExecTimeout;
-import org.kie.workbench.common.stunner.sw.definition.WorkflowExecTimeout_JsonDeserializerImpl;
-import org.kie.workbench.common.stunner.sw.definition.WorkflowExecTimeout_JsonSerializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.Schedule;
+import org.kie.workbench.common.stunner.sw.definition.Schedule_JsonDeserializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.Schedule_JsonSerializerImpl;
 
-
-public class WorkflowExecTimeoutJsonSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object> {
-    private static final WorkflowExecTimeout_JsonSerializerImpl serializer =
-            WorkflowExecTimeout_JsonSerializerImpl.INSTANCE;
-
+public class ScheduleJsonbTypeSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object> {
+    private static final Schedule_JsonSerializerImpl serializerSchedule =
+            Schedule_JsonSerializerImpl.INSTANCE;
+    private static final Schedule_JsonDeserializerImpl deserializerSchedule = new Schedule_JsonDeserializerImpl();
     private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
-
-    private static final WorkflowExecTimeout_JsonDeserializerImpl deserializer =
-            WorkflowExecTimeout_JsonDeserializerImpl.INSTANCE;
-
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
+
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
             stringJsonSerializer.serialize((String) obj, generator, ctx);
-        } else if (obj instanceof WorkflowExecTimeout) {
+        } else if (obj instanceof Schedule) {
             JsonGenerator jsonGenerator = generator.writeStartObject();
-            serializer.serialize((WorkflowExecTimeout) obj, jsonGenerator, ctx);
+            serializerSchedule.serialize((Schedule) obj, jsonGenerator, ctx);
             jsonGenerator.writeEnd();
         }
     }
@@ -62,7 +58,7 @@ public class WorkflowExecTimeoutJsonSerializer implements JsonbDeserializer<Obje
                 if (value.getValueType() == JsonValue.ValueType.STRING) {
                     return stringJsonDeserializer.deserialize(value, ctx);
                 } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
-                    return deserializer.deserialize(parser, ctx, rtType);
+                    return deserializerSchedule.deserialize(parser, ctx, rtType);
                 }
             }
         }

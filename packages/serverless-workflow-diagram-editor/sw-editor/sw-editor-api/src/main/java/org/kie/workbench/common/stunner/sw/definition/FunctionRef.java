@@ -20,9 +20,14 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ArgumentsValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.ArgumentsValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ArgumentsValueHolderYamlTypeSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class FunctionRef {
 
@@ -34,6 +39,8 @@ public class FunctionRef {
 
     @JsonbTypeSerializer(ArgumentsValueHolderJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(ArgumentsValueHolderJsonbTypeSerializer.class)
+    @YamlTypeSerializer(ArgumentsValueHolderYamlTypeSerializer.class)
+    @YamlTypeDeserializer(ArgumentsValueHolderYamlTypeSerializer.class)
     private Object arguments;
 
     public final String getRefName() {

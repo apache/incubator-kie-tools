@@ -20,12 +20,19 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.StateEndDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.StateTransitionDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowTimeoutsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StateEndDefinitionYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StateTransitionDefinitionYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowTimeoutsYamlSerializer;
 
 @JsType
 @JSONMapper
+@YAMLMapper
 public class State {
 
     public String name;
@@ -37,11 +44,15 @@ public class State {
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
     private Object transition;
 
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
+    @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
     private Object end;
 
     public ErrorTransition[] onErrors;
@@ -52,6 +63,8 @@ public class State {
 
     @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
+    @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
+    @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
     private Object timeouts;
 
     public State() {

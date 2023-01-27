@@ -19,8 +19,12 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.FunctionRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.SubFlowRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.FunctionRefYamlSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.SubFlowRefYamlSerializer;
 
 @JsType
 public class ActionNode {
@@ -31,12 +35,16 @@ public class ActionNode {
 
     @JsonbTypeSerializer(FunctionRefJsonSerializer.class)
     @JsonbTypeDeserializer(FunctionRefJsonSerializer.class)
+    @YamlTypeSerializer(FunctionRefYamlSerializer.class)
+    @YamlTypeDeserializer(FunctionRefYamlSerializer.class)
     private Object functionRef;
 
     public ActionEventRef eventRef;
 
     @JsonbTypeSerializer(SubFlowRefJsonSerializer.class)
     @JsonbTypeDeserializer(SubFlowRefJsonSerializer.class)
+    @YamlTypeSerializer(SubFlowRefYamlSerializer.class)
+    @YamlTypeDeserializer(SubFlowRefYamlSerializer.class)
     private Object subFlowRef;
 
     public String retryRef;
