@@ -298,7 +298,7 @@ export const DASHBUILDER_SCHEMA = {
           type: ["boolean", "string"],
         },
       },
-      required: ["enabled", "listening", "notification", "selfapply"],
+      required: ["enabled"],
       title: "SettingsFilter",
     },
     SettingsColumn: {
@@ -317,7 +317,7 @@ export const DASHBUILDER_SCHEMA = {
           type: "string",
         },
       },
-      required: ["id", "name", "expression", "pattern"],
+      required: ["id"],
       title: "SettingsColumn",
     },
     SettingsTable: {
@@ -333,7 +333,6 @@ export const DASHBUILDER_SCHEMA = {
           $ref: "#/definitions/TableSort",
         },
       },
-      required: ["pageSize", "show_column_picker", "sort"],
       title: "SettingsTable",
     },
     TableSort: {
@@ -349,7 +348,7 @@ export const DASHBUILDER_SCHEMA = {
           $ref: "#/definitions/sortEnum",
         },
       },
-      required: ["enabled", "columnId", "order"],
+      required: ["enabled"],
       title: "TableSort",
     },
     Sort: {
@@ -358,16 +357,16 @@ export const DASHBUILDER_SCHEMA = {
         column: {
           type: "string",
         },
-        sortOrder: {
+        order: {
           $ref: "#/definitions/sortEnum",
         },
       },
-      required: ["column", "sortOrder"],
+      required: ["column", "order"],
       title: "Sort",
     },
     sortEnum: {
       type: "string",
-      enum: ["ASCENDING", "DESCENDING"],
+      enum: ["ASCENDING", "DESCENDING", "ascending", "descending", "Ascending", "descending"],
       additionalProperties: false,
       title: "sortEnum",
     },
@@ -568,7 +567,7 @@ export const DASHBUILDER_SCHEMA = {
           type: ["number", "string"],
         },
         zoom: {
-          type: ["number", "string"],
+          type: ["boolean", "string"],
         },
         margin: {
           type: "object",
@@ -722,7 +721,6 @@ export const DASHBUILDER_SCHEMA = {
               $ref: "#/definitions/MapColorScheme",
             },
           },
-          required: ["color_scheme"],
           title: "map",
         },
         meter: {
@@ -764,32 +762,30 @@ export const DASHBUILDER_SCHEMA = {
               type: "object",
               properties: {
                 labels_show: {
-                  type: "boolean",
+                  type: ["boolean", "string"],
                 },
                 title: {
                   type: "string",
                 },
                 labels_angle: {
-                  type: "number",
+                  type: ["string", "number"],
                 },
               },
-              required: ["title"],
               title: "x",
             },
             y: {
               type: "object",
               properties: {
                 labels_show: {
-                  type: "boolean",
+                  type: ["boolean", "string"],
                 },
                 title: {
                   type: "string",
                 },
                 labels_angle: {
-                  type: "string",
+                  type: ["string", "number"],
                 },
               },
-              required: ["title"],
               title: "y",
             },
           },
