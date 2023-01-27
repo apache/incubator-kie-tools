@@ -175,7 +175,9 @@ For more information about what is installed on this image, take a look [here](k
 **modules.install** section. 
 
 
-#### Kogito swf Builder Image usage
+#### Kogito SWF (Serverless Workflow) Builder Image usage
+
+##### Using as a builder
 
 The main purpose of this image is to be used within the Kogito Serverless Operator as a builder image, below you can find
 an example on how to use it:
@@ -194,6 +196,19 @@ ENTRYPOINT ['java', '-jar', 'target/quarkus-app/quarkus-run.jar']
 #=============================
 ```
 
+##### Using for application development
+
+If you run the image, it will start an empty [Kogito Serverless Workflow](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html) application with [Quarkus Devmode](https://quarkus.io/guides/maven-tooling#dev-mode). This allows you to develop and to run quick tests locally without having to setup Maven or Java on your machine. You can have your workflows in your local file system mounted in the image so that you can see test the application live.
+
+To run the image for testing your local workflow files, run:
+
+```shell
+docker run -it --rm -p 8080:8080 -v <local_workflow_path>:/home/kogito/serverless-workflow-project/src/main/resources/workflows quay.io/kiegroup/kogito-swf-builder:latest
+```
+
+Replace `<local_workflow_path>` with your local filesystem containing your workflow files. You can test with the [example application](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/getting-started/create-your-first-workflow-service.html#proc-creating-workflow).
+
+After the image bootstrap, you can access [http://localhost:8080/q/swagger-ui](http://localhost:8080/q/swagger-ui) and test the workflow application right away!
 
 #### Kogito s2i Builder Image usage
 

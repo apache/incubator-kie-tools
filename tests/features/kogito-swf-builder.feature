@@ -10,3 +10,13 @@ Feature: SWF and Quarkus installation
   Scenario: verify if there is no dependencies with multiple versions in /home/kogito/.m2/repository
     When container is started with command bash
     Then run sh -c 'ls /home/kogito/.m2/repository/io/quarkus/quarkus-bom  | wc -l' in container and immediately check its output for 1
+
+  Scenario: verify if container starts in devmode by default
+    When container is ready
+    Then check that page is served
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /q/swagger-ui                                                                 |
+      | wait                 | 480                                                                           |
+      | request_method       | GET                                                                           |
+      | expected_status_code | 200                                                                           |

@@ -21,6 +21,12 @@ envs:
     description: To use only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
   - name: QUARKUS_ADD_EXTENSION_ARGS
     description: To use only if you plan to use the ${KOGITO_HOME}/launch/add-extension.sh
+  - name: QUARKUS_KOGITO_DEVSERVICES_ENABLED
+    description: Whether to enable Kogito Devservices or not. Default to "false" since Data Index needs Docker.
+    value: "false"
+  - name: QUARKUS_KUBERNETES_CLIENT_DEVSERVICES_ENABLED
+    description: Whether to enable Kogito Devservices or not. Default to "false" since Kubernetes objects are managed by the Kogito Serverless Operator.
+    value: "false"
 
 # see build-quarkus-app.sh script, responsible for building those artifacts.
 # called by the Makefile before builds

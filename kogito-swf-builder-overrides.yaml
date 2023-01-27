@@ -23,3 +23,9 @@ modules:
 run:
   workdir: "/home/kogito"
   user: 1001
+  entrypoint: 
+    - "/home/kogito/launch/run-app-devmode.sh"
+
+ports:
+  - value: 8080
+  - value: 5005
