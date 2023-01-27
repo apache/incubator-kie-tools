@@ -27,6 +27,8 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_GIT_CORS_PROXY_URL: buildEnv.onlineEditor.gitCorsProxyUrl,
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
   KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES: buildEnv.onlineEditor.requireCustomCommitMessages,
+  KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL:
+    buildEnv.onlineEditor.customCommitMessagesValidationServiceUrl,
   KIE_SANDBOX_AUTH_PROVIDERS: [
     {
       id: "github_dot_com",
