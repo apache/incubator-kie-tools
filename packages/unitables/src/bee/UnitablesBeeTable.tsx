@@ -15,6 +15,7 @@
  */
 
 import {
+  BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -23,6 +24,10 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable/StandaloneBeeTable";
+import {
+  useBeeTableCoordinates,
+  useBeeTableSelectableCellRef,
+} from "@kie-tools/boxed-expression-component/dist/selection/BeeTableSelectionContext";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
@@ -31,6 +36,7 @@ import { UnitablesColumnType } from "../UnitablesTypes";
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { AutoField } from "uniforms-patternfly";
+import { useField } from "uniforms";
 
 export const UNITABLES_COLUMN_MIN_WIDTH = 150;
 
@@ -80,13 +86,13 @@ export function UnitablesBeeTable({
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = React.useMemo(() => {
     return columns.reduce((acc, column) => {
       if (column.insideProperties) {
-        for (const i of column.insideProperties) {
-          const joinedName = i.joinedName;
-          acc[getColumnAccessor(i)] = () => <AutoField key={joinedName} name={joinedName} form={generateUuid()} />;
+        for (const insideProperty of column.insideProperties) {
+          acc[getColumnAccessor(insideProperty)] = (props) => (
+            <UnitablesBeeTableCell {...props} joinedName={insideProperty.joinedName} />
+          );
         }
       } else {
-        const joinedName = column.joinedName;
-        acc[getColumnAccessor(column)] = () => <AutoField key={joinedName} name={joinedName} form={generateUuid()} />;
+        acc[getColumnAccessor(column)] = (props) => <UnitablesBeeTableCell {...props} joinedName={column.joinedName} />;
       }
       return acc;
     }, {} as NonNullable<BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"]>);
@@ -201,4 +207,23 @@ export function UnitablesBeeTable({
 
 function getColumnAccessor(c: UnitablesColumnType) {
   return `field-${c.joinedName}`;
+}
+
+function UnitablesBeeTableCell({ joinedName }: BeeTableCellProps<ROWTYPE> & { joinedName: string }) {
+  const { containerCellCoordinates } = useBeeTableCoordinates();
+
+  const [field] = useField(joinedName, {});
+
+  useBeeTableSelectableCellRef(
+    containerCellCoordinates?.rowIndex ?? 0,
+    containerCellCoordinates?.columnIndex ?? 0,
+    field.onChange,
+    () => JSON.stringify(field.value)
+  );
+
+  return (
+    <>
+      <AutoField key={joinedName} name={joinedName} form={generateUuid()} />
+    </>
+  );
 }

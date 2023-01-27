@@ -125,14 +125,14 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   // Debounce to avoid multiple updates on the filesystem
   const timeout = useRef<number | undefined>(undefined);
   const setInputRowsAndUpdatePersistence = useCallback(
-    (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
+    (newInputRowsAction: React.SetStateAction<InputRow[]>) => {
       if (timeout.current) {
         window.clearTimeout(timeout.current);
       }
 
       // After a re-render the callback is called by the first time, this avoids a filesystem unnecessary re-update
       const stringfiedDmnRunnerInputs = dmnRunnerInputsService.stringifyDmnRunnerInputs(
-        newInputRows,
+        newInputRowsAction,
         previousInputRows.current
       );
 

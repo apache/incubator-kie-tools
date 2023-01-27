@@ -279,11 +279,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         return newData;
       });
     },
-<<<<<<< HEAD
     [dmnRunnerState.currentInputRowIndex, setInputRows]
-=======
-    [dmnRunnerDispatch, dmnRunnerState.currentInputRowIndex]
->>>>>>> 03007f2aa5 (DMN Runner table outputs working)
   );
 
   const [selectedRow, selectRow] = useState<string>("");

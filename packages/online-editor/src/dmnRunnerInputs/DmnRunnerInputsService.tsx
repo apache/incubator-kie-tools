@@ -25,14 +25,11 @@ export class DmnRunnerInputsService {
     emptyFileContent: JSON.stringify(EMPTY_DMN_RUNNER_INPUTS),
   });
 
-  public stringifyDmnRunnerInputs(
-    inputs: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>),
-    previous?: Array<InputRow>
-  ) {
-    if (typeof inputs === "function") {
-      return JSON.stringify(inputs(previous ?? EMPTY_DMN_RUNNER_INPUTS));
+  public stringifyDmnRunnerInputs(newInputRowsAction: React.SetStateAction<InputRow[]>, previous?: InputRow[]) {
+    if (typeof newInputRowsAction === "function") {
+      return JSON.stringify(newInputRowsAction(previous ?? EMPTY_DMN_RUNNER_INPUTS));
     }
-    return JSON.stringify(inputs);
+    return JSON.stringify(newInputRowsAction);
   }
 
   public parseDmnRunnerInputs(inputs: string): Array<InputRow> {

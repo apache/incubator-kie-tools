@@ -36,12 +36,11 @@ export interface UnitablesRowApi {
 
 export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>(
   ({ children, formId, rowIndex, jsonSchemaBridge, model, onModelUpdate }, forwardRef) => {
-    const [_model, _setModel] = useState<object>(model);
     const autoRowRef = useRef<HTMLFormElement>(null);
 
     const onSubmit = useCallback(
       (model: object) => {
-        _setModel(model);
+        console.log("SUBMITTING ROW: " + rowIndex);
         onModelUpdate(model, rowIndex);
       },
       [onModelUpdate, rowIndex]
@@ -49,7 +48,6 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
 
     const onValidate = useCallback(
       (model: object, error: object) => {
-        _setModel(model);
         onModelUpdate(model, rowIndex);
       },
       [onModelUpdate, rowIndex]
@@ -57,7 +55,7 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
 
     useImperativeHandle(forwardRef, () => ({
       submit: () => autoRowRef.current?.submit(),
-      reset: (defaultValues?: object) => _setModel({ ...defaultValues }),
+      reset: onSubmit,
     }));
 
     return (
@@ -67,9 +65,9 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
           schema={jsonSchemaBridge}
           autosave={true}
           autosaveDelay={200}
-          model={_model}
-          onSubmit={(model: object) => onSubmit(model)}
-          onValidate={(model: object, error: object) => onValidate(model, error)}
+          model={model}
+          onSubmit={onSubmit}
+          onValidate={onValidate}
           placeholder={true}
         >
           <UniformsContext.Consumer>

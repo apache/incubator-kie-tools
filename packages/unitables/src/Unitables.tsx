@@ -102,8 +102,9 @@ export const Unitables = ({
 
   const onModelUpdate = useCallback(
     (model: object, index: number) => {
-      console.info("updating model " + JSON.stringify(model));
       setRows?.((prev) => {
+        console.info(`prev model (${index}) ${JSON.stringify(prev)}`);
+        console.info(`updating model (${index}) ${JSON.stringify(model)}`);
         const n = [...prev];
         n[index] = model;
         return n;
@@ -193,7 +194,6 @@ function UnitablesRowWrapper({
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   onModelUpdate: (model: object, index: number) => void;
 }>) {
-  console.info(model);
   return (
     <UnitablesRow
       key={rowIndex}
