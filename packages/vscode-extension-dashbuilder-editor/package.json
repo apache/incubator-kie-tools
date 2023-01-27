@@ -74,6 +74,11 @@
         "command": "extension.kogito.dashbuilder.openAsDashboard",
         "icon": "$(open-preview)",
         "title": "Dashbuilder: Open as Dashboard (to the side)"
+      },
+      {
+        "command": "extension.kogito.dashbuilder.openAsSource",
+        "icon": "$(go-to-file)",
+        "title": "Dashbuilder: Open as Source"
       }
     ],
     "configuration": {
@@ -101,9 +106,10 @@
     "customEditors": [
       {
         "displayName": "Dashbuilder Editor",
+        "priority": "option",
         "selector": [
           {
-            "filenamePattern": "*.{dash.yml,dash.yaml,dash.json}"
+            "filenamePattern": "*.dash.{yaml,yml,json}"
           }
         ],
         "viewType": "kieKogitoWebviewEditorsDashbuilder"
@@ -116,6 +122,12 @@
         "key": "ctrl+k v",
         "mac": "cmd+k v",
         "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)$/"
+      },
+      {
+        "command": "extension.kogito.dashbuilder.openAsSource",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "activeCustomEditorId == kieKogitoWebviewEditorsDashbuilder"
       }
     ],
     "languages": [
@@ -133,11 +145,13 @@
         "aliases": [
           "dashbuilder (YAML)",
           "dash.yaml",
-          "dash.yml"
+          "dash.yml",
+          "dash.json"
         ],
         "extensions": [
           ".dash.yml",
-          ".dash.yaml"
+          ".dash.yaml",
+          ".dash.json"
         ],
         "id": "dash-yaml"
       }
@@ -147,6 +161,10 @@
         {
           "command": "extension.kogito.dashbuilder.openAsDashboard",
           "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)/"
+        },
+        {
+          "command": "extension.kogito.dashbuilder.openAsSource",
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsDashbuilder"
         }
       ],
       "editor/title": [
@@ -154,6 +172,11 @@
           "command": "extension.kogito.dashbuilder.openAsDashboard",
           "group": "navigation",
           "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.dash\\.(json|yaml|yml)/"
+        },
+        {
+          "command": "extension.kogito.dashbuilder.openAsSource",
+          "group": "navigation",
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsDashbuilder"
         }
       ]
     }

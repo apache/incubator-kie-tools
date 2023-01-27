@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./EditorToolbar";
@@ -48,6 +48,7 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
+import { useFileValidation } from "./Validation";
 
 export interface Props {
   workspaceId: string;
@@ -286,6 +287,8 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     if (
       workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
+      workspaceFilePromise.data?.workspaceFile.extension === "bpmn" ||
+      workspaceFilePromise.data?.workspaceFile.extension === "bpmn2" ||
       !workspaceFilePromise.data ||
       !editor?.isReady
     ) {
@@ -337,6 +340,8 @@ export function EditorPage(props: Props) {
     setFileBroken(true);
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
+
+  useFileValidation(workspaceFilePromise.data?.workspaceFile, editorPageDock);
 
   return (
     <OnlineEditorPage>

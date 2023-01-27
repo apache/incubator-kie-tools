@@ -102,6 +102,8 @@ public class RouterScreen {
         clientLoader.load(this::route,
                 (a, t) -> {
                     appNavBar.setHide(true);
+                    DomGlobal.console.log("Error loading models: " + a);
+                    DomGlobal.console.debug(t);
                     placeManager.goTo(EmptyPerspective.ID);
                 });
     }
@@ -143,13 +145,10 @@ public class RouterScreen {
     }
 
     public void loadDashboard(String importId) {
-        String newUrl = GWT.getHostPageBaseURL() + "?" +
+        final var newUrl = GWT.getHostPageBaseURL() + "?" +
                 RuntimeClientLoader.IMPORT_ID_PARAM + "=" +
                 importId;
-        DomGlobal.window.history.replaceState(null,
-                "Dashbuilder Runtime |" + importId,
-                newUrl);
-        doRoute();
+        DomGlobal.window.location.href = newUrl;
     }
 
     public void listDashboards() {

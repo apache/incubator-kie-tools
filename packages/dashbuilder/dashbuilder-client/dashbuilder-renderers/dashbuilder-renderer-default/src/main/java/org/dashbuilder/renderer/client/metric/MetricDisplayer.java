@@ -103,7 +103,6 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
 
         DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints()
                 .setGroupAllowed(false)
-                .setMaxColumns(1)
                 .setMinColumns(1)
                 .setFunctionRequired(true)
                 .setExtraColumnsAllowed(false)

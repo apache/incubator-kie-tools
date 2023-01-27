@@ -27,6 +27,11 @@ function isDashbuilder(textDocument: vscode.TextDocument) {
   return /^.*\.dash\.(json|yml|yaml)$/.test(textDocument.fileName);
 }
 
+function getFilePathFromGlobalState(context: vscode.ExtensionContext) {
+  const filePath = context.globalState.get("textEditorFilePath", {} as vscode.Uri);
+  return vscode.Uri.file(filePath.path);
+}
+
 async function openAsDashboardIfDashbuilder(args: { textEditor: vscode.TextEditor; active: boolean }) {
   if (!isDashbuilder(args.textEditor.document)) {
     return;
@@ -93,7 +98,7 @@ export async function setupDashboardEditorControls(args: {
       if (!isDashbuilder(textEditor.document)) {
         return;
       }
-
+      args.context.globalState.update("textEditorFilePath", textEditor?.document.uri);
       await maybeOpenAsDashboardIfDashbuilder({ configuration: args.configuration, textEditor, active: false });
     })
   );
@@ -109,6 +114,16 @@ export async function setupDashboardEditorControls(args: {
   args.context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.setupAutomaticallyOpenDashboardEditorAlongsideTextEditor, async () => {
       await args.configuration.configureAutomaticallyOpenDashboardEditorAlongsideTextEditor();
+    })
+  );
+
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async () => {
+      await vscode.commands.executeCommand("vscode.open", getFilePathFromGlobalState(args.context), {
+        viewColumn: vscode.ViewColumn.One,
+        preserveFocus: false,
+        background: false,
+      });
     })
   );
 
