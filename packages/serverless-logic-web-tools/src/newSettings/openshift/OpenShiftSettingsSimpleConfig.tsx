@@ -306,7 +306,10 @@ export function OpenShiftSettingsSimpleConfig() {
             isInline={true}
             key="quickstart"
             variant="link"
-            onClick={() => qsContext.setActiveQuickStartID?.(QuickStartIds.OpenShiftIntegrationQuickStart)}
+            onClick={() => {
+              qsContext.setActiveQuickStartID?.(QuickStartIds.OpenShiftIntegrationQuickStart);
+              setTimeout(() => qsContext.setQuickStartTaskNumber?.(QuickStartIds.OpenShiftIntegrationQuickStart, 1), 0);
+            }}
           >
             Need help getting started? Follow our quickstart guide.
           </Button>

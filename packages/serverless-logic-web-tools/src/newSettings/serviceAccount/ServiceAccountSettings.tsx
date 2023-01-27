@@ -284,9 +284,14 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                 isInline={true}
                 key="quickstart"
                 variant="link"
-                onClick={() =>
-                  qsContext.setActiveQuickStartID?.(QuickStartIds.ApplicationServicesIntegrationQuickStart)
-                }
+                onClick={() => {
+                  qsContext.setActiveQuickStartID?.(QuickStartIds.ApplicationServicesIntegrationQuickStart);
+                  setTimeout(
+                    () =>
+                      qsContext.setQuickStartTaskNumber?.(QuickStartIds.ApplicationServicesIntegrationQuickStart, 0),
+                    0
+                  );
+                }}
               >
                 Need help getting started? Follow our quickstart guide.
               </Button>

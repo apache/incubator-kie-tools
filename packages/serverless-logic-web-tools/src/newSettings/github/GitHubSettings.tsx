@@ -222,14 +222,21 @@ export function GitHubSettings(props: SettingsPageProps) {
                 />
               </InputGroup>
             </FormGroup>
-            <Button
-              isInline={true}
-              key="quickstart"
-              variant="link"
-              onClick={() => qsContext.setActiveQuickStartID?.(QuickStartIds.GitHubTokenQuickStart)}
-            >
-              Need help getting started? Follow our quickstart guide.
-            </Button>
+            <TextContent>
+              <Text>
+                <Button
+                  isInline={true}
+                  key="quickstart"
+                  variant="link"
+                  onClick={() => {
+                    qsContext.setActiveQuickStartID?.(QuickStartIds.GitHubTokenQuickStart);
+                    setTimeout(() => qsContext.setQuickStartTaskNumber?.(QuickStartIds.GitHubTokenQuickStart, 0), 0);
+                  }}
+                >
+                  Need help getting started? Follow our quickstart guide.
+                </Button>
+              </Text>
+            </TextContent>
           </Form>
         </Modal>
       )}
