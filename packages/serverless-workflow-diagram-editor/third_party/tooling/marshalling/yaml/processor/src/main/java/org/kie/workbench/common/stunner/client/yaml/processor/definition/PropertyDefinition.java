@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.yaml.processor.definition;
 
+import java.util.Objects;
+
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.MirroredTypeException;
@@ -51,9 +53,9 @@ public class PropertyDefinition extends Definition {
         TypeMirror typeMirror = bean;
         if (!typeMirror.getKind().isPrimitive()) {
           if (MoreTypes.asTypeElement(typeMirror).getAnnotation(YamlTypeDeserializer.class)
-              != null) {
+                  != null) {
             deserializer =
-                MoreTypes.asTypeElement(typeMirror).getAnnotation(YamlTypeDeserializer.class);
+                    MoreTypes.asTypeElement(typeMirror).getAnnotation(YamlTypeDeserializer.class);
           }
         }
       }
@@ -65,23 +67,23 @@ public class PropertyDefinition extends Definition {
 
     TypeMirror asInterface = maybeInterface();
     FieldDefinition fieldDefinition =
-        propertyDefinitionFactory.getFieldDefinition(asInterface != null ? asInterface : bean);
+            propertyDefinitionFactory.getFieldDefinition(asInterface != null ? asInterface : bean);
     Expression result = fieldDefinition.getFieldDeserializer(this, cu);
     return result;
   }
 
   private TypeMirror maybeInterface() {
     if (!getBean().getKind().equals(TypeKind.ARRAY)
-        && !getBean().getKind().isPrimitive()
-        && MoreTypes.isType(getBean())) {
+            && !getBean().getKind().isPrimitive()
+            && MoreTypes.isType(getBean())) {
       if (MoreTypes.asElement(getBean()).getKind().isInterface()
-          || (MoreTypes.asElement(getBean()).getKind().isClass()
+              || (MoreTypes.asElement(getBean()).getKind().isClass()
               && MoreTypes.asElement(getBean()).getModifiers().contains(Modifier.ABSTRACT))) {
         return context.getBeans().stream()
-            .filter(v -> v.getElement().equals(MoreTypes.asTypeElement(getBean())))
-            .findFirst()
-            .map(v -> v.getBean())
-            .orElse(null);
+                .filter(v -> v.getElement().equals(MoreTypes.asTypeElement(getBean())))
+                .findFirst()
+                .map(v -> v.getBean())
+                .orElse(null);
       }
     }
     return null;
@@ -95,7 +97,7 @@ public class PropertyDefinition extends Definition {
         if (!typeMirror.getKind().isPrimitive()) {
           if (MoreTypes.asTypeElement(typeMirror).getAnnotation(YamlTypeSerializer.class) != null) {
             serializer =
-                MoreTypes.asTypeElement(typeMirror).getAnnotation(YamlTypeSerializer.class);
+                    MoreTypes.asTypeElement(typeMirror).getAnnotation(YamlTypeSerializer.class);
           }
         }
       }
@@ -107,13 +109,13 @@ public class PropertyDefinition extends Definition {
 
     TypeMirror bean = maybeInterface();
     FieldDefinition fieldDefinition =
-        propertyDefinitionFactory.getFieldDefinition(bean != null ? bean : getBean());
+            propertyDefinitionFactory.getFieldDefinition(bean != null ? bean : getBean());
     return fieldDefinition.getFieldSerializer(this, cu);
   }
 
   public String getPropertyName() {
     if (property.getAnnotation(YamlProperty.class) != null
-        && !property.getAnnotation(YamlProperty.class).value().isEmpty()) {
+            && !property.getAnnotation(YamlProperty.class).value().isEmpty()) {
       return property.getAnnotation(YamlProperty.class).value();
     }
     return property.getSimpleName().toString();
@@ -149,9 +151,22 @@ public class PropertyDefinition extends Definition {
       ClassOrInterfaceType type = new ClassOrInterfaceType();
       type.setName(e.getTypeMirror().toString());
       return new ObjectCreationExpr()
-          .setType(YamlTypeSerializerWrapper.class)
-          .addArgument(new ObjectCreationExpr().setType(type));
+              .setType(YamlTypeSerializerWrapper.class.getCanonicalName())
+              .addArgument(new ObjectCreationExpr().setType(type));
     }
     return null;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PropertyDefinition that = (PropertyDefinition) o;
+    return Objects.equals(property, that.property);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(property);
   }
 }

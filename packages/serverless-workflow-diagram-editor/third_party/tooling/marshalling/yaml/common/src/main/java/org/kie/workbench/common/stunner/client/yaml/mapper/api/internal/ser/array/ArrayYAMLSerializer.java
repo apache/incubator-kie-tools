@@ -34,22 +34,17 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.Defau
 public class ArrayYAMLSerializer<T> extends AbstractYAMLSerializer<T[]> {
 
   private final YAMLSerializer<T> serializer;
-  protected final String propertyName;
 
   /**
    * Constructor for ArrayYAMLSerializer.
    *
    * @param serializer {@link YAMLSerializer} used to serialize the objects inside the array.
    */
-  public ArrayYAMLSerializer(YAMLSerializer<T> serializer, String propertyName) {
+  public ArrayYAMLSerializer(YAMLSerializer<T> serializer) {
     if (null == serializer) {
       throw new IllegalArgumentException("serializer cannot be null");
     }
-    if (null == propertyName) {
-      throw new IllegalArgumentException("propertyName cannot be null");
-    }
     this.serializer = serializer;
-    this.propertyName = propertyName;
   }
 
   /** {@inheritDoc} */
@@ -61,7 +56,7 @@ public class ArrayYAMLSerializer<T> extends AbstractYAMLSerializer<T[]> {
   @Override
   public void serialize(YAMLWriter writer, T[] values, YAMLSerializationContext ctx)
       throws YAMLSerializationException {
-    throw new RuntimeException("Not implemented");
+    throw new RuntimeException("2D arrays aren't implemented");
   }
 
   /** {@inheritDoc} */

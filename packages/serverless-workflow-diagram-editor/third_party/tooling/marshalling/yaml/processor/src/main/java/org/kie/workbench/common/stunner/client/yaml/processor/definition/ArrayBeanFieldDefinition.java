@@ -27,7 +27,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
@@ -117,8 +116,7 @@ public class ArrayBeanFieldDefinition extends FieldDefinition {
 
     return new ObjectCreationExpr()
         .setType(serializer)
-        .addArgument(expression)
-        .addArgument(new StringLiteralExpr(field.getPropertyName()));
+        .addArgument(expression);
   }
 
   @Override

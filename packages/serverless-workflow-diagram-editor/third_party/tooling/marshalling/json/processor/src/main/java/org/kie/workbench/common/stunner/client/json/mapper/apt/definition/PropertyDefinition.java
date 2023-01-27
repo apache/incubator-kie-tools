@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.json.mapper.apt.definition;
 
+import java.util.Objects;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
@@ -36,7 +37,7 @@ public class PropertyDefinition {
 
   public String getName() {
     if (property.getAnnotation(JsonbProperty.class) != null
-        && !property.getAnnotation(JsonbProperty.class).value().isEmpty()) {
+            && !property.getAnnotation(JsonbProperty.class).value().isEmpty()) {
       return property.getAnnotation(JsonbProperty.class).value();
     }
     return property.getSimpleName().toString();
@@ -56,5 +57,18 @@ public class PropertyDefinition {
 
   public VariableElement getVariableElement() {
     return property;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PropertyDefinition that = (PropertyDefinition) o;
+    return Objects.equals(property, that.property);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(property);
   }
 }

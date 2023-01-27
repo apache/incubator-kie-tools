@@ -47,7 +47,6 @@ import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
-import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.exception.GenerationException;
 
@@ -74,13 +73,13 @@ public class TypeUtils {
   public Collection<VariableElement> getAllFieldsIn(TypeElement type) {
     Map<String, VariableElement> fields = new LinkedHashMap<>();
     ElementFilter.fieldsIn(type.getEnclosedElements())
-        .forEach(field -> fields.put(field.getSimpleName().toString(), field));
+            .forEach(field -> fields.put(field.getSimpleName().toString(), field));
 
     List<TypeElement> alltypes = getSuperTypes(elements, type);
     for (TypeElement atype : alltypes) {
       ElementFilter.fieldsIn(atype.getEnclosedElements()).stream()
-          .filter(field -> !fields.containsKey(field.getSimpleName().toString()))
-          .forEach(field -> fields.put(field.getSimpleName().toString(), field));
+              .filter(field -> !fields.containsKey(field.getSimpleName().toString()))
+              .forEach(field -> fields.put(field.getSimpleName().toString(), field));
     }
     return fields.values();
   }
@@ -140,29 +139,29 @@ public class TypeUtils {
   public ExecutableElement getGetter(VariableElement variable) {
     List<String> method = compileGetterMethodName(variable);
     return MoreElements.asType(variable.getEnclosingElement()).getEnclosedElements().stream()
-        .filter(e -> e.getKind().equals(ElementKind.METHOD))
-        .filter(e -> method.contains(e.toString()))
-        .filter(e -> !e.getModifiers().contains(Modifier.PRIVATE))
-        .filter(e -> !e.getModifiers().contains(Modifier.STATIC))
-        .map(MoreElements::asExecutable)
-        .filter(elm -> elm.getParameters().isEmpty())
-        .filter(elm -> types.isSameType(elm.getReturnType(), variable.asType()))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new GenerationException(
-                    String.format(
-                        "Unable to find suitable getter for %s.%s",
-                        variable.getEnclosingElement(), variable.getSimpleName())));
+            .filter(e -> e.getKind().equals(ElementKind.METHOD))
+            .filter(e -> method.contains(e.getSimpleName().toString()))
+            .filter(e -> !e.getModifiers().contains(Modifier.PRIVATE))
+            .filter(e -> !e.getModifiers().contains(Modifier.STATIC))
+            .map(MoreElements::asExecutable)
+            .filter(elm -> elm.getParameters().isEmpty())
+            .filter(elm -> types.isSameType(elm.getReturnType(), variable.asType()))
+            .findFirst()
+            .orElseThrow(
+                    () ->
+                            new GenerationException(
+                                    String.format(
+                                            "Unable to find suitable getter for %s.%s",
+                                            variable.getEnclosingElement(), variable.getSimpleName())));
   }
 
   public List<String> compileGetterMethodName(VariableElement variable) {
     String varName = variable.getSimpleName().toString();
     boolean isBoolean = isBoolean(variable);
     List<String> result = new ArrayList<>();
-    result.add("get" + StringUtils.capitalize(varName) + "()");
+    result.add("get" + capitalize(varName));
     if (isBoolean) {
-      result.add("is" + StringUtils.capitalize(varName) + "()");
+      result.add("is" + capitalize(varName));
     }
     return result;
   }
@@ -174,27 +173,27 @@ public class TypeUtils {
   public ExecutableElement getSetter(VariableElement variable) {
     String method = compileSetterMethodName(variable);
     return MoreElements.asType(variable.getEnclosingElement()).getEnclosedElements().stream()
-        .filter(e -> e.getKind().equals(ElementKind.METHOD))
-        .filter(e -> e.toString().equals(method))
-        .filter(e -> !e.getModifiers().contains(Modifier.PRIVATE))
-        .filter(e -> !e.getModifiers().contains(Modifier.STATIC))
-        .map(MoreElements::asExecutable)
-        .filter(elm -> elm.getParameters().size() == 1)
-        .filter(elm -> types.isSameType(elm.getParameters().get(0).asType(), variable.asType()))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new GenerationException(
-                    String.format(
-                        "Unable to find suitable setter for %s.%s",
-                        variable.getEnclosingElement(), variable.getSimpleName())));
+            .filter(e -> e.getKind().equals(ElementKind.METHOD))
+            .filter(e -> e.toString().equals(method))
+            .filter(e -> !e.getModifiers().contains(Modifier.PRIVATE))
+            .filter(e -> !e.getModifiers().contains(Modifier.STATIC))
+            .map(MoreElements::asExecutable)
+            .filter(elm -> elm.getParameters().size() == 1)
+            .filter(elm -> types.isSameType(elm.getParameters().get(0).asType(), variable.asType()))
+            .findFirst()
+            .orElseThrow(
+                    () ->
+                            new GenerationException(
+                                    String.format(
+                                            "Unable to find suitable setter for %s.%s",
+                                            variable.getEnclosingElement(), variable.getSimpleName())));
   }
 
   private String compileSetterMethodName(VariableElement variable) {
     String varName = variable.getSimpleName().toString();
     StringBuffer sb = new StringBuffer();
     sb.append("set");
-    sb.append(StringUtils.capitalize(varName));
+    sb.append(capitalize(varName));
     sb.append("(");
     sb.append(variable.asType());
     sb.append(")");
@@ -211,12 +210,12 @@ public class TypeUtils {
 
   public boolean isBoolean(VariableElement variable) {
     return variable.asType().getKind().equals(TypeKind.BOOLEAN)
-        || variable.asType().toString().equals(Boolean.class.getCanonicalName());
+            || variable.asType().toString().equals(Boolean.class.getCanonicalName());
   }
 
   public boolean isAssignableFrom(TypeMirror typeMirror, Class<?> targetClass) {
     return types.isAssignable(
-        typeMirror, types.getDeclaredType(elements.getTypeElement(targetClass.getCanonicalName())));
+            typeMirror, types.getDeclaredType(elements.getTypeElement(targetClass.getCanonicalName())));
   }
 
   public boolean isSimpleType(TypeMirror property) {
@@ -239,8 +238,8 @@ public class TypeUtils {
     return (type.getEnclosingElement().getKind().equals(ElementKind.PACKAGE)
             ? ""
             : MoreElements.asType(type.getEnclosingElement()).getSimpleName().toString() + "_")
-        + type.getSimpleName()
-        + BEAN_JSON_SERIALIZER_IMPL;
+            + type.getSimpleName()
+            + BEAN_JSON_SERIALIZER_IMPL;
   }
 
   public String getJsonDeserializerImplQualifiedName(TypeElement type, CompilationUnit cu) {
@@ -251,8 +250,8 @@ public class TypeUtils {
     return (type.getEnclosingElement().getKind().equals(ElementKind.PACKAGE)
             ? ""
             : MoreElements.asType(type.getEnclosingElement()).getSimpleName().toString() + "_")
-        + type.getSimpleName()
-        + BEAN_JSON_DESERIALIZER_IMPL;
+            + type.getSimpleName()
+            + BEAN_JSON_DESERIALIZER_IMPL;
   }
 
   public boolean isIterable(TypeMirror property) {
@@ -261,8 +260,8 @@ public class TypeUtils {
 
   public boolean isJsonbTypeSerializer(VariableElement type) {
     boolean isFieldAnnotated =
-        type.getAnnotation(JsonbTypeSerializer.class) != null
-            && type.getAnnotation(JsonbTypeDeserializer.class) != null;
+            type.getAnnotation(JsonbTypeSerializer.class) != null
+                    && type.getAnnotation(JsonbTypeDeserializer.class) != null;
     if (isFieldAnnotated) {
       return true;
     }
@@ -285,7 +284,7 @@ public class TypeUtils {
       }
     }
     return type.getAnnotation(JsonbTypeSerializer.class) != null
-        && type.getAnnotation(JsonbTypeDeserializer.class) != null;
+            && type.getAnnotation(JsonbTypeDeserializer.class) != null;
   }
 
   public boolean isJsonbTypeSerializer(TypeMirror mirror) {
@@ -302,7 +301,7 @@ public class TypeUtils {
       return isJsonbTypeSerializer(arrayType.getComponentType());
     } else if (isIterable(mirror)) {
       boolean hasJsonbTypeSerializer =
-          isJsonbTypeSerializer(MoreTypes.asDeclared(mirror).getTypeArguments().get(0));
+              isJsonbTypeSerializer(MoreTypes.asDeclared(mirror).getTypeArguments().get(0));
       if (hasJsonbTypeSerializer) {
         return true;
       }
@@ -395,5 +394,9 @@ public class TypeUtils {
       PrimitiveType primitive = types.getPrimitiveType(type);
       return types.boxedClass(primitive).asType();
     }
+  }
+
+  private String capitalize(String name) {
+    return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 }

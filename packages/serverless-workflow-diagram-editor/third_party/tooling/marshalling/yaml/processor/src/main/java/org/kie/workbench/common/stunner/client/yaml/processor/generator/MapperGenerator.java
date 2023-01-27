@@ -43,7 +43,7 @@ import org.kie.workbench.common.stunner.client.yaml.processor.serializer.Seriali
 /** @author Dmitrii Tikhomirov Created by treblereel 3/20/20 */
 public class MapperGenerator extends AbstractGenerator {
 
-  private static final String MAPPER_IMPL = "_YAMLMapperImpl";
+  private static final String MAPPER_IMPL = "_YamlMapperImpl";
 
   private final DeserializerGenerator deserializerGenerator;
   private final SerializerGenerator serializerGenerator;
