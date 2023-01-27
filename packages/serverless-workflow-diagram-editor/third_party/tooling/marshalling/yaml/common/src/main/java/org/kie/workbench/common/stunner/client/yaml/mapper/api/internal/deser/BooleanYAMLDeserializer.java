@@ -31,6 +31,9 @@ public class BooleanYAMLDeserializer implements YAMLDeserializer<Boolean> {
 
   @Override
   public Boolean deserialize(YamlNode value, YAMLDeserializationContext ctx) {
+    if (value == null || value.isEmpty()) {
+      return null;
+    }
     return Boolean.valueOf(value.asScalar().value());
   }
 }

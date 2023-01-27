@@ -17,14 +17,18 @@
 package org.kie.workbench.common.stunner.client.yaml.processor.definition;
 
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTransient;
 import org.kie.workbench.common.stunner.client.yaml.processor.context.GenerationContext;
 
@@ -37,26 +41,61 @@ public class BeanDefinition extends Definition {
   public BeanDefinition(TypeElement element, GenerationContext context) {
     super(element.asType(), context);
     this.element = element;
-
-    loadProperties();
   }
 
   private void loadProperties() {
-    properties =
-        context.getTypeUtils().getAllFieldsIn(element).stream()
-            .filter(field -> !field.getModifiers().contains(Modifier.STATIC))
-            .filter(field -> !field.getModifiers().contains(Modifier.FINAL))
-            .filter(field -> !field.getModifiers().contains(Modifier.TRANSIENT))
-            .filter(field -> field.getAnnotation(YamlTransient.class) == null)
-            .map(field -> new PropertyDefinition(field, context))
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+    properties = new LinkedHashSet<>();
+    Stream<VariableElement> asStream =
+            context.getTypeUtils().getAllFieldsIn(element).stream()
+                    .filter(field -> !field.getModifiers().contains(Modifier.STATIC))
+                    .filter(field -> !field.getModifiers().contains(Modifier.FINAL))
+                    .filter(field -> !field.getModifiers().contains(Modifier.TRANSIENT))
+                    .filter(field -> field.getAnnotation(YamlTransient.class) == null);
+
+    if (element.getAnnotation(YamlPropertyOrder.class) != null
+            && element.getAnnotation(YamlPropertyOrder.class).value().length > 0) {
+      String[] order = element.getAnnotation(YamlPropertyOrder.class).value();
+      Map<String, PropertyDefinition> asMap =
+              asStream.collect(
+                      Collectors.toMap(
+                              variableElement -> variableElement.getSimpleName().toString(),
+                              variableElement -> new PropertyDefinition(variableElement, context),
+                              (o1, o2) -> o1,
+                              java.util.LinkedHashMap::new));
+
+      for (String s : order) {
+        if (asMap.containsKey(s)) {
+          properties.add(asMap.remove(s));
+        }
+      }
+      properties.addAll(asMap.values());
+    } else {
+      asStream.map(field -> new PropertyDefinition(field, context)).forEach(properties::add);
+    }
+  }
+
+  @Override
+  public TypeMirror getBean() {
+    return bean;
+  }
+
+  public TypeElement getElement() {
+    return element;
   }
 
   public Set<PropertyDefinition> getFields() {
     if (properties == null) {
-      getFields();
+      loadProperties();
     }
     return properties;
+  }
+
+  public String getSimpleName() {
+    return getElement().getSimpleName().toString();
+  }
+
+  public String getQualifiedName() {
+    return getElement().getQualifiedName().toString();
   }
 
   @Override
@@ -79,26 +118,5 @@ public class BeanDefinition extends Definition {
   @Override
   public String toString() {
     return "BeanDefinition{" + "element=" + element + '}';
-  }
-
-  public String getRootElement() {
-    return getElement().getSimpleName().toString();
-  }
-
-  public TypeElement getElement() {
-    return element;
-  }
-
-  public String getSimpleName() {
-    return getElement().getSimpleName().toString();
-  }
-
-  public String getQualifiedName() {
-    return getElement().getQualifiedName().toString();
-  }
-
-  @Override
-  public TypeMirror getBean() {
-    return bean;
   }
 }
