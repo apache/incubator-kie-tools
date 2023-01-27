@@ -185,6 +185,13 @@ interface OnlineDictionary extends ReferenceDictionary {
       note: string;
     };
   };
+  commitModal: {
+    title: string;
+    description: string;
+    commit: string;
+    inputHelper: string;
+    placeholder: string;
+  };
   homePage: {
     uploadFile: {
       header: string;

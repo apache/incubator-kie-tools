@@ -69,6 +69,10 @@ module.exports = composeEnv(
         default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
         description: "Extended Services URL.",
       },
+      ONLINE_EDITOR__requireCustomCommitMessages: {
+        default: false,
+        description: "Require users to type a custom commit message when creating a new commit.",
+      },
       DMN_DEV_DEPLOYMENT__baseImageTag: {
         default: "latest",
         description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
@@ -97,6 +101,7 @@ module.exports = composeEnv(
           },
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
+          requireCustomCommitMessages: getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessages),
         },
         devDeployments: {
           onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__onlineEditorUrl),

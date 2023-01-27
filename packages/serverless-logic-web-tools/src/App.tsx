@@ -35,7 +35,10 @@ export const App = () => (
       [EnvContextProvider, {}],
       [KieSandboxExtendedServicesContextProvider, {}],
       [SettingsContextProvider, {}],
-      [WorkspacesContextProvider, { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js" }],
+      [
+        WorkspacesContextProvider,
+        { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js", shouldRequireCommitMessage: false },
+      ],
       [OpenShiftContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
       [NavigationContextProvider, {}],

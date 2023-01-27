@@ -101,12 +101,15 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
 
+  kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: { workspaceId: string }): Promise<string[]>;
+
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
     gitConfig?: {
       email: string;
       name: string;
     };
+    commitMessage?: string;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
