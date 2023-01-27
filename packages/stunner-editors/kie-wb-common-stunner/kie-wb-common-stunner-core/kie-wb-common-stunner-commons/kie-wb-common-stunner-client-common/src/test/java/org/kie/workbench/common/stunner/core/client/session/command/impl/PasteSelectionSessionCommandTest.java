@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
-import org.appformer.client.stateControl.registry.Registry;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +62,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -72,6 +72,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand.DEFAULT_PADDING;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -102,9 +103,6 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-
-    @Mock
-    private Registry commandRegistry;
 
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
@@ -200,7 +198,6 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         when(clone.getUUID()).thenReturn(CLONE_UUID);
         when(clone2.getUUID()).thenReturn(CLONE2_UUID);
         when(session.getClipboardControl()).thenReturn(clipboardControl);
-        when(session.getCommandRegistry()).thenReturn(commandRegistry);
         when(sessionManager.getCurrentSession()).thenReturn(session);
 
         cloneMap = new HashMap() {{
@@ -328,12 +325,6 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         verify(canvasCommandFactory, times(1))
                 .cloneConnector(eq(graphInstance.edge1), Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), any());
 
-        //check command registry update after execution to allow a single undo/redo
-        verify(commandRegistry, times(2)).pop();
-        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
-        verify(commandRegistry, times(1)).register(commandArgumentCaptor.capture());
-        assertTrue(commandArgumentCaptor.getValue() instanceof CompositeCommand);
-        assertEquals(2, ((CompositeCommand) commandArgumentCaptor.getValue()).size());
     }
 
     @Test
@@ -405,12 +396,18 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         verify(canvasCommandFactory, times(1))
                 .cloneConnector(eq(graphInstance.edge1), Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), any());
 
-        //check command registry update after execution to allow a single undo/redo
-        verify(commandRegistry, times(2)).pop();
+                
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
-        verify(commandRegistry, times(1)).register(commandArgumentCaptor.capture());
-        assertTrue(commandArgumentCaptor.getValue() instanceof CompositeCommand);
-        assertEquals(2, ((CompositeCommand) commandArgumentCaptor.getValue()).size());
+                        
+        final InOrder inOrder = inOrder(sessionCommandManager);
+        inOrder.verify(sessionCommandManager).start();
+        inOrder.verify(sessionCommandManager, times(2)).execute(eq(canvasHandler), commandArgumentCaptor.capture());
+        inOrder.verify(sessionCommandManager).complete();
+
+        CompositeCommand nodesCommand = (CompositeCommand) commandArgumentCaptor.getAllValues().get(0);
+        assertEquals(2, nodesCommand.size());
+        CompositeCommand edgesCommand = (CompositeCommand) commandArgumentCaptor.getAllValues().get(1);
+        assertEquals(1, edgesCommand.size());
     }
 
     @Test
