@@ -209,11 +209,17 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
         CommandResult<CanvasViolation> nodesResult = sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
 
         if (CommandUtils.isError(nodesResult)) {
+            sessionCommandManager.rollback();
+            sessionCommandManager.complete();
             return nodesResult;
         }
 
         // Processing connectors: after all nodes has been cloned (this is necessary because we need the cloned nodes UUIDs to than clone the Connectors
         CommandResult<CanvasViolation> connectorsResult = processConnectors(processedNodesCountdown);
+        if (CommandUtils.isError(connectorsResult)) {
+            sessionCommandManager.rollback();
+        }
+
         sessionCommandManager.complete();
 
         return new CanvasCommandResultBuilder()
