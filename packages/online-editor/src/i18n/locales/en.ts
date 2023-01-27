@@ -550,6 +550,12 @@ export const en: OnlineI18n = {
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.bitbucket} repository. ${error}`,
       },
+      form: {
+        select: {
+          label: "Pick a workspace under which the new repository will be created.",
+          description: "Pick either a personal or shared workspace.",
+        },
+      },
     },
     github: {
       repository: `${en_common.names.github} repository`,
@@ -559,6 +565,67 @@ export const en: OnlineI18n = {
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.github} repository. ${error}`,
       },
+      form: {
+        select: {
+          label: "The new repository will be created under the following scope",
+          description: "Pick either your user account or a GitHub organization.",
+        },
+      },
+    },
+  },
+  createGistOrSnippetModal: {
+    form: {
+      buttonCreate: "Create",
+      visibility: {
+        public: {
+          label: "Public",
+          description: "Anyone on the internet can see this repository. You choose who can commit.",
+        },
+        private: {
+          label: "Private",
+          description: "You choose who can see and commit to this repository.",
+        },
+      },
+    },
+    bitbucket: {
+      gistOrSnippet: `${en_common.names.bitbucket} Snippet`,
+      create: `Create ${en_common.names.bitbucket} Snippet`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} Snippet.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.bitbucket} Snippet. ${error}`,
+      },
+      form: {
+        select: {
+          label: "Pick a workspace under which the new Snippet will be created.",
+          description: "Pick either a personal or shared workspace.",
+        },
+      },
+    },
+    github: {
+      gistOrSnippet: `${en_common.names.github} Gist`,
+      create: `Create ${en_common.names.github} Gist`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.github} Gist.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.github} Gist. ${error}`,
+      },
+      form: {
+        select: {
+          label: "The Gist will be created under the following user.",
+          description: "Currently GitHub does not allow to create Gists in GitHub organizations.",
+        },
+      },
+    },
+  },
+  loadOrganizationsSelect: {
+    bitbucket: {
+      user: "Bitbucket user",
+      organizations: "Bitbucket workspaces",
+    },
+    github: {
+      user: "GitHub user",
+      organizations: "GitHub organizations",
     },
   },
 };

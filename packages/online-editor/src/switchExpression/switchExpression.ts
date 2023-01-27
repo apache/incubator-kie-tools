@@ -42,16 +42,16 @@ export const switchExpression = <
   }
 
   let propertyValue: R | undefined;
-  Object.entries(cases).forEach(([key, value], index) => {
+  let didMatch: boolean = false;
+  for (const [key, value] of Object.entries(cases)) {
     if (key === switchValue) {
-      if (!value) {
-        throw new Error(`Undefined value for key ${key}`);
-      }
       propertyValue = value;
+      didMatch = true;
+      break;
     }
-  });
-  if (propertyValue) {
-    return propertyValue;
+  }
+  if (didMatch) {
+    return propertyValue as R;
   }
   if (hasDefault) {
     return (cases as PartialWithMandatoryDefault<S, R>).default as R;

@@ -118,6 +118,7 @@ import {
   WorkspaceKindGitBased,
 } from "@kie-tools-core/workspaces-git-fs/src/worker/api/WorkspaceOrigin";
 import { switchExpression } from "../switchExpression/switchExpression";
+import { CreateGistOrSnippetModal } from "./CreateGistOrSnippetModal";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -280,7 +281,7 @@ export function EditorToolbar(props: Props) {
           return;
         }
 
-        bitbucketClient.getSnippet(org, snippetId).then(async (response) => {
+        bitbucketClient.getSnippet({ workspace: org, snippetId }).then(async (response) => {
           if (canceled.get()) {
             return;
           }
@@ -595,143 +596,6 @@ export function EditorToolbar(props: Props) {
     errorPushingGistOrSnippet,
   ]);
 
-  const createGitHubGist: () => Promise<CreateRepositoryResponse> = useCallback(async () => {
-    const gist = await gitHubClient.gists.create({
-      description: workspacePromise.data?.descriptor.name ?? "",
-      public: true,
-
-      // This file is used just for creating the Gist. The `push -f` overwrites it.
-      files: {
-        "README.md": {
-          content: `
-This Gist was created from KIE Sandbox.
-
-This file is temporary and you should not be seeing it.
-If you are, it means that creating this Gist failed and it can safely be deleted.
-`,
-        },
-      },
-    });
-
-    if (!gist.data.git_push_url || !gist.data.html_url) {
-      throw new Error("Gist creation failed.");
-    }
-    return { cloneUrl: gist.data.git_push_url, htmlUrl: gist.data.html_url };
-  }, [gitHubClient.gists, workspacePromise.data?.descriptor.name]);
-
-  const createBitbucketSnippet: () => Promise<CreateRepositoryResponse> = useCallback(async () => {
-    const response = await bitbucketClient.createSnippet("KIE Sandbox Snippet", {
-      "README.md": {
-        content: `
-This Snippet was created from KIE Sandbox.
-
-This file is temporary and you should not be seeing it.
-If you are, it means that creating this Snippet failed and it can safely be deleted.
-`,
-      },
-    });
-    const json = await response.json();
-
-    if (!json.links || !json.links.clone) {
-      throw new Error("Unexpected contents of the snippet creation request.");
-    }
-
-    const cloneLinks: any[] = json.links.clone;
-    const cloneUrl = cloneLinks.filter((e) => {
-      return (e.name = "https" && e.href.startsWith("https"));
-    })[0].href;
-
-    return { cloneUrl, htmlUrl: json.links.html };
-  }, [bitbucketClient]);
-
-  const createGistOrSnippet = useCallback(async () => {
-    try {
-      if (!authInfo || !isGistEnabledAuthProviderType(authProvider?.type)) {
-        return;
-      }
-      const gistEnabledAuthProvider = authProvider?.type as GistEnabledAuthProviderType;
-      setGistOrSnippetLoading(true);
-
-      const createGistOrSnippetCommand: () => Promise<CreateRepositoryResponse> = switchExpression(
-        gistEnabledAuthProvider,
-        {
-          github: createGitHubGist,
-          bitbucket: createBitbucketSnippet,
-        }
-      );
-      const gistOrSnippet = await createGistOrSnippetCommand();
-
-      const gistOrSnippetDefaultBranch = (
-        await workspaces.getGitServerRefs({
-          url: new URL(gistOrSnippet.cloneUrl).toString(),
-          authInfo,
-        })
-      )
-        .find((serverRef) => serverRef.ref === "HEAD")!
-        .target!.replace("refs/heads/", "");
-
-      const initWorkspaceCommand: (args: { workspaceId: string; remoteUrl: URL; branch: string }) => Promise<void> =
-        switchExpression(gistEnabledAuthProvider, {
-          github: workspaces.initGistOnWorkspace,
-          bitbucket: workspaces.initSnippetOnWorkspace,
-        });
-      await initWorkspaceCommand({
-        workspaceId: props.workspaceFile.workspaceId,
-        remoteUrl: new URL(gistOrSnippet.cloneUrl),
-        branch: gistOrSnippetDefaultBranch,
-      });
-
-      await workspaces.addRemote({
-        workspaceId: props.workspaceFile.workspaceId,
-        url: gistOrSnippet.cloneUrl,
-        name: GIST_ORIGIN_REMOTE_NAME,
-        force: true,
-      });
-
-      await workspaces.branch({
-        workspaceId: props.workspaceFile.workspaceId,
-        checkout: true,
-        name: gistOrSnippetDefaultBranch,
-      });
-
-      await workspaces.createSavePoint({
-        workspaceId: props.workspaceFile.workspaceId,
-        gitConfig,
-      });
-      await workspaces.push({
-        workspaceId: props.workspaceFile.workspaceId,
-        remote: GIST_ORIGIN_REMOTE_NAME,
-        ref: gistOrSnippetDefaultBranch,
-        remoteRef: `refs/heads/${gistOrSnippetDefaultBranch}`,
-        force: true,
-        authInfo,
-      });
-      await workspaces.pull({
-        workspaceId: props.workspaceFile.workspaceId,
-        authInfo,
-      });
-
-      successfullyCreatedGistOrSnippetAlert.show();
-
-      return;
-    } catch (err) {
-      errorAlert.show();
-      throw err;
-    } finally {
-      setGistOrSnippetLoading(false);
-    }
-  }, [
-    authInfo,
-    authProvider?.type,
-    createGitHubGist,
-    createBitbucketSnippet,
-    workspaces,
-    props.workspaceFile.workspaceId,
-    gitConfig,
-    successfullyCreatedGistOrSnippetAlert,
-    errorAlert,
-  ]);
-
   const forkGitHubGist = useCallback(async () => {
     try {
       if (!authSession || !authInfo || !gitHubGist?.id || !workspacePromise.data) {
@@ -816,7 +680,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
   }, [authInfo, gitHubGist]);
 
   const isBitbucketSnippetOwner = useMemo(() => {
-    return authInfo?.uuid && bitbucketSnippet?.owner.uuid === authInfo.uuid;
+    return authInfo?.uuid && bitbucketSnippet?.creator.uuid === authInfo.uuid;
   }, [authInfo, bitbucketSnippet]);
 
   const isGistOrSnippetOwner = isGitHubGistOwner || isBitbucketSnippetOwner;
@@ -874,6 +738,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
   );
 
   const [isCreateGitRepositoryModalOpen, setCreateGitRepositoryModalOpen] = useState(false);
+  const [isCreateGistOrSnippetModalOpen, setCreateGistOrSnippetModalOpen] = useState(false);
 
   const shareDropdownItems = useMemo(
     () => [
@@ -1005,7 +870,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
                     })}
                     data-testid={"create-gist-or-snippet-button"}
                     component="button"
-                    onClick={createGistOrSnippet}
+                    onClick={() => setCreateGistOrSnippetModalOpen(true)}
                     isDisabled={!canCreateGistOrSnippet}
                   >
                     {switchExpression(authProvider?.type as GistEnabledAuthProviderType, {
@@ -1038,7 +903,6 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       canCreateGitRepository,
       authProvider?.type,
       canCreateGistOrSnippet,
-      createGistOrSnippet,
       changeGitAuthSessionId,
       accountsDispatch,
     ]
@@ -2220,6 +2084,17 @@ If you are, it means that creating this Snippet failed and it can safely be dele
               onClose={() => setCreateGitRepositoryModalOpen(false)}
               onSuccess={({ url }) => {
                 createRepositorySuccessAlert.show({ url });
+              }}
+            />
+            <CreateGistOrSnippetModal
+              workspace={workspace.descriptor}
+              isOpen={isCreateGistOrSnippetModalOpen}
+              onClose={() => setCreateGistOrSnippetModalOpen(false)}
+              onSuccess={({ url }) => {
+                successfullyCreatedGistOrSnippetAlert.show({ url });
+              }}
+              onError={() => {
+                errorAlert.show();
               }}
             />
             <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />

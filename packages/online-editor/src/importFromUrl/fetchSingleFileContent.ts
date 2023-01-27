@@ -30,13 +30,13 @@ export async function fetchSingleFileContent(
   }
 
   if (importableUrl.type === UrlType.BITBUCKET_DOT_ORG_FILE) {
-    const repoResponse = await bitbucketClient.getRepositoryContents(
-      importableUrl.org,
-      importableUrl.repo,
-      importableUrl.branch,
-      decodeURIComponent(importableUrl.filePath),
-      true
-    );
+    const repoResponse = await bitbucketClient.getRepositoryContents({
+      workspace: importableUrl.org,
+      repository: importableUrl.repo,
+      ref: importableUrl.branch,
+      path: decodeURIComponent(importableUrl.filePath),
+      meta: true,
+    });
     if (!repoResponse.ok) {
       throw new Error(`Couldn't get Bitbucket repository contents: ${repoResponse.status} ${repoResponse.statusText}`);
     }
@@ -47,7 +47,10 @@ export async function fetchSingleFileContent(
     rawUrl = new URL(json.links.self.href);
   }
   if (importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE) {
-    const snippetResponse = await bitbucketClient.getSnippet(importableUrl.org, importableUrl.snippetId);
+    const snippetResponse = await bitbucketClient.getSnippet({
+      workspace: importableUrl.org,
+      snippetId: importableUrl.snippetId,
+    });
     if (!snippetResponse.ok) {
       throw new Error(
         `Couldn't get Bitbucket snippet contents: ${snippetResponse.status} ${snippetResponse.statusText}`

@@ -17,7 +17,7 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
-import { SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
+import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
 
 interface OnlineDictionary extends ReferenceDictionary {
   editorPage: {
@@ -456,6 +456,12 @@ interface OnlineDictionary extends ReferenceDictionary {
       error: {
         formAlert: (error: string) => string;
       };
+      form: {
+        select: {
+          label: string;
+          description: string;
+        };
+      };
     };
   } & {
     form: {
@@ -474,6 +480,42 @@ interface OnlineDictionary extends ReferenceDictionary {
           description: string;
         };
       };
+    };
+  };
+  createGistOrSnippetModal: {
+    [key in GistEnabledAuthProviderType]: {
+      gistOrSnippet: string;
+      create: string;
+      description: (workspace: string) => string;
+      error: {
+        formAlert: (error: string) => string;
+      };
+      form: {
+        select: {
+          label: string;
+          description: string;
+        };
+      };
+    };
+  } & {
+    form: {
+      buttonCreate: string;
+      visibility: {
+        public: {
+          label: string;
+          description: string;
+        };
+        private: {
+          label: string;
+          description: string;
+        };
+      };
+    };
+  };
+  loadOrganizationsSelect: {
+    [key in SupportedGitAuthProviders]: {
+      user: string;
+      organizations: string;
     };
   };
 }

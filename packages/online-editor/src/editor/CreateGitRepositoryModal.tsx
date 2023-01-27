@@ -36,11 +36,11 @@ import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { useBitbucketClient } from "../bitbucket/Hooks";
 import { GithubIcon, BitbucketIcon } from "@patternfly/react-icons";
 import { useGitHubClient } from "../github/Hooks";
-import { isSupportedGitAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
+import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { switchExpression } from "../switchExpression/switchExpression";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { useOnlineI18n } from "../i18n";
+import { LoadOrganizationsSelect } from "./LoadOrganizationsSelect";
 
 export interface CreateRepositoryResponse {
   cloneUrl: string;
@@ -71,13 +71,17 @@ export function CreateGitRepositoryModal(props: {
   const [error, setError] = useState<string | undefined>(undefined);
   const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.name));
   const { i18n } = useOnlineI18n();
+  const [selectedOrganization, setSelectedOrganization] = useState<string>();
 
   useEffect(() => {
     setName(getSuggestedRepositoryName(props.workspace.name));
   }, [props.workspace.name]);
 
   const createBitbucketRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
-    const repoResponse = await bitbucketClient.createRepo(name, isPrivate);
+    if (!selectedOrganization) {
+      throw new Error("No workspace was selected for Bitbucket Repository.");
+    }
+    const repoResponse = await bitbucketClient.createRepo({ name, workspace: selectedOrganization, isPrivate });
     if (!repoResponse.ok) {
       throw new Error(
         `Bitbucket repository creation request failed with: ${repoResponse.status} ${repoResponse.statusText}`
@@ -94,13 +98,16 @@ export function CreateGitRepositoryModal(props: {
       return (e.name = "https" && e.href.startsWith("https"));
     })[0].href;
     return { cloneUrl, htmlUrl: repo.links.html.href };
-  }, [bitbucketClient, isPrivate, name]);
+  }, [bitbucketClient, isPrivate, name, selectedOrganization]);
 
   const createGitHubRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
-    const repo = await gitHubClient.request("POST /user/repos", {
-      name,
-      private: isPrivate,
-    });
+    const repo = selectedOrganization
+      ? await gitHubClient.repos.createInOrg({
+          name,
+          private: isPrivate,
+          org: selectedOrganization,
+        })
+      : await gitHubClient.repos.createForAuthenticatedUser({ name, private: isPrivate });
 
     if (!repo.data.clone_url) {
       throw new Error("Repo creation failed.");
@@ -108,16 +115,21 @@ export function CreateGitRepositoryModal(props: {
 
     const cloneUrl = repo.data.clone_url;
     return { cloneUrl, htmlUrl: repo.data.html_url };
-  }, [isPrivate, name, gitHubClient]);
+  }, [selectedOrganization, gitHubClient.repos, name, isPrivate]);
 
   const pushEmptyCommitIntoBitbucket = useCallback(async (): Promise<void> => {
+    if (!selectedOrganization) {
+      throw new Error("No workspace was selected for Bitbucket Repository.");
+    }
     // need an empty commit push through REST API first
-    await bitbucketClient.pushEmptyCommit(name, props.workspace.origin.branch).then((response) => {
-      if (!response.ok) {
-        throw new Error(`Initial commit push failed: ${response.status} ${response.statusText}`);
-      }
-    });
-  }, [bitbucketClient, name, props.workspace.origin.branch]);
+    await bitbucketClient
+      .pushEmptyCommit({ repository: name, workspace: selectedOrganization, branch: props.workspace.origin.branch })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Initial commit push failed: ${response.status} ${response.statusText}`);
+        }
+      });
+  }, [bitbucketClient, name, props.workspace.origin.branch, selectedOrganization]);
 
   const create = useCallback(async () => {
     try {
@@ -225,7 +237,16 @@ export function CreateGitRepositoryModal(props: {
       })}
       description={i18n.createGitRepositoryModal[authProvider.type].description(props.workspace.name)}
       actions={[
-        <Button isLoading={isLoading} key="create" variant="primary" onClick={create} isDisabled={!isNameValid}>
+        <Button
+          isLoading={isLoading}
+          key="create"
+          variant="primary"
+          onClick={create}
+          isDisabled={switchExpression(authProvider.type, {
+            bitbucket: !isNameValid || selectedOrganization === undefined,
+            github: !isNameValid,
+          })}
+        >
           {i18n.createGitRepositoryModal.form.buttonCreate}
         </Button>,
       ]}
@@ -250,6 +271,13 @@ export function CreateGitRepositoryModal(props: {
             <br />
           </FormAlert>
         )}
+        <FormGroup
+          label={i18n.createGitRepositoryModal[authProvider.type].form.select.label}
+          helperText={i18n.createGitRepositoryModal[authProvider.type].form.select.description}
+          fieldId="organization"
+        >
+          <LoadOrganizationsSelect workspace={props.workspace} onSelect={setSelectedOrganization} />
+        </FormGroup>
         <FormGroup
           label={i18n.createGitRepositoryModal.form.nameField.label}
           isRequired={true}

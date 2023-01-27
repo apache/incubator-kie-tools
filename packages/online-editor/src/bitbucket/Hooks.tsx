@@ -40,30 +40,54 @@ export interface Options {
   headers?: Record<string, string>;
 }
 
+type GetRepositoryContentsArgsType = {
+  workspace: string;
+  repository: string;
+  ref: string;
+  path: string;
+  meta: boolean;
+};
+
+type CreateRepoArgsType = {
+  name: string;
+  workspace: string;
+  isPrivate: boolean;
+};
+
+type PushEmptyCommitArgsType = {
+  repository: string;
+  workspace: string;
+  branch: string;
+};
+
+type GetSnippetArgsType = {
+  workspace: string;
+  snippetId: string;
+};
+
+type CreateSnippetArgsType = {
+  workspace: string;
+  title: string;
+  files: {
+    [key: string]: {
+      content: string;
+    };
+  };
+  isPrivate: boolean;
+};
+
 export interface BitbucketClientApi {
   domain?: string;
   auth?: AuthOptions;
   headers?: Record<string, string>;
-  getApiUrl: () => string;
-  getAuthedUser: () => Promise<Response>;
-  getRepositoryContents: (
-    workspace: string,
-    name: string,
-    ref: string,
-    path: string,
-    meta: boolean
-  ) => Promise<Response>;
-  createRepo: (name: string, isPrivate: boolean) => Promise<Response>;
-  pushEmptyCommit: (repository: string, branch: string) => Promise<Response>;
-  getSnippet: (workspace: string, snippetId: string) => Promise<Response>;
-  createSnippet: (
-    title: string,
-    files: {
-      [key: string]: {
-        content: string;
-      };
-    }
-  ) => Promise<Response>;
+  getApiUrl(): string;
+  getAuthedUser(): Promise<Response>;
+  getRepositoryContents(args: GetRepositoryContentsArgsType): Promise<Response>;
+  createRepo(args: CreateRepoArgsType): Promise<Response>;
+  pushEmptyCommit(args: PushEmptyCommitArgsType): Promise<Response>;
+  getSnippet(args: GetSnippetArgsType): Promise<Response>;
+  createSnippet(args: CreateSnippetArgsType): Promise<Response>;
+  listWorkspaces(): Promise<Response>;
 }
 export class BitbucketClient implements BitbucketClientApi {
   constructor(options: Options = {}) {
@@ -112,28 +136,30 @@ export class BitbucketClient implements BitbucketClientApi {
   getAuthedUser = () => {
     return this.request({ urlContext: "/user" });
   };
-  getRepositoryContents = (workspace: string, name: string, ref: string, path: string, meta: boolean) => {
+  getRepositoryContents = (args: GetRepositoryContentsArgsType) => {
     return this.request({
-      urlContext: `/repositories/${workspace}/${name}/src/${ref}/${path}${meta ? "?format=meta" : ""}`,
+      urlContext: `/repositories/${args.workspace}/${args.repository}/src/${args.ref}/${args.path}${
+        args.meta ? "?format=meta" : ""
+      }`,
       method: "get",
     });
   };
-  createRepo = (name: string, isPrivate: boolean) => {
+  createRepo = (args: CreateRepoArgsType) => {
     return this.request({
-      urlContext: `/repositories/${this.username}/${name}`,
+      urlContext: `/repositories/${args.workspace}/${args.name}`,
       method: "post",
       body: JSON.stringify({
-        is_private: isPrivate,
+        is_private: args.isPrivate,
         name,
       }),
     });
   };
-  pushEmptyCommit = (repoName: string, branch: string) => {
+  pushEmptyCommit = (args: PushEmptyCommitArgsType) => {
     const formData: FormData = new FormData();
-    formData.append("branch", branch);
+    formData.append("branch", args.branch);
     formData.append("message", "KIE Sandbox Initial Push");
     return this.request({
-      urlContext: `/repositories/${this.username}/${repoName}/src`,
+      urlContext: `/repositories/${args.workspace}/${args.repository}/src`,
       method: "post",
       body: formData,
       extraHeaders: {
@@ -145,27 +171,21 @@ export class BitbucketClient implements BitbucketClientApi {
       },
     });
   };
-  getSnippet = (workspace: string, snippetId: string) => {
+  getSnippet = (args: GetSnippetArgsType) => {
     return this.request({
-      urlContext: `/snippets/${workspace}/${snippetId}`,
+      urlContext: `/snippets/${args.workspace}/${args.snippetId}`,
       method: "get",
     });
   };
-  createSnippet = (
-    title: string,
-    files: {
-      [key: string]: {
-        content: string;
-      };
-    }
-  ) => {
+  createSnippet = (args: CreateSnippetArgsType) => {
     const formData: FormData = new FormData();
-    for (const key in files) {
-      formData.append("file", new File([files[key].content], key, { type: "text/plain" }));
+    for (const key in args.files) {
+      formData.append("file", new File([args.files[key].content], key, { type: "text/plain" }));
     }
-    formData.append("title", title);
+    formData.append("title", args.title);
+    formData.append("is_private", args.isPrivate.toString());
     return this.request({
-      urlContext: "/snippets",
+      urlContext: `/snippets/${args.workspace}`,
       method: "post",
       body: formData,
       extraHeaders: {
@@ -175,6 +195,12 @@ export class BitbucketClient implements BitbucketClientApi {
         */
         "Content-Type": undefined,
       },
+    });
+  };
+  listWorkspaces = () => {
+    return this.request({
+      urlContext: "/user/permissions/workspaces",
+      method: "get",
     });
   };
 }
