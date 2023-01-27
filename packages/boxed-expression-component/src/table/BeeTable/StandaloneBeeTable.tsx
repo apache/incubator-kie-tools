@@ -9,6 +9,7 @@ import {
   generateUuid,
 } from "../../api";
 import { BoxedExpressionEditorContextProvider } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot.css";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
