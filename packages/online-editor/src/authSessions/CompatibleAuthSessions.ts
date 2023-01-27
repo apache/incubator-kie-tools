@@ -114,9 +114,9 @@ export function authSessionsSelectFilterCompatibleWithGitUrlDomain(
   };
 }
 
-export function authSessionsSelectFilterCompatibleWithGistUrlDomain(
+export function authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
   gitUrlDomain: string | undefined,
-  gistOwner: string | undefined
+  owner: string | undefined
 ): AuthSessionSelectFilter {
   if (!gitUrlDomain) {
     return gitAuthSessionSelectFilter();
@@ -134,7 +134,7 @@ export function authSessionsSelectFilterCompatibleWithGistUrlDomain(
             status,
             urlDomain: gitUrlDomain,
           }) &&
-          gistOwner === authSession.login
+          owner === authSession.login
         ) {
           return { authSession, authProvider, groupLabel: "Compatible" };
         } else {

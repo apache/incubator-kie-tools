@@ -17,6 +17,7 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
+import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
 
 interface OnlineDictionary extends ReferenceDictionary {
   editorPage: {
@@ -30,8 +31,11 @@ interface OnlineDictionary extends ReferenceDictionary {
       };
       copy: string;
       updateGist: string;
+      updateSnippet: string;
       createGist: string;
+      createSnippet: string;
       errorPushingGist: string;
+      errorPushingSnippet: string;
       forcePushWarning: string;
       invalidCurrentGist: string;
       invalidGistFilename: string;
@@ -54,6 +58,9 @@ interface OnlineDictionary extends ReferenceDictionary {
     createGist: string;
     cantCreateGistTooltip: string;
     cantUpdateGistTooltip: string;
+    createSnippet: string;
+    cantCreateSnippetTooltip: string;
+    cantUpdateSnippetTooltip: string;
     share: string;
     embed: string;
   };
@@ -170,19 +177,50 @@ interface OnlineDictionary extends ReferenceDictionary {
     embedCode: string;
     copiedToClipboard: string;
   };
-  githubTokenModal: {
-    header: {
-      title: string;
-      subtitle: string;
+  connectToGitModal: {
+    [key in SupportedGitAuthProviders]: {
+      header: {
+        title: string;
+        subtitle: string;
+      };
+      footer: {
+        createNewToken: string;
+        placeHolder: string;
+      };
+      body: {
+        learnMore: string;
+        note: string;
+      };
+      validation: {
+        scopes: {
+          helper: string;
+        };
+      };
+      form: {
+        username?: {
+          label: string;
+          placeHolder: string;
+        };
+        token: {
+          label: string;
+          placeHolder: string;
+        };
+      };
     };
-    footer: {
-      createNewToken: string;
-      placeHolder: string;
-    };
-    body: {
+  } & {
+    auth: {
       disclaimer: string;
-      learnMore: string;
-      note: string;
+      error: {
+        alreadyLoggedIn: string;
+        oauthScopes: (scopes: string) => string;
+      };
+    };
+    status: {
+      loading: string;
+    };
+    navigation: {
+      seeConnectedAccounts: string;
+      continue: string;
     };
   };
   commitModal: {
@@ -415,6 +453,76 @@ interface OnlineDictionary extends ReferenceDictionary {
       initial: {
         subHeader: string;
       };
+    };
+  };
+  createGitRepositoryModal: {
+    [key in SupportedGitAuthProviders]: {
+      repository: string;
+      createRepository: string;
+      description: (workspace: string) => string;
+      error: {
+        formAlert: (error: string) => string;
+      };
+      form: {
+        select: {
+          label: string;
+          description: string;
+        };
+      };
+    };
+  } & {
+    form: {
+      buttonCreate: string;
+      nameField: {
+        label: string;
+        hint: string;
+      };
+      visibility: {
+        public: {
+          label: string;
+          description: string;
+        };
+        private: {
+          label: string;
+          description: string;
+        };
+      };
+    };
+  };
+  createGistOrSnippetModal: {
+    [key in GistEnabledAuthProviderType]: {
+      gistOrSnippet: string;
+      create: string;
+      description: (workspace: string) => string;
+      error: {
+        formAlert: (error: string) => string;
+      };
+      form: {
+        select: {
+          label: string;
+          description: string;
+        };
+      };
+    };
+  } & {
+    form: {
+      buttonCreate: string;
+      visibility: {
+        public: {
+          label: string;
+          description: string;
+        };
+        private: {
+          label: string;
+          description: string;
+        };
+      };
+    };
+  };
+  loadOrganizationsSelect: {
+    [key in SupportedGitAuthProviders]: {
+      user: string;
+      organizations: string;
     };
   };
 }

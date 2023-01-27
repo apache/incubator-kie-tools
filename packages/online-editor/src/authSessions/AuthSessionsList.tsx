@@ -34,7 +34,7 @@ import {
   DescriptionListGroup,
   DescriptionListTerm,
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
-import { obfuscate } from "../accounts/github/ConnectToGitHubSection";
+import { obfuscate } from "../accounts/git/ConnectToGitSection";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
