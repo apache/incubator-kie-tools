@@ -36,7 +36,7 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable/StandaloneBeeTable";
-import { UnitablesBeeTableColumn } from "@kie-tools/unitables/dist/UnitablesTypes";
+import { UnitablesColumnType } from "@kie-tools/unitables/dist/UnitablesTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
@@ -88,10 +88,12 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
         <EmptyState>
           <EmptyStateIcon icon={CubeIcon} />
           <TextContent>
-            <Text component={"h2"}>Without Responses Yet</Text>
+            <Text component={"h2"}>No Decision results yet...</Text>
           </TextContent>
           <EmptyStateBody>
-            <TextContent>Add decision nodes and fill the input nodes!</TextContent>
+            <TextContent>
+              Add input and decision nodes, provide values to the inputs at the left and see the Decisions results here.
+            </TextContent>
           </EmptyStateBody>
         </EmptyState>
       )}
@@ -108,7 +110,7 @@ function OutputError() {
           <Text component={"h2"}>Error</Text>
         </TextContent>
         <EmptyStateBody>
-          <p>An error has happened while trying to show your outputs</p>
+          <p>An error has happened while trying to show your Decision results</p>
         </EmptyStateBody>
       </EmptyState>
     </div>
@@ -126,7 +128,7 @@ export interface OutputsTableProps {
   id: string;
   i18n: BoxedExpressionEditorI18n;
   rows: { outputEntries: string[] }[];
-  outputs?: UnitablesBeeTableColumn[];
+  outputs?: UnitablesColumnType[];
   scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
@@ -154,7 +156,6 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
       // Lists
       const output = outputs?.[outputIndex];
       if (Array.isArray(outputEntry)) {
-        console.info("TIAGO-A:" + outputEntry);
         return [
           {
             originalId: uuid + `${output?.name}}`,
@@ -179,7 +180,6 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
       }
       // Contexts/Structures
       else if (typeof outputEntry === "object") {
-        console.info("TIAGO-B:" + outputEntry);
         return [
           {
             originalId: uuid + `${output?.name}`,
@@ -210,7 +210,6 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
       }
       // Primitives
       else {
-        console.info("TIAGO-C:" + outputEntry);
         return [
           {
             originalId: uuid + `-parent-${output?.name}`,

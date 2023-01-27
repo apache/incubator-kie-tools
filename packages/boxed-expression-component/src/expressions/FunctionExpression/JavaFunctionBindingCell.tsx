@@ -121,7 +121,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
     ];
   }, [functionExpression]);
 
-  const cellComponentByColumnId: BeeTableProps<JAVA_ROWTYPE>["cellComponentByColumnId"] = useMemo(
+  const cellComponentByColumnAccessor: BeeTableProps<JAVA_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       label: (props) => <JavaFunctionExpressionLabelCell {...props} />,
     }),
@@ -170,7 +170,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
       getRowKey={(r) => r.id}
       getColumnKey={(c) => c.id}
       operationConfig={[]}
-      cellComponentByColumnId={cellComponentByColumnId}
+      cellComponentByColumnAccessor={cellComponentByColumnAccessor}
       headerVisibility={BeeTableHeaderVisibility.None}
       shouldRenderRowIndexColumn={false}
       shouldShowRowsInlineControls={false}

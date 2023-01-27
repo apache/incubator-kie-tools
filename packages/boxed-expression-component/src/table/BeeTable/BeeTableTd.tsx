@@ -24,11 +24,9 @@ import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumn
 import { BeeTableCellCoordinates, BeeTableCoordinatesContextProvider } from "../../selection/BeeTableSelectionContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import { generateUuid } from "../../api";
 
 export interface BeeTableTdProps<R extends object> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
-  shouldUseCellDelegate: boolean;
   onRowAdded?: (args: { beforeIndex: number }) => void;
   isActive: boolean;
   shouldRenderInlineButtons: boolean;
@@ -55,7 +53,6 @@ export function BeeTableTd<R extends object>({
   row,
   column,
   rowIndex,
-  shouldUseCellDelegate,
   shouldRenderInlineButtons,
   shouldShowRowsInlineControls,
   resizerStopBehavior,
@@ -67,10 +64,8 @@ export function BeeTableTd<R extends object>({
 
   const tdRef = useRef<HTMLTableCellElement>(null);
 
-  let cssClass = column.isRowIndexColumn ? "row-index-column-cell" : "data-cell";
-  if (column.cellDelegate) {
-    cssClass += " input"; // FIXME: Tiago -> DMN Runner/DecisionTable-specific logic
-  }
+  const cssClass = column.isRowIndexColumn ? "row-index-column-cell" : "data-cell";
+
   const cell = useMemo(() => {
     return row.cells[columnIndex];
   }, [columnIndex, row]);
@@ -172,10 +167,8 @@ export function BeeTableTd<R extends object>({
   );
 
   const tdContent = useMemo(() => {
-    return shouldUseCellDelegate && column.cellDelegate
-      ? column.cellDelegate?.(`cell-delegate-${rowIndex}-${generateUuid()}`)
-      : cell.render("Cell");
-  }, [cell, column, rowIndex, shouldUseCellDelegate]);
+    return cell.render("Cell");
+  }, [cell]);
 
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>

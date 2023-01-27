@@ -45,6 +45,8 @@ export interface BeeTableBodyProps<R extends object> {
   resizerStopBehavior: ResizerStopBehavior;
 
   lastColumnMinWidth?: number;
+
+  rowWrapper?: React.FunctionComponent<React.PropsWithChildren<{ row: R; rowIndex: number }>>;
 }
 
 export function BeeTableBody<R extends object>({
@@ -58,13 +60,13 @@ export function BeeTableBody<R extends object>({
   shouldShowRowsInlineControls,
   resizerStopBehavior,
   lastColumnMinWidth,
+  rowWrapper,
 }: BeeTableBodyProps<R>) {
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
-      const rowKey = getRowKey(row);
 
-      const renderTr = (args: { shouldUseCellDelegate: boolean }) => (
+      const renderTr = () => (
         <PfReactTable.Tr
           className={rowKey}
           {...row.getRowProps()}
@@ -83,7 +85,6 @@ export function BeeTableBody<R extends object>({
                     columnIndex={cellIndex}
                     row={row}
                     rowIndex={rowIndex}
-                    shouldUseCellDelegate={args.shouldUseCellDelegate}
                     column={reactTableInstance.allColumns[cellIndex]}
                     onRowAdded={onRowAdded}
                     isActive={false}
@@ -103,19 +104,25 @@ export function BeeTableBody<R extends object>({
         </PfReactTable.Tr>
       );
 
-      const RowDelegate = (row.original as any).rowDelegate; // FIXME: Tiago -> Bad typing.
+      const RowWrapper = rowWrapper;
+
+      const rowKey = getRowKey(row);
+
       return (
         <React.Fragment key={rowKey}>
-          {RowDelegate ? (
-            <RowDelegate>{renderTr({ shouldUseCellDelegate: true })}</RowDelegate>
+          {RowWrapper ? (
+            <RowWrapper rowIndex={rowIndex} row={row.original}>
+              {renderTr()}
+            </RowWrapper>
           ) : (
-            renderTr({ shouldUseCellDelegate: false })
+            <>{renderTr()}</>
           )}
         </React.Fragment>
       );
     },
     [
       reactTableInstance,
+      rowWrapper,
       getRowKey,
       getColumnKey,
       shouldRenderRowIndexColumn,

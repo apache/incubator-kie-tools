@@ -22,28 +22,12 @@ import * as React from "react";
 import { joinName } from "uniforms";
 import { AutoField } from "./AutoField";
 import { UNITABLES_COLUMN_MIN_WIDTH } from "../bee";
+import { UnitablesColumnType } from "../UnitablesTypes";
 
 export const FORMS_ID = "unitables-forms";
 
 const DEFAULT_DATE_TIME_CELL_WDITH = 296;
 const DEFAULT_DATE_CELL_WIDTH = 180;
-
-interface InputField {
-  dataType: DmnBuiltInDataType;
-  width: number;
-  name: string;
-  cellDelegate: (id: string) => React.ReactNode;
-}
-
-interface InputWithInsideProperties extends InputField {
-  insideProperties: Array<InputField>;
-}
-
-export type InputFields = InputField | InputWithInsideProperties;
-
-export function isInputWithInsideProperties(toBeDetermined: InputFields): toBeDetermined is InputWithInsideProperties {
-  return (toBeDetermined as InputWithInsideProperties).insideProperties !== undefined;
-}
 
 export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   constructor(
@@ -53,6 +37,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   ) {
     super(formSchema, validator);
   }
+
   public getProps(name: string, props: Record<string, any> = {}) {
     const finalProps = super.getProps(name, props);
     finalProps.label = "";
@@ -68,34 +53,23 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
 
     if (field.type === "object") {
       field.default = {};
-    }
-    if (field.type === "array") {
+    } else if (field.type === "array") {
       field.default = [];
-    }
-    if (field.type === "boolean") {
+    } else if (field.type === "boolean") {
       field.default = false;
-    }
-    if ((field.type === "string" || field.type === "number") && field.enum) {
+    } else if ((field.type === "string" || field.type === "number") && field.enum) {
       field.placeholder = this.i18n.schema.selectPlaceholder;
       field.direction = SelectDirection.up;
       field.menuAppendTo = document.body;
-    }
-    if (!field.type) {
+    } else if (!field.type) {
       field.type = "string";
     }
+
     return field;
   }
 
-  private static removeInputName(fullName: string) {
-    return fullName.match(/\./) ? fullName.split(".").slice(1).join("-") : fullName;
-  }
-
-  public getBoxedFieldType(field: Record<string, any>): string {
-    return field.type ?? "string";
-  }
-
-  public getBoxedDataType(field: Record<string, any>) {
-    const type = this.getBoxedFieldType(field);
+  public getDataType(field: Record<string, any>) {
+    const type = field.type ?? "string";
 
     switch (type) {
       case "<Undefined>":
@@ -128,43 +102,51 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     }
   }
 
-  private deepTransformToBoxedInputs(fieldName: string, parentName = "") {
+  private deepTransformToUnitablesColumns(fieldName: string, parentName = ""): UnitablesColumnType {
     const joinedName = joinName(parentName, fieldName);
     const field = this.getField(joinedName);
 
-    if (field.type === "object") {
-      const insideProperties: Array<InputField> = this.getSubfields(joinedName).reduce(
-        (insideProperties: Array<InputField>, subField: string) => {
-          const field = this.deepTransformToBoxedInputs(subField, joinedName) as InputWithInsideProperties;
-          if (field && field.insideProperties) {
-            return [...insideProperties, ...field.insideProperties];
-          }
-          return [...insideProperties, field];
-        },
-        []
-      );
+    if (field.type !== "object") {
       return {
-        ...this.getBoxedDataType(field),
-        insideProperties,
-        name: joinedName,
-        width: insideProperties.reduce((acc, insideProperty) => acc + insideProperty.width, 0),
-      } as InputWithInsideProperties;
+        ...this.getDataType(field),
+        name: removeFieldName(joinedName),
+        joinedName: joinedName,
+      };
     }
+
+    const insideProperties: UnitablesColumnType[] = this.getSubfields(joinedName).reduce(
+      (insideProperties: UnitablesColumnType[], subField: string) => {
+        const field = this.deepTransformToUnitablesColumns(subField, joinedName);
+        if (field.insideProperties) {
+          return [...insideProperties, ...field.insideProperties];
+        } else {
+          return [...insideProperties, field];
+        }
+      },
+      []
+    );
+
     return {
-      ...this.getBoxedDataType(field),
-      name: UnitablesJsonSchemaBridge.removeInputName(joinedName),
-      cellDelegate: (id) => <AutoField key={joinedName} name={joinedName} form={id} />,
-    } as InputField;
+      ...this.getDataType(field),
+      insideProperties,
+      name: joinedName,
+      joinedName: joinedName,
+      width: insideProperties.reduce((acc, insideProperty) => acc + (insideProperty.width ?? 0), 0),
+    };
   }
 
-  public getBoxedHeaderInputs(): Array<InputFields> {
-    return (
-      super.getSubfields().reduce((inputs: Array<InputFields>, fieldName: string) => {
-        const generateInputFields = this.deepTransformToBoxedInputs(fieldName);
-        if (generateInputFields) {
-          return [...inputs, generateInputFields];
-        }
-      }, [] as Array<InputFields>) ?? []
-    );
+  public getUnitablesColumns(): UnitablesColumnType[] {
+    return (super.getSubfields() ?? []).reduce((fields, fieldName) => {
+      const generateInputFields = this.deepTransformToUnitablesColumns(fieldName);
+      if (generateInputFields) {
+        return [...fields, generateInputFields];
+      } else {
+        return fields;
+      }
+    }, []);
   }
+}
+
+function removeFieldName(fullName: string) {
+  return fullName.match(/\./) ? fullName.split(".").slice(1).join("-") : fullName;
 }

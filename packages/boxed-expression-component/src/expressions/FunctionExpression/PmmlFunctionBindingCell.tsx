@@ -69,7 +69,7 @@ export function PmmlFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
     ];
   }, [functionExpression]);
 
-  const cellComponentByColumnId: BeeTableProps<PMML_ROWTYPE>["cellComponentByColumnId"] = useMemo(
+  const cellComponentByColumnAccessor: BeeTableProps<PMML_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       label: (props) => <PmmlFunctionExpressionLabelCell {...props} />,
       value: (props) => <PmmlFunctionExpressionValueCell {...props} />,
@@ -85,7 +85,7 @@ export function PmmlFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
       getRowKey={(r) => r.id}
       getColumnKey={(c) => c.id}
       operationConfig={[]}
-      cellComponentByColumnId={cellComponentByColumnId}
+      cellComponentByColumnAccessor={cellComponentByColumnAccessor}
       headerVisibility={BeeTableHeaderVisibility.None}
       shouldRenderRowIndexColumn={false}
       shouldShowRowsInlineControls={false}

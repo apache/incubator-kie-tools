@@ -25,6 +25,7 @@ interface OutputField {
   dataType: DmnBuiltInDataType;
   width?: number;
   name: string;
+  joinedName: string;
 }
 
 interface OutputTypesField extends OutputField {
@@ -52,16 +53,17 @@ export function useDmnRunnerOutputs(
     const outputTypeMap = Object.entries(jsonSchemaBridge.schema?.definitions?.OutputSet?.properties ?? []).reduce(
       (outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnSchemaProperties]) => {
         if (properties["x-dmn-type"]) {
-          const dataType = jsonSchemaBridge.getBoxedDataType(properties).dataType;
+          const dataType = jsonSchemaBridge.getDataType(properties).dataType;
           outputTypeMap.set(name, {
             type: properties.type,
             dataType,
             name,
+            joinedName: name,
           });
         } else {
           const path = properties.$ref.split("/").slice(1); // remove #
           const data = path.reduce((acc: any, property: string) => acc[property], jsonSchemaBridge.schema);
-          const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
+          const dataType = jsonSchemaBridge.getDataType(data).dataType;
           if (data.properties) {
             const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
             outputTypeMap.set(name, {
@@ -69,12 +71,14 @@ export function useDmnRunnerOutputs(
               insideProperties,
               dataType,
               name,
+              joinedName: name,
             });
           } else {
             outputTypeMap.set(name, {
               type: data.type,
               dataType,
               name,
+              joinedName: name,
             });
           }
         }
@@ -95,6 +99,7 @@ export function useDmnRunnerOutputs(
             if (data && isOutputWithInsideProperties(data)) {
               acc.set(decisionName, {
                 name: decisionName,
+                joinedName: decisionName,
                 dataType,
                 insideProperties: data.insideProperties,
                 width: data.insideProperties.reduce((acc, column: any) => acc + column.width, 0),
@@ -102,6 +107,7 @@ export function useDmnRunnerOutputs(
             } else {
               acc.set(decisionName, {
                 name: decisionName,
+                joinedName: decisionName,
                 dataType,
                 width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
               });
@@ -133,21 +139,21 @@ function deepGenerateOutputTypesMapFields(
 ) {
   return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
     if (property["x-dmn-type"]) {
-      const dataType = jsonSchemaBridge.getBoxedDataType(property).dataType;
-      outputTypeMap.set(name, { type: property.type, dataType, name });
-      return { name, type: property.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH, dataType };
+      const dataType = jsonSchemaBridge.getDataType(property).dataType;
+      outputTypeMap.set(name, { type: property.type, dataType, name, joinedName: name });
+      return { name, type: property.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH, dataType, joinedName: name };
     }
     const path: string[] = property.$ref.split("/").slice(1); // remove #
     const data = path.reduce(
       (acc: { [x: string]: object }, property: string) => acc[property],
       jsonSchemaBridge.schema
     );
-    const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
+    const dataType = jsonSchemaBridge.getDataType(data).dataType;
     if (data.properties) {
       const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
-      outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
+      outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name, joinedName: name });
     } else {
-      outputTypeMap.set(name, { type: data.type, dataType, name });
+      outputTypeMap.set(name, { type: data.type, dataType, name, joinedName: name });
     }
     return { name, dataType: data.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } as OutputTypesField;
   });

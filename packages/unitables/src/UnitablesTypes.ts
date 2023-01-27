@@ -17,16 +17,16 @@
 import * as React from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
-export interface UnitablesBeeTableColumn {
+export interface UnitablesColumnType {
   name: string;
+  joinedName: string;
   dataType: DmnBuiltInDataType;
-  width?: number | string;
+  width?: number;
 
   cellDelegate?: (id: string) => React.ReactNode;
   insideProperties?: any[];
 }
 
-export interface UnitablesInputRows {
+export interface UnitablesRowType {
   inputEntries: string[];
-  rowDelegate?: React.FunctionComponent;
 }

@@ -192,7 +192,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     [setExpression]
   );
 
-  const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
+  const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       parametersInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />,
       argumentExpression: (props) => <ArgumentEntryExpressionCell {...props} />,
@@ -293,7 +293,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           headerLevelCount={2}
           headerVisibility={headerVisibility}
           skipLastHeaderGroup={true}
-          cellComponentByColumnId={cellComponentByColumnId}
+          cellComponentByColumnAccessor={cellComponentByColumnAccessor}
           columns={beeTableColumns}
           rows={beeTableRows}
           onColumnUpdates={onColumnUpdates}

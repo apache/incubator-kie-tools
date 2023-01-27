@@ -197,7 +197,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
     [functionExpression.functionKind, onFunctionKindSelect]
   );
 
-  const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = React.useMemo(
+  const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = React.useMemo(
     () => ({
       parameters: (props) => (
         <>
@@ -246,7 +246,7 @@ export function FunctionExpression(functionExpression: FunctionExpressionDefinit
         headerLevelCount={1}
         headerVisibility={headerVisibility}
         controllerCell={controllerCell}
-        cellComponentByColumnId={cellComponentByColumnId}
+        cellComponentByColumnAccessor={cellComponentByColumnAccessor}
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={false}
         shouldShowColumnsInlineControls={false}

@@ -105,7 +105,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     return row.original.entryExpression.id;
   }, []);
 
-  const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(
+  const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       list: ListItemCell,
     }),
@@ -181,7 +181,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={listExpression.id}
           headerVisibility={beeTableHeaderVisibility}
-          cellComponentByColumnId={cellComponentByColumnId}
+          cellComponentByColumnAccessor={cellComponentByColumnAccessor}
           columns={beeTableColumns}
           rows={beeTableRows}
           operationConfig={beeTableOperationConfig}

@@ -37,8 +37,10 @@ export interface BeeTableProps<R extends object> {
   isEditableHeader?: boolean;
   /** Top-left cell custom content */
   controllerCell?: string | JSX.Element;
+  //
+  rowWrapper?: React.FunctionComponent<React.PropsWithChildren<{ row: R; rowIndex: number }>>;
   /** For each column there is a default component to be used to render the related cell */
-  cellComponentByColumnId?: { [columnId: string]: React.FunctionComponent<BeeTableCellProps<R>> };
+  cellComponentByColumnAccessor?: { [columnId: string]: React.FunctionComponent<BeeTableCellProps<R>> };
   /** Table's columns */
   columns: ReactTable.Column<R>[];
   /** Table's cells */

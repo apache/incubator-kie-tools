@@ -161,7 +161,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [setExpression]
   );
 
-  const cellComponentByColumnId: BeeTableProps<ROWTYPE>["cellComponentByColumnId"] = useMemo(() => {
+  const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
     return {
       entryInfo: (props) => {
         return <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />;
@@ -286,7 +286,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           tableId={contextExpression.id}
           headerLevelCount={1}
           headerVisibility={headerVisibility}
-          cellComponentByColumnId={cellComponentByColumnId}
+          cellComponentByColumnAccessor={cellComponentByColumnAccessor}
           columns={beeTableColumns}
           rows={contextExpression.contextEntries}
           onColumnUpdates={onColumnUpdates}

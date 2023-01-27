@@ -81,7 +81,7 @@ export function BeeTableInternal<R extends object>({
   onColumnAdded,
   onColumnDeleted,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
-  cellComponentByColumnId,
+  cellComponentByColumnAccessor,
   rows,
   columns,
   operationConfig,
@@ -97,6 +97,7 @@ export function BeeTableInternal<R extends object>({
   shouldShowColumnsInlineControls,
   resizerStopBehavior,
   lastColumnMinWidth,
+  rowWrapper,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -167,7 +168,8 @@ export function BeeTableInternal<R extends object>({
   const defaultColumn = useMemo(
     () => ({
       Cell: (cellProps: ReactTable.CellProps<R>) => {
-        const CellComponentForColumn = cellComponentByColumnId?.[cellProps.column.id];
+        const CellComponentForColumn =
+          cellComponentByColumnAccessor?.[cellProps.column.id] ?? cellComponentByColumnAccessor?.["___default"];
         if (CellComponentForColumn) {
           return (
             <CellComponentForColumn
@@ -189,7 +191,7 @@ export function BeeTableInternal<R extends object>({
         }
       },
     }),
-    [hasAdditionalRow, cellComponentByColumnId, isReadOnly, onCellUpdates]
+    [hasAdditionalRow, cellComponentByColumnAccessor, isReadOnly, onCellUpdates]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(
@@ -523,6 +525,7 @@ export function BeeTableInternal<R extends object>({
           lastColumnMinWidth={lastColumnMinWidth}
         />
         <BeeTableBody<R>
+          rowWrapper={rowWrapper}
           resizerStopBehavior={resizerStopBehavior}
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
           shouldShowRowsInlineControls={shouldShowRowsInlineControls}

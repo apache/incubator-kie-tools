@@ -23,7 +23,7 @@ import { DEFAULT_EXPRESSION_NAME, ExpressionDefinitionHeaderMenu } from "../Expr
 import "./ContextEntryInfoCell.css";
 
 export interface ContextEntryInfoCellProps {
-  // This name ('data') can't change, as this is used on "cellComponentByColumnId".
+  // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
   data: readonly ContextExpressionDefinitionEntry[];
   onEntryUpdate: (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => void;
   rowIndex: number;

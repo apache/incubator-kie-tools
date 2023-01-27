@@ -26,7 +26,7 @@ interface Props {
   rowIndex: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   model: object;
-  onModelUpdate: (model: object) => void;
+  onModelUpdate: (model: object, index: number) => void;
 }
 
 export interface UnitablesRowApi {
@@ -42,17 +42,17 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
     const onSubmit = useCallback(
       (model: object) => {
         _setModel(model);
-        onModelUpdate(model);
+        onModelUpdate(model, rowIndex);
       },
-      [onModelUpdate]
+      [onModelUpdate, rowIndex]
     );
 
     const onValidate = useCallback(
       (model: object, error: object) => {
         _setModel(model);
-        onModelUpdate(model);
+        onModelUpdate(model, rowIndex);
       },
-      [onModelUpdate]
+      [onModelUpdate, rowIndex]
     );
 
     useImperativeHandle(forwardRef, () => ({

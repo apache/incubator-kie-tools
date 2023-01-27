@@ -30,7 +30,7 @@ import { useCallback, useMemo } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 
 export interface ContextEntryExpressionCellProps {
-  // This name ('data') can't change, as this is used on "cellComponentByColumnId".
+  // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
   data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
 }
