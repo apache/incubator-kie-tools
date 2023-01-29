@@ -19,5 +19,5 @@ export const COMMAND_IDS = {
   setupAutomaticallyOpenDashboardEditorAlongsideTextEditor:
     "extension.kogito.dashbuilder.setupAutomaticallyOpenDashboardEditorAlongsideTextEditor",
   openAsSource: "extension.kogito.dashbuilder.openAsSource",
-  dashbuilderLsCommand: "extension.kogito.dashbuilder.ls.command"
+  dashbuilderLsCommand: "extension.kogito.dashbuilder.ls.command",
 };
