@@ -36,6 +36,7 @@ import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExt
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
+import { useHistory } from "react-router";
 
 export enum PanelId {
   DMN_RUNNER_TABLE = "dmn-runner-table",
@@ -66,6 +67,7 @@ export const EditorPageDockDrawer = React.forwardRef<
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
   const queryParams = useQueryParams();
+  const history = useHistory();
 
   const notificationsPanelTabNames = useMemo(() => {
     if (
@@ -96,14 +98,35 @@ export const EditorPageDockDrawer = React.forwardRef<
     }
   }, [i18n.terms.execution, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
-  const onToggle = useCallback((panel: PanelId) => {
-    setPanel((currentPanel) => {
-      if (currentPanel !== panel) {
-        return panel;
+  const onToggle = useCallback(
+    (newPanel: PanelId) => {
+      if (panel !== PanelId.DMN_RUNNER_TABLE && newPanel === PanelId.DMN_RUNNER_TABLE) {
+        history.replace({
+          search: queryParams
+            .with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true")
+            .without(QueryParams.PROBLEMS_IS_EXPANDED)
+            .toString(),
+        });
+        return;
       }
-      return PanelId.NONE;
-    });
-  }, []);
+      if (panel !== PanelId.NOTIFICATIONS_PANEL && newPanel === PanelId.NOTIFICATIONS_PANEL) {
+        history.replace({
+          search: queryParams
+            .with(QueryParams.PROBLEMS_IS_EXPANDED, "true")
+            .without(QueryParams.DMN_RUNNER_IS_EXPANDED)
+            .toString(),
+        });
+        return;
+      }
+      history.replace({
+        search: queryParams
+          .without(QueryParams.PROBLEMS_IS_EXPANDED)
+          .without(QueryParams.DMN_RUNNER_IS_EXPANDED)
+          .toString(),
+      });
+    },
+    [panel, history, queryParams]
+  );
 
   const setNotifications = useCallback(
     (tabName: string, path: string, notifications: Notification[]) => {
@@ -168,9 +191,9 @@ export const EditorPageDockDrawer = React.forwardRef<
         setPanel(PanelId.DMN_RUNNER_TABLE);
         return;
       }
-      setPanel(PanelId.NONE);
     }
-  }, [queryParams]);
+    setPanel(PanelId.NONE);
+  }, [history, queryParams]);
 
   return (
     <>
