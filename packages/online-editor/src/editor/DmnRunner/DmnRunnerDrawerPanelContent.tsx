@@ -302,13 +302,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           key={rowIndex}
           onClick={() => {
             selectRow(`Row ${rowIndex + 1}`);
-            dmnRunnerDispatch.setCurrentInputRowIndex(rowIndex);
+            dmnRunnerDispatch.setRowIndexLocation(rowIndex);
           }}
         >
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [dmnRunnerState.inputRows]
+    [dmnRunnerState.inputRows, dmnRunnerDispatch]
   );
 
   const formInputs = useMemo(() => {
@@ -318,14 +318,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const onAddNewRow = useCallback(() => {
     dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
-      dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
+      dmnRunnerDispatch.setRowIndexLocation(newData.length - 1);
       selectRow(`Row ${newData.length}`);
       return newData;
     });
   }, [dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
-    dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
+    dmnRunnerDispatch.setModeLocation(DmnRunnerMode.TABLE);
     props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
   }, [dmnRunnerDispatch, props.editorPageDock]);
 
@@ -426,11 +426,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       </FlexItem>
                     </Flex>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                      <DrawerCloseButton
-                        onClick={(e: any) => {
-                          dmnRunnerDispatch.setExpanded(false);
-                        }}
-                      />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setExpandedLocation(false)} />
                     )}
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
@@ -471,7 +467,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <Text component={"h3"}>{i18n.terms.outputs}</Text>
                     </TextContent>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                      <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setExpandedLocation(false)} />
                     )}
                   </PageSection>
                   <div

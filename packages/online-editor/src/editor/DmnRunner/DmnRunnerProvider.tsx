@@ -56,7 +56,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [props.isEditorReady]);
 
   const { inputRows, setInputRows } = useDmnRunnerInputs(props.workspaceFile);
-
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
   const [isExpanded, setExpanded] = useState(false);
@@ -125,6 +124,8 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       if (isExpanded !== undefined) {
         setExpanded(isExpanded);
       }
+    } else {
+      setExpanded(false);
     }
 
     if (queryParams.has(QueryParams.DMN_RUNNER_MODE)) {
@@ -174,16 +175,58 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
+  const setExpandedLocation = useCallback(
+    (isExpanded?: boolean) => {
+      if (!isExpanded) {
+        history.replace({
+          search: queryParams.without(QueryParams.DMN_RUNNER_IS_EXPANDED).toString(),
+        });
+        return;
+      }
+      history.replace({
+        search: queryParams.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true").toString(),
+      });
+    },
+    [history, queryParams]
+  );
+
+  const setModeLocation = useCallback(
+    (mode: DmnRunnerMode, expand?: true) => {
+      if (expand !== undefined) {
+        history.replace({
+          search: queryParams
+            .with(QueryParams.DMN_RUNNER_MODE, mode)
+            .with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true")
+            .toString(),
+        });
+        return;
+      }
+      history.replace({
+        search: queryParams.with(QueryParams.DMN_RUNNER_MODE, mode).toString(),
+      });
+    },
+    [history, queryParams]
+  );
+
+  const setRowIndexLocation = useCallback(
+    (rowIndex: number) => {
+      history.replace({
+        search: queryParams.with(QueryParams.DMN_RUNNER_ROW, rowIndex.toString()).toString(),
+      });
+    },
+    [history, queryParams]
+  );
+
   const dmnRunnerDispatch = useMemo(
     () => ({
       preparePayload,
-      setCurrentInputRowIndex,
-      setExpanded,
       setError,
+      setExpandedLocation,
       setInputRows,
-      setMode,
+      setModeLocation,
+      setRowIndexLocation,
     }),
-    [preparePayload, setInputRows]
+    [preparePayload, setExpandedLocation, setInputRows, setModeLocation, setRowIndexLocation]
   );
 
   const dmnRunnerState = useMemo(

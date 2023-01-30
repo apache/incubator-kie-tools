@@ -45,12 +45,16 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
 
   const onToggleDmnRunner = useCallback(() => {
     if (isKieSandboxExtendedServicesRunning) {
-      dmnRunnerDispatch.setExpanded((prev) => !prev);
+      if (dmnRunnerState.isExpanded) {
+        dmnRunnerDispatch.setExpandedLocation(false);
+        return;
+      }
+      dmnRunnerDispatch.setExpandedLocation(true);
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [dmnRunnerDispatch, isKieSandboxExtendedServicesRunning, extendedServices]);
+  }, [dmnRunnerDispatch, dmnRunnerState.isExpanded, isKieSandboxExtendedServicesRunning, extendedServices]);
 
   return (
     <>

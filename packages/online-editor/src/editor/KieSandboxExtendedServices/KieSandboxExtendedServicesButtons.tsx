@@ -67,13 +67,18 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
       if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
         props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
       } else {
-        dmnRunnerDispatch.setExpanded((prev) => !prev);
+        if (dmnRunnerState.isExpanded) {
+          dmnRunnerDispatch.setExpandedLocation(false);
+          return;
+        }
+        dmnRunnerDispatch.setExpandedLocation(true);
+        return;
       }
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [dmnRunnerState.mode, dmnRunnerDispatch, extendedServices, props.editorPageDock]);
+  }, [dmnRunnerState.mode, dmnRunnerState.isExpanded, dmnRunnerDispatch, extendedServices, props.editorPageDock]);
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
@@ -163,9 +168,8 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<ListIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setMode(DmnRunnerMode.FORM);
+                  dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM, true);
                   props.editorPageDock?.close();
-                  dmnRunnerDispatch.setExpanded(true);
                 }
               }}
             >
@@ -177,9 +181,8 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<TableIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
+                  dmnRunnerDispatch.setModeLocation(DmnRunnerMode.TABLE, true);
                   props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
-                  dmnRunnerDispatch.setExpanded(true);
                 }
               }}
             >
