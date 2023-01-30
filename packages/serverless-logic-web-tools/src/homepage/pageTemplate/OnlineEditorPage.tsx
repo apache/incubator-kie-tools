@@ -31,13 +31,7 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { BarsIcon } from "@patternfly/react-icons";
-import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
-import * as React from "react";
-import { useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
-import { useLocation } from "react-router-dom";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
@@ -49,6 +43,11 @@ import {
 } from "../../quickstarts-data";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
+import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ExclamationIcon, BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 
 export type OnlineEditorPageProps = { children?: React.ReactNode; pageContainerRef: React.RefObject<HTMLDivElement> };
 
