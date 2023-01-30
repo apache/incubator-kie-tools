@@ -5,7 +5,7 @@ description: "Kogito Serverless Workflow base builder with Quarkus extensions li
 
 labels:
   - name: "org.quarkus.version"
-    value: "2.15.0.Final"
+    value: "2.16.0.Final"
 
 modules:
   install:
