@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import * as PfReactTable from "@patternfly/react-table";
 import { BeeTableHeaderVisibility } from "../../api";
 import * as ReactTable from "react-table";
 import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
@@ -67,13 +66,7 @@ export function BeeTableBody<R extends object>({
       reactTableInstance.prepareRow(row);
 
       const renderTr = () => (
-        <PfReactTable.Tr
-          className={rowKey}
-          {...row.getRowProps()}
-          ouiaId={"expression-row-" + rowIndex} // FIXME: Tiago -> Bad name.
-          key={rowKey}
-          style={{ display: "flex" }}
-        >
+        <tr className={rowKey} key={rowKey}>
           {row.cells.map((cell, cellIndex) => {
             const columnKey = getColumnKey(reactTableInstance.allColumns[cellIndex]);
             return (
@@ -101,7 +94,7 @@ export function BeeTableBody<R extends object>({
               </React.Fragment>
             );
           })}
-        </PfReactTable.Tr>
+        </tr>
       );
 
       const RowWrapper = rowWrapper;
@@ -138,7 +131,7 @@ export function BeeTableBody<R extends object>({
   }, [reactTableInstance.rows.length]);
 
   return (
-    <PfReactTable.Tbody
+    <tbody
       className={`${headerVisibility === BeeTableHeaderVisibility.None ? "missing-header" : ""}`}
       {...reactTableInstance.getTableBodyProps()}
     >
@@ -147,7 +140,7 @@ export function BeeTableBody<R extends object>({
       })}
 
       {additionalRow && (
-        <PfReactTable.Tr className={"additional-row"}>
+        <tr className={"additional-row"}>
           {shouldRenderRowIndexColumn && (
             <BeeTableCoordinatesContextProvider coordinates={{ rowIndex: additionalRowIndex, columnIndex: 0 }}>
               <BeeTableTdForAdditionalRow
@@ -184,8 +177,8 @@ export function BeeTableBody<R extends object>({
               </BeeTableCoordinatesContextProvider>
             );
           })}
-        </PfReactTable.Tr>
+        </tr>
       )}
-    </PfReactTable.Tbody>
+    </tbody>
   );
 }

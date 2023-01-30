@@ -15,14 +15,12 @@
  */
 
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import * as PfReactTable from "@patternfly/react-table";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
-  useBeeTableSelectableCellRef,
   useBeeTableSelectionDispatch,
 } from "../../selection/BeeTableSelectionContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
@@ -31,7 +29,7 @@ export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   className: string;
-  thProps: Partial<PfReactTable.ThProps>;
+  thProps: Partial<ReactTable.TableHeaderProps>;
   onClick?: React.MouseEventHandler;
   isLastLevelColumn: boolean;
   rowIndex: number;
@@ -148,7 +146,7 @@ export function BeeTableTh<R extends object>({
 
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
-      <PfReactTable.Th
+      <th
         rowSpan={rowSpan}
         {...thProps}
         style={{ ...thProps.style, display: "table-cell" }}
@@ -171,7 +169,7 @@ export function BeeTableTh<R extends object>({
             <PlusIcon size="sm" />
           </div>
         )}
-      </PfReactTable.Th>
+      </th>
     </BeeTableCoordinatesContextProvider>
   );
 }

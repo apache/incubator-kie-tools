@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as PfReactTable from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
@@ -250,9 +249,9 @@ export function BeeTableHeader<R extends object>({
 
       const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
       return (
-        <PfReactTable.Tr key={key} {...props}>
+        <tr key={key} {...props}>
           {headerGroup.headers.map((column, columnIndex) => renderColumn(rowIndex, column, columnIndex, done))}
-        </PfReactTable.Tr>
+        </tr>
       );
     });
   }, [skipLastHeaderGroup, reactTableInstance.headerGroups, renderColumn]);
@@ -261,11 +260,11 @@ export function BeeTableHeader<R extends object>({
     (headerGroupLevel: number) => {
       const done = new Set<ReactTable.ColumnInstance<R>>();
       return (
-        <PfReactTable.Tr>
+        <tr>
           {_.nth(reactTableInstance.headerGroups, headerGroupLevel)?.headers.map((column, columnIndex) =>
             renderColumn(headerGroupLevel, column, columnIndex, done)
           )}
-        </PfReactTable.Tr>
+        </tr>
       );
     },
     [renderColumn, reactTableInstance.headerGroups]
@@ -274,11 +273,11 @@ export function BeeTableHeader<R extends object>({
   const header = useMemo(() => {
     switch (headerVisibility) {
       case BeeTableHeaderVisibility.AllLevels:
-        return <PfReactTable.Thead noWrap>{renderHeaderGroups()}</PfReactTable.Thead>;
+        return <thead>{renderHeaderGroups()}</thead>;
       case BeeTableHeaderVisibility.LastLevel:
-        return <PfReactTable.Thead noWrap>{renderAtLevelInHeaderGroups(-1)}</PfReactTable.Thead>;
+        return <thead>{renderAtLevelInHeaderGroups(-1)}</thead>;
       case BeeTableHeaderVisibility.SecondToLastLevel:
-        return <PfReactTable.Thead noWrap>{renderAtLevelInHeaderGroups(-2)}</PfReactTable.Thead>;
+        return <thead>{renderAtLevelInHeaderGroups(-2)}</thead>;
       default:
         return null;
     }

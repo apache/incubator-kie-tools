@@ -15,7 +15,6 @@
  */
 
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import * as PfReactTable from "@patternfly/react-table";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
@@ -132,12 +131,6 @@ export function BeeTableTd<R extends object>({
     [hoverInfo, onRowAdded, rowIndex]
   );
 
-  const style = useMemo(() => {
-    return {
-      flexGrow: columnIndex === row.cells.length - 1 ? "1" : "0",
-    };
-  }, [columnIndex, row.cells.length]);
-
   const addRowButtonStyle = useMemo(
     () =>
       hoverInfo.isHovered && hoverInfo.part === "lower"
@@ -172,29 +165,27 @@ export function BeeTableTd<R extends object>({
 
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
-      <PfReactTable.Td
+      <td
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}
         data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
-        style={style}
+        style={{
+          outline: "none",
+          minHeight: `60px`,
+          width: column.width ? resizingWidth?.value : "100%",
+          minWidth: column.width ? resizingWidth?.value : "100%",
+          maxWidth: column.width ? resizingWidth?.value : "100%",
+        }}
       >
         {column.isRowIndexColumn ? (
           <>{rowIndexLabel}</>
         ) : (
           <>
-            <div
-              style={{
-                width: resizingWidth?.value,
-                minWidth: lastColumnMinWidth ?? cell.column.minWidth,
-                minHeight: `60px`,
-                outline: "none",
-              }}
-            >
-              {tdContent}
-            </div>
+            {tdContent}
+
             {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
               <Resizer
                 minWidth={lastColumnMinWidth ?? cell.column.minWidth}
@@ -210,16 +201,23 @@ export function BeeTableTd<R extends object>({
 
         {hoverInfo.isHovered && shouldRenderInlineButtons && onRowAdded && shouldShowRowsInlineControls && (
           <div
-            onMouseDown={(e) => e.stopPropagation()}
-            onDoubleClick={(e) => e.stopPropagation()}
-            onClick={onAddRowButtonClick}
-            className={"add-row-button"}
-            style={addRowButtonStyle}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
-            <PlusIcon size="sm" />
+            <div
+              onMouseDown={(e) => e.stopPropagation()}
+              onDoubleClick={(e) => e.stopPropagation()}
+              onClick={onAddRowButtonClick}
+              className={"add-row-button"}
+              style={addRowButtonStyle}
+            >
+              <PlusIcon size="sm" />
+            </div>
           </div>
         )}
-      </PfReactTable.Td>
+      </td>
     </BeeTableCoordinatesContextProvider>
   );
 }

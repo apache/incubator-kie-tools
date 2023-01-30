@@ -183,7 +183,7 @@ export function BeeTableEditableCellContent({
           }
         }}
       >
-        <span className="editable-cell-value" dangerouslySetInnerHTML={{ __html: preview }} />
+        <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
         <FeelInput
           ref={feelInputRef}
           enabled={mode === Mode.Edit}

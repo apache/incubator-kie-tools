@@ -79,6 +79,8 @@
 }
 
 .expression-container .expression-info .expression-info-name {
+  font-weight: 700;
+  color: var(--pf-global--palette--black-600);
   font-family: Menlo, monospace;
   font-size: 0.8em;
   white-space: nowrap;

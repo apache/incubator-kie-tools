@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as PfReactTable from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
@@ -503,12 +502,7 @@ export function BeeTableInternal<R extends object>({
 
   return (
     <div className={`table-component ${tableId}`} ref={tableRef} onKeyDown={onKeyDown}>
-      <PfReactTable.TableComposable
-        {...reactTableInstance.getTableProps()}
-        variant="compact"
-        ref={tableComposableRef}
-        ouiaId="expression-grid-table"
-      >
+      <table {...reactTableInstance.getTableProps()} ref={tableComposableRef}>
         <BeeTableHeader<R>
           resizerStopBehavior={resizerStopBehavior}
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
@@ -537,7 +531,7 @@ export function BeeTableInternal<R extends object>({
           onRowAdded={onRowAdded2}
           lastColumnMinWidth={lastColumnMinWidth}
         />
-      </PfReactTable.TableComposable>
+      </table>
       <BeeTableContextMenuHandler
         tableRef={tableRef}
         operationConfig={operationConfig}

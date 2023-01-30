@@ -39,8 +39,9 @@ export function PmmlFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
         accessor: "label" as any,
         dataType: undefined as any,
         isRowIndexColumn: false,
-        width: undefined,
+        width: PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
         minWidth: PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+        isResizable: false, // FIXME: Tiago -> Make this work.
       },
       {
         label: "value",

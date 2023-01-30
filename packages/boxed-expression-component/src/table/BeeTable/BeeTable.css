@@ -28,12 +28,6 @@
   box-sizing: border-box;
 }
 
-.expression-container .table-component table thead,
-.expression-container .table-component table tbody {
-  display: table;
-  width: 100%;
-}
-
 /** Table Header rules */
 
 .expression-container .table-component table th {
@@ -74,7 +68,6 @@
 
 .expression-container .table-component table th:not(.no-clickable-cell) .header-cell-info .label {
   min-height: 21px;
-  color: inherit;
 }
 
 .expression-container .table-component table thead tr {
@@ -226,7 +219,6 @@
 }
 
 .expression-container .table-component table tbody tr td:first-child {
-  display: flex;
   align-items: flex-start;
   justify-content: center;
   box-sizing: border-box;
@@ -296,12 +288,7 @@
 }
 /** Additional row section */
 
-.expression-container .table-component table tbody .additional-row {
-  display: flex;
-}
-
 .expression-container .table-component table tbody tr .additional-row-content {
-  display: inline-block;
   box-sizing: border-box;
 }
 
@@ -315,7 +302,7 @@
 
 .add-row-button {
   position: absolute;
-  border: 1px solid #d2d2d2;
+  border: 1px solid var(--pf-global--palette--black-400);
   height: 18px;
   width: 18px;
   display: flex;
@@ -338,7 +325,7 @@
 
 .add-column-button {
   position: absolute;
-  border: 1px solid #d2d2d2;
+  border: 1px solid var(--pf-global--palette--black-400);
   bottom: 5px;
   height: 18px;
   width: 18px;

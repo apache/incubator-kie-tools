@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as PfReactTable from "@patternfly/react-table";
 import * as ReactTable from "react-table";
 import * as React from "react";
 import { useRef } from "react";
@@ -58,7 +57,7 @@ export function BeeTableTdForAdditionalRow<R extends object>({
   const { cssClasses, onMouseDown, onDoubleClick } = useBeeTableSelectableCell(tdRef, rowIndex, columnIndex);
 
   return isEmptyCell ? (
-    <PfReactTable.Td
+    <td
       ref={tdRef}
       role="cell"
       className={`empty-cell ${cssClasses}`}
@@ -66,14 +65,13 @@ export function BeeTableTdForAdditionalRow<R extends object>({
       onDoubleClick={onDoubleClick}
     >
       <br />
-    </PfReactTable.Td>
+    </td>
   ) : (
-    <PfReactTable.Td
+    <td
       ref={tdRef}
       role={"cell"}
       className={`additional-row-content ${cssClasses}`}
       tabIndex={-1}
-      style={{ flexGrow: isLastColumn ? "1" : "0" }}
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
     >
@@ -86,6 +84,6 @@ export function BeeTableTdForAdditionalRow<R extends object>({
         resizingWidth={resizingWidth}
         setResizingWidth={setResizingWidth}
       />
-    </PfReactTable.Td>
+    </td>
   );
 }

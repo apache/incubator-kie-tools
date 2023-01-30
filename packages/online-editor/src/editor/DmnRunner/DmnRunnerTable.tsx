@@ -33,6 +33,7 @@ import { Unitables } from "@kie-tools/unitables/dist/Unitables";
 import { DmnRunnerOutputsTable } from "@kie-tools/unitables-dmn/dist/DmnRunnerOutputsTable";
 import { DmnUnitablesValidator } from "@kie-tools/unitables-dmn/dist/DmnUnitablesValidator";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import "./DmnRunnerTable.css";
 
 interface Props {
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
@@ -271,7 +272,10 @@ function useAnchoredUnitablesDrawerPanel(args: {
       return { didRefresh: false };
     }
 
-    const ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX = 10;
+    const ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX =
+      10 + // 10px for TODO
+      5; // 5px for paddingRight
+
     const newTotalWidth = (outputsTable as HTMLElement).offsetWidth + ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX;
     const newDrawerPanelMinSize = `min(50%, ${newTotalWidth + scrollbarWidth}px)`;
     setDrawerPanelMinSize((prev) => {

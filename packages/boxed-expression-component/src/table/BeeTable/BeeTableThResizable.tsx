@@ -87,7 +87,14 @@ export function BeeTableThResizable<R extends object>({
   return (
     <BeeTableTh<R>
       className={cssClasses}
-      thProps={{ ...column.getHeaderProps(), style: { position: "relative" } }}
+      thProps={{
+        ...column.getHeaderProps(),
+        style: {
+          width: column.width ? resizingWidth?.value : "100%",
+          minWidth: column.width ? resizingWidth?.value : "100%",
+          maxWidth: column.width ? resizingWidth?.value : "100%",
+        },
+      }}
       onClick={onClick}
       columnIndex={columnIndex}
       rowIndex={rowIndex}
@@ -98,11 +105,7 @@ export function BeeTableThResizable<R extends object>({
       shouldShowColumnsInlineControls={shouldShowColumnsInlineControls}
       column={column}
     >
-      <div
-        className="header-cell"
-        data-ouia-component-type="expression-column-header"
-        style={{ width: column.width ? resizingWidth?.value : undefined }}
-      >
+      <div className="header-cell" data-ouia-component-type="expression-column-header">
         {column.dataType && isEditableHeader ? (
           <ExpressionDefinitionHeaderMenu
             position={PopoverPosition.bottom}

@@ -32,6 +32,7 @@ import { useUnitablesColumns } from "./UnitablesColumns";
 import "./Unitables.css";
 import { UnitablesRow } from "./UnitablesRow";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { GratipayIcon } from "@patternfly/react-icons";
 
 interface Props {
   jsonSchema: object;
@@ -147,9 +148,12 @@ export const Unitables = ({
       {unitablesColumns.length > 0 && rows.length > 0 && formsDivRendered && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={setError} error={<InputError />}>
           <div style={{ display: "flex" }} ref={containerRef}>
-            <div style={{ display: "flex", flexDirection: "column", marginTop: "5px", paddingLeft: "5px" }}>
-              <OutsideRowMenu height={64} isFirstChild={true}>{`#`}</OutsideRowMenu>
-              <OutsideRowMenu height={65} borderBottomSizeBasis={2}>{`#`}</OutsideRowMenu>
+            <div
+              className={"kie-tools--unitables-open-on-form-container"}
+              style={{ display: "flex", flexDirection: "column", marginTop: "5px", paddingLeft: "5px" }}
+            >
+              <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
+              <OutsideRowMenu height={64.5} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
               {rows.map((e, rowIndex) => (
                 <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
                   <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
@@ -242,11 +246,12 @@ function OutsideRowMenu({
         width: "60px",
         height: `${height + (isFirstChild ? 3 : 0) + (isLastChild ? 2 : 0)}px`,
         display: "flex",
-        fontSize: "14px",
+        fontSize: "16px",
+        color: "gray",
         alignItems: "center",
         justifyContent: "center",
         borderBottom: `${isLastChild ? 3 : borderBottomSizeBasis}px solid lightgray`,
-        borderTop: `${isFirstChild ? 3 : 0}px solid lightgray`,
+        borderTop: `${isFirstChild ? 2 : 0}px solid lightgray`,
         borderLeft: "3px solid lightgray",
       }}
     >
