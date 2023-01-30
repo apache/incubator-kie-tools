@@ -103,13 +103,13 @@ pipeline {
                 script {
                     helper.loginRegistry()
 
-                    container.tagImage("quay.io/kiegroup/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}", helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
+                    container.tagImage(getBuiltImage(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
                     container.pushImage(helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
 
                     String reducedTag = helper.getReducedTag()
                     if (reducedTag) {
                         String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, reducedTag)
-                        container.tagImage("quay.io/kiegroup/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}", finalFullImage)
+                        container.tagImage(getBuiltImage(), finalFullImage)
                         container.pushImage(finalFullImage)
                     }
                 }
@@ -139,6 +139,14 @@ void sendNotification() {
 
 String getOperatorVersion() {
     return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
+}
+
+String getOperatorImageName() {
+    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorImageName)', returnStdout: true).trim()
+}
+
+String getBuiltImage() {
+    return "${getOperatorImageName()}:${getOperatorVersion()}"
 }
 
 boolean isMainBranch() {

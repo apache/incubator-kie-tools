@@ -256,6 +256,10 @@ String getOperatorVersion() {
     return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
 }
 
+String getOperatorImageName() {
+    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorImageName)', returnStdout: true).trim()
+}
+
 String getBuiltImage() {
-    return "quay.io/kiegroup/${env.OPERATOR_IMAGE_NAME}:${getOperatorVersion()}"
+    return "${getOperatorImageName()}:${getOperatorVersion()}"
 }

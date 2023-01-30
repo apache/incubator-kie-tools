@@ -20,6 +20,11 @@ getOperatorVersion() {
   echo "${version}"
 }
 
+getOperatorImageName() {
+  local image_name=$(grep -m 1 'IMAGE_TAG_BASE ?=' Makefile | awk -F= '{print $2}' | tr -d ' ')
+  echo "${image_name}"
+}
+
 getCsvFile() {
   echo "${CSV_DIR}/kogito-serverless-operator.clusterserviceversion.yaml"
 }
