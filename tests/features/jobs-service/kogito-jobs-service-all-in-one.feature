@@ -31,17 +31,17 @@ Feature: Kogito-jobs-service-all-in-one feature.
       | variable                                  | value             |
       | SCRIPT_DEBUG                              | true              |
       | JOBS_SERVICE_PERSISTENCE                  | infinispan        |
-      | QUARKUS_INFINISPAN_CLIENT_SERVER_LIST     | 172.18.0.1:11222  |
+      | QUARKUS_INFINISPAN_CLIENT_HOSTS           | 172.18.0.1:11222  |
       | QUARKUS_INFINISPAN_CLIENT_USE_AUTH        | true              |
-      | QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME   | IamNotExist       |
-      | QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD   | hard2guess        |
+      | QUARKUS_INFINISPAN_CLIENT_USERNAME        | IamNotExist       |
+      | QUARKUS_INFINISPAN_CLIENT_PASSWORD        | hard2guess        |
       | QUARKUS_INFINISPAN_CLIENT_AUTH_REALM      | SecretRealm       |
       | QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM  | COOLGSSAPI        |
     Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/infinispan/quarkus-app/quarkus-run.jar
-    And container log should contain QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=172.18.0.1:11222
+    And container log should contain QUARKUS_INFINISPAN_CLIENT_HOSTS=172.18.0.1:11222
     And container log should contain QUARKUS_INFINISPAN_CLIENT_USE_AUTH=true
-    And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD=hard2guess
-    And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME=IamNotExist
+    And container log should contain QUARKUS_INFINISPAN_CLIENT_PASSWORD=hard2guess
+    And container log should contain QUARKUS_INFINISPAN_CLIENT_USERNAME=IamNotExist
     And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_REALM=SecretReal
     And container log should contain QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM=COOLGSSAPI
     And container log should not contain Application failed to start

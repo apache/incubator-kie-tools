@@ -639,7 +639,7 @@ The Persistence service can be switched by using its corresponding image
 
 Basic usage with Infinispan:
 ```bash
-$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
+$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
 ```
 
 Basic usage with Ephemeral PostgreSQL:
@@ -671,7 +671,7 @@ $ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:
 To enable debug just use this env while running this image:
 
 ```bash
-$ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
+$ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
 ```
 You should notice a few debug messages present in the system output.
 
@@ -716,7 +716,7 @@ The Trusty service can be switched by using its corresponding image
 
 Basic usage with Infinispan:
 ```bash
-$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-trusty-infinispan:latest
+$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-trusty-infinispan:latest
 ```
 
 Basic usage with Redis:
@@ -735,7 +735,7 @@ $ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:
 To enable debug just use this env while running this image:
 
 ```bash
-docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-trusty:latest
+docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-trusty:latest
 ```
 You should notice a few debug messages being printed in the system output.
 
