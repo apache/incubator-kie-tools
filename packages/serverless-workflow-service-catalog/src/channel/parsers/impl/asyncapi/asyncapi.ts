@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,118 +22,104 @@ import {
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSource,
   SwfServiceCatalogServiceType,
-} from "../../api";
-import { OpenAPIV3 } from "openapi-types";
-import { get } from "lodash";
-import { convertSource } from "./ConvertSource";
+} from "../../../../api";
+import { convertSource } from "../convertSource";
+import * as AsyncApi from "../../../../api/asyncapitypes";
 
-const APPLICATION_JSON = "application/json";
-
-type OpenapiPathOperations = Pick<
-  OpenAPIV3.PathItemObject,
-  "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace"
->;
-
-export function parseOpenApi(
+export function parseAsyncApi(
   args: {
     source: SwfServiceCatalogServiceSource;
     serviceFileName: string;
     serviceFileContent: string;
   },
-  serviceOpenApiDocument: OpenAPIV3.Document
+  serviceAsyncApiDocument: AsyncApi.AsyncAPIDocument
 ): SwfServiceCatalogService {
-  const swfServiceCatalogFunctions = extractFunctions(serviceOpenApiDocument, convertSource(args.source));
+  const swfServiceCatalogFunctions = extractFunctions(serviceAsyncApiDocument, convertSource(args.source));
+
   return {
-    name: serviceOpenApiDocument.info.title ?? args.serviceFileName,
-    type: SwfServiceCatalogServiceType.rest,
+    name: serviceAsyncApiDocument.info.title ?? args.serviceFileName,
+    type: SwfServiceCatalogServiceType.asyncapi,
     source: args.source,
     functions: swfServiceCatalogFunctions,
     rawContent: args.serviceFileContent,
-  };
+  } as SwfServiceCatalogService;
 }
 
 export function extractFunctions(
-  serviceOpenApiDocument: OpenAPIV3.Document,
+  serviceAsyncApiDocument: AsyncApi.AsyncAPIDocument,
   source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
-  const swfServiceCatalogFunctions = Object.entries(serviceOpenApiDocument.paths).map(
-    ([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
-      return extractPathItemFunctions(pathItem, endpoint, serviceOpenApiDocument, source);
+  const swfServiceCatalogFunctions = Object.entries(serviceAsyncApiDocument.channels).map(
+    ([endpoint, channelItem]: [string, AsyncApi.ChannelsObject]) => {
+      return extractChannelItemFunctions(channelItem, endpoint, serviceAsyncApiDocument, source);
     }
   );
+
   return [].concat.apply([], swfServiceCatalogFunctions);
 }
 
-function extractPathItemFunctions(
-  pathItem: OpenapiPathOperations,
+function extractChannelItemFunctions(
+  channelItem: AsyncApi.ChannelsObject,
   endpoint: string,
-  serviceOpenApiDocument: OpenAPIV3.Document,
+  serviceAsyncApiDocument: AsyncApi.AsyncAPIDocument,
   source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
   const swfServiceCatalogFunctions: SwfServiceCatalogFunction[] = [];
 
-  Object.values(pathItem)
-    .filter((pathOperation) => pathOperation.operationId)
-    .forEach((pathOperation: OpenAPIV3.OperationObject) => {
-      const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
+  const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
 
-      const name = pathOperation.operationId as string;
-
-      const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
-
-      // Looking at operation params
-      if (pathOperation.parameters) {
-        extractFunctionArgumentsFromParams(pathOperation.parameters, functionArguments);
-      }
+  // Looking at operation params
+  if (channelItem.parameters) {
+    extractFunctionArgumentsFromParams(channelItem?.parameters, functionArguments);
+  }
+  Object.values(channelItem)
+    .filter((channelOperation: AsyncApi.OperationObject) => channelOperation.operationId)
+    .forEach((channelOperation: any) => {
+      const body = channelOperation.message;
+      const name = channelOperation.operationId as string;
 
       // Looking only at application/json mime types, we might consider others.
-      if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
-        extractFunctionArgumentsFromRequestBody(
-          body.content[APPLICATION_JSON].schema ?? {},
-          serviceOpenApiDocument,
-          functionArguments
-        );
+      if (body) {
+        extractFunctionArgumentsFromRequestBody(body ?? {}, serviceAsyncApiDocument, functionArguments);
       }
 
       const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
         source,
         name,
-        type: SwfServiceCatalogFunctionType.rest,
+        type: SwfServiceCatalogFunctionType.asyncapi,
         arguments: functionArguments,
       };
       swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
     });
-
   return swfServiceCatalogFunctions;
 }
 
 function extractFunctionArgumentsFromParams(
-  pathParams: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
+  channelParams: any,
   functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
 ) {
-  pathParams.forEach((pathParam) => {
-    const name = get(pathParam, "name");
-    const type = get(pathParam, "schema.type");
-    if (name && type) {
-      functionParams[name] = resolveArgumentType(type);
+  const paramNames = Object.keys(channelParams);
+  paramNames.forEach((paramName) => {
+    if (channelParams && paramName) {
+      functionParams[paramName] = resolveArgumentType(channelParams[paramName]?.schema?.type);
     }
   });
 }
 
 function extractFunctionArgumentsFromRequestBody(
-  schema: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
-  doc: OpenAPIV3.Document,
+  message: AsyncApi.MessageObject,
+  doc: AsyncApi.AsyncAPIDocument,
   functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
 ) {
-  const schemaObject: OpenAPIV3.SchemaObject = extractSchemaObject(schema, doc);
+  const schemaObject: AsyncApi.SchemaObject = extractMessageObject(message, doc);
   if (schemaObject.properties) {
     Object.entries(schemaObject.properties).forEach(
-      ([propertyName, propertySchema]: [string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject]) => {
-        const asReference = propertySchema as OpenAPIV3.ReferenceObject;
+      ([propertyName, propertySchema]: [string, AsyncApi.ReferenceObject | AsyncApi.SchemaObject]) => {
+        const asReference = propertySchema as AsyncApi.ReferenceObject;
         if (asReference.$ref) {
           functionParams[propertyName] = SwfServiceCatalogFunctionArgumentType.object;
         } else {
-          const asSchema = propertySchema as OpenAPIV3.SchemaObject;
+          const asSchema = propertySchema as AsyncApi.SchemaObject;
           if (asSchema.type) {
             functionParams[propertyName] = resolveArgumentType(asSchema.type);
           }
@@ -143,17 +129,27 @@ function extractFunctionArgumentsFromRequestBody(
   }
 }
 
-function extractSchemaObject(
-  schema: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
-  doc: OpenAPIV3.Document
-): OpenAPIV3.SchemaObject {
-  const asReference = schema as OpenAPIV3.ReferenceObject;
+function extractMessageObject(message: AsyncApi.MessageObject, doc: AsyncApi.AsyncAPIDocument): any {
+  const asReference = message as AsyncApi.MessageObject;
+  if (asReference.$ref) {
+    const messageRef: any = asReference.$ref.split("/").pop() ?? "";
+    const resolvedMessage = doc.components?.messages
+      ? doc.components?.messages[messageRef]
+      : ({} as AsyncApi.MessageObject);
+
+    return extractSchemaObject(resolvedMessage?.payload, doc);
+  }
+  return message?.payload;
+}
+
+function extractSchemaObject(payload: any, doc: AsyncApi.AsyncAPIDocument): AsyncApi.SchemaObject {
+  const asReference = payload as any;
   if (asReference.$ref) {
     const schemaRef = asReference.$ref.split("/").pop() ?? "";
     const resolvedSchema = doc.components?.schemas ? doc.components?.schemas[schemaRef] : {};
     return extractSchemaObject(resolvedSchema, doc);
   }
-  return schema as OpenAPIV3.SchemaObject;
+  return asReference as any;
 }
 
 function resolveArgumentType(type: string): SwfServiceCatalogFunctionArgumentType {

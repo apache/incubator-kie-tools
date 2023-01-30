@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { OpenAPIV3 } from "openapi-types";
-import { SwfServiceCatalogService } from "../../../api";
-import { parseOpenApi } from "../openapi";
+import { SwfServiceCatalogService } from "../../../../api";
+import { parseAsyncApi } from "./asyncapi";
 import { ArgsType, SpecParser } from "../SpecParser";
+import * as AsyncApi from "../../../../api/asyncapitypes";
 
-export class OpenApiParser implements SpecParser<OpenAPIV3.Document> {
+export class AsyncApiParser implements SpecParser<AsyncApi.AsyncAPIDocument> {
   canParse(content: any): boolean {
-    return content.openapi && content.info && content.paths;
+    return content.asyncapi && content.info && content.channels;
   }
 
-  parse(serviceOpenApiDocument: OpenAPIV3.Document, args: ArgsType): SwfServiceCatalogService {
-    return parseOpenApi(args, serviceOpenApiDocument);
+  parse(serviceAsyncApiDocument: AsyncApi.AsyncAPIDocument, args: ArgsType): SwfServiceCatalogService {
+    return parseAsyncApi(args, serviceAsyncApiDocument);
   }
 }

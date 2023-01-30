@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export { parseOpenApi } from "./openapi";
-export { parseAsyncApi } from "./asyncapi";
+export { parseOpenApi } from "./impl/openapi/openapi";
+export { parseAsyncApi } from "./impl/asyncapi/asyncapi";
 export { parseApiContent } from "./parseApiContent";

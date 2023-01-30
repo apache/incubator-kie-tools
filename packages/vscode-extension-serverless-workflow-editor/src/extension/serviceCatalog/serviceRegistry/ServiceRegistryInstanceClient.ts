@@ -58,7 +58,7 @@ export class ServiceRegistryInstanceClient {
       const response = await artifactsApi.searchArtifacts();
       const artifacts: SearchedArtifact[] = response.data.artifacts ?? [];
       const specs: SearchedArtifact[] = artifacts.filter((artifact) => artifact.groupId);
-
+      console.log("this.name", this.name);
       for (const spec of specs) {
         const response = await artifactsApi.getLatestArtifact(spec.groupId ?? "", spec.id);
         try {
@@ -74,7 +74,7 @@ export class ServiceRegistryInstanceClient {
           });
           swfServices.push(swfService);
         } catch (e) {
-          console.error(e);
+          console.debug(`Parser error: ${e}`);
         }
       }
     } catch (err) {

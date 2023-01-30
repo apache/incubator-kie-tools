@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 import * as yaml from "js-yaml";
 import { posix as posixPath } from "path";
 import { SwfServiceCatalogService, SwfServiceCatalogServiceSource } from "../../api";
-import { AsyncApiParser } from "./impl/AsyncApiParser";
-import { OpenApiParser } from "./impl/OpenApiParser";
-import { ArgsType, SpecParser } from "./SpecParser";
+import { AsyncApiParser } from "./impl/asyncapi/AsyncApiParser";
+import { OpenApiParser } from "./impl/openapi/OpenApiParser";
+import { ArgsType, SpecParser } from "./impl/SpecParser";
 
 const specParsers: SpecParser<any>[] = [new OpenApiParser(), new AsyncApiParser()];
 

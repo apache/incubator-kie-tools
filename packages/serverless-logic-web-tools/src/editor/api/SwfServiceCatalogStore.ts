@@ -19,7 +19,7 @@ import {
   SwfCatalogSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
+import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/impl/openapi/openapi";
 import { ArtifactType, SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
