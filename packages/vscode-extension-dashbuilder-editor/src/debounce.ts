@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-export const COMMAND_IDS = {
-  openAsDashboard: "extension.kogito.dashbuilder.openAsDashboard",
-  setupAutomaticallyOpenDashboardEditorAlongsideTextEditor:
-    "extension.kogito.dashbuilder.setupAutomaticallyOpenDashboardEditorAlongsideTextEditor",
-  openAsSource: "extension.kogito.dashbuilder.openAsSource",
-  dashbuilderLsCommand: "extension.kogito.dashbuilder.ls.command",
-};
+export function debounce(cb: (...args: any[]) => any, delay: number) {
+  let timeout: any;
+
+  return (...args: any) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      cb(...args);
+    }, delay);
+  };
+}

@@ -67,6 +67,7 @@
       { "id": "@kie-tools/dashbuilder-component-dev" },
       { "id": "@kie-tools/dashbuilder-editor" },
       { "id": "@kie-tools/dashbuilder-language-service" },
+      { "id": "@kie-tools/yaml-language-server" },
       { "id": "@kie-tools/dashbuilder-images" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
       { "id": "@kie-tools/dashbuilder-viewer" },
@@ -108,7 +109,6 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
-      { "id": "@kie-tools/yaml-language-server" },
       { "id": "vscode-extension-backend" },
       { "id": "vscode-extension-bpmn-editor" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
@@ -477,9 +477,10 @@
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-language-service", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/yaml-language-server", "weight": 1 },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-images", "target": "@kie-tools/dashbuilder", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
@@ -702,9 +703,6 @@
         "target": "@kie-tools-core/envelope-bus",
         "weight": 1
       },
-      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools/backend-extended-services", "weight": 1 },
       { "source": "vscode-extension-backend", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -727,6 +725,11 @@
         "weight": 1
       },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
+      {
+        "source": "vscode-extension-dashbuilder-editor",
+        "target": "@kie-tools/dashbuilder-language-service",
+        "weight": 1
+      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools/dashbuilder-viewer", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },

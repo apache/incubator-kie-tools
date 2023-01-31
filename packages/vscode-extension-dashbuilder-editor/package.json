@@ -35,8 +35,10 @@
     "@kie-tools-core/vscode-extension": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/dashbuilder-language-service": "workspace:*",
     "@kie-tools/dashbuilder-viewer": "workspace:*",
-    "portfinder": "^1.0.32"
+    "portfinder": "^1.0.32",
+    "vscode-languageserver-types": "^3.16.0"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -101,6 +103,13 @@
         "*.dash.json": "json",
         "*.dash.yaml": "yaml",
         "*.dash.yml": "yaml"
+      },
+      "yaml.schemas": {
+        "https://www.dashbuilder.org/schemas/0.1/dashbuilder.json": [
+          "**/*.dash.yml",
+          "**/*.dash.yaml",
+          "**/*.dash.json"
+        ]
       }
     },
     "customEditors": [
