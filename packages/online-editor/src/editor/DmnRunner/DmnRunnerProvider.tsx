@@ -22,7 +22,7 @@ import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { QueryParams } from "../../navigation/Routes";
+import { QueryParams, QueryParamsImpl } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
@@ -177,44 +177,55 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
   const setExpandedLocation = useCallback(
     (isExpanded?: boolean) => {
+      let query = queryParams;
+      if (!queryParams.has(QueryParams.DMN_RUNNER_MODE)) {
+        query = query.with(QueryParams.DMN_RUNNER_MODE, DmnRunnerMode.FORM);
+      }
+
       if (!isExpanded) {
         history.replace({
-          search: queryParams.without(QueryParams.DMN_RUNNER_IS_EXPANDED).toString(),
+          search: query.without(QueryParams.DMN_RUNNER_IS_EXPANDED).toString(),
         });
         return;
       }
       history.replace({
-        search: queryParams.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true").toString(),
+        search: query.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true").toString(),
       });
     },
     [history, queryParams]
   );
 
   const setModeLocation = useCallback(
-    (mode: DmnRunnerMode, expand?: true) => {
-      if (expand !== undefined) {
-        history.replace({
-          search: queryParams
-            .with(QueryParams.DMN_RUNNER_MODE, mode)
-            .with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true")
-            .toString(),
-        });
-        return;
-      }
-      history.replace({
-        search: queryParams.with(QueryParams.DMN_RUNNER_MODE, mode).toString(),
-      });
-    },
-    [history, queryParams]
-  );
+    (newMode?: DmnRunnerMode, expand?: true, row?: number) => {
+      let query = queryParams;
 
-  const setRowIndexLocation = useCallback(
-    (rowIndex: number) => {
+      if (mode !== undefined) {
+        query = query.with(QueryParams.DMN_RUNNER_MODE, newMode);
+      } else {
+        query = query.with(QueryParams.DMN_RUNNER_MODE, mode);
+      }
+
+      if (newMode === DmnRunnerMode.TABLE) {
+        query = query.without(QueryParams.PROBLEMS_IS_EXPANDED);
+      }
+
+      if (expand !== undefined) {
+        query = query.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true");
+      } else {
+        query = query.without(QueryParams.DMN_RUNNER_IS_EXPANDED);
+      }
+
+      if (row !== undefined) {
+        query = query.with(QueryParams.DMN_RUNNER_ROW, row.toString());
+      } else {
+        query = query.without(QueryParams.DMN_RUNNER_ROW);
+      }
+
       history.replace({
-        search: queryParams.with(QueryParams.DMN_RUNNER_ROW, rowIndex.toString()).toString(),
+        search: query.toString(),
       });
     },
-    [history, queryParams]
+    [mode, history, queryParams]
   );
 
   const dmnRunnerDispatch = useMemo(
@@ -224,9 +235,8 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setExpandedLocation,
       setInputRows,
       setModeLocation,
-      setRowIndexLocation,
     }),
-    [preparePayload, setExpandedLocation, setInputRows, setModeLocation, setRowIndexLocation]
+    [preparePayload, setExpandedLocation, setInputRows, setModeLocation]
   );
 
   const dmnRunnerState = useMemo(

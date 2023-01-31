@@ -100,30 +100,20 @@ export const EditorPageDockDrawer = React.forwardRef<
 
   const onToggle = useCallback(
     (newPanel: PanelId) => {
+      let query = queryParams;
+
       if (panel !== PanelId.DMN_RUNNER_TABLE && newPanel === PanelId.DMN_RUNNER_TABLE) {
-        history.replace({
-          search: queryParams
-            .with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true")
-            .without(QueryParams.PROBLEMS_IS_EXPANDED)
-            .toString(),
-        });
-        return;
+        query = query.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true").without(QueryParams.PROBLEMS_IS_EXPANDED);
+      } else if (panel !== PanelId.NOTIFICATIONS_PANEL && newPanel === PanelId.NOTIFICATIONS_PANEL) {
+        query = query.with(QueryParams.PROBLEMS_IS_EXPANDED, "true");
+        if (query.getString(QueryParams.DMN_RUNNER_MODE) !== DmnRunnerMode.FORM) {
+          query = query.without(QueryParams.DMN_RUNNER_IS_EXPANDED);
+        }
+      } else {
+        query = query.without(QueryParams.PROBLEMS_IS_EXPANDED).without(QueryParams.DMN_RUNNER_IS_EXPANDED);
       }
-      if (panel !== PanelId.NOTIFICATIONS_PANEL && newPanel === PanelId.NOTIFICATIONS_PANEL) {
-        history.replace({
-          search: queryParams
-            .with(QueryParams.PROBLEMS_IS_EXPANDED, "true")
-            .without(QueryParams.DMN_RUNNER_IS_EXPANDED)
-            .toString(),
-        });
-        return;
-      }
-      history.replace({
-        search: queryParams
-          .without(QueryParams.PROBLEMS_IS_EXPANDED)
-          .without(QueryParams.DMN_RUNNER_IS_EXPANDED)
-          .toString(),
-      });
+
+      history.replace({ search: query.toString() });
     },
     [panel, history, queryParams]
   );

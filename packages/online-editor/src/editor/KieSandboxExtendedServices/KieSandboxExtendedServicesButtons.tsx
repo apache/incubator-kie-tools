@@ -69,10 +69,9 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
       } else {
         if (dmnRunnerState.isExpanded) {
           dmnRunnerDispatch.setExpandedLocation(false);
-          return;
+        } else {
+          dmnRunnerDispatch.setExpandedLocation(true);
         }
-        dmnRunnerDispatch.setExpandedLocation(true);
-        return;
       }
       return;
     }
@@ -168,8 +167,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<ListIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM, true);
-                  props.editorPageDock?.close();
+                  dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM, true, dmnRunnerState.currentInputRowIndex);
                 }
               }}
             >
@@ -182,7 +180,6 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   dmnRunnerDispatch.setModeLocation(DmnRunnerMode.TABLE, true);
-                  props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
                 }
               }}
             >

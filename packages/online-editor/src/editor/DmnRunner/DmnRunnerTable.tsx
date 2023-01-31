@@ -136,11 +136,9 @@ export function DmnRunnerTable(props: Props) {
 
   const openRow = useCallback(
     (rowIndex: number) => {
-      dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM);
-      dmnRunnerDispatch.setRowIndexLocation(rowIndex);
-      props.setPanelOpen(PanelId.NONE);
+      dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM, true, rowIndex);
     },
-    [dmnRunnerDispatch, props.setPanelOpen]
+    [dmnRunnerDispatch]
   );
 
   useElementsThatStopKeyboardEventsPropagation(
