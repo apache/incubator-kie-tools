@@ -29,20 +29,24 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsPageProps } from "../types";
 import { EMPTY_CONFIG, isServiceAccountConfigValid, resetConfigCookie, saveConfigCookie } from "./ServiceAccountConfig";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { QuickStartIds } from "../../quickstarts-data";
 
-export function ServiceAccountSettings() {
+export function ServiceAccountSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceAccount.config);
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -167,127 +171,146 @@ export function ServiceAccountSettings() {
         </PageSection>
       </PageSection>
 
-      <Modal
-        title="Add Service Account"
-        isOpen={
-          isModalOpen &&
-          kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
-          !isStoredConfigValid
-        }
-        onClose={handleModalToggle}
-        variant={ModalVariant.large}
-      >
-        <Form>
-          {!isExtendedServicesRunning && (
-            <FormAlert>
-              <Alert
-                variant="danger"
-                title={
-                  <Text>
-                    Connect to{" "}
-                    <Link to={routes.settings.kie_sandbox_extended_services.path({})}>
-                      KIE Sandbox Extended Services
-                    </Link>{" "}
-                    before configuring your Service Account
-                  </Text>
-                }
-                aria-live="polite"
-                isInline
-              />
-            </FormAlert>
-          )}
-          <FormGroup
-            label={"Client ID"}
-            labelIcon={
-              <Popover bodyContent={"Client ID"}>
-                <button
-                  type="button"
-                  aria-label="More info for client id field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="client-id-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="client-id-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="client-id-field"
-                name="client-id-field"
-                aria-label="Client ID field"
-                aria-describedby="client-id-field-helper"
-                value={config.clientId}
-                onChange={onClientIdChanged}
-                tabIndex={1}
-                data-testid="client-id-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear client id button" onClick={onClearClientId}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup
-            label={"Client Secret"}
-            labelIcon={
-              <Popover bodyContent={"Client Secret"}>
-                <button
-                  type="button"
-                  aria-label="More info for client secret field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="client-secret-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="client-secret-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="client-secret-field"
-                name="client-secret-field"
-                aria-label="Client secret field"
-                aria-describedby="client-secret-field-helper"
-                value={config.clientSecret}
-                onChange={onClientSecretChanged}
-                tabIndex={2}
-                data-testid="client-secret-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear client secret button" onClick={onClearClientSecret}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <ActionGroup>
-            <Button
-              isDisabled={!isCurrentConfigValid}
-              id="service-account-config-apply-button"
-              key="save"
-              variant="primary"
-              onClick={onApply}
-              data-testid="apply-config-button"
+      {props.pageContainerRef.current && (
+        <Modal
+          title="Add Service Account"
+          isOpen={
+            isModalOpen &&
+            kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
+            !isStoredConfigValid
+          }
+          onClose={handleModalToggle}
+          variant={ModalVariant.large}
+          appendTo={props.pageContainerRef.current || document.body}
+        >
+          <Form>
+            {!isExtendedServicesRunning && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={
+                    <Text>
+                      Connect to{" "}
+                      <Link to={routes.settings.kie_sandbox_extended_services.path({})}>
+                        KIE Sandbox Extended Services
+                      </Link>{" "}
+                      before configuring your Service Account
+                    </Text>
+                  }
+                  aria-live="polite"
+                  isInline
+                />
+              </FormAlert>
+            )}
+            <FormGroup
+              label={"Client ID"}
+              labelIcon={
+                <Popover bodyContent={"Client ID"}>
+                  <button
+                    type="button"
+                    aria-label="More info for client id field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="client-id-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="client-id-field"
             >
-              Apply
-            </Button>
-          </ActionGroup>
-        </Form>
-      </Modal>
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="client-id-field"
+                  name="client-id-field"
+                  aria-label="Client ID field"
+                  aria-describedby="client-id-field-helper"
+                  value={config.clientId}
+                  onChange={onClientIdChanged}
+                  tabIndex={1}
+                  data-testid="client-id-text-field"
+                />
+                <InputGroupText>
+                  <Button isSmall variant="plain" aria-label="Clear client id button" onClick={onClearClientId}>
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+            <FormGroup
+              label={"Client Secret"}
+              labelIcon={
+                <Popover bodyContent={"Client Secret"}>
+                  <button
+                    type="button"
+                    aria-label="More info for client secret field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="client-secret-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="client-secret-field"
+            >
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="client-secret-field"
+                  name="client-secret-field"
+                  aria-label="Client secret field"
+                  aria-describedby="client-secret-field-helper"
+                  value={config.clientSecret}
+                  onChange={onClientSecretChanged}
+                  tabIndex={2}
+                  data-testid="client-secret-text-field"
+                />
+                <InputGroupText>
+                  <Button isSmall variant="plain" aria-label="Clear client secret button" onClick={onClearClientSecret}>
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+              <br />
+              <Button
+                isInline={true}
+                key="quickstart"
+                variant="link"
+                onClick={() => {
+                  qsContext.setActiveQuickStartID?.(QuickStartIds.ApplicationServicesIntegrationQuickStart);
+                  setTimeout(
+                    () =>
+                      qsContext.setQuickStartTaskNumber?.(QuickStartIds.ApplicationServicesIntegrationQuickStart, 0),
+                    0
+                  );
+                }}
+              >
+                Need help getting started? Follow our quickstart guide.
+              </Button>
+            </FormGroup>
+            <ActionGroup>
+              <Button
+                isDisabled={!isCurrentConfigValid}
+                id="service-account-config-apply-button"
+                key="save"
+                variant="primary"
+                onClick={onApply}
+                data-testid="apply-config-button"
+              >
+                Apply
+              </Button>
+            </ActionGroup>
+          </Form>
+        </Modal>
+      )}
     </Page>
   );
 }

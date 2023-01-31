@@ -29,7 +29,7 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
@@ -41,13 +41,17 @@ import {
   resetConfigCookie,
   saveConfigCookie,
 } from "./ServiceRegistryConfig";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { QuickStartIds } from "../../quickstarts-data";
+import { SettingsPageProps } from "../types";
 
-export function ServiceRegistrySettings() {
+export function ServiceRegistrySettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceRegistry.config);
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -165,141 +169,158 @@ export function ServiceRegistrySettings() {
         </PageSection>
       </PageSection>
 
-      <Modal
-        title="Add Service Registry"
-        isOpen={
-          isModalOpen &&
-          kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
-          !isStoredConfigValid
-        }
-        onClose={handleModalToggle}
-        variant={ModalVariant.large}
-      >
-        <Form>
-          {!isExtendedServicesRunning && (
-            <FormAlert>
-              <Alert
-                variant="danger"
-                title={
-                  <Text>
-                    Connect to{" "}
-                    <Link to={routes.settings.kie_sandbox_extended_services.path({})}>
-                      KIE Sandbox Extended Services
-                    </Link>{" "}
-                    before configuring your Service Registry instance
-                  </Text>
-                }
-                aria-live="polite"
-                isInline
-              />
-            </FormAlert>
-          )}
-          <FormGroup
-            label={"Name"}
-            labelIcon={
-              <Popover
-                bodyContent={"Name to identify your Service Registry instance across the Serverless Logic Web Tools."}
-              >
-                <button
-                  type="button"
-                  aria-label="More info for name field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="name-field"
-                  className="pf-c-form__group-label-help"
+      {props.pageContainerRef.current && (
+        <Modal
+          title="Add Service Registry"
+          isOpen={
+            isModalOpen &&
+            kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
+            !isStoredConfigValid
+          }
+          onClose={handleModalToggle}
+          variant={ModalVariant.large}
+          appendTo={props.pageContainerRef.current || document.body}
+        >
+          <Form>
+            {!isExtendedServicesRunning && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={
+                    <Text>
+                      Connect to{" "}
+                      <Link to={routes.settings.kie_sandbox_extended_services.path({})}>
+                        KIE Sandbox Extended Services
+                      </Link>{" "}
+                      before configuring your Service Registry instance
+                    </Text>
+                  }
+                  aria-live="polite"
+                  isInline
+                />
+              </FormAlert>
+            )}
+            <FormGroup
+              label={"Name"}
+              labelIcon={
+                <Popover
+                  bodyContent={"Name to identify your Service Registry instance across the Serverless Logic Web Tools."}
                 >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="name-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="name-field"
-                name="name-field"
-                aria-label="Name field"
-                aria-describedby="name-field-helper"
-                value={config.name}
-                onChange={onNameChanged}
-                tabIndex={1}
-                data-testid="name-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear name button" onClick={onClearName}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup
-            label={"Core Registry API"}
-            labelIcon={
-              <Popover bodyContent={"Core Registry API URL associated with your Service Registry instance."}>
-                <button
-                  type="button"
-                  aria-label="More info for core registry api field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="core-registry-api-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="core-registry-api-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="core-registry-api-field"
-                name="core-registry-api-field"
-                aria-label="Core Registry API field"
-                aria-describedby="core-registry-api-field-helper"
-                value={config.coreRegistryApi}
-                onChange={onCoreRegistryApiChanged}
-                tabIndex={2}
-                data-testid="core-registry-api-text-field"
-              />
-              <InputGroupText>
-                <Button
-                  isSmall
-                  variant="plain"
-                  aria-label="Clear core registry api button"
-                  onClick={onClearCoreRegistryApi}
-                >
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <TextContent>
-            <Text component={TextVariants.p}>
-              <b>Note</b>: You must also provide{" "}
-              <Link to={routes.settings.service_account.path({})}>Service Account</Link> so the connection with your
-              Service Registry instance can be properly established.
-            </Text>
-          </TextContent>
-          <ActionGroup>
-            <Button
-              isDisabled={!isCurrentConfigValid}
-              id="service-registry-config-apply-button"
-              key="save"
-              variant="primary"
-              onClick={onApply}
-              data-testid="apply-config-button"
+                  <button
+                    type="button"
+                    aria-label="More info for name field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="name-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="name-field"
             >
-              Apply
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="name-field"
+                  name="name-field"
+                  aria-label="Name field"
+                  aria-describedby="name-field-helper"
+                  value={config.name}
+                  onChange={onNameChanged}
+                  tabIndex={1}
+                  data-testid="name-text-field"
+                />
+                <InputGroupText>
+                  <Button isSmall variant="plain" aria-label="Clear name button" onClick={onClearName}>
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+            <FormGroup
+              label={"Core Registry API"}
+              labelIcon={
+                <Popover bodyContent={"Core Registry API URL associated with your Service Registry instance."}>
+                  <button
+                    type="button"
+                    aria-label="More info for core registry api field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="core-registry-api-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="core-registry-api-field"
+            >
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="core-registry-api-field"
+                  name="core-registry-api-field"
+                  aria-label="Core Registry API field"
+                  aria-describedby="core-registry-api-field-helper"
+                  value={config.coreRegistryApi}
+                  onChange={onCoreRegistryApiChanged}
+                  tabIndex={2}
+                  data-testid="core-registry-api-text-field"
+                />
+                <InputGroupText>
+                  <Button
+                    isSmall
+                    variant="plain"
+                    aria-label="Clear core registry api button"
+                    onClick={onClearCoreRegistryApi}
+                  >
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+            <TextContent>
+              <Text component={TextVariants.p}>
+                <b>Note</b>: You must also provide{" "}
+                <Link to={routes.settings.service_account.path({})}>Service Account</Link> so the connection with your
+                Service Registry instance can be properly established.
+              </Text>
+            </TextContent>
+            <Button
+              isInline={true}
+              key="quickstart"
+              variant="link"
+              onClick={() => {
+                qsContext.setActiveQuickStartID?.(QuickStartIds.ApplicationServicesIntegrationQuickStart);
+                setTimeout(
+                  () => qsContext.setQuickStartTaskNumber?.(QuickStartIds.ApplicationServicesIntegrationQuickStart, 1),
+                  0
+                );
+              }}
+            >
+              Need help getting started? Follow our quickstart guide.
             </Button>
-          </ActionGroup>
-        </Form>
-      </Modal>
+            <ActionGroup>
+              <Button
+                isDisabled={!isCurrentConfigValid}
+                id="service-registry-config-apply-button"
+                key="save"
+                variant="primary"
+                onClick={onApply}
+                data-testid="apply-config-button"
+              >
+                Apply
+              </Button>
+            </ActionGroup>
+          </Form>
+        </Modal>
+      )}
     </Page>
   );
 }

@@ -25,28 +25,33 @@ import { ApacheKafkaSettings } from "../kafka/ApacheKafkaSettings";
 import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
+import { SettingsPageProps } from "../types";
 
-export function SettingsPageRoutes() {
+export function SettingsPageRoutes(props: {} & SettingsPageProps) {
   const routes = useRoutes();
+  const settingsPageProps: SettingsPageProps = {
+    pageContainerRef: props.pageContainerRef,
+  };
+
   return (
     <Switch>
       <Route path={routes.settings.github.path({})}>
-        <GitHubSettings />
+        <GitHubSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.kie_sandbox_extended_services.path({})}>
-        <KieSandboxExtendedServicesSettings />
+        <KieSandboxExtendedServicesSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.openshift.path({})}>
-        <OpenShiftSettings />
+        <OpenShiftSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.service_account.path({})}>
-        <ServiceAccountSettings />
+        <ServiceAccountSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.service_registry.path({})}>
-        <ServiceRegistrySettings />
+        <ServiceRegistrySettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.kafka.path({})}>
-        <ApacheKafkaSettings />
+        <ApacheKafkaSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.feature_preview.path({})}>
         <FeaturePreviewSettings />

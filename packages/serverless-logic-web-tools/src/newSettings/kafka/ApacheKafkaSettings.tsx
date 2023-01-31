@@ -29,20 +29,24 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { EMPTY_CONFIG, isKafkaConfigValid, resetConfigCookie, saveConfigCookie } from "./KafkaSettingsConfig";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { QuickStartIds } from "../../quickstarts-data";
+import { SettingsPageProps } from "../types";
 
-export function ApacheKafkaSettings() {
+export function ApacheKafkaSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.apacheKafka.config);
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -159,139 +163,158 @@ export function ApacheKafkaSettings() {
         </PageSection>
       </PageSection>
 
-      <Modal
-        title="Add Streams for Apache Kafka"
-        isOpen={
-          isModalOpen &&
-          kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
-          !isStoredConfigValid
-        }
-        onClose={handleModalToggle}
-        variant={ModalVariant.large}
-      >
-        <Form>
-          {!isExtendedServicesRunning && (
-            <FormAlert>
-              <Alert
-                variant="danger"
-                title={
-                  <Text>
-                    Connect to{" "}
-                    <Link to={routes.settings.kie_sandbox_extended_services.path({})}>
-                      KIE Sandbox Extended Services
-                    </Link>{" "}
-                    before configuring your Streams for Apache Kafka instance
-                  </Text>
-                }
-                aria-live="polite"
-                isInline
-              />
-            </FormAlert>
-          )}
-          <FormGroup
-            label={"Bootstrap Server"}
-            labelIcon={
-              <Popover bodyContent={"The bootstrap server associated with your Streams for Apache Kafka instance."}>
-                <button
-                  type="button"
-                  aria-label="More info for bootstrap server field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="bootstrap-server-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="bootstrap-server-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="bootstrap-server-field"
-                name="bootstrap-server-field"
-                aria-label="Bootstrap server field"
-                aria-describedby="bootstrap-server-field-helper"
-                value={config.bootstrapServer}
-                onChange={onBootstrapServerChanged}
-                tabIndex={1}
-                data-testid="bootstrap-server-text-field"
-              />
-              <InputGroupText>
-                <Button
-                  isSmall
-                  variant="plain"
-                  aria-label="Clear bootstrap server button"
-                  onClick={onClearBootstraServer}
-                >
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup
-            label={"Topic"}
-            labelIcon={
-              <Popover bodyContent={"The topic that messages will flow in."}>
-                <button
-                  type="button"
-                  aria-label="More info for topic field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="topic-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="topic-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="topic-field"
-                name="topic-field"
-                aria-label="Topic field"
-                aria-describedby="topic-field-helper"
-                value={config.topic}
-                onChange={onTopicChanged}
-                tabIndex={2}
-                data-testid="topic-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear topic button" onClick={onClearTopic}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <TextContent>
-            <Text component={TextVariants.p}>
-              <b>Note</b>: You must also provide{" "}
-              <Link to={routes.settings.service_account.path({})}>Service Account</Link> so the connection with your
-              Streams for Apache Kafka instance can be properly established.
-            </Text>
-          </TextContent>
-          <ActionGroup>
-            <Button
-              isDisabled={!isCurrentConfigValid}
-              id="apache-kafka-config-apply-button"
-              key="save"
-              variant="primary"
-              onClick={onApply}
-              data-testid="apply-config-button"
+      {props.pageContainerRef.current && (
+        <Modal
+          title="Add Streams for Apache Kafka"
+          isOpen={
+            isModalOpen &&
+            kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
+            !isStoredConfigValid
+          }
+          onClose={handleModalToggle}
+          variant={ModalVariant.large}
+          appendTo={props.pageContainerRef.current || document.body}
+        >
+          <Form>
+            {!isExtendedServicesRunning && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={
+                    <Text>
+                      Connect to{" "}
+                      <Link to={routes.settings.kie_sandbox_extended_services.path({})}>
+                        KIE Sandbox Extended Services
+                      </Link>{" "}
+                      before configuring your Streams for Apache Kafka instance
+                    </Text>
+                  }
+                  aria-live="polite"
+                  isInline
+                />
+              </FormAlert>
+            )}
+            <FormGroup
+              label={"Bootstrap Server"}
+              labelIcon={
+                <Popover bodyContent={"The bootstrap server associated with your Streams for Apache Kafka instance."}>
+                  <button
+                    type="button"
+                    aria-label="More info for bootstrap server field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="bootstrap-server-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="bootstrap-server-field"
             >
-              Apply
-            </Button>
-          </ActionGroup>
-        </Form>
-      </Modal>
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="bootstrap-server-field"
+                  name="bootstrap-server-field"
+                  aria-label="Bootstrap server field"
+                  aria-describedby="bootstrap-server-field-helper"
+                  value={config.bootstrapServer}
+                  onChange={onBootstrapServerChanged}
+                  tabIndex={1}
+                  data-testid="bootstrap-server-text-field"
+                />
+                <InputGroupText>
+                  <Button
+                    isSmall
+                    variant="plain"
+                    aria-label="Clear bootstrap server button"
+                    onClick={onClearBootstraServer}
+                  >
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+            <FormGroup
+              label={"Topic"}
+              labelIcon={
+                <Popover bodyContent={"The topic that messages will flow in."}>
+                  <button
+                    type="button"
+                    aria-label="More info for topic field"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="topic-field"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              }
+              isRequired
+              fieldId="topic-field"
+            >
+              <InputGroup className="pf-u-mt-sm">
+                <TextInput
+                  autoComplete={"off"}
+                  isRequired
+                  type="text"
+                  id="topic-field"
+                  name="topic-field"
+                  aria-label="Topic field"
+                  aria-describedby="topic-field-helper"
+                  value={config.topic}
+                  onChange={onTopicChanged}
+                  tabIndex={2}
+                  data-testid="topic-text-field"
+                />
+                <InputGroupText>
+                  <Button isSmall variant="plain" aria-label="Clear topic button" onClick={onClearTopic}>
+                    <TimesIcon />
+                  </Button>
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+            <TextContent>
+              <Text component={TextVariants.p}>
+                <b>Note</b>: You must also provide{" "}
+                <Link to={routes.settings.service_account.path({})}>Service Account</Link> so the connection with your
+                Streams for Apache Kafka instance can be properly established.
+              </Text>
+              <br />
+              <Button
+                isInline={true}
+                key="quickstart"
+                variant="link"
+                onClick={() => {
+                  qsContext.setActiveQuickStartID?.(QuickStartIds.ApplicationServicesIntegrationQuickStart);
+                  setTimeout(
+                    () =>
+                      qsContext.setQuickStartTaskNumber?.(QuickStartIds.ApplicationServicesIntegrationQuickStart, 2),
+                    0
+                  );
+                }}
+              >
+                Need help getting started? Follow our quickstart guide.
+              </Button>
+            </TextContent>
+            <ActionGroup>
+              <Button
+                isDisabled={!isCurrentConfigValid}
+                id="apache-kafka-config-apply-button"
+                key="save"
+                variant="primary"
+                onClick={onApply}
+                data-testid="apply-config-button"
+              >
+                Apply
+              </Button>
+            </ActionGroup>
+          </Form>
+        </Modal>
+      )}
     </Page>
   );
 }

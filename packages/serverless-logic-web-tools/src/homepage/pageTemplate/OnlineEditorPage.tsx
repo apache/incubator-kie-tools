@@ -15,42 +15,60 @@
  */
 
 import * as React from "react";
-import { useMemo } from "react";
+import { QuickStartContainer, QuickStartContainerProps } from "@patternfly/quickstarts";
 import {
+  Brand,
+  Button,
   Masthead,
   MastheadBrand,
+  MastheadContent,
   MastheadMain,
   MastheadToggle,
-  Button,
-  Brand,
-  MastheadContent,
-  ToolbarContent,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem,
   PageSidebar,
   SkipToContent,
+  Toolbar,
+  ToolbarContent,
+  ToolbarGroup,
+  ToolbarItem,
 } from "@patternfly/react-core";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
+import { useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
+import { useLocation } from "react-router-dom";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
+import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
+import {
+  ApplicationServicesIntegrationQuickStart,
+  GitHubTokenQuickStart,
+  OpenShiftIntegrationQuickStart,
+} from "../../quickstarts-data";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
-import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ExclamationIcon, BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 
-export function OnlineEditorPage(props: { children?: React.ReactNode }) {
+export type OnlineEditorPageProps = { children?: React.ReactNode; pageContainerRef: React.RefObject<HTMLDivElement> };
+
+export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const history = useHistory();
   const routes = useRoutes();
   const [isNavOpen, setIsNavOpen] = useState(true);
   const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
   const navToggle = () => {
     setIsNavOpen(!isNavOpen);
+  };
+  const [activeQuickStartID, setActiveQuickStartID] = useState("");
+  const [allQuickStartStates, setAllQuickStartStates] = useState({});
+
+  const drawerProps: QuickStartContainerProps = {
+    quickStarts: [GitHubTokenQuickStart, OpenShiftIntegrationQuickStart, ApplicationServicesIntegrationQuickStart],
+    activeQuickStartID,
+    allQuickStartStates,
+    setActiveQuickStartID,
+    setAllQuickStartStates,
+    useQueryParams: false,
   };
 
   const isChromiumBased = useMemo(() => {
@@ -145,8 +163,12 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;
 
   return (
-    <Page header={masthead} sidebar={sidebar} skipToContent={pageSkipToContent} mainContainerId={mainContainerId}>
-      {props.children}
-    </Page>
+    <QuickStartContainer {...drawerProps}>
+      <div id="page-container" ref={props.pageContainerRef}>
+        <Page header={masthead} sidebar={sidebar} skipToContent={pageSkipToContent} mainContainerId={mainContainerId}>
+          {props.children}
+        </Page>
+      </div>
+    </QuickStartContainer>
   );
 }

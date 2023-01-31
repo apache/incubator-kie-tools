@@ -32,10 +32,11 @@ import { routes } from "../../navigation/Routes";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { obfuscate } from "../github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsPageProps } from "../types";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { OpenShiftSettingsSimpleConfig } from "./OpenShiftSettingsSimpleConfig";
 
-export function OpenShiftSettings() {
+export function OpenShiftSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -133,19 +134,22 @@ export function OpenShiftSettings() {
         </PageSection>
       </PageSection>
 
-      <Modal
-        title="Add connection"
-        isOpen={
-          isModalOpen &&
-          kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
-          (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
-            settings.openshift.status === OpenShiftInstanceStatus.EXPIRED)
-        }
-        onClose={handleModalToggle}
-        variant={ModalVariant.large}
-      >
-        <OpenShiftSettingsSimpleConfig />
-      </Modal>
+      {props.pageContainerRef.current && (
+        <Modal
+          title="Add connection"
+          isOpen={
+            isModalOpen &&
+            kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
+            (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
+              settings.openshift.status === OpenShiftInstanceStatus.EXPIRED)
+          }
+          onClose={handleModalToggle}
+          variant={ModalVariant.large}
+          appendTo={props.pageContainerRef.current || document.body}
+        >
+          <OpenShiftSettingsSimpleConfig />
+        </Modal>
+      )}
     </Page>
   );
 }

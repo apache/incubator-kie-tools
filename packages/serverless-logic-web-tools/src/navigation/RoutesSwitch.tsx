@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useRoutes } from "./Hooks";
 import { OnlineEditorPage } from "../homepage/pageTemplate/OnlineEditorPage";
@@ -29,6 +29,7 @@ export function RoutesSwitch() {
   const buildInfo = useMemo(() => {
     return process.env["WEBPACK_REPLACE__buildInfo"];
   }, []);
+  const pageContainerRef = useRef<HTMLDivElement>(null);
 
   const renderPage = (routeProps: {
     location: {
@@ -45,8 +46,8 @@ export function RoutesSwitch() {
     };
   }) => {
     return (
-      <OnlineEditorPage>
-        {!isRouteInSettingsSection ? <HomePageRoutes /> : <SettingsPageRoutes />}
+      <OnlineEditorPage pageContainerRef={pageContainerRef}>
+        {!isRouteInSettingsSection ? <HomePageRoutes /> : <SettingsPageRoutes pageContainerRef={pageContainerRef} />}
         {buildInfo && (
           <div className={"kie-tools--build-info"}>
             <Label>{buildInfo}</Label>

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Modal, ModalVariant } from "@patternfly/react-core";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -23,15 +24,16 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { AddCircleOIcon } from "@patternfly/react-icons";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import { AddCircleOIcon, CheckCircleIcon } from "@patternfly/react-icons";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
+import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
+import { SettingsPageProps } from "../types";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
@@ -49,9 +51,10 @@ enum GitHubTokenScope {
   REPO = "repo",
 }
 
-export function GitHubSettings() {
+export function GitHubSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
+  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
   const [isGitHubTokenValid, setIsGitHubTokenValid] = useState(true);
@@ -180,46 +183,63 @@ export function GitHubSettings() {
         </PageSection>
       </PageSection>
 
-      <Modal
-        title="Create new token"
-        isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
-        onClose={handleModalToggle}
-        variant={ModalVariant.large}
-      >
-        <Form onSubmit={(e) => e.preventDefault()}>
-          <h3>
-            <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
-              Create a new token&nbsp;&nbsp;
-              <ExternalLinkAltIcon />
-            </a>
-          </h3>
-          <FormGroup
-            isRequired={true}
-            helperTextInvalid={githubTokenHelperText}
-            validated={githubTokenValidated}
-            label={"Token"}
-            fieldId={"github-pat"}
-            helperText={"Your token must include the 'repo' scope."}
-          >
-            <InputGroup>
-              <TextInput
-                ref={tokenInput}
-                autoComplete={"off"}
-                id="token-input"
-                name="tokenInput"
-                aria-describedby="token-text-input-helper"
-                placeholder={"Paste your GitHub token here"}
-                maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-                validated={githubTokenValidated}
-                value={githubTokenToDisplay}
-                onPaste={onPasteGitHubToken}
-                tabIndex={1}
-              />
-            </InputGroup>
-          </FormGroup>
-          <br />
-        </Form>
-      </Modal>
+      {props.pageContainerRef.current && (
+        <Modal
+          title="Create new token"
+          isOpen={isModalOpen && settings.github.authStatus !== AuthStatus.LOADING}
+          onClose={handleModalToggle}
+          variant={ModalVariant.large}
+          appendTo={props.pageContainerRef.current}
+        >
+          <Form onSubmit={(e) => e.preventDefault()}>
+            <h3>
+              <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
+                Create a new token&nbsp;&nbsp;
+                <ExternalLinkAltIcon />
+              </a>
+            </h3>
+            <FormGroup
+              isRequired={true}
+              helperTextInvalid={githubTokenHelperText}
+              validated={githubTokenValidated}
+              label={"Token"}
+              fieldId={"github-pat"}
+              helperText={"Your token must include the 'repo' scope."}
+            >
+              <InputGroup>
+                <TextInput
+                  ref={tokenInput}
+                  autoComplete={"off"}
+                  id="token-input"
+                  name="tokenInput"
+                  aria-describedby="token-text-input-helper"
+                  placeholder={"Paste your GitHub token here"}
+                  maxLength={GITHUB_OAUTH_TOKEN_SIZE}
+                  validated={githubTokenValidated}
+                  value={githubTokenToDisplay}
+                  onPaste={onPasteGitHubToken}
+                  tabIndex={1}
+                />
+              </InputGroup>
+            </FormGroup>
+            <TextContent>
+              <Text>
+                <Button
+                  isInline={true}
+                  key="quickstart"
+                  variant="link"
+                  onClick={() => {
+                    qsContext.setActiveQuickStartID?.(QuickStartIds.GitHubTokenQuickStart);
+                    setTimeout(() => qsContext.setQuickStartTaskNumber?.(QuickStartIds.GitHubTokenQuickStart, 0), 0);
+                  }}
+                >
+                  Need help getting started? Follow our quickstart guide.
+                </Button>
+              </Text>
+            </TextContent>
+          </Form>
+        </Modal>
+      )}
     </Page>
   );
 }
