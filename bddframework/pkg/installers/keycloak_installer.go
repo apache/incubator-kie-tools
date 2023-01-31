@@ -24,7 +24,7 @@ var (
 	// keycloakOlmNamespacedInstaller installs Keycloak in the namespace using OLM
 	keycloakOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
 		SubscriptionName:                  "keycloak-operator",
-		Channel:                           "alpha",
+		Channel:                           "fast",
 		Catalog:                           framework.GetCommunityCatalog,
 		InstallationTimeoutInMinutes:      10,
 		GetAllNamespacedOlmCrsInNamespace: getKeycloakCrsInNamespace,

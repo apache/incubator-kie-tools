@@ -48,7 +48,7 @@ var (
 	}
 
 	infinispanOperatorSubscriptionName    = "infinispan"
-	infinispanOperatorSubscriptionChannel = "2.2.x"
+	infinispanOperatorSubscriptionChannel = "2.3.x"
 	infinispanOperatorGitHubBranch        = "2.0.x"
 	infinispanOperatorDeployFilesURI      = fmt.Sprintf("https://raw.githubusercontent.com/infinispan/infinispan-operator/%s/deploy/", infinispanOperatorGitHubBranch)
 	infinispanOperatorServiceName         = "Infinispan"
