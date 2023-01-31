@@ -12,9 +12,9 @@ var validatorsMap = map[string]validators.ValidationFunction{
 	"IssuePrefix": validators.IssuePrefix,
 }
 
-func Validate(message string) *validators.Validation {
-	var enabledValidators = strings.Split(metadata.Validators, ";")
+var enabledValidators = strings.Split(metadata.Validators, ";")
 
+func Validate(message string) *validators.Validation {
 	var result bool = true
 	var reason string = ""
 
