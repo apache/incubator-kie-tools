@@ -53,7 +53,7 @@ var (
 
 	propertiesInfinispan = map[api.RuntimeType]map[int]string{
 		api.QuarkusRuntimeType: {
-			appPropInfinispanServerList:         "quarkus.infinispan-client.server-list",
+			appPropInfinispanServerList:         "quarkus.infinispan-client.hosts",
 			appPropInfinispanUseAuth:            "quarkus.infinispan-client.use-auth",
 			appPropInfinispanSaslMechanism:      "quarkus.infinispan-client.sasl-mechanism",
 			appPropInfinispanAuthRealm:          "quarkus.infinispan-client.auth-realm",

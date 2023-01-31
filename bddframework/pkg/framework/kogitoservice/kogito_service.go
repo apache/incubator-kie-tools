@@ -22,7 +22,7 @@ import (
 	"os"
 )
 
-//Constants ...
+// Constants ...
 const (
 	EnvVarKogitoServiceURL = "LOCAL_KOGITO_SERVICE_URL"
 	webSocketScheme        = "ws"

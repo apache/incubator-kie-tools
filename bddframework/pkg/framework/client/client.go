@@ -161,7 +161,7 @@ func GetKubeConfigFile() string {
 	return filename
 }
 
-//restScope implementation
+// restScope implementation
 type restScope struct {
 	name apimeta.RESTScopeName
 }
