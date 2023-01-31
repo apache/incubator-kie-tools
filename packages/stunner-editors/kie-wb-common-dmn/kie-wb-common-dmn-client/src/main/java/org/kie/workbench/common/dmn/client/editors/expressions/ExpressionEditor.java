@@ -18,10 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.appformer.client.context.Channel;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -104,15 +101,6 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
         this.kogitoChannelHelper = kogitoChannelHelper;
 
         this.view.init(this);
-        enableNewBoxedExpressionBetaPreview();
-    }
-
-    protected void enableNewBoxedExpressionBetaPreview() {
-        /** New Boxed Expression Editor disabled in EMBEDDED and CHROME EXTENSION Channels */
-        if (kogitoChannelHelper.isCurrentChannelEnabled(
-                Stream.of(Channel.EMBEDDED, Channel.GITHUB).collect(Collectors.toList()))) {
-            view.disableBetaBoxedExpressionToggle();
-        }
     }
 
     @Override
