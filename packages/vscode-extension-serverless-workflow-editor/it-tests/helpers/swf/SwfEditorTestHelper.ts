@@ -119,25 +119,21 @@ export default class SwfEditorTestHelper {
   /**
    * Calculates node's center coordinates relative to center of canvas.
    *
-   * Ensure the function is called from the active frame. To switch to the active frame use switchToEditorFrame() function.
+   * Make sure the function is called from the active frame. To switch to the active frame use switchToEditorFrame() function.
    *
    * @param nodeId id of the node.
    * @returns Promise that resolves to an array with coordinates: [x, y].
    */
   private async calculateNodeCenterCoordinates(nodeId: string): Promise<number[]> {
-    const driver = this.webview.getDriver();
+    // Node coordinates
+    const nodeCoordinates = await this.getNodeCoordinates(nodeId);
 
-    // Shape coordinates
-    const scriptGetShapeCoordinates = `return window.frames.canvas.getLocation("${nodeId}")`;
-    const shapeCoordinates = (await driver.executeScript(scriptGetShapeCoordinates)) as number[];
-
-    // Shape dimensions
-    const scriptGetShapeDimensions = `return window.frames.canvas.getDimensions("${nodeId}")`;
-    const shapeDimensions = (await driver.executeScript(scriptGetShapeDimensions)) as number[];
-    const shapeWidth = shapeDimensions[0];
-    const shapeHeight = shapeDimensions[1];
-    const shapeRelativeCenterX = shapeWidth % 2 == 0 ? shapeWidth / 2 : (shapeWidth - 1) / 2;
-    const shapeRelativeCenterY = shapeHeight % 2 == 0 ? shapeHeight / 2 : (shapeWidth - 1) / 2;
+    // Node dimensions
+    const nodeDimensions = await this.getNodeDimensions(nodeId);
+    const nodeWidth = nodeDimensions[0];
+    const nodeHeight = nodeDimensions[1];
+    const nodeRelativeCenterX = nodeWidth % 2 == 0 ? nodeWidth / 2 : (nodeWidth - 1) / 2;
+    const nodeRelativeCenterY = nodeHeight % 2 == 0 ? nodeHeight / 2 : (nodeWidth - 1) / 2;
 
     // Canvas
     const canvasWebElement = await this.getCanvasPanelElementInActiveFrame();
@@ -147,10 +143,40 @@ export default class SwfEditorTestHelper {
     const canvasY0PointerOffset =
       canvasRectangle.height % 2 == 0 ? canvasRectangle.height / 2 : (canvasRectangle.height - 1) / 2;
 
-    // Shape center coordinates relative to center of canvas
-    const shapeCenterXCoordinate = shapeCoordinates[0] + shapeRelativeCenterX - canvasX0PointerOffset;
-    const shapeCenterYCoordinate = shapeCoordinates[1] + shapeRelativeCenterY - canvasY0PointerOffset;
+    // Node center coordinates relative to center of canvas
+    const nodeCenterXCoordinate = nodeCoordinates[0] + nodeRelativeCenterX - canvasX0PointerOffset;
+    const nodeCenterYCoordinate = nodeCoordinates[1] + nodeRelativeCenterY - canvasY0PointerOffset;
 
-    return Promise.resolve([shapeCenterXCoordinate, shapeCenterYCoordinate]);
+    return Promise.resolve([nodeCenterXCoordinate, nodeCenterYCoordinate]);
+  }
+
+  /**
+   * Gets node coordinates.
+   *
+   * Make sure the function is called from the active frame. To switch to the active frame use switchToEditorFrame() function.
+   *
+   * @param nodeId id of the node.
+   * @returns Promise that resolves to to an array with coordinates: [x, y].
+   */
+  private async getNodeCoordinates(nodeId: string): Promise<number[]> {
+    const driver = this.webview.getDriver();
+    const scriptGetNodeCoordinates = `return window.frames.canvas.getLocation("${nodeId}")`;
+    const nodeCoordinates = (await driver.executeScript(scriptGetNodeCoordinates)) as number[];
+    return Promise.resolve(nodeCoordinates);
+  }
+
+  /**
+   * Gets node dimensions.
+   *
+   * Make sure the function is called from the active frame. To switch to the active frame use switchToEditorFrame() function.
+   *
+   * @param nodeId id of the node.
+   * @returns Promise that resolves to to an array with dimensions: [width, height].
+   */
+  private async getNodeDimensions(nodeId: string): Promise<number[]> {
+    const driver = this.webview.getDriver();
+    const scriptGetNodeDimensions = `return window.frames.canvas.getDimensions("${nodeId}")`;
+    const nodeDimensions = (await driver.executeScript(scriptGetNodeDimensions)) as number[];
+    return Promise.resolve(nodeDimensions);
   }
 }
