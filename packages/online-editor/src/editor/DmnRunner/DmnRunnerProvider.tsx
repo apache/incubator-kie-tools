@@ -203,7 +203,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     [history, queryParams]
   );
 
-  const setModeLocation = useCallback(
+  const setParams = useCallback(
     (newMode?: DmnRunnerMode, expand?: true, row?: number) => {
       let query = queryParams;
 
@@ -242,9 +242,9 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setError,
       setExpandedLocation,
       setInputRows,
-      setModeLocation,
+      setParams,
     }),
-    [preparePayload, setExpandedLocation, setInputRows, setModeLocation]
+    [preparePayload, setExpandedLocation, setInputRows, setParams]
   );
 
   const dmnRunnerState = useMemo(

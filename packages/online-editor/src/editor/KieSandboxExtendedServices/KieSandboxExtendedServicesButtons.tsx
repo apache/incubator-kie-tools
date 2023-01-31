@@ -167,7 +167,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<ListIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM, true, dmnRunnerState.currentInputRowIndex);
+                  dmnRunnerDispatch.setParams(DmnRunnerMode.FORM, true, dmnRunnerState.currentInputRowIndex);
                 }
               }}
             >
@@ -179,7 +179,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<TableIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setModeLocation(DmnRunnerMode.TABLE, true);
+                  dmnRunnerDispatch.setParams(DmnRunnerMode.TABLE, true);
                 }
               }}
             >

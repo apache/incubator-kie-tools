@@ -302,7 +302,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           key={rowIndex}
           onClick={() => {
             selectRow(`Row ${rowIndex + 1}`);
-            dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM, true, rowIndex);
+            dmnRunnerDispatch.setParams(DmnRunnerMode.FORM, true, rowIndex);
           }}
         >
           Row {rowIndex + 1}
@@ -318,14 +318,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const onAddNewRow = useCallback(() => {
     dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
-      dmnRunnerDispatch.setModeLocation(DmnRunnerMode.FORM, true, newData.length - 1);
+      dmnRunnerDispatch.setParams(DmnRunnerMode.FORM, true, newData.length - 1);
       selectRow(`Row ${newData.length}`);
       return newData;
     });
   }, [dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
-    dmnRunnerDispatch.setModeLocation(DmnRunnerMode.TABLE, true);
+    dmnRunnerDispatch.setParams(DmnRunnerMode.TABLE, true);
   }, [dmnRunnerDispatch]);
 
   return (
