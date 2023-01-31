@@ -37,7 +37,7 @@ function doParse(fileName: string): SwfServiceCatalogService {
       serviceFileContent: content,
       source: {
         type: SwfCatalogSourceType?.LOCAL_FS,
-        absoluteFilePath: `/Users/tiago/open-api-tests/specs/${fileName}`,
+        absoluteFilePath: `/open-api-tests/specs/${fileName}`,
       },
     },
     serviceOpenApiDocument
@@ -51,8 +51,7 @@ describe("openapi parser", () => {
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
     expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
-    if (result.source.type !== SwfCatalogSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/multiplication.yaml");
+    expect(result.source).toHaveProperty("absoluteFilePath", "/open-api-tests/specs/multiplication.yaml");
     expect(result.name).toBe("Generated API");
 
     expect(result.functions).toHaveLength(2);
@@ -80,8 +79,7 @@ describe("openapi parser", () => {
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
     expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
-    if (result.source.type !== SwfCatalogSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/hiring.yaml");
+    expect(result.source).toHaveProperty("absoluteFilePath", "/open-api-tests/specs/hiring.yaml");
     expect(result.name).toBe("process-usertasks-timer-quarkus-with-console API");
     expect(result.functions).toHaveLength(1);
 
@@ -102,8 +100,7 @@ describe("openapi parser", () => {
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
     expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
-    if (result.source.type !== SwfCatalogSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/greeting.yaml");
+    expect(result.source).toHaveProperty("absoluteFilePath", "/open-api-tests/specs/greeting.yaml");
     expect(result.name).toBe("quarkus-example API");
     expect(result.functions).toHaveLength(1);
 

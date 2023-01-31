@@ -22,8 +22,7 @@
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:updateSnapshot": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests --updateSnapshot\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",

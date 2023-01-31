@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ function doParse(fileName: string): SwfServiceCatalogService {
       serviceFileContent: content,
       source: {
         type: SwfCatalogSourceType?.LOCAL_FS,
-        absoluteFilePath: `/Users/saravana/async-api-tests/specs/${fileName}`,
+        absoluteFilePath: `/async-api-tests/specs/${fileName}`,
       },
     },
     serviceAsyncApiDocument
@@ -51,8 +51,7 @@ describe("asyncapi parser", () => {
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.asyncapi);
     expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
-    if (result.source.type !== SwfCatalogSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/saravana/async-api-tests/specs/message.yaml");
+    expect(result.source).toHaveProperty("absoluteFilePath", "/async-api-tests/specs/message.yaml");
     expect(result.name).toBe("Kafka Application");
 
     expect(result.functions).toHaveLength(1);
@@ -69,8 +68,7 @@ describe("asyncapi parser", () => {
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.asyncapi);
     expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
-    if (result.source.type !== SwfCatalogSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/saravana/async-api-tests/specs/http.yaml");
+    expect(result.source).toHaveProperty("absoluteFilePath", "/async-api-tests/specs/http.yaml");
     expect(result.name).toBe("Http Application");
     expect(result.functions).toHaveLength(2);
 

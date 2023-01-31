@@ -16,6 +16,8 @@
 
 import { OpenAPIV3 } from "openapi-types";
 
+export type SchemaObject = OpenAPIV3.ArraySchemaObject | OpenAPIV3.NonArraySchemaObject;
+
 export interface ParametersObject {
   description: string;
   schema: OpenAPIV3.SchemaObject;
@@ -25,8 +27,6 @@ export interface ParametersObject {
 export interface ReferenceObject {
   $ref: string;
 }
-
-export type SchemaObject = OpenAPIV3.ArraySchemaObject | OpenAPIV3.NonArraySchemaObject;
 
 interface OperationTraitObject {
   operationId: string;

@@ -17,7 +17,7 @@
 import { SwfServiceCatalogService } from "../../../../api";
 import { parseAsyncApi } from "./asyncapi";
 import { ArgsType, SpecParser } from "../SpecParser";
-import * as AsyncApi from "../../../../api/asyncapitypes";
+import * as AsyncApi from "./types";
 
 export class AsyncApiParser implements SpecParser<AsyncApi.AsyncAPIDocument> {
   canParse(content: any): boolean {

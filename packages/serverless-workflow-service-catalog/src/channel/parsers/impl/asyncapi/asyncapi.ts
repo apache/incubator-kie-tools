@@ -24,7 +24,7 @@ import {
   SwfServiceCatalogServiceType,
 } from "../../../../api";
 import { convertSource } from "../convertSource";
-import * as AsyncApi from "../../../../api/asyncapitypes";
+import * as AsyncApi from "./types";
 
 export function parseAsyncApi(
   args: {
