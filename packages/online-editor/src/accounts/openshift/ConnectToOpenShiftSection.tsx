@@ -25,7 +25,7 @@ import {
   DependentFeature,
   useExtendedServices,
 } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { obfuscate } from "../github/ConnectToGitHubSection";
+import { obfuscate } from "../git/ConnectToGitSection";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";
 import { EMPTY_OPENSHIFT_CONNECTION } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";

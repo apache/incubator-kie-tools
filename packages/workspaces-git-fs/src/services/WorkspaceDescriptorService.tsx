@@ -123,14 +123,35 @@ export class WorkspaceDescriptorService {
       message: async () => ({ type: "WSS_UPDATE", workspaceId }),
     });
   }
+  public async turnIntoSnippet(fs: KieSandboxWorkspacesFs, workspaceId: string, snippetUrl: URL, branch: string) {
+    const file = this.toStorageFile({
+      ...(await this.get(fs, workspaceId)),
+      origin: {
+        kind: WorkspaceKind.BITBUCKET_SNIPPET,
+        url: snippetUrl.toString(),
+        branch,
+      },
+    });
+    await this.storageService.updateFile(fs, file.path, file.getFileContents);
 
-  public async turnIntoGit(fs: KieSandboxWorkspacesFs, workspaceId: string, url: URL) {
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
+  }
+
+  public async turnIntoGit(fs: KieSandboxWorkspacesFs, workspaceId: string, url: URL, branch?: string) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       origin: {
         kind: WorkspaceKind.GIT,
         url: url.toString(),
-        branch: GIT_DEFAULT_BRANCH,
+        branch: branch ?? GIT_DEFAULT_BRANCH,
       },
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
