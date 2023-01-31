@@ -1,7 +1,7 @@
-METADATA_PATH                 										:= github.com/kiegroup/kie-tools/examples/commit-message-validator/pkg/metadata
-SET_COMMIT_MESSAGE_VALIDATOR_PORT    							:= $(METADATA_PATH).Port=$(shell build-env commitMessageValidator.port)
-SET_COMMIT_MESSAGE_VALIDATOR_ENABLED_VALIDATORS		:= $(METADATA_PATH).Validators=$(shell build-env commitMessageValidator.validators)
-LDFLAGS                       										:= "-X $(SET_COMMIT_MESSAGE_VALIDATOR_PORT) -X $(SET_COMMIT_MESSAGE_VALIDATOR_ENABLED_VALIDATORS)"
+METADATA_PATH                                     := github.com/kiegroup/kie-tools/examples/commit-message-validator/pkg/metadata
+SET_COMMIT_MESSAGE_VALIDATOR_PORT                 := $(METADATA_PATH).Port=$(shell build-env commitMessageValidator.port)
+SET_COMMIT_MESSAGE_VALIDATOR_ENABLED_VALIDATORS   := $(METADATA_PATH).Validators=$(shell build-env commitMessageValidator.validators)
+LDFLAGS                                           := "-X $(SET_COMMIT_MESSAGE_VALIDATOR_PORT) -X $(SET_COMMIT_MESSAGE_VALIDATOR_ENABLED_VALIDATORS)"
 
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),x86_64)
