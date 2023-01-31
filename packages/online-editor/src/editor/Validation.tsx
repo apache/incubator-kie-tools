@@ -7,7 +7,7 @@ import { useOnlineI18n } from "../i18n";
 import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { DmnLanguageService } from "@kie-tools/dmn-language-service";
+import { DmnLanguageService, DmnLanguageServiceImportedModel } from "@kie-tools/dmn-language-service";
 import { WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 export function useFileValidation(
@@ -18,11 +18,22 @@ export function useFileValidation(
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const dmnLanguageService = useMemo(() => {
-    if (workspaceFile && workspaceFile.extension.toLocaleLowerCase() !== "dmn") {
+    if (!workspaceFile) {
       return;
     }
-    return new DmnLanguageService();
-  }, [workspaceFile]);
+
+    if (workspaceFile.extension.toLocaleLowerCase() !== "dmn") {
+      return;
+    }
+
+    return new DmnLanguageService(async (importedModel: string) => {
+      const resourceContent = await workspaces.resourceContentGet({
+        workspaceId: workspaceFile.workspaceId,
+        relativePath: importedModel,
+      });
+      return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
+    });
+  }, [workspaces, workspaceFile]);
 
   // BPMN validation
   useEffect(() => {
@@ -92,10 +103,8 @@ export function useFileValidation(
         }
 
         dmnLanguageService
-          ?.getAllImportedModelsResources(workspaces, workspaceFile.workspaceId, [
-            currentResourceContent?.content ?? "",
-          ])
-          .then((importedModelsResources) => {
+          ?.getAllImportedModelsResources([currentResourceContent?.content ?? ""])
+          .then((importedModelsResources: DmnLanguageServiceImportedModel[]) => {
             const resources = [currentResourceContent, ...importedModelsResources];
             const payload: KieSandboxExtendedServicesModelPayload = {
               mainURI: workspaceFile.relativePath,

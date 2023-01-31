@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import { ResourceContent } from "@kie-tools-core/workspace/dist/api";
-import { WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-
 const IMPORT = "import";
 const INPUT_DATA = "inputData";
 const XML_MIME = "text/xml";
 const LOCATION_URI_ATTRIBUTE = "locationURI";
+
+export interface DmnLanguageServiceImportedModel {
+  content: string;
+  path: string;
+}
 
 export class DmnLanguageService {
   private readonly parser = new DOMParser();
   private readonly importTagRegExp = new RegExp(`([a-z]*:)?(${IMPORT})`);
   private readonly inputDataRegEx = new RegExp(`([a-z]*:)?(${INPUT_DATA})`);
 
-  DmnLanguageService() {}
+  constructor(private readonly readDmn: (importedModel: string) => Promise<DmnLanguageServiceImportedModel>) {}
 
   private getImportedModel(model: string): string[] {
     const xmlContent = this.parser.parseFromString(model, XML_MIME);
@@ -62,34 +64,24 @@ export class DmnLanguageService {
   }
 
   // recursively get imported models
-  public async getAllImportedModelsResources(
-    workspaces: WorkspacesContextType,
-    workspaceId: string,
-    models: string[]
-  ): Promise<ResourceContent[]> {
+  public async getAllImportedModelsResources(models: string[]): Promise<DmnLanguageServiceImportedModel[]> {
     // get imported models resources
     const importedModels = this.getImportedModels(models);
     if (importedModels && importedModels.length > 0) {
-      const importedModelsResources = (
+      const importedModelsContent = (
         await Promise.all(
           importedModels.map((importedModel) => {
-            return workspaces.resourceContentGet({
-              workspaceId: workspaceId,
-              relativePath: importedModel,
-            });
+            return this.readDmn(importedModel);
           })
         )
-      ).filter((e) => e !== undefined) as ResourceContent[];
+      ).filter((e) => e !== undefined) as DmnLanguageServiceImportedModel[];
 
-      const contents = importedModelsResources.map((resources) => resources.content ?? "");
+      const contents = importedModelsContent.map((resources) => resources.content ?? "");
       const importedFiles = this.getImportedModels(contents);
       if (importedFiles.length > 0) {
-        return [
-          ...importedModelsResources,
-          ...(await this.getAllImportedModelsResources(workspaces, workspaceId, importedFiles)),
-        ];
+        return [...importedModelsContent, ...(await this.getAllImportedModelsResources(importedFiles))];
       }
-      return [...importedModelsResources];
+      return [...importedModelsContent];
     }
     return [];
   }

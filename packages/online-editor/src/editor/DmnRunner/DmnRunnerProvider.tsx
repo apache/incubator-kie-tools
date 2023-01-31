@@ -22,7 +22,7 @@ import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { QueryParams, QueryParamsImpl } from "../../navigation/Routes";
+import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
@@ -61,7 +61,15 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const [isExpanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.FORM);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
-  const dmnLanguageService = useMemo(() => new DmnLanguageService(), []);
+  const dmnLanguageService = useMemo(() => {
+    return new DmnLanguageService(async (importedModel: string) => {
+      const resourceContent = await workspaces.resourceContentGet({
+        workspaceId: props.workspaceFile.workspaceId,
+        relativePath: importedModel,
+      });
+      return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
+    });
+  }, [workspaces, props.workspaceFile]);
 
   const status = useMemo(() => {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
@@ -78,11 +86,9 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         throw new Error("Missing resource content from current file");
       }
 
-      const importedModelsResources = await dmnLanguageService.getAllImportedModelsResources(
-        workspaces,
-        props.workspaceFile.workspaceId,
-        [currentResourceContent?.content ?? ""]
-      );
+      const importedModelsResources = await dmnLanguageService.getAllImportedModelsResources([
+        currentResourceContent?.content ?? "",
+      ]);
       const dmnResources = [currentResourceContent, ...importedModelsResources].map((resources) => ({
         URI: resources.path,
         content: resources.content ?? "",
