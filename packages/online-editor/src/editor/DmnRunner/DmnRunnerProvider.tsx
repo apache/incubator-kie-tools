@@ -149,6 +149,8 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       if (row !== undefined) {
         setCurrentInputRowIndex(row);
       }
+    } else {
+      setCurrentInputRowIndex(0);
     }
 
     if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
