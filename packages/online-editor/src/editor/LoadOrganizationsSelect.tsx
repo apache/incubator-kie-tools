@@ -42,9 +42,32 @@ export interface LoadOrganizationsReponse {
     name: string;
   }[];
 }
+
+export type SelectOptionKindType = "user" | "organization";
+
+export type SelectOptionObjectType = {
+  value: string;
+  kind: SelectOptionKindType;
+  toString(): string;
+  compareTo(selectOption: any): boolean;
+};
+
+const getSelectOptionValue = (value: string, kind: SelectOptionKindType): SelectOptionObjectType => {
+  return {
+    value,
+    kind,
+    toString: () => {
+      return value;
+    },
+    compareTo: (selectOption: any) => {
+      return value.toLowerCase() === selectOption.toString().toLowerCase();
+    },
+  };
+};
+
 export interface Props {
   workspace: WorkspaceDescriptor;
-  onSelect: (organization?: string) => void;
+  onSelect: (organization?: SelectOptionObjectType) => void;
   readonly?: boolean;
   hideUser?: boolean;
 }
@@ -60,7 +83,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
   const [isOrganizationDropdownOpen, setOrganizationDropdownOpen] = useState(false);
   const [organizations, setOrganizations] = useState<{ name: string }[]>();
   const [isLoadingOrganizations, setLoadingOrganizations] = useState(false);
-  const [internalSelectedOption, setInternalSelectedOption] = useState<string>();
+  const [internalSelectedOption, setInternalSelectedOption] = useState<SelectOptionObjectType>();
 
   const hideUser = useMemo(() => {
     return authProvider?.type === AuthProviderType.bitbucket;
@@ -83,7 +106,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
   }, [bitbucketClient]);
 
   const setSelectedOption = useCallback(
-    (option?: string) => {
+    (option?: SelectOptionObjectType) => {
       props.onSelect(option);
       setInternalSelectedOption(option);
     },
@@ -97,8 +120,8 @@ export const LoadOrganizationsSelect = (props: Props) => {
       }
       setSelectedOption(
         switchExpression(authProvider?.type, {
-          bitbucket: orgs.organizations[0].name,
-          github: authInfo?.username,
+          bitbucket: getSelectOptionValue(orgs.organizations[0].name, "organization"),
+          github: getSelectOptionValue(authInfo!.username, "user"),
         })
       );
     },
@@ -138,7 +161,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
     }
     options.push(
       <SelectGroup label={i18n.loadOrganizationsSelect[authProvider.type].user} key="group1" hidden={hideUser}>
-        <SelectOption key={0} value={authInfo?.username}>
+        <SelectOption key={0} value={getSelectOptionValue(authInfo!.username, "user")}>
           <Flex>
             <FlexItem>
               <UserIcon />
@@ -155,7 +178,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
       options.push(
         <SelectGroup label={i18n.loadOrganizationsSelect[authProvider.type].organizations} key="group2">
           {organizations?.map((it, index) => (
-            <SelectOption key={2 + index} value={it.name}>
+            <SelectOption key={2 + index} value={getSelectOptionValue(it.name, "organization")}>
               <Flex>
                 <FlexItem>
                   <UsersIcon />
@@ -168,7 +191,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
       );
     }
     return options;
-  }, [authInfo?.username, authProvider, hideUser, i18n.loadOrganizationsSelect, organizations]);
+  }, [authInfo, authProvider, hideUser, i18n.loadOrganizationsSelect, organizations]);
 
   if (!authProvider || !isSupportedGitAuthProviderType(authProvider?.type)) {
     return <></>;
@@ -180,7 +203,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
           <Select
             variant={SelectVariant.single}
             isOpen={isOrganizationDropdownOpen}
-            onSelect={(_, selection: string) => {
+            onSelect={(_, selection: SelectOptionObjectType) => {
               setOrganizationDropdownOpen(false);
               setSelectedOption(selection);
             }}
