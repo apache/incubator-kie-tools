@@ -16,7 +16,12 @@
 
 <div class="kie-dmn-container">
   <div class="kie-dmn-return-to-link">
-    <i class="fa fa-angle-double-left" aria-hidden="true"></i><a href="#" data-field="returnToLink"></a>
+    <button class="pf-c-button pf-m-link pf-m-inline pf-m-small" type="button" data-field="returnToDRGLink">
+      <span class="pf-c-button__icon pf-m-end">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      </span>
+      <span data-field="returnToDRGLabel"></span>
+    </button>
 
     <div data-field="beta-boxed-expression-toggle" class="kie-beta-boxed-expression-editor">
       <span class="beta-dash"></span>
@@ -28,23 +33,17 @@
       </span>
       <span class="beta-description">
         <span data-i18n-key="BetaVersionDescription1"></span>
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSdTGtMAEPC85vH28PCHJZh-ccnxaVoKGMZvf4BZYsC5dx_1iA/viewform?usp=sf_link"
-          target="_blank"
-          data-i18n-key="FeedbackHere"
-        ></a>
-        <span data-i18n-key="BetaVersionDescription2"></span>
         <a href="#" data-field="switch-back" data-i18n-key="SwitchBack"></a>
-        <span data-i18n-key="BetaVersionDescription3"></span>
+        <span data-i18n-key="BetaVersionDescription2"></span>
       </span>
     </div>
   </div>
-  <div data-field="dmn-new-expression-editor" class="kie-dmn-new-expression-editor hidden"></div>
-  <div data-field="dmn-expression-type" class="kie-dmn-expression-type">
+  <div data-field="dmn-new-expression-editor" class="kie-dmn-new-expression-editor"></div>
+  <div data-field="dmn-expression-type" class="kie-dmn-expression-type hidden">
     <span id="name" data-field="expressionName"></span>
     <span id="type" data-field="expressionType"></span>
   </div>
-  <div data-field="dmn-expression-editor" class="kie-dmn-expression-editor">
+  <div data-field="dmn-expression-editor" class="kie-dmn-expression-editor hidden">
     <div data-field="dmn-table"></div>
   </div>
 </div>

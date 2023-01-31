@@ -31,8 +31,8 @@ import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -107,7 +107,6 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
-import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
@@ -132,8 +131,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     private ExpressionEditorView.Presenter presenter;
 
-    @DataField("returnToLink")
-    private Anchor returnToLink;
+    @DataField("returnToDRGLink")
+    private HTMLButtonElement returnToDRGLink;
+
+    @DataField("returnToDRGLabel")
+    private Span returnToDRGLabel;
 
     @DataField("expressionName")
     private Span expressionName;
@@ -191,7 +193,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Inject
-    public ExpressionEditorViewImpl(final Anchor returnToLink,
+    public ExpressionEditorViewImpl(final HTMLButtonElement returnToDRGLink,
+                                    final Span returnToDRGLabel,
                                     final Span expressionName,
                                     final Span expressionType,
                                     final @DMNEditor DMNGridPanelContainer gridPanelContainer,
@@ -214,14 +217,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final HTMLDivElement newBoxedExpression,
                                     final HTMLDivElement dmnExpressionType,
                                     final HTMLDivElement dmnExpressionEditor) {
-        this.returnToLink = returnToLink;
+        this.returnToDRGLink = returnToDRGLink;
+        this.returnToDRGLabel = returnToDRGLabel;
         this.expressionName = expressionName;
         this.expressionType = expressionType;
         this.gridPanelContainer = gridPanelContainer;
-
         this.translationService = translationService;
         this.listSelector = listSelector;
-
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
@@ -232,7 +234,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.dataTypePageActiveEvent = dataTypePageActiveEvent;
         this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
         this.itemDefinitionUtils = itemDefinitionUtils;
-
         this.tryIt = tryIt;
         this.switchBack = switchBack;
         this.betaBoxedExpressionToggle = betaBoxedExpressionToggle;
@@ -331,7 +332,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void setReturnToLinkText(final String text) {
-        returnToLink.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
+        returnToDRGLabel.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, "DRG"));
     }
 
     @Override
@@ -339,8 +340,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                               final HasExpression hasExpression,
                               final Optional<HasName> hasName,
                               final boolean isOnlyVisualChangeAllowed) {
-        toggleBetaBoxedExpressionEditor(false);
-        toggleLegacyExpressionEditor(true);
         this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
         this.hasName = hasName;
@@ -371,18 +370,12 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         "<" + expressionTypeText + ">"));
     }
 
-    public void onEditorSelectedPageEvent(@Observes MultiPageEditorSelectedPageEvent editorSelectedPageEvent) {
-        toggleBetaBoxedExpressionEditor(false);
-        toggleLegacyExpressionEditor(true);
-    }
-
     public void onPropertiesPanelFormFieldChanged(@Observes FormFieldChanged event) {
         reloadIfIsNewEditor();
     }
 
     @EventHandler("try-it")
     public void onTryIt(final ClickEvent event) {
-        loadNewBoxedExpressionEditor();
         toggleLegacyExpressionEditor(false);
         toggleBetaBoxedExpressionEditor(true);
         preventDefault(event);
@@ -563,12 +556,16 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     void toggleBetaBoxedExpressionEditor(final boolean enabled) {
         betaBoxedExpressionToggle.classList.toggle(ENABLED_BETA_CSS_CLASS, enabled);
-        newBoxedExpression.classList.toggle("hidden", !enabled);
+        newBoxedExpression.classList.toggle(HiddenHelper.HIDDEN_CSS_CLASS, !enabled);
     }
 
     void toggleLegacyExpressionEditor(final boolean enabled) {
-        dmnExpressionType.classList.toggle("hidden", !enabled);
-        dmnExpressionEditor.classList.toggle("hidden", !enabled);
+        dmnExpressionType.classList.toggle(HiddenHelper.HIDDEN_CSS_CLASS, !enabled);
+        dmnExpressionEditor.classList.toggle(HiddenHelper.HIDDEN_CSS_CLASS, !enabled);
+        if (enabled) {
+            gridPanel.setFocus(true);
+            onResize();
+        }
     }
 
     boolean isNewEditorEnabled() {
@@ -653,8 +650,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         loadNewBoxedExpressionEditor();
     }
 
-    @EventHandler("returnToLink")
-    void onClickReturnToLink(final ClickEvent event) {
+    @EventHandler("returnToDRGLink")
+    void onClickReturnToDRGLink(final ClickEvent event) {
         presenter.exit();
     }
 
@@ -692,7 +689,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void setFocus() {
-        gridPanel.setFocus(true);
+        toggleBetaBoxedExpressionEditor(true);
+        toggleLegacyExpressionEditor(false);
+        loadNewBoxedExpressionEditor();
     }
 
     HasExpression getHasExpression() {
