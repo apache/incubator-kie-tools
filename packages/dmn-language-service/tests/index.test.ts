@@ -18,7 +18,6 @@ import { DmnLanguageService } from "../src";
 import { readFile } from "fs/promises";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const tests = [
   { modelPath: "./fixtures/model.dmn", expected: ["recursive.dmn", "nested.dmn"] },
@@ -27,7 +26,13 @@ const tests = [
 ];
 
 describe("DmnLanguageService", () => {
-  const service = new DmnLanguageService();
+  const service = new DmnLanguageService(
+    () =>
+      new Promise((res) => ({
+        path: "",
+        content: "",
+      }))
+  );
 
   it("getImportedModels - empty string", () => {
     expect(service.getImportedModels("")).toEqual([]);
@@ -54,16 +59,15 @@ describe("DmnLanguageService", () => {
   });
 
   it("getAllImportedModelsResources - empty", async () => {
-    const workspaces: any = {
-      resourceContentGet: () =>
+    const service = new DmnLanguageService(
+      () =>
         new Promise((res) => ({
           path: "",
           content: "",
-          type: ContentType.TEXT,
-        })),
-    };
+        }))
+    );
 
-    expect(await service.getAllImportedModelsResources(workspaces, "", [""])).toEqual([]);
+    expect(await service.getAllImportedModelsResources([""])).toEqual([]);
   });
 
   it("getAllImportedModelsResources - get resources", async () => {
@@ -76,13 +80,10 @@ describe("DmnLanguageService", () => {
     const expected = {
       path: pathNested,
       content: fileNested,
-      type: ContentType.TEXT,
     };
 
-    const workspaces: any = {
-      resourceContentGet: () => new Promise((res) => res(expected)),
-    };
+    const service = new DmnLanguageService(() => new Promise((res) => res(expected)));
 
-    expect(await service.getAllImportedModelsResources(workspaces, "random-id", [fileRecursive])).toEqual([expected]);
+    expect(await service.getAllImportedModelsResources([fileRecursive])).toEqual([expected]);
   });
 });
