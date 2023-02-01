@@ -84,10 +84,6 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
         return originalState;
     }
 
-    public void setOriginalState(final ExpressionState originalState) {
-        this.originalState = originalState;
-    }
-
     public ExpressionState getStateBeforeUndo() {
         return stateBeforeUndo;
     }

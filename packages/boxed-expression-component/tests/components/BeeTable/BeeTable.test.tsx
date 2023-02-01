@@ -762,8 +762,8 @@ describe("Table tests", () => {
   });
 
   describe("when interacting with column name", () => {
-    test("should trigger beeGwtService.notifyUserAction, when column name changed", async () => {
-      const { beeGwtService, mockedNotifyUserAction } = mockBeeGwtService();
+    test("should trigger beeGwtService.createUndoCommand, when column name changed", async () => {
+      const { beeGwtService, mockedCreateUndoCommand } = mockBeeGwtService();
 
       const nameColumn = {
         label: columnName,
@@ -787,11 +787,11 @@ describe("Table tests", () => {
       const input = changeValue(container, "new value");
       input.blur();
 
-      expect(mockedNotifyUserAction).toHaveBeenCalled();
+      expect(mockedCreateUndoCommand).toHaveBeenCalled();
     });
 
-    test("should not trigger beeGwtService.notifyUserAction, when column name is not changed", async () => {
-      const { beeGwtService, mockedNotifyUserAction } = mockBeeGwtService();
+    test("should not trigger beeGwtService.createUndoCommand, when column name is not changed", async () => {
+      const { beeGwtService, mockedCreateUndoCommand } = mockBeeGwtService();
 
       const nameColumn = {
         label: columnName,
@@ -815,7 +815,7 @@ describe("Table tests", () => {
       const input = changeValue(container, columnName);
       input.blur();
 
-      expect(mockedNotifyUserAction).toHaveBeenCalledTimes(0);
+      expect(mockedCreateUndoCommand).toHaveBeenCalledTimes(0);
     });
   });
 });
@@ -870,11 +870,11 @@ function changeValue(container: Element, newValue: string) {
 
 function mockBeeGwtService() {
   const mockedSelectObject: (uuid?: string | undefined) => void = jest.fn();
-  const mockedNotifyUserAction: () => void = jest.fn();
+  const mockedCreateUndoCommand: () => void = jest.fn();
   const beeGwtService = {
     broadcastFunctionExpressionDefinition: () => {},
-    notifyUserAction: mockedNotifyUserAction,
+    createUndoCommand: mockedCreateUndoCommand,
     selectObject: mockedSelectObject,
   } as unknown as BeeGwtService;
-  return { mockedSelectObject, mockedNotifyUserAction, beeGwtService };
+  return { mockedSelectObject, mockedCreateUndoCommand, beeGwtService };
 }

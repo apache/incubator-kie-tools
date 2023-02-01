@@ -699,7 +699,7 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testNotifyUserAction() {
+    public void testCreateUndoAction() {
 
         final ArgumentCaptor<SaveCurrentStateCommand> captor = ArgumentCaptor.forClass(SaveCurrentStateCommand.class);
 
@@ -709,7 +709,7 @@ public class ExpressionEditorViewImplTest {
         doNothing().when(view).execute(commandBuilder);
         doReturn(Optional.empty()).when(view).getHasName();
 
-        view.notifyUserAction();
+        view.createUndoCommand();
 
         verify(view).addExpressionCommand(captor.capture(), eq(commandBuilder));
         verify(view).execute(commandBuilder);

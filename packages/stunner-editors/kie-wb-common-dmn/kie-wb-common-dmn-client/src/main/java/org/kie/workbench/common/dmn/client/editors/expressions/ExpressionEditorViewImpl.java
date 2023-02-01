@@ -706,7 +706,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return nodeUUID;
     }
 
-    public void notifyUserAction() {
+    public void createUndoCommand() {
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
         final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
                                                                                       getEditorSelectedEvent(),

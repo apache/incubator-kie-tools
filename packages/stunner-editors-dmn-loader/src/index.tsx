@@ -87,8 +87,10 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       setExpression((prev) => {
         const n = typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
 
-        console.info("Notifying DMN Editor that expression changed with:");
+        console.info("Notifying DMN Editor that expression is changing with:");
         console.info(JSON.stringify(n));
+        window.beeApiWrapper?.createUndoCommand();
+
         const logicType = n.logicType;
         switch (logicType) {
           case ExpressionDefinitionLogicType.Literal:
@@ -119,8 +121,6 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
             assertUnreachable(logicType);
         }
 
-        console.info("Notifying user action...");
-        window.beeApiWrapper?.notifyUserAction();
         return n;
       });
     },

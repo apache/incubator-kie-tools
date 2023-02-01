@@ -438,7 +438,7 @@ describe("FunctionExpression tests", () => {
     const mockedBroadcastDefinition: (definition: FunctionExpressionDefinition) => void = jest.fn();
     const beeGwtService = {
       broadcastFunctionExpressionDefinition: mockedBroadcastDefinition,
-      notifyUserAction: () => {},
+      createUndoCommand: () => {},
       selectObject: () => {},
     } as BeeGwtService;
     return { mockedBroadcastDefinition, beeGwtService };

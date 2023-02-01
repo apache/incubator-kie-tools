@@ -41,8 +41,11 @@ declare global {
     broadcastFunctionExpressionDefinition: (definition: FunctionExpressionDefinition) => void;
     broadcastDecisionTableExpressionDefinition: (definition: DecisionTableExpressionDefinition) => void;
 
-    // Mostly used for stacking commands for undo/redo
-    notifyUserAction: () => void;
+    // It creates an UNDO action in the GWT layer with the current expression status.
+    // This must be called just before *ANY* user action we want to be undoable.
+    // GWT layer needs to store the expression status before the user change, for this reason this
+    // must be called BEFORE ANY change is actually persisted in the GWT layer.
+    createUndoCommand: () => void;
 
     // Navigate to Data Types definitions, if available
     openManageDataType: () => void;

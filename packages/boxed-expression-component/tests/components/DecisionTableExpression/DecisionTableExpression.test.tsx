@@ -165,7 +165,7 @@ describe("DecisionTableExpression tests", () => {
     const beeGwtService = {
       broadcastDecisionTableExpressionDefinition: (definition: DecisionTableExpressionDefinition) =>
         mockedBroadcastDefinition(definition),
-      notifyUserAction: () => {},
+      createUndoCommand: () => {},
       selectObject(): void {},
     } as BeeGwtService;
 
