@@ -100,20 +100,34 @@ export const EditorPageDockDrawer = React.forwardRef<
 
   const onToggle = useCallback(
     (newPanel: PanelId) => {
-      let query = queryParams;
-
+      // Remove the problemsIsExpanded and add the dmnRunnerIsExpanded
       if (panel !== PanelId.DMN_RUNNER_TABLE && newPanel === PanelId.DMN_RUNNER_TABLE) {
-        query = query.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true").without(QueryParams.PROBLEMS_IS_EXPANDED);
-      } else if (panel !== PanelId.NOTIFICATIONS_PANEL && newPanel === PanelId.NOTIFICATIONS_PANEL) {
-        query = query.with(QueryParams.PROBLEMS_IS_EXPANDED, "true");
-        if (query.getString(QueryParams.DMN_RUNNER_MODE) !== DmnRunnerMode.FORM) {
-          query = query.without(QueryParams.DMN_RUNNER_IS_EXPANDED);
-        }
-      } else {
-        query = query.without(QueryParams.PROBLEMS_IS_EXPANDED).without(QueryParams.DMN_RUNNER_IS_EXPANDED);
+        history.replace({
+          search: queryParams
+            .with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true")
+            .without(QueryParams.PROBLEMS_IS_EXPANDED)
+            .toString(),
+        });
+        return;
       }
 
-      history.replace({ search: query.toString() });
+      // Remove the dmnRunnerIsExpanded only if the DMN runner is in "table" view and add the problemsIsExpanded
+      if (panel !== PanelId.NOTIFICATIONS_PANEL && newPanel === PanelId.NOTIFICATIONS_PANEL) {
+        let query = queryParams.with(QueryParams.PROBLEMS_IS_EXPANDED, "true");
+        if (query.getString(QueryParams.DMN_RUNNER_MODE) === DmnRunnerMode.TABLE) {
+          query = query.without(QueryParams.DMN_RUNNER_IS_EXPANDED);
+        }
+        history.replace({ search: query.toString() });
+        return;
+      }
+
+      // Remove the dmnRunnerIsExpanded and remove the problemsIsExpanded
+      history.replace({
+        search: queryParams
+          .without(QueryParams.PROBLEMS_IS_EXPANDED)
+          .without(QueryParams.DMN_RUNNER_IS_EXPANDED)
+          .toString(),
+      });
     },
     [panel, history, queryParams]
   );
@@ -166,6 +180,8 @@ export const EditorPageDockDrawer = React.forwardRef<
   );
 
   useEffect(() => {
+    // The Problems tab has precedence over the DMN Runner
+    // if the query params has both (problemsIsExpanded and dmnRunnerIsExpanded), the problems tab will be opened.
     if (
       queryParams.has(QueryParams.PROBLEMS_IS_EXPANDED) ||
       (queryParams.has(QueryParams.DMN_RUNNER_MODE) && queryParams.has(QueryParams.DMN_RUNNER_IS_EXPANDED))

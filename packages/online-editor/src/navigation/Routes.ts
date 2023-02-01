@@ -25,9 +25,9 @@ export enum QueryParams {
   CONFIRM = "confirm",
   PROBLEMS_IS_EXPANDED = "problemsIsExpanded",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
-  DMN_RUNNER_MODE = "runnerMode",
-  DMN_RUNNER_IS_EXPANDED = "runnerIsExpanded",
-  DMN_RUNNER_ROW = "runnerRow",
+  DMN_RUNNER_MODE = "dmnRunnerMode",
+  DMN_RUNNER_IS_EXPANDED = "dmnRunnerIsExpanded",
+  DMN_RUNNER_ROW = "dmnRunnerRow",
 }
 
 export enum PathParams {

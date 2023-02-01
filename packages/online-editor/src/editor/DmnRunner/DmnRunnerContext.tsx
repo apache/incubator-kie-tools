@@ -34,9 +34,9 @@ export interface DmnRunnerContextType {
 export interface DmnRunnerCallbacksContextType {
   preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
-  setExpandedLocation: (isExpanded: boolean) => void;
+  setIsExpandedQueryParams: (isExpanded: boolean) => void;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  setParams: (mode: DmnRunnerMode, expand?: true, row?: number) => void;
+  setMode: (queryParams: { newMode: DmnRunnerMode; expand?: true; row?: number }) => void;
 }
 
 export const DmnRunnerStateContext = React.createContext<DmnRunnerContextType>({} as any);

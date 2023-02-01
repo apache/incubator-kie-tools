@@ -26,27 +26,27 @@ const tests = [
 ];
 
 describe("DmnLanguageService", () => {
-  const service = new DmnLanguageService(
-    () =>
+  const service = new DmnLanguageService({
+    getDmnImportedModel: () =>
       new Promise((res) => ({
         path: "",
         content: "",
-      }))
-  );
-
-  it("getImportedModels - empty string", () => {
-    expect(service.getImportedModels("")).toEqual([]);
+      })),
   });
 
-  it("getImportedModels", () => {
+  it("getImportedModelPaths - empty string", () => {
+    expect(service.getImportedModelPaths("")).toEqual([]);
+  });
+
+  it("getImportedModelPaths", () => {
     tests.forEach(({ modelPath, expected }) => {
       const path = resolve(__dirname, modelPath);
       const file = readFileSync(path, "utf8");
-      expect(service.getImportedModels(file)).toEqual(expected);
+      expect(service.getImportedModelPaths(file)).toEqual(expected);
     });
   });
 
-  it("getImportedModels - multiple files", async () => {
+  it("getImportedModelPaths - multiple files", async () => {
     const files = (
       await Promise.all(
         tests.map(({ modelPath }) => {
@@ -55,17 +55,17 @@ describe("DmnLanguageService", () => {
       )
     ).map((e) => e.toString("utf8"));
 
-    expect(service.getImportedModels(files)).toEqual(tests.flatMap((e) => e.expected));
+    expect(service.getImportedModelPaths(files)).toEqual(tests.flatMap((e) => e.expected));
   });
 
   it("getAllImportedModelsResources - empty", async () => {
-    const service = new DmnLanguageService(
-      () =>
+    const service = new DmnLanguageService({
+      getDmnImportedModel: () =>
         new Promise((res) => ({
           path: "",
           content: "",
-        }))
-    );
+        })),
+    });
 
     expect(await service.getAllImportedModelsResources([""])).toEqual([]);
   });
@@ -82,7 +82,7 @@ describe("DmnLanguageService", () => {
       content: fileNested,
     };
 
-    const service = new DmnLanguageService(() => new Promise((res) => res(expected)));
+    const service = new DmnLanguageService({ getDmnImportedModel: () => new Promise((res) => res(expected)) });
 
     expect(await service.getAllImportedModelsResources([fileRecursive])).toEqual([expected]);
   });

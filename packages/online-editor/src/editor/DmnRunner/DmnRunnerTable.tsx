@@ -136,7 +136,7 @@ export function DmnRunnerTable(props: Props) {
 
   const openRow = useCallback(
     (rowIndex: number) => {
-      dmnRunnerDispatch.setParams(DmnRunnerMode.FORM, true, rowIndex);
+      dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.FORM, expand: true, row: rowIndex });
     },
     [dmnRunnerDispatch]
   );

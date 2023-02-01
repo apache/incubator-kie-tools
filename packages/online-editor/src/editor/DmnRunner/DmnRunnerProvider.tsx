@@ -62,12 +62,14 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const [mode, setMode] = useState(DmnRunnerMode.FORM);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
   const dmnLanguageService = useMemo(() => {
-    return new DmnLanguageService(async (importedModel: string) => {
-      const resourceContent = await workspaces.resourceContentGet({
-        workspaceId: props.workspaceFile.workspaceId,
-        relativePath: importedModel,
-      });
-      return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
+    return new DmnLanguageService({
+      getDmnImportedModel: async (importedModelRelativePath: string) => {
+        const resourceContent = await workspaces.resourceContentGet({
+          workspaceId: props.workspaceFile.workspaceId,
+          relativePath: importedModelRelativePath,
+        });
+        return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
+      },
     });
   }, [workspaces, props.workspaceFile]);
 
@@ -136,10 +138,10 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
     if (queryParams.has(QueryParams.DMN_RUNNER_MODE)) {
       const mode = queryParams.getString(QueryParams.DMN_RUNNER_MODE);
-      if (mode === "form") {
+      if (mode === DmnRunnerMode.FORM) {
         setMode(DmnRunnerMode.FORM);
       }
-      if (mode === "table") {
+      if (mode === DmnRunnerMode.TABLE) {
         setMode(DmnRunnerMode.TABLE);
       }
     }
@@ -183,7 +185,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
-  const setExpandedLocation = useCallback(
+  const setIsExpandedQueryParams = useCallback(
     (isExpanded?: boolean) => {
       let query = queryParams;
       if (!queryParams.has(QueryParams.DMN_RUNNER_MODE)) {
@@ -203,8 +205,8 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     [history, queryParams]
   );
 
-  const setParams = useCallback(
-    (newMode?: DmnRunnerMode, expand?: true, row?: number) => {
+  const setQueryParams = useCallback(
+    ({ newMode, expand, row }) => {
       let query = queryParams;
 
       if (mode !== undefined) {
@@ -240,11 +242,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     () => ({
       preparePayload,
       setError,
-      setExpandedLocation,
+      setIsExpandedQueryParams,
       setInputRows,
-      setParams,
+      setMode: setQueryParams,
     }),
-    [preparePayload, setExpandedLocation, setInputRows, setParams]
+    [preparePayload, setIsExpandedQueryParams, setInputRows, setQueryParams]
   );
 
   const dmnRunnerState = useMemo(

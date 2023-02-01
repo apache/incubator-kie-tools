@@ -29,9 +29,13 @@ export class DmnLanguageService {
   private readonly importTagRegExp = new RegExp(`([a-z]*:)?(${IMPORT})`);
   private readonly inputDataRegEx = new RegExp(`([a-z]*:)?(${INPUT_DATA})`);
 
-  constructor(private readonly readDmn: (importedModel: string) => Promise<DmnLanguageServiceImportedModel>) {}
+  constructor(
+    private readonly helperFunction: {
+      getDmnImportedModel: (importedModelRelativePath: string) => Promise<DmnLanguageServiceImportedModel>;
+    }
+  ) {}
 
-  private getImportedModel(model: string): string[] {
+  private getImportedModelPath(model: string): string[] {
     const xmlContent = this.parser.parseFromString(model, XML_MIME);
     const importTag = this.importTagRegExp.exec(model);
     const importedModels = xmlContent.getElementsByTagName(importTag?.at(0) ?? IMPORT);
@@ -40,12 +44,12 @@ export class DmnLanguageService {
       .filter((e) => e !== null) as string[];
   }
 
-  public getImportedModels(models: string | string[]): string[] {
+  public getImportedModelPaths(models: string | string[]): string[] {
     if (Array.isArray(models)) {
-      return models.flatMap((model) => this.getImportedModel(model));
+      return models.flatMap((model) => this.getImportedModelPath(model));
     }
 
-    return this.getImportedModel(models);
+    return this.getImportedModelPath(models);
   }
 
   // Receive all contents, paths and a node ID and returns the model that contains the node.
@@ -66,18 +70,18 @@ export class DmnLanguageService {
   // recursively get imported models
   public async getAllImportedModelsResources(models: string[]): Promise<DmnLanguageServiceImportedModel[]> {
     // get imported models resources
-    const importedModels = this.getImportedModels(models);
-    if (importedModels && importedModels.length > 0) {
+    const importedModelPaths = this.getImportedModelPaths(models);
+    if (importedModelPaths && importedModelPaths.length > 0) {
       const importedModelsContent = (
         await Promise.all(
-          importedModels.map((importedModel) => {
-            return this.readDmn(importedModel);
+          importedModelPaths.map((importedModelPath) => {
+            return this.helperFunction.getDmnImportedModel(importedModelPath);
           })
         )
       ).filter((e) => e !== undefined) as DmnLanguageServiceImportedModel[];
 
       const contents = importedModelsContent.map((resources) => resources.content ?? "");
-      const importedFiles = this.getImportedModels(contents);
+      const importedFiles = this.getImportedModelPaths(contents);
       if (importedFiles.length > 0) {
         return [...importedModelsContent, ...(await this.getAllImportedModelsResources(importedFiles))];
       }

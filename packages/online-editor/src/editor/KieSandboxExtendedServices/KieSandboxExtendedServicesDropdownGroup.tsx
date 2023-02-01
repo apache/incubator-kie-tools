@@ -46,10 +46,10 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
   const onToggleDmnRunner = useCallback(() => {
     if (isKieSandboxExtendedServicesRunning) {
       if (dmnRunnerState.isExpanded) {
-        dmnRunnerDispatch.setExpandedLocation(false);
+        dmnRunnerDispatch.setIsExpandedQueryParams(false);
         return;
       }
-      dmnRunnerDispatch.setExpandedLocation(true);
+      dmnRunnerDispatch.setIsExpandedQueryParams(true);
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);

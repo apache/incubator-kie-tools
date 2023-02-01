@@ -26,12 +26,14 @@ export function useFileValidation(
       return;
     }
 
-    return new DmnLanguageService(async (importedModel: string) => {
-      const resourceContent = await workspaces.resourceContentGet({
-        workspaceId: workspaceFile.workspaceId,
-        relativePath: importedModel,
-      });
-      return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
+    return new DmnLanguageService({
+      getDmnImportedModel: async (importedModel: string) => {
+        const resourceContent = await workspaces.resourceContentGet({
+          workspaceId: workspaceFile.workspaceId,
+          relativePath: importedModel,
+        });
+        return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
+      },
     });
   }, [workspaces, workspaceFile]);
 
