@@ -4,11 +4,11 @@ Provides a simple service to check for patterns in a commit message.
 
 ## Environment Variables
 
-- `COMMIT_MESSAGE_VALIDATOR__port <PORT_NUMBER>`
+- `COMMIT_MESSAGE_VALIDATION_SERVICE__port <PORT_NUMBER>`
 
   Sets service port, otherwise it will use `env/index.js` port.
 
-- `COMMIT_MESSAGE_VALIDATOR__validators <validatorName1>:<validatorParameters1>;<validatorName2>:<validatorParameters2>...`
+- `COMMIT_MESSAGE_VALIDATION_SERVICE__validators <validatorName1>:<validatorParameters1>;<validatorName2>:<validatorParameters2>...`
 
   Enables and configures validators.
 

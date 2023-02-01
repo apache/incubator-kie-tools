@@ -19,8 +19,8 @@ package pkg
 import (
 	"strings"
 
-	"github.com/kiegroup/kie-tools/examples/commit-message-validator/pkg/metadata"
-	"github.com/kiegroup/kie-tools/examples/commit-message-validator/pkg/validators"
+	"github.com/kiegroup/kie-tools/examples/commit-message-validation-service/pkg/metadata"
+	"github.com/kiegroup/kie-tools/examples/commit-message-validation-service/pkg/validators"
 )
 
 var validatorsMap = map[string]validators.ValidationFunction{

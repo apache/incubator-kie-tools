@@ -23,8 +23,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/kiegroup/kie-tools/examples/commit-message-validator/pkg"
-	"github.com/kiegroup/kie-tools/examples/commit-message-validator/pkg/metadata"
+	"github.com/kiegroup/kie-tools/examples/commit-message-validation-service/pkg"
+	"github.com/kiegroup/kie-tools/examples/commit-message-validation-service/pkg/metadata"
 )
 
 func main() {

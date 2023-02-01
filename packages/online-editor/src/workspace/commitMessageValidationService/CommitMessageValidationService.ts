@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-import { CommitMessageValidationResource, CommitMessageValidationFetch } from "./CommitMessageValidation";
+import {
+  CommitMessageValidationResource,
+  CommitMessageValidationServiceClient,
+} from "./CommitMessageValidationServiceClient";
 
 export class CommitMessageValidationService {
   constructor(private readonly args: { commitMessageValidationServiceUrl: string }) {}
 
   public async validateCommitMessage(commitMessage: string): Promise<CommitMessageValidationResource> {
-    const commitMessageValidationResource = new CommitMessageValidationFetch({
+    const commitMessageValidationResource = new CommitMessageValidationServiceClient({
       commitMessageValidationServiceUrl: this.args.commitMessageValidationServiceUrl,
       commitMessage,
     });

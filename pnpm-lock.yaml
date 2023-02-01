@@ -150,7 +150,7 @@ importers:
       webpack-dev-server: 4.7.3_arvjobxnuton62rnb6f22zdmlm
       webpack-merge: 5.8.0
 
-  examples/commit-message-validator:
+  examples/commit-message-validation-service:
     specifiers:
       "@kie-tools/root-env": workspace:*
       cross-env: ^7.0.3

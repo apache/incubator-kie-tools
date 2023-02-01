@@ -23,7 +23,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../../i18n";
 import { useEnv } from "../../env/hooks/EnvContext";
-import { CommitMessageValidationService } from "../commitMessageValidation/CommitMessageValidationService";
+import { CommitMessageValidationService } from "../commitMessageValidationService/CommitMessageValidationService";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 const CommitValidationErrorMessages = (props: { validations?: string }) => {
@@ -61,17 +61,17 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
 
   const commitMessageValidationService = useMemo(
     () =>
-      env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL &&
+      env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL &&
       new CommitMessageValidationService({
-        commitMessageValidationServiceUrl: env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL,
+        commitMessageValidationServiceUrl: env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL,
       }),
-    [env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL]
+    [env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL]
   );
 
   const onValidate = useCallback(
     async (message: string) => {
       if (!message) {
-        return { result: false, reason: i18n.commitModal.inputHelper };
+        return { result: false, reason: i18n.commitModal.emptyMessageValidation };
       }
       if (!commitMessageValidationService) {
         return { result: true };

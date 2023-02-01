@@ -29,7 +29,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   }),
   get env() {
     return {
-      commitMessageValidator: {
+      commitMessageValidationService: {
         port: getOrDefault(this.vars.COMMIT_MESSAGE_VALIDATOR__port),
         validators: getOrDefault(this.vars.COMMIT_MESSAGE_VALIDATOR__validators),
       },

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { LocalFile } from "../worker/api/LocalFile";

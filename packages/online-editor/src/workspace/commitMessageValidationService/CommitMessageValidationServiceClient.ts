@@ -19,7 +19,7 @@ export type CommitMessageValidationResource = {
   reason?: string;
 };
 
-export type CommitMessageValidationFetchArgs = {
+export type CommitMessageValidationServiceClientArgs = {
   commitMessageValidationServiceUrl: string;
   commitMessage: string;
 };
@@ -37,8 +37,8 @@ export enum HttpMethod {
   DELETE = "DELETE",
 }
 
-export class CommitMessageValidationFetch {
-  constructor(protected readonly args: CommitMessageValidationFetchArgs) {}
+export class CommitMessageValidationServiceClient {
+  constructor(protected readonly args: CommitMessageValidationServiceClientArgs) {}
 
   public method() {
     return HttpMethod.POST;
