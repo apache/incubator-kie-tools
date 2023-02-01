@@ -27,7 +27,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 function doParse(fileName: string): SwfServiceCatalogService {
-  const filePath = path.resolve(__dirname, `examples/${fileName}`);
+  const filePath = path.resolve(__dirname, `../examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
   const serviceOpenApiDocument = yaml.load(content) as any;
 
