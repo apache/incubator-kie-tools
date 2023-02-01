@@ -41,8 +41,9 @@ cd /tmp
 rm -rf kogito-examples/
 git clone https://github.com/kiegroup/kogito-examples.git
 cd kogito-examples/
+git fetch origin
 git fetch origin --tags
-git checkout -b nightly-main origin/nightly-main
+git checkout -b nightly-main
 
 # make a new copy of rules-quarkus-helloworld for native tests
 cp -rv  /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld/ /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld-native/
