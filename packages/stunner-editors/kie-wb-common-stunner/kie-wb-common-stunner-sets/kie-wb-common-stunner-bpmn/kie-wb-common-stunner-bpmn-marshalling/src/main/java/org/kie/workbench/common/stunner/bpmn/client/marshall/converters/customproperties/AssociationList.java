@@ -19,11 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customp
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.commons.UUID;
 
 import static java.util.stream.Collectors.toList;
@@ -60,14 +58,17 @@ public class AssociationList {
     }
 
     public static AssociationList fromString(String encoded) {
-        return Optional.ofNullable(encoded)
-                .filter(StringUtils::nonEmpty)
-                .map(s -> new AssociationList(
-                        Arrays.stream(s.replaceAll(REGEX_DELIMITER, REPLACE_DELIMITER_AVOID_CONFLICTS)
-                                              .split(REPLACED_DELIMITER))
-                                .map(AssociationDeclaration::fromString)
-                                .collect(toList())))
-                .orElse(new AssociationList());
+        // The change below is to fix SDM issue on Mac OS
+        if (encoded == null || encoded.isEmpty()) {
+            return new AssociationList();
+        } else {
+            return new AssociationList(
+                    Arrays.stream(encoded.replaceAll(REGEX_DELIMITER, REPLACE_DELIMITER_AVOID_CONFLICTS)
+                                    .split(REPLACED_DELIMITER))
+                            .map(AssociationDeclaration::fromString)
+                            .collect(toList()));
+
+        }
     }
 
     public List<AssociationDeclaration> getInputs() {
