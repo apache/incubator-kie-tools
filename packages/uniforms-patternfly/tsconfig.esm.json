@@ -9,6 +9,5 @@
     "esModuleInterop": true,
     "moduleResolution": "node"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "tests"]
+  "include": ["src"]
 }

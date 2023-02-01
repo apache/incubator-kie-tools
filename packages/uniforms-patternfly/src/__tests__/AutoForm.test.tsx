@@ -16,11 +16,10 @@
 
 import * as React from "react";
 import { AutoForm } from "../";
-import { createSchema } from "./_createSchema";
-import { render } from "./_render";
-import { screen } from "@testing-library/react";
+import { createSimpleSchema, usingUniformsContext } from "./test-utils";
+import { render, screen } from "@testing-library/react";
 
 test("<AutoForm> - works", () => {
-  render(<AutoForm schema={createSchema()} />);
+  render(usingUniformsContext(<AutoForm schema={createSimpleSchema()} />));
   expect(screen.getByTestId("base-form")).toBeInTheDocument();
 });

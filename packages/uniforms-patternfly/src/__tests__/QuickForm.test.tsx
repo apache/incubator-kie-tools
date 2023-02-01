@@ -15,12 +15,11 @@
  */
 
 import * as React from "react";
-import { context } from "uniforms";
-import { render as testingLibraryRender } from "@testing-library/react";
+import { QuickForm } from "..";
+import { usingUniformsContext, createSimpleSchema } from "./test-utils";
+import { render, screen } from "@testing-library/react";
 
-export function render(node: React.ReactElement, options?: any) {
-  if (options === undefined) {
-    return testingLibraryRender(node);
-  }
-  return testingLibraryRender(<context.Provider value={options.context}>{node}</context.Provider>);
-}
+test("<QuickForm> - works", () => {
+  render(usingUniformsContext(<QuickForm schema={createSimpleSchema()} />));
+  expect(screen.getByTestId("base-form")).toBeInTheDocument();
+});

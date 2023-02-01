@@ -16,23 +16,25 @@
 
 import * as React from "react";
 import { AutoFields } from "..";
-import { createContext } from "./_createContext";
-import { render } from "./_render";
-import { screen } from "@testing-library/react";
+import { usingUniformsContext } from "./test-utils";
+import { render, screen } from "@testing-library/react";
 
 test("<AutoFields> - works", () => {
-  render(<AutoFields />, createContext({ x: { type: String } }));
+  render(usingUniformsContext(<AutoFields />, {}, { x: { type: String } }));
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
 });
 
 test("<AutoFields> - render all fields by default", () => {
   render(
-    <AutoFields />,
-    createContext({
-      x: { type: String },
-      y: { type: String },
-      z: { type: String },
-    })
+    usingUniformsContext(
+      <AutoFields />,
+      {},
+      {
+        x: { type: String },
+        y: { type: String },
+        z: { type: String },
+      }
+    )
   );
 
   expect(screen.getAllByTestId("text-field")).toHaveLength(3);
@@ -40,12 +42,15 @@ test("<AutoFields> - render all fields by default", () => {
 
 test("<AutoFields> - renders only specified fields", () => {
   render(
-    <AutoFields fields={["x", "y"]} />,
-    createContext({
-      x: { type: String },
-      y: { type: String },
-      z: { type: String },
-    })
+    usingUniformsContext(
+      <AutoFields fields={["x", "y"]} />,
+      {},
+      {
+        x: { type: String },
+        y: { type: String },
+        z: { type: String },
+      }
+    )
   );
 
   expect(screen.getAllByTestId("text-field")).toHaveLength(2);
@@ -54,12 +59,15 @@ test("<AutoFields> - renders only specified fields", () => {
 
 test("<AutoFields> - does not render ommited fields", () => {
   render(
-    <AutoFields omitFields={["x"]} />,
-    createContext({
-      x: { type: String },
-      y: { type: String },
-      z: { type: String },
-    })
+    usingUniformsContext(
+      <AutoFields omitFields={["x"]} />,
+      {},
+      {
+        x: { type: String },
+        y: { type: String },
+        z: { type: String },
+      }
+    )
   );
 
   expect(screen.getAllByTestId("text-field")).toHaveLength(2);
@@ -70,12 +78,15 @@ test("<AutoFields> - works with custom component", () => {
   const Component = jest.fn(() => null);
 
   render(
-    <AutoFields autoField={Component} />,
-    createContext({
-      x: { type: String },
-      y: { type: String },
-      z: { type: String },
-    })
+    usingUniformsContext(
+      <AutoFields autoField={Component} />,
+      {},
+      {
+        x: { type: String },
+        y: { type: String },
+        z: { type: String },
+      }
+    )
   );
 
   expect(Component).toHaveBeenCalledTimes(3);
@@ -83,12 +94,15 @@ test("<AutoFields> - works with custom component", () => {
 
 test("<AutoFields> - wraps fields in specified element", () => {
   render(
-    <AutoFields element="section" />,
-    createContext({
-      x: { type: String },
-      y: { type: String },
-      z: { type: String },
-    })
+    usingUniformsContext(
+      <AutoFields element="section" />,
+      {},
+      {
+        x: { type: String },
+        y: { type: String },
+        z: { type: String },
+      }
+    )
   );
 
   expect(screen.getAllByTestId("text-field")).toHaveLength(3);

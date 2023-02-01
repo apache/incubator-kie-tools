@@ -16,11 +16,10 @@
 
 import * as React from "react";
 import { ValidatedQuickForm } from "..";
-import { screen } from "@testing-library/react";
-import { createSchema } from "./_createSchema";
-import { render } from "./_render";
+import { render, screen } from "@testing-library/react";
+import { createSimpleSchema, usingUniformsContext } from "./test-utils";
 
 test("<ValidatedQuickForm> - works", () => {
-  render(<ValidatedQuickForm schema={createSchema()} />);
+  render(usingUniformsContext(<ValidatedQuickForm schema={createSimpleSchema()} />));
   expect(screen.getByTestId("base-form")).toBeInTheDocument();
 });

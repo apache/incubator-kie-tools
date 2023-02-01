@@ -16,11 +16,10 @@
 
 import * as React from "react";
 import { BaseForm } from "../";
-import { createSchema } from "./_createSchema";
-import { render } from "./_render";
-import { screen } from "@testing-library/react";
+import { usingUniformsContext, createSimpleSchema } from "./test-utils";
+import { render, screen } from "@testing-library/react";
 
 test("<BaseForm> - works", () => {
-  render(<BaseForm schema={createSchema()} />);
+  render(usingUniformsContext(<BaseForm schema={createSimpleSchema()} />));
   expect(screen.getByTestId("base-form")).toBeInTheDocument();
 });
