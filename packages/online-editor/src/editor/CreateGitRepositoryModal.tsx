@@ -40,7 +40,7 @@ import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersAp
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { useOnlineI18n } from "../i18n";
-import { LoadOrganizationsSelect } from "./LoadOrganizationsSelect";
+import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 
 export interface CreateRepositoryResponse {
   cloneUrl: string;
@@ -71,17 +71,17 @@ export function CreateGitRepositoryModal(props: {
   const [error, setError] = useState<string | undefined>(undefined);
   const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.name));
   const { i18n } = useOnlineI18n();
-  const [selectedOrganization, setSelectedOrganization] = useState<string>();
+  const [selectedOrganization, setSelectedOrganization] = useState<SelectOptionObjectType>();
 
   useEffect(() => {
     setName(getSuggestedRepositoryName(props.workspace.name));
   }, [props.workspace.name]);
 
   const createBitbucketRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
-    if (!selectedOrganization) {
+    if (selectedOrganization?.kind !== "organization") {
       throw new Error("No workspace was selected for Bitbucket Repository.");
     }
-    const repoResponse = await bitbucketClient.createRepo({ name, workspace: selectedOrganization, isPrivate });
+    const repoResponse = await bitbucketClient.createRepo({ name, workspace: selectedOrganization.value, isPrivate });
     if (!repoResponse.ok) {
       throw new Error(
         `Bitbucket repository creation request failed with: ${repoResponse.status} ${repoResponse.statusText}`
@@ -101,13 +101,14 @@ export function CreateGitRepositoryModal(props: {
   }, [bitbucketClient, isPrivate, name, selectedOrganization]);
 
   const createGitHubRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
-    const repo = selectedOrganization
-      ? await gitHubClient.repos.createInOrg({
-          name,
-          private: isPrivate,
-          org: selectedOrganization,
-        })
-      : await gitHubClient.repos.createForAuthenticatedUser({ name, private: isPrivate });
+    const repo =
+      selectedOrganization?.kind === "organization"
+        ? await gitHubClient.repos.createInOrg({
+            name,
+            private: isPrivate,
+            org: selectedOrganization.value,
+          })
+        : await gitHubClient.repos.createForAuthenticatedUser({ name, private: isPrivate });
 
     if (!repo.data.clone_url) {
       throw new Error("Repo creation failed.");
@@ -118,12 +119,16 @@ export function CreateGitRepositoryModal(props: {
   }, [selectedOrganization, gitHubClient.repos, name, isPrivate]);
 
   const pushEmptyCommitIntoBitbucket = useCallback(async (): Promise<void> => {
-    if (!selectedOrganization) {
+    if (selectedOrganization?.kind !== "organization") {
       throw new Error("No workspace was selected for Bitbucket Repository.");
     }
     // need an empty commit push through REST API first
     await bitbucketClient
-      .pushEmptyCommit({ repository: name, workspace: selectedOrganization, branch: props.workspace.origin.branch })
+      .pushEmptyCommit({
+        repository: name,
+        workspace: selectedOrganization.value,
+        branch: props.workspace.origin.branch,
+      })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Initial commit push failed: ${response.status} ${response.statusText}`);

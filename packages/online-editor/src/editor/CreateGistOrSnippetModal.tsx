@@ -42,7 +42,7 @@ import {
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { useOnlineI18n } from "../i18n";
-import { LoadOrganizationsSelect } from "./LoadOrganizationsSelect";
+import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 
 export interface CreateGistOrSnippetResponse {
   cloneUrl: string;
@@ -65,7 +65,7 @@ export const CreateGistOrSnippetModal = (props: {
   const [isPrivate, setPrivate] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const { i18n } = useOnlineI18n();
-  const [selectedOrganization, setSelectedOrganization] = useState<string>();
+  const [selectedOrganization, setSelectedOrganization] = useState<SelectOptionObjectType>();
   const [isGistOrSnippetLoading, setGistOrSnippetLoading] = useState(false);
 
   const createGitHubGist: () => Promise<CreateGistOrSnippetResponse> = useCallback(async () => {
@@ -93,11 +93,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   }, [gitHubClient.gists, isPrivate, props.workspace.name]);
 
   const createBitbucketSnippet: () => Promise<CreateGistOrSnippetResponse> = useCallback(async () => {
-    if (!selectedOrganization) {
+    if (selectedOrganization?.kind !== "organization") {
       throw new Error("No workspace was selected for Bitbucket Snippet.");
     }
     const response = await bitbucketClient.createSnippet({
-      workspace: selectedOrganization,
+      workspace: selectedOrganization.value,
       title: props.workspace.name ?? "KIE Sandbox Snippet",
       files: {
         "README.md": {
