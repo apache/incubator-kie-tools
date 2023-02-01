@@ -24,7 +24,7 @@ require (
 
 require (
 	github.com/RHsyseng/operator-utils v1.4.11
-	github.com/kiegroup/container-builder v0.0.0-20221215132240-f70d743ccd41
+	github.com/kiegroup/container-builder v0.0.0-20230131205716-bc25e59e2f13
 	github.com/onsi/ginkgo v1.16.5
 	github.com/openshift/api v0.0.0-20211209135129-c58d9f695577
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1

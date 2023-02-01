@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/kiegroup/container-builder/api"
-	"github.com/kiegroup/container-builder/builder"
+	builder "github.com/kiegroup/container-builder/builder/kubernetes"
 	"github.com/kiegroup/container-builder/client"
 	"github.com/kiegroup/kogito-serverless-operator/constants"
 	corev1 "k8s.io/api/core/v1"
@@ -134,14 +134,7 @@ func (b *Builder) BuildImage(kb KogitoBuilder) (*api.Build, error) {
 		},
 	}
 
-	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
-		WithKanikoCache(kb.Cache).
-		WithKanikoResources(kb.Resources).
-		WithKanikoAdditionalArgs(kb.AdditionalFlags).
-		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
-		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
-		WithClient(cli).
-		Schedule()
+	build, err := newBuild(kb, platform, b, cli)
 	if err != nil {
 		log.Error(err, err.Error())
 		return nil, err
@@ -171,19 +164,23 @@ func (b *Builder) ScheduleBuild(kb KogitoBuilder) (*api.Build, error) {
 		},
 	}
 
-	build, err := builder.NewBuild(platform, kb.ImageName, kb.PodMiddleName).
-		WithKanikoCache(kb.Cache).
-		WithKanikoResources(kb.Resources).
-		WithKanikoAdditionalArgs(kb.AdditionalFlags).
-		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
-		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
-		WithClient(cli).
-		Schedule()
+	build, err := newBuild(kb, platform, b, cli)
 	if err != nil {
 		log.Error(err, err.Error())
 		return nil, err
 	}
 	return build, err
+}
+
+// Helper function to create a new container-builder Build and schedule it
+func newBuild(kb KogitoBuilder, platform api.PlatformBuild, b *Builder, cli client.Client) (*api.Build, error) {
+	buildInfo := builder.BuilderInfo{FinalImageName: kb.ImageName, BuildUniqueName: kb.PodMiddleName, Platform: platform}
+
+	return builder.NewBuild(buildInfo).
+		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
+		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
+		WithClient(cli).
+		Schedule()
 }
 
 // Fluent API section
