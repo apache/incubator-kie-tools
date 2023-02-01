@@ -36,7 +36,7 @@ if (Utils.isProductizedBranch(this)) {
 }
 
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
-    'python3 scripts/update-quarkus-version.py --bump-to %new_version%'
+    'source ~/virtenvs/cekit/bin/activate && python3 scripts/update-quarkus-version.py --bump-to %new_version%'
 ])
 
 /////////////////////////////////////////////////////////////////
