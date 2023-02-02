@@ -29,6 +29,7 @@ import org.dashbuilder.client.perspective.ContentErrorPerspective;
 import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.perspective.EmptyPerspective;
 import org.dashbuilder.client.perspective.RuntimePerspective;
+import org.dashbuilder.client.perspective.SamplesPerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
@@ -65,6 +66,9 @@ public class RouterScreen {
 
     @Inject
     DashboardsListScreen dashboardsListScreen;
+
+    @Inject
+    SamplesScreen samplesScreen;
 
     @Inject
     ContentErrorScreen contentErrorScreen;
@@ -104,7 +108,7 @@ public class RouterScreen {
                     appNavBar.setHide(true);
                     DomGlobal.console.log("Error loading models: " + a);
                     DomGlobal.console.debug(t);
-                    placeManager.goTo(EmptyPerspective.ID);
+                    goToNoModelsScreen();
                 });
     }
 
@@ -123,7 +127,7 @@ public class RouterScreen {
         }
 
         if (response.getAvailableModels().isEmpty()) {
-            placeManager.goTo(EmptyPerspective.ID);
+            goToNoModelsScreen();
             return;
         }
 
@@ -172,4 +176,11 @@ public class RouterScreen {
         }
     }
 
+    private void goToNoModelsScreen() {
+        if (clientLoader.hasSamples()) {
+            placeManager.goTo(SamplesPerspective.ID);
+        } else {
+            placeManager.goTo(EmptyPerspective.ID);
+        }
+    }
 }

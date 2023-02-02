@@ -83,4 +83,6 @@ public interface AppConstants extends Messages {
 
     String errorContentTitle();
 
+    String samplesScreenTitle();
+
 }
