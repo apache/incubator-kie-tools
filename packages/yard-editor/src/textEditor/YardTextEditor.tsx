@@ -40,16 +40,6 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
 
   const controller: YardTextEditorApi = useMemo<YardTextEditorApi>(() => {
-    if (file.path.endsWith(".yard.json")) {
-      return new YardTextEditorController(
-        file.content,
-        onContentChange,
-        "json",
-        editorEnvelopeCtx.operatingSystem,
-        isReadOnly,
-        setValidationErrors
-      );
-    }
     if (file.path.endsWith(".yard.yaml") || file.path.endsWith(".yard.yml")) {
       return new YardTextEditorController(
         file.content,

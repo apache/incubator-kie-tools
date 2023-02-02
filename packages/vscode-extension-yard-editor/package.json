@@ -117,9 +117,6 @@
       "title": "yard Editor"
     },
     "configurationDefaults": {
-      "[json]": {
-        "editor.wordBasedSuggestions": false
-      },
       "[yaml]": {
         "editor.wordBasedSuggestions": false
       },
@@ -130,7 +127,6 @@
         "editor.wordBasedSuggestions": false
       },
       "files.associations": {
-        "*.yard.json": "json",
         "*.yard.yaml": "yaml",
         "*.yard.yml": "yaml"
       }
@@ -141,18 +137,13 @@
         "priority": "option",
         "selector": [
           {
-            "filenamePattern": "*.{yard.json,yard.yaml,yard.yml}"
+            "filenamePattern": "*.{yard.yaml,yard.yml}"
           }
         ],
         "viewType": "kieKogitoWebviewEditorsYard"
       }
     ],
     "grammars": [
-      {
-        "language": "yard-json",
-        "path": "./syntaxes/JSON.tmLanguage.json",
-        "scopeName": "source.json"
-      },
       {
         "language": "yard-yaml",
         "path": "./syntaxes/YAML.tmLanguage.json",
@@ -164,7 +155,7 @@
         "command": "extension.kogito.yard.openAsDiagram",
         "key": "ctrl+k v",
         "mac": "cmd+k v",
-        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(json|yaml|yml)$/"
+        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(yaml|yml)$/"
       },
       {
         "command": "extension.kogito.yard.openAsSource",
@@ -174,17 +165,6 @@
       }
     ],
     "languages": [
-      {
-        "aliases": [
-          "yard (JSON)",
-          "yard.json"
-        ],
-        "configuration": "./languageConfiguration/jsonLanguageConfiguration.json",
-        "extensions": [
-          ".yard.json"
-        ],
-        "id": "yard-json"
-      },
       {
         "aliases": [
           "yard (YAML)",
@@ -207,7 +187,7 @@
         },
         {
           "command": "extension.kogito.yard.openAsDiagram",
-          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(json|yaml|yml)/"
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(yaml|yml)/"
         }
       ],
       "editor/title": [
@@ -219,15 +199,13 @@
         {
           "command": "extension.kogito.yard.openAsDiagram",
           "group": "navigation",
-          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(json|yaml|yml)/"
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(yaml|yml)/"
         }
       ]
     }
   },
   "activationEvents": [
-    "onLanguage:json",
     "onLanguage:yaml",
-    "onLanguage:yard-json",
     "onLanguage:yard-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsYard"
   ],

@@ -22,7 +22,6 @@ import YardTextEditorTestHelper from "./helpers/yard/YardTextEditorTestHelper";
 
 describe("yard editor - integration tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources");
-  const EMPTY_YARD_JSON = "empty.yard.json";
   const EMPTY_YARD_YAML = "empty.yard.yaml";
   const EMPTY_YARD_YML = "empty.yard.yml";
 
@@ -45,7 +44,7 @@ describe("yard editor - integration tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  [EMPTY_YARD_JSON, EMPTY_YARD_YAML, EMPTY_YARD_YML].forEach(function (fileName) {
+  [EMPTY_YARD_YAML, EMPTY_YARD_YML].forEach(function (fileName) {
     it("Opens " + fileName + " and loads two editor groups (text editor and a web view)", async function () {
       this.timeout(30000);
       let [textEditor, webView] = await testHelper.openFileFromSidebar(fileName);

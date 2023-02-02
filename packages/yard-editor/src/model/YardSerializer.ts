@@ -19,7 +19,7 @@ import { YardModel } from "./YardModel";
 
 /**
  * It deserializes content string as YardModel object
- * @param {string} content The JSON or YAML yard source to deserialize
+ * @param {string} content The YAML yard source to deserialize
  * @returns {YardModel} Resulting object representation of yard model
  */
 export function deserialize(content: string): YardModel {

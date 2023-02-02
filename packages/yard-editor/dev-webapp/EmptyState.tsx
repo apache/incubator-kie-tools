@@ -51,9 +51,6 @@ export const YardEmptyState = (props: AllProps) => (
       <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
         New YAML
       </Button>
-      <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
-        New JSON
-      </Button>
       <Button variant="link" ouiaId="new-button" isDisabled={true}>
         Try YAML sample (not yet available)
       </Button>
@@ -90,7 +87,7 @@ const FileChooser = (props: UploadProps) => {
         id="file-upload"
         style={{ display: "none" }}
         type="file"
-        accept={"yaml,yml,json"}
+        accept={"yaml,yml"}
         onChange={(e) => showFile(e)}
       />
     </div>

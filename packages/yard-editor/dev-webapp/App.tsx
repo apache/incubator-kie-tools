@@ -30,7 +30,7 @@ import "./App.scss";
 import { YardEmptyState } from "./EmptyState";
 import { MenuButtons } from "./MenuButtons";
 
-export type YardFileType = "json" | "yml" | "yaml";
+export type YardFileType = "yml" | "yaml";
 
 export const App = () => {
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
@@ -41,7 +41,7 @@ export const App = () => {
       new EditorEnvelopeLocator(window.location.origin, [
         new EnvelopeMapping({
           type: "yard",
-          filePathGlob: "**/*.yard.+(yml|yaml|json)",
+          filePathGlob: "**/*.yard.+(yml|yaml)",
           resourcesPathPrefix: "",
           envelopeContent: { type: EnvelopeContentType.PATH, path: "yard-editor-envelope.html" },
         }),
@@ -76,7 +76,7 @@ export const App = () => {
   }, [editor]);
 
   const onSetContent = useCallback((path: string, content: string) => {
-    const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
+    const match = /\.yard\.(yml|yaml)$/.exec(path.toLowerCase());
     const dotExtension = match ? match[0] : extname(path);
     const extension = dotExtension.slice(1);
     const fileName = basename(path);
