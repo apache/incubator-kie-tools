@@ -17,7 +17,10 @@
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.bean;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.amihaiemil.eoyaml.Node;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
@@ -75,14 +78,14 @@ public abstract class AbstractBeanYAMLDeserializer<T> implements YAMLDeserialize
   public abstract Class getDeserializedType();
 
   private BeanPropertyDeserializer<T, ?> getPropertyDeserializer(
-      String propertyName, YAMLDeserializationContext ctx) {
+          String propertyName, YAMLDeserializationContext ctx) {
     BeanPropertyDeserializer<T, ?> property = deserializers.get(propertyName);
     if (null == property) {
       throw new Error(
-          "Unknown property '"
-              + propertyName
-              + "' in (de)serializer "
-              + this.getClass().getCanonicalName());
+              "Unknown property '"
+                      + propertyName
+                      + "' in (de)serializer "
+                      + this.getClass().getCanonicalName());
     }
     return property;
   }
@@ -94,18 +97,26 @@ public abstract class AbstractBeanYAMLDeserializer<T> implements YAMLDeserialize
    * object.
    */
   public final T deserializeInline(YamlMapping yaml, YAMLDeserializationContext ctx) {
+    if (yaml == null) {
+      return null;
+    }
+
+    Set<String> props =
+            yaml.keys().stream().map(node -> node.asScalar().value()).collect(Collectors.toSet());
+    props.retainAll(deserializers.keySet());
+    if (props.isEmpty()) {
+      return null;
+    }
     T instance = instanceBuilder.newInstance(ctx).getInstance();
-    deserializers
-        .keySet()
-        .forEach(
+    props.forEach(
             key -> {
               if (getPropertyDeserializer(key, ctx).getDeserializer()
-                  instanceof AbstractBeanYAMLDeserializer) {
+                      instanceof AbstractBeanYAMLDeserializer) {
                 YamlMapping node = yaml.yamlMapping(key);
                 BeanPropertyDeserializer propertyDeserializer = getPropertyDeserializer(key, ctx);
                 Object value =
-                    ((AbstractBeanYAMLDeserializer) propertyDeserializer.getDeserializer())
-                        .deserialize(node, ctx);
+                        ((AbstractBeanYAMLDeserializer) propertyDeserializer.getDeserializer())
+                                .deserialize(node, ctx);
                 propertyDeserializer.setValue(instance, value, ctx);
               } else {
                 getPropertyDeserializer(key, ctx).deserialize(yaml, key, instance, ctx);
@@ -116,6 +127,9 @@ public abstract class AbstractBeanYAMLDeserializer<T> implements YAMLDeserialize
 
   @Override
   public T deserialize(YamlNode node, YAMLDeserializationContext ctx) {
+    if (node.type() == Node.MAPPING) {
+      return deserialize(node.asMapping(), ctx);
+    }
     throw new UnsupportedOperationException("Not supported yet.");
   }
 }

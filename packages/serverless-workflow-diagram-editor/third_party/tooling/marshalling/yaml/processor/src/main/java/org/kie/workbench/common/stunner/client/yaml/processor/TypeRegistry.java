@@ -668,7 +668,7 @@ public final class TypeRegistry {
    * @return a {@link TypeElement} object.
    */
   public TypeElement getCustomSerializer(TypeMirror typeMirror) {
-    return getCustomSerializer(context.getTypeUtils().stringifyTypeWithPackage(typeMirror));
+    return getCustomSerializer(types.erasure(typeMirror).toString());
   }
 
   /**
@@ -701,7 +701,7 @@ public final class TypeRegistry {
    * @return a {@link TypeElement} object.
    */
   public TypeElement getCustomDeserializer(TypeMirror typeMirror) {
-    return getCustomDeserializer(context.getTypeUtils().stringifyTypeWithPackage(typeMirror));
+    return getCustomDeserializer(types.erasure(typeMirror).toString());
   }
 
   /**

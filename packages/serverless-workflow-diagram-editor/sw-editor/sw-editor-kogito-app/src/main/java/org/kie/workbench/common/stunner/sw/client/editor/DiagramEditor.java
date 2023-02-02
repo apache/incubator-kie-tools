@@ -61,6 +61,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
+import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Message;
 import org.kie.workbench.common.stunner.sw.marshall.ParseResult;
 import org.uberfire.backend.vfs.Path;
@@ -137,14 +138,22 @@ public class DiagramEditor {
     }
 
     public Promise<Void> setContent(final String path, final String value) {
+        return setContent(path, value, DocType.JSON);
+    }
+
+    public Promise<Void> setContentYAML(final String path, final String value) {
+        return setContent(path, value, DocType.YAML);
+    }
+
+    private Promise<Void> setContent(final String path, final String value, final DocType docType) {
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
 
         Promise<Void> setContentPromise;
         if (stunnerEditor.isClosed() || !isSameWorkflow(value)) {
-            setContentPromise = setNewContent(path, value);
+            setContentPromise = setNewContent(path, value, docType);
         } else {
-            setContentPromise = updateContent(path, value);
+            setContentPromise = updateContent(path, value, docType);
         }
 
         return setContentPromise.then(v -> promises.create((success, failure) -> {
@@ -157,11 +166,12 @@ public class DiagramEditor {
         return promises.resolve(stunnerEditor.hasErrors());
     }
 
-    public Promise<Void> setNewContent(final String path, final String value) {
+    public Promise<Void> setNewContent(final String path, final String value, final DocType docType) {
         return promises.create((success, failure) -> {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
+                                     docType,
                                      new ServiceCallback<ParseResult>() {
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
@@ -209,11 +219,12 @@ public class DiagramEditor {
     @SuppressWarnings("all")
     Diagram renderDiagram;
 
-    public Promise<Void> updateContent(final String path, final String value) {
+    public Promise<Void> updateContent(final String path, final String value, final DocType docType) {
         return promises.create((success, failure) -> {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
+                                     docType,
                                      new ServiceCallback<ParseResult>() {
 
                                          @Override
