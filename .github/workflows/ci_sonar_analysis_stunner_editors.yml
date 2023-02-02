@@ -39,7 +39,7 @@ jobs:
         run: |
           pnpm -F @kie-tools/stunner-editors^... build:dev
           cd packages/stunner-editors
-          mvn clean install --fail-at-end -Prun-code-coverage -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'
+          mvn clean install --fail-at-end -Prun-code-coverage -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!lienzo-webapp'
 
       - name: "Analyze with Sonar"
         env:
@@ -47,4 +47,4 @@ jobs:
           SONARCLOUD_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd packages/stunner-editors
-          mvn -B validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=org.kie.kogito:kogito-tooling -Dsonar.organization=kiegroup -Dsonar.host.url=https://sonarcloud.io -DskipTests -Dgwt.compiler.skip -Dsonar.login=${{ env.SONARCLOUD_TOKEN }} -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'
+          mvn -B validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=org.kie.kogito:kogito-tooling -Dsonar.organization=kiegroup -Dsonar.host.url=https://sonarcloud.io -DskipTests -Dgwt.compiler.skip -Dsonar.login=${{ env.SONARCLOUD_TOKEN }} -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!lienzo-webapp'

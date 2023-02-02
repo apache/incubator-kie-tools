@@ -58,6 +58,10 @@ public class EmptyScreen {
     public interface View extends UberElemental<EmptyScreen> {
         
         void editorMode();
+
+        void noModel();
+
+        void modelId(String modelId);
         
     }
 
@@ -78,8 +82,13 @@ public class EmptyScreen {
     
     @OnOpen
     protected void onOpen() {
+        var modelId = loader.getImportId();
         if (loader.isEditor()) {
             view.editorMode();
+        } else if (modelId != null && !modelId.trim().equals("")) {
+            view.modelId(modelId);
+        } else {
+            view.noModel();
         }
     }
     

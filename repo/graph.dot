@@ -54,6 +54,7 @@ digraph G {
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-viewer-deployment-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -106,7 +107,6 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -201,9 +201,7 @@ digraph G {
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
-  "@kie-tools/dashbuilder-language-service" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
-  "@kie-tools/dashbuilder-language-service" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
-  "@kie-tools/dashbuilder-language-service" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dashbuilder-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "blue" ];
@@ -359,6 +357,7 @@ digraph G {
   "vscode-extension-bpmn-editor" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];
   "vscode-extension-bpmn-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
   "vscode-extension-dashbuilder-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
+  "vscode-extension-dashbuilder-editor" -> "@kie-tools/dashbuilder-language-service" [ style = "solid", color = "blue" ];
   "vscode-extension-dashbuilder-editor" -> "@kie-tools/dashbuilder-viewer" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];

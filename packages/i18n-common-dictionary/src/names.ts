@@ -16,6 +16,7 @@
 
 export const names = {
   app: "App",
+  bitbucket: "Bitbucket",
   bpmn: "BPMN",
   businessModeler: {
     name: "Business Modeler",
@@ -36,6 +37,7 @@ export const names = {
   fedora: "Fedora",
   pmml: "PMML",
   dropbox: "Dropbox",
+  git: "Git",
   github: "GitHub",
   kogito: "Kogito",
   linux: "Linux",

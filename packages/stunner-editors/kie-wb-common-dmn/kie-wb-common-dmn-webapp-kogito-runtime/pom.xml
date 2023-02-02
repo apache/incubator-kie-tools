@@ -35,6 +35,8 @@
     <kogito.large.model.it.tests>**/large/model/*IT.java</kogito.large.model.it.tests>
     <kogito.backward.compatibility.it.tests>**/backward/compatibility/*IT.java</kogito.backward.compatibility.it.tests>
     <kogito.selenium.it.tests>**/selenium/*IT.java</kogito.selenium.it.tests>
+    <gwt.helper.rootDirectories>${project.parent.basedir}/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/</gwt.helper.rootDirectories>
+    <gwt.helper.excludes>BPMN,Bpmn,Emf,Emulation</gwt.helper.excludes>
 
     <!-- this module is just and "integration" of components, to minimize CI times, we skip sonar here -->
     <sonar.skip>true</sonar.skip>
@@ -494,7 +496,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -510,7 +512,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -525,7 +527,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -535,7 +537,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.antlr</groupId>
+      <groupId>org.antlr4gwt</groupId>
       <artifactId>antlr4gwt-runtime</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -610,6 +612,24 @@
             <org.kie.dmn.kogito.screenshots.dir>${project.build.directory}/screenshots</org.kie.dmn.kogito.screenshots.dir>
           </systemPropertyVariables>
         </configuration>
+      </plugin>
+
+      <!-- Include additional sources path for hot reload -->
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-gwthelper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <excludes>${gwt.helper.excludes}</excludes> <!-- will include all GWT module whose configuration file name match that pattern -->
+              <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>

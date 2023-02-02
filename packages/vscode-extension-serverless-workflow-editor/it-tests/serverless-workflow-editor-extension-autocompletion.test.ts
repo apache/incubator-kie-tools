@@ -98,9 +98,9 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       await selectFromContentAssist(textEditor, "refName");
       await selectFromContentAssist(textEditor, '"testFuncId"');
 
-      // check there are 3 states: start, testState, end
-      const states = await swfEditor.getAllStateNodes();
-      expect(states.length).equal(3);
+      // check there are 2 nodes: testState, end
+      const nodeIds = await swfEditor.getAllNodeIds();
+      expect(nodeIds.length).equal(2);
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
@@ -183,9 +183,9 @@ end: true`);
       await selectFromContentAssist(textEditor, "refName");
       await selectFromContentAssist(textEditor, "testFuncId");
 
-      // check there are 3 states: start, testState, end
-      const states = await swfEditor.getAllStateNodes();
-      expect(states.length).equal(3);
+      // check there are 3 nodes: start, testState, end
+      const nodes = await swfEditor.getAllNodesInMermaidDiagram();
+      expect(nodes.length).equal(3);
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();

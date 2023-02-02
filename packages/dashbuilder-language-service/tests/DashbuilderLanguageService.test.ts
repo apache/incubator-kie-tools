@@ -82,3 +82,34 @@ describe("code completion", () => {
     });
   });
 });
+
+describe("diagnostic", () => {
+  const ls = new DashbuilderLanguageService();
+  test.each([
+    ["empty file", ``],
+    [
+      "valid",
+      `pages:
+      - rows:
+          - columns:
+              - span: '6'
+                components:
+                  - html: Row 1 Column 1
+              - span: '6'
+                components:
+                  - html: Row 1 Column 2
+          - columns:
+              - span: '6'
+                components:
+                  - html: Row 2 Column 1
+              - span: '6'
+                components:
+                  - html: Row 2 Column 2`,
+    ],
+  ])("%s", async (_description, content) => {
+    const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
+
+    expect(diagnostic.length).toMatchSnapshot();
+    expect(diagnostic).toMatchSnapshot();
+  });
+});
