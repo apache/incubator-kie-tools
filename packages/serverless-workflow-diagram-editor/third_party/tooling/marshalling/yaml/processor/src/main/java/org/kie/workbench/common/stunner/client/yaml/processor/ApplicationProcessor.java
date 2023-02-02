@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -30,8 +31,11 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 
 import com.google.auto.common.MoreElements;
+import com.google.auto.common.MoreTypes;
 import com.google.auto.service.AutoService;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.client.yaml.processor.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.yaml.processor.logger.PrintWriterTreeLogger;
 import org.kie.workbench.common.stunner.client.yaml.processor.logger.TreeLogger;
@@ -41,7 +45,7 @@ import org.kie.workbench.common.stunner.client.yaml.processor.processor.BeanProc
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ApplicationProcessor extends AbstractProcessor {
 
-  private final TreeLogger logger = new PrintWriterTreeLogger();
+  private final PrintWriterTreeLogger logger = new PrintWriterTreeLogger();
   private final Set<TypeElement> beans = new HashSet<>();
 
   @Override
@@ -51,15 +55,64 @@ public class ApplicationProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(
-      Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {
+          Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {
     if (!annotations.isEmpty()) {
       GenerationContext context = new GenerationContext(roundEnvironment, processingEnv);
       roundEnvironment.getElementsAnnotatedWith(YAMLMapper.class).stream()
-          .map(MoreElements::asType)
-          .forEach(beans::add);
+              .map(MoreElements::asType)
+              .forEach(beans::add);
+
+      logger.setMaxDetail(TreeLogger.Type.INFO);
+      long started = System.currentTimeMillis();
+
+      addCustomDeserializers(
+              roundEnvironment.getElementsAnnotatedWith(YamlTypeSerializer.class).stream()
+                      .filter(e -> e instanceof TypeElement)
+                      .map(MoreElements::asType),
+              context);
+
+      addCustomSerializers(
+              roundEnvironment.getElementsAnnotatedWith(YamlTypeDeserializer.class).stream()
+                      .filter(e -> e instanceof TypeElement)
+                      .map(MoreElements::asType),
+              context);
+
       new BeanProcessor(context, logger, beans).process();
+      logger.log(
+              TreeLogger.Type.INFO,
+              "YAML ser/deser generated in " + (System.currentTimeMillis() - started) + " ms");
     }
     return false;
+  }
+
+  private void addCustomDeserializers(Stream<TypeElement> elements, GenerationContext context) {
+    elements.forEach(
+            type ->
+                    context
+                            .getTypeUtils()
+                            .getClassValueFromAnnotation(type, YamlTypeDeserializer.class, "value")
+                            .ifPresent(
+                                    serializer ->
+                                            context
+                                                    .getTypeRegistry()
+                                                    .registerDeserializer(
+                                                            type.getQualifiedName().toString(),
+                                                            MoreTypes.asTypeElement(serializer))));
+  }
+
+  private void addCustomSerializers(Stream<TypeElement> elements, GenerationContext context) {
+    elements.forEach(
+            type ->
+                    context
+                            .getTypeUtils()
+                            .getClassValueFromAnnotation(type, YamlTypeSerializer.class, "value")
+                            .ifPresent(
+                                    serializer ->
+                                            context
+                                                    .getTypeRegistry()
+                                                    .registerSerializer(
+                                                            type.getQualifiedName().toString(),
+                                                            MoreTypes.asTypeElement(serializer))));
   }
 
   private List<Class<?>> supportedAnnotations() {

@@ -89,12 +89,20 @@ public class MarshallerUtils {
      * @param json     - the original JSON
      * @param workflow - the definition of the workflow
      */
-    static void onPostDeserialize(String json, Workflow workflow) {
-        Object parsed = Global.JSON.parse(json);
-        Js.asPropertyMap(workflow).set("__original__", parsed);
+    static void onPostDeserialize(String json, Workflow workflow, DocType docType) {
+        if(docType == DocType.JSON) {
+            Object parsed = Global.JSON.parse(json);
+            Js.asPropertyMap(workflow).set("__original__", parsed);
+        } else {
+            Js.asPropertyMap(workflow).set("__original__", "empty");
+
+        }
     }
 
-    static String onPostSerialize(String json, Workflow workflow) {
+    static String onPostSerialize(String json, Workflow workflow, DocType docType) {
+        if(docType == DocType.YAML) {
+            throw new UnsupportedOperationException("YAML is not supported yet");
+        }
         Object parsed = Global.JSON.parse(json);
         merge(Js.asPropertyMap(workflow).get("__original__"), parsed);
         return Global.JSON.stringify(parsed);

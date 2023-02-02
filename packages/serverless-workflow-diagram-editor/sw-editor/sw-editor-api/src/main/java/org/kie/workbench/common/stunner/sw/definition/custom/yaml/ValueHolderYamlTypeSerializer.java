@@ -7,6 +7,7 @@ import com.amihaiemil.eoyaml.YamlNode;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.core.Reflect;
+import elemental2.dom.DomGlobal;
 import jakarta.json.JsonObject;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
@@ -50,12 +51,22 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
 
     @Override
     public ValueHolder deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return deserialize(yaml.yamlMapping(key));
     }
 
     @Override
     public ValueHolder deserialize(YamlNode node, YAMLDeserializationContext ctx) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return deserialize(node.asMapping());
+    }
+
+    private ValueHolder deserialize(YamlMapping value) throws YAMLDeserializationException {
+        ValueHolder valueHolder = new ValueHolder();
+        if (value != null) {
+            value.keys().forEach(key -> {
+                DomGlobal.console.log("k " + key + " " + value.yamlMapping(key).type());
+            });
+        }
+        return valueHolder;
     }
 
     @Override
