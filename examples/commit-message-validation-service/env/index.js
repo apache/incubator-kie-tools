@@ -24,7 +24,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     EXAMPLE_COMMIT_MESSAGE_VALIDATION_SERVICE__validators: {
       default: "Length:5-72;IssuePrefix:kie-issues#*",
-      description: "Enabled validators",
+      description:
+        "Enables and configures validators. The value is a list of `;` separated validators that are parameterized with anything after `:`.",
     },
   }),
   get env() {
