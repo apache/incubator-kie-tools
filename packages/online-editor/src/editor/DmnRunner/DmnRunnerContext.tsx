@@ -36,7 +36,7 @@ export interface DmnRunnerCallbacksContextType {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   toggleExpanded: () => void;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  setMode: (queryParams: { newMode?: DmnRunnerMode; expand?: boolean; row?: number }) => void;
+  setMode: (queryParams: { newMode?: DmnRunnerMode; row?: number }) => void;
 }
 
 export const DmnRunnerStateContext = React.createContext<DmnRunnerContextType>({} as any);

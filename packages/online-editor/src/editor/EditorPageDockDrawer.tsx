@@ -169,14 +169,13 @@ export const EditorPageDockDrawer = React.forwardRef<
   );
 
   useEffect(() => {
-    if (queryParams.has(QueryParams.DMN_RUNNER)) {
+    if (props.workspaceFile.extension.toLowerCase() === "dmn" && queryParams.has(QueryParams.DMN_RUNNER)) {
       const dmnRunnerMode = queryParams.getString(QueryParams.DMN_RUNNER);
       if (
         dmnRunnerMode === DmnRunnerMode.TABLE &&
         extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
       ) {
         setPanel(PanelId.DMN_RUNNER_TABLE);
-        // remove dock param;
         return;
       }
       // wrong value; remove dmn_runner param;
@@ -199,7 +198,7 @@ export const EditorPageDockDrawer = React.forwardRef<
       // wrong value; remove dock param;
     }
     setPanel(PanelId.NONE);
-  }, [extendedServices.status, history, queryParams]);
+  }, [props.workspaceFile.extension, extendedServices.status, history, queryParams]);
 
   return (
     <>

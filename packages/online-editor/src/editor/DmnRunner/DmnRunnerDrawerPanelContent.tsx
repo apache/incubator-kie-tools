@@ -302,7 +302,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           key={rowIndex}
           onClick={() => {
             selectRow(`Row ${rowIndex + 1}`);
-            dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.FORM, expand: true, row: rowIndex });
+            dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.FORM, row: rowIndex });
           }}
         >
           Row {rowIndex + 1}
@@ -318,14 +318,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const onAddNewRow = useCallback(() => {
     dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
-      dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.FORM, expand: true, row: newData.length - 1 });
+      dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.FORM, row: newData.length - 1 });
       selectRow(`Row ${newData.length}`);
       return newData;
     });
   }, [dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
-    dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.TABLE, expand: true });
+    dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.TABLE });
   }, [dmnRunnerDispatch]);
 
   return (
@@ -425,7 +425,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       </FlexItem>
                     </Flex>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setMode({ expand: false })} />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.toggleExpanded()} />
                     )}
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
@@ -466,7 +466,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <Text component={"h3"}>{i18n.terms.outputs}</Text>
                     </TextContent>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setMode({ expand: false })} />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.toggleExpanded()} />
                     )}
                   </PageSection>
                   <div

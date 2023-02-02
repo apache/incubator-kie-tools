@@ -117,6 +117,13 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [extendedServices.status, extendedServices.client, props.workspaceFile.extension, preparePayload]);
 
   useEffect(() => {
+    if (props.workspaceFile.extension !== "dmn") {
+      history.replace({
+        search: queryParams.without(QueryParams.DMN_RUNNER).without(QueryParams.DMN_RUNNER_ROW).toString(),
+      });
+      return;
+    }
+
     if (queryParams.has(QueryParams.DMN_RUNNER)) {
       const dmnRunnerMode = queryParams.getString(QueryParams.DMN_RUNNER);
       if (dmnRunnerMode === DmnRunnerMode.FORM) {
@@ -154,7 +161,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile]);
+  }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile.extension]);
 
   const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
   useEffect(() => {
@@ -178,24 +185,22 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       return;
     }
     history.replace({
-      search: queryParams.without(QueryParams.DMN_RUNNER).toString(),
+      search: queryParams.without(QueryParams.DMN_RUNNER).without(QueryParams.DMN_RUNNER_ROW).toString(),
     });
   }, [mode, isExpanded, history, queryParams]);
 
   const setQueryParams = useCallback(
-    ({ newMode, expand, row }) => {
+    ({ newMode, row }) => {
       let query = queryParams;
+
+      if (newMode === DmnRunnerMode.TABLE) {
+        query = query.without(QueryParams.DMN_RUNNER_ROW);
+      }
 
       if (mode !== undefined) {
         query = query.with(QueryParams.DMN_RUNNER, newMode);
       } else {
         query = query.with(QueryParams.DMN_RUNNER, mode);
-      }
-
-      if (newMode === DmnRunnerMode.TABLE) {
-        // query = query.without(QueryParams.DOCK);
-      } else {
-        //
       }
 
       if (row !== undefined) {
