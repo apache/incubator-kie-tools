@@ -28,6 +28,7 @@ export interface ResizerProps {
   resizingWidth: ResizingWidth | undefined;
   setResizingWidth: ((getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void) | undefined;
   setResizing?: React.Dispatch<React.SetStateAction<boolean>>;
+  getWidthToFitData?: () => number | undefined;
 }
 
 export const Resizer: React.FunctionComponent<ResizerProps> = ({
@@ -37,6 +38,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   resizingWidth,
   setResizingWidth,
   setResizing,
+  getWidthToFitData,
 }) => {
   //
   // onResizeStop batching strategy (begin)
@@ -107,14 +109,20 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
+      const widthToFitData = getWidthToFitData?.();
+
       // This is pretending we resized down.
-      onResizeStart(undefined, { size: { width: minWidth ?? DEFAULT_MIN_WIDTH } });
+      onResizeStart(undefined, {
+        size: {
+          width: Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH),
+        },
+      });
       // Let React handle the state update above, then stop the resizing.
       setTimeout(() => {
-        setResizingStop__data(minWidth ?? DEFAULT_MIN_WIDTH);
+        setResizingStop__data(Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH));
       }, 100);
     },
-    [minWidth, onResizeStart]
+    [getWidthToFitData, minWidth, onResizeStart]
   );
 
   const style = useMemo(() => {

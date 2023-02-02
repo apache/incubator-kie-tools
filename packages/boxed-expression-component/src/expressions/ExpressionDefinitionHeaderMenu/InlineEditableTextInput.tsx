@@ -70,7 +70,7 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
   }, [value]);
 
   return toggle ? (
-    <p className={"pf-u-text-truncate"} style={getTextStyle} onClick={onLabelClick}>
+    <p className={"inline-editable-preview pf-u-text-truncate"} style={getTextStyle} onClick={onLabelClick}>
       {value || i18n.enterText}
     </p>
   ) : (

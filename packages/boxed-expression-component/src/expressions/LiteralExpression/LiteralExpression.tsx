@@ -21,7 +21,7 @@ import { BeeTableHeaderVisibility, LiteralExpressionDefinition } from "../../api
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import "./LiteralExpression.css";

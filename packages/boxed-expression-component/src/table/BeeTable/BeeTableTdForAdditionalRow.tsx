@@ -18,7 +18,7 @@ import * as ReactTable from "react-table";
 import * as React from "react";
 import { useRef } from "react";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 

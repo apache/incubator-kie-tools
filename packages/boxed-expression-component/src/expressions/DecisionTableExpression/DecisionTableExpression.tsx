@@ -29,7 +29,7 @@ import {
   getNextAvailablePrefixedName,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useApportionedColumnWidthsIfNestedTable, useNestedTableLastColumnMinWidth } from "../../resizing/Hooks";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {

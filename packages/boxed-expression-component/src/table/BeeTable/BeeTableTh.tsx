@@ -37,6 +37,7 @@ export interface BeeTableThProps<R extends object> {
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
   shouldShowColumnsInlineControls: boolean;
+  forwardRef?: React.RefObject<HTMLTableCellElement>;
 }
 
 export type HoverInfo =
@@ -49,6 +50,7 @@ export type HoverInfo =
     };
 
 export function BeeTableTh<R extends object>({
+  forwardRef,
   onColumnAdded,
   children,
   className,
@@ -63,7 +65,6 @@ export function BeeTableTh<R extends object>({
   shouldShowColumnsInlineControls: shouldShowRowsInlineControls,
 }: React.PropsWithChildren<BeeTableThProps<R>>) {
   const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
-  const thRef = useRef<HTMLTableCellElement>(null);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
@@ -84,6 +85,9 @@ export function BeeTableTh<R extends object>({
     },
     [columnIndex, groupType, hoverInfo, onColumnAdded]
   );
+
+  const _thRef = useRef<HTMLTableCellElement>(null);
+  const thRef = forwardRef ?? _thRef;
 
   useEffect(() => {
     function onEnter(e: MouseEvent) {
@@ -108,7 +112,7 @@ export function BeeTableTh<R extends object>({
       th?.removeEventListener("mousemove", onMove);
       th?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd]);
+  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd, thRef]);
 
   const addColumButtonStyle = useMemo(
     () =>

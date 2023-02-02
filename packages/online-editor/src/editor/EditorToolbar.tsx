@@ -116,7 +116,7 @@ import {
   isGistLikeWorkspaceKind,
   WorkspaceKindGistLike,
   WorkspaceKindGitBased,
-} from "@kie-tools-core/workspaces-git-fs/src/worker/api/WorkspaceOrigin";
+} from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { CreateGistOrSnippetModal } from "./CreateGistOrSnippetModal";
 

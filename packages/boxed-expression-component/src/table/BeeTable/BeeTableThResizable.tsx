@@ -16,12 +16,12 @@
 
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as React from "react";
-import { useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
 import { BeeTableTh } from "./BeeTableTh";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
@@ -42,6 +42,8 @@ export interface BeeTableThResizableProps<R extends object> {
   shouldShowColumnsInlineControls: boolean;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
+  onGetWidthToFitData: () => number;
+  forwardRef?: React.RefObject<HTMLTableCellElement>;
 }
 
 export function BeeTableThResizable<R extends object>({
@@ -58,6 +60,8 @@ export function BeeTableThResizable<R extends object>({
   resizerStopBehavior,
   shouldShowColumnsInlineControls,
   lastColumnMinWidth,
+  onGetWidthToFitData,
+  forwardRef,
 }: BeeTableThResizableProps<R>) {
   const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
 
@@ -84,8 +88,17 @@ export function BeeTableThResizable<R extends object>({
     column.width ? Math.max(lastColumnMinWidth ?? column.minWidth ?? 0, column.width ?? 0) : undefined
   );
 
+  const getWidthToFitData = useCallback(() => {
+    const extraSpace =
+      2 + // 2px for compensate for th's borders
+      16; // 16px for a nice padding
+
+    return onGetWidthToFitData() + extraSpace;
+  }, [onGetWidthToFitData]);
+
   return (
     <BeeTableTh<R>
+      forwardRef={forwardRef}
       className={cssClasses}
       thProps={{
         ...column.getHeaderProps(),
@@ -125,6 +138,7 @@ export function BeeTableThResizable<R extends object>({
         setWidth={column.setWidth}
         resizingWidth={resizingWidth}
         setResizingWidth={setResizingWidth}
+        getWidthToFitData={getWidthToFitData}
       />
     </BeeTableTh>
   );

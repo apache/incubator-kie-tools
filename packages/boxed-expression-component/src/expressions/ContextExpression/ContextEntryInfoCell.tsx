@@ -21,6 +21,8 @@ import * as _ from "lodash";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { DEFAULT_EXPRESSION_NAME, ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
 import "./ContextEntryInfoCell.css";
+import { useCellWidthToFitDataRef } from "../../resizing/BeeTableCellWidthToFitDataContext";
+import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
 
 export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
@@ -41,6 +43,8 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const entryInfo = useMemo(() => entry.entryInfo, [entry.entryInfo]);
   const entryExpression = useMemo(() => entry.entryExpression, [entry.entryExpression]);
 
+  const ref = React.useRef<HTMLDivElement>(null);
+
   const onContextEntryInfoUpdated = useCallback(
     ({
       name = DEFAULT_EXPRESSION_NAME,
@@ -56,6 +60,32 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     [onEntryUpdate, rowIndex, entry, entryExpression, entryInfo]
   );
 
+  useCellWidthToFitDataRef(
+    rowIndex,
+    columnIndex,
+    useMemo(
+      () => ({
+        getWidthToFitData: () => {
+          const name = ref.current!.querySelector(".expression-info-name")!;
+          const dataType = ref.current!.querySelector(".expression-info-data-type")!;
+
+          const padding = 8 * 2; // 8px for each side, comes from .entry-info div
+          const border = 2; // that's the td border.
+
+          return (
+            padding +
+            border +
+            Math.max(
+              getTextWidth(name.textContent ?? "", getCanvasFont(name)),
+              getTextWidth(dataType.textContent ?? "", getCanvasFont(dataType))
+            )
+          );
+        },
+      }),
+      []
+    )
+  );
+
   useBeeTableSelectableCellRef(
     rowIndex,
     columnIndex,
@@ -65,7 +95,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
 
   const renderEntryDefinition = useCallback(
     (args: { additionalCssClass?: string }) => (
-      <div className={`expression-info ${args.additionalCssClass}`}>
+      <div className={`expression-info ${args.additionalCssClass}`} ref={ref}>
         <p className="expression-info-name pf-u-text-truncate" title={entryInfo.name}>
           {entryInfo.name}
         </p>

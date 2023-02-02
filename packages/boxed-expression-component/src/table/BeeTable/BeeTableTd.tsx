@@ -18,11 +18,16 @@ import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
+import { useCellWidthToFitData } from "../../resizing/BeeTableCellWidthToFitDataContext";
+import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContextProvider";
-import { BeeTableCellCoordinates, BeeTableCoordinatesContextProvider } from "../../selection/BeeTableSelectionContext";
-import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { DEFAULT_MIN_WIDTH } from "../../resizing/WidthConstants";
+import {
+  BeeTableCellCoordinates,
+  BeeTableCoordinatesContextProvider,
+  useBeeTableSelectableCell,
+} from "../../selection/BeeTableSelectionContext";
 
 export interface BeeTableTdProps<R extends object> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -68,6 +73,8 @@ export function BeeTableTd<R extends object>({
   const cell = useMemo(() => {
     return row.cells[columnIndex];
   }, [columnIndex, row]);
+
+  const cellWidthToFitDataRef = useCellWidthToFitData(rowIndex, columnIndex);
 
   const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
     columnIndex,
@@ -188,6 +195,7 @@ export function BeeTableTd<R extends object>({
 
             {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
               <Resizer
+                getWidthToFitData={cellWidthToFitDataRef?.getWidthToFitData}
                 minWidth={lastColumnMinWidth ?? cell.column.minWidth}
                 width={cell.column.width}
                 setWidth={cell.column.setWidth}

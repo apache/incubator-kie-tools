@@ -24,6 +24,7 @@ import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
 
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;
@@ -163,6 +164,9 @@ export function BeeTableHeader<R extends object>({
     (rowIndex, _column, columnIndex, done) => {
       const column = _column;
       const rowSpan = 1;
+
+      const thRef = React.createRef<HTMLTableCellElement>();
+
       const ret = column.isRowIndexColumn ? (
         <React.Fragment key={"row-index-column"}>
           {shouldRenderRowIndexColumn && renderRowIndexColumn(column, rowIndex)}
@@ -171,6 +175,7 @@ export function BeeTableHeader<R extends object>({
         <React.Fragment key={getColumnKey(column)}>
           {!done.has(column) && (
             <BeeTableThResizable
+              forwardRef={thRef}
               resizerStopBehavior={resizerStopBehavior}
               rowSpan={rowSpan}
               isEditableHeader={isEditableHeader}
@@ -189,6 +194,23 @@ export function BeeTableHeader<R extends object>({
               lastColumnMinWidth={
                 columnIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
               }
+              onGetWidthToFitData={() => {
+                if (column.isInlineEditable) {
+                  const inlineEditablePreview = thRef.current!.querySelector(".inline-editable-preview")!;
+                  return Math.ceil(
+                    getTextWidth(inlineEditablePreview.textContent ?? "", getCanvasFont(inlineEditablePreview))
+                  );
+                } else {
+                  const name = thRef.current!.querySelector(".expression-info-name")!;
+                  const dataType = thRef.current!.querySelector(".expression-info-data-type")!;
+                  return Math.ceil(
+                    Math.max(
+                      getTextWidth(name.textContent ?? "", getCanvasFont(name)),
+                      getTextWidth(dataType.textContent ?? "", getCanvasFont(dataType))
+                    )
+                  );
+                }
+              }}
               headerCellInfo={
                 <div
                   className="expression-info header-cell-info"

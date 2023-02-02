@@ -28,7 +28,7 @@ import { BeeTableBody } from "./BeeTableBody";
 import {
   BeeTableResizableColumnsContextProvider,
   BeeTableResizableColumnsDispatchContextType,
-} from "../../resizing/BeeTableResizableColumnsContextProvider";
+} from "../../resizing/BeeTableResizableColumnsContext";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableDefaultCell } from "./BeeTableDefaultCell";
 import { BeeTableHeader } from "./BeeTableHeader";
@@ -38,6 +38,7 @@ import {
   SELECTION_MIN_ACTIVE_DEPTH,
   useBeeTableSelectionDispatch,
 } from "../../selection/BeeTableSelectionContext";
+import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
@@ -557,7 +558,9 @@ export const BeeTable = <R extends object>(props: ForwardRefBeeTableProps<R>) =>
   return (
     <BeeTableSelectionContextProvider>
       <BeeTableResizableColumnsContextProvider ref={props.forwardRef} onChange={props.onColumnResizingWidthChange}>
-        <BeeTableInternal {...props} />
+        <BeeTableCellWidthsToFitDataContextProvider>
+          <BeeTableInternal {...props} />
+        </BeeTableCellWidthsToFitDataContextProvider>
       </BeeTableResizableColumnsContextProvider>
     </BeeTableSelectionContextProvider>
   );

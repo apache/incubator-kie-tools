@@ -64,7 +64,7 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
     () =>
       (results ?? []).map((result) => ({
         outputEntries: (result ?? []).map(({ result }) => {
-          return result as string; // FIXME: Tiago -> This `string` here is absolutely wrong.
+          return result as string; // FIXME: Tiago -> This ` as string` here is absolutely wrong.
         }),
       })),
     [results]

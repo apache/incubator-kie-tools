@@ -83,11 +83,11 @@
   color: var(--pf-global--palette--black-600);
   font-family: Menlo, monospace;
   font-size: 0.8em;
-  white-space: nowrap;
+  white-space: pre !important;
 }
 
 .expression-container .expression-info .expression-info-data-type {
-  white-space: nowrap;
+  white-space: pre !important;
   font-style: italic;
   font-size: smaller;
   color: #1b515f;

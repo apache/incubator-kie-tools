@@ -6,7 +6,7 @@ import {
   BeeTableProps,
   JavaFunctionExpressionDefinition,
 } from "../../api";
-import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContextProvider";
+import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useApportionedColumnWidthsIfNestedTable } from "../../resizing/Hooks";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
@@ -90,7 +90,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
         accessor: "label" as any,
         dataType: undefined as any,
         isRowIndexColumn: false,
-        width: undefined,
+        width: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
         minWidth: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
       },
       {
@@ -134,8 +134,13 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
 
   const columns = useMemo(
     () => [
-      { width: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH, isFrozen: true },
-      { width: functionExpression.classAndMethodNamesWidth },
+      {
+        width: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+        isFrozen: true,
+      },
+      {
+        width: functionExpression.classAndMethodNamesWidth,
+      },
     ],
     [functionExpression.classAndMethodNamesWidth]
   );
