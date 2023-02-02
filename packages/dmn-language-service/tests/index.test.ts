@@ -34,19 +34,19 @@ describe("DmnLanguageService", () => {
       })),
   });
 
-  it("getImportedModelPaths - empty string", () => {
-    expect(service.getImportedModelPaths("")).toEqual([]);
+  it("getImportedModelRelativePaths - empty string", () => {
+    expect(service.getImportedModelRelativePaths("")).toEqual([]);
   });
 
-  it("getImportedModelPaths", () => {
+  it("getImportedModelRelativePaths", () => {
     tests.forEach(({ modelPath, expected }) => {
       const path = resolve(__dirname, modelPath);
       const file = readFileSync(path, "utf8");
-      expect(service.getImportedModelPaths(file)).toEqual(expected);
+      expect(service.getImportedModelRelativePaths(file)).toEqual(expected);
     });
   });
 
-  it("getImportedModelPaths - multiple files", async () => {
+  it("getImportedModelRelativePaths - multiple files", async () => {
     const files = (
       await Promise.all(
         tests.map(({ modelPath }) => {
@@ -55,7 +55,7 @@ describe("DmnLanguageService", () => {
       )
     ).map((e) => e.toString("utf8"));
 
-    expect(service.getImportedModelPaths(files)).toEqual(tests.flatMap((e) => e.expected));
+    expect(service.getImportedModelRelativePaths(files)).toEqual(tests.flatMap((e) => e.expected));
   });
 
   it("getAllImportedModelsResources - empty", async () => {
