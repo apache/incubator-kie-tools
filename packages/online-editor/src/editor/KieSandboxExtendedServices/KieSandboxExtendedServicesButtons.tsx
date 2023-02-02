@@ -67,17 +67,13 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
       if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
         props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
       } else {
-        if (dmnRunnerState.isExpanded) {
-          dmnRunnerDispatch.setIsExpandedQueryParams(false);
-        } else {
-          dmnRunnerDispatch.setIsExpandedQueryParams(true);
-        }
+        dmnRunnerDispatch.toggleExpanded();
       }
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [dmnRunnerState.mode, dmnRunnerState.isExpanded, dmnRunnerDispatch, extendedServices, props.editorPageDock]);
+  }, [dmnRunnerState.mode, dmnRunnerDispatch, extendedServices, props.editorPageDock]);
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {

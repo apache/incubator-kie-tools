@@ -425,7 +425,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       </FlexItem>
                     </Flex>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setIsExpandedQueryParams(false)} />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setMode({ expand: false })} />
                     )}
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
@@ -466,7 +466,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <Text component={"h3"}>{i18n.terms.outputs}</Text>
                     </TextContent>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setIsExpandedQueryParams(false)} />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setMode({ expand: false })} />
                     )}
                   </PageSection>
                   <div

@@ -23,10 +23,9 @@ export enum QueryParams {
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
   CONFIRM = "confirm",
-  PROBLEMS_IS_EXPANDED = "problemsIsExpanded",
+  DOCK = "dock",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
-  DMN_RUNNER_MODE = "dmnRunnerMode",
-  DMN_RUNNER_IS_EXPANDED = "dmnRunnerIsExpanded",
+  DMN_RUNNER = "dmnRunner",
   DMN_RUNNER_ROW = "dmnRunnerRow",
 }
 
@@ -86,7 +85,6 @@ export interface QueryParamsImpl<Q extends string> {
   has(name: Q): boolean;
   getString(name: Q): string | undefined;
   getNumber(name: Q): number | undefined;
-  getBoolean(name: Q): boolean | undefined;
   with(name: Q, value: string | undefined): QueryParamsImpl<Q>;
   without(name: Q): QueryParamsImpl<Q>;
   toString(): string;
@@ -109,15 +107,6 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
         return undefined;
       }
       return number;
-    },
-    getBoolean: (name) => {
-      const val = new URLSearchParams(queryString).get(name);
-      if (val === "false") {
-        return false;
-      } else if (val === "true") {
-        return true;
-      }
-      return undefined;
     },
     with: (name, value) => {
       const urlSearchParams = new URLSearchParams(queryString);
@@ -153,10 +142,9 @@ export const routes = {
     queryParams:
       | QueryParams.URL
       | QueryParams.SETTINGS
-      | QueryParams.PROBLEMS_IS_EXPANDED
+      | QueryParams.DOCK
       | QueryParams.DMN_RUNNER_FORM_INPUTS
-      | QueryParams.DMN_RUNNER_IS_EXPANDED
-      | QueryParams.DMN_RUNNER_MODE
+      | QueryParams.DMN_RUNNER
       | QueryParams.DMN_RUNNER_ROW;
   }>(({ extension }) => `/editor/${extension}`),
 

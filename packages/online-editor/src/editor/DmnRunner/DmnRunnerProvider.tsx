@@ -127,23 +127,18 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [extendedServices.status, extendedServices.client, props.workspaceFile.extension, preparePayload]);
 
   useEffect(() => {
-    if (queryParams.has(QueryParams.DMN_RUNNER_IS_EXPANDED)) {
-      const isExpanded = queryParams.getBoolean(QueryParams.DMN_RUNNER_IS_EXPANDED);
-      if (isExpanded !== undefined) {
-        setExpanded(isExpanded);
+    if (queryParams.has(QueryParams.DMN_RUNNER)) {
+      const dmnRunnerMode = queryParams.getString(QueryParams.DMN_RUNNER);
+      if (dmnRunnerMode === DmnRunnerMode.FORM) {
+        setMode(DmnRunnerMode.FORM);
+        setExpanded(true);
+      }
+      if (dmnRunnerMode === DmnRunnerMode.TABLE) {
+        setMode(DmnRunnerMode.TABLE);
+        setExpanded(true);
       }
     } else {
       setExpanded(false);
-    }
-
-    if (queryParams.has(QueryParams.DMN_RUNNER_MODE)) {
-      const mode = queryParams.getString(QueryParams.DMN_RUNNER_MODE);
-      if (mode === DmnRunnerMode.FORM) {
-        setMode(DmnRunnerMode.FORM);
-      }
-      if (mode === DmnRunnerMode.TABLE) {
-        setMode(DmnRunnerMode.TABLE);
-      }
     }
 
     if (queryParams.has(QueryParams.DMN_RUNNER_ROW)) {
@@ -185,44 +180,32 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
-  const setIsExpandedQueryParams = useCallback(
-    (isExpanded?: boolean) => {
-      let query = queryParams;
-      if (!queryParams.has(QueryParams.DMN_RUNNER_MODE)) {
-        query = query.with(QueryParams.DMN_RUNNER_MODE, DmnRunnerMode.FORM);
-      }
-
-      if (!isExpanded) {
-        history.replace({
-          search: query.without(QueryParams.DMN_RUNNER_IS_EXPANDED).toString(),
-        });
-        return;
-      }
+  const toggleExpanded = useCallback(() => {
+    if (!isExpanded) {
       history.replace({
-        search: query.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true").toString(),
+        search: queryParams.with(QueryParams.DMN_RUNNER, mode).toString(),
       });
-    },
-    [history, queryParams]
-  );
+      return;
+    }
+    history.replace({
+      search: queryParams.without(QueryParams.DMN_RUNNER).toString(),
+    });
+  }, [mode, isExpanded, history, queryParams]);
 
   const setQueryParams = useCallback(
     ({ newMode, expand, row }) => {
       let query = queryParams;
 
       if (mode !== undefined) {
-        query = query.with(QueryParams.DMN_RUNNER_MODE, newMode);
+        query = query.with(QueryParams.DMN_RUNNER, newMode);
       } else {
-        query = query.with(QueryParams.DMN_RUNNER_MODE, mode);
+        query = query.with(QueryParams.DMN_RUNNER, mode);
       }
 
       if (newMode === DmnRunnerMode.TABLE) {
-        query = query.without(QueryParams.PROBLEMS_IS_EXPANDED);
-      }
-
-      if (expand !== undefined) {
-        query = query.with(QueryParams.DMN_RUNNER_IS_EXPANDED, "true");
+        // query = query.without(QueryParams.DOCK);
       } else {
-        query = query.without(QueryParams.DMN_RUNNER_IS_EXPANDED);
+        //
       }
 
       if (row !== undefined) {
@@ -242,11 +225,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     () => ({
       preparePayload,
       setError,
-      setIsExpandedQueryParams,
+      toggleExpanded,
       setInputRows,
       setMode: setQueryParams,
     }),
-    [preparePayload, setIsExpandedQueryParams, setInputRows, setQueryParams]
+    [preparePayload, toggleExpanded, setInputRows, setQueryParams]
   );
 
   const dmnRunnerState = useMemo(
