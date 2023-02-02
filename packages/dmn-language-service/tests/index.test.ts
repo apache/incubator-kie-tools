@@ -28,10 +28,12 @@ const tests = [
 describe("DmnLanguageService", () => {
   const service = new DmnLanguageService({
     getDmnImportedModel: () =>
-      new Promise((res) => ({
-        path: "",
-        content: "",
-      })),
+      new Promise((res) =>
+        res({
+          relativePath: "",
+          content: "",
+        })
+      ),
   });
 
   it("getImportedModelRelativePaths - empty string", () => {
@@ -61,10 +63,12 @@ describe("DmnLanguageService", () => {
   it("getAllImportedModelsResources - empty", async () => {
     const service = new DmnLanguageService({
       getDmnImportedModel: () =>
-        new Promise((res) => ({
-          path: "",
-          content: "",
-        })),
+        new Promise((res) =>
+          res({
+            relativePath: "",
+            content: "",
+          })
+        ),
     });
 
     expect(await service.getAllImportedModelsResources([""])).toEqual([]);
@@ -78,7 +82,7 @@ describe("DmnLanguageService", () => {
     const fileNested = readFileSync(pathNested, "utf8");
 
     const expected = {
-      path: pathNested,
+      relativePath: pathNested,
       content: fileNested,
     };
 

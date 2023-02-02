@@ -49,6 +49,8 @@ import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 import { useFileValidation } from "./Validation";
+import { DmnLanguageService } from "@kie-tools/dmn-language-service";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 export interface Props {
   workspaceId: string;
@@ -341,7 +343,28 @@ export function EditorPage(props: Props) {
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
 
-  useFileValidation(workspaces, workspaceFilePromise.data?.workspaceFile, editorPageDock);
+  const dmnLanguageService = useMemo(() => {
+    if (!workspaceFilePromise.data?.workspaceFile) {
+      return;
+    }
+
+    if (workspaceFilePromise.data?.workspaceFile.extension.toLocaleLowerCase() !== "dmn") {
+      return;
+    }
+
+    return new DmnLanguageService({
+      getDmnImportedModel: async (importedModelRelativePath: string) => {
+        const fileContent = await workspaces.getFileContent({
+          workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
+          relativePath: importedModelRelativePath,
+        });
+
+        return { content: decoder.decode(fileContent), relativePath: importedModelRelativePath };
+      },
+    });
+  }, [workspaces, workspaceFilePromise.data?.workspaceFile]);
+
+  useFileValidation(workspaces, workspaceFilePromise.data?.workspaceFile, editorPageDock, dmnLanguageService);
 
   return (
     <OnlineEditorPage>
@@ -367,6 +390,7 @@ export function EditorPage(props: Props) {
               workspaceFile={file.workspaceFile}
               editorPageDock={editorPageDock}
               isEditorReady={editor?.isReady}
+              dmnLanguageService={dmnLanguageService}
             >
               <Page>
                 <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />

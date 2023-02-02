@@ -32,11 +32,13 @@ import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandbox
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 interface Props {
   isEditorReady?: boolean;
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspaceFile: WorkspaceFile;
+  dmnLanguageService?: DmnLanguageService;
 }
 
 export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
@@ -61,17 +63,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const [isExpanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.FORM);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
-  const dmnLanguageService = useMemo(() => {
-    return new DmnLanguageService({
-      getDmnImportedModel: async (importedModelRelativePath: string) => {
-        const resourceContent = await workspaces.resourceContentGet({
-          workspaceId: props.workspaceFile.workspaceId,
-          relativePath: importedModelRelativePath,
-        });
-        return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
-      },
-    });
-  }, [workspaces, props.workspaceFile]);
 
   const status = useMemo(() => {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
@@ -79,21 +70,20 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
   const preparePayload = useCallback(
     async (formData?: InputRow) => {
-      const currentResourceContent = await workspaces.resourceContentGet({
+      const fileContent = await workspaces.getFileContent({
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: props.workspaceFile.relativePath,
       });
 
-      if (!currentResourceContent) {
-        throw new Error("Missing resource content from current file");
-      }
-
-      const importedModelsResources = await dmnLanguageService.getAllImportedModelsResources([
-        currentResourceContent?.content ?? "",
-      ]);
-      const dmnResources = [currentResourceContent, ...importedModelsResources].map((resources) => ({
-        URI: resources.path,
-        content: resources.content ?? "",
+      const decodedFileContent = decoder.decode(fileContent);
+      const importedModelsResources =
+        (await props.dmnLanguageService?.getAllImportedModelsResources([decodedFileContent])) ?? [];
+      const dmnResources = [
+        { content: decodedFileContent, relativePath: props.workspaceFile.relativePath },
+        ...importedModelsResources,
+      ].map((resource) => ({
+        URI: resource.relativePath,
+        content: resource.content ?? "",
       }));
 
       return {
@@ -102,7 +92,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         context: formData,
       } as KieSandboxExtendedServicesModelPayload;
     },
-    [props.workspaceFile, workspaces, dmnLanguageService]
+    [props.workspaceFile, workspaces, props.dmnLanguageService]
   );
 
   useEffect(() => {

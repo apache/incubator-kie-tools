@@ -1,7 +1,7 @@
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { useOnlineI18n } from "../i18n";
 import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
@@ -13,29 +13,11 @@ import { WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/co
 export function useFileValidation(
   workspaces: WorkspacesContextType,
   workspaceFile: WorkspaceFile | undefined,
-  editorPageDock: EditorPageDockDrawerRef | undefined
+  editorPageDock: EditorPageDockDrawerRef | undefined,
+  dmnLanguageService?: DmnLanguageService
 ) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
-  const dmnLanguageService = useMemo(() => {
-    if (!workspaceFile) {
-      return;
-    }
-
-    if (workspaceFile.extension.toLocaleLowerCase() !== "dmn") {
-      return;
-    }
-
-    return new DmnLanguageService({
-      getDmnImportedModel: async (importedModel: string) => {
-        const resourceContent = await workspaces.resourceContentGet({
-          workspaceId: workspaceFile.workspaceId,
-          relativePath: importedModel,
-        });
-        return { content: resourceContent?.content ?? "", path: resourceContent?.path ?? "" };
-      },
-    });
-  }, [workspaces, workspaceFile]);
 
   // BPMN validation
   useEffect(() => {
@@ -95,24 +77,24 @@ export function useFileValidation(
     }
 
     workspaces
-      .resourceContentGet({
+      .getFileContent({
         workspaceId: workspaceFile.workspaceId,
         relativePath: workspaceFile.relativePath,
       })
-      .then((currentResourceContent) => {
-        if (!currentResourceContent) {
-          throw new Error("Missing resource content from current file");
-        }
-
+      .then((fileContent) => {
+        const decodedFileContent = decoder.decode(fileContent);
         dmnLanguageService
-          ?.getAllImportedModelsResources([currentResourceContent?.content ?? ""])
+          ?.getAllImportedModelsResources([decodedFileContent])
           .then((importedModelsResources: DmnLanguageServiceImportedModel[]) => {
-            const resources = [currentResourceContent, ...importedModelsResources];
+            const resources = [
+              { content: decodedFileContent, relativePath: workspaceFile.relativePath },
+              ...importedModelsResources,
+            ];
             const payload: KieSandboxExtendedServicesModelPayload = {
               mainURI: workspaceFile.relativePath,
-              resources: resources.map((resources) => ({
-                URI: resources.path,
-                content: resources.content ?? "",
+              resources: resources.map((resource) => ({
+                URI: resource.relativePath,
+                content: resource.content ?? "",
               })),
             };
 
