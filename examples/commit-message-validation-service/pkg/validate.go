@@ -30,9 +30,14 @@ var validatorsMap = map[string]validators.ValidationFunction{
 
 var enabledValidators = strings.Split(metadata.Validators, ";")
 
-func Validate(message string) *validators.Validation {
+type ValidationResult struct {
+	Result  bool     `json:"result"`
+	Reasons []string `json:"reasons,omitempty"`
+}
+
+func Validate(message string) *ValidationResult {
 	var result bool = true
-	var reason string = ""
+	var reasons []string
 
 	for _, validatorNameAndOptions := range enabledValidators {
 		var validator = strings.Split(validatorNameAndOptions, ":")
@@ -40,12 +45,12 @@ func Validate(message string) *validators.Validation {
 
 		if !validationResult.Result {
 			result = validationResult.Result
-			reason = reason + "\n" + validationResult.Reason
+			reasons = append(reasons, validationResult.Reason)
 		}
 	}
 
-	return &validators.Validation{
-		Result: result,
-		Reason: reason,
+	return &ValidationResult{
+		Result:  result,
+		Reasons: reasons,
 	}
 }

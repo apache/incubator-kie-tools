@@ -18,11 +18,11 @@ const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    COMMIT_MESSAGE_VALIDATOR__port: {
+    EXAMPLE_COMMIT_MESSAGE_VALIDATION_SERVICE__port: {
       default: "8090",
       description: "Web server port",
     },
-    COMMIT_MESSAGE_VALIDATOR__validators: {
+    EXAMPLE_COMMIT_MESSAGE_VALIDATION_SERVICE__validators: {
       default: "Length:5-72;IssuePrefix:kie-issues#*",
       description: "Enabled validators",
     },
@@ -30,8 +30,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   get env() {
     return {
       commitMessageValidationService: {
-        port: getOrDefault(this.vars.COMMIT_MESSAGE_VALIDATOR__port),
-        validators: getOrDefault(this.vars.COMMIT_MESSAGE_VALIDATOR__validators),
+        port: getOrDefault(this.vars.EXAMPLE_COMMIT_MESSAGE_VALIDATION_SERVICE__port),
+        validators: getOrDefault(this.vars.EXAMPLE_COMMIT_MESSAGE_VALIDATION_SERVICE__validators),
       },
     };
   },

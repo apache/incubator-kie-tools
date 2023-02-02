@@ -23,25 +23,27 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../../i18n";
 import { useEnv } from "../../env/hooks/EnvContext";
-import { CommitMessageValidationService } from "../commitMessageValidationService/CommitMessageValidationService";
+import {
+  CommitMessageValidation,
+  CommitMessageValidationService,
+} from "../commitMessageValidationService/CommitMessageValidationService";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
-const CommitValidationErrorMessages = (props: { validations?: string }) => {
-  const messages = useMemo(() => props.validations && props.validations.split("\n"), [props.validations]);
-  if (!messages) {
+const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
+  if (!props.validations) {
     return null;
   }
   return (
     <ul>
-      {messages.map(
-        (message) =>
-          message && (
-            <li key={message}>
+      {props.validations.map(
+        (validation) =>
+          validation && (
+            <li key={validation}>
               <Text
                 component={TextVariants.small}
                 style={{ whiteSpace: "pre-line", color: "var(--pf-global--danger-color--100)" }}
               >
-                {message}
+                {validation}
               </Text>
             </li>
           )
@@ -54,8 +56,8 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
   const { i18n } = useOnlineI18n();
   const { env } = useEnv();
   const [commitMessage, setCommitMessage] = useState<string>("");
-  const [validation, setValidation] = useState<{ validated: ValidatedOptions; helperText?: string }>({
-    validated: ValidatedOptions.default,
+  const [validation, setValidation] = useState<CommitMessageValidation>({
+    result: true,
   });
   const [loading, setLoading] = useState(false);
 
@@ -69,9 +71,9 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
   );
 
   const onValidate = useCallback(
-    async (message: string) => {
+    async (message: string): Promise<CommitMessageValidation> => {
       if (!message) {
-        return { result: false, reason: i18n.commitModal.emptyMessageValidation };
+        return { result: false, reasons: [i18n.commitModal.emptyMessageValidation] };
       }
       if (!commitMessageValidationService) {
         return { result: true };
@@ -86,14 +88,11 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
       setLoading(true);
       e.preventDefault();
       e.stopPropagation();
-      const validation = await onValidate(commitMessage);
+      const validationResult = await onValidate(commitMessage);
 
-      setValidation({
-        validated: validation.result ? ValidatedOptions.success : ValidatedOptions.error,
-        helperText: validation.reason,
-      });
+      setValidation(validationResult);
 
-      if (validation.result) {
+      if (validationResult.result) {
         onReturn(commitMessage);
       }
       setLoading(false);
@@ -108,8 +107,8 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
       <Form onSubmit={onSubmit}>
         <FormGroup
           fieldId={"kie-sandbox-custom-commit-message"}
-          validated={validation.validated}
-          helperTextInvalid={<CommitValidationErrorMessages validations={validation.helperText} />}
+          validated={validation.result ? ValidatedOptions.success : ValidatedOptions.error}
+          helperTextInvalid={<CommitValidationErrorMessages validations={validation.reasons} />}
         >
           <TextArea
             value={commitMessage}

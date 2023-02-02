@@ -101,3 +101,70 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
+
+## Providing your own _Commit message validation service_
+
+To validate a commit message against your custom rules you'll need to provide a service that takes the message as input and returns the desired validation.
+
+The KIE Sandbox expects that your service provides an endpoint for a POST request containing the commit message in its body:
+
+```
+POST http://yourdomain.com/commit-message-validation-url
+Content-Type: text/plain
+
+This is the commit message to be validated.
+```
+
+In return, your service should respond with a JSON object with the properties `result` and `reasons`.
+
+- `result`: Boolean value ( `true` | `false` ). True if the validation passes, else false.
+- `reasons`: Array of strings with the reasons why the validation failed (only when `result = false`). If `result = true` this property can be an empty array or omitted completely.
+
+### Validations
+
+- #### Validation success
+
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "result": true,
+}
+```
+
+- #### Validation failed (single reason)
+
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "result": false,
+    "reasons": ["Message exceeds the maximum length of 72 characters."]
+}
+```
+
+- #### Validation failed (multiple reasons)
+
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "result": false,
+    "reasons": [
+      "Message exceeds the maximum length of 72 characters.",
+      "Missing required prefix with issue number in the format: my-issue#123."
+    ]
+}
+```
+
+### Errors
+
+- #### Unreachable URL
+
+  The KIE Sandbox will display an error message if the validation service URL is unreachable and won't allow the user to proceed with the commit.
+
+- #### HTTP Status different from 200
+  If the service responds with an HTTP code other than 200, an error message is displayed alongside the HTTP Code + the response body of the request in full.

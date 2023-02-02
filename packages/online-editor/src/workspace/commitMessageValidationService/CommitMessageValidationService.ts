@@ -14,40 +14,37 @@
  * limitations under the License.
  */
 
-import {
-  CommitMessageValidationResource,
-  CommitMessageValidationServiceClient,
-} from "./CommitMessageValidationServiceClient";
+export type CommitMessageValidation = {
+  result: boolean;
+  reasons?: string[];
+};
 
 export class CommitMessageValidationService {
   constructor(private readonly args: { commitMessageValidationServiceUrl: string }) {}
 
-  public async validateCommitMessage(commitMessage: string): Promise<CommitMessageValidationResource> {
-    const commitMessageValidationResource = new CommitMessageValidationServiceClient({
-      commitMessageValidationServiceUrl: this.args.commitMessageValidationServiceUrl,
-      commitMessage,
-    });
+  public async validateCommitMessage(commitMessage: string): Promise<CommitMessageValidation> {
     try {
-      const response = await fetch(commitMessageValidationResource.endpoint(), {
-        method: commitMessageValidationResource.method(),
-        body: commitMessageValidationResource.body(),
-        headers: commitMessageValidationResource.headers(),
+      const response = await fetch(this.args.commitMessageValidationServiceUrl, {
+        method: "POST",
+        body: commitMessage,
       });
 
       if (response.ok) {
-        return (await response.json()) as CommitMessageValidationResource;
+        return (await response.json()) as CommitMessageValidation;
       } else {
         return {
           result: false,
-          reason: `Commit message validator ${this.args.commitMessageValidationServiceUrl} is not accessible. ([HTTP ${
-            response.status
-          }]: ${await response.text()})`,
+          reasons: [
+            `Commit message validator ${this.args.commitMessageValidationServiceUrl} is not accessible. ([HTTP ${
+              response.status
+            }]: ${await response.text()})`,
+          ],
         };
       }
     } catch (e) {
       return {
         result: false,
-        reason: `Commit message validator ${this.args.commitMessageValidationServiceUrl} is not accessible.`,
+        reasons: [`Commit message validator ${this.args.commitMessageValidationServiceUrl} is not accessible.`],
       };
     }
   }
