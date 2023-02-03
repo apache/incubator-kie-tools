@@ -20,9 +20,6 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface DocksCss extends CssResource {
 
-    @ClassName("gradientTopBottom")
-    String gradientTopBottom();
-
     @ClassName("gradientBottomTop")
     String gradientBottomTop();
 
@@ -38,23 +35,11 @@ public interface DocksCss extends CssResource {
     @ClassName("dockExpanded")
     String dockExpanded();
 
-    @ClassName("dockExpandedLabelWest")
-    String dockExpandedLabelWest();
-
-    @ClassName("dockExpandedButtonWest")
-    String dockExpandedButtonWest();
-
     @ClassName("dockExpandedLabelEast")
     String dockExpandedLabelEast();
 
     @ClassName("dockExpandedButtonEast")
     String dockExpandedButtonEast();
-
-    @ClassName("dockExpandedButtonSouth")
-    String dockExpandedButtonSouth();
-
-    @ClassName("dockExpandedLabelSouth")
-    String dockExpandedLabelSouth();
 
     @ClassName("dockExpandedTitlePanel")
     String dockExpandedTitlePanel();
@@ -62,14 +47,8 @@ public interface DocksCss extends CssResource {
     @ClassName("dockExpandedContentPanel")
     String dockExpandedContentPanel();
 
-    @ClassName("dockExpandedContentPanelSouth")
-    String dockExpandedContentPanelSouth();
-
     @ClassName("buttonFocused")
     String buttonFocused();
-
-    @ClassName("southDockItem")
-    String southDockItem();
 
     @ClassName("resizableBar")
     String resizableBar();

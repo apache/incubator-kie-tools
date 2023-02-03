@@ -17,8 +17,6 @@ public abstract class AbstractSideDockItem extends AbstractDockItem {
         itemTooltip.setContainer("body");
         if (this.getDock().getDockPosition() == UberfireDockPosition.EAST) {
             itemTooltip.setPlacement(Placement.LEFT);
-        } else if (this.getDock().getDockPosition() == UberfireDockPosition.WEST) {
-            itemTooltip.setPlacement(Placement.RIGHT);
         }
     }
 }

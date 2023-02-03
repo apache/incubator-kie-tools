@@ -170,10 +170,7 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
 
     private void setupMoveIcon() {
         UberfireDockPosition position = docksBar.getPosition();
-        if (position == UberfireDockPosition.SOUTH) {
-            getElement().getStyle().setProperty("cursor",
-                                                "ns-resize");
-        } else {
+        if (position == UberfireDockPosition.EAST) {
             getElement().getStyle().setProperty("cursor",
                                                 "ew-resize");
         }
@@ -182,14 +179,8 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
     private double calculateDockSize(MouseMoveEvent event,
                                      DocksBar docksBar) {
         UberfireDockPosition position = docksBar.getPosition();
-        if (position == UberfireDockPosition.WEST) {
-            return docksBar.getExpandedBarSize() + (event.getClientX() - getAbsoluteLeft());
-        }
         if (position == UberfireDockPosition.EAST) {
             return docksBar.getExpandedBarSize() + (getAbsoluteLeft() - event.getClientX());
-        }
-        if (position == UberfireDockPosition.SOUTH) {
-            return docksBar.getExpandedBarSize() + (getAbsoluteTop() - event.getClientY());
         }
         return docksBar.getExpandedBarSize();
     }
