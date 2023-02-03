@@ -118,6 +118,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
             label: "entryInfo",
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
+            isWidthPinned: true,
             minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
             width: entryInfoWidth,
             setWidth: setEntryInfoWidth,

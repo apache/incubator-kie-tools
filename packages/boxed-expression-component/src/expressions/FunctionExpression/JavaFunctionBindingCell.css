@@ -34,6 +34,7 @@
 }
 
 .java-function-expression-label {
+  min-width: 140px;
   min-height: 60px;
   display: flex;
   align-items: center;

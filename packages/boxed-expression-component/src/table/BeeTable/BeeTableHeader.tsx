@@ -175,6 +175,7 @@ export function BeeTableHeader<R extends object>({
         <React.Fragment key={getColumnKey(column)}>
           {!done.has(column) && (
             <BeeTableThResizable
+              firstColumnIndexOfGroup={reactTableInstance.allColumns.indexOf(column.columns?.[0] ?? column)}
               forwardRef={thRef}
               resizerStopBehavior={resizerStopBehavior}
               rowSpan={rowSpan}

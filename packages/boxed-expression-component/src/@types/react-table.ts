@@ -62,6 +62,7 @@ declare module "react-table" {
 
     width?: number;
     setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>;
+    isWidthPinned?: boolean;
 
     columns?: Array<Column<D>>;
   }

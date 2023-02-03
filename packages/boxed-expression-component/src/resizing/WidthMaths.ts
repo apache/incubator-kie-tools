@@ -23,6 +23,9 @@ import {
   LIST_ITEM_EXPRESSION_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  INVOCATION_EXTRA_WIDTH,
+  INVOCATION_PARAMETER_MIN_WIDTH,
+  INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
@@ -42,9 +45,9 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
   } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
     const nestedExpressions = (expression.bindingEntries ?? []).map((e) => e.entryExpression);
     return (
-      CONTEXT_ENTRY_INFO_MIN_WIDTH +
-      Math.max(CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
-      CONTEXT_EXPRESSION_EXTRA_WIDTH
+      INVOCATION_PARAMETER_MIN_WIDTH +
+      Math.max(INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
+      INVOCATION_EXTRA_WIDTH
     );
 
     // Function
@@ -159,12 +162,12 @@ export function getExpressionResizingWidth(
     const nestedExpressions = (expression.bindingEntries ?? []).map((e) => e.entryExpression);
     return (
       resizingWidth ??
-      (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
+      (expression.entryInfoWidth ?? INVOCATION_PARAMETER_MIN_WIDTH) +
         Math.max(
-          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths))
         ) +
-        CONTEXT_EXPRESSION_EXTRA_WIDTH
+        INVOCATION_EXTRA_WIDTH
     );
   }
 

@@ -6,15 +6,13 @@ export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 120;
 export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 210;
 export const CONTEXT_EXPRESSION_EXTRA_WIDTH =
-  2 + // 2px for borders of context entry info
-  2; // 2px for borders of context entry expression
+  2 + // 2px for borders of context entry info // FIXME: Tiago -> To me, it's a mistery why to these cells are counting the borders.
+  2; // 2px for borders of context entry expression // FIXME: Tiago -> To me, it's a mistery why to these cells are counting the borders.
 
 // INVOCATION
 export const INVOCATION_PARAMETER_MIN_WIDTH = 120;
 export const INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH = 210;
-export const INVOCATION_EXTRA_WIDTH =
-  2 + // 2px for borders of context entry info
-  2; // 2px for borders of context entry expression
+export const INVOCATION_EXTRA_WIDTH = 2; // 2px for borders of context entry expression // FIXME: Tiago -> To me, it's a mistery why ONLY THE EXPRESSION CELL is counting the borders.
 
 // DECISION TABLE
 export const DECISION_TABLE_INPUT_MIN_WIDTH = 100;
@@ -37,7 +35,7 @@ export const LITERAL_EXPRESSION_MIN_WIDTH = CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH -
 export const LIST_ITEM_EXPRESSION_MIN_WIDTH = 210;
 export const LIST_EXPRESSION_EXTRA_WIDTH =
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + //
-  2; // 2px for borders of list item expression
+  2; // 2px for borders of list item expression // FIXME: Tiago -> To me, it's a mistery why to these cells are counting the borders.
 
 // FUNCTION
 export const FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH =
@@ -53,4 +51,4 @@ export const PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH = FUNCTION_EXPRESSION_COMMON_E
 export const JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH = 210;
 export const JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH = 140;
 
-export const JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH = FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH;
+export const JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH = FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH + 2;

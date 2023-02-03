@@ -90,7 +90,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
         accessor: "label" as any,
         dataType: undefined as any,
         isRowIndexColumn: false,
-        width: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+        width: undefined,
         minWidth: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
       },
       {

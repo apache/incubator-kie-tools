@@ -64,8 +64,6 @@ export function BeeTableTh<R extends object>({
   isLastLevelColumn,
   shouldShowColumnsInlineControls: shouldShowRowsInlineControls,
 }: React.PropsWithChildren<BeeTableThProps<R>>) {
-  const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
-
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
   const onAddColumnButtonClick = useCallback(
@@ -112,7 +110,7 @@ export function BeeTableTh<R extends object>({
       th?.removeEventListener("mousemove", onMove);
       th?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd, thRef]);
+  }, [thRef]);
 
   const addColumButtonStyle = useMemo(
     () =>
@@ -178,7 +176,7 @@ export function BeeTableTh<R extends object>({
   );
 }
 
-function getHoverInfo(e: MouseEvent, elem: HTMLElement): HoverInfo {
+export function getHoverInfo(e: MouseEvent, elem: HTMLElement): HoverInfo {
   const rect = elem.getBoundingClientRect();
   const localX = e.clientX - rect.left; // x position within the element.
   const part = localX < rect.width / 2 ? "left" : "right"; // upper part is the upper half

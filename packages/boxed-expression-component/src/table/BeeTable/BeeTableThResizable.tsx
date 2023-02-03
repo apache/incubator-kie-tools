@@ -16,20 +16,25 @@
 
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as React from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
 import { ExpressionDefinition } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
-import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
-import { BeeTableTh } from "./BeeTableTh";
-import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import {
+  useBeeTableResizableCell,
+  useBeeTableResizableColumnsDispatch,
+} from "../../resizing/BeeTableResizableColumnsContext";
+import { BeeTableTh, getHoverInfo, HoverInfo } from "./BeeTableTh";
+import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { apportionColumnWidths } from "../../resizing/Hooks";
 
 export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
   rowIndex: number;
+  firstColumnIndexOfGroup: number;
   rowSpan: number;
   editColumnLabel?: string | { [groupType: string]: string };
   isEditableHeader: boolean;
@@ -50,6 +55,7 @@ export function BeeTableThResizable<R extends object>({
   column,
   columnIndex,
   rowIndex,
+  firstColumnIndexOfGroup,
   rowSpan,
   isEditableHeader,
   getColumnKey,
@@ -96,6 +102,81 @@ export function BeeTableThResizable<R extends object>({
     return onGetWidthToFitData() + extraSpace;
   }, [onGetWidthToFitData]);
 
+  // const { updateColumnResizingWidth } = useBeeTableResizableColumnsDispatch();
+  // const [isCalcWidthResizing, setCalcWidthResizing] = useState<boolean>(false);
+  // const [calcWidth, setCalcWidth] = useState<number | undefined>(undefined);
+  // const [calcResizingWidth, setCalcResizingWidth] = useState<ResizingWidth | undefined>(undefined);
+
+  // useLayoutEffect(() => {
+  //   if (column.width) {
+  //     return;
+  //   }
+
+  //   const calcWidth = forwardRef?.current?.getBoundingClientRect().width;
+  //   if (!calcWidth) {
+  //     return;
+  //   }
+
+  //   setCalcWidth(calcWidth);
+  //   setCalcResizingWidth({ isPivoting: false, value: calcWidth ?? 0 });
+  // }, [column.width, forwardRef]);
+
+  // useEffect(() => {
+  //   if (!calcResizingWidth?.isPivoting) {
+  //     return;
+  //   }
+
+  //   const apportionedColumnWidths = apportionColumnWidths(
+  //     calcResizingWidth.value,
+  //     (column.columns ?? []).map((c) => ({
+  //       minWidth: c.minWidth ?? 0,
+  //       currentWidth: c.width ?? 0,
+  //       isFrozen: c.isWidthPinned ?? false,
+  //     }))
+  //   );
+
+  //   (column.columns ?? []).forEach((c, i) => {
+  //     updateColumnResizingWidth(firstColumnIndexOfGroup + i, (prev) => {
+  //       return { isPivoting: true, value: apportionedColumnWidths[i] };
+  //     });
+  //   });
+  // }, [
+  //   calcResizingWidth?.isPivoting,
+  //   calcResizingWidth?.value,
+  //   column.columns,
+  //   columnIndex,
+  //   firstColumnIndexOfGroup,
+  //   updateColumnResizingWidth,
+  // ]);
+
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
+  const [isResizing, setResizing] = useState<boolean>(false);
+
+  useEffect(() => {
+    function onEnter(e: MouseEvent) {
+      e.stopPropagation();
+      setHoverInfo((prev) => getHoverInfo(e, th!));
+    }
+
+    function onMove(e: MouseEvent) {
+      setHoverInfo((prev) => getHoverInfo(e, th!));
+    }
+
+    function onLeave() {
+      setHoverInfo((prev) => ({ isHovered: false }));
+    }
+
+    const th = forwardRef?.current;
+    th?.addEventListener("mouseenter", onEnter);
+    th?.addEventListener("mousemove", onMove);
+    th?.addEventListener("mouseleave", onLeave);
+    return () => {
+      th?.removeEventListener("mouseleave", onLeave);
+      th?.removeEventListener("mousemove", onMove);
+      th?.removeEventListener("mouseenter", onEnter);
+    };
+  }, [columnIndex, rowIndex, forwardRef]);
+
   return (
     <BeeTableTh<R>
       forwardRef={forwardRef}
@@ -132,14 +213,29 @@ export function BeeTableThResizable<R extends object>({
           headerCellInfo
         )}
       </div>
-      <Resizer
-        minWidth={lastColumnMinWidth ?? column.minWidth}
-        width={column.width}
-        setWidth={column.setWidth}
-        resizingWidth={resizingWidth}
-        setResizingWidth={setResizingWidth}
-        getWidthToFitData={getWidthToFitData}
-      />
+      {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
+        <Resizer
+          minWidth={lastColumnMinWidth ?? column.minWidth}
+          width={column.width}
+          setWidth={column.setWidth}
+          resizingWidth={resizingWidth}
+          setResizingWidth={setResizingWidth}
+          getWidthToFitData={getWidthToFitData}
+          setResizing={setResizing}
+        />
+      )}
+      {/* //FIXME: Tiago -> Don't know if that's a good idea yet. */}
+      {/* {calcWidth && (hoverInfo.isHovered || (calcResizingWidth?.isPivoting && isCalcWidthResizing)) && (
+        <Resizer
+          minWidth={(column.columns ?? []).reduce((acc, { minWidth }) => acc + (minWidth ?? 0), 0)}
+          width={calcWidth}
+          setWidth={setCalcWidth}
+          resizingWidth={calcResizingWidth}
+          setResizingWidth={setCalcResizingWidth}
+          getWidthToFitData={getWidthToFitData}
+          setResizing={setCalcWidthResizing}
+        />
+      )} */}
     </BeeTableTh>
   );
 }
