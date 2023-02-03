@@ -31,6 +31,8 @@ import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsCont
 import { QueryParams } from "../../navigation/Routes";
 import { useCallback } from "react";
 import { NewModelCard } from "./NewModelCard";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 
 export function Overview() {
   const routes = useRoutes();
@@ -62,6 +64,35 @@ export function Overview() {
   );
   return (
     <Grid hasGutter>
+      <GridItem xl={12}>
+        <PageSection
+          className="appsrv-marketing--banner pf-u-background-color-100"
+          style={
+            {
+              "--appsrv-marketing--banner--before--BackgroundImage": "url(images/overview-banner-bg.png)",
+              "--appsrv-marketing--banner--before--BackgroundPositionY": "-99px",
+              "--appsrv-marketing--banner--before--BackgroundRepeat": "no-repeat",
+              "--appsrv-marketing--banner--before--BackgroundSize": "478px",
+            } as React.CSSProperties
+          }
+          variant={"light"}
+        >
+          <Stack hasGutter>
+            <Title headingLevel="h1" size="2xl">
+              Welcome to Serverless Logic Web Tools
+            </Title>
+            <Text className="appsrv-marketing--banner__tagline pf-u-color-200">
+              Add-on service to create and synchronize your Serverless Workflow, Decision files, and Dashbuilder files
+            </Text>
+            <Text component={TextVariants.p}>
+              The Serverless Logic Web Tools is a web application that enables you to create and synchronize your
+              Serverless Workflow, Decision files, and Dashbuilder files in a single interface. Also, the Serverless
+              Logic Web Tools application provides the integrations that are needed to deploy and test the Serverless
+              Workflow models in development mode.
+            </Text>
+          </Stack>
+        </PageSection>
+      </GridItem>
       <GridItem sm={12} xl={6}>
         <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
           <Card className="Dev-ui__card-size">

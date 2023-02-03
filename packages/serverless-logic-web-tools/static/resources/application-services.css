@@ -1,0 +1,80 @@
+/* TODO: this code has been copied from OpenShift Console and should be replaced after OpenShift integration.*/
+.pf-c-page__main-section.appsrv-marketing--banner {
+  --appsrv-marketing--banner--before--GridTemplateColumns: 1fr;
+  --appsrv-marketing--banner--ColumnGap: var(--pf-global--spacer--2xl);
+  --appsrv-marketing--banner__tagline--Color: var(--pf-global--Color--light-300);
+  --appsrv-marketing--banner--Padding: var(--pf-global--spacer--lg);
+  --appsrv-marketing--banner--PaddingTop: var(--appsrv-marketing--banner--Padding);
+  --appsrv-marketing--banner--PaddingRight: var(--appsrv-marketing--banner--Padding);
+  --appsrv-marketing--banner--PaddingBottom: var(--appsrv-marketing--banner--Padding);
+  --appsrv-marketing--banner--PaddingLeft: var(--appsrv-marketing--banner--Padding);
+  --appsrv-marketing--banner--before--Offset--top: calc(var(--appsrv-marketing--banner--PaddingTop) * -1);
+  --appsrv-marketing--banner--before--Offset--bottom: calc(var(--appsrv-marketing--banner--PaddingBottom) * -1);
+  --appsrv-marketing--banner--before--Offset--right: calc(var(--appsrv-marketing--banner--PaddingRight) * -1);
+  --appsrv-marketing--banner--before--Offset--left: calc(var(--appsrv-marketing--banner--PaddingLeft) * -1);
+  grid-gap: var(--appsrv-marketing--banner--ColumnGap);
+  display: grid;
+  grid-template-areas: "content";
+  grid-template-columns: var(--appsrv-marketing--banner--before--GridTemplateColumns);
+  padding: var(--appsrv-marketing--banner--PaddingTop) var(--appsrv-marketing--banner--PaddingRight)
+    var(--appsrv-marketing--banner--PaddingBottom) var(--appsrv-marketing--banner--PaddingLeft);
+}
+
+@media screen and (min-width: 768px) {
+  .pf-c-page__main-section.appsrv-marketing--banner {
+    --appsrv-marketing--banner--Padding: var(--pf-global--spacer--2xl);
+    --appsrv-marketing--banner--before--Opacity: 0.65;
+    --appsrv-marketing--banner--before--GridTemplateColumns: 2fr 1fr;
+    grid-template-areas: "content graphic";
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .pf-c-page__main-section.appsrv-marketing--banner {
+    --appsrv-marketing--banner--before--GridTemplateColumns: 2fr 1fr;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .pf-c-page__main-section.appsrv-marketing--banner {
+    --appsrv-marketing--banner--before--Opacity: 1;
+  }
+}
+
+.pf-c-page__main-section.appsrv-marketing--banner:before {
+  background-image: var(--appsrv-marketing--banner--before--BackgroundImage);
+  background-position-y: var(--appsrv-marketing--banner--before--BackgroundPositionY);
+  background-repeat: var(--appsrv-marketing--banner--before--BackgroundRepeat);
+  background-size: var(--appsrv-marketing--banner--before--BackgroundSize);
+  content: "";
+  grid-area: graphic;
+  margin-bottom: var(--appsrv-marketing--banner--before--Offset--bottom);
+  margin-right: var(--appsrv-marketing--banner--before--Offset--right);
+  margin-top: var(--appsrv-marketing--banner--before--Offset--top);
+  opacity: var(--appsrv-marketing--banner--before--Opacity);
+}
+
+.pf-c-page__main-section.appsrv-marketing--banner[class*="pf-m-dark-"].pf-c-page__main-section
+  .pf-c-button.pf-m-primary {
+  background-color: var(--pf-global--palette--blue-400);
+  color: var(--pf-global--primary-color-100);
+}
+
+.pf-c-page__main-section.appsrv-marketing--banner[class*="pf-m-dark-"].pf-c-page__main-section
+  .pf-c-button.pf-m-primary:active,
+.pf-c-page__main-section.appsrv-marketing--banner[class*="pf-m-dark-"].pf-c-page__main-section
+  .pf-c-button.pf-m-primary:focus,
+.pf-c-page__main-section.appsrv-marketing--banner[class*="pf-m-dark-"].pf-c-page__main-section
+  .pf-c-button.pf-m-primary:hover {
+  background-color: var(--pf-global--palette--blue-500);
+  color: var(--pf-global--primary-color-100);
+}
+
+.appsrv-marketing--banner__tagline {
+  color: var(--appsrv-marketing--banner__tagline--Color);
+  font-size: var(--pf-global--FontSize--lg);
+  margin-bottom: var(--pf-global--spacer--lg);
+}
+.pf-u-color-200 {
+  color: var(--pf-global--Color--200) !important;
+}

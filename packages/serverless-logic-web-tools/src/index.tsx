@@ -20,6 +20,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import "../static/resources/style.css";
+import "../static/resources/application-services.css";
 import * as incompatibleBrowser from "./workspace/startupBlockers/IncompatibleBrowser";
 import * as fsChanged from "./workspace/startupBlockers/FsChanged";
 
