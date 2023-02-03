@@ -66,7 +66,7 @@ import org.uberfire.client.promise.Promises;
 @Dependent
 public class DMNMarshallerService {
 
-    private static Logger LOGGER = Logger.getLogger(DMNMarshallerService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DMNMarshallerService.class.getName());
 
     private final DMNUnmarshaller dmnUnmarshaller;
 
