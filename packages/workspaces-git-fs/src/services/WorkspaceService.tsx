@@ -18,7 +18,7 @@ import { encoder } from "../encoderdecoder/EncoderDecoder";
 import JSZip from "jszip";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
-import { basename, extname, join, relative } from "path";
+import { basename, join, relative } from "path";
 import { Minimatch } from "minimatch";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { BroadcasterDispatch } from "./FsService";

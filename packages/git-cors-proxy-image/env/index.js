@@ -45,7 +45,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           buildTags: getOrDefault(this.vars.GIT_CORS_PROXY__imageBuildTags),
         },
         dev: {
-          port: 3000,
+          port: 8080,
         },
       },
     };

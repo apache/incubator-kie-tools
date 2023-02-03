@@ -142,7 +142,7 @@ After that, you're ready to start developing the Editors individually.
 
 - DMN
 
-  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing`.
+  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime`.
   - Run `mvn clean gwt:run` to start.
   - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
 

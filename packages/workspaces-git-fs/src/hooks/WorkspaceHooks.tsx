@@ -18,7 +18,7 @@ import { useWorkspaces } from "../context/WorkspacesContext";
 import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
+import { isGitBasedWorkspaceKind, WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { GIT_ORIGIN_REMOTE_NAME } from "../constants/GitConstants";
 import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
@@ -46,10 +46,7 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         return;
       }
 
-      if (
-        workspace.descriptor.origin.kind === WorkspaceKind.GIT ||
-        workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
-      ) {
+      if (isGitBasedWorkspaceKind(workspace.descriptor.origin.kind)) {
         const head = await workspaces.resolveRef({
           workspaceId: workspace.descriptor.workspaceId,
           ref: "HEAD",

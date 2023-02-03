@@ -36,28 +36,58 @@ import { useAuthSessions, useAuthSessionsDispatch } from "../../authSessions/Aut
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
 import { GitAuthSession } from "../../authSessions/AuthSessionApi";
 import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { GitAuthProvider } from "../../authProviders/AuthProvidersApi";
+import {
+  GitAuthProvider,
+  isSupportedGitAuthProviderType,
+  SupportedGitAuthProviders,
+} from "../../authProviders/AuthProvidersApi";
+import { switchExpression } from "../../switchExpression/switchExpression";
+import { AuthOptionsType, BitbucketClient } from "../../bitbucket/Hooks";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
+export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;
 
 export const GITHUB_TOKENS_HOW_TO_URL =
   "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";
+export const BITBUCKET_TOKENS_HOW_TO_URL = "https://support.atlassian.com/bitbucket-cloud/docs/create-an-app-password/";
 
-export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider }) {
+export const GITHUB_OAUTH_SCOPES = ["repo", "gist"];
+export const BITBUCKET_OAUTH_SCOPES = [
+  "account",
+  "repository",
+  "repository:write",
+  "repository:admin",
+  "snippet",
+  "snippet:write",
+];
+
+export type AuthenticatedUserResponse = {
+  headers: {
+    scopes: string[];
+  };
+  data: Pick<GitAuthSession, "login" | "name" | "uuid" | "email">;
+};
+
+export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
   const { i18n } = useOnlineI18n();
   const accounts = useAccounts();
   const accountsDispatch = useAccountsDispatch();
   const { authSessions } = useAuthSessions();
   const authSessionsDispatch = useAuthSessionsDispatch();
 
-  const [githubToken, setGitHubToken] = useState("");
+  const [usernameInput, setUsernameInput] = useState("");
+  const [tokenInput, setTokenInput] = useState("");
   const [success, setSuccess] = useState(false);
   const [newAuthSession, setNewAuthSession] = usePromiseState<GitAuthSession>();
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!githubToken) {
+        const authProviderType = props.authProvider.type;
+        if (!isSupportedGitAuthProviderType(authProviderType)) {
+          return;
+        }
+        if (!tokenInput) {
           return;
         }
 
@@ -67,37 +97,43 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
 
         setSuccess(false);
         setNewAuthSession({ loading: true });
-
         if (
           [...authSessions.values()]
             .filter(({ type }) => type === "git")
-            .some(({ token }: GitAuthSession) => token === githubToken)
+            .some(({ token }: GitAuthSession) => token === tokenInput)
         ) {
-          setNewAuthSession({ error: "You're already logged in with this Token." });
+          setNewAuthSession({ error: i18n.connectToGitModal.auth.error.alreadyLoggedIn });
           return;
         }
-
         delay(600)
-          .then(() => fetchAuthenticatedGitHubUser(githubToken, getGithubInstanceApiUrl(props.authProvider.domain)))
+          .then(
+            switchExpression<SupportedGitAuthProviders, () => Promise<AuthenticatedUserResponse>>(authProviderType, {
+              bitbucket: () => fetchAuthenticatedBitbucketUser(usernameInput, tokenInput, props.authProvider.domain),
+              github: () => fetchAuthenticatedGitHubUser(tokenInput, props.authProvider.domain),
+            })
+          )
           .then((response) => {
             if (canceled.get()) {
               return;
             }
-
-            const scopes = response.headers["x-oauth-scopes"]?.split(", ") ?? [];
-            if (!scopes.includes("repo") || !scopes.includes("gist")) {
+            const requiredScopes = switchExpression(authProviderType, {
+              bitbucket: BITBUCKET_OAUTH_SCOPES,
+              github: GITHUB_OAUTH_SCOPES,
+            });
+            if (!response.headers.scopes.some((it) => requiredScopes.includes(it))) {
               setNewAuthSession({
-                error: "Make sure your Token includes the 'repo' and 'gist' scopes.",
+                error: i18n.connectToGitModal.auth.error.oauthScopes(requiredScopes.toString()),
               });
             }
 
             const newAuthSession: GitAuthSession = {
               id: uuid(),
-              token: githubToken,
+              token: tokenInput,
               type: "git",
               login: response.data.login,
               name: response.data.name ?? undefined,
               email: response.data.email ?? undefined,
+              uuid: response.data.uuid ?? undefined,
               authProviderId: props.authProvider.id,
               createdAtDateISO: new Date().toISOString(),
             };
@@ -118,23 +154,33 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
           });
       },
       [
-        authSessions,
-        authSessionsDispatch,
-        githubToken,
+        props.authProvider.type,
         props.authProvider.domain,
         props.authProvider.id,
-        setNewAuthSession,
+        tokenInput,
         success,
+        setNewAuthSession,
+        authSessions,
+        i18n.connectToGitModal.auth.error,
+        usernameInput,
+        authSessionsDispatch,
       ]
     )
   );
 
   const validation = useMemo(() => {
-    if (!githubToken) {
+    if (!isSupportedGitAuthProviderType(props.authProvider.type)) {
+      return {
+        validated: ValidatedOptions.error,
+        helperTextInvalidIcon: <ExclamationCircleIcon />,
+        helperTextInvalid: "Unsupported Git Auth Provider. This should not happen.",
+      };
+    }
+    if (!tokenInput) {
       return {
         validated: ValidatedOptions.default,
         helperTextIcon: <Spinner diameter={"1em"} style={{ display: "none" }} />,
-        helperText: "Your token must include the 'repo' and 'gist' scopes.",
+        helperText: i18n.connectToGitModal[props.authProvider.type].validation.scopes.helper,
       };
     }
 
@@ -144,7 +190,7 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
         return {
           validated: ValidatedOptions.default,
           helperTextIcon: <Spinner diameter={"1em"} />,
-          helperText: "Loading...",
+          helperText: i18n.connectToGitModal.status.loading,
         };
       case PromiseStateStatus.REJECTED:
         return {
@@ -157,26 +203,39 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
       default:
         assertUnreachable(status);
     }
-  }, [githubToken, newAuthSession]);
+  }, [props.authProvider.type, tokenInput, newAuthSession, i18n.connectToGitModal]);
 
   const successPrimaryAction = useMemo(() => {
-    if (accounts.section !== AccountsSection.CONNECT_TO_GITHUB || !newAuthSession.data) {
+    if (
+      (accounts.section !== AccountsSection.CONNECT_TO_GITHUB &&
+        accounts.section !== AccountsSection.CONNECT_TO_BITBUCKET) ||
+      !newAuthSession.data
+    ) {
       return;
     }
 
     if (!accounts.onNewAuthSession) {
       return {
         action: () => accountsDispatch({ kind: AccountsDispatchActionKind.GO_HOME }),
-        label: "See connected accounts",
+        label: i18n.connectToGitModal.navigation.seeConnectedAccounts,
       };
     }
 
     return {
       action: () => accounts.onNewAuthSession?.(newAuthSession.data),
-      label: "Continue",
+      label: i18n.connectToGitModal.navigation.continue,
     };
-  }, [accounts, accountsDispatch, newAuthSession.data]);
+  }, [
+    accounts,
+    accountsDispatch,
+    i18n.connectToGitModal.navigation.continue,
+    i18n.connectToGitModal.navigation.seeConnectedAccounts,
+    newAuthSession.data,
+  ]);
 
+  if (!props.authProvider?.type || !isSupportedGitAuthProviderType(props.authProvider?.type)) {
+    return <></>;
+  }
   return (
     <>
       {validation.validated === ValidatedOptions.success && (
@@ -196,6 +255,26 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
       {validation.validated !== ValidatedOptions.success && (
         <>
           <Form>
+            {switchExpression(props.authProvider.type, {
+              bitbucket: (
+                <FormGroup
+                  isRequired={true}
+                  label={i18n.connectToGitModal[props.authProvider.type].form.username?.label}
+                  fieldId={"username"}
+                >
+                  <TextInput
+                    value={usernameInput}
+                    autoComplete={"off"}
+                    id="username-input"
+                    name="usernameInput"
+                    aria-describedby="username-text-input-helper"
+                    placeholder={i18n.connectToGitModal[props.authProvider.type].form.username?.placeHolder}
+                    onChange={(v) => setUsernameInput(v.trim())}
+                  />
+                </FormGroup>
+              ),
+              default: <></>,
+            })}
             <FormGroup
               isRequired={true}
               helperTextIcon={validation.helperTextIcon}
@@ -203,27 +282,34 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
               helperTextInvalid={validation.helperTextInvalid}
               helperText={validation.helperText}
               validated={validation.validated}
-              label={"Personal Access Token (classic)"}
+              label={i18n.connectToGitModal[props.authProvider.type].form.token.label}
               fieldId={"github-pat"}
             >
               <TextInput
-                value={obfuscate(githubToken)}
+                value={obfuscate(tokenInput)}
                 autoComplete={"off"}
-                id="github-personal-access-token-input"
+                id="token-input"
                 name="tokenInput"
                 aria-describedby="token-text-input-helper"
-                placeholder={"Paste your GitHub token here"}
-                maxLength={GITHUB_OAUTH_TOKEN_SIZE}
+                placeholder={i18n.connectToGitModal[props.authProvider.type].form.token.placeHolder}
+                maxLength={tokenSize()}
                 validated={validation.validated}
-                onPaste={(e) => setGitHubToken(e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE))}
+                onPaste={(e) => setTokenInput(e.clipboardData.getData("text/plain").slice(0, tokenSize()))}
                 autoFocus={true}
               />
             </FormGroup>
           </Form>
           <br />
           <h3>
-            <a href={generateNewTokenUrl(props.authProvider.domain)} target={"_blank"} rel={"noopener"}>
-              {i18n.githubTokenModal.footer.createNewToken}
+            <a
+              href={switchExpression(props.authProvider.type, {
+                bitbucket: generateNewBitbucketTokenUrl(props.authProvider.domain),
+                github: generateNewGitHubTokenUrl(props.authProvider.domain),
+              })}
+              target={"_blank"}
+              rel={"noopener"}
+            >
+              {i18n.connectToGitModal[props.authProvider.type].footer.createNewToken}
               &nbsp;
               <ExternalLinkAltIcon className="pf-u-mx-sm" />
             </a>
@@ -234,9 +320,16 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
             <Text component={TextVariants.blockquote}>
               <InfoAltIcon />
               &nbsp;
-              <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}&nbsp;</span>
-              <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"} rel={"noopener"}>
-                {i18n.githubTokenModal.body.learnMore}
+              <span className="pf-u-mr-sm">{i18n.connectToGitModal.auth.disclaimer}&nbsp;</span>
+              <a
+                href={switchExpression(props.authProvider.type, {
+                  bitbucket: BITBUCKET_TOKENS_HOW_TO_URL,
+                  github: GITHUB_TOKENS_HOW_TO_URL,
+                })}
+                target={"_blank"}
+                rel={"noopener"}
+              >
+                {i18n.connectToGitModal[props.authProvider.type].body.learnMore}
                 &nbsp;
                 <ExternalLinkAltIcon className="pf-u-mx-sm" />
               </a>
@@ -246,6 +339,14 @@ export function ConnectToGitHubSection(props: { authProvider: GitAuthProvider })
       )}
     </>
   );
+
+  function tokenSize(): number | undefined {
+    return switchExpression(props.authProvider.type, {
+      bitbucket: BITBUCKET_OAUTH_TOKEN_SIZE,
+      github: GITHUB_OAUTH_TOKEN_SIZE,
+      default: -1,
+    });
+  }
 }
 
 export function obfuscate(token: string) {
@@ -258,7 +359,10 @@ export function obfuscate(token: string) {
   return token.replace(pieceToObfuscate, stars);
 }
 
-export const generateNewTokenUrl = (domain: string) => {
+export const generateNewBitbucketTokenUrl = (domain: string) => {
+  return `https://${domain}/account/settings/app-passwords/`;
+};
+export const generateNewGitHubTokenUrl = (domain: string) => {
   return `https://${domain}/settings/tokens`;
 };
 
@@ -270,11 +374,49 @@ export function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here");
 }
 
-export function fetchAuthenticatedGitHubUser(githubToken: string, githubInstanceApiUrl: string | undefined) {
+export const fetchAuthenticatedGitHubUser = async (githubToken: string, domain?: string) => {
   const octokit = new Octokit({
     auth: githubToken,
-    baseUrl: githubInstanceApiUrl,
+    baseUrl: getGithubInstanceApiUrl(domain),
+  });
+  const response = await octokit.users.getAuthenticated();
+  return {
+    data: {
+      name: response.data.name ?? undefined,
+      login: response.data.login,
+      email: response.data.email ?? undefined,
+    },
+    headers: { scopes: response.headers["x-oauth-scopes"]?.split(", ") ?? [] },
+  };
+};
+export const fetchAuthenticatedBitbucketUser = async (
+  bitbucketUsername: string,
+  bitbucketToken: string,
+  domain?: string
+) => {
+  const bitbucket = new BitbucketClient({
+    domain,
+    auth: {
+      type: AuthOptionsType.BASIC,
+      username: bitbucketUsername,
+      password: bitbucketToken,
+    },
   });
 
-  return octokit.users.getAuthenticated();
-}
+  const response = await bitbucket.getAuthedUser();
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(
+      `Error while authenticating user ${bitbucketUsername}: ${response.status} ${response.statusText} ${message}`
+    );
+  }
+  const json = await response.json();
+  return {
+    data: {
+      name: json?.display_name,
+      login: bitbucketUsername,
+      uuid: json.uuid,
+    },
+    headers: { scopes: response.headers.get("x-oauth-scopes")?.split(", ") ?? [] },
+  };
+};

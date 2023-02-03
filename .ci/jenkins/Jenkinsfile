@@ -38,7 +38,7 @@ pipeline {
                     if (isNormalPRCheck() && isSonarCloudEnabled()) {
                         mvnCmd.withProfiles(['run-code-coverage'])
                     }
-                    mvnCmd.withOptions(["-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
+                    mvnCmd.withOptions(["-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!lienzo-webapp'"])
                     mvnCmd.withProperty('revision', '0.0.0')
                     mvnCmd.run('clean install')
                 }
@@ -59,7 +59,7 @@ pipeline {
                 script {
                     if (isSonarCloudEnabled()) {
                         getMavenCommand('kie-tools/packages/stunner-editors')
-                                .withOptions(['-Drevision=0.0.0', '-e', '-nsu', "-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
+                                .withOptions(['-Drevision=0.0.0', '-e', '-nsu', "-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!lienzo-webapp'"])
                                 .withProperty('sonar.projectKey', 'org.kie.kogito:kogito-tooling')
                                 .withProperty('sonar.organization', 'kiegroup')
                                 .withProperty('sonar.host.url', 'https://sonarcloud.io')
