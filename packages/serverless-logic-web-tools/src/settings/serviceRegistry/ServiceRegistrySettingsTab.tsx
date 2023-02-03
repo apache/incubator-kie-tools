@@ -93,7 +93,7 @@ export function ServiceRegistrySettingsTab() {
             </TextContent>
             <EmptyStateBody>
               <TextContent>
-                Uploading OpenAPI specs when deploying models is <b>enabled</b>.
+                Uploading specs when deploying models is <b>enabled</b>.
               </TextContent>
               <br />
               <TextContent>
@@ -137,9 +137,9 @@ export function ServiceRegistrySettingsTab() {
               </TextContent>
               <TextContent>
                 <Text component={TextVariants.small}>
-                  Data you provide here is necessary for uploading Open API specs associated with models you design to
-                  your Service Registry instance. All information is locally stored in your browser and never shared
-                  with anyone.
+                  Data you provide here is necessary for uploading specs associated with models you design to your
+                  Service Registry instance. All information is locally stored in your browser and never shared with
+                  anyone.
                 </Text>
               </TextContent>
               <FormGroup

@@ -62,6 +62,11 @@ export enum SwfServiceCatalogFunctionType {
   asyncapi = "asyncapi",
 }
 
+export enum SupportArtifactTypes {
+  Openapi = "OPENAPI",
+  Asyncapi = "ASYNCAPI",
+}
+
 export enum SwfServiceCatalogFunctionArgumentType {
   boolean = "boolean",
   object = "object",

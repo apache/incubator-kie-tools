@@ -22,6 +22,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as yaml from "yaml";
 import { parseApiContent } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { supportArtifactTypes } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/parseApiContent";
 
 export class ServiceRegistryInstanceClient {
   constructor(
@@ -57,7 +58,9 @@ export class ServiceRegistryInstanceClient {
     try {
       const response = await artifactsApi.searchArtifacts();
       const artifacts: SearchedArtifact[] = response.data.artifacts ?? [];
-      const specs: SearchedArtifact[] = artifacts.filter((artifact) => artifact.groupId);
+      const specs: SearchedArtifact[] = artifacts.filter(
+        (artifact: any) => supportArtifactTypes.includes(artifact.type) && artifact.groupId
+      );
       for (const spec of specs) {
         const response = await artifactsApi.getLatestArtifact(spec.groupId ?? "", spec.id);
         try {

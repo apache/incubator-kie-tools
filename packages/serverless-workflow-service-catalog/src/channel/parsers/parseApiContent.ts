@@ -16,12 +16,17 @@
 
 import * as yaml from "js-yaml";
 import { posix as posixPath } from "path";
-import { SwfServiceCatalogService, SwfServiceCatalogServiceSource } from "../../api";
+import { SupportArtifactTypes, SwfServiceCatalogService, SwfServiceCatalogServiceSource } from "../../api";
 import { AsyncApiParser } from "./impl/asyncapi/AsyncApiParser";
 import { OpenApiParser } from "./impl/openapi/OpenApiParser";
 import { ArgsType, SpecParser } from "./impl/SpecParser";
 
 const specParsers: SpecParser<any>[] = [new OpenApiParser(), new AsyncApiParser()];
+
+export const supportArtifactTypes: SupportArtifactTypes[] = [
+  SupportArtifactTypes.Openapi,
+  SupportArtifactTypes.Asyncapi,
+];
 
 export function parseApiContent(args: {
   serviceFileName: string;
