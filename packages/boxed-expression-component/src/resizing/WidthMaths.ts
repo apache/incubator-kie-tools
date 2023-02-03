@@ -60,16 +60,12 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
       return (
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
-        2 + // column borders
-        2 + // whole table borders
         FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
       return (
         PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
-        2 + // column borders
-        2 + // whole table borders
         FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
       );
     } else {
@@ -79,17 +75,15 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     // Relation + DecisionTable
   } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
     return (
-      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-      (expression.columns?.length ?? 0) * (RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 1) +
-      1 // 1px for last-child border-right
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + //
+      (expression.columns?.length ?? 0) * RELATION_EXPRESSION_COLUMN_MIN_WIDTH
     );
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
     return (
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
-      (expression.input?.length ?? 0) * (DECISION_TABLE_INPUT_MIN_WIDTH + 1) +
-      (expression.output?.length ?? 0) * (DECISION_TABLE_OUTPUT_MIN_WIDTH + 1) +
-      (expression.annotations?.length ?? 0) * (DECISION_TABLE_ANNOTATION_MIN_WIDTH + 1) +
-      1 // 1px for last-child border-right
+      (expression.input?.length ?? 0) * DECISION_TABLE_INPUT_MIN_WIDTH +
+      (expression.output?.length ?? 0) * DECISION_TABLE_OUTPUT_MIN_WIDTH +
+      (expression.annotations?.length ?? 0) * DECISION_TABLE_ANNOTATION_MIN_WIDTH
     );
   }
 
@@ -136,11 +130,7 @@ export function getExpressionResizingWidth(
         return acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
       }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH);
 
-    return (
-      variableWidth +
-      columns.length + // 1px for each column
-      1 // 1px for last-child border-right
-    );
+    return variableWidth;
   } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
     const columns = [...(expression.input ?? []), ...(expression.output ?? []), ...(expression.annotations ?? [])];
 
@@ -150,11 +140,7 @@ export function getExpressionResizingWidth(
         return acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
       }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH);
 
-    return (
-      variableWidth +
-      columns.length + // 1px for each column
-      1 // 1px for last-child border-right
-    );
+    return variableWidth;
   }
 
   // Context + Invocation

@@ -252,6 +252,7 @@ export function useApportionedColumnWidthsIfNestedTable(
 
 // This code is an implementation of the Jefferson method for solving the Apportion problem.
 // See https://en.wikipedia.org/wiki/Mathematics_of_apportionment and https://en.wikipedia.org/wiki/D%27Hondt_method
+// This algorithm also allows for columns to be frozen, and not proportional.
 function apportionColumnWidths(
   nextTotalWidth: number, // Analogous to "total seats"
   columns: { currentWidth: number; minWidth: number; isFrozen: boolean }[]

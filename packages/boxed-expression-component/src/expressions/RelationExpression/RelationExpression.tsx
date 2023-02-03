@@ -110,7 +110,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     beeTableRef,
     isPivoting,
     relationExpression.isNested,
-    BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + columns.length + 1, //1px for each column border-left, 1px for the last column border-right.
+    BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
     rows
   );
