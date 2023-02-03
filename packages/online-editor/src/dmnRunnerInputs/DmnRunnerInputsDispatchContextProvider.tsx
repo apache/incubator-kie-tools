@@ -23,14 +23,8 @@ import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsDispatchContext
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useSyncedCompanionFs } from "../companionFs/CompanionFsHooks";
 import { EMPTY_DMN_RUNNER_INPUTS } from "./DmnRunnerInputsService";
-import { QueryParams } from "../navigation/Routes";
-import { useHistory } from "react-router";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
 
 export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChildren<{}>) {
-  const queryParams = useQueryParams();
-  const history = useHistory();
-
   const dmnRunnerInputsService = useMemo(() => {
     return new DmnRunnerInputsService();
   }, []);
@@ -75,12 +69,8 @@ export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChi
         { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
         JSON.stringify(EMPTY_DMN_RUNNER_INPUTS)
       );
-
-      history.replace({
-        search: queryParams.without(QueryParams.DMN_RUNNER_ROW).toString(),
-      });
     },
-    [dmnRunnerInputsService, history, queryParams]
+    [dmnRunnerInputsService]
   );
 
   const getInputRowsForDownload = useCallback(

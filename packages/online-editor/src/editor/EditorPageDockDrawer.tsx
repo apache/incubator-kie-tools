@@ -34,19 +34,11 @@ import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { QueryParams } from "../navigation/Routes";
-import { useHistory } from "react-router";
 
 export enum PanelId {
   DMN_RUNNER_TABLE = "dmn-runner-table",
   NOTIFICATIONS_PANEL = "notifications-panel",
   NONE = "",
-}
-
-enum DockQueryParams {
-  PROBLEMS = "problems",
-  EXECUTION = "execution",
 }
 
 interface EditorPageDockDrawerProps {
@@ -71,19 +63,25 @@ export const EditorPageDockDrawer = React.forwardRef<
   const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
-  const queryParams = useQueryParams();
-  const history = useHistory();
   const extendedServices = useExtendedServices();
 
   const notificationsPanelTabNames = useMemo(() => {
     if (
-      props.workspaceFile.extension.toLowerCase() === "dmn" &&
-      extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
+      (props.workspaceFile.extension.toLowerCase() === "dmn" &&
+        dmnRunnerState.isExpanded &&
+        dmnRunnerState.mode === DmnRunnerMode.FORM) ||
+      dmnRunnerState.mode === DmnRunnerMode.TABLE
     ) {
       return [i18n.terms.validation, i18n.terms.execution];
     }
     return [i18n.terms.validation];
-  }, [props.workspaceFile.extension, extendedServices.status, i18n.terms.validation, i18n.terms.execution]);
+  }, [
+    props.workspaceFile.extension,
+    i18n.terms.validation,
+    i18n.terms.execution,
+    dmnRunnerState.mode,
+    dmnRunnerState.isExpanded,
+  ]);
 
   useEffect(() => {
     if (!notificationsPanelTabNames.includes(i18n.terms.execution)) {
@@ -97,30 +95,14 @@ export const EditorPageDockDrawer = React.forwardRef<
     }
   }, [i18n.terms.execution, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
-  const onToggle = useCallback(
-    (newPanel: PanelId) => {
-      let query = queryParams.without(QueryParams.DOCK);
-      if (query.getString(QueryParams.DMN_RUNNER) === DmnRunnerMode.TABLE) {
-        query = query.without(QueryParams.DMN_RUNNER);
+  const onToggle = useCallback((panel: PanelId) => {
+    setPanel((currentPanel) => {
+      if (currentPanel !== panel) {
+        return panel;
       }
-
-      // Remove the problemsIsExpanded and add the dmnRunnerIsExpanded
-      if (panel !== PanelId.DMN_RUNNER_TABLE && newPanel === PanelId.DMN_RUNNER_TABLE) {
-        query = queryParams.with(QueryParams.DMN_RUNNER, DmnRunnerMode.TABLE).without(QueryParams.DOCK);
-      }
-
-      // Remove the dmnRunnerIsExpanded only if the DMN runner is in "table" view and add the problemsIsExpanded
-      if (panel !== PanelId.NOTIFICATIONS_PANEL && newPanel === PanelId.NOTIFICATIONS_PANEL) {
-        query = queryParams.with(QueryParams.DOCK, DockQueryParams.PROBLEMS);
-        if (query.getString(QueryParams.DMN_RUNNER) === DmnRunnerMode.TABLE) {
-          query = query.without(QueryParams.DMN_RUNNER);
-        }
-      }
-
-      history.replace({ search: query.toString() });
-    },
-    [panel, history, queryParams]
-  );
+      return PanelId.NONE;
+    });
+  }, []);
 
   const setNotifications = useCallback(
     (tabName: string, path: string, notifications: Notification[]) => {
@@ -169,36 +151,8 @@ export const EditorPageDockDrawer = React.forwardRef<
   );
 
   useEffect(() => {
-    if (props.workspaceFile.extension.toLowerCase() === "dmn" && queryParams.has(QueryParams.DMN_RUNNER)) {
-      const dmnRunnerMode = queryParams.getString(QueryParams.DMN_RUNNER);
-      if (
-        dmnRunnerMode === DmnRunnerMode.TABLE &&
-        extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
-      ) {
-        setPanel(PanelId.DMN_RUNNER_TABLE);
-        return;
-      }
-      // wrong value; remove dmn_runner param;
-    }
-
-    if (queryParams.has(QueryParams.DOCK)) {
-      const dockQueryParam = queryParams.getString(QueryParams.DOCK);
-      if (dockQueryParam === DockQueryParams.PROBLEMS) {
-        setPanel(PanelId.NOTIFICATIONS_PANEL);
-        // setTab problems
-        return;
-      }
-      if (dockQueryParam === DockQueryParams.EXECUTION) {
-        if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-          setPanel(PanelId.NOTIFICATIONS_PANEL);
-          // setTab execution
-          return;
-        }
-      }
-      // wrong value; remove dock param;
-    }
     setPanel(PanelId.NONE);
-  }, [props.workspaceFile.extension, extendedServices.status, history, queryParams]);
+  }, [props.workspaceFile.relativePath]);
 
   return (
     <>

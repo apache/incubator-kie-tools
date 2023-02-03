@@ -16,18 +16,12 @@
 
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
-import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { QueryParams } from "../../navigation/Routes";
-import { jsonParseWithDate } from "../../json/JsonParse";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { useQueryParams } from "../../queryParams/QueryParamsContext";
-import { useHistory } from "react-router";
-import { useRoutes } from "../../navigation/Hooks";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
@@ -36,15 +30,11 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 
 interface Props {
   isEditorReady?: boolean;
-  editorPageDock: EditorPageDockDrawerRef | undefined;
   workspaceFile: WorkspaceFile;
   dmnLanguageService?: DmnLanguageService;
 }
 
 export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
-  const queryParams = useQueryParams();
-  const history = useHistory();
-  const routes = useRoutes();
   const extendedServices = useExtendedServices();
   const workspaces = useWorkspaces();
 
@@ -116,53 +106,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       });
   }, [extendedServices.status, extendedServices.client, props.workspaceFile.extension, preparePayload]);
 
-  useEffect(() => {
-    if (props.workspaceFile.extension !== "dmn") {
-      history.replace({
-        search: queryParams.without(QueryParams.DMN_RUNNER).without(QueryParams.DMN_RUNNER_ROW).toString(),
-      });
-      return;
-    }
-
-    if (queryParams.has(QueryParams.DMN_RUNNER)) {
-      const dmnRunnerMode = queryParams.getString(QueryParams.DMN_RUNNER);
-      if (dmnRunnerMode === DmnRunnerMode.FORM) {
-        setMode(DmnRunnerMode.FORM);
-        setExpanded(true);
-      }
-      if (dmnRunnerMode === DmnRunnerMode.TABLE) {
-        setMode(DmnRunnerMode.TABLE);
-        setExpanded(true);
-      }
-    } else {
-      setExpanded(false);
-    }
-
-    if (queryParams.has(QueryParams.DMN_RUNNER_ROW)) {
-      const row = queryParams.getNumber(QueryParams.DMN_RUNNER_ROW);
-      if (row !== undefined) {
-        setCurrentInputRowIndex(row);
-      }
-    } else {
-      setCurrentInputRowIndex(0);
-    }
-
-    if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
-      return;
-    }
-
-    try {
-      setInputRows([jsonParseWithDate(queryParams.getString(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
-    } catch (e) {
-      console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
-    } finally {
-      history.replace({
-        pathname: routes.editor.path({ extension: "dmn" }),
-        search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
-      });
-    }
-  }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile.extension]);
-
   const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
@@ -177,54 +120,16 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
-  const toggleExpanded = useCallback(() => {
-    if (!isExpanded) {
-      history.replace({
-        search: queryParams.with(QueryParams.DMN_RUNNER, mode).toString(),
-      });
-      return;
-    }
-    history.replace({
-      search: queryParams.without(QueryParams.DMN_RUNNER).without(QueryParams.DMN_RUNNER_ROW).toString(),
-    });
-  }, [mode, isExpanded, history, queryParams]);
-
-  const setQueryParams = useCallback(
-    ({ newMode, row }) => {
-      let query = queryParams;
-
-      if (newMode === DmnRunnerMode.TABLE) {
-        query = query.without(QueryParams.DMN_RUNNER_ROW);
-      }
-
-      if (mode !== undefined) {
-        query = query.with(QueryParams.DMN_RUNNER, newMode);
-      } else {
-        query = query.with(QueryParams.DMN_RUNNER, mode);
-      }
-
-      if (row !== undefined) {
-        query = query.with(QueryParams.DMN_RUNNER_ROW, row.toString());
-      } else {
-        query = query.without(QueryParams.DMN_RUNNER_ROW);
-      }
-
-      history.replace({
-        search: query.toString(),
-      });
-    },
-    [mode, history, queryParams]
-  );
-
   const dmnRunnerDispatch = useMemo(
     () => ({
       preparePayload,
+      setCurrentInputRowIndex,
       setError,
-      toggleExpanded,
+      setExpanded,
       setInputRows,
-      setMode: setQueryParams,
+      setMode,
     }),
-    [preparePayload, toggleExpanded, setInputRows, setQueryParams]
+    [preparePayload, setCurrentInputRowIndex, setError, setExpanded, setInputRows, setMode]
   );
 
   const dmnRunnerState = useMemo(

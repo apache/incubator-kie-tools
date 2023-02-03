@@ -388,7 +388,6 @@ export function EditorPage(props: Props) {
           <>
             <DmnRunnerProvider
               workspaceFile={file.workspaceFile}
-              editorPageDock={editorPageDock}
               isEditorReady={editor?.isReady}
               dmnLanguageService={dmnLanguageService}
             >

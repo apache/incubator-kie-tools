@@ -67,7 +67,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
       if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
         props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
       } else {
-        dmnRunnerDispatch.toggleExpanded();
+        dmnRunnerDispatch.setExpanded((prev) => !prev);
       }
       return;
     }
@@ -163,10 +163,9 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<ListIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setMode({
-                    newMode: DmnRunnerMode.FORM,
-                    row: dmnRunnerState.currentInputRowIndex,
-                  });
+                  dmnRunnerDispatch.setMode(DmnRunnerMode.FORM);
+                  props.editorPageDock?.close();
+                  dmnRunnerDispatch.setExpanded(true);
                 }
               }}
             >
@@ -178,7 +177,9 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<TableIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setMode({ newMode: DmnRunnerMode.TABLE });
+                  dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
+                  props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
+                  dmnRunnerDispatch.setExpanded(true);
                 }
               }}
             >

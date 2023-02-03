@@ -23,10 +23,6 @@ export enum QueryParams {
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
   CONFIRM = "confirm",
-  DOCK = "dock",
-  DMN_RUNNER_FORM_INPUTS = "formInputs",
-  DMN_RUNNER = "dmnRunner",
-  DMN_RUNNER_ROW = "dmnRunnerRow",
 }
 
 export enum PathParams {
@@ -83,8 +79,7 @@ export class Route<
 
 export interface QueryParamsImpl<Q extends string> {
   has(name: Q): boolean;
-  getString(name: Q): string | undefined;
-  getNumber(name: Q): number | undefined;
+  get(name: Q): string | undefined;
   with(name: Q, value: string | undefined): QueryParamsImpl<Q>;
   without(name: Q): QueryParamsImpl<Q>;
   toString(): string;
@@ -93,20 +88,9 @@ export interface QueryParamsImpl<Q extends string> {
 export function newQueryParamsImpl<Q extends string>(queryString: string): QueryParamsImpl<Q> {
   return {
     has: (name) => new URLSearchParams(queryString).has(name),
-    getString: (name) => {
+    get: (name) => {
       const val = new URLSearchParams(queryString).get(name);
       return !val ? undefined : decodeURIComponent(val);
-    },
-    getNumber: (name) => {
-      const val = new URLSearchParams(queryString).get(name);
-      if (!val) {
-        return undefined;
-      }
-      const number = parseInt(decodeURIComponent(val), 10);
-      if (isNaN(number)) {
-        return undefined;
-      }
-      return number;
     },
     with: (name, value) => {
       const urlSearchParams = new URLSearchParams(queryString);
@@ -139,13 +123,7 @@ export const routes = {
    * Use import instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
-    queryParams:
-      | QueryParams.URL
-      | QueryParams.SETTINGS
-      | QueryParams.DOCK
-      | QueryParams.DMN_RUNNER_FORM_INPUTS
-      | QueryParams.DMN_RUNNER
-      | QueryParams.DMN_RUNNER_ROW;
+    queryParams: QueryParams.URL | QueryParams.SETTINGS;
   }>(({ extension }) => `/editor/${extension}`),
 
   newModel: new Route<{
@@ -153,12 +131,7 @@ export const routes = {
   }>(({ extension }) => `/new/${extension}`),
 
   import: new Route<{
-    queryParams:
-      | QueryParams.URL
-      | QueryParams.DMN_RUNNER_FORM_INPUTS
-      | QueryParams.BRANCH
-      | QueryParams.AUTH_SESSION_ID
-      | QueryParams.CONFIRM;
+    queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.AUTH_SESSION_ID | QueryParams.CONFIRM;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{

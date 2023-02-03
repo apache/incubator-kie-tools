@@ -84,9 +84,7 @@ export function SettingsContextProvider(props: any) {
 
   useEffect(() => {
     setOpen(queryParams.has(QueryParams.SETTINGS));
-    setActiveTab(
-      (queryParams.getString(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES
-    );
+    setActiveTab((queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
   }, [queryParams]);
 
   const open = useCallback(

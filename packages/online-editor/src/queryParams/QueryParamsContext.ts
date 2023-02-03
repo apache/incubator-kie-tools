@@ -25,5 +25,5 @@ export function useQueryParams(): QueryParamsImpl<string> {
 
 export function useQueryParam(name: string) {
   const queryParams = useQueryParams();
-  return useMemo(() => queryParams.getString(name), [queryParams, name]);
+  return useMemo(() => queryParams.get(name), [queryParams, name]);
 }
