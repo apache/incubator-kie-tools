@@ -10,10 +10,7 @@ export type BeeTableResizableColumnsContextType = {
 };
 
 export interface BeeTableResizableColumnsDispatchContextType {
-  updateColumnResizingWidth(
-    columnIndex: number,
-    getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth | undefined
-  ): void;
+  updateColumnResizingWidths(newColumnResizingWidths: Map<number, ResizingWidth | undefined>): void;
   registerResizableCellRef(columnIndex: number, ref: BeeTableResizableCellRef): BeeTableResizableCellRef;
   deregisterResizableCellRef(columnIndex: number, ref: BeeTableResizableCellRef): void;
 }
@@ -30,7 +27,7 @@ export interface BeeTableResizableCellRef {
 // PROVIDER
 
 type Props = React.PropsWithChildren<{
-  onChange?: (args: { columnIndex: number; newResizingWidth: ResizingWidth }) => void;
+  onChange?: (args: Map<number, ResizingWidth | undefined>) => void;
 }>;
 
 type MyRef = BeeTableResizableColumnsDispatchContextType;
@@ -45,14 +42,14 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
 
     const dispatch = useMemo<BeeTableResizableColumnsDispatchContextType>(() => {
       return {
-        updateColumnResizingWidth: (columnIndex, getNewResizingWidth) => {
-          const newResizingWidth = getNewResizingWidth(undefined); // FIXME: Tiago -> Not good!
-          for (const ref of refs.current.get(columnIndex) ?? []) {
-            ref.setResizingWidth?.(newResizingWidth);
+        updateColumnResizingWidths: (newColumnResizingWidths) => {
+          for (const [columnIndex, newResizingWidth] of newColumnResizingWidths.entries()) {
+            for (const ref of refs.current.get(columnIndex) ?? []) {
+              ref.setResizingWidth?.(newResizingWidth);
+            }
           }
-          if (newResizingWidth) {
-            onChange?.({ columnIndex, newResizingWidth });
-          }
+
+          onChange?.(newColumnResizingWidths);
         },
         registerResizableCellRef: (columnIndex, ref) => {
           const prev = refs.current?.get(columnIndex) ?? new Set();
@@ -89,7 +86,7 @@ export function useBeeTableResizableCell(
   setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>,
   initialResizingWidthValue?: number
 ) {
-  const { registerResizableCellRef, deregisterResizableCellRef, updateColumnResizingWidth } =
+  const { registerResizableCellRef, deregisterResizableCellRef, updateColumnResizingWidths } =
     useBeeTableResizableColumnsDispatch();
 
   const initialResizingWidth: ResizingWidth | undefined = useMemo(() => {
@@ -117,14 +114,14 @@ export function useBeeTableResizableCell(
   );
 
   useEffect(() => {
-    updateColumnResizingWidth(columnIndex, (prev) => initialResizingWidth);
-  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateColumnResizingWidth]);
+    updateColumnResizingWidths(new Map([[columnIndex, initialResizingWidth]]));
+  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateColumnResizingWidths]);
 
   const _updateResizingWidth = useCallback(
-    (getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => {
-      updateColumnResizingWidth(columnIndex, getNewResizingWidth);
+    (newResizingWidth: ResizingWidth) => {
+      updateColumnResizingWidths(new Map([[columnIndex, newResizingWidth]]));
     },
-    [columnIndex, updateColumnResizingWidth]
+    [columnIndex, updateColumnResizingWidths]
   );
 
   useEffect(() => {
@@ -153,10 +150,14 @@ export function usePublishedBeeTableResizableColumns(id: string, columnCount: nu
     );
   }, [columnCount, hasRowIndexColumn]);
 
-  const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
+  const onColumnResizingWidthChange = useCallback((args: Map<number, ResizingWidth | undefined>) => {
     setColumnResizingWidths((prev) => {
       const n = new Map(prev);
-      n.set(args.columnIndex, args.newResizingWidth);
+      for (const [columnIndex, newResizingWidth] of args.entries()) {
+        if (newResizingWidth) {
+          n.set(columnIndex, newResizingWidth);
+        }
+      }
       return n;
     });
   }, []);

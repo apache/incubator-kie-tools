@@ -226,17 +226,22 @@ export function useApportionedColumnWidthsIfNestedTable(
       }))
     );
 
-    apportionedWidths.forEach((nextWidth, index) => {
+    const newColumnWidths = apportionedWidths.reduce((acc, nextWidth, index) => {
       if (columns[index].isFrozen) {
-        return;
+        return acc;
       }
 
       const columnIndex = index + 1; // + 1 to compensate for rowIndex column
-      beeTableRef.current?.updateColumnResizingWidth(columnIndex, (prev) => ({
-        isPivoting: prev?.isPivoting ?? false,
+
+      acc.set(columnIndex, {
+        isPivoting: false,
         value: nextWidth,
-      }));
-    });
+      });
+
+      return acc;
+    }, new Map());
+
+    beeTableRef.current?.updateColumnResizingWidths(newColumnWidths);
   }, [
     columns,
     isPivoting,
@@ -296,7 +301,7 @@ export function apportionColumnWidths(
     }
   }
 
-  return apportionedWidths;
+  return apportionedWidths.filter(Boolean); // Filter out `NaN` values.
 }
 
 export function useNestedTableLastColumnMinWidth(columnResizingWidths: Map<number, ResizingWidth>) {

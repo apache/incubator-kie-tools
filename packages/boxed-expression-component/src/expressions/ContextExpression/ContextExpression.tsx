@@ -75,9 +75,10 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     isPivoting: false,
   });
 
-  const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
-    if (args.columnIndex === 1) {
-      setEntryInfoResizingWidth(args.newResizingWidth);
+  const onColumnResizingWidthChange = useCallback((args: Map<number, ResizingWidth | undefined>) => {
+    const newResizingWidth = args.get(1);
+    if (newResizingWidth) {
+      setEntryInfoResizingWidth(newResizingWidth);
     }
   }, []);
 

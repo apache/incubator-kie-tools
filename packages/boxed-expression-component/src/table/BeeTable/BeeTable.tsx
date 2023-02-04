@@ -551,7 +551,7 @@ export function BeeTableInternal<R extends object>({
 export type BeeTableRef = BeeTableResizableColumnsDispatchContextType;
 
 export type ForwardRefBeeTableProps<R extends object> = BeeTableProps<R> & { forwardRef?: React.Ref<BeeTableRef> } & {
-  onColumnResizingWidthChange?: (args: { columnIndex: number; newResizingWidth: ResizingWidth }) => void;
+  onColumnResizingWidthChange?: (args: Map<number, ResizingWidth | undefined>) => void;
 };
 
 export const BeeTable = <R extends object>(props: ForwardRefBeeTableProps<R>) => {

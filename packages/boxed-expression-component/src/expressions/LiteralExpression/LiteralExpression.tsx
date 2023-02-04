@@ -107,12 +107,17 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     }
 
     const COLUMN_INDEX = 1;
-    beeTableRef.current?.updateColumnResizingWidth(COLUMN_INDEX, (prev) => {
-      return {
-        value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidth),
-        isPivoting: prev?.isPivoting ?? false,
-      };
-    });
+    beeTableRef.current?.updateColumnResizingWidths(
+      new Map([
+        [
+          COLUMN_INDEX,
+          {
+            value: Math.max(nestedExpressionContainer.resizingWidth.value - LITERAL_EXPRESSION_EXTRA_WIDTH, minWidth),
+            isPivoting: false,
+          },
+        ],
+      ])
+    );
   }, [isPivoting, literalExpression.isNested, minWidth, nestedExpressionContainer.resizingWidth.value]);
 
   /// //////////////////////////////////////////////////////

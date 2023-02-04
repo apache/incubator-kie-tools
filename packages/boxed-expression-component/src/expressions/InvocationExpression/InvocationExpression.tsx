@@ -66,9 +66,10 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     isPivoting: false,
   });
 
-  const onColumnResizingWidthChange = useCallback((args: { columnIndex: number; newResizingWidth: ResizingWidth }) => {
-    if (args.columnIndex === 1) {
-      setParametersResizingWidth(args.newResizingWidth);
+  const onColumnResizingWidthChange = useCallback((args: Map<number, ResizingWidth | undefined>) => {
+    const newResizingWidth = args.get(1);
+    if (newResizingWidth) {
+      setParametersResizingWidth(newResizingWidth);
     }
   }, []);
 

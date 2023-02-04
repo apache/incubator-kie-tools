@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -30,7 +30,12 @@ import {
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
-import { useApportionedColumnWidthsIfNestedTable, useNestedTableLastColumnMinWidth } from "../../resizing/Hooks";
+import {
+  apportionColumnWidths,
+  useApportionedColumnWidthsIfNestedTable,
+  useNestedTableLastColumnMinWidth,
+} from "../../resizing/Hooks";
+import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -640,6 +645,52 @@ export function DecisionTableExpression(
   const beeTableHeaderVisibility = useMemo(() => {
     return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [decisionTableExpression.isNested]);
+
+  const pivotingColumnIndex = useMemo(() => {
+    const pivotingColumn = [...columnResizingWidths.entries()].find(([_, { isPivoting }]) => isPivoting);
+    if (pivotingColumn) {
+      const [pivotingColumnIndex] = pivotingColumn;
+      return pivotingColumnIndex - 1;
+    } else {
+      return 0;
+    }
+  }, [columnResizingWidths]);
+
+  const nestedExpressionContainer = useNestedExpressionContainer();
+
+  const spaceToTheRight = useMemo(
+    () =>
+      nestedExpressionContainer.actualWidth -
+      (columnResizingWidths.get(0)?.value ?? 0) -
+      columns
+        .slice(0, pivotingColumnIndex + 1) //
+        .reduce((acc, c, i) => acc + (columnResizingWidths.get(i + 1)?.value ?? 0), 0),
+    [columnResizingWidths, columns, nestedExpressionContainer.actualWidth, pivotingColumnIndex]
+  );
+
+  useEffect(() => {
+    if (isPivoting) {
+      const apportionedColumnWidths = apportionColumnWidths(
+        spaceToTheRight,
+        columns.slice(pivotingColumnIndex + 1).map((c) => ({
+          minWidth: 100,
+          currentWidth: c.width ?? 0,
+          isFrozen: false,
+        }))
+      );
+
+      const newColumnWidths = apportionedColumnWidths.reduce((acc, apportionedWidth, i) => {
+        acc.set(1 + pivotingColumnIndex + 1 + i, {
+          isPivoting: false,
+          value: apportionedWidth,
+        });
+
+        return acc;
+      }, new Map());
+
+      beeTableRef.current?.updateColumnResizingWidths(newColumnWidths);
+    }
+  }, [columns, isPivoting, pivotingColumnIndex, spaceToTheRight]);
 
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>

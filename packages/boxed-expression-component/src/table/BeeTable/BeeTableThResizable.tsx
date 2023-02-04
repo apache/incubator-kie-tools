@@ -102,7 +102,7 @@ export function BeeTableThResizable<R extends object>({
     return onGetWidthToFitData() + extraSpace;
   }, [onGetWidthToFitData]);
 
-  // const { updateColumnResizingWidth } = useBeeTableResizableColumnsDispatch();
+  // const { updateColumnResizingWidths } = useBeeTableResizableColumnsDispatch();
   // const [isCalcWidthResizing, setCalcWidthResizing] = useState<boolean>(false);
   // const [calcWidth, setCalcWidth] = useState<number | undefined>(undefined);
   // const [calcResizingWidth, setCalcResizingWidth] = useState<ResizingWidth | undefined>(undefined);
@@ -136,7 +136,7 @@ export function BeeTableThResizable<R extends object>({
   //   );
 
   //   (column.columns ?? []).forEach((c, i) => {
-  //     updateColumnResizingWidth(firstColumnIndexOfGroup + i, (prev) => {
+  //     updateColumnResizingWidths(firstColumnIndexOfGroup + i, (prev) => {
   //       return { isPivoting: true, value: apportionedColumnWidths[i] };
   //     });
   //   });
@@ -146,7 +146,7 @@ export function BeeTableThResizable<R extends object>({
   //   column.columns,
   //   columnIndex,
   //   firstColumnIndexOfGroup,
-  //   updateColumnResizingWidth,
+  //   updateColumnResizingWidths,
   // ]);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });

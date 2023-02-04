@@ -26,7 +26,7 @@ export interface ResizerProps {
   width: number | undefined;
   setWidth: React.Dispatch<React.SetStateAction<number | undefined>> | undefined;
   resizingWidth: ResizingWidth | undefined;
-  setResizingWidth: ((getNewResizingWidth: (prev: ResizingWidth) => ResizingWidth) => void) | undefined;
+  setResizingWidth: (newResizingWidth: ResizingWidth) => void;
   setResizing?: React.Dispatch<React.SetStateAction<boolean>>;
   getWidthToFitData?: () => number | undefined;
 }
@@ -78,7 +78,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     }
 
     setResizing?.(false);
-    setResizingWidth?.((prev) => ({ value: Math.floor(resizingStop__data), isPivoting: false }));
+    setResizingWidth?.({ value: Math.floor(resizingStop__data), isPivoting: false });
     setWidth?.(resizingWidth?.value);
 
     setResizingStop__data(0); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
@@ -94,14 +94,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onResize = useCallback(
     (_, data) => {
-      setResizingWidth?.(() => ({ value: Math.floor(data.size.width), isPivoting: true }));
+      setResizingWidth?.({ value: Math.floor(data.size.width), isPivoting: true });
     },
     [setResizingWidth]
   );
 
   const onResizeStart = useCallback(
     (_, data) => {
-      setResizingWidth?.(() => ({ value: Math.floor(data.size.width), isPivoting: true }));
+      setResizingWidth?.({ value: Math.floor(data.size.width), isPivoting: true });
       setResizing?.(true);
     },
     [setResizing, setResizingWidth]
