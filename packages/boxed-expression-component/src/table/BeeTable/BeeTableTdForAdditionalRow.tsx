@@ -75,7 +75,7 @@ export function BeeTableTdForAdditionalRow<R extends object>({
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
     >
-      <div style={{ width: resizingWidth?.value }}>{children}</div>
+      {children}
 
       <Resizer
         minWidth={lastColumnMinWidth ?? column.minWidth}
