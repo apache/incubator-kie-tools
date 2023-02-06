@@ -54,7 +54,7 @@ export function ImportFromUrlCard() {
   }, [importableUrl]);
 
   return (
-    <Card isFullHeight={true} isLarge={true} isPlain={true} isSelected={url.length > 0}>
+    <Card isFullHeight={true} isLarge={true} isPlain={true} isSelected={url.length > 0} isCompact>
       <CardTitle>
         <TextContent>
           <Text component={TextVariants.h2}>

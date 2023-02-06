@@ -34,7 +34,7 @@ export function NewServerlessModelCard(props: {
   const routes = useRoutes();
 
   return (
-    <GridItem lg={4} xl={12} xl2={4}>
+    <GridItem sm={12} md={4}>
       <Card isFullHeight={true} isPlain={true} isLarge={true} isCompact={true}>
         <CardTitle>
           <FileLabel style={{ fontSize: "0.6em" }} extension={props.jsonExtension} />

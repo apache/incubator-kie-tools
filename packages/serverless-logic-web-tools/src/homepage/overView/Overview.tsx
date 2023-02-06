@@ -104,7 +104,7 @@ export function Overview() {
                 </CardHeaderMain>
               </CardHeader>
               <CardBody>
-                <Grid hasGutter>
+                <Grid>
                   <NewServerlessModelCard
                     title={"Workflow"}
                     jsonExtension={FileTypes.SW_JSON}
@@ -129,22 +129,26 @@ export function Overview() {
             </Card>
           </GridItem>
           <GridItem xl={12} xl2={6}>
-            <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-              <TextContent>
-                <Text component={TextVariants.h1}>Import</Text>
-              </TextContent>
-              <br />
-              <Divider inset={{ default: "insetXl" }} />
-              <Gallery
-                hasGutter={true}
-                // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
-                style={{ height: "calc(100% - 32px)" }}
-              >
-                <ImportFromUrlCard />
-                <UploadCard expandWorkspace={expandWorkspace} />
-              </Gallery>
-            </PageSection>
+            <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
+              <CardHeader>
+                <CardHeaderMain>
+                  <CardTitle>
+                    <Title headingLevel="h2">Import</Title>
+                  </CardTitle>
+                </CardHeaderMain>
+              </CardHeader>
+              <CardBody>
+                <Gallery
+                  hasGutter={true}
+                  // 16px is the "Gutter" width.
+                  minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
+                  style={{ height: "calc(100% - 32px)" }}
+                >
+                  <ImportFromUrlCard />
+                  <UploadCard expandWorkspace={expandWorkspace} />
+                </Gallery>
+              </CardBody>
+            </Card>
           </GridItem>
         </Grid>
       </PageSection>
