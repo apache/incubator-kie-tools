@@ -57,58 +57,52 @@ test("<BoolField> - renders an input with correct disabled state", () => {
   render(usingUniformsContext(<BoolField name="x" disabled={true} />, {}, { x: { type: Boolean } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
-  expect(screen.getByTestId("bool-field")).toMatchSnapshot();
-  expect(screen.getByTestId("bool-field").getAttribute("disabled")).toBe(true);
+  expect(screen.getByTestId("bool-field")).toBeDisabled();
 });
 
-// test("<BoolField> - renders a input with correct label (specified)", () => {
-//   render(<BoolField name="x" label="BoolFieldLabel" />, {},({ x: { type: Boolean } }));
+test("<BoolField> - renders a input with correct label (specified)", () => {
+  render(usingUniformsContext(<BoolField name="x" label="BoolFieldLabel" />, {}, { x: { type: Boolean } }));
 
-//   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("bool-field").text()).toBe("BoolFieldLabel");
-//   expect(screen.getByTestId("bool-field").getAttribute("htmlFor")).toBe(screen.getByTestId("bool-field").getAttribute("id"));
-// });
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
+  expect(screen.getByText("BoolFieldLabel")).toBeInTheDocument();
+});
 
-// test("<BoolField> - renders a input with correct value (default)", () => {
-//   render(usingUniformsContext(<BoolField name="x" />, {},({ x: { type: Boolean } }));
+test("<BoolField> - renders a input with correct value (default)", () => {
+  render(usingUniformsContext(<BoolField name="x" />, {}, { x: { type: Boolean } }));
 
-//   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("bool-field").getAttribute("checked")).toBe(false);
-// });
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
+  expect(screen.getByTestId("bool-field")).not.toHaveAttribute("checked");
+});
 
-// test("<BoolField> - renders a input with correct value (model)", () => {
-//   render(usingUniformsContext(<BoolField name="x" />, { model: { x: true } },({ x: { type: Boolean } }));
+test("<BoolField> - renders a input with correct value (model)", () => {
+  render(usingUniformsContext(<BoolField name="x" />, { model: { x: true } }, { x: { type: Boolean } }));
 
-//   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("bool-field").getAttribute("checked")).toBe(true);
-// });
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
+  expect(screen.getByTestId("bool-field")).toHaveAttribute("checked");
+});
 
-// test("<BoolField> - renders a input with correct value (specified)", () => {
-//   render(usingUniformsContext(<BoolField name="x" value />, {},({ x: { type: Boolean } }));
+test("<BoolField> - renders a input with correct value (specified)", () => {
+  render(usingUniformsContext(<BoolField name="x" value />, {}, { x: { type: Boolean } }));
 
-//   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("bool-field").getAttribute("checked")).toBe(true);
-// });
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
+  expect(screen.getByTestId("bool-field")).toHaveAttribute("checked");
+});
 
-// test("<BoolField> - renders a input which correctly reacts on change", () => {
-//   const onChange = jest.fn();
+test("<BoolField> - renders a input which correctly reacts on change", () => {
+  const onChange = jest.fn();
 
-//   render(usingUniformsContext(<BoolField name="x" />, { onChange },({ x: { type: Boolean } }));
+  render(usingUniformsContext(<BoolField name="x" />, { onChange }, { x: { type: Boolean } }));
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
 
-//   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId("bool-field"));
+  expect(onChange).toHaveBeenLastCalledWith("x", true);
+});
 
-//   fireEvent.click(screen.getByTestId("bool-field"));
-//   expect(onChange).toHaveBeenLastCalledWith("x", true);
+test("<BoolField> - renders a wrapper with unknown props", () => {
+  render(usingUniformsContext(<BoolField name="x" data-x="x" data-y="y" data-z="z" />, {}, { x: { type: Boolean } }));
 
-//   fireEvent.click(screen.getByTestId("bool-field"));
-//   expect(onChange).toHaveBeenLastCalledWith("x", false);
-// });
-
-// test("<BoolField> - renders a wrapper with unknown props", () => {
-//   render(usingUniformsContext(<BoolField name="x" data-x="x" data-y="y" data-z="z" />, {},({ x: { type: Boolean } }));
-
-//   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("bool-field").getAttribute("data-x")).toBe("x");
-//   expect(screen.getByTestId("bool-field").getAttribute("data-y")).toBe("y");
-//   expect(screen.getByTestId("bool-field").getAttribute("data-z")).toBe("z");
-// });
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field").getAttribute("data-x")).toBe("x");
+  expect(screen.getByTestId("wrapper-field").getAttribute("data-y")).toBe("y");
+  expect(screen.getByTestId("wrapper-field").getAttribute("data-z")).toBe("z");
+});
