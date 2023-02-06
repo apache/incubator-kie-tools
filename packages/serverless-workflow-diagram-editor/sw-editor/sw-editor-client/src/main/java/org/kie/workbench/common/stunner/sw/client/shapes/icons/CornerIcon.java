@@ -20,9 +20,13 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.PrimitiveTextTooltip;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import elemental2.dom.DomGlobal;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 public class CornerIcon extends Group {
+
+    private final HandlerRegistration mouseEnterHandler;
+    private final HandlerRegistration mouseExitHandler;
+    private final String tooltipText;
 
     private final Rectangle border = new Rectangle(20, 20)
             .setFillColor("white")
@@ -32,8 +36,6 @@ public class CornerIcon extends Group {
             .setCornerRadius(9)
             .setEventPropagationMode(EventPropagationMode.NO_ANCESTORS)
             .setListening(true);
-
-    private String tooltipText;
 
     public CornerIcon(String icon, String tooltip) {
         setX(224);
@@ -58,21 +60,21 @@ public class CornerIcon extends Group {
                 .setListening(false);
         add(clockIcon);
 
-        border.addNodeMouseEnterHandler(event -> {
+        mouseEnterHandler = border.addNodeMouseEnterHandler(event -> {
             tooltipElement.show();
             clockIcon.setFillColor("#4F5255");
         });
-        border.addNodeMouseExitHandler(event -> {
+        mouseExitHandler = border.addNodeMouseExitHandler(event -> {
             tooltipElement.hide();
             clockIcon.setFillColor("#CCC");
             border.getLayer().batch();
         });
-        border.addNodeMouseClickHandler(event -> {
-            DomGlobal.console.log("clicked!");
-        });
     }
 
-    public void setTooltipText(String text) {
-        tooltipText = text;
+    @Override
+    public void destroy() {
+        super.destroy();
+        mouseEnterHandler.removeHandler();
+        mouseExitHandler.removeHandler();
     }
 }
