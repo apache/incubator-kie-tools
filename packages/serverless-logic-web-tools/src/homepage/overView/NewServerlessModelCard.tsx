@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { SupportedFileExtensions } from "../../extension";
 import { useRoutes } from "../../navigation/Hooks";
-import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { FileLabel } from "../../workspace/components/FileLabel";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { Link } from "react-router-dom";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 export function NewServerlessModelCard(props: {
   title: string;
@@ -33,34 +34,47 @@ export function NewServerlessModelCard(props: {
   const routes = useRoutes();
 
   return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true}>
-      <CardTitle>
-        <FileLabel style={{ fontSize: "0.6em" }} extension={props.jsonExtension} />
-      </CardTitle>
-      <CardBody>
-        <TextContent>
-          <Text component={TextVariants.p}>{props.description}</Text>
-        </TextContent>
-      </CardBody>
-      <CardFooter>
-        <Grid hasGutter>
-          <GridItem span={12}>New {props.title}</GridItem>
-          <GridItem span={6}>
+    <GridItem sm={4}>
+      <Card
+        isFullHeight={true}
+        isPlain={true}
+        isLarge={true}
+        style={
+          {
+            "--pf-c-card--first-child--PaddingTop": 0,
+            "--pf-c-card--m-display-lg--child--PaddingLeft": 0,
+            "--pf-c-card--m-display-lg--child--PaddingRight": 0,
+          } as React.CSSProperties
+        }
+      >
+        <CardTitle>
+          <FileLabel style={{ fontSize: "0.6em" }} extension={props.jsonExtension} />
+        </CardTitle>
+        <CardBody>
+          <TextContent>
+            <Text component={TextVariants.p}>{props.description}</Text>
+          </TextContent>
+        </CardBody>
+        <CardFooter>
+          <TextContent>
+            <Text component={TextVariants.p}>
+              <b>New {props.title}</b>
+            </Text>
+          </TextContent>
+          <Flex>
             <Link to={{ pathname: routes.newModel.path({ extension: props.jsonExtension }) }}>
               <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.jsonExtension}-button`}>
                 JSON
               </Button>
             </Link>
-          </GridItem>
-          <GridItem span={6}>
             <Link to={{ pathname: routes.newModel.path({ extension: props.yamlExtension }) }}>
               <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.yamlExtension}-button`}>
                 YAML
               </Button>
             </Link>
-          </GridItem>
-        </Grid>
-      </CardFooter>
-    </Card>
+          </Flex>
+        </CardFooter>
+      </Card>
+    </GridItem>
   );
 }
