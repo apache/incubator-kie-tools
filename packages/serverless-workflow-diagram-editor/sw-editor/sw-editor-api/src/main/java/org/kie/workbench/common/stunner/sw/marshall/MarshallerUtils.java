@@ -99,11 +99,11 @@ public class MarshallerUtils {
         }
     }
 
-    static String onPostSerialize(String json, Workflow workflow, DocType docType) {
+    static String onPostSerialize(String model, Workflow workflow, DocType docType) {
         if(docType == DocType.YAML) {
-            throw new UnsupportedOperationException("YAML is not supported yet");
+            return model;
         }
-        Object parsed = Global.JSON.parse(json);
+        Object parsed = Global.JSON.parse(model);
         merge(Js.asPropertyMap(workflow).get("__original__"), parsed);
         return Global.JSON.stringify(parsed);
     }

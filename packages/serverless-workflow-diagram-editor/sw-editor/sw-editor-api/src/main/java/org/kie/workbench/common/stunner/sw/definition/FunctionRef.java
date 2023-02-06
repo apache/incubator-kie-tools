@@ -21,14 +21,16 @@ import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.ArgumentsValueHolderJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ArgumentsValueHolderYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.StringOrValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StringOrValueHolderYamlTypeSerializer;
 
 @JSONMapper
 @YAMLMapper
 @JsType
+@YamlPropertyOrder({"refName", "selectionSet", "invoke", "arguments"})
 public class FunctionRef {
 
     public String refName;
@@ -37,10 +39,10 @@ public class FunctionRef {
 
     public FunctionRefType invoke;
 
-    @JsonbTypeSerializer(ArgumentsValueHolderJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ArgumentsValueHolderJsonbTypeSerializer.class)
-    @YamlTypeSerializer(ArgumentsValueHolderYamlTypeSerializer.class)
-    @YamlTypeDeserializer(ArgumentsValueHolderYamlTypeSerializer.class)
+    @JsonbTypeSerializer(StringOrValueHolderJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StringOrValueHolderJsonbTypeSerializer.class)
+    @YamlTypeSerializer(StringOrValueHolderYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StringOrValueHolderYamlTypeSerializer.class)
     private Object arguments;
 
     public final String getRefName() {

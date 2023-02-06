@@ -21,6 +21,7 @@ import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.json.StateEndDefinitionJsonbTypeSerializer;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowTimeou
 @JsType
 @JSONMapper
 @YAMLMapper
+@YamlPropertyOrder({"name", "type", "end", "onErrors", "eventTimeout", "compensatedBy", "stateDataFilter", "transition", "timeouts"})
 public class State {
 
     public String name;

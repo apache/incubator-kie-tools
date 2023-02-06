@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
 import org.kie.workbench.common.stunner.sw.definition.ValueHolder;
 
-public class ArgumentsValueHolderJsonbTypeSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object>  {
+public class StringOrValueHolderJsonbTypeSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object>  {
 
     private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();

@@ -21,6 +21,7 @@ import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.json.ErrorJsonSerializer;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowTimeou
 @JSONMapper
 @YAMLMapper
 @JsType
+@YamlPropertyOrder({"id", "version", "specVersion", "name", "description", "start", "states"})
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
 public class Workflow {
 

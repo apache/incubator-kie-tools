@@ -34,6 +34,8 @@ public interface EditorActivity extends Activity {
 
     Promise<String> getContent();
 
+    Promise<String> getContentYAML();
+
     Promise<String> getPreview();
 
     Promise<List<Notification>> validate();

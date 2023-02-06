@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.json.FunctionRefJsonSerializer;
@@ -27,6 +28,7 @@ import org.kie.workbench.common.stunner.sw.definition.custom.yaml.FunctionRefYam
 import org.kie.workbench.common.stunner.sw.definition.custom.yaml.SubFlowRefYamlSerializer;
 
 @JsType
+@YamlPropertyOrder({"name", "id", "functionRef", "eventRef", "subFlowRef", "retryRef", "sleep", "retryableErrors", "nonRetryableErrors", "actionDataFilter", "condition"})
 public class ActionNode {
 
     public String id;
