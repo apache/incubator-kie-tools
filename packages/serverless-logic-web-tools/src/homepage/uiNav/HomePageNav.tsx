@@ -20,24 +20,27 @@ import { Link } from "react-router-dom";
 
 export function HomePageNav(props: { pathname: string }) {
   return (
-    <Nav aria-label="Global NAV" theme="dark">
-      <NavList>
-        <NavItem itemId={0} key={"Overview-nav"} isActive={props.pathname === "/"}>
-          <Link to="/">Overview</Link>
-        </NavItem>
+    <>
+      <div className="chr-c-app-title">Serverless Logic Web Tools</div>
+      <Nav aria-label="Global NAV" theme="dark">
+        <NavList>
+          <NavItem itemId={0} key={"Overview-nav"} isActive={props.pathname === "/"}>
+            <Link to="/">Overview</Link>
+          </NavItem>
 
-        <NavItem itemId={1} key={"Serverless-models-nav"} isActive={props.pathname === "/ServerlessModels"}>
-          <Link to="/ServerlessModels">Serverless Models</Link>
-        </NavItem>
+          <NavItem itemId={1} key={"Serverless-models-nav"} isActive={props.pathname === "/ServerlessModels"}>
+            <Link to="/ServerlessModels">Serverless Models</Link>
+          </NavItem>
 
-        <NavItem itemId={2} key={"SampleCatalog-nav"} isActive={props.pathname === "/SampleCatalog"}>
-          <Link to="/SampleCatalog">Sample Catalog</Link>
-        </NavItem>
+          <NavItem itemId={2} key={"SampleCatalog-nav"} isActive={props.pathname === "/SampleCatalog"}>
+            <Link to="/SampleCatalog">Sample Catalog</Link>
+          </NavItem>
 
-        <NavItem itemId={3} key={"Documentation-nav"} isActive={props.pathname === "/Documentation"}>
-          <Link to="/Documentation">Documentation</Link>
-        </NavItem>
-      </NavList>
-    </Nav>
+          <NavItem itemId={3} key={"Documentation-nav"} isActive={props.pathname === "/Documentation"}>
+            <Link to="/Documentation">Documentation</Link>
+          </NavItem>
+        </NavList>
+      </Nav>
+    </>
   );
 }
