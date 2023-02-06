@@ -27,7 +27,19 @@
   <artifactId>kie-wb-common-dmn-client</artifactId>
   <name>Kie Workbench - Common - DMN - Client</name>
   <description>Kie Workbench - Common - DMN - Client</description>
-  <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <packaging>jar</packaging>
 
   <properties>
     <java.module.name>org.kie.wb.common.dmn.client</java.module.name>
@@ -291,7 +303,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt-functions</artifactId>
       <exclusions>
         <exclusion>
@@ -301,7 +313,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -316,7 +328,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <classifier>sources</classifier>
       <exclusions>
