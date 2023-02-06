@@ -124,7 +124,7 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, onToggle, setNotifications]
   );
 
-  const notificationsPanelIsDisabled = useMemo(() => {
+  const dockIsDisabled = useMemo(() => {
     return (
       (props.workspaceFile.extension.toLowerCase() === "dmn" ||
         props.workspaceFile.extension.toLowerCase() === "bpmn" ||
@@ -133,7 +133,7 @@ export const EditorPageDockDrawer = React.forwardRef<
     );
   }, [extendedServices.status, props.workspaceFile.extension]);
 
-  const notificationsPanelDisabledReason = useMemo(() => {
+  const dockIsDisabledReason = useMemo(() => {
     if (
       (props.workspaceFile.extension.toLowerCase() === "dmn" ||
         props.workspaceFile.extension.toLowerCase() === "bpmn" ||
@@ -151,8 +151,14 @@ export const EditorPageDockDrawer = React.forwardRef<
   );
 
   useEffect(() => {
-    setPanel(PanelId.NONE);
-  }, [props.workspaceFile.relativePath]);
+    if (
+      (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
+        extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING) &&
+      panel === PanelId.DMN_RUNNER_TABLE
+    ) {
+      setPanel(PanelId.NONE);
+    }
+  }, [extendedServices.status, props.workspaceFile.relativePath]);
 
   return (
     <>
@@ -189,11 +195,16 @@ export const EditorPageDockDrawer = React.forwardRef<
       >
         <ToggleGroup>
           {isDmnTableMode && (
-            <DmnRunnerDockToggle isSelected={panel === PanelId.DMN_RUNNER_TABLE} onChange={(id) => onToggle(id)} />
+            <DmnRunnerDockToggle
+              isDisabled={dockIsDisabled}
+              disabledReason={dockIsDisabledReason}
+              isSelected={panel === PanelId.DMN_RUNNER_TABLE}
+              onChange={(id) => onToggle(id)}
+            />
           )}
           <NotificationsPanelDockToggle
-            isDisabled={notificationsPanelIsDisabled}
-            disabledReason={notificationsPanelDisabledReason}
+            isDisabled={dockIsDisabled}
+            disabledReason={dockIsDisabledReason}
             ref={notificationsToggleRef}
             isSelected={panel === PanelId.NOTIFICATIONS_PANEL}
             onChange={(id) => onToggle(id)}
