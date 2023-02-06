@@ -15,14 +15,15 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	"reflect"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -106,7 +107,7 @@ func (i *configReconciler) processDelta(requestedResources map[reflect.Type][]cl
 }
 
 func (i *configReconciler) createInfraPropertiesConfigMap(appProps map[string]string) *v1.ConfigMap {
-	var data map[string]string = nil
+	var data map[string]string
 	if len(appProps) > 0 {
 		data = appProps
 	}

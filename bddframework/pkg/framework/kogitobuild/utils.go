@@ -15,10 +15,11 @@
 package kogitobuild
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
-	buildv1 "github.com/openshift/api/build/v1"
 	"strconv"
 	"strings"
+
+	api "github.com/kiegroup/kogito-operator/apis"
+	buildv1 "github.com/openshift/api/build/v1"
 )
 
 const (
@@ -41,8 +42,6 @@ func GetBuildBuilderName(build api.KogitoBuildInterface) string {
 
 // getBuilderLimitsAsIntString gets the string representation for the resource limits defined in the given bc
 func getBuilderLimitsAsIntString(bc *buildv1.BuildConfig) (limitCPU, limitMemory string) {
-	limitCPU = ""
-	limitMemory = ""
 	if bc.Spec.Resources.Limits == nil {
 		return "", ""
 	}

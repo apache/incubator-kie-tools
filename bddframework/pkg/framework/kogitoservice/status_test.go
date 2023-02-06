@@ -16,7 +16,9 @@ package kogitoservice
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis"
+	"testing"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
@@ -26,7 +28,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	meta2 "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
 )
 
 func TestReconciliation_ErrorOccur(t *testing.T) {
@@ -151,7 +152,7 @@ func TestReconciliation(t *testing.T) {
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	statusHandler := NewStatusHandler(context)
-	var err error = nil
+	var err error
 	statusHandler.HandleStatusUpdate(instance, &err)
 	assert.NotNil(t, instance)
 
@@ -188,7 +189,7 @@ func TestReconciliation_PodAlreadyRunning(t *testing.T) {
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	statusHandler := NewStatusHandler(context)
-	var err error = nil
+	var err error
 	statusHandler.HandleStatusUpdate(instance, &err)
 	assert.NotNil(t, instance)
 

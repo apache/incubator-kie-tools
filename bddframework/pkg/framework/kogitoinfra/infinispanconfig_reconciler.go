@@ -124,7 +124,7 @@ func (i *infinispanConfigReconciler) getInfinispanAppProps() (map[string]string,
 }
 
 func (i *infinispanConfigReconciler) createInfinispanConfigMap(appProps map[string]string) *v12.ConfigMap {
-	var data map[string]string = nil
+	var data map[string]string
 	if len(appProps) > 0 {
 		data = appProps
 	}

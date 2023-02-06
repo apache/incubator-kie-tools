@@ -68,16 +68,16 @@ const (
 )
 
 const (
-	// ReconciliationAfterThreeMinutes ...
-	ReconciliationAfterThreeMinutes = time.Minute * 3
+	// ReconciliationAfterThreeMinutesDuration ...
+	ReconciliationAfterThreeMinutesDuration = time.Minute * 3
 	// ReconciliationAfterThirty ...
 	ReconciliationAfterThirty = time.Second * 30
 	// ReconciliationAfterTen ...
 	ReconciliationAfterTen = time.Second * 10
 	// ReconciliationAfterFive ...
 	ReconciliationAfterFive = time.Second * 5
-	// ReconciliationAfterOneMinute ...
-	ReconciliationAfterOneMinute = time.Minute
+	// ReconciliationAfterOneMinuteDuration ...
+	ReconciliationAfterOneMinuteDuration = time.Minute
 )
 
 // ReconciliationError ...
@@ -100,7 +100,7 @@ func (e ReconciliationError) Error() string {
 // ErrorForInfraNotReady ...
 func ErrorForInfraNotReady(serviceName string, infraName string, conditionReason string) ReconciliationError {
 	return ReconciliationError{
-		reconciliationInterval: ReconciliationAfterOneMinute,
+		reconciliationInterval: ReconciliationAfterOneMinuteDuration,
 		reason:                 KogitoInfraNotReadyReason,
 		innerError: fmt.Errorf("KogitoService '%s' is waiting for infra dependency; skipping deployment; KogitoInfra not ready: %s; Status: %s",
 			serviceName, infraName, conditionReason),
@@ -138,7 +138,7 @@ func ErrorForDashboards(err error) ReconciliationError {
 func ErrorForServiceNotReachable(statusCode int, requestURL string, method string) ReconciliationError {
 	return ReconciliationError{
 		reason:                 InternalServiceNotReachable,
-		reconciliationInterval: ReconciliationAfterThreeMinutes,
+		reconciliationInterval: ReconciliationAfterThreeMinutesDuration,
 		innerError:             fmt.Errorf("Received NOT expected status code %d while making a %s request to %s ", statusCode, method, requestURL),
 	}
 }
