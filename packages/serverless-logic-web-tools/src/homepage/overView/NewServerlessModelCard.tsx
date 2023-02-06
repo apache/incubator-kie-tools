@@ -34,19 +34,8 @@ export function NewServerlessModelCard(props: {
   const routes = useRoutes();
 
   return (
-    <GridItem sm={4}>
-      <Card
-        isFullHeight={true}
-        isPlain={true}
-        isLarge={true}
-        style={
-          {
-            "--pf-c-card--first-child--PaddingTop": 0,
-            "--pf-c-card--m-display-lg--child--PaddingLeft": 0,
-            "--pf-c-card--m-display-lg--child--PaddingRight": 0,
-          } as React.CSSProperties
-        }
-      >
+    <GridItem lg={4} xl={12} xl2={4}>
+      <Card isFullHeight={true} isPlain={true} isLarge={true} isCompact={true}>
         <CardTitle>
           <FileLabel style={{ fontSize: "0.6em" }} extension={props.jsonExtension} />
         </CardTitle>
