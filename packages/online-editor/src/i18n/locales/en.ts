@@ -263,7 +263,7 @@ export const en: OnlineI18n = {
     title: "Input custom commit message",
     description: "Write a brief summary of the changes made to the workspace, ideally up to 72 characters.",
     commit: "Commit",
-    inputHelper: "Commit message cannot be empty",
+    emptyMessageValidation: "Commit message cannot be empty",
     placeholder: "Commit message",
   },
   homePage: {

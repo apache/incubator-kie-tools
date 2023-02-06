@@ -20,6 +20,7 @@
       { "id": "kie-tools-examples-base64png-editor-vscode-extension" },
       { "id": "@kie-tools-core/vscode-extension" },
       { "id": "@kie-tools-core/vscode-java-code-completion" },
+      { "id": "@kie-tools-examples/commit-message-validation-service" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
@@ -182,6 +183,11 @@
       { "source": "@kie-tools-core/vscode-java-code-completion", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/vscode-java-code-completion", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/vscode-java-code-completion", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools-examples/commit-message-validation-service",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
       { "source": "@kie-tools-examples/ping-pong-view", "target": "@kie-tools-core/envelope", "weight": 1 },
       { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/root-env", "weight": 1 },
@@ -803,6 +809,7 @@
     ["@kie-tools-examples/base64png-editor", "examples/base64png-editor"],
     ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
+    ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
     ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],

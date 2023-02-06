@@ -227,7 +227,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     title: string;
     description: string;
     commit: string;
-    inputHelper: string;
+    emptyMessageValidation: string;
     placeholder: string;
   };
   homePage: {
