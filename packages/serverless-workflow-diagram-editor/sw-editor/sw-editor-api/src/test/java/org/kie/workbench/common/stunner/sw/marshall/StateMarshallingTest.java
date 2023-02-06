@@ -59,7 +59,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         workflow.getStates()[0].setEnd(endObject);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
-        assertTrue(hasOutgoingEdgeTo("State1", "State1_end"));
+        assertTrue(isConnectedToEnd("State1"));
         assertTrue(workflow.getStates()[0].getEnd() instanceof StateEnd);
         final StateEnd end = (StateEnd) workflow.getStates()[0].getEnd();
         assertTrue(end.getTerminate());
@@ -110,7 +110,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         workflow.getStates()[0].setEnd(true);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
-        assertTrue(hasOutgoingEdgeTo("State1", "State1_end"));
+        assertTrue(isConnectedToEnd("State1"));
     }
 
     @Test

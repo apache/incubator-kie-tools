@@ -67,6 +67,6 @@ public class StatesFlowMarshallingTest extends BaseMarshallingTest {
         assertTrue(hasIncomingEdges("State3"));
         assertTrue(hasIncomingEdgeFrom("State3", "State2"));
         assertTrue(hasOutgoingEdges("State3"));
-        assertTrue(hasOutgoingEdgeTo("State3","State3_end"));
+        assertTrue(isConnectedToEnd("State3"));
     }
 }

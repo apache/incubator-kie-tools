@@ -104,14 +104,18 @@ public class AutoLayout {
                 }));
     }
 
-    private static void moveEndNodesX(Graph graph, final double x) {
+    @SuppressWarnings("all")
+    static void moveEndNodesX(Graph graph, final double x) {
         Iterable<Node> nodes = graph.nodes();
         nodes.forEach(node -> {
             if (node.getContent() instanceof View) {
                 final View content = (View) node.getContent();
                 if (content.getDefinition() instanceof End) {
                     final Bounds bounds = content.getBounds();
-                    final Bounds newBounds = Bounds.create(bounds.getX() + x, bounds.getY(), bounds.getWidth(), bounds.getHeight());
+                    final Bounds newBounds = Bounds.create(bounds.getUpperLeft().getX() + x,
+                                                           bounds.getUpperLeft().getY(),
+                                                           bounds.getLowerRight().getX() + x,
+                                                           bounds.getLowerRight().getY());
                     content.setBounds(newBounds);
                 }
             }
@@ -119,7 +123,7 @@ public class AutoLayout {
     }
 
     @SuppressWarnings("all")
-    private static void applyOrthogonalLinesBehaviour(Graph graph) {
+    static void applyOrthogonalLinesBehaviour(Graph graph) {
         Iterable<Node> nodes = graph.nodes();
         nodes.forEach(node -> {
             if (node.getContent() instanceof View) {
@@ -161,7 +165,7 @@ public class AutoLayout {
                     adjustBackwardConnections(sourceConnection,
                                               targetConnection,
                                               controlPoints.length,
-                                              inEdges);
+                                              inEdges.size());
                 } else if (controlPoints.length == 0) {
                     adjustConnectionWithoutControlPoints(i,
                                                          sourceNode,
@@ -207,7 +211,7 @@ public class AutoLayout {
                         adjustBackwardConnections(sourceConnection,
                                                   targetConnection,
                                                   controlPoints.length,
-                                                  inEdges);
+                                                  outEdges.size());
                     } else if (controlPoints.length == 0) {
                         // handle connections without CPs
                         adjustConnectionWithoutControlPoints(i,
@@ -285,8 +289,8 @@ public class AutoLayout {
     static void adjustBackwardConnections(final MagnetConnection sourceConnection,
                                           final MagnetConnection targetConnection,
                                           final int controlPointsCount,
-                                          final List<Edge> inEdges) {
-        if (inEdges.size() > 0) {
+                                          final int edgesCount) {
+        if (edgesCount > 0) {
             if (controlPointsCount == 0) {
                 sourceConnection.setAuto(false);
                 sourceConnection.setIndex(MagnetConnection.MAGNET_LEFT);

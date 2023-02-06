@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
@@ -72,7 +73,7 @@ public interface StateMarshalling {
                 boolean end = getEnd(state.getEnd());
                 if (end) {
                     final End endBean = new End();
-                    String endName = name + "_end";
+                    String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
 
                     final Transition tend = new Transition();
