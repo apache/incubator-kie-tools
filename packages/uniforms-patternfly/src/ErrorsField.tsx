@@ -24,7 +24,7 @@ function ErrorsField({ children, ...props }: ErrorsFieldProps) {
   const { error, schema } = useForm();
 
   return !error && !children ? null : (
-    <div {...filterDOMProps(props)}>
+    <div data-testid={"errors-field"} {...filterDOMProps(props)}>
       {children}
       <ul>
         {schema.getErrorMessages(error).map((message, index) => (
