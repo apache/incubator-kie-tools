@@ -20,21 +20,17 @@ import { usingUniformsContext } from "./test-utils";
 import { render, screen } from "@testing-library/react";
 
 test("<AutoFields> - works", () => {
-  render(usingUniformsContext(<AutoFields />, {}, { x: { type: String } }));
+  render(usingUniformsContext(<AutoFields />, { x: { type: String } }));
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
 });
 
 test("<AutoFields> - render all fields by default", () => {
   render(
-    usingUniformsContext(
-      <AutoFields />,
-      {},
-      {
-        x: { type: String },
-        y: { type: String },
-        z: { type: String },
-      }
-    )
+    usingUniformsContext(<AutoFields />, {
+      x: { type: String },
+      y: { type: String },
+      z: { type: String },
+    })
   );
 
   expect(screen.getAllByTestId("text-field")).toHaveLength(3);
@@ -44,7 +40,7 @@ test("<AutoFields> - renders only specified fields", () => {
   render(
     usingUniformsContext(
       <AutoFields fields={["x", "y"]} />,
-      {},
+
       {
         x: { type: String },
         y: { type: String },
@@ -61,7 +57,7 @@ test("<AutoFields> - does not render ommited fields", () => {
   render(
     usingUniformsContext(
       <AutoFields omitFields={["x"]} />,
-      {},
+
       {
         x: { type: String },
         y: { type: String },
@@ -80,7 +76,7 @@ test("<AutoFields> - works with custom component", () => {
   render(
     usingUniformsContext(
       <AutoFields autoField={Component} />,
-      {},
+
       {
         x: { type: String },
         y: { type: String },
@@ -96,7 +92,7 @@ test("<AutoFields> - wraps fields in specified element", () => {
   render(
     usingUniformsContext(
       <AutoFields element="section" />,
-      {},
+
       {
         x: { type: String },
         y: { type: String },

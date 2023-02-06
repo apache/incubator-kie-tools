@@ -25,7 +25,7 @@ export function createSimpleSchema(schema = {}) {
   return new SimpleSchema2Bridge(new SimpleSchema(schema));
 }
 
-export function usingUniformsContext(children: React.ReactElement, ctx?: Partial<Context<any>>, schema = {}) {
+export function usingUniformsContext(children: React.ReactElement, schema = {}, ctx?: Partial<Context<any>>) {
   const partialCtx = {
     changed: false,
     changedMap: {},
