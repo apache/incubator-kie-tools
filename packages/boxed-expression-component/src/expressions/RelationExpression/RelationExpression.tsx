@@ -72,8 +72,8 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     ],
     [i18n]
   );
-  const columns = useMemo<RelationExpressionDefinitionColumn[]>(() => {
-    return relationExpression.columns ?? [];
+  const columns = useMemo(() => {
+    return (relationExpression.columns ?? []).map((c) => ({ ...c, minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH }));
   }, [relationExpression.columns]);
 
   const rows = useMemo<RelationExpressionDefinitionRow[]>(() => {
@@ -112,6 +112,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     relationExpression.isNested,
     BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
+    columnResizingWidths,
     rows
   );
 

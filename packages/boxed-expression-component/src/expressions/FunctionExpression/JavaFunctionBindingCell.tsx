@@ -135,17 +135,19 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
   const columns = useMemo(
     () => [
       {
+        minWidth: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
         width: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
         isFrozen: true,
       },
       {
+        minWidth: JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
         width: functionExpression.classAndMethodNamesWidth,
       },
     ],
     [functionExpression.classAndMethodNamesWidth]
   );
 
-  const { onColumnResizingWidthChange, isPivoting } = usePublishedBeeTableResizableColumns(
+  const { onColumnResizingWidthChange, isPivoting, columnResizingWidths } = usePublishedBeeTableResizableColumns(
     functionExpression.id,
     columns.length,
     false
@@ -159,6 +161,7 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
     functionExpression.isNested,
     JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
     columns,
+    columnResizingWidths,
     useMemo(() => [], []) // rows
   );
 

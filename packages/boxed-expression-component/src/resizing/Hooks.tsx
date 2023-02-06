@@ -7,7 +7,7 @@ import {
   NestedExpressionContainerContextType,
 } from "./NestedExpressionContainerContext";
 import { ResizingWidth, useResizingWidths, useResizingWidthsDispatch } from "./ResizingWidthsContext";
-import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "./WidthConstants";
+import { RELATION_EXPRESSION_COLUMN_MIN_WIDTH } from "./WidthConstants";
 import { getExpressionResizingWidth, getExpressionMinWidth } from "./WidthMaths";
 
 export function useNestedExpressionResizingWidth(
@@ -196,10 +196,10 @@ export function useApportionedColumnWidthsIfNestedTable(
   isPivoting: boolean,
   isNested: boolean,
   extraWidth: number,
-  columns: Array<{ width: number | undefined; isFrozen?: boolean }>,
+  columns: Array<{ minWidth: number; width: number | undefined; isFrozen?: boolean }>,
+  columnResizingWidths: Map<number, ResizingWidth>,
   rows: any[] //FIXME: Tiago -> This is a hack to recalculate the positions when the row number changes.
 ) {
-  const minWidth = RELATION_EXPRESSION_COLUMN_MIN_WIDTH; // FIXME: Tiago -> Maybe this should be a parameter?
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   useEffect(() => {
@@ -208,7 +208,7 @@ export function useApportionedColumnWidthsIfNestedTable(
     }
 
     const fixedWidthAmount = columns.reduce(
-      (acc, { isFrozen, width }) => (isFrozen ? acc + (width ?? minWidth) : acc),
+      (acc, { isFrozen, width, minWidth }) => (isFrozen ? acc + (width ?? minWidth) : acc),
       0
     );
     const nextTotalWidth =
@@ -219,7 +219,7 @@ export function useApportionedColumnWidthsIfNestedTable(
 
     const apportionedWidths = apportionColumnWidths(
       nextTotalWidth,
-      columns.map(({ width, isFrozen }) => ({
+      columns.map(({ minWidth, width, isFrozen }) => ({
         minWidth,
         currentWidth: width ?? minWidth,
         isFrozen: isFrozen ?? false,
@@ -250,9 +250,56 @@ export function useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     rows,
     nestedExpressionContainer.minWidth,
-    minWidth,
     extraWidth,
   ]);
+
+  const pivotingColumnIndex = useMemo(() => {
+    const pivotingColumn = [...columnResizingWidths.entries()].find(([_, { isPivoting }]) => isPivoting);
+    if (pivotingColumn) {
+      const [pivotingColumnIndex] = pivotingColumn;
+      return pivotingColumnIndex - 1;
+    } else {
+      return 0;
+    }
+  }, [columnResizingWidths]);
+
+  const spaceToTheRight = useMemo(
+    () =>
+      nestedExpressionContainer.resizingWidth.value -
+      (columnResizingWidths.get(0)?.value ?? 0) -
+      columns
+        .slice(0, pivotingColumnIndex + 1) //
+        .reduce((acc, c, i) => acc + (columnResizingWidths.get(i + 1)?.value ?? 0), 0),
+    [columnResizingWidths, columns, nestedExpressionContainer.resizingWidth.value, pivotingColumnIndex]
+  );
+
+  const isSmallerThanContainersMinWidth = useMemo(() => {
+    return [...columnResizingWidths.values()].reduce((acc, w) => acc + w.value, 0) < nestedExpressionContainer.minWidth;
+  }, [columnResizingWidths, nestedExpressionContainer.minWidth]);
+
+  useEffect(() => {
+    if (isPivoting && isSmallerThanContainersMinWidth) {
+      const apportionedColumnWidths = apportionColumnWidths(
+        spaceToTheRight,
+        columns.slice(pivotingColumnIndex + 1).map((c) => ({
+          minWidth: c.minWidth,
+          currentWidth: c.width ?? 0,
+          isFrozen: false,
+        }))
+      );
+
+      const newColumnWidths = apportionedColumnWidths.reduce((acc, apportionedWidth, i) => {
+        acc.set(pivotingColumnIndex + 1 + i + 1, {
+          isPivoting: false,
+          value: apportionedWidth,
+        });
+
+        return acc;
+      }, new Map());
+
+      beeTableRef.current?.updateColumnResizingWidths(newColumnWidths);
+    }
+  }, [beeTableRef, columns, isPivoting, isSmallerThanContainersMinWidth, pivotingColumnIndex, spaceToTheRight]);
 }
 
 // This code is an implementation of the Jefferson method for solving the Apportion problem.
