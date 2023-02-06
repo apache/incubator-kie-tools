@@ -52,7 +52,14 @@ export default async (env: any, argv: any) => {
     devDeployments_onlineEditorUrl,
   ] = getDevDeploymentsArgs();
   const gtmResource = getGtmResource();
-
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const childProcess = require("child_process");
+  let lastCommitHash = "";
+  try {
+    lastCommitHash = childProcess.execSync("git rev-parse --short HEAD").toString().trim();
+  } catch (e) {
+    console.error(e);
+  }
   return [
     merge(common(env), {
       entry: {
@@ -94,6 +101,7 @@ export default async (env: any, argv: any) => {
             },
           ]),
           new EnvironmentPlugin({
+            COMMIT_HASH: JSON.stringify(lastCommitHash),
             WEBPACK_REPLACE__buildInfo: buildInfo,
             WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
             WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
