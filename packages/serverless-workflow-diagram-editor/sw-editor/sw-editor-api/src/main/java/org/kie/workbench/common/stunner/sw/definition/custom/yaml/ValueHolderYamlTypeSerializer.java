@@ -2,20 +2,18 @@ package org.kie.workbench.common.stunner.sw.definition.custom.yaml;
 
 import java.util.List;
 
+import com.amihaiemil.eoyaml.Node;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
+import com.amihaiemil.eoyaml.YamlSequence;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.core.Reflect;
-import elemental2.dom.DomGlobal;
 import jakarta.json.JsonObject;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.BaseNumberYAMLDeserializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.BooleanYAMLDeserializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.StringYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.BaseNumberYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.BooleanYAMLSerializer;
@@ -38,35 +36,57 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
     private static final BaseNumberYAMLSerializer.FloatYAMLSerializer floatYAMLSerializer = new BaseNumberYAMLSerializer.FloatYAMLSerializer();
     private static final BaseNumberYAMLSerializer.DoubleYAMLSerializer doubleYAMLSerializer = new BaseNumberYAMLSerializer.DoubleYAMLSerializer();
 
-    private static final StringYAMLDeserializer stringYAMLDeserializer = new StringYAMLDeserializer();
-    private static final BooleanYAMLDeserializer booleanYAMLDeserializer = new BooleanYAMLDeserializer();
-
-    private static final BaseNumberYAMLDeserializer.ByteYAMLDeserializer byteYAMLDeserializer = new BaseNumberYAMLDeserializer.ByteYAMLDeserializer();
-    private static final BaseNumberYAMLDeserializer.ShortYAMLDeserializer shortYAMLDeserializer = new BaseNumberYAMLDeserializer.ShortYAMLDeserializer();
-    private static final BaseNumberYAMLDeserializer.IntegerYAMLDeserializer integerYAMLDeserializer = new BaseNumberYAMLDeserializer.IntegerYAMLDeserializer();
-    private static final BaseNumberYAMLDeserializer.LongYAMLDeserializer longYAMLDeserializer = new BaseNumberYAMLDeserializer.LongYAMLDeserializer();
-    private static final BaseNumberYAMLDeserializer.FloatYAMLDeserializer floatYAMLDeserializer = new BaseNumberYAMLDeserializer.FloatYAMLDeserializer();
-    private static final BaseNumberYAMLDeserializer.DoubleYAMLDeserializer doubleYAMLDeserializer = new BaseNumberYAMLDeserializer.DoubleYAMLDeserializer();
-
-
     @Override
     public ValueHolder deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        return deserialize(yaml.yamlMapping(key));
+        if(yaml != null || yaml.value(key) != null) {
+            return deserialize(yaml.value(key), ctx);
+        }
+        return null;
     }
 
     @Override
     public ValueHolder deserialize(YamlNode node, YAMLDeserializationContext ctx) {
-        return deserialize(node.asMapping());
+        if(node != null && node.type() == Node.MAPPING && !node.asMapping().isEmpty()) {
+            ValueHolder valueHolder = new ValueHolder();
+            YamlMapping yamlMapping = node.asMapping();
+            writeObject(valueHolder, yamlMapping);
+            return valueHolder;
+        }
+        return null;
     }
 
-    private ValueHolder deserialize(YamlMapping value) throws YAMLDeserializationException {
-        ValueHolder valueHolder = new ValueHolder();
-        if (value != null) {
-            value.keys().forEach(key -> {
-                DomGlobal.console.log("k " + key + " " + value.yamlMapping(key).type());
-            });
-        }
-        return valueHolder;
+    private void writeObject(Object obj, YamlMapping yamlMapping) {
+        yamlMapping.keys().forEach(key -> {
+            if(key.type() == Node.SCALAR) {
+                String keyName = key.asScalar().value();
+                YamlNode yamlNode = yamlMapping.value(key);
+                if (yamlNode.type() == Node.SCALAR) {
+                    String value = yamlNode.asScalar().value();
+                    if (value != null) {
+                        Reflect.set(obj, keyName, value);
+                    }
+                } else if (yamlNode.type() == Node.MAPPING) {
+                    ValueHolder inner = new ValueHolder();
+                    Reflect.set(obj, keyName, inner);
+                    writeObject(inner, yamlNode.asMapping());
+                }else if (yamlNode.type() == Node.SEQUENCE) {
+                    YamlSequence sequence = yamlNode.asSequence();
+                    JsArray<Object> array = new JsArray<>();
+                    sequence.values().forEach(yamlNode1 -> {
+                        if (yamlNode1.type() == Node.SCALAR) {
+                            array.push(yamlNode1.asScalar().value());
+                        } else if (yamlNode1.type() == Node.MAPPING) {
+                            ValueHolder inner = new ValueHolder();
+                            array.push(inner);
+                            writeObject(inner, yamlNode1.asMapping());
+                        }
+                    });
+                    Reflect.set(obj, keyName, array);
+                }
+            } else {
+                throw new UnsupportedOperationException("Unsupported key type " + key.type());
+            }
+        });
     }
 
     @Override
@@ -90,6 +110,10 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
         if (!keys.isEmpty()) {
             for (Reflect.OwnKeysArrayUnionType k : keys) {
                 String key = k.asString();
+                if(key.startsWith("$")) { // skip internal properties
+                    continue;
+                }
+
                 Object jsonValue = Js.asPropertyMap(obj).get(key);
                 if (jsonValue instanceof JsonObject) {
                     jsonValue = ((JsonObject) jsonValue).asJsonObject();

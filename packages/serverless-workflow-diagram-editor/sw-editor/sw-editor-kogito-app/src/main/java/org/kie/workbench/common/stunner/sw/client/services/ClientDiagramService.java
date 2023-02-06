@@ -90,8 +90,8 @@ public class ClientDiagramService {
         }
     }
 
-    public Promise<String> transform(final Diagram diagram) {
-        return marshaller.marshallGraph(diagram.getGraph());
+    public Promise<String> transform(final Diagram diagram, DocType docType) {
+        return marshaller.marshallGraph(diagram.getGraph(), docType);
     }
 
     public Marshaller getMarshaller() {

@@ -711,7 +711,7 @@ public class TypeUtils {
 
     public String serializerName(TypeMirror mirror) {
         if (typeRegistry.containsSerializer(mirror.toString())) {
-            return typeRegistry.getCustomSerializer(mirror).getSimpleName().toString();
+            return typeRegistry.getCustomSerializer(mirror).getQualifiedName().toString();
         }
         TypeElement type = MoreTypes.asTypeElement(mirror);
         return (type.getEnclosingElement().getKind().equals(ElementKind.PACKAGE)
@@ -734,7 +734,7 @@ public class TypeUtils {
 
     public String deserializerName(TypeMirror mirror) {
         if (typeRegistry.containsDeserializer(mirror.toString())) {
-            return typeRegistry.getCustomDeserializer(mirror).getSimpleName().toString();
+            return typeRegistry.getCustomDeserializer(mirror).getQualifiedName().toString();
         }
         TypeElement type = MoreTypes.asTypeElement(mirror);
         return (type.getEnclosingElement().getKind().equals(ElementKind.PACKAGE)

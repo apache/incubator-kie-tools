@@ -244,7 +244,7 @@ public class DiagramEditorTest {
                                        canvasFileExport,
                                        togglePreviewEvent,
                                        diagramApi));
-        tested.jsRegExp = jsRegExp;
+        tested.jsRegExpJson = jsRegExp;
         tested.domainInitializer = domainInitializer;
         when(tested.getJsCanvas()).thenReturn(jsCanvas);
     }
@@ -366,7 +366,7 @@ public class DiagramEditorTest {
 
     @Test
     public void testRegex() {
-        RegExp regExp = RegExp.compile(DiagramEditor.ID_SEARCH_PATTERN);
+        RegExp regExp = RegExp.compile(DiagramEditor.ID_SEARCH_PATTERN_JSON);
         MatchResult matcher = regExp.exec(rawJSON);
 
         assertNotNull(matcher);

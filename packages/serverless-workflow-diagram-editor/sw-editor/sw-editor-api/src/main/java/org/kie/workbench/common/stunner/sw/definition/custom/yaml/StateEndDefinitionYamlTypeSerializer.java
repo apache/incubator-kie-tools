@@ -1,5 +1,6 @@
 package org.kie.workbench.common.stunner.sw.definition.custom.yaml;
 
+import com.amihaiemil.eoyaml.Node;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
@@ -22,19 +23,22 @@ public class StateEndDefinitionYamlTypeSerializer implements YAMLDeserializer, Y
     private static final BooleanYAMLSerializer booleanYAMLSerializer = new BooleanYAMLSerializer();
     private static final BooleanYAMLDeserializer booleanYAMLDeserializer = new BooleanYAMLDeserializer();
 
-
     @Override
     public Object deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
+        YamlNode node = yaml.value(key);
+        if (node != null) {
+            if(node.type() == Node.MAPPING) {
+                return mapper.getDeserializer().deserialize(yaml, key, ctx);
+            } else if(node.type() == Node.SCALAR) {
+                return booleanYAMLDeserializer.deserialize(yaml, key, ctx);
+            }
+        }
         return null;
     }
 
     @Override
     public Object deserialize(YamlNode node, YAMLDeserializationContext ctx) {
-        if (node == null) {
-            return null;
-        }
-
-        throw new UnsupportedOperationException("crap " + node.type());
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

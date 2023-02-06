@@ -47,7 +47,7 @@ public class ValueHolderJsonbTypeSerializer implements JsonbDeserializer<ValueHo
         jsonGenerator.writeEnd();
     }
 
-    private void writeObject(JsonGenerator generator, String objName, Object obj) {
+    void writeObject(JsonGenerator generator, String objName, Object obj) {
         if(obj == null) {
             return;
         }

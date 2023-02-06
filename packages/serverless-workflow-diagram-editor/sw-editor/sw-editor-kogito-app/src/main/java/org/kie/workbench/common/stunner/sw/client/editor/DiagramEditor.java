@@ -77,9 +77,12 @@ public class DiagramEditor {
     public static final String EDITOR_ID = "SWDiagramEditor";
     public static final String BACKGROUND_COLOR = "#f2f2f2";
 
-    static String ID_SEARCH_PATTERN = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
+    static String ID_SEARCH_PATTERN_JSON = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
             "?(?<value>true|false|[0-9a-zA-Z\\+\\-\\,\\.\\$]*)";
-    static JsRegExp jsRegExp = new JsRegExp(ID_SEARCH_PATTERN, "i"); //case insensitive
+
+    static String ID_SEARCH_PATTERN_YAML = "^[^\\s\\t](?:\\\"|'|)(?<id>[^\\\"']*)(?:\\\"|'|)(?=:)(?::\\s*)(?:\\\"|'|)?(?<value>true|false|[0-9a-zA-Z+,-.$]+)";
+    static JsRegExp jsRegExpJson = new JsRegExp(ID_SEARCH_PATTERN_JSON, "i"); //case insensitive
+    static JsRegExp jsRegExpYaml = new JsRegExp(ID_SEARCH_PATTERN_YAML, "i"); //case insensitive
 
     private final Promises promises;
     private final StunnerEditor stunnerEditor;
@@ -134,7 +137,11 @@ public class DiagramEditor {
     }
 
     public Promise<String> getContent() {
-        return diagramService.transform(stunnerEditor.getDiagram());
+        return diagramService.transform(stunnerEditor.getDiagram(), DocType.JSON);
+    }
+
+    public Promise<String> getContentYAML() {
+        return diagramService.transform(stunnerEditor.getDiagram(), DocType.YAML);
     }
 
     public Promise<Void> setContent(final String path, final String value) {
@@ -148,9 +155,8 @@ public class DiagramEditor {
     private Promise<Void> setContent(final String path, final String value, final DocType docType) {
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
-
         Promise<Void> setContentPromise;
-        if (stunnerEditor.isClosed() || !isSameWorkflow(value)) {
+        if (stunnerEditor.isClosed() || !isSameWorkflow(value, docType)) {
             setContentPromise = setNewContent(path, value, docType);
         } else {
             setContentPromise = updateContent(path, value, docType);
@@ -334,12 +340,11 @@ public class DiagramEditor {
     }
 
     @SuppressWarnings("all")
-    private boolean isSameWorkflow(final String value) {
+    private boolean isSameWorkflow(final String value, DocType docType) {
         Boolean found = false;
 
         try {
-            RegExpResult execs = jsRegExp.exec(value);
-
+            RegExpResult execs = docType.equals(DocType.JSON) ? jsRegExpJson.exec(value) : jsRegExpYaml.exec(value);
             if (execs != null || execs.length > 0) {
 
                 Diagram oldDiagram = stunnerEditor.getCanvasHandler().getDiagram();
