@@ -51,12 +51,6 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   isNested: boolean;
 }
 
-const NON_SELECTABLE_LOGIC_TYPES = new Set([ExpressionDefinitionLogicType.Undefined]);
-
-const SELECTABLE_LOGIC_TYPES = Object.values(ExpressionDefinitionLogicType).filter((logicType) => {
-  return !NON_SELECTABLE_LOGIC_TYPES.has(logicType);
-});
-
 export function ExpressionDefinitionLogicTypeSelector({
   expression,
   onLogicTypeSelected,
@@ -65,6 +59,22 @@ export function ExpressionDefinitionLogicTypeSelector({
   isResetSupported,
   isNested,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
+  const nonSelectableLogicTypes = useMemo(
+    () =>
+      isNested
+        ? new Set([ExpressionDefinitionLogicType.Undefined])
+        : new Set([ExpressionDefinitionLogicType.Undefined, ExpressionDefinitionLogicType.Function]),
+    [isNested]
+  );
+
+  const selectableLogicTypes = useMemo(
+    () =>
+      Object.values(ExpressionDefinitionLogicType).filter((logicType) => {
+        return !nonSelectableLogicTypes.has(logicType);
+      }),
+    [nonSelectableLogicTypes]
+  );
+
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const { setCurrentlyOpenContextMenu, editorRef } = useBoxedExpressionEditor();
@@ -230,9 +240,9 @@ export function ExpressionDefinitionLogicTypeSelector({
 
     return (
       expression.logicType !== ExpressionDefinitionLogicType.Literal &&
-      !NON_SELECTABLE_LOGIC_TYPES.has(expression.logicType)
+      !nonSelectableLogicTypes.has(expression.logicType)
     );
-  }, [expression.logicType, isNested]);
+  }, [expression.logicType, isNested, nonSelectableLogicTypes]);
 
   const contextMenuItems = useMemo(() => {
     return (
@@ -316,9 +326,6 @@ export function ExpressionDefinitionLogicTypeSelector({
                     <>{contextMenuItems}</>
                   </Menu>
                 </Dropdown>
-                {/* <div
-                style={{ textAlign: "left", display: "inline" }}
-              >{`Depth: ${depth}, Active: ${currentDepth.active} (max: ${currentDepth.max})`}</div> */}
               </div>
             )}
             {renderExpression}
@@ -337,7 +344,7 @@ export function ExpressionDefinitionLogicTypeSelector({
               <>
                 <Menu onSelect={selectLogicType}>
                   <MenuList>
-                    {SELECTABLE_LOGIC_TYPES.map((key) => (
+                    {selectableLogicTypes.map((key) => (
                       <MenuItem
                         key={key}
                         itemId={key}

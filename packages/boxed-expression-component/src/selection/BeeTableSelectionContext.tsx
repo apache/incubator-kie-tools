@@ -48,10 +48,6 @@ export interface BeeTableSelectionDispatchContextType {
   copy(): void;
   cut(): void;
   paste(): void;
-  updateResizingWidths(
-    columnIndex: number,
-    getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth
-  ): void;
   adaptSelection(args: {
     atRowIndex: number;
     rowCountDelta: number;
@@ -60,7 +56,7 @@ export interface BeeTableSelectionDispatchContextType {
   }): void;
   mutateSelection: (args: {
     part: SelectionPart;
-    columnCount: number;
+    columnCount: (rowIndex: number) => number;
     rowCount: number;
     deltaColumns: number;
     deltaRows: number;
@@ -376,7 +372,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
                 }
               : {
                   rows: { min: 0, max: rowCount - 1 },
-                  columns: { min: 1, max: columnCount - 1 },
+                  columns: { min: 1, max: columnCount(prev.active.rowIndex) - 1 },
                 };
 
           const prevCoords =
@@ -521,16 +517,6 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
           }
         });
       },
-      updateResizingWidths: (
-        columnIndex: number,
-        getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth
-      ) => {
-        for (const c of refs.current?.values()) {
-          for (const ref of c.get(columnIndex) ?? []) {
-            ref.setResizingWidth?.(getNewResizingWidth(undefined));
-          }
-        }
-      },
       adaptSelection: ({
         atRowIndex,
         rowCountDelta,
@@ -649,7 +635,6 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         navigator.clipboard.writeText(clipboardValue);
       },
       paste: () => {
-        // FIXME: Tiago -> Add new columns and rows, based on the clipboard's size.
         navigator.clipboard.readText().then((clipboardValue) => {
           setPasteData(clipboardValue);
         });

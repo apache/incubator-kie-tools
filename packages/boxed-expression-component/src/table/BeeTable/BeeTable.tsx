@@ -229,6 +229,17 @@ export function BeeTableInternal<R extends object>({
     return reactTableInstance.rows.length + (hasAdditionalRow ? 1 : 0);
   }, [hasAdditionalRow, reactTableInstance.rows.length]);
 
+  const getColumnCount = useCallback(
+    (rowIndex: number) => {
+      if (rowIndex >= 0) {
+        return reactTableInstance.allColumns.length;
+      } else {
+        return _.nth(reactTableInstance.headerGroups, rowIndex)!.headers.length;
+      }
+    },
+    [reactTableInstance.allColumns.length, reactTableInstance.headerGroups]
+  );
+
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (!enableKeyboardNavigation) {
@@ -254,7 +265,7 @@ export function BeeTableInternal<R extends object>({
 
           mutateSelection({
             part: SelectionPart.ActiveCell,
-            columnCount: reactTableInstance.allColumns.length,
+            columnCount: getColumnCount,
             rowCount,
             deltaColumns: 0,
             deltaRows: 0,
@@ -272,7 +283,7 @@ export function BeeTableInternal<R extends object>({
         if (e.shiftKey) {
           mutateSelection({
             part: SelectionPart.ActiveCell,
-            columnCount: reactTableInstance.allColumns.length,
+            columnCount: getColumnCount,
             rowCount,
             deltaColumns: -1,
             deltaRows: 0,
@@ -282,7 +293,7 @@ export function BeeTableInternal<R extends object>({
         } else {
           mutateSelection({
             part: SelectionPart.ActiveCell,
-            columnCount: reactTableInstance.allColumns.length,
+            columnCount: getColumnCount,
             rowCount,
             deltaColumns: 1,
             deltaRows: 0,
@@ -301,7 +312,7 @@ export function BeeTableInternal<R extends object>({
         e.preventDefault();
         mutateSelection({
           part: selectionPart,
-          columnCount: reactTableInstance.allColumns.length,
+          columnCount: getColumnCount,
           rowCount,
           deltaColumns: -1,
           deltaRows: 0,
@@ -314,7 +325,7 @@ export function BeeTableInternal<R extends object>({
         e.preventDefault();
         mutateSelection({
           part: selectionPart,
-          columnCount: reactTableInstance.allColumns.length,
+          columnCount: getColumnCount,
           rowCount,
           deltaColumns: 1,
           deltaRows: 0,
@@ -327,7 +338,7 @@ export function BeeTableInternal<R extends object>({
         e.preventDefault();
         mutateSelection({
           part: selectionPart,
-          columnCount: reactTableInstance.allColumns.length,
+          columnCount: getColumnCount,
           rowCount,
           deltaColumns: 0,
           deltaRows: -1,
@@ -340,7 +351,7 @@ export function BeeTableInternal<R extends object>({
         e.preventDefault();
         mutateSelection({
           part: selectionPart,
-          columnCount: reactTableInstance.allColumns.length,
+          columnCount: getColumnCount,
           rowCount,
           deltaColumns: 0,
           deltaRows: 1,
@@ -390,7 +401,7 @@ export function BeeTableInternal<R extends object>({
 
         mutateSelection({
           part: SelectionPart.SelectionStart,
-          columnCount: reactTableInstance.allColumns.length,
+          columnCount: getColumnCount,
           rowCount,
           deltaColumns: -(reactTableInstance.allColumns.length - 1),
           deltaRows: -(reactTableInstance.rows.length - 1),
@@ -399,7 +410,7 @@ export function BeeTableInternal<R extends object>({
         });
         mutateSelection({
           part: SelectionPart.SelectionEnd,
-          columnCount: reactTableInstance.allColumns.length,
+          columnCount: getColumnCount,
           rowCount,
           deltaColumns: +(reactTableInstance.allColumns.length - 1),
           deltaRows: +(reactTableInstance.rows.length - 1),
@@ -413,9 +424,10 @@ export function BeeTableInternal<R extends object>({
       currentlyOpenContextMenu,
       setCurrentDepth,
       mutateSelection,
+      rowCount,
       reactTableInstance.allColumns.length,
       reactTableInstance.rows.length,
-      rowCount,
+      getColumnCount,
       erase,
       resetSelectionAt,
       copy,

@@ -49,7 +49,7 @@ export function BeeTableDefaultCell<R extends object>({
     (isEditing: boolean) => {
       mutateSelection({
         part: SelectionPart.ActiveCell,
-        columnCount: cellProps.allColumns.length,
+        columnCount: () => cellProps.allColumns.length,
         rowCount,
         deltaColumns: 0,
         deltaRows: 0,
@@ -75,7 +75,7 @@ export function BeeTableDefaultCell<R extends object>({
     (args: { isShiftPressed: boolean }) => {
       mutateSelection({
         part: SelectionPart.ActiveCell,
-        columnCount: cellProps.allColumns.length,
+        columnCount: () => cellProps.allColumns.length,
         rowCount,
         deltaColumns: 0,
         deltaRows: args.isShiftPressed ? -1 : 1,
@@ -90,7 +90,7 @@ export function BeeTableDefaultCell<R extends object>({
     (args: { isShiftPressed: boolean }) => {
       mutateSelection({
         part: SelectionPart.ActiveCell,
-        columnCount: cellProps.allColumns.length,
+        columnCount: () => cellProps.allColumns.length,
         rowCount,
         deltaColumns: args.isShiftPressed ? -1 : 1,
         deltaRows: 0,
