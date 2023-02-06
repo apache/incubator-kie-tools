@@ -28,7 +28,9 @@ export type ErrorFieldProps = Override<
 
 function ErrorField({ children, error, errorMessage, ...props }: ErrorFieldProps) {
   return !error ? null : (
-    <div {...filterDOMProps(props)}>{children ? children : <div style={{ margin: "3px" }}>{errorMessage}</div>}</div>
+    <div data-testid={"error-field"} {...filterDOMProps(props)}>
+      {children ? children : <div style={{ margin: "3px" }}>{errorMessage}</div>}
+    </div>
   );
 }
 
