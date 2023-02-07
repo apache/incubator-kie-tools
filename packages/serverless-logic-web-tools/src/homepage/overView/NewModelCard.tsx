@@ -29,7 +29,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
 
   return (
     <GridItem sm={12} md={4}>
-      <Card isFullHeight={true} isPlain={true} isLarge={true} isCompact>
+      <Card isFullHeight={true} isPlain={true} isCompact>
         <CardTitle>
           <FileLabel style={{ fontSize: "0.6em" }} extension={props.extension} />
         </CardTitle>

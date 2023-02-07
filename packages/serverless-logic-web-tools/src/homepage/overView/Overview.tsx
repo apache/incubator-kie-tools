@@ -20,7 +20,6 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { NewServerlessModelCard } from "./NewServerlessModelCard";
 import { Card, CardBody } from "@patternfly/react-core";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
@@ -29,18 +28,25 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
-import { useCallback } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { NewModelCard } from "./NewModelCard";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 
-export function Overview() {
+export function Overview(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
   const history = useHistory();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
+  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
+
+  const force12Cols = useMemo(
+    () => props.isNavOpen && !!qsContext.activeQuickStartID,
+    [props.isNavOpen, qsContext.activeQuickStartID]
+  );
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
@@ -64,7 +70,7 @@ export function Overview() {
     },
     [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
   );
-  /* FIXME: Overview: visualization issues with sidebar and quickstarts open */
+
   return (
     <>
       <PageSection
@@ -96,7 +102,7 @@ export function Overview() {
       </PageSection>
       <PageSection className="appsrv-marketing--page-section--marketing" isWidthLimited>
         <Grid hasGutter>
-          <GridItem xl={12} xl2={6}>
+          <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
             <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
               <CardHeader>
                 <CardHeaderMain>
@@ -130,7 +136,7 @@ export function Overview() {
               </CardBody>
             </Card>
           </GridItem>
-          <GridItem xl={12} xl2={6}>
+          <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
             <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
               <CardHeader>
                 <CardHeaderMain>
@@ -168,7 +174,7 @@ export function Overview() {
           </GridItem>
           <GridItem md={5}>
             <TextContent>
-              <Text className="pf-u-color-200 pf-u-ml-md">In this video, you'll learn how to:</Text>
+              <Text className="pf-u-color-200 pf-u-ml-md">In this video, you&apos;ll learn how to:</Text>
               <List className="app-services-ui--icon-list">
                 <ListItem>Create a Serverless Workflow, a Dashboard or a Decision.</ListItem>
                 <ListItem>Import a project into Serveless Logic Web Tools.</ListItem>

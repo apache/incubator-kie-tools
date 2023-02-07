@@ -49,15 +49,19 @@ import {
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 
-export type OnlineEditorPageProps = { children?: React.ReactNode; pageContainerRef: React.RefObject<HTMLDivElement> };
+export type OnlineEditorPageProps = {
+  children?: React.ReactNode;
+  pageContainerRef: React.RefObject<HTMLDivElement>;
+  isNavOpen: boolean;
+  setIsNavOpen: (value: boolean) => void;
+};
 
 export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const history = useHistory();
   const routes = useRoutes();
-  const [isNavOpen, setIsNavOpen] = useState(true);
   const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
   const navToggle = () => {
-    setIsNavOpen(!isNavOpen);
+    props.setIsNavOpen(!props.isNavOpen);
   };
   const [activeQuickStartID, setActiveQuickStartID] = useState("");
   const [allQuickStartStates, setAllQuickStartStates] = useState({});
@@ -124,7 +128,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           variant="plain"
           aria-label="Global NAV"
           onClick={navToggle}
-          aria-expanded={isNavOpen}
+          aria-expanded={props.isNavOpen}
           aria-controls=""
         >
           <BarsIcon />
@@ -157,7 +161,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     [location, isRouteInSettingsSection]
   );
 
-  const sidebar = <PageSidebar nav={pageNav} isNavOpen={isNavOpen} theme="dark" />;
+  const sidebar = <PageSidebar nav={pageNav} isNavOpen={props.isNavOpen} theme="dark" />;
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;

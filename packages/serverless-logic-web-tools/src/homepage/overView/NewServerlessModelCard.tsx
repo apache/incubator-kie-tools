@@ -35,7 +35,7 @@ export function NewServerlessModelCard(props: {
 
   return (
     <GridItem sm={12} md={4}>
-      <Card isFullHeight={true} isPlain={true} isLarge={true} isCompact={true}>
+      <Card isFullHeight={true} isPlain={true} isCompact={true}>
         <CardTitle>
           <FileLabel style={{ fontSize: "0.6em" }} extension={props.jsonExtension} />
         </CardTitle>
