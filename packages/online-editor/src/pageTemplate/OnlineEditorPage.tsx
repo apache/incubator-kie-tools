@@ -38,7 +38,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
       header={
         <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
-            <PageHeaderToolsItem className={"pf-l-flex"}>
+            <PageHeaderToolsItem className={"kie-sandbox--logo"}>
               <MastheadBrand
                 onClick={() => history.push({ pathname: routes.home.path({}) })}
                 style={{ textDecoration: "none" }}

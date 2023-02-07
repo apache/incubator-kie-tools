@@ -57,8 +57,9 @@ export default async (env: any, argv: any) => {
   let lastCommitHash = "";
   try {
     lastCommitHash = childProcess.execSync("git rev-parse --short HEAD").toString().trim();
+    JSON.stringify(lastCommitHash);
   } catch (e) {
-    console.error(e);
+    throw new Error(e);
   }
 
   return [
@@ -102,7 +103,7 @@ export default async (env: any, argv: any) => {
             },
           ]),
           new EnvironmentPlugin({
-            WEBPACK_REPLACE__commitHash: JSON.stringify(lastCommitHash),
+            WEBPACK_REPLACE__commitHash: lastCommitHash,
             WEBPACK_REPLACE__buildInfo: buildInfo,
             WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
             WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
