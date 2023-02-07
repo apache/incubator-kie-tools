@@ -34,6 +34,7 @@ export default function HiddenField({ value, ...rawProps }: HiddenFieldProps) {
 
   return props.noDOM ? null : (
     <input
+      data-testid="hidden-field"
       disabled={props.disabled}
       name={props.name}
       ref={props.inputRef}
