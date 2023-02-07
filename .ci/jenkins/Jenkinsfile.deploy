@@ -18,6 +18,8 @@ pipeline {
 
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
