@@ -24,22 +24,19 @@ export interface DmnRunnerContextType {
   currentInputRowIndex: number;
   error: boolean;
   inputRows: Array<InputRow>;
-  didUpdateInputRows: boolean;
   isExpanded: boolean;
+  isVisible: boolean;
   jsonSchema?: DmnSchema;
   mode: DmnRunnerMode;
-  didUpdateOutputRows: boolean;
   status: DmnRunnerStatus;
 }
 
 export interface DmnRunnerCallbacksContextType {
   preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
-  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  setDidUpdateInputRows: React.Dispatch<React.SetStateAction<boolean>>;
-  setDidUpdateOutputRows: React.Dispatch<React.SetStateAction<boolean>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
 }
 

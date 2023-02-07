@@ -38,7 +38,6 @@ import { DmnUnitablesValidator } from "@kie-tools/unitables-dmn/dist/DmnUnitable
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 
 interface Props {
-  isReady?: boolean;
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
   dmnRunnerResults: Array<DecisionResult[] | undefined>;
   setDmnRunnerResults: React.Dispatch<React.SetStateAction<Array<DecisionResult[] | undefined>>>;
@@ -85,11 +84,6 @@ export function DmnRunnerTable(props: Props) {
 
   const updateDmnRunnerResults = useCallback(
     async (inputRows: Array<InputRow>, canceled: Holder<boolean>) => {
-      if (!props.isReady) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
-        return;
-      }
-
       try {
         if (canceled.get()) {
           return;
@@ -118,13 +112,11 @@ export function DmnRunnerTable(props: Props) {
           }
         }
         props.setDmnRunnerResults(runnerResults);
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (err) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return undefined;
       }
     },
-    [props.isReady, dmnRunnerDispatch, extendedServices.client]
+    [props.setDmnRunnerResults, dmnRunnerDispatch, extendedServices.client]
   );
 
   // Debounce to avoid multiple updates caused by uniforms library
@@ -148,7 +140,7 @@ export function DmnRunnerTable(props: Props) {
       dmnRunnerDispatch.setCurrentInputRowIndex(rowIndex);
       props.setPanelOpen(PanelId.NONE);
     },
-    [dmnRunnerDispatch, props.setPanelOpen]
+    [dmnRunnerDispatch, props]
   );
 
   useElementsThatStopKeyboardEventsPropagation(
@@ -193,7 +185,7 @@ export function DmnRunnerTable(props: Props) {
                 >
                   <Unitables
                     ref={unitablesRef}
-                    name={"DMN Runner Table"}
+                    name={`DMN Runner Table - ${props.workspaceFile.relativePath}`}
                     i18n={i18n.dmnRunner.table}
                     jsonSchema={dmnRunnerState.jsonSchema}
                     rowCount={rowCount}

@@ -28,10 +28,6 @@ import { usePreviousRef } from "@kie-tools-core/react-hooks/dist/usePreviousRef"
 interface DmnRunnerInputs {
   inputRows: Array<InputRow>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  didUpdateInputRows: boolean;
-  setDidUpdateInputRows: React.Dispatch<React.SetStateAction<boolean>>;
-  didUpdateOutputRows: boolean;
-  setDidUpdateOutputRows: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInputs {
@@ -40,9 +36,6 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   const [inputRows, setInputRows] = useState<Array<InputRow>>(EMPTY_DMN_RUNNER_INPUTS);
   const lastInputRows = useRef<string>(JSON.stringify(EMPTY_DMN_RUNNER_INPUTS));
   const previousInputRows = usePreviousRef(inputRows);
-
-  const [didUpdateInputRows, setDidUpdateInputRows] = useState<boolean>(false);
-  const [didUpdateOutputRows, setDidUpdateOutputRows] = useState<boolean>(false);
 
   // TODO: Use useCompanionFsFile for keeping the `inputRows` up to date with updates made to it.
   //   I.e. When the DMN Runner Inputs file is changed
@@ -61,23 +54,26 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
 
         console.debug(`Subscribing to ${dmnRunnerInputsFileUniqueId}`);
         const broadcastChannel = new BroadcastChannel(dmnRunnerInputsFileUniqueId);
-        broadcastChannel.onmessage = ({ data }: MessageEvent<CompanionFsServiceBroadcastEvents>) => {
+        broadcastChannel.onmessage = ({ data: companionEvent }: MessageEvent<CompanionFsServiceBroadcastEvents>) => {
           if (canceled.get()) {
             return;
           }
-          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
-          if (data.type === "CFSF_MOVE" || data.type == "CFSF_RENAME") {
+          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(companionEvent)}`);
+          if (companionEvent.type === "CFSF_MOVE" || companionEvent.type == "CFSF_RENAME") {
             // Ignore, as content remains the same.
-          } else if (data.type === "CFSF_UPDATE" || data.type === "CFSF_ADD" || data.type === "CFSF_DELETE") {
+          } else if (
+            companionEvent.type === "CFSF_UPDATE" ||
+            companionEvent.type === "CFSF_ADD" ||
+            companionEvent.type === "CFSF_DELETE"
+          ) {
             // Triggered by the tab
-            if (data.content === lastInputRows.current) {
-              setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(data.content));
+            if (companionEvent.content === lastInputRows.current) {
+              setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
               return;
             }
             // Triggered by the other tab
-            lastInputRows.current = data.content;
-            setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(data.content));
-            setDidUpdateInputRows(true);
+            lastInputRows.current = companionEvent.content;
+            setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
           }
         };
 
@@ -157,9 +153,5 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   return {
     inputRows,
     setInputRows: setInputRowsAndUpdatePersistence,
-    didUpdateInputRows,
-    setDidUpdateInputRows,
-    didUpdateOutputRows,
-    setDidUpdateOutputRows,
   };
 }

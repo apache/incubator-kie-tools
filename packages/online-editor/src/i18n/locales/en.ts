@@ -488,15 +488,6 @@ export const en: OnlineI18n = {
           helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
         },
       },
-      use: {
-        title: "All set! 🎉",
-        connected: `You're connected to the ${en_common.names.kieSandboxExtendedServices}.`,
-        fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
-        deployTheModel: `You can also deploy your model to the ${en_common.names.devDeployments} when you're done editing.`,
-        backToEditor: "Back to Editor",
-        setupDevDeployments: `Set up the ${en_common.names.devDeployments}`,
-        devDeploymentsAlreadySetup: `${en_common.names.devDeployments} already set up`,
-      },
     },
     dropdown: {
       label: `${en_common.names.kieSandboxExtendedServices}`,

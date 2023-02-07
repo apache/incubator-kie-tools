@@ -104,12 +104,12 @@ export function CustomTable(props: CustomTableProps) {
   }, [props.i18n.editClause.input, props.i18n.editClause.output]);
 
   const columns = useMemo(() => {
-    const inputSection = (props.input ?? []).map((inputClause) => {
+    const inputSection = (props.input ?? []).map((inputClause, inputClauseIndex) => {
       if (inputClause.insideProperties) {
-        const insideProperties = inputClause.insideProperties.map((insideInputClauses) => {
+        const insideProperties = inputClause.insideProperties.map((insideInputClauses, insideInputClausesIndex) => {
           return {
-            label: insideInputClauses.name,
-            accessor: `input-${insideInputClauses.name}`,
+            label: `${insideInputClauses.name}-${inputClauseIndex}-${insideInputClausesIndex}`,
+            accessor: `input-${insideInputClauses.name}-${inputClauseIndex}-${insideInputClausesIndex}`,
             dataType: insideInputClauses.dataType,
             width: insideInputClauses.width,
             groupType: DecisionTableColumnType.InputClause,
@@ -119,7 +119,7 @@ export function CustomTable(props: CustomTableProps) {
         return {
           groupType: DecisionTableColumnType.InputClause,
           label: inputClause.name,
-          accessor: `input-${inputClause.name}`,
+          accessor: `input-${inputClause.name}-${inputClauseIndex}`,
           dataType: inputClause.dataType,
           width: inputClause.width,
           cssClasses: "decision-table--input",
@@ -130,7 +130,7 @@ export function CustomTable(props: CustomTableProps) {
       return {
         groupType: DecisionTableColumnType.InputClause,
         label: inputClause.name,
-        accessor: `input-${inputClause.name}`,
+        accessor: `input-${inputClause.name}-${inputClauseIndex}`,
         dataType: inputClause.dataType,
         width: inputClause.width,
         cssClasses: "decision-table--input",

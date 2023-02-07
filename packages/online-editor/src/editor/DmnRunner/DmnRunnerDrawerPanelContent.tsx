@@ -150,7 +150,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const updateDmnRunnerResults = useCallback(
     async (formInputs: InputRow, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
@@ -177,10 +176,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }
           return result.decisionResults;
         });
-
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (e) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         setDmnRunnerResults(undefined);
       }
     },
@@ -312,7 +308,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [dmnRunnerState.inputRows]
+    [dmnRunnerState.inputRows, dmnRunnerDispatch]
   );
 
   const formInputs = useMemo(() => {
@@ -326,11 +322,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       selectRow(`Row ${newData.length}`);
       return newData;
     });
-  }, [dmnRunnerDispatch.setInputRows, dmnRunnerDispatch]);
+  }, [dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
-    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
+    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
   }, [dmnRunnerDispatch, props.editorPageDock]);
 
   return (
@@ -430,11 +426,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       </FlexItem>
                     </Flex>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                      <DrawerCloseButton
-                        onClick={(e: any) => {
-                          dmnRunnerDispatch.setExpanded(false);
-                        }}
-                      />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setExpanded(false)} />
                     )}
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
@@ -475,7 +467,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <Text component={"h3"}>{i18n.terms.outputs}</Text>
                     </TextContent>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                      <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setExpanded(false)} />
                     )}
                   </PageSection>
                   <div

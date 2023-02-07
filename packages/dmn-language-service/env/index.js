@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-export enum DmnRunnerStatus {
-  UNAVAILABLE,
-  AVAILABLE,
-}
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-export enum DmnRunnerMode {
-  FORM = "form",
-  TABLE = "table",
-}
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {};
+  },
+});

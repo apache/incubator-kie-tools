@@ -1991,6 +1991,32 @@ importers:
       "@kie-tools/root-env": link:../root-env
       run-script-os: 1.1.6
 
+  packages/dmn-language-service:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@types/jest": ^26.0.23
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      rimraf: ^3.0.2
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@types/jest": 26.0.23
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      rimraf: 3.0.2
+      ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
+      typescript: 4.8.4
+
   packages/editor:
     specifiers:
       "@babel/core": ^7.16.0
@@ -3180,6 +3206,7 @@ importers:
       "@kie-tools-core/workspaces-git-fs": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
       "@kie-tools/dmn-dev-deployment-base-image-env": workspace:*
+      "@kie-tools/dmn-language-service": workspace:*
       "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/extended-services": workspace:*
@@ -3261,6 +3288,7 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools-core/workspaces-git-fs": link:../workspaces-git-fs
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
+      "@kie-tools/dmn-language-service": link:../dmn-language-service
       "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn

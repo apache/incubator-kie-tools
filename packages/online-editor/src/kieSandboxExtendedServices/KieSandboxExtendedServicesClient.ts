@@ -15,6 +15,7 @@
  */
 
 import { DmnResult, DmnSchema } from "@kie-tools/form-dmn";
+import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api/NotificationSeverity";
 
 export interface KieSandboxExtendedServicesModelResource {
   URI: string;
@@ -25,6 +26,15 @@ export interface KieSandboxExtendedServicesModelPayload {
   mainURI: string;
   resources: KieSandboxExtendedServicesModelResource[];
   context?: any;
+}
+
+export interface KieSandboxExtendedServicesValidateResponse {
+  severity: NotificationSeverity;
+  message: string;
+  messageType: string;
+  sourceId: string | null;
+  path: string;
+  level: string;
 }
 
 export class KieSandboxExtendedServicesClient {
@@ -56,7 +66,9 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateDmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
+  public async validateDmn(
+    payload: KieSandboxExtendedServicesModelPayload
+  ): Promise<KieSandboxExtendedServicesValidateResponse[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
@@ -71,7 +83,9 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateBpmn(payload: KieSandboxExtendedServicesModelPayload): Promise<[]> {
+  public async validateBpmn(
+    payload: KieSandboxExtendedServicesModelPayload
+  ): Promise<KieSandboxExtendedServicesValidateResponse[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
