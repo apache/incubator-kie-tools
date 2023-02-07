@@ -21,7 +21,7 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { NewServerlessModelCard } from "./NewServerlessModelCard";
-import { Card, CardBody } from "@patternfly/react-core";
+import { Button, ButtonVariant, Card, CardBody } from "@patternfly/react-core/dist/js";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
 import { UploadCard } from "./UploadCard";
 import { useRoutes } from "../../navigation/Hooks";
@@ -31,10 +31,11 @@ import { QueryParams } from "../../navigation/Routes";
 import { useCallback, useContext, useMemo } from "react";
 import { NewModelCard } from "./NewModelCard";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 
 export function Overview(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
@@ -89,15 +90,29 @@ export function Overview(props: { isNavOpen: boolean }) {
           <Title headingLevel="h1" size="2xl">
             Welcome to Serverless Logic Web Tools
           </Title>
-          <Text className="appsrv-marketing--banner__tagline pf-u-color-200">
-            Add-on service to create and synchronize your Serverless Workflow, Decision files, and Dashbuilder files
-          </Text>
-          <Text component={TextVariants.p}>
-            The Serverless Logic Web Tools is a web application that enables you to create and synchronize your
-            Serverless Workflow, Decision files, and Dashbuilder files in a single interface. Also, the Serverless Logic
-            Web Tools application provides the integrations that are needed to deploy and test the Serverless Workflow
-            models in development mode.
-          </Text>
+          <StackItem>
+            <Text className="appsrv-marketing--banner__tagline pf-u-color-200">
+              Add-on service to create and synchronize your Serverless Workflow, Decision files, and Dashbuilder files
+            </Text>
+            <Text component={TextVariants.p}>
+              The Serverless Logic Web Tools is a web application that enables you to create and synchronize your
+              Serverless Workflow, Decision files, and Dashbuilder files in a single interface. Also, the Serverless
+              Logic Web Tools application provides the integrations that are needed to deploy and test the Serverless
+              Workflow models in development mode.
+            </Text>
+          </StackItem>
+          <StackItem>
+            <Button
+              target="_blank"
+              iconPosition="right"
+              icon={<ExternalLinkAltIcon />}
+              href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html"
+              variant={ButtonVariant.secondary}
+              component="a"
+            >
+              Get Started with Serverless Logig Web Tools
+            </Button>
+          </StackItem>
         </Stack>
       </PageSection>
       <PageSection className="appsrv-marketing--page-section--marketing" isWidthLimited>
