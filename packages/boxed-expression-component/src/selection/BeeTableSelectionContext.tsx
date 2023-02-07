@@ -769,6 +769,12 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         refs.current?.set(rowIndex, refs.current?.get(rowIndex) ?? new Map());
         const prev = refs.current?.get(rowIndex)?.get(columnIndex) ?? new Set();
         refs.current?.get(rowIndex)?.set(columnIndex, new Set([...prev, ref]));
+        const isActive = coincides(selectionRef.current?.active, { rowIndex, columnIndex });
+        ref.setStatus?.({
+          isActive,
+          isEditing: isActive && (selectionRef.current?.active?.isEditing ?? false),
+          isSelected: !coincides(selectionRef.current?.selectionStart, selectionRef.current?.selectionEnd),
+        });
         return ref;
       },
       deregisterSelectableCellRef: (rowIndex, columnIndex, ref) => {
@@ -847,10 +853,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         r.setStatus?.({
           isActive: true,
           isEditing: active?.isEditing ?? false,
-          isSelected: !(
-            selection.selectionStart?.rowIndex === selection.selectionEnd?.rowIndex &&
-            selection.selectionStart?.columnIndex === selection.selectionEnd?.columnIndex
-          ),
+          isSelected: !coincides(selectionRef.current?.selectionStart, selectionRef.current?.selectionEnd),
         })
       );
 

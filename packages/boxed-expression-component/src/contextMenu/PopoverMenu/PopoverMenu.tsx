@@ -107,9 +107,10 @@ export const PopoverMenu = React.forwardRef(
           onHide();
         }
 
+        setCurrentlyOpenContextMenu(undefined);
         hideFunction?.();
       },
-      [onCancel, onHide]
+      [onCancel, onHide, setCurrentlyOpenContextMenu]
     );
 
     useImperativeHandle(

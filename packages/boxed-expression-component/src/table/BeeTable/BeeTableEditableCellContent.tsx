@@ -15,7 +15,7 @@
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
-import { FeelEditorService, FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
+import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils";
@@ -88,19 +88,20 @@ export function BeeTableEditableCellContent({
     [mode, value, onChange]
   );
 
-  const onFeelBlur = useCallback((valueOnBlur: string) => {
-    // FIXME: Tiago -> This is not working well.
-    // triggerReadMode(valueOnBlur);
-    // setEditing(false);
-  }, []);
-  (window as any).a = FeelEditorService.getStandaloneEditor();
+  const onFeelBlur = useCallback(
+    (valueOnBlur: string) => {
+      triggerReadMode(valueOnBlur);
+      setEditing(false);
+    },
+    [setEditing, triggerReadMode]
+  );
 
   const onFeelKeyDown = useCallback(
     (e: Monaco.IKeyboardEvent, newValue: string) => {
       const eventKey = e?.code ?? "";
 
       if (NavigationKeysUtils.isTab(eventKey)) {
-        if (FeelEditorService.isSuggestWidgetOpen()) {
+        if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing.
         } else {
           triggerReadMode(newValue);
@@ -113,7 +114,7 @@ export function BeeTableEditableCellContent({
       if (NavigationKeysUtils.isEnter(eventKey)) {
         if (e.ctrlKey || e.metaKey || e.altKey) {
           feelInputRef.current?.insertNewLineToMonaco();
-        } else if (FeelEditorService.isSuggestWidgetOpen()) {
+        } else if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing;
         } else {
           setEditing(false);
@@ -123,7 +124,7 @@ export function BeeTableEditableCellContent({
       }
 
       if (NavigationKeysUtils.isEsc(eventKey)) {
-        if (FeelEditorService.isSuggestWidgetOpen()) {
+        if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing.
         } else {
           triggerReadMode(previousValue);
@@ -146,10 +147,6 @@ export function BeeTableEditableCellContent({
     []
   );
 
-  const onFeelLoad = useCallback((preview: string) => {
-    setPreview(preview);
-  }, []);
-
   const editableCellRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (isActive && !isEditing) {
@@ -161,6 +158,23 @@ export function BeeTableEditableCellContent({
     return `editable-cell ${mode === Mode.Edit ? "editable-cell--edit-mode" : "editable-cell--read-mode"}`;
   }, [mode]);
 
+  const onKeyDown = useCallback(
+    (e) => {
+      // When inside FEEL Input, all keyboard events should be kept inside it.
+      // Exceptions to this strategy are handled on `onFeelKeyDown`.
+      if (isEditing) {
+        e.stopPropagation();
+      }
+
+      // This is used to start editing a cell without being in edit mode.
+      if (isActive && !isEditing && isEditModeTriggeringKey(e)) {
+        setEditingValue("");
+        setEditing(true);
+      }
+    },
+    [isActive, isEditing, setEditing]
+  );
+
   return (
     <>
       <div
@@ -168,20 +182,7 @@ export function BeeTableEditableCellContent({
         tabIndex={-1}
         style={{ height: `${cellHeight}px`, outline: "none" }}
         className={cssClass}
-        // FIXME: Tiago -> Extracting this to a useCallback breaks it.
-        onKeyDown={(e) => {
-          // When inside FEEL Input, all keyboard events should be kept inside it.
-          // Exceptions to this strategy are handled on `onFeelKeyDown`.
-          if (isEditing) {
-            e.stopPropagation();
-          }
-
-          // This is used to start editing a cell without being in edit mode.
-          if (isActive && !isEditing && isEditModeTriggeringKey(e)) {
-            setEditingValue("");
-            setEditing(true);
-          }
-        }}
+        onKeyDown={onKeyDown}
       >
         <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
         <FeelInput
@@ -190,7 +191,7 @@ export function BeeTableEditableCellContent({
           value={isEditing ? editingValue : value}
           onKeyDown={onFeelKeyDown}
           onChange={onFeelChange}
-          onLoad={onFeelLoad}
+          onPreviewChanged={setPreview}
           options={MONACO_OPTIONS}
           onBlur={onFeelBlur}
         />

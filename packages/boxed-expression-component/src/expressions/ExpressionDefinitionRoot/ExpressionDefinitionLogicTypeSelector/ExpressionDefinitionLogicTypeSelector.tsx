@@ -223,7 +223,8 @@ export function ExpressionDefinitionLogicTypeSelector({
     });
     setExpression(expression);
     setDropdownOpen(false);
-  }, [setExpression]);
+    setCurrentlyOpenContextMenu(undefined);
+  }, [setCurrentlyOpenContextMenu, setExpression]);
 
   const menuIconContainerStyle = useMemo(() => {
     return {
@@ -315,6 +316,7 @@ export function ExpressionDefinitionLogicTypeSelector({
                       icon={<>{logicTypeIcon(expression.logicType)}</>}
                       style={{ padding: 0 }}
                       onToggle={setDropdownOpen}
+                      tabIndex={-1}
                     >
                       {expression.logicType}
                       {expression.logicType === ExpressionDefinitionLogicType.Function &&
