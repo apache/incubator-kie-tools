@@ -34,6 +34,7 @@ import { NewModelCard } from "./NewModelCard";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 
 export function Overview() {
   const routes = useRoutes();
@@ -63,10 +64,11 @@ export function Overview() {
     },
     [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
   );
+  /* FIXME: Overview: visualization issues with sidebar and quickstarts open */
   return (
     <>
       <PageSection
-        className="appsrv-marketing--banner pf-u-background-color-100"
+        className="appsrv-marketing--banner"
         style={
           {
             "--appsrv-marketing--banner--before--BackgroundImage": "url(images/overview-banner-bg.png)",
@@ -149,6 +151,30 @@ export function Overview() {
                 </Gallery>
               </CardBody>
             </Card>
+          </GridItem>
+        </Grid>
+      </PageSection>
+
+      <PageSection isWidthLimited className="appsrv-marketing--page-section--marketing" variant="light">
+        <Title className="pf-u-mb-lg" size="xl" headingLevel="h3">
+          Use Serverless Logic Web Tools
+        </Title>
+        <Grid hasGutter>
+          <GridItem md={7}>
+            <Card className="appsrv-marketing--video">
+              {/* TODO: Overview:  replace this placeholder with a real video */}
+              <img src="images/openshift_slwt_youtube_video.png" />
+            </Card>
+          </GridItem>
+          <GridItem md={5}>
+            <TextContent>
+              <Text className="pf-u-color-200 pf-u-ml-md">In this video, you'll learn how to:</Text>
+              <List className="app-services-ui--icon-list">
+                <ListItem>Create a Serverless Workflow, a Dashboard or a Decision.</ListItem>
+                <ListItem>Import a project into Serveless Logic Web Tools.</ListItem>
+                <ListItem>Deploy and run your project into an OpenShift instance.</ListItem>
+              </List>
+            </TextContent>
           </GridItem>
         </Grid>
       </PageSection>

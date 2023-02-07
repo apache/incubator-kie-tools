@@ -285,3 +285,61 @@ tr.mas--ResponsiveTable__Tr--deleted > td {
 .pf-u-color-200 {
   color: var(--pf-global--Color--200) !important;
 }
+
+.pf-u-mb-lg {
+  margin-bottom: var(--pf-global--spacer--lg) !important;
+}
+.pf-u-ml-auto {
+  margin-left: auto !important;
+}
+
+.pf-u-ml-0 {
+  margin-left: 0 !important;
+}
+
+.pf-u-ml-xs {
+  margin-left: var(--pf-global--spacer--xs) !important;
+}
+
+.pf-u-ml-sm {
+  margin-left: var(--pf-global--spacer--sm) !important;
+}
+
+.pf-u-ml-md {
+  margin-left: var(--pf-global--spacer--md) !important;
+}
+
+.pf-u-ml-lg {
+  margin-left: var(--pf-global--spacer--lg) !important;
+}
+
+.pf-u-ml-xl {
+  margin-left: var(--pf-global--spacer--xl) !important;
+}
+
+.pf-u-ml-2xl {
+  margin-left: var(--pf-global--spacer--2xl) !important;
+}
+
+.pf-u-ml-3xl {
+  margin-left: var(--pf-global--spacer--3xl) !important;
+}
+
+.pf-u-ml-4xl {
+  margin-left: var(--pf-global--spacer--4xl) !important;
+}
+.pf-u-color-100 {
+  color: var(--pf-global--Color--100) !important;
+}
+
+.pf-u-color-200 {
+  color: var(--pf-global--Color--200) !important;
+}
+
+.pf-u-color-300 {
+  color: var(--pf-global--Color--300) !important;
+}
+
+.pf-u-color-400 {
+  color: var(--pf-global--Color--400) !important;
+}
