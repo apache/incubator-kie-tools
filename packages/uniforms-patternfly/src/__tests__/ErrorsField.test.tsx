@@ -31,8 +31,13 @@ const error = {
 };
 
 test("<ErrorsField> - renders list of correct error messages (context)", () => {
-  const element = <ErrorsField name="x" />;
-  render(usingUniformsContext(element, { x: { type: String }, y: { type: String }, z: { type: String } }, { error }));
+  render(
+    usingUniformsContext(
+      <ErrorsField name="x" />,
+      { x: { type: String }, y: { type: String }, z: { type: String } },
+      { error }
+    )
+  );
 
   expect(screen.getByTestId("errors-field")).toBeInTheDocument();
   expect(screen.getByText("X is required")).toBeInTheDocument();
@@ -41,8 +46,13 @@ test("<ErrorsField> - renders list of correct error messages (context)", () => {
 });
 
 test("<ErrorsField> - renders children (specified)", () => {
-  const element = <ErrorsField name="x" children="Error message list" />;
-  render(usingUniformsContext(element, { x: { type: String }, y: { type: String }, z: { type: String } }, { error }));
+  render(
+    usingUniformsContext(
+      <ErrorsField name="x" children="Error message list" />,
+      { x: { type: String }, y: { type: String }, z: { type: String } },
+      { error }
+    )
+  );
 
   expect(screen.getByText("Error message list")).toBeInTheDocument();
 });

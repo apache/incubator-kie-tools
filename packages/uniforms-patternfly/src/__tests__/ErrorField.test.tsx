@@ -27,23 +27,24 @@ const error = {
 };
 
 test("<ErrorField> - works", () => {
-  const element = <ErrorField name="x" error={true} />;
-  render(usingUniformsContext(element, { x: { type: String } }));
+  render(usingUniformsContext(<ErrorField name="x" error={true} />, { x: { type: String } }));
 
   expect(screen.getByTestId("error-field")).toBeInTheDocument();
 });
 
 test("<ErrorField> - renders correct error message (context)", () => {
-  const element = <ErrorField name="x" />;
-  render(usingUniformsContext(element, { x: { type: String } }, { error }));
+  render(usingUniformsContext(<ErrorField name="x" />, { x: { type: String } }, { error }));
 
   expect(screen.getByTestId("error-field")).toBeInTheDocument();
   expect(screen.getByText(error.reason)).toBeInTheDocument();
 });
 
 test("<ErrorField> - renders correct error message (specified)", () => {
-  const element = <ErrorField name="x" error={error.details[0]} errorMessage={error.reason} />;
-  render(usingUniformsContext(element, { x: { type: String } }));
+  render(
+    usingUniformsContext(<ErrorField name="x" error={error.details[0]} errorMessage={error.reason} />, {
+      x: { type: String },
+    })
+  );
 
   expect(screen.getByTestId("error-field")).toBeInTheDocument();
   expect(screen.getByText(error.reason)).toBeInTheDocument();
