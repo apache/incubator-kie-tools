@@ -30,39 +30,40 @@ import {
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { commonLabels, runtimeLabels } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
-import { AppLabelNames } from "../deploy/types";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 
+interface SpinUpDevModePipelineArgs {
+  webToolsId: string;
+}
+
 export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined> {
-  constructor(protected readonly args: OpenShiftPipelineArgs) {
+  constructor(protected readonly args: OpenShiftPipelineArgs & SpinUpDevModePipelineArgs) {
     super(args);
   }
 
   public async execute(): Promise<string | undefined> {
-    const deployments = await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute<DeploymentGroupDescriptor>({
-        target: new ListDeployments({
-          namespace: this.args.namespace,
-          labelSelector: AppLabelNames.DEV_MODE,
-        }),
-      })
-    );
+    const deployments = (
+      await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+        fetcher.execute<DeploymentGroupDescriptor>({
+          target: new ListDeployments({
+            namespace: this.args.namespace,
+            labelSelector: this.args.webToolsId,
+          }),
+        })
+      )
+    ).items
+      .filter((d) => d.metadata.name === this.resolveResourceName())
+      .sort(
+        (a, b) =>
+          new Date(b.metadata.creationTimestamp ?? 0).getTime() - new Date(a.metadata.creationTimestamp ?? 0).getTime()
+      );
 
-    if (deployments.items.length === 0) {
+    if (deployments.length === 0) {
       return this.createDevModeDeployment();
     }
 
-    const sortedDeployments = deployments.items.sort(
-      (a, b) =>
-        new Date(b.metadata.creationTimestamp ?? 0).getTime() - new Date(a.metadata.creationTimestamp ?? 0).getTime()
-    );
-
-    if (sortedDeployments.length === 0) {
-      return;
-    }
-
-    const latestDeployment = sortedDeployments[0];
+    const latestDeployment = deployments[0];
 
     const latestDeploymentStatus = this.args.openShiftService.kubernetes.extractDeploymentState({
       deployment: latestDeployment,
@@ -107,10 +108,14 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
     return routeUrl;
   }
 
+  private resolveResourceName(): string {
+    return `devmode-${this.args.webToolsId}`;
+  }
+
   private async createDevModeDeployment(): Promise<string | undefined> {
     const resourceArgs = {
       namespace: this.args.namespace,
-      resourceName: "serverless-logic-devmode",
+      resourceName: this.resolveResourceName(),
       createdBy: RESOURCE_OWNER,
     };
 
@@ -130,7 +135,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
       );
 
       const appLabels = {
-        [AppLabelNames.DEV_MODE]: "true",
+        [this.args.webToolsId]: "true",
       };
 
       const deploymentDescriptor: DeploymentDescriptor = {

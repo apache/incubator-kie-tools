@@ -16,11 +16,12 @@
 
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { RegistryIcon } from "@patternfly/react-icons/dist/js/icons";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
@@ -48,6 +49,7 @@ interface Props {
   alerts: AlertsController | undefined;
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
+  canContentBeDeployed: boolean;
 }
 
 // TOOD CAPONETTO: Alerts can be moved to a context
@@ -62,6 +64,30 @@ export function useDeployDropdownItems(props: Props) {
     workspace: props.workspace,
   });
 
+  const devModeUploadingAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        return (
+          <Alert
+            className="pf-u-mb-md"
+            variant="info"
+            title={
+              <>
+                <Spinner size={"sm"} />
+                &nbsp;&nbsp; {`Uploading '${props.workspaceFile.nameWithoutExtension}'...`}
+              </>
+            }
+            aria-live="polite"
+            data-testid="alert-dev-mode-uploading"
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        );
+      },
+      [props.workspaceFile.nameWithoutExtension]
+    )
+  );
+
   const devModeReadyAlert = useAlert<{ routeUrl: string }>(
     props.alerts,
     useCallback(({ close }, { routeUrl }) => {
@@ -71,7 +97,7 @@ export function useDeployDropdownItems(props: Props) {
           variant="success"
           title={`Your Dev Mode has been updated.`}
           aria-live="polite"
-          data-testid="alert-dev-mode-updated"
+          data-testid="alert-dev-mode-ready"
           actionClose={<AlertActionCloseButton onClose={close} />}
           actionLinks={
             <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>Dev Mode Swagger UI</AlertActionLink>
@@ -89,9 +115,14 @@ export function useDeployDropdownItems(props: Props) {
           <Alert
             className="pf-u-mb-md"
             variant="info"
-            title={`'${props.workspaceFile.nameWithoutExtension}' uploaded to your Dev Mode deployment. Please wait a few seconds for the Dev Mode deployment to be updated.`}
+            title={
+              <>
+                <Spinner size={"sm"} />
+                &nbsp;&nbsp; {`Updating Dev Mode deployment with '${props.workspaceFile.nameWithoutExtension}'...`}
+              </>
+            }
             aria-live="polite"
-            data-testid="alert-upload-dev-mode"
+            data-testid="alert-dev-mode-updating"
             actionClose={<AlertActionCloseButton onClose={close} />}
           />
         );
@@ -107,11 +138,25 @@ export function useDeployDropdownItems(props: Props) {
         <Alert
           className="pf-u-mb-md"
           variant="danger"
-          title={
-            "Something went wrong while uploading to the Dev Mode deployment. Check your OpenShift instance and then try again."
-          }
+          title={"Something went wrong while uploading to the Dev Mode deployment. Please try again in a few moments."}
           aria-live="polite"
           data-testid="alert-upload-error"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const uploadToDevModeNotReadyAlert = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="warning"
+          title={"Looks like the Dev Mode deployment is not ready yet. Please try again in a few moments."}
+          aria-live="polite"
+          data-testid="alert-dev-mode-not-ready"
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
@@ -145,40 +190,44 @@ export function useDeployDropdownItems(props: Props) {
 
   const onDeployDevMode = useCallback(async () => {
     if (isKieSandboxExtendedServicesRunning) {
-      const success = await devMode.upload([props.workspaceFile]);
-      if (success && devMode.endpoints) {
+      devModeUploadingAlert.show();
+      const result = await devMode.upload([props.workspaceFile]);
+      devModeUploadingAlert.close();
+      if (result.success && devMode.endpoints) {
         uploadToDevModeSuccessAlert.show();
 
         // TODO CAPONETTO: improve it
         const fetchDevModeDeploymentTask = window.setInterval(async () => {
-          try {
-            const isReady = await devMode.checkHealthReady();
-            if (!isReady) {
-              return;
-            }
-            uploadToDevModeSuccessAlert.close();
-            devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swaggerUi });
-          } catch (e) {
-            console.error(e);
-            uploadToDevModeSuccessAlert.close();
-            uploadToDevModeErrorAlert.show();
+          const isReady = await devMode.checkHealthReady();
+          if (!isReady) {
+            return;
           }
+          uploadToDevModeSuccessAlert.close();
+          devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swaggerUi });
           window.clearInterval(fetchDevModeDeploymentTask);
         }, 2000);
-      } else {
-        uploadToDevModeErrorAlert.show();
       }
-      return;
+
+      if (!result.success) {
+        if (result.reason === "ERROR") {
+          uploadToDevModeErrorAlert.show();
+        } else if (result.reason === "NOT_READY") {
+          uploadToDevModeNotReadyAlert.show();
+        }
+      }
+    } else {
+      kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
+      kieSandboxExtendedServices.setModalOpen(true);
     }
-    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
-    kieSandboxExtendedServices.setModalOpen(true);
   }, [
     devMode,
     devModeReadyAlert,
     isKieSandboxExtendedServicesRunning,
     kieSandboxExtendedServices,
     props.workspaceFile,
+    devModeUploadingAlert,
     uploadToDevModeErrorAlert,
+    uploadToDevModeNotReadyAlert,
     uploadToDevModeSuccessAlert,
   ]);
 
@@ -187,7 +236,8 @@ export function useDeployDropdownItems(props: Props) {
       <React.Fragment key={"deploy-dropdown-items"}>
         {props.workspace && (
           <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
-            <DropdownItem
+            {/* TODO OPERATE-FIRST: Hidden */}
+            {/* <DropdownItem
               icon={<OpenshiftIcon />}
               id="deploy-your-model-button"
               key={`dropdown-deploy`}
@@ -215,7 +265,7 @@ export function useDeployDropdownItems(props: Props) {
                   </FlexItem>
                 </Flex>
               )}
-            </DropdownItem>
+            </DropdownItem> */}
             {isDevModeEnabled && (
               <DropdownItem
                 icon={<OpenshiftIcon />}
@@ -223,7 +273,9 @@ export function useDeployDropdownItems(props: Props) {
                 key={`dropdown-deploy-dev-mode`}
                 component={"button"}
                 onClick={onDeployDevMode}
-                isDisabled={isKieSandboxExtendedServicesRunning && !isOpenShiftConnected}
+                isDisabled={
+                  isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !props.canContentBeDeployed)
+                }
                 ouiaId={"deploy-to-openshift-dev-mode-dropdown-button"}
               >
                 <Flex flexWrap={{ default: "nowrap" }}>
@@ -233,7 +285,8 @@ export function useDeployDropdownItems(props: Props) {
                 </Flex>
               </DropdownItem>
             )}
-            {needsDependencyDeployment && (
+            {/* TODO OPERATE-FIRST: Hidden */}
+            {/* {needsDependencyDeployment && (
               <>
                 <Divider />
                 <Tooltip content={i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip} position="bottom">
@@ -247,6 +300,18 @@ export function useDeployDropdownItems(props: Props) {
                     </Flex>
                   </DropdownItem>
                 </Tooltip>
+              </>
+            )} */}
+            {!props.canContentBeDeployed && (
+              <>
+                <Divider />
+                <DropdownItem icon={<ExclamationCircleIcon />} isDisabled>
+                  <Flex flexWrap={{ default: "nowrap" }}>
+                    <FlexItem>
+                      <Text component="small">Models with errors/warnings cannot be uploaded</Text>
+                    </FlexItem>
+                  </Flex>
+                </DropdownItem>
               </>
             )}
           </FeatureDependentOnKieSandboxExtendedServices>
@@ -270,11 +335,11 @@ export function useDeployDropdownItems(props: Props) {
     ];
   }, [
     props.workspace,
-    onDeploy,
+    props.canContentBeDeployed,
+    isDevModeEnabled,
+    onDeployDevMode,
     isKieSandboxExtendedServicesRunning,
     isOpenShiftConnected,
-    needsDependencyDeployment,
-    i18n,
     onSetup,
   ]);
 }

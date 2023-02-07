@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
+import { v4 as uuid } from "uuid";
+
 export const ZIP_FILE_PART_KEY = "zipFile";
 export const ZIP_FILE_NAME = "file.zip";
+
+export type DevModeUploadResult =
+  | {
+      success: true;
+    }
+  | {
+      success: false;
+      reason: "NOT_READY" | "ERROR";
+    };
 
 export interface DevModeEndpoints {
   base: string;
@@ -38,3 +49,25 @@ export const buildEndpoints = (routeUrl: string): DevModeEndpoints => ({
     started: `${routeUrl}/q/health/started`,
   },
 });
+
+const WEB_TOOLS_ID_KEY = "SERVERLESS_LOGIC_WEB_TOOLS_ID";
+
+// TODO CAPONETTO: maybe move this function to somewhere else
+export const resolveWebToolsId = () => {
+  const webToolsId = localStorage.getItem(WEB_TOOLS_ID_KEY) ?? uuid();
+  localStorage.setItem(WEB_TOOLS_ID_KEY, webToolsId);
+  return webToolsId;
+};
+
+// TODO CAPONETTO: maybe move this function to somewhere else
+export async function fetchWithTimeout(input: string, init: RequestInit & { timeout: number }) {
+  const { timeout = 8000 } = init;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  const response = await fetch(input, {
+    ...init,
+    signal: controller.signal,
+  });
+  clearTimeout(id);
+  return response;
+}

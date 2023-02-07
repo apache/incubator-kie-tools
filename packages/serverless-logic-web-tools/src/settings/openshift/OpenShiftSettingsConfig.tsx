@@ -29,8 +29,8 @@ export const EMPTY_CONFIG: OpenShiftConnection = {
 
 export function readOpenShiftConfigCookie(): OpenShiftConnection {
   return {
-    namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "",
-    host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
+    namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "kubesmarts",
+    host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "https://c130-e.us-south.containers.cloud.ibm.com:30741",
     token: getCookie(OPENSHIFT_TOKEN_COOKIE_NAME) ?? "",
   };
 }

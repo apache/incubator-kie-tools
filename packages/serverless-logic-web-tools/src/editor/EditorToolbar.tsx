@@ -101,6 +101,7 @@ export interface Props {
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
   editorPageDock: EditorPageDockDrawerRef | undefined;
+  canContentBeDeployed: boolean; // TODO CAPONETTO: improve this
 }
 
 const showWhenSmall: ToolbarItemProps["visibility"] = {
@@ -180,7 +181,8 @@ export function EditorToolbar(props: Props) {
   }, [isSaved]);
 
   const canBeDeployed = useMemo(
-    () => isServerlessWorkflow(props.workspaceFile.relativePath) || isDashbuilder(props.workspaceFile.relativePath),
+    // TODO OPERATE-FIRST: disable deploy dashboards
+    () => isServerlessWorkflow(props.workspaceFile.relativePath),
     [props.workspaceFile.relativePath]
   );
 
@@ -1545,6 +1547,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           workspace={workspace}
                           workspaceFile={props.workspaceFile}
                           editorPageDock={props.editorPageDock}
+                          canContentBeDeployed={props.canContentBeDeployed}
                         />
                       </ToolbarItem>
                     )}
@@ -1720,6 +1723,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   workspace={workspace}
                                   workspaceFile={props.workspaceFile}
                                   key="kie-sandbox-extended-services-group"
+                                  canContentBeDeployed={props.canContentBeDeployed}
                                 />,
                               ]),
                         ]}

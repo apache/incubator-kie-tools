@@ -21,7 +21,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
-import { buildEndpoints, DevModeEndpoints, ZIP_FILE_NAME, ZIP_FILE_PART_KEY } from "./DevModeConstants";
+import {
+  buildEndpoints,
+  DevModeEndpoints,
+  DevModeUploadResult,
+  fetchWithTimeout,
+  resolveWebToolsId,
+  ZIP_FILE_NAME,
+  ZIP_FILE_PART_KEY,
+} from "./DevModeConstants";
 import { DevModeContext } from "./DevModeContext";
 
 interface Props {
@@ -41,6 +49,7 @@ export function DevModeContextProvider(props: Props) {
 
     try {
       const spinUpDevModePipeline = new SpinUpDevModePipeline({
+        webToolsId: resolveWebToolsId(),
         namespace: settings.openshift.config.namespace,
         openShiftService: settingsDispatch.openshift.service,
       });
@@ -52,9 +61,9 @@ export function DevModeContextProvider(props: Props) {
             setEndpoints(buildEndpoints(routeUrl));
           }
         })
-        .catch((e) => console.error(e));
+        .catch((e) => console.debug(e));
     } catch (e) {
-      console.error(e);
+      console.debug(e);
     }
   }, [settings.openshift.status, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
@@ -62,20 +71,32 @@ export function DevModeContextProvider(props: Props) {
     if (!endpoints) {
       return false;
     }
-    const readyResponse = await fetch(endpoints.health.ready);
-    return readyResponse.ok;
+
+    try {
+      const readyResponse = await fetchWithTimeout(endpoints.health.ready, { timeout: 2000 });
+      return readyResponse.ok;
+    } catch (e) {
+      console.debug(e);
+    }
+    return false;
   }, [endpoints]);
 
   const upload = useCallback(
-    async (files: WorkspaceFile[]) => {
+    async (files: WorkspaceFile[]): Promise<DevModeUploadResult> => {
       if (!endpoints) {
         console.error("Route URL for Dev Mode deployment not available.");
-        return false;
+        return {
+          success: false,
+          reason: "NOT_READY",
+        };
       }
 
       if (!(await checkHealthReady())) {
         console.error("Dev Mode deployment is not ready");
-        return false;
+        return {
+          success: false,
+          reason: "NOT_READY",
+        };
       }
 
       try {
@@ -98,14 +119,16 @@ export function DevModeContextProvider(props: Props) {
 
         await fetch(endpoints.upload, { method: "POST", body: formData });
 
-        window.setTimeout(() => fetch(endpoints.swaggerUi), 2000);
-        return true;
+        return { success: true };
       } catch (e) {
-        console.error(e);
+        console.debug(e);
       }
-      return false;
+      return {
+        success: false,
+        reason: "ERROR",
+      };
     },
-    [endpoints]
+    [checkHealthReady, endpoints]
   );
 
   const value = useMemo(() => ({ upload, endpoints, checkHealthReady }), [endpoints, upload, checkHealthReady]);

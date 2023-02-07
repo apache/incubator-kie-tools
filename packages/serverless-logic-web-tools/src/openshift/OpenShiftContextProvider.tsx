@@ -28,6 +28,7 @@ import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
 import { DevModeDeploymentLoaderPipeline } from "./pipelines/DevModeDeploymentLoaderPipeline";
+import { resolveWebToolsId } from "./devMode/DevModeConstants";
 
 interface Props {
   children: React.ReactNode;
@@ -61,6 +62,7 @@ export function OpenShiftContextProvider(props: Props) {
   const devModeDeploymentLoaderPipeline = useMemo(
     () =>
       new DevModeDeploymentLoaderPipeline({
+        webToolsId: resolveWebToolsId(),
         namespace: settings.openshift.config.namespace,
         openShiftService: settingsDispatch.openshift.service,
       }),
@@ -131,7 +133,7 @@ export function OpenShiftContextProvider(props: Props) {
 
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
       const deploymentLoaderPromises = Promise.all([
-        deploymentLoaderPipeline.execute(),
+        Promise.resolve([]), //deploymentLoaderPipeline.execute(), TODO OPERATE-FIRST: hide knative deployments
         devModeDeploymentLoaderPipeline.execute(),
       ]).then((res) => res.flat());
 
@@ -151,7 +153,7 @@ export function OpenShiftContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
         const deploymentLoaderPromises = Promise.all([
-          deploymentLoaderPipeline.execute(),
+          Promise.resolve([]), //deploymentLoaderPipeline.execute(), TODO OPERATE-FIRST: hide knative deployments
           devModeDeploymentLoaderPipeline.execute(),
         ]).then((res) => res.flat());
         deploymentLoaderPromises

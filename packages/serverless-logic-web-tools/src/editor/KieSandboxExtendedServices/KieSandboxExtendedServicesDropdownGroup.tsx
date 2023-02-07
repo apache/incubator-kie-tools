@@ -26,6 +26,7 @@ interface Props {
   alerts: AlertsController | undefined;
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
+  canContentBeDeployed: boolean;
 }
 
 export function KieSandboxExtendedServicesDropdownGroup(props: Props) {
@@ -33,6 +34,7 @@ export function KieSandboxExtendedServicesDropdownGroup(props: Props) {
     alerts: props.alerts,
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
+    canContentBeDeployed: props.canContentBeDeployed,
   });
 
   return (

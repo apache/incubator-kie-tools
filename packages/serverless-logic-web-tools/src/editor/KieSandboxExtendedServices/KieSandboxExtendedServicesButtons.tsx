@@ -37,6 +37,7 @@ interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
+  canContentBeDeployed: boolean;
 }
 
 export function KieSandboxExtendedServicesButtons(props: Props) {
@@ -45,6 +46,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
     alerts: props.alerts,
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
+    canContentBeDeployed: props.canContentBeDeployed,
   });
   const openshift = useOpenShift();
   const settings = useSettings();

@@ -19,16 +19,14 @@ import { ListRoutes } from "@kie-tools-core/openshift/dist/api/kubernetes/Route"
 import {
   DeploymentDescriptor,
   DeploymentGroupDescriptor,
-  RouteDescriptor,
   RouteGroupDescriptor,
 } from "@kie-tools-core/openshift/dist/api/types";
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
-import { __RouterContext } from "react-router";
-import { AppLabelNames, WebToolsOpenShiftDeployedModel } from "../deploy/types";
-import { buildEndpoints, DevModeEndpoints } from "../devMode/DevModeConstants";
-import { OpenShiftPipeline } from "../OpenShiftPipeline";
+import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
+import { buildEndpoints, DevModeEndpoints, fetchWithTimeout } from "../devMode/DevModeConstants";
+import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 
 interface ExtendedDeployment {
   endpoints: DevModeEndpoints;
@@ -36,23 +34,29 @@ interface ExtendedDeployment {
   state: OpenShiftDeploymentState;
 }
 
+interface DevModeDeploymentLoaderPipelineArgs {
+  webToolsId: string;
+}
+
 export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsOpenShiftDeployedModel[]> {
+  constructor(protected readonly args: OpenShiftPipelineArgs & DevModeDeploymentLoaderPipelineArgs) {
+    super(args);
+  }
+
   public async execute(): Promise<WebToolsOpenShiftDeployedModel[]> {
     try {
-      const deployments = await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-        fetcher.execute<DeploymentGroupDescriptor>({
-          target: new ListDeployments({
-            namespace: this.args.namespace,
-            labelSelector: AppLabelNames.DEV_MODE,
-          }),
-        })
-      );
+      const deployments = (
+        await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
+          fetcher.execute<DeploymentGroupDescriptor>({
+            target: new ListDeployments({
+              namespace: this.args.namespace,
+              labelSelector: this.args.webToolsId,
+            }),
+          })
+        )
+      ).items.filter((d) => d.metadata.name === this.resolveResourceName());
 
-      const devModeDeployments = deployments.items.filter(
-        (d) => d.metadata.labels && !!d.metadata.labels[AppLabelNames.DEV_MODE]
-      );
-
-      if (deployments.items.length === 0) {
+      if (deployments.length === 0) {
         return [];
       }
 
@@ -64,14 +68,37 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
             }),
           })
         )
-      ).items.filter((route) => devModeDeployments.some((d) => route.metadata.name === d.metadata.name));
+      ).items.filter((route) => deployments.some((d) => route.metadata.name === d.metadata.name));
 
-      const extendedDeployments = await this.buildExtendedDeployments({
-        routes: devModeRoutes,
-        deployments: devModeDeployments,
+      const extendedDeployments = devModeRoutes.map((route) => {
+        const routeUrl = this.args.openShiftService.kubernetes.composeRouteUrl(route);
+        const deployment = deployments.filter((d) => d.metadata.name === route.metadata.name)[0];
+        const state = this.args.openShiftService.kubernetes.extractDeploymentState({ deployment });
+        return { endpoints: buildEndpoints(routeUrl), state, deployment };
       });
 
-      return extendedDeployments.map((ed: ExtendedDeployment) => ({
+      const healthCheckedExtendedDeployments = [];
+      for (const ed of extendedDeployments) {
+        if (ed.state !== OpenShiftDeploymentState.UP) {
+          healthCheckedExtendedDeployments.push(ed);
+        } else {
+          try {
+            const readyResponse = await fetchWithTimeout(ed.endpoints.health.ready, { timeout: 1000 });
+            healthCheckedExtendedDeployments.push({
+              ...ed,
+              state: readyResponse.ok ? OpenShiftDeploymentState.UP : OpenShiftDeploymentState.IN_PROGRESS,
+            });
+          } catch (e) {
+            console.debug(e);
+            healthCheckedExtendedDeployments.push({
+              ...ed,
+              state: OpenShiftDeploymentState.IN_PROGRESS,
+            });
+          }
+        }
+      }
+
+      return healthCheckedExtendedDeployments.map((ed: ExtendedDeployment) => ({
         resourceName: ed.deployment.metadata.name,
         uri: ed.deployment.metadata.annotations![ResourceLabelNames.URI],
         routeUrl: ed.endpoints.base,
@@ -85,37 +112,8 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
     }
   }
 
-  private async buildExtendedDeployments(args: {
-    routes: RouteDescriptor[];
-    deployments: DeploymentDescriptor[];
-  }): Promise<ExtendedDeployment[]> {
-    return Promise.all(
-      args.routes
-        .map((route) => {
-          const routeUrl = this.args.openShiftService.kubernetes.composeRouteUrl(route);
-          return {
-            resourceName: route.metadata.name,
-            endpoints: buildEndpoints(routeUrl),
-          };
-        })
-        .map(async (mapArgs: { resourceName: string; endpoints: DevModeEndpoints }) => {
-          const deployment = args.deployments.filter((d) => d.metadata.name === mapArgs.resourceName)[0];
-          const state = this.args.openShiftService.kubernetes.extractDeploymentState({ deployment });
-          const extended = { endpoints: mapArgs.endpoints, state, deployment };
-          if (state !== OpenShiftDeploymentState.UP) {
-            return extended;
-          }
-          try {
-            const readyResponse = await fetch(mapArgs.endpoints.health.ready);
-            if (readyResponse.ok) {
-              return { ...extended, state: OpenShiftDeploymentState.UP };
-            }
-          } catch (e) {
-            console.debug(e);
-          }
-
-          return { ...extended, state: OpenShiftDeploymentState.IN_PROGRESS };
-        })
-    );
+  // TODO CAPONETTO: maybe move this to a common place
+  private resolveResourceName(): string {
+    return `devmode-${this.args.webToolsId}`;
   }
 }

@@ -17,11 +17,11 @@
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import * as React from "react";
 import { useContext } from "react";
-import { DevModeEndpoints } from "./DevModeConstants";
+import { DevModeEndpoints, DevModeUploadResult } from "./DevModeConstants";
 
 export interface DevModeContextType {
   endpoints: DevModeEndpoints | undefined;
-  upload(files: WorkspaceFile[]): Promise<boolean>;
+  upload(files: WorkspaceFile[]): Promise<DevModeUploadResult>;
   checkHealthReady(): Promise<boolean>;
 }
 

@@ -19,14 +19,15 @@ package org.kie.kogito.service;
 import io.quarkus.runtime.Startup;
 import org.apache.commons.io.FileUtils;
 import org.jboss.logging.Logger;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.*;
+import java.util.Objects;
 
 @Startup
 @ApplicationScoped
@@ -77,9 +78,24 @@ public class UploadServiceImpl implements UploadService {
         folder.mkdirs();
     }
 
-    private void validateIncomingFiles() {
+    private void validateIncomingFiles() throws IOException {
         LOGGER.info("Validate incoming files");
-        // TODO CAPONETTO: validate SWF file before copying to resources
+        // TODO CAPONETTO: improve this very simple logic; also assuming for now that all files are SW files
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(UNZIP_FOLDER))) {
+            for (Path path : stream) {
+                try {
+                    String format = path.getFileName().endsWith(".sw.json") ? "json" : "yml";
+                    ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(
+                            new InputStreamReader(new FileInputStream(path.toAbsolutePath().toString())),
+                            format,
+                            JavaKogitoBuildContext.builder().build());
+                    LOGGER.info("Workflow validated: " + parser.getProcessInfo().info().getId());
+                } catch (Exception e) {
+                    path.toFile().delete();
+                    LOGGER.error("Error when validating file", e);
+                }
+            }
+        }
     }
 
     private void cleanUpFolder(final String folderPath) throws IOException {

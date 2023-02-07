@@ -76,9 +76,3 @@ export type InitSwfDeployArgs = InitDeployArgs & {
     kind: DeploymentStrategyKind.KOGITO_PROJECT | DeploymentStrategyKind.KOGITO_SWF_MODEL;
   };
 };
-
-export type DeployMode = "dev" | "user";
-
-export const AppLabelNames = {
-  DEV_MODE: "kogito.kie.org/dev-mode",
-};

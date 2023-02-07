@@ -69,6 +69,7 @@
     "react-dropzone": "^11.4.2",
     "react-router": "^5.2.1",
     "react-router-dom": "^5.2.1",
+    "uuid": "^8.3.2",
     "vscode-languageserver-types": "^3.16.0",
     "yaml": "^2.0.1"
   },
@@ -95,6 +96,7 @@
     "@types/react-dom": "^17.0.5",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
+    "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^11.0.0",
     "cypress": "^12.5.1",
     "cypress-file-upload": "^5.0.8",

@@ -5487,6 +5487,9 @@ importers:
       react-router-dom:
         specifier: ^5.2.1
         version: 5.3.0(react@17.0.2)
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
       vscode-languageserver-types:
         specifier: ^3.16.0
         version: 3.17.2
@@ -5560,6 +5563,9 @@ importers:
       "@types/react-router-dom":
         specifier: ^5.1.7
         version: 5.1.7
+      "@types/uuid":
+        specifier: ^8.3.0
+        version: 8.3.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
