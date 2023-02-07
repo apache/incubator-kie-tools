@@ -1,12 +1,12 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
  *
+ *        http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,57 +14,37 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import InfoAltIcon from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
-import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
+import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthead";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
   DescriptionList,
   DescriptionListTerm,
   DescriptionListGroup,
   DescriptionListDescription,
-  Divider,
-} from "@patternfly/react-core";
-
-export function OnlineEditorPage(props: { children?: React.ReactNode }) {
-  const history = useHistory();
-  const routes = useRoutes();
-}
+} from "@patternfly/react-core/dist/js/components/DescriptionList";
 
 export const AboutButton: React.FunctionComponent = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const history = useHistory();
   const routes = useRoutes();
-  const handleModalToggle = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
-  const buildInfo = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__buildInfo"];
+  const handleModalToggle = useCallback(() => {
+    setIsModalOpen((prev) => !prev);
   }, []);
-  const kogitoVersion = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__kogitoRuntimeVersion"];
-  }, []);
-  const quarkusVersion = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__quarkusPlatformVersion"];
-  }, []);
-  const dmnImage = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl"];
-  }, []);
-  const extendedVersion = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion"];
-  }, []);
-  const commitSha = useMemo(() => {
-    return process.env.COMMIT_HASH;
-  }, []);
+  const buildInfo = process.env.WEBPACK_REPLACE__buildInfo;
+  const kogitoVersion = process.env.WEBPACK_REPLACE__kogitoRuntimeVersion;
+  const quarkusVersion = process.env.WEBPACK_REPLACE__quarkusPlatformVersion;
+  const dmnImage = process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl;
+  const extendedVersion = process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion;
+  const commitSha = process.env.WEBPACK_REPLACE__commitHash;
 
   return (
     <React.Fragment>
