@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as unstyled from "../";
+import * as unstyled from "..";
 
 it("exports everything", () => {
   expect(unstyled).toEqual({
