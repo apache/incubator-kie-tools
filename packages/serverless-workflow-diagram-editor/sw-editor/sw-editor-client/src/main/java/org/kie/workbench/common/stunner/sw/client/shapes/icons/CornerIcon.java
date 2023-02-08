@@ -46,7 +46,6 @@ public class CornerIcon extends Group {
 
         PrimitiveTextTooltip tooltipElement = PrimitiveTextTooltip.Builder.build(tooltipText);
         tooltipElement.withText(t -> {
-            moveToTop();
             t.setText(tooltipText);
             t.setFontSize(12);
         });
@@ -61,6 +60,7 @@ public class CornerIcon extends Group {
         add(clockIcon);
 
         mouseEnterHandler = border.addNodeMouseEnterHandler(event -> {
+            this.getParent().moveToTop();
             tooltipElement.show();
             clockIcon.setFillColor("#4F5255");
         });
