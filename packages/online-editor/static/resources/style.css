@@ -19,6 +19,10 @@
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
 
+.kie-sandbox--logo {
+  display: flex;
+}
+
 .pf-c-dropdown__group-title {
   white-space: nowrap;
 }
