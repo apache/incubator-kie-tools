@@ -162,64 +162,40 @@ test("<DateField> - renders a input which correctly reacts on change (TimePicker
 });
 
 test("<DateField> - test max property - valid", () => {
-  const onChange = jest.fn();
-
   const date = "1998-12-31";
   const max = "1999-01-01T00:00:00Z";
   render(
-    usingUniformsContext(
-      <DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />,
-      { x: { type: Date } },
-      { onChange }
-    )
+    usingUniformsContext(<DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
   );
 
   expect(screen.queryByTestId("Should be before")).toBeNull();
 });
 
 test("<DateField> - test max property - invalid", () => {
-  const onChange = jest.fn();
-
   const date = "1999-01-02";
   const max = "1999-01-01T00:00:00.000Z";
   render(
-    usingUniformsContext(
-      <DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />,
-      { x: { type: Date } },
-      { onChange }
-    )
+    usingUniformsContext(<DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
   );
 
   expect(screen.getByText(`Should be before ${max}`)).toBeInTheDocument();
 });
 
 test("<DateField> - test min property - valid", () => {
-  const onChange = jest.fn();
-
   const date = "1999-01-02";
   const min = "1999-01-01T00:00:00Z";
   render(
-    usingUniformsContext(
-      <DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />,
-      { x: { type: Date } },
-      { onChange }
-    )
+    usingUniformsContext(<DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
   );
 
   expect(screen.queryByTestId("Should be after")).toBeNull();
 });
 
 test("<DateField> - test min property - invalid", () => {
-  const onChange = jest.fn();
-
   const date = "1998-12-31";
   const min = "1999-01-01T00:00:00.000Z";
   render(
-    usingUniformsContext(
-      <DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />,
-      { x: { type: Date } },
-      { onChange }
-    )
+    usingUniformsContext(<DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
   );
 
   expect(screen.getByText(`Should be after ${min}`)).toBeInTheDocument();
