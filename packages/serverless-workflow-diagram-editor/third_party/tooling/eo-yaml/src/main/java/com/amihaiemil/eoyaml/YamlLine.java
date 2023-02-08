@@ -27,6 +27,8 @@
  */
 package com.amihaiemil.eoyaml;
 
+import com.amihaiemil.eoyaml.exceptions.YamlReadingException;
+
 /**
  * A line of yaml.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -41,10 +43,40 @@ interface YamlLine extends Comparable<YamlLine> {
     int UNKNOWN_LINE_NUMBER = -1;
 
     /**
+     * The line's value, untrimmed, containing comments etc.
+     * @return String.
+     */
+    String value();
+
+    /**
      * The line's trimmed contents with comments, aliases etc removed.
      * @return Trimmed string (leading and trailing spaces) contents.
+     * @todo #374:60min There's a missing condition in this method, removed
+     *  as a workaround in Pull Request 375. Debug, find the reason and
+     *  implement a better solution for ticket 374. This is rather low prio.
      */
-    String trimmed();
+    default String trimmed() {
+        String trimmed = this.value().trim();
+        int i = 0;
+        while(i < trimmed.length()) {
+            if(i > 0 && trimmed.charAt(i) == '#') {
+                trimmed = trimmed.substring(0, i);
+                break;
+            } else if(trimmed.charAt(i) == '"') {
+                i++;
+                while(i < trimmed.length() && trimmed.charAt(i) != '"') {
+                    i++;
+                }
+            } else if(trimmed.charAt(i) == '\'') {
+                i++;
+                while(i < trimmed.length() && trimmed.charAt(i) != '\'') {
+                    i++;
+                }
+            }
+            i++;
+        }
+        return trimmed.trim();
+    }
 
     /**
      * The line's contents with spaces, tabs, etc maintained.
@@ -52,13 +84,47 @@ interface YamlLine extends Comparable<YamlLine> {
      *                       to remove leading spaces.
      * @return String line contents.
      */
-    String contents(int previousIndent);
+    default String contents(final int previousIndent) {
+        String contents;
+        int indentation = indentation();
+        if (indentation == 0 && previousIndent <= 0) {
+            contents = this.value();
+        } else if (indentation > previousIndent) {
+            contents = this.value().substring(previousIndent + 2);
+        } else {
+            throw new YamlReadingException("Literal must be indented "
+                + "at least 2 spaces from previous element.");
+        }
+        return contents;
+    }
 
     /**
      * Return the comment, if any, from this line.
      * @return Comment of empty string.
      */
-    String comment();
+    default String comment() {
+        String comment = "";
+        String trimmed = this.value().trim();
+        int i = 0;
+        while(i < trimmed.length()) {
+            if(trimmed.charAt(i) == '#') {
+                comment = trimmed.substring(i + 1);
+                break;
+            } else if(trimmed.charAt(i) == '"') {
+                i++;
+                while(i < trimmed.length() && trimmed.charAt(i) != '"') {
+                    i++;
+                }
+            } else if(trimmed.charAt(i) == '\'') {
+                i++;
+                while(i < trimmed.length() && trimmed.charAt(i) != '\'') {
+                    i++;
+                }
+            }
+            i++;
+        }
+        return comment.trim();
+    }
 
     /**
      * Number of the line (count start from 0).
@@ -78,12 +144,47 @@ interface YamlLine extends Comparable<YamlLine> {
      * Do the following line(s) require a deeper indentation than this line's?
      * @return True or false
      */
-    boolean requireNestedIndentation();
+    default boolean requireNestedIndentation() {
+        final boolean result;
+
+        if("---".equals(this.trimmed())) {
+            result = false;
+        } else {
+            final String specialCharacters = "-?";
+            final CharSequence prevLineLastChar =
+                this.trimmed().substring(this.trimmed().length() - 1);
+            result = specialCharacters.contains(prevLineLastChar);
+        }
+        return result;
+    }
+
+    /**
+     * Compare this line to another.
+     * @param other Other line to compare.
+     * @return Zero if same line object, 1 if other is null, or string
+     *  comparison of the trimmed (no spaces or comments) values.
+     */
+    default int compareTo(final YamlLine other) {
+        int result = -1;
+        if (this == other) {
+            result = 0;
+        } else if (other == null) {
+            result = 1;
+        } else {
+            result = this.trimmed().compareTo(other.trimmed());
+        }
+        return result;
+    }
 
     /**
      * YamlLine null object.
      */
     class NullYamlLine implements YamlLine {
+
+        @Override
+        public String value() {
+            return "";
+        }
 
         @Override
         public String trimmed() {
@@ -96,11 +197,6 @@ interface YamlLine extends Comparable<YamlLine> {
         }
 
         @Override
-        public String comment() {
-            return "";
-        }
-
-        @Override
         public int number() {
             return UNKNOWN_LINE_NUMBER;
         }
@@ -108,16 +204,6 @@ interface YamlLine extends Comparable<YamlLine> {
         @Override
         public int indentation() {
             return -1;
-        }
-
-        @Override
-        public int compareTo(final YamlLine other) {
-            return -1;
-        }
-
-        @Override
-        public boolean requireNestedIndentation() {
-            return false;
         }
 
     }

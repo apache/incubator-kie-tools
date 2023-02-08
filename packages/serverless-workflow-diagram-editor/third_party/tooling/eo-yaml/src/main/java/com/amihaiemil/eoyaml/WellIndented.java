@@ -62,7 +62,6 @@ import com.amihaiemil.eoyaml.exceptions.YamlIndentationException;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id: 5c56959866454db16c9d07e9546bf73c6b0b1930 $
  * @since 3.1.2
- *
  */
 final class WellIndented implements YamlLines {
 
@@ -111,45 +110,48 @@ final class WellIndented implements YamlLines {
         final Iterator<YamlLine> iterator = this.yamlLines.iterator();
         final List<YamlLine> wellIndented = new ArrayList<>();
         YamlLine previous;
+        boolean withinBlockScalar = false;
         if(iterator.hasNext()) {
             previous = iterator.next();
             wellIndented.add(previous);
             while(iterator.hasNext()) {
                 YamlLine line = iterator.next();
                 if(!(previous instanceof YamlLine.NullYamlLine)) {
+                    final CharSequence prevLineLastChar =
+                        previous.trimmed().substring(previous.trimmed().length() - 1);
+                    if(">|".contains(prevLineLastChar)) {
+                        withinBlockScalar = true;
+                    }
                     int prevIndent = previous.indentation();
-                    if(previous.trimmed().matches("^[ ]*\\-.*\\:.*$")) {
+                    if(previous.trimmed().matches("^\\s*-.*:(|\\s.*)$")) {
+                        withinBlockScalar = false;
                         prevIndent += 2;
                     }
-                    int lineIndent = line.indentation();
-                    if(previous.requireNestedIndentation()) {
-                        if(lineIndent != prevIndent + 2) {
-                            if(this.guessIndentation) {
-                                line = new Indented(line, prevIndent + 2);
-                            } else {
+                    if(!withinBlockScalar) {
+                        int lineIndent = line.indentation();
+                        if (previous.requireNestedIndentation()) {
+                            if (lineIndent < prevIndent + 2) {
                                 throw new YamlIndentationException(
                                     "Indentation of line " + (line.number() + 1)
-                                  + " [" + line.trimmed() + "]"
-                                  + " is not ok. It should be greater than the one"
-                                  + " of line " + (previous.number() + 1)
-                                  + " [" + previous.trimmed() + "]"
-                                  + " by 2 spaces."
+                                    + " [" + line.trimmed() + "]"
+                                    + " is not ok. It should be greater than the one"
+                                    + " of line " + (previous.number() + 1)
+                                    + " [" + previous.trimmed() + "]"
+                                    + " by at least 2 spaces."
                                 );
                             }
-                        }
-                    } else {
-                        if(!"---".equals(previous.trimmed()) && lineIndent > prevIndent) {
-                            if(this.guessIndentation) {
-                                line = new Indented(line, prevIndent);
-                            } else {
-                                throw new YamlIndentationException(
-                                    "Indentation of line " + (line.number() + 1)
-                                  + " [" + line.trimmed() + "]"
-                                  + " is greater than the one of line "
-                                  + (previous.number() + 1)
-                                  + " [" + previous.trimmed() + "]. "
-                                  + "It should be less or equal."
-                                );
+                        } else {
+                            if (!"---".equals(previous.trimmed()) && lineIndent > prevIndent) {
+                                if (!":".contains(prevLineLastChar)) {
+                                    throw new YamlIndentationException(
+                                        "Indentation of line " + (line.number() + 1)
+                                        + " [" + line.trimmed() + "]"
+                                        + " is greater than the one of line "
+                                        + (previous.number() + 1)
+                                        + " [" + previous.trimmed() + "]. "
+                                        + "It should be less or equal."
+                                    );
+                                }
                             }
                         }
                     }
@@ -167,11 +169,8 @@ final class WellIndented implements YamlLines {
     }
 
     @Override
-    public YamlNode toYamlNode(
-        final YamlLine prev,
-        final boolean guessIndent
-    ) {
-        return this.yamlLines.toYamlNode(prev, guessIndent);
+    public YamlNode toYamlNode(final YamlLine prev) {
+        return this.yamlLines.toYamlNode(prev);
     }
 
 }

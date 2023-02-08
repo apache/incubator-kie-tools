@@ -76,7 +76,7 @@ final class RtYamlStreamBuilder implements YamlStreamBuilder {
     /**
      * Built YamlStream.
      * @author Mihai Andronache (amihaiemil@gmail.com)
-     * @version $Id: 559858292b99713877a7f877a21cc5f0db8c51ba $
+     * @version $Id: 916e0db8ff07441ec4f51231fc6ee55487ce73fc $
      * @since 3.1.1
      */
     static class BuiltYamlStream extends BaseYamlStream {

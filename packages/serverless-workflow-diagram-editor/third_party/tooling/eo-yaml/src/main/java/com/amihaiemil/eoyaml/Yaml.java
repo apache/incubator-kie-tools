@@ -104,33 +104,14 @@ public final class Yaml {
     /**
      * Create a {@link YamlInput} from a File.
      * @return YamlInput, reader of Yaml.
-     * @param input File to read from.
-     * @throws FileNotFoundException If the file is not found.
-     */
-    @GwtIncompatible
-    public static YamlInput createYamlInput(final File input)
-        throws FileNotFoundException {
-        return Yaml.createYamlInput(input, Boolean.FALSE);
-    }
-
-    /**
-     * Create a {@link YamlInput} from a File.
-     * @return YamlInput, reader of Yaml.
-     * @param input File to read from.
-     * @param guessIndentation If set to true, we will try to guess the correct
-     *  indentation of misplaced lines. The default value is false
-     *  and an exception is thrown if indentation is not correct.
+     * @param input File to read from
      * @throws FileNotFoundException If the file is not found.
      */
     @GwtIncompatible
     public static YamlInput createYamlInput(
-        final File input,
-        final boolean guessIndentation
+        final File input
     ) throws FileNotFoundException {
-        return Yaml.createYamlInput(
-            new java.io.FileInputStream(input),
-            guessIndentation
-        );
+        return Yaml.createYamlInput(new java.io.FileInputStream(input));
     }
 
     /**
@@ -139,25 +120,7 @@ public final class Yaml {
      * @return YamlInput, reader of Yaml.
      */
     public static YamlInput createYamlInput(final String input) {
-        return Yaml.createYamlInput(input, Boolean.FALSE);
-    }
-
-    /**
-     * Create a {@link YamlInput} from a String.
-     * @param input String to read from.
-     * @param guessIndentation If set to true, we will try to guess the correct
-     *  indentation of misplaced lines. The default value is false
-     *  and an exception is thrown if indentation is not correct.
-     * @return YamlInput, reader of Yaml.
-     */
-    public static YamlInput createYamlInput(
-        final String input,
-        final boolean guessIndentation
-    ) {
-        return Yaml.createYamlInput(
-            new ByteArrayInputStream(input.getBytes()),
-            guessIndentation
-        );
+        return Yaml.createYamlInput(new ByteArrayInputStream(input.getBytes()));
     }
 
     /**
@@ -166,22 +129,7 @@ public final class Yaml {
      * @return YamlInput, reader of Yaml.
      */
     public static YamlInput createYamlInput(final InputStream input) {
-        return Yaml.createYamlInput(input, Boolean.FALSE);
-    }
-
-    /**
-     * Create a {@link YamlInput} from an InputStream.
-     * @param input InputStream to read from.
-     * @param guessIndentation If set to true, we will try to guess the correct
-     *  indentation of misplaced lines. The default value is false
-     *  and an exception is thrown if indentation is not correct.
-     * @return YamlInput, reader of Yaml.
-     */
-    public static YamlInput createYamlInput(
-        final InputStream input,
-        final boolean guessIndentation
-    ) {
-        return new RtYamlInput(input, guessIndentation);
+        return new RtYamlInput(input);
     }
 
     /**

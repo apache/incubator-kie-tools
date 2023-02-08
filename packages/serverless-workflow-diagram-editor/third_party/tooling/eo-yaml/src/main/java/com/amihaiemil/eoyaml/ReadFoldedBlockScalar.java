@@ -91,6 +91,17 @@ final class ReadFoldedBlockScalar extends BaseFoldedScalar {
             new Skip(
                 lines,
                 line -> line.number() <= previous.number(),
+                line -> {
+                    final YamlLine key = previous;
+                    final Skip.Line skipLine = (Skip.Line) line;
+                    if(skipLine.indentation() == key.indentation()) {
+                        // mark that we finished the block by storing the
+                        // block's key line
+                        skipLine.store(key);
+                    }
+                    // if the key is set then we can safely skip remaining lines
+                    return skipLine.getStored().equals(key);
+                },
                 line -> line.trimmed().endsWith(">"),
                 line -> line.trimmed().startsWith("---"),
                 line -> line.trimmed().startsWith("..."),

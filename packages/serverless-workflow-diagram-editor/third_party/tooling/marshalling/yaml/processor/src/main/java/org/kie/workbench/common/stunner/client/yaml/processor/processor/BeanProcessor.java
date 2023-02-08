@@ -107,8 +107,6 @@ public class BeanProcessor {
         return;
       } else if (MoreTypes.isType(type)) {
         if (!MoreTypes.asElement(type).getKind().equals(ElementKind.ENUM)) {
-
-          System.out.println("type = " + type);
           processBean(typeUtils.toTypeElement(type));
         }
       }

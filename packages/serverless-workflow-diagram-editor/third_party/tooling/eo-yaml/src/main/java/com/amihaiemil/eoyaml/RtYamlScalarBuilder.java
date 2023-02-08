@@ -90,7 +90,7 @@ final class RtYamlScalarBuilder implements YamlScalarBuilder {
     /**
      * A built folded block Scalar.
      * @author Mihai Andronache (amihaiemil@gmail.com)
-     * @version $Id: 5ae1914a3e1fa64d96e6886324312fe2149723e2 $
+     * @version $Id: b7c5a66de40c0707d81584bf943b9f5a1776466a $
      * @since 4.0.0
      */
     static class BuiltFoldedBlockScalar extends BaseFoldedScalar {
@@ -157,7 +157,7 @@ final class RtYamlScalarBuilder implements YamlScalarBuilder {
     /**
      * A built literal block Scalar.
      * @author Mihai Andronache (amihaiemil@gmail.com)
-     * @version $Id: 5ae1914a3e1fa64d96e6886324312fe2149723e2 $
+     * @version $Id: b7c5a66de40c0707d81584bf943b9f5a1776466a $
      * @since 4.0.0
      */
     static class BuiltLiteralBlockScalar extends BaseScalar {

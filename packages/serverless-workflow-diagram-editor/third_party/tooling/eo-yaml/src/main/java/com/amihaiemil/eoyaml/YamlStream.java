@@ -197,7 +197,7 @@ public interface YamlStream extends YamlNode, Stream<YamlNode> {
     }
 
     default <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super YamlNode> accumulator,
-                          BiConsumer<R, R> combiner) {
+                         BiConsumer<R, R> combiner) {
         return this.values().stream().collect(supplier, accumulator, combiner);
     }
 

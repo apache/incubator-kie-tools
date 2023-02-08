@@ -27,8 +27,6 @@
  */
 package com.amihaiemil.eoyaml;
 
-import com.amihaiemil.eoyaml.exceptions.YamlReadingException;
-
 /**
  * Default implementation of {@link YamlLine}.
  * "Rt" stands for "Runtime".
@@ -60,67 +58,8 @@ final class RtYamlLine implements YamlLine {
     }
 
     @Override
-    public String trimmed() {
-        String trimmed = this.value.trim();
-        int i = 0;
-        while(i < trimmed.length()) {
-            if(i > 0 && trimmed.charAt(i) == '#') {
-                trimmed = trimmed.substring(0, i);
-                break;
-            } else if(trimmed.charAt(i) == '"') {
-                i++;
-                while(i < trimmed.length() && trimmed.charAt(i) != '"') {
-                    i++;
-                }
-            } else if(trimmed.charAt(i) == '\'') {
-                i++;
-                while(i < trimmed.length() && trimmed.charAt(i) != '\'') {
-                    i++;
-                }
-            }
-            i++;
-        }
-        return trimmed.trim();
-    }
-
-    @Override
-    public String contents(final int previousIndent) {
-        String contents;
-        int indentation = indentation();
-        if (indentation == 0 && previousIndent <= 0) {
-            contents = this.value;
-        } else if (indentation > previousIndent) {
-            contents = this.value.substring(previousIndent + 2);
-        } else {
-            throw new YamlReadingException("Literal must be indented "
-                    + "at least 2 spaces from previous element.");
-        }
-        return contents;
-    }
-
-    @Override
-    public String comment() {
-        String comment = "";
-        String trimmed = this.value.trim();
-        int i = 0;
-        while(i < trimmed.length()) {
-            if(trimmed.charAt(i) == '#') {
-                comment = trimmed.substring(i + 1);
-                break;
-            } else if(trimmed.charAt(i) == '"') {
-                i++;
-                while(i < trimmed.length() && trimmed.charAt(i) != '"') {
-                    i++;
-                }
-            } else if(trimmed.charAt(i) == '\'') {
-                i++;
-                while(i < trimmed.length() && trimmed.charAt(i) != '\'') {
-                    i++;
-                }
-            }
-            i++;
-        }
-        return comment.trim();
+    public String value() {
+        return this.value;
     }
 
     @Override
@@ -140,33 +79,5 @@ final class RtYamlLine implements YamlLine {
     @Override
     public String toString() {
         return this.value;
-    }
-
-    @Override
-    public int compareTo(final YamlLine other) {
-        int result = -1;
-        if (this == other) {
-            result = 0;
-        } else if (other == null) {
-            result = 1;
-        } else {
-            result = this.trimmed().compareTo(other.trimmed());
-        }
-        return result;
-    }
-
-    @Override
-    public boolean requireNestedIndentation() {
-        final boolean result;
-
-        if("---".equals(this.trimmed())) {
-            result = false;
-        } else {
-            final String specialCharacters = ":>|-?";
-            final CharSequence prevLineLastChar =
-                this.trimmed().substring(this.trimmed().length() - 1);
-            result = specialCharacters.contains(prevLineLastChar);
-        }
-        return result;
     }
 }

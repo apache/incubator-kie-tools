@@ -365,7 +365,7 @@ final class RtYamlPrinter implements YamlPrinter {
     /**
      * A scalar which escapes its value.
      * @author Mihai Andronache (amihaiemil@gmail.com)
-     * @version $Id: 62ce12fb9a51909526d63bad9ee39606cb85fe60 $
+     * @version $Id: 90b06106eb678a89747f11644ad24b4b73fa124b $
      * @since 4.3.1
      */
     static class Escaped extends BaseScalar {

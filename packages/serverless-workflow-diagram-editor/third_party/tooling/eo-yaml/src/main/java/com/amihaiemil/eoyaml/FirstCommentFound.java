@@ -94,11 +94,8 @@ final class FirstCommentFound implements YamlLines {
     }
 
     @Override
-    public YamlNode toYamlNode(
-        final YamlLine prev,
-        final boolean guessIndentation
-    ) {
-        return this.lines.toYamlNode(prev, guessIndentation);
+    public YamlNode toYamlNode(final YamlLine prev) {
+        return this.lines.toYamlNode(prev);
     }
 
     /**
@@ -117,10 +114,8 @@ final class FirstCommentFound implements YamlLines {
             final YamlLine line = iterator.next();
             boolean hasComment = !line.comment().isEmpty();
             boolean notYamlStart = !"---".equals(line.trimmed());
-            if(notYamlStart && hasComment) {
-                if(line.trimmed().startsWith("#")) {
-                    comment.add(line);
-                }
+            if(notYamlStart && hasComment && line.trimmed().startsWith("#")) {
+                comment.add(line);
             } else {
                 break;
             }
