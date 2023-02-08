@@ -80,12 +80,18 @@ function TextField(props: TextFieldProps) {
       if (parsedTime && typeof props.min === "string" && timeRgx.exec(props.min)) {
         const parsedMin = parseTime(props.min)!;
         if (parsedTime < parsedMin) {
+          if (parsedMin.getUTCMinutes() < 10) {
+            return `Should be after ${parsedMin.getUTCHours()}:0${parsedMin.getUTCMinutes()}`;
+          }
           return `Should be after ${parsedMin.getUTCHours()}:${parsedMin.getUTCMinutes()}`;
         }
       }
       if (parsedTime && typeof props.max === "string" && timeRgx.exec(props.max)) {
         const parsedMax = parseTime(props.max)!;
         if (parsedTime > parsedMax) {
+          if (parsedMax.getUTCMinutes() < 10) {
+            return `Should be before ${parsedMax.getUTCHours()}:0${parsedMax.getUTCMinutes()}`;
+          }
           return `Should be before ${parsedMax.getUTCHours()}:${parsedMax.getUTCMinutes()}`;
         }
       }
@@ -112,7 +118,6 @@ function TextField(props: TextFieldProps) {
     [props.disabled, props.onChange]
   );
 
-  // https://github.com/aerogear/uniforms-patternfly/issues/106
   const { helperText, ...withoutHelperTextProps } = props;
 
   return wrapField(
@@ -120,7 +125,7 @@ function TextField(props: TextFieldProps) {
     props.type === "date" || props.field?.format === "date" ? (
       <>
         <DatePicker
-          data-testid={"text-field"}
+          data-testid={"text-field-date-picker"}
           name={props.name}
           isDisabled={props.disabled}
           onChange={onDateChange}
@@ -142,6 +147,7 @@ function TextField(props: TextFieldProps) {
     ) : props.type === "time" || props.field?.format === "time" ? (
       <>
         <TimePicker
+          data-testid={"text-field-time-picker"}
           name={props.name}
           isDisabled={props.disabled}
           onChange={onTimeChange}
