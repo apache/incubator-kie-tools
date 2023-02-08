@@ -600,6 +600,9 @@ section.kie-tools--settings-tab {
 #editor-page-masthead-files-dropdown-toggle {
   padding-left: 0;
 }
+.kogito-tools-common--brand {
+  height: 28.6px;
+}
 
 .pf-c-expandable-section.plain .pf-c-expandable-section__toggle {
   color: black;

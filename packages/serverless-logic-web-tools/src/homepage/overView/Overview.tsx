@@ -110,7 +110,7 @@ export function Overview(props: { isNavOpen: boolean }) {
               variant={ButtonVariant.secondary}
               component="a"
             >
-              Get Started with Serverless Logig Web Tools
+              Get Started with Serverless Logic Web Tools
             </Button>
           </StackItem>
         </Stack>
@@ -184,7 +184,14 @@ export function Overview(props: { isNavOpen: boolean }) {
           <GridItem md={7}>
             <Card className="appsrv-marketing--video">
               {/* TODO: Overview:  replace this placeholder with a real video */}
-              <img src="images/openshift_slwt_youtube_video.png" />
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/aBxc1-o6gBI"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
             </Card>
           </GridItem>
           <GridItem md={5}>

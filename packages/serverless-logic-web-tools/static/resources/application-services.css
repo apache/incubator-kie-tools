@@ -1,3 +1,5 @@
+/* original CSS: https://console.redhat.com/beta/apps/application-services/6f315189.css */
+
 main.applicationServices {
   height: 100%;
 }
@@ -342,4 +344,7 @@ tr.mas--ResponsiveTable__Tr--deleted > td {
 
 .pf-u-color-400 {
   color: var(--pf-global--Color--400) !important;
+}
+.chr-c-navigation__additional-links svg {
+  margin-left: var(--pf-global--spacer--sm);
 }

@@ -17,6 +17,7 @@
 import * as React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 
 export function HomePageNav(props: { pathname: string }) {
   return (
@@ -36,8 +37,16 @@ export function HomePageNav(props: { pathname: string }) {
             <Link to="/SampleCatalog">Sample Catalog</Link>
           </NavItem>
 
-          <NavItem itemId={3} key={"Documentation-nav"} isActive={props.pathname === "/Documentation"}>
-            <Link to="/Documentation">Documentation</Link>
+          <NavItem
+            itemId={3}
+            key={"Documentation-nav"}
+            className="chr-c-navigation__additional-links"
+            isActive={props.pathname === "/Documentation"}
+          >
+            <Link to="/Documentation">
+              Documentation
+              <ExternalLinkAltIcon />
+            </Link>
           </NavItem>
         </NavList>
       </Nav>
