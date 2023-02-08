@@ -41,6 +41,10 @@ public class Matcher {
     return matchResult.getAt(group);
   }
 
+  public String group(String group) {
+    return matchResult.groups.get(group);
+  }
+
   public static String quoteReplacement(String s) {
     if ((s.indexOf('\\') == -1) && (s.indexOf('$') == -1)) return s;
     StringBuilder sb = new StringBuilder(s.length());

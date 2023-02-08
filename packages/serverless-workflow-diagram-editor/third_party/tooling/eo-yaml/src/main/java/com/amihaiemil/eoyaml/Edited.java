@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2020, Mihai Emil Andronache
+ * Copyright (c) 2016-2023, Mihai Emil Andronache
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,48 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+package com.amihaiemil.eoyaml;
+
 /**
- * This package contains convenient extensions for both YamlMapping and
- * YamlSequence that provide all sorts of different functionality.
- *
- * Classes within this package are supposed to work only with the public
- * API of this library.
- *
- * In order to create your own extension, you need to extend
- * {@link com.amihaiemil.eoyaml.BaseYamlMapping} or
- * {@link com.amihaiemil.eoyaml.BaseYamlSequence} respectively.
+ * A YamlLine with contents edited by us.
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ * @version $Id: 1b93c3f8df1769be052cc5d00fae945ae29d77df $
+ * @since 7.0.0
  */
-package com.amihaiemil.eoyaml.extensions;
+final class Edited implements YamlLine {
+    /**
+     * New content of the YamlLine.
+     */
+    private final String newContent;
+
+    /**
+     * Original YamlLine to preserve other suff besides the new content.
+     */
+    private final YamlLine original;
+
+    /**
+     * Ctor.
+     * @param newContent New content of the line.
+     * @param original Original line to preserveother stuff such as indentation
+     *  and line number.
+     */
+    Edited(final String newContent, final YamlLine original) {
+        this.newContent = newContent;
+        this.original = original;
+    }
+
+    @Override
+    public String value() {
+        return this.newContent;
+    }
+
+    @Override
+    public int number() {
+        return this.original.number();
+    }
+
+    @Override
+    public int indentation() {
+        return this.original.indentation();
+    }
+}

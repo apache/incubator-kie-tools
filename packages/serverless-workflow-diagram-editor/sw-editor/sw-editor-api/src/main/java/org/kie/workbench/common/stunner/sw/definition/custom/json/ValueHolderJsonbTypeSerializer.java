@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.definition.custom.json;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.core.JsNumber;
 import elemental2.core.Reflect;
 import jakarta.json.JsonArray;
@@ -98,8 +99,10 @@ public class ValueHolderJsonbTypeSerializer implements JsonbDeserializer<ValueHo
                         }
                     }
                     arrayBuilder.writeEnd();
-                } else if (jsonValue instanceof JsonObject) {
+                } else if (jsonValue instanceof JsonObject ) {
                     writeObject(objBuilder, key, ((JsonObject) jsonValue).asJsonObject());
+                } else if(jsonValue instanceof JavaScriptObject) {
+                    writeObject(objBuilder, key, jsonValue);
                 } else {
                     throw new UnsupportedOperationException("unknown type " + jsonValue.getClass().getCanonicalName());
                 }

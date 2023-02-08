@@ -96,10 +96,7 @@ final class GreaterIndentation implements YamlLines {
     }
 
     @Override
-    public YamlNode toYamlNode(
-        final YamlLine prev,
-        final boolean guessIndentation
-    ) {
-        return this.yamlLines.toYamlNode(prev, guessIndentation);
+    public YamlNode toYamlNode(final YamlLine prev) {
+        return this.yamlLines.toYamlNode(prev);
     }
 }

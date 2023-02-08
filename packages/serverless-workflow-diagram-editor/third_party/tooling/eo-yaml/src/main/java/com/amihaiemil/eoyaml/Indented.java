@@ -57,18 +57,8 @@ final class Indented implements YamlLine {
     }
 
     @Override
-    public String trimmed() {
-        return this.original.trimmed();
-    }
-
-    @Override
-    public String contents(final int previousIndent) {
-        return this.original.contents(previousIndent);
-    }
-
-    @Override
-    public String comment() {
-        return this.original.comment();
+    public String value() {
+        return this.original.value();
     }
 
     @Override
@@ -79,15 +69,5 @@ final class Indented implements YamlLine {
     @Override
     public int indentation() {
         return this.indentation;
-    }
-
-    @Override
-    public boolean requireNestedIndentation() {
-        return this.original.requireNestedIndentation();
-    }
-
-    @Override
-    public int compareTo(final YamlLine other) {
-        return this.original.compareTo(other);
     }
 }

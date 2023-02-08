@@ -94,11 +94,8 @@ final class Skip implements YamlLines {
     }
 
     @Override
-    public YamlNode toYamlNode(
-        final YamlLine prev,
-        final boolean guessIndentation
-    ) {
-        return this.yamlLines.toYamlNode(prev, guessIndentation);
+    public YamlNode toYamlNode(final YamlLine prev) {
+        return this.yamlLines.toYamlNode(prev);
     }
 
     /**
@@ -169,18 +166,8 @@ final class Skip implements YamlLines {
         }
 
         @Override
-        public String trimmed() {
-            return this.current.trimmed();
-        }
-
-        @Override
-        public String contents(final int previousIndent) {
-            return this.current.contents(previousIndent);
-        }
-
-        @Override
-        public String comment() {
-            return this.current.comment();
+        public String value() {
+            return this.current.value();
         }
 
         @Override
@@ -191,16 +178,6 @@ final class Skip implements YamlLines {
         @Override
         public int indentation() {
             return this.current.indentation();
-        }
-
-        @Override
-        public boolean requireNestedIndentation() {
-            return this.current.requireNestedIndentation();
-        }
-
-        @Override
-        public int compareTo(final YamlLine other) {
-            return this.current.compareTo(other);
         }
 
         /**

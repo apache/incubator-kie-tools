@@ -50,43 +50,26 @@ final class RtYamlInput implements YamlInput {
     private final InputStream source;
 
     /**
-     * If set to true, we will try to guess the correct indentation
-     * of misplaced lines.
-     */
-    private final boolean guessIndentation;
-
-    /**
      * Ctor.
      * @param source Given source.
      */
     RtYamlInput(final InputStream source) {
-        this(source, false);
-    }
-
-    /**
-     * Ctor.
-     * @param source Given source.
-     * @param guessIndentation If set to true, we will try to guess
-     *  the correct indentation of misplaced lines.
-     */
-    RtYamlInput(final InputStream source, final boolean guessIndentation) {
         this.source = source;
-        this.guessIndentation = guessIndentation;
     }
 
     @Override
     public YamlMapping readYamlMapping() throws IOException {
-        return new ReadYamlMapping(this.readInput(), this.guessIndentation);
+        return new ReadYamlMapping(this.readInput());
     }
 
     @Override
     public YamlSequence readYamlSequence() throws IOException {
-        return new ReadYamlSequence(this.readInput(), this.guessIndentation);
+        return new ReadYamlSequence(this.readInput());
     }
 
     @Override
     public YamlStream readYamlStream() throws IOException {
-        return new ReadYamlStream(this.readInput(), this.guessIndentation);
+        return new ReadYamlStream(this.readInput());
     }
 
     @Override
@@ -193,8 +176,8 @@ final class RtYamlInput implements YamlInput {
     private boolean mappingStartsAtDash(final String line){
         //line without indentation.
         final String trimmed = line.trim();
-        final boolean escapedScalar = trimmed.matches("^[ ]*-[ ]*\".*\"$")
-            || trimmed.matches("^[ ]*-[ ]*'.*'$");
-        return trimmed.matches("^[ ]*-.*:.+$") && !escapedScalar;
+        final boolean escapedScalar = trimmed.matches("^\\s*-\\s*\".*\"$")
+            || trimmed.matches("^\\s*-\\s*'.*'$");
+        return trimmed.matches("^\\s*-.+:\\s.*$") && !escapedScalar;
     }
 }
