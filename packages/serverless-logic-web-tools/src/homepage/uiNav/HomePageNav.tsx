@@ -43,10 +43,10 @@ export function HomePageNav(props: { pathname: string }) {
             className="chr-c-navigation__additional-links"
             isActive={props.pathname === "/Documentation"}
           >
-            <Link to="/Documentation">
+            <a href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html" target="_blank">
               Documentation
               <ExternalLinkAltIcon />
-            </Link>
+            </a>
           </NavItem>
         </NavList>
       </Nav>

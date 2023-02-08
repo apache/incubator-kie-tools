@@ -63,13 +63,6 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
       <Route path="/SampleCatalog">
         <SampleCatalog />
       </Route>
-      <Route
-        path="/Documentation"
-        component={() => {
-          window.open("https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html");
-          return null;
-        }}
-      />
       <Route component={NoMatchPage} />
     </Switch>
   );
