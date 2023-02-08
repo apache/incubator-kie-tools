@@ -6,16 +6,15 @@ import SelectInputsField from "./SelectInputsField";
 import { CheckboxProps } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { RadioProps } from "@patternfly/react-core/dist/js/components/Radio";
 
-export type CheckboxesProps = FieldProps<
+export type SelectCheckboxProps = FieldProps<
   string | string[],
   CheckboxProps | RadioProps,
   {
-    checkboxes: true;
-    fieldType?: typeof Array | any;
     onChange: (value?: string | string[]) => void;
     transform?: (value?: string) => string;
     allowedValues: string[];
     id?: string;
+    fieldType?: typeof Array | any;
     disabled?: boolean;
   }
 >;
@@ -24,7 +23,7 @@ export type SelectInputProps = FieldProps<
   string | string[],
   SelectProps,
   {
-    checkboxes: false;
+    checkboxes?: boolean;
     required?: boolean;
     fieldType?: typeof Array | any;
     onChange: (value?: string | string[] | number | number[]) => void;
@@ -38,13 +37,17 @@ export type SelectInputProps = FieldProps<
   }
 >;
 
-type SelectFieldProps = CheckboxesProps | SelectInputProps;
+type SelectFieldProps = SelectCheckboxProps | SelectInputProps;
 
-function SelectField(props: SelectFieldProps) {
-  if (props.checkboxes) {
-    return <SelectCheckboxField data-testid={"select-checkbox-field"} {...props} />;
-  }
-  return <SelectInputsField data-testid={"select-input-field"} {...props} />;
+function isSelectCheckboxProps(toBeDetermined: SelectFieldProps): toBeDetermined is SelectCheckboxProps {
+  return (toBeDetermined as SelectInputProps).checkboxes === true;
 }
 
-export default connectField<SelectFieldProps>(SelectField as any);
+function SelectField(props: SelectFieldProps) {
+  if (isSelectCheckboxProps(props)) {
+    return <SelectCheckboxField {...props} />;
+  }
+  return <SelectInputsField {...props} />;
+}
+
+export default connectField<SelectFieldProps>(SelectField);

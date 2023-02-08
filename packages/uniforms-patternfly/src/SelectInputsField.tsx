@@ -23,6 +23,7 @@ import {
   SelectVariant,
 } from "@patternfly/react-core/dist/js/components/Select";
 import wrapField from "./wrapField";
+import { filterDOMProps } from "uniforms";
 import { SelectInputProps } from "./SelectField";
 
 function isSelectOptionObject(
@@ -102,22 +103,24 @@ function SelectInputsField(props: SelectInputProps) {
 
   return wrapField(
     props as any,
-    <Select
-      isDisabled={props.disabled}
-      id={props.id}
-      variant={props.fieldType === Array ? SelectVariant.typeaheadMulti : SelectVariant.single}
-      name={props.name}
-      placeholderText={props.placeholder}
-      isOpen={expanded}
-      selections={selected}
-      onToggle={(isExpanded) => setExpanded(isExpanded)}
-      onSelect={handleSelect}
-      value={props.value || (props.fieldType === Array ? [] : undefined)}
-      menuAppendTo={props.menuAppendTo}
-      direction={props.direction}
-    >
-      {selectOptions}
-    </Select>
+    <div data-testid={"select-inputs-field"} id={props.id}>
+      <Select
+        isDisabled={props.disabled}
+        id={props.id}
+        variant={props.fieldType === Array ? SelectVariant.typeaheadMulti : SelectVariant.single}
+        name={props.name}
+        placeholderText={props.placeholder}
+        isOpen={expanded}
+        selections={selected}
+        onToggle={(isExpanded) => setExpanded(isExpanded)}
+        onSelect={handleSelect}
+        value={props.value || (props.fieldType === Array ? [] : undefined)}
+        menuAppendTo={props.menuAppendTo}
+        direction={props.direction}
+      >
+        {selectOptions}
+      </Select>
+    </div>
   );
 }
 

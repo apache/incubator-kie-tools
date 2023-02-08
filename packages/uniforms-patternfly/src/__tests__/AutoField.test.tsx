@@ -46,7 +46,7 @@ test("<AutoField> - renders SelectField - input", () => {
     })
   );
 
-  expect(screen.getByTestId("select-input-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
 });
 
 test("<AutoField> - renders SelectField - checkbox", () => {

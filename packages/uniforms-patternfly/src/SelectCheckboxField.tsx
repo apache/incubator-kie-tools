@@ -19,7 +19,7 @@ import { useMemo } from "react";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { filterDOMProps } from "uniforms";
-import { CheckboxesProps } from "./SelectField";
+import { SelectCheckboxProps } from "./SelectField";
 
 function xor<T>(item: T, array: T[]) {
   const index = array.indexOf(item);
@@ -32,11 +32,11 @@ function xor<T>(item: T, array: T[]) {
 
 filterDOMProps.register("autoValue");
 
-function SelectCheckboxField(props: CheckboxesProps) {
+function SelectCheckboxField(props: SelectCheckboxProps) {
   const Group = useMemo(() => (props.fieldType === Array ? Checkbox : Radio), [props]);
 
   return (
-    <div {...filterDOMProps(props)}>
+    <div data-testid={"select-checkbox-field"} {...filterDOMProps(props)}>
       {props.label && <label>{props.label}</label>}
       {props.allowedValues!.map((item: string, index: number) => {
         return (
