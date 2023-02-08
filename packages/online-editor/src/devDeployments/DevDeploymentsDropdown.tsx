@@ -193,14 +193,14 @@ export function DevDeploymentsDropdown() {
       }
     } else {
       return [
-        <>
+        <div key={"empty-deployments"}>
           <EmptyState>
             <EmptyStateIcon icon={PficonSatelliteIcon} />
             <Title headingLevel="h4" size="md" style={{ color: "darkgray" }}>
               {`Choose a Cloud provider to see your Dev deployments.`}
             </Title>
           </EmptyState>
-        </>,
+        </div>,
       ];
     }
   }, [authSession, deleteAllDeployments, deployments.data, deployments.status, i18n]);
