@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { ArtifactSearchResults, ArtifactType, SearchedArtifact } from "@rhoas/registry-instance-sdk";
+import { ArtifactSearchResults, SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
+import { AsyncAPIDocument } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { supportArtifactTypes } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/parseApiContent";
 
 export interface UploadArtifactArgs {
   groupId: string;
@@ -26,7 +28,7 @@ export interface UploadArtifactArgs {
 
 export interface ArtifactWithContent {
   metadata: SearchedArtifact;
-  content: OpenAPIV3.Document;
+  content: OpenAPIV3.Document | AsyncAPIDocument;
 }
 
 const ARTIFACT_ENDPOINTS = {
@@ -74,7 +76,7 @@ export class RemoteArtifactCatalogApi {
     }
     return Promise.all(
       artifactSearchResult.artifacts
-        .filter((artifact: SearchedArtifact) => artifact.type === ArtifactType.Openapi)
+        .filter((artifact: any) => supportArtifactTypes.includes(artifact.type))
         .map(async (artifact) => ({
           metadata: artifact,
           content: (
@@ -84,7 +86,7 @@ export class RemoteArtifactCatalogApi {
                 "Target-Url": ARTIFACT_ENDPOINTS.artifactById({ baseUrl: this.args.baseUrl, artifact }),
               },
             })
-          ).data as OpenAPIV3.Document,
+          ).data,
         }))
     );
   }

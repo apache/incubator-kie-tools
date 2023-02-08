@@ -16,24 +16,32 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import * as yaml from "js-yaml";
 import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import {
   SwfServiceCatalogFunctionArgumentType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
+  SwfCatalogSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 function doParse(fileName: string): SwfServiceCatalogService {
-  const filePath = path.resolve(__dirname, `examples/${fileName}`);
+  const filePath = path.resolve(__dirname, `../examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
+  const serviceOpenApiDocument = yaml.load(content) as any;
 
-  return parseOpenApi({
-    serviceFileName: fileName,
-    serviceFileContent: content,
-    specsDirAbsolutePosixPath: "/Users/tiago/open-api-tests/specs",
-  });
+  return parseOpenApi(
+    {
+      serviceFileName: fileName,
+      serviceFileContent: content,
+      source: {
+        type: SwfCatalogSourceType?.LOCAL_FS,
+        absoluteFilePath: `/open-api-tests/specs/${fileName}`,
+      },
+    },
+    serviceOpenApiDocument
+  );
 }
 
 describe("openapi parser", () => {
@@ -42,9 +50,8 @@ describe("openapi parser", () => {
 
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
-    expect(result.source.type).toBe(SwfServiceCatalogServiceSourceType.LOCAL_FS);
-    if (result.source.type !== SwfServiceCatalogServiceSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/multiplication.yaml");
+    expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
+    expect(result.source).toHaveProperty("absoluteFilePath", "/open-api-tests/specs/multiplication.yaml");
     expect(result.name).toBe("Generated API");
 
     expect(result.functions).toHaveLength(2);
@@ -71,9 +78,8 @@ describe("openapi parser", () => {
 
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
-    expect(result.source.type).toBe(SwfServiceCatalogServiceSourceType.LOCAL_FS);
-    if (result.source.type !== SwfServiceCatalogServiceSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/hiring.yaml");
+    expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
+    expect(result.source).toHaveProperty("absoluteFilePath", "/open-api-tests/specs/hiring.yaml");
     expect(result.name).toBe("process-usertasks-timer-quarkus-with-console API");
     expect(result.functions).toHaveLength(1);
 
@@ -93,9 +99,8 @@ describe("openapi parser", () => {
 
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
-    expect(result.source.type).toBe(SwfServiceCatalogServiceSourceType.LOCAL_FS);
-    if (result.source.type !== SwfServiceCatalogServiceSourceType.LOCAL_FS) throw new Error("Assertion error.");
-    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/greeting.yaml");
+    expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
+    expect(result.source).toHaveProperty("absoluteFilePath", "/open-api-tests/specs/greeting.yaml");
     expect(result.name).toBe("quarkus-example API");
     expect(result.functions).toHaveLength(1);
 
@@ -103,15 +108,5 @@ describe("openapi parser", () => {
     expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(functionDef.name).toBe("sayHello");
     expect(functionDef.arguments).toMatchObject({});
-  });
-
-  it("parse wrong format test", async () => {
-    expect(() => {
-      doParse("wrong.txt");
-    }).toThrowError("'wrong.txt' is not an OpenAPI file");
-
-    expect(() => {
-      doParse("wrong.json");
-    }).toThrowError("'wrong.json' is not an OpenAPI file");
   });
 });

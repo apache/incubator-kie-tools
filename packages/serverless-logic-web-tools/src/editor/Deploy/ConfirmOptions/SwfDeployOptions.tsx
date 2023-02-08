@@ -109,7 +109,7 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
         >
           <Checkbox
             id="check-use-service-registry"
-            label="Upload OpenAPI spec to Service Registry"
+            label="Upload spec to Service Registry"
             description={
               "The spec associated with the deployment will be available in the configured Service Registry."
             }

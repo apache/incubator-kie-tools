@@ -18,16 +18,14 @@ import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionArgumentType,
   SwfServiceCatalogFunctionSource,
-  SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
+  SwfServiceCatalogServiceSource,
   SwfServiceCatalogServiceType,
-} from "../../api";
-import * as yaml from "js-yaml";
+} from "../../../../api";
 import { OpenAPIV3 } from "openapi-types";
-import { posix as posixPath } from "path";
 import { get } from "lodash";
+import { convertSource } from "../convertSource";
 
 const APPLICATION_JSON = "application/json";
 
@@ -36,41 +34,22 @@ type OpenapiPathOperations = Pick<
   "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace"
 >;
 
-export function parseOpenApi(args: {
-  specsDirAbsolutePosixPath: string;
-  serviceFileName: string;
-  serviceFileContent: string;
-}): SwfServiceCatalogService {
-  const serviceFileAbsolutePosixPath = posixPath.join(args.specsDirAbsolutePosixPath, args.serviceFileName);
-  const serviceOpenApiDocument = serviceFileContentToOpenApiDocument(args.serviceFileName, args.serviceFileContent);
-
-  const swfServiceCatalogFunctions = extractFunctions(serviceOpenApiDocument, {
-    type: SwfServiceCatalogFunctionSourceType.LOCAL_FS,
-    serviceFileAbsolutePath: serviceFileAbsolutePosixPath,
-  });
-
+export function parseOpenApi(
+  args: {
+    source: SwfServiceCatalogServiceSource;
+    serviceFileName: string;
+    serviceFileContent: string;
+  },
+  serviceOpenApiDocument: OpenAPIV3.Document
+): SwfServiceCatalogService {
+  const swfServiceCatalogFunctions = extractFunctions(serviceOpenApiDocument, convertSource(args.source));
   return {
-    name: serviceOpenApiDocument.info.title ?? serviceFileAbsolutePosixPath,
+    name: serviceOpenApiDocument.info.title ?? args.serviceFileName,
     type: SwfServiceCatalogServiceType.rest,
-    source: { type: SwfServiceCatalogServiceSourceType.LOCAL_FS, absoluteFilePath: serviceFileAbsolutePosixPath },
+    source: args.source,
     functions: swfServiceCatalogFunctions,
     rawContent: args.serviceFileContent,
   };
-}
-
-function serviceFileContentToOpenApiDocument(serviceFileName: string, serviceFileContent: string): OpenAPIV3.Document {
-  let serviceOpenApiDocument;
-  if (posixPath.extname(serviceFileName) === ".json") {
-    serviceOpenApiDocument = JSON.parse(serviceFileContent) as OpenAPIV3.Document;
-  } else {
-    serviceOpenApiDocument = yaml.load(serviceFileContent) as OpenAPIV3.Document;
-  }
-
-  if (!serviceOpenApiDocument.openapi || !serviceOpenApiDocument.info || !serviceOpenApiDocument.paths) {
-    throw new Error(`'${serviceFileName}' is not an OpenAPI file`);
-  }
-
-  return serviceOpenApiDocument;
 }
 
 export function extractFunctions(
@@ -147,7 +126,6 @@ function extractFunctionArgumentsFromRequestBody(
   functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
 ) {
   const schemaObject: OpenAPIV3.SchemaObject = extractSchemaObject(schema, doc);
-
   if (schemaObject.properties) {
     Object.entries(schemaObject.properties).forEach(
       ([propertyName, propertySchema]: [string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject]) => {
