@@ -4469,8 +4469,8 @@ importers:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.5.4)
       ts-loader:
-        specifier: ^9.1.2
-        version: 9.2.1(typescript@4.5.4)(webpack@5.70.0)
+        specifier: ^9.4.2
+        version: 9.4.2(typescript@4.5.4)(webpack@5.70.0)
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
@@ -8288,8 +8288,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(webpack@5.70.0)
       ts-loader:
-        specifier: ^9.1.2
-        version: 9.2.1(webpack@5.70.0)
+        specifier: ^9.4.2
+        version: 9.4.2(webpack@5.70.0)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0
@@ -11113,7 +11113,7 @@ packages:
       npm-pick-manifest: 6.1.1
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.3.5
+      semver: 7.3.7
       which: 2.0.2
     transitivePeerDependencies:
       - bluebird
@@ -19553,7 +19553,7 @@ packages:
     resolution:
       { integrity: sha512-1IMnbjt4KzsQfnhnzNd8wUEgXZ44IzZaZmnLYx7D5FZlaHt2gW20Cri8Q+E/t5tIj4+epTBub+2Zxu/vNILzqQ== }
     dependencies:
-      micromatch: 4.0.4
+      micromatch: 4.0.5
     dev: true
 
   /flat-cache@3.0.4:
@@ -23329,15 +23329,6 @@ packages:
       - supports-color
     dev: true
 
-  /micromatch@4.0.4:
-    resolution:
-      { integrity: sha512-pRmzw/XUcwXGpD9aI9q/0XOwLNygjETJ8y0ao0wdqprrzDa4YnxLcz7fQRZr8voh8V10kGhABbNcHVk5wHgWwg== }
-    engines: { node: ">=8.6" }
-    dependencies:
-      braces: 3.0.2
-      picomatch: 2.3.1
-    dev: true
-
   /micromatch@4.0.5:
     resolution:
       { integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA== }
@@ -24143,7 +24134,7 @@ packages:
       { integrity: sha512-09OmyDkNLYwqKPOnbI8exiOZU2GVVmQp7tgez2BPi5OZC8M82elDAps7sxC4l//uSUtotWqoEIDwjRvWH4qz8w== }
     engines: { node: ">=10" }
     dependencies:
-      semver: 7.3.5
+      semver: 7.3.7
     dev: true
 
   /npm-normalize-package-bin@1.0.1:
@@ -24157,7 +24148,7 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.3.5
+      semver: 7.3.7
       validate-npm-package-name: 3.0.0
     dev: true
 
@@ -24180,7 +24171,7 @@ packages:
       npm-install-checks: 4.0.0
       npm-normalize-package-bin: 1.0.1
       npm-package-arg: 8.1.5
-      semver: 7.3.5
+      semver: 7.3.7
     dev: true
 
   /npm-registry-fetch@11.0.0:
@@ -25031,7 +25022,7 @@ packages:
       https-proxy-agent: 5.0.0
       node-fetch: 2.6.7
       progress: 2.0.3
-      semver: 7.3.5
+      semver: 7.3.7
       tar-fs: 2.1.1
       yargs: 16.2.0
     transitivePeerDependencies:
@@ -25352,7 +25343,7 @@ packages:
       cosmiconfig: 7.0.0
       klona: 2.0.5
       postcss: 8.4.5
-      semver: 7.3.5
+      semver: 7.3.7
       webpack: 5.70.0(esbuild@0.14.22)
     dev: true
 
@@ -28638,13 +28629,13 @@ packages:
       typescript: 4.8.4
     dev: true
 
-  /ts-loader@9.2.1(typescript@4.5.4)(webpack@5.70.0):
+  /ts-loader@9.4.2(typescript@4.5.4)(webpack@5.70.0):
     resolution:
-      { integrity: sha512-BLfLa4paMQyf819haKxxbZqA1aLDqsk8XEZLmd7E1eBa0NsEHYFcTWlUlPmYMGhvD/IMi0NcIW3A/G7vzr3oiA== }
+      { integrity: sha512-OmlC4WVmFv5I0PpaxYb+qGeGOdm5giHU7HwDDUjw59emP2UYMHy9fFSDcYgSNoH8sXcj4hGCSEhlDZ9ULeDraA== }
     engines: { node: ">=12.0.0" }
     peerDependencies:
       typescript: "*"
-      webpack: "*"
+      webpack: ^5.0.0
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.9.3
@@ -28654,13 +28645,13 @@ packages:
       webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
-  /ts-loader@9.2.1(webpack@5.70.0):
+  /ts-loader@9.4.2(webpack@5.70.0):
     resolution:
-      { integrity: sha512-BLfLa4paMQyf819haKxxbZqA1aLDqsk8XEZLmd7E1eBa0NsEHYFcTWlUlPmYMGhvD/IMi0NcIW3A/G7vzr3oiA== }
+      { integrity: sha512-OmlC4WVmFv5I0PpaxYb+qGeGOdm5giHU7HwDDUjw59emP2UYMHy9fFSDcYgSNoH8sXcj4hGCSEhlDZ9ULeDraA== }
     engines: { node: ">=12.0.0" }
     peerDependencies:
       typescript: "*"
-      webpack: "*"
+      webpack: ^5.0.0
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.9.3
