@@ -94,6 +94,7 @@ import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatu
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
+import { AppDeploymentMode, useEnv } from "../env/EnvContext";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -129,6 +130,7 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
 };
 
 export function EditorToolbar(props: Props) {
+  const env = useEnv();
   const routes = useRoutes();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -180,11 +182,13 @@ export function EditorToolbar(props: Props) {
     };
   }, [isSaved]);
 
-  const canBeDeployed = useMemo(
-    // TODO OPERATE-FIRST: disable deploy dashboards
-    () => isServerlessWorkflow(props.workspaceFile.relativePath),
-    [props.workspaceFile.relativePath]
-  );
+  const canBeDeployed = useMemo(() => {
+    if (env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST) {
+      return isServerlessWorkflow(props.workspaceFile.relativePath);
+    }
+
+    return isServerlessWorkflow(props.workspaceFile.relativePath) || isDashbuilder(props.workspaceFile.relativePath);
+  }, [env.vars.FEATURE_FLAGS.MODE, props.workspaceFile.relativePath]);
 
   useCancelableEffect(
     useCallback(

@@ -28,7 +28,8 @@ import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
 import { DevModeDeploymentLoaderPipeline } from "./pipelines/DevModeDeploymentLoaderPipeline";
-import { resolveWebToolsId } from "./devMode/DevModeConstants";
+import { AppDeploymentMode, useEnv } from "../env/EnvContext";
+import { resolveWebToolsId } from "./devMode/DevModeContext";
 
 interface Props {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 const FETCH_OPEN_API_POLLING_TIME = 5000;
 
 export function OpenShiftContextProvider(props: Props) {
+  const env = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
@@ -133,7 +135,9 @@ export function OpenShiftContextProvider(props: Props) {
 
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
       const deploymentLoaderPromises = Promise.all([
-        Promise.resolve([]), //deploymentLoaderPipeline.execute(), TODO OPERATE-FIRST: hide knative deployments
+        env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
+          ? deploymentLoaderPipeline.execute()
+          : Promise.resolve([]),
         devModeDeploymentLoaderPipeline.execute(),
       ]).then((res) => res.flat());
 
@@ -153,7 +157,9 @@ export function OpenShiftContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
         const deploymentLoaderPromises = Promise.all([
-          Promise.resolve([]), //deploymentLoaderPipeline.execute(), TODO OPERATE-FIRST: hide knative deployments
+          env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
+            ? deploymentLoaderPipeline.execute()
+            : Promise.resolve([]),
           devModeDeploymentLoaderPipeline.execute(),
         ]).then((res) => res.flat());
         deploymentLoaderPromises
@@ -176,6 +182,7 @@ export function OpenShiftContextProvider(props: Props) {
     onDisconnect,
     deploymentLoaderPipeline,
     devModeDeploymentLoaderPipeline,
+    env.vars.FEATURE_FLAGS.MODE,
   ]);
 
   const value = useMemo(

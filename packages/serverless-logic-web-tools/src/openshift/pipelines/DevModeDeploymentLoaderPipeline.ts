@@ -24,8 +24,10 @@ import {
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
+import { fetchWithTimeout } from "../../fetch";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
-import { buildEndpoints, DevModeEndpoints, fetchWithTimeout } from "../devMode/DevModeConstants";
+import { buildEndpoints, DevModeEndpoints } from "../devMode/DevModeConstants";
+import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 
 interface ExtendedDeployment {
@@ -54,7 +56,7 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
             }),
           })
         )
-      ).items.filter((d) => d.metadata.name === this.resolveResourceName());
+      ).items.filter((d) => d.metadata.name === resolveDevModeResourceName(this.args.webToolsId));
 
       if (deployments.length === 0) {
         return [];
@@ -110,10 +112,5 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
     } catch (e) {
       throw new Error(`Failed to load dev mode deployments: ${e.message}`);
     }
-  }
-
-  // TODO CAPONETTO: maybe move this to a common place
-  private resolveResourceName(): string {
-    return `devmode-${this.args.webToolsId}`;
   }
 }

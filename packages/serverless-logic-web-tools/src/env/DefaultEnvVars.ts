@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useContext } from "react";
+import { AppDeploymentMode, EnvVars } from "./EnvContext";
 
-export enum AppDeploymentMode {
-  COMMUNITY = "COMMUNITY",
-  OPERATE_FIRST = "OPERATE_FIRST",
-}
+export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST = "http://localhost";
+export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT = "21345";
 
-export interface EnvVars {
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
-  SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: string;
+export const DEFAULT_ENV_VARS: EnvVars = {
+  KIE_SANDBOX_EXTENDED_SERVICES_URL: `${DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST}:${DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT}`,
+  SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: process.env.WEBPACK_REPLACE__gitCorsProxyUrl ?? "",
   FEATURE_FLAGS: {
-    MODE: AppDeploymentMode;
-  };
-}
-
-export interface EnvContextType {
-  vars: EnvVars;
-}
-
-export const EnvContext = React.createContext<EnvContextType>({} as any);
-
-export function useEnv() {
-  return useContext(EnvContext);
-}
+    MODE: AppDeploymentMode.COMMUNITY,
+  },
+};

@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
+import { v4 as uuid } from "uuid";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import * as React from "react";
 import { useContext } from "react";
-import { DevModeEndpoints, DevModeUploadResult } from "./DevModeConstants";
+import { DevModeEndpoints, DevModeUploadResult, WEB_TOOLS_ID_KEY } from "./DevModeConstants";
+
+export const resolveWebToolsId = () => {
+  const webToolsId = localStorage.getItem(WEB_TOOLS_ID_KEY) ?? uuid();
+  localStorage.setItem(WEB_TOOLS_ID_KEY, webToolsId);
+  return webToolsId;
+};
+
+export const resolveDevModeResourceName = (webToolsId: string) => {
+  return `devmode-${webToolsId}`;
+};
 
 export interface DevModeContextType {
   endpoints: DevModeEndpoints | undefined;

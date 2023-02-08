@@ -18,7 +18,8 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { ENV_FILE_PATH } from "./EnvConstants";
-import { DEFAULT_ENV_VARS, EnvContext } from "./EnvContext";
+import { EnvContext } from "./EnvContext";
+import { DEFAULT_ENV_VARS } from "./DefaultEnvVars";
 
 interface Props {
   children: React.ReactNode;
@@ -40,8 +41,8 @@ export function EnvContextProvider(props: Props) {
             throw new Error(`Failed to fetch ${ENV_FILE_PATH}: ${response.statusText}`);
           }
 
-          const varsWithName = await response.json();
-          setVars((previous) => ({ ...previous, ...varsWithName }));
+          const envJson = await response.json();
+          setVars((previous) => ({ ...previous, ...envJson }));
         })
         .catch((e) => {
           // env json file could not be fetched, so we keep the default values

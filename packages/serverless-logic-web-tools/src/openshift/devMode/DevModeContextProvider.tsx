@@ -18,6 +18,7 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import JSZip from "jszip";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { fetchWithTimeout } from "../../fetch";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
@@ -25,12 +26,10 @@ import {
   buildEndpoints,
   DevModeEndpoints,
   DevModeUploadResult,
-  fetchWithTimeout,
-  resolveWebToolsId,
   ZIP_FILE_NAME,
   ZIP_FILE_PART_KEY,
 } from "./DevModeConstants";
-import { DevModeContext } from "./DevModeContext";
+import { DevModeContext, resolveWebToolsId } from "./DevModeContext";
 
 interface Props {
   children: React.ReactNode;

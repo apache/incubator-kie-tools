@@ -30,6 +30,7 @@ import {
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { commonLabels, runtimeLabels } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
+import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 
@@ -53,7 +54,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
         })
       )
     ).items
-      .filter((d) => d.metadata.name === this.resolveResourceName())
+      .filter((d) => d.metadata.name === resolveDevModeResourceName(this.args.webToolsId))
       .sort(
         (a, b) =>
           new Date(b.metadata.creationTimestamp ?? 0).getTime() - new Date(a.metadata.creationTimestamp ?? 0).getTime()
@@ -108,14 +109,10 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
     return routeUrl;
   }
 
-  private resolveResourceName(): string {
-    return `devmode-${this.args.webToolsId}`;
-  }
-
   private async createDevModeDeployment(): Promise<string | undefined> {
     const resourceArgs = {
       namespace: this.args.namespace,
-      resourceName: this.resolveResourceName(),
+      resourceName: resolveDevModeResourceName(this.args.webToolsId),
       createdBy: RESOURCE_OWNER,
     };
 

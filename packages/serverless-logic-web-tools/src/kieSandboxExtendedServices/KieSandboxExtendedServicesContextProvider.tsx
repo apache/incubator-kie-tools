@@ -22,11 +22,11 @@ import { DependentFeature, KieSandboxExtendedServicesContext } from "./KieSandbo
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
 import { KieSandboxExtendedServicesModal } from "./KieSandboxExtendedServicesModal";
+import { useEnv } from "../env/EnvContext";
 import {
   DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST,
   DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT,
-  useEnv,
-} from "../env/EnvContext";
+} from "../env/DefaultEnvVars";
 
 interface Props {
   children: React.ReactNode;
