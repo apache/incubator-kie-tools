@@ -37,7 +37,7 @@ interface Props {
 }
 
 export function DevModeContextProvider(props: Props) {
-  const env = useEnv();
+  const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [endpoints, setEndpoints] = useState<DevModeEndpoints | undefined>();
@@ -45,7 +45,7 @@ export function DevModeContextProvider(props: Props) {
   useEffect(() => {
     if (
       settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED ||
-      env.vars.FEATURE_FLAGS.MODE !== AppDeploymentMode.OPERATE_FIRST
+      env.FEATURE_FLAGS.MODE !== AppDeploymentMode.OPERATE_FIRST
     ) {
       setEndpoints(undefined);
       return;
@@ -73,7 +73,7 @@ export function DevModeContextProvider(props: Props) {
     settings.openshift.status,
     settings.openshift.config.namespace,
     settingsDispatch.openshift.service,
-    env.vars.FEATURE_FLAGS.MODE,
+    env.FEATURE_FLAGS.MODE,
   ]);
 
   const checkHealthReady = useCallback(async () => {

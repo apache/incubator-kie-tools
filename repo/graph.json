@@ -658,6 +658,7 @@
         "target": "@kie-tools/dashbuilder-viewer-image-env",
         "weight": 1
       },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/extended-services", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",

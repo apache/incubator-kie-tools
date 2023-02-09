@@ -23,10 +23,6 @@ import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesSt
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
 import { KieSandboxExtendedServicesModal } from "./KieSandboxExtendedServicesModal";
 import { useEnv } from "../env/EnvContext";
-import {
-  DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST,
-  DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT,
-} from "../env/DefaultEnvVars";
 
 interface Props {
   children: React.ReactNode;
@@ -37,14 +33,24 @@ export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = makeCookieName("ex
 export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = makeCookieName("extended-services", "port");
 
 export function KieSandboxExtendedServicesContextProvider(props: Props) {
-  const env = useEnv();
+  const { env } = useEnv();
   const [status, setStatus] = useState(KieSandboxExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
-  const [config, setConfig] = useState(
-    new ExtendedServicesConfig(DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST, DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT)
-  );
+
+  const { port, host } = useMemo(() => {
+    const url = new URL(env.KIE_SANDBOX_EXTENDED_SERVICES_URL);
+    const port = url.port;
+    url.port = "";
+
+    return {
+      port,
+      host: url.href,
+    };
+  }, [env.KIE_SANDBOX_EXTENDED_SERVICES_URL]);
+
+  const [config, setConfig] = useState(new ExtendedServicesConfig(host, port));
   const bridge = useMemo(() => new KieSandboxExtendedServicesBridge(config.buildUrl()), [config]);
   const version = useMemo(
     () => process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion ?? "0.0.0",
@@ -59,28 +65,26 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
   }, []);
 
   useEffect(() => {
-    let envHost = DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST;
-    let envPort = DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT;
     try {
-      const envUrl = new URL(env.vars.KIE_SANDBOX_EXTENDED_SERVICES_URL);
-      envHost = `${envUrl.protocol}//${envUrl.hostname}`;
-      envPort = envUrl.port;
+      const envUrl = new URL(env.KIE_SANDBOX_EXTENDED_SERVICES_URL);
+      const envHost = `${envUrl.protocol}//${envUrl.hostname}`;
+      const envPort = envUrl.port;
+
+      const host = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
+      const port = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
+
+      const newConfig = new ExtendedServicesConfig(host, port);
+      setConfig(newConfig);
+
+      new KieSandboxExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
+        if (checked) {
+          saveNewConfig(newConfig);
+        }
+      });
     } catch (e) {
       console.error("Invalid KIE_SANDBOX_EXTENDED_SERVICES_URL", e);
     }
-
-    const host = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
-    const port = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
-
-    const newConfig = new ExtendedServicesConfig(host, port);
-    setConfig(newConfig);
-
-    new KieSandboxExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
-      if (checked) {
-        saveNewConfig(newConfig);
-      }
-    });
-  }, [env.vars.KIE_SANDBOX_EXTENDED_SERVICES_URL, saveNewConfig]);
+  }, [env.KIE_SANDBOX_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if KieSandboxExtendedServices is running or has stopped

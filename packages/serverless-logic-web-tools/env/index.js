@@ -15,8 +15,8 @@
  */
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
-
 const { version } = require("@kie-tools-scripts/build-env/package.json");
+const extendedServicesEnv = require("@kie-tools/extended-services/env");
 
 module.exports = composeEnv(
   [
@@ -48,6 +48,10 @@ module.exports = composeEnv(
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
         description: "",
       },
+      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesUrl: {
+        default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
+        description: "",
+      },
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: {
         default: version,
         description: "",
@@ -70,6 +74,10 @@ module.exports = composeEnv(
       },
       SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: {
         default: "https://cors.isomorphic-git.org",
+        description: "",
+      },
+      SERVERLESS_LOGIC_WEB_TOOLS__featureFlagMode: {
+        default: "COMMUNITY",
         description: "",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__cypressUrl: {
@@ -99,6 +107,7 @@ module.exports = composeEnv(
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag),
           },
           kieSandboxExtendedServices: {
+            url: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesUrl),
             compatibleVersion: getOrDefault(
               this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion
             ),
@@ -109,6 +118,9 @@ module.exports = composeEnv(
             },
           },
           gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl),
+          featureFlags: {
+            mode: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__featureFlagMode),
+          },
         },
       };
     },

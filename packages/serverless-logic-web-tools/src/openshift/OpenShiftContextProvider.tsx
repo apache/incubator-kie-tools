@@ -39,7 +39,7 @@ const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 const FETCH_OPEN_API_POLLING_TIME = 5000;
 
 export function OpenShiftContextProvider(props: Props) {
-  const env = useEnv();
+  const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
@@ -135,7 +135,7 @@ export function OpenShiftContextProvider(props: Props) {
 
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
       const deploymentLoaderPromises = Promise.all([
-        env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
+        env.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
           ? deploymentLoaderPipeline.execute()
           : Promise.resolve([]),
         devModeDeploymentLoaderPipeline.execute(),
@@ -157,7 +157,7 @@ export function OpenShiftContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
         const deploymentLoaderPromises = Promise.all([
-          env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
+          env.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
             ? deploymentLoaderPipeline.execute()
             : Promise.resolve([]),
           devModeDeploymentLoaderPipeline.execute(),
@@ -182,7 +182,7 @@ export function OpenShiftContextProvider(props: Props) {
     onDisconnect,
     deploymentLoaderPipeline,
     devModeDeploymentLoaderPipeline,
-    env.vars.FEATURE_FLAGS.MODE,
+    env.FEATURE_FLAGS.MODE,
   ]);
 
   const value = useMemo(

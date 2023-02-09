@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import { AppDeploymentMode, EnvVars } from "./EnvContext";
+import { AppDeploymentMode } from "./EnvContext";
 
-export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST = "http://localhost";
-export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT = "21345";
-
-export const DEFAULT_ENV_VARS: EnvVars = {
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: `${DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST}:${DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT}`,
-  SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: process.env.WEBPACK_REPLACE__gitCorsProxyUrl ?? "",
+export interface EnvJson {
+  KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
+  SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: string;
   FEATURE_FLAGS: {
-    MODE: AppDeploymentMode.COMMUNITY,
-  },
-};
+    MODE: AppDeploymentMode;
+  };
+}

@@ -16,22 +16,15 @@
 
 import * as React from "react";
 import { useContext } from "react";
+import { EnvJson } from "./EnvJson";
 
 export enum AppDeploymentMode {
   COMMUNITY = "COMMUNITY",
   OPERATE_FIRST = "OPERATE_FIRST",
 }
 
-export interface EnvVars {
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
-  SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: string;
-  FEATURE_FLAGS: {
-    MODE: AppDeploymentMode;
-  };
-}
-
 export interface EnvContextType {
-  vars: EnvVars;
+  env: EnvJson;
 }
 
 export const EnvContext = React.createContext<EnvContextType>({} as any);

@@ -56,7 +56,7 @@ interface Props {
 
 // TOOD CAPONETTO: Alerts can be moved to a context
 export function useDeployDropdownItems(props: Props) {
-  const env = useEnv();
+  const { env } = useEnv();
   const { i18n } = useAppI18n();
   const devMode = useDevMode();
   const settings = useSettings();
@@ -177,9 +177,8 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const isDevModeEnabled = useMemo(
-    () =>
-      env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST && isServerlessWorkflow(props.workspaceFile.name),
-    [env.vars.FEATURE_FLAGS.MODE, props.workspaceFile.name]
+    () => env.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST && isServerlessWorkflow(props.workspaceFile.name),
+    [env.FEATURE_FLAGS.MODE, props.workspaceFile.name]
   );
 
   const onSetup = useCallback(() => {
@@ -242,37 +241,35 @@ export function useDeployDropdownItems(props: Props) {
       <React.Fragment key={"deploy-dropdown-items"}>
         {props.workspace && (
           <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
-            {env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY && (
-              <DropdownItem
-                icon={<OpenshiftIcon />}
-                id="deploy-your-model-button"
-                key={`dropdown-deploy`}
-                component={"button"}
-                onClick={onDeploy}
-                isDisabled={isKieSandboxExtendedServicesRunning && !isOpenShiftConnected}
-                ouiaId={"deploy-to-openshift-dropdown-button"}
-              >
-                {props.workspace.files.length > 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
-                    </FlexItem>
-                  </Flex>
-                )}
-                {props.workspace.files.length === 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
-                    </FlexItem>
-                    <FlexItem>
-                      <b>
-                        <FileLabel extension={props.workspace.files[0].extension} />
-                      </b>
-                    </FlexItem>
-                  </Flex>
-                )}
-              </DropdownItem>
-            )}
+            <DropdownItem
+              icon={<OpenshiftIcon />}
+              id="deploy-your-model-button"
+              key={`dropdown-deploy`}
+              component={"button"}
+              onClick={onDeploy}
+              isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !props.canContentBeDeployed)}
+              ouiaId={"deploy-to-openshift-dropdown-button"}
+            >
+              {props.workspace.files.length > 1 && (
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
+                  </FlexItem>
+                </Flex>
+              )}
+              {props.workspace.files.length === 1 && (
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
+                  </FlexItem>
+                  <FlexItem>
+                    <b>
+                      <FileLabel extension={props.workspace.files[0].extension} />
+                    </b>
+                  </FlexItem>
+                </Flex>
+              )}
+            </DropdownItem>
             {isDevModeEnabled && (
               <DropdownItem
                 icon={<OpenshiftIcon />}
@@ -292,7 +289,7 @@ export function useDeployDropdownItems(props: Props) {
                 </Flex>
               </DropdownItem>
             )}
-            {needsDependencyDeployment && env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY && (
+            {needsDependencyDeployment && env.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY && (
               <>
                 <Divider />
                 <Tooltip content={i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip} position="bottom">
@@ -314,7 +311,7 @@ export function useDeployDropdownItems(props: Props) {
                 <DropdownItem icon={<ExclamationCircleIcon />} isDisabled>
                   <Flex flexWrap={{ default: "nowrap" }}>
                     <FlexItem>
-                      <Text component="small">Models with errors/warnings cannot be uploaded</Text>
+                      <Text component="small">Models with errors/warnings cannot be deployed</Text>
                     </FlexItem>
                   </Flex>
                 </DropdownItem>
@@ -342,7 +339,7 @@ export function useDeployDropdownItems(props: Props) {
   }, [
     props.workspace,
     props.canContentBeDeployed,
-    env.vars.FEATURE_FLAGS.MODE,
+    env.FEATURE_FLAGS.MODE,
     onDeploy,
     isKieSandboxExtendedServicesRunning,
     isOpenShiftConnected,

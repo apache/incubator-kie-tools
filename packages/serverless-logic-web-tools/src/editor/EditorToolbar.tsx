@@ -130,7 +130,7 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
 };
 
 export function EditorToolbar(props: Props) {
-  const env = useEnv();
+  const { env } = useEnv();
   const routes = useRoutes();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -183,12 +183,12 @@ export function EditorToolbar(props: Props) {
   }, [isSaved]);
 
   const canBeDeployed = useMemo(() => {
-    if (env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST) {
+    if (env.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST) {
       return isServerlessWorkflow(props.workspaceFile.relativePath);
     }
 
     return isServerlessWorkflow(props.workspaceFile.relativePath) || isDashbuilder(props.workspaceFile.relativePath);
-  }, [env.vars.FEATURE_FLAGS.MODE, props.workspaceFile.relativePath]);
+  }, [env.FEATURE_FLAGS.MODE, props.workspaceFile.relativePath]);
 
   useCancelableEffect(
     useCallback(

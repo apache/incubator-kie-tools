@@ -323,6 +323,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
