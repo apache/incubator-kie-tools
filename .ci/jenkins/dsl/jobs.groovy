@@ -63,7 +63,6 @@ void setupPrJob(boolean isProdCI = false) {
 void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Images Init Branch')
     jobParams.env.putAll([
-        CI: true,
         REPO_NAME: 'kogito-images',
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
 
@@ -113,7 +112,6 @@ void setupDeployJob(JobType jobType, String envName = '') {
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
     }
     jobParams.env.putAll([
-        CI: true,
         REPO_NAME: 'kogito-images',
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
@@ -181,7 +179,6 @@ void setupDeployJob(JobType jobType, String envName = '') {
 void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote')
     jobParams.env.putAll([
-        CI: true,
         REPO_NAME: 'kogito-images',
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
