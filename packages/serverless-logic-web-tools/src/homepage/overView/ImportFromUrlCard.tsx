@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { SupportedFileExtensions } from "../../extension";
 import * as React from "react";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
@@ -54,7 +53,7 @@ export function ImportFromUrlCard() {
   }, [importableUrl]);
 
   return (
-    <Card isFullHeight={true} isLarge={true} isPlain={true} isSelected={url.length > 0}>
+    <Card isFullHeight={true} isPlain={true} isSelected={url.length > 0} isCompact>
       <CardTitle>
         <TextContent>
           <Text component={TextVariants.h2}>

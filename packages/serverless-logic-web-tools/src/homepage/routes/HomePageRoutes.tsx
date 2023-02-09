@@ -27,7 +27,7 @@ import { NewWorkspaceFromUrlPage } from "../../workspace/components/NewWorkspace
 import { EditorPage } from "../../editor/EditorPage";
 import { NoMatchPage } from "../../navigation/NoMatchPage";
 
-export function HomePageRoutes() {
+export function HomePageRoutes(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
   const supportedExtensions = useMemo(() => supportedFileExtensionArray.join("|"), []);
   return (
@@ -55,7 +55,7 @@ export function HomePageRoutes() {
         )}
       </Route>
       <Route path="/" exact>
-        <Overview />
+        <Overview isNavOpen={props.isNavOpen} />
       </Route>
       <Route path="/ServerlessModels">
         <ServerlessModels />
@@ -63,13 +63,6 @@ export function HomePageRoutes() {
       <Route path="/SampleCatalog">
         <SampleCatalog />
       </Route>
-      <Route
-        path="/Documentation"
-        component={() => {
-          window.open("https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html");
-          return null;
-        }}
-      />
       <Route component={NoMatchPage} />
     </Switch>
   );

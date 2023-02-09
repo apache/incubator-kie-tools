@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
-import { SupportedFileExtensions } from "../../extension";
-import * as React from "react";
-import { useRoutes } from "../../navigation/Hooks";
-import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
-import { FileLabel } from "../../workspace/components/FileLabel";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Grid } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { Link } from "react-router-dom";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
+import * as React from "react";
+import { Link } from "react-router-dom";
+import { SupportedFileExtensions } from "../../extension";
+import { useRoutes } from "../../navigation/Hooks";
+import { FileLabel } from "../../workspace/components/FileLabel";
 
 export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
   const routes = useRoutes();
 
   return (
-    <Card isFullHeight={true} isPlain={true} isLarge={true}>
-      <CardTitle>
-        <FileLabel style={{ fontSize: "0.6em" }} extension={props.extension} />
-      </CardTitle>
-      <CardBody>
-        <TextContent>
-          <Text component={TextVariants.p}>{props.description}</Text>
-        </TextContent>
-      </CardBody>
-      <CardFooter>
-        <Grid>
+    <GridItem sm={12} md={4}>
+      <Card isFullHeight={true} isPlain={true} isCompact>
+        <CardTitle>
+          <FileLabel style={{ fontSize: "0.6em" }} extension={props.extension} />
+        </CardTitle>
+        <CardBody>
+          <TextContent>
+            <Text component={TextVariants.p}>{props.description}</Text>
+          </TextContent>
+        </CardBody>
+        <CardFooter>
           <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
             <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
               New {props.title}
             </Button>
           </Link>
-        </Grid>
-      </CardFooter>
-    </Card>
+        </CardFooter>
+      </Card>
+    </GridItem>
   );
 }
