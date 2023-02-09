@@ -73,9 +73,7 @@ test("<HiddenField> - renders an input which correctly reacts on model change", 
   render(usingUniformsContext(<HiddenField name="x" />, { x: { type: String } }, { onChange }));
 
   fireEvent.change(screen.getByTestId("hidden-field"), { target: { value: "y" } });
-
-  //TODO
-  // expect(onChange).toHaveBeenLastCalledWith("x", "y");
+  expect(screen.getByTestId("hidden-field").getAttribute("value")).toBe("y");
 });
 
 test("<HiddenField> - renders an input which correctly reacts on model change (empty)", () => {
@@ -84,7 +82,6 @@ test("<HiddenField> - renders an input which correctly reacts on model change (e
   render(usingUniformsContext(<HiddenField name="x" />, { x: { type: String } }, { onChange }));
 
   fireEvent.change(screen.getByTestId("hidden-field"), { target: { value: undefined } });
-
   expect(onChange).not.toHaveBeenCalled();
 });
 
@@ -95,8 +92,7 @@ test("<HiddenField> - renders an input which correctly reacts on model change (s
 
   fireEvent.change(screen.getByTestId("hidden-field"), { target: { value: "y" } });
 
-  //TODO
-  // expect(onChange).toHaveBeenLastCalledWith("x", "y");
+  expect(onChange).not.toHaveBeenCalled();
 });
 
 test("<HiddenField noDOM> - renders nothing", () => {
