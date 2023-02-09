@@ -20,6 +20,7 @@ import java.util.HashMap;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SamplesServiceTest {
 
@@ -61,6 +62,17 @@ public class SamplesServiceTest {
         assertEquals("other2", other2.getId());
         assertEquals("Other 2", other2.getName());
 
+    }
+
+    @Test
+    public void testIsSample() {
+        var service = new SamplesService();
+        service.samplesByCategory = new HashMap<>();
+
+        service.extractSamplesFromResponse("samples", SAMPLES_JSON);
+
+        assertTrue(service.isSample("samples/other2/other2.dash.yaml"));
+        assertTrue(service.isSample("samples/products-dashboard/products-dashboard.dash.yaml"));
     }
 
 }

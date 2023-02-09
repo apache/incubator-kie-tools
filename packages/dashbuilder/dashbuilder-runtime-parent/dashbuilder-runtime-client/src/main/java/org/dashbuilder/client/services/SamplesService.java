@@ -46,14 +46,13 @@ public class SamplesService {
         var setup = RuntimeClientSetup.Builder.get();
         var userSamplesUrl = setup == null ? null : RuntimeClientSetup.Builder.get().getSamplesUrl();
         samplesByCategory = new HashMap<>();
-        
+
         if (userSamplesUrl != null) {
-            var samplesUrl = userSamplesUrl.endsWith("/") ? userSamplesUrl : userSamplesUrl + "/";
             var xhr = new XMLHttpRequest();
             xhr.open("GET", SAMPLES_FILE, false);
             xhr.send();
             if (xhr.status >= 200 && xhr.status < 300) {
-                this.extractSamplesFromResponse(samplesUrl, xhr.responseText);
+                this.extractSamplesFromResponse(userSamplesUrl, xhr.responseText);
             } else {
                 DomGlobal.console.warn("Not able to load samples, server responded with " + xhr.status);
             }
@@ -72,7 +71,16 @@ public class SamplesService {
                 .collect(Collectors.toList());
     }
 
-    void extractSamplesFromResponse(String samplesUrl, String txt) {
+    public boolean isSample(String importID) {
+        return samplesByCategory.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .anyMatch(sample -> sample.sourceUrl.equals(importID));
+
+    }
+
+    void extractSamplesFromResponse(String userSamplesUrl, String txt) {
+        var samplesUrl = userSamplesUrl.endsWith("/") ? userSamplesUrl : userSamplesUrl + "/";
         var samplesJson = Json.parse(txt);
         for (var cat : samplesJson.keys()) {
             var samplesArray = samplesJson.getArray(cat);

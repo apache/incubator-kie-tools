@@ -407,6 +407,9 @@ public class RuntimeClientLoader {
             }
             throw new IllegalArgumentException("External models are not enabled");
         }
+        if (samplesService.isSample(importID)) {
+            return importID;
+        }
         return clientModelBaseUrl + importID;
     }
 }
