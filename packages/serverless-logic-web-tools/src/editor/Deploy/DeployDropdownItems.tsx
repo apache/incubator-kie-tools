@@ -176,7 +176,11 @@ export function useDeployDropdownItems(props: Props) {
     [settings.openshift.status]
   );
 
-  const isDevModeEnabled = useMemo(() => isServerlessWorkflow(props.workspaceFile.name), [props.workspaceFile.name]);
+  const isDevModeEnabled = useMemo(
+    () =>
+      env.vars.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST && isServerlessWorkflow(props.workspaceFile.name),
+    [env.vars.FEATURE_FLAGS.MODE, props.workspaceFile.name]
+  );
 
   const onSetup = useCallback(() => {
     settingsDispatch.open(SettingsTabs.OPENSHIFT);

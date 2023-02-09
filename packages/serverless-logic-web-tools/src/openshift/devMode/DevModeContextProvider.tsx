@@ -18,6 +18,7 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import JSZip from "jszip";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { AppDeploymentMode, useEnv } from "../../env/EnvContext";
 import { fetchWithTimeout } from "../../fetch";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
@@ -36,12 +37,16 @@ interface Props {
 }
 
 export function DevModeContextProvider(props: Props) {
+  const env = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [endpoints, setEndpoints] = useState<DevModeEndpoints | undefined>();
 
   useEffect(() => {
-    if (settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED) {
+    if (
+      settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED ||
+      env.vars.FEATURE_FLAGS.MODE !== AppDeploymentMode.OPERATE_FIRST
+    ) {
       setEndpoints(undefined);
       return;
     }
@@ -64,7 +69,12 @@ export function DevModeContextProvider(props: Props) {
     } catch (e) {
       console.debug(e);
     }
-  }, [settings.openshift.status, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
+  }, [
+    settings.openshift.status,
+    settings.openshift.config.namespace,
+    settingsDispatch.openshift.service,
+    env.vars.FEATURE_FLAGS.MODE,
+  ]);
 
   const checkHealthReady = useCallback(async () => {
     if (!endpoints) {
