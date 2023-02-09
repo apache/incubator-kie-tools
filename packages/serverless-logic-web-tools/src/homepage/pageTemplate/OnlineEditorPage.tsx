@@ -39,7 +39,7 @@ import { useHistory, useRouteMatch } from "react-router";
 import { useLocation } from "react-router-dom";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
-import { SettingsPageNav } from "../../newSettings/uiNav/SettingsPageNav";
+import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
 import {
   ApplicationServicesIntegrationQuickStart,

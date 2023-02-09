@@ -26,15 +26,17 @@ import { useCallback, useMemo } from "react";
 import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { useOpenShift } from "../OpenShiftContext";
 import { OpenShiftDeploymentDropdownItem } from "./OpenShiftDeploymentDropdownItem";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
+import { routes } from "../../navigation/Routes";
+import { useHistory } from "react-router";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const openshift = useOpenShift();
+  const history = useHistory();
 
   const isConnected = useMemo(
     () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
@@ -42,7 +44,7 @@ export function OpenshiftDeploymentsDropdown() {
   );
 
   const openOpenShiftSettings = useCallback(() => {
-    settingsDispatch.open(SettingsTabs.OPENSHIFT);
+    history.push(routes.settings.openshift.path({}));
   }, [settingsDispatch]);
 
   const items = useMemo(() => {
