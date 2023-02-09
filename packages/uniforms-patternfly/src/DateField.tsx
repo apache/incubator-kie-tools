@@ -36,7 +36,7 @@ export type DateFieldProps = FieldProps<
 
 const DateConstructor = (typeof global === "object" ? global : window).Date;
 
-function DateField(props: DateFieldProps) {
+function DateField({ onChange, ...props }: DateFieldProps) {
   const parseDate = useCallback(() => {
     if (!props.value) {
       return "";
@@ -54,7 +54,7 @@ function DateField(props: DateFieldProps) {
   const onDateChange = useCallback(
     (value: string, date?: Date) => {
       if (!date) {
-        props.onChange(date);
+        onChange(date);
       } else {
         const newDate = new DateConstructor(date);
         const time = parseTime();
@@ -65,10 +65,10 @@ function DateField(props: DateFieldProps) {
           newDate.setUTCHours(0);
           newDate.setUTCMinutes(0);
         }
-        props.onChange(newDate);
+        onChange(newDate);
       }
     },
-    [props.onChange, parseTime]
+    [onChange, parseTime]
   );
 
   const isInvalid = useMemo(() => {
@@ -111,10 +111,10 @@ function DateField(props: DateFieldProps) {
           newDate.setUTCHours(0);
           newDate.setUTCMinutes(0);
         }
-        props.onChange(newDate);
+        onChange(newDate);
       }
     },
-    [props.onChange, props.value]
+    [onChange, props.value]
   );
 
   return wrapField(

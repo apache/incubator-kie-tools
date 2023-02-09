@@ -36,7 +36,7 @@ export type TextFieldProps = {
 
 const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?/;
 
-function TextField(props: TextFieldProps) {
+function TextField({ onChange, ...props }: TextFieldProps) {
   const isDateInvalid = useMemo(() => {
     if (typeof props.value === "string" && (props.type === "date" || props.field?.format === "date")) {
       const date = new Date(props.value);
@@ -62,7 +62,7 @@ function TextField(props: TextFieldProps) {
       }
     }
     return false;
-  }, [props.value, props.max, props.min, props.errorMessage]);
+  }, [props.value, props.max, props.min, props.errorMessage, props.type, props.field]);
 
   const parseTime = useCallback((time: string) => {
     const parsedTime = timeRgx.exec(time);
@@ -101,21 +101,21 @@ function TextField(props: TextFieldProps) {
 
   const onDateChange = useCallback(
     (value: string) => {
-      props.onChange(value);
+      onChange(value);
     },
-    [props.disabled, props.onChange]
+    [onChange]
   );
 
   const onTimeChange = useCallback(
     (time: string) => {
       const parsedTime = time.split(":");
       if (parsedTime.length === 2) {
-        props.onChange([...parsedTime, "00"].join(":"));
+        onChange([...parsedTime, "00"].join(":"));
       } else {
-        props.onChange(time);
+        onChange(time);
       }
     },
-    [props.disabled, props.onChange]
+    [onChange]
   );
 
   const { helperText, ...withoutHelperTextProps } = props;
@@ -172,7 +172,7 @@ function TextField(props: TextFieldProps) {
         name={props.name}
         isDisabled={props.disabled}
         validated={props.error ? "error" : "default"}
-        onChange={(value, event) => props.onChange((event.target as any).value)}
+        onChange={(value, event) => onChange((event.target as any).value)}
         placeholder={props.placeholder}
         ref={props.inputRef}
         type={props.type ?? "text"}

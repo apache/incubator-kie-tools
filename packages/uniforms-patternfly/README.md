@@ -19,9 +19,9 @@ To start using uniforms, we have to install three independent packages:
 In this example, we will use the JSON Schema to describe our desired data format and style our form using the Pattenfly UI theme.
 
 ```shell
-npm install uniforms@3.6.2
-npm install uniforms-bridge-json-schema@3.6.2
-npm install uniforms-patternfly
+npm install uniforms@^3.10.2
+npm install uniforms-bridge-json-schema@^3.10.2
+npm install @kie-tools/uniforms-patternfly
 npm install @patternfly/react-core @patternfly/react-icons
 ```
 

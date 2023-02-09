@@ -48,7 +48,7 @@ test("<ErrorsField> - renders list of correct error messages (context)", () => {
 test("<ErrorsField> - renders children (specified)", () => {
   render(
     usingUniformsContext(
-      <ErrorsField name="x" children="Error message list" />,
+      <ErrorsField name="x">Error message list</ErrorsField>,
       { x: { type: String }, y: { type: String }, z: { type: String } },
       { error }
     )
