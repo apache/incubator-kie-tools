@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.URLSearchParams;
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.RuntimeCommunication;
 import org.dashbuilder.client.navbar.AppNavBar;
@@ -51,6 +52,8 @@ import org.uberfire.lifecycle.OnOpen;
 public class RouterScreen {
 
     public static final String ID = "RouterScreen";
+
+    public static final String SAMPLES_PARAM = "samples";
 
     private static AppConstants i18n = AppConstants.INSTANCE;
 
@@ -103,6 +106,12 @@ public class RouterScreen {
     }
 
     public void doRoute() {
+        var query = new URLSearchParams(DomGlobal.window.location.search);
+        // shortcut to samples screen
+        if (query.get(SAMPLES_PARAM) != null && clientLoader.hasSamples()) {
+            placeManager.goTo(SamplesPerspective.ID);
+            return;
+        }
         clientLoader.load(this::route,
                 (a, t) -> {
                     appNavBar.setHide(true);
