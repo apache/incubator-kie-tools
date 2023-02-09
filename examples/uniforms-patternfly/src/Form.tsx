@@ -40,7 +40,13 @@ export function Form(props: Props) {
     <div className={"form--page"}>
       <div className={"form--container"}>
         <CodeBlock model={model} />
-        <AutoForm placeholder schema={schema} onSubmit={(model: any) => setModel(model)} showInlineError />
+        <AutoForm
+          placeholder
+          model={model}
+          schema={schema}
+          onSubmit={(model: any) => setModel(model)}
+          showInlineError
+        />
       </div>
     </div>
   );

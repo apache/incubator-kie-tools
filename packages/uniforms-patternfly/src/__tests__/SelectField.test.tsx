@@ -150,64 +150,84 @@ test("<SelectField checkboxes> - renders a set of checkboxes with correct value 
   expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")[1]).toBeChecked();
 });
 
-// test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change", () => {
-//   const onChange = jest.fn();
+test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change", () => {
+  const onChange = jest.fn();
 
-//   render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" checkboxes={true} />, { x: { type: String, allowedValues: ["a", "b"] } }, { onChange }));
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" checkboxes={true} />,
+      { x: { type: String, allowedValues: ["a", "b"] } },
+      { onChange }
+    )
+  );
 
-//   expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")).toHaveLength(2);
-//   expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")[1].simulate("change")).toBeTruthy();
-//   expect(onChange).toHaveBeenLastCalledWith("x", "b");
-// });
+  expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")).toHaveLength(2);
 
-// test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change (array check)", () => {
-//   const onChange = jest.fn();
+  fireEvent.click(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")[1]);
+  expect(onChange).toHaveBeenLastCalledWith("x", "b");
+});
 
-//   <SelectField onToggle={() => {}} name="x" checkboxes={true} />r(
-//     element,
+test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change (array check)", () => {
+  const onChange = jest.fn();
 
-//       {
-//         x: { type: Array },
-//         "x.$": { type: String, allowedValues: ["a", "b"] },
-//       },
-//       { onChange }
-//     )
-//   );
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" checkboxes={true} />,
+      {
+        x: { type: Array },
+        "x.$": { type: String, allowedValues: ["a", "b"] },
+      },
+      { onChange }
+    )
+  );
 
-//   expect(screen.getByTestId("select-checkbox-field")).toHaveLength(2);
-//   expect(screen.getByTestId("select-checkbox-field").at(1).simulate("change")).toBeTruthy();
-//   expect(onChange).toHaveBeenLastCalledWith("x", ["b"]);
-// });
+  expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")).toHaveLength(2);
 
-// test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change (array uncheck)", () => {
-//   const onChange = jest.fn();
+  fireEvent.click(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")[1]);
+  expect(onChange).toHaveBeenLastCalledWith("x", ["b"]);
+});
 
-//   <SelectField onToggle={() => {}} name="x" value={["b"]} checkboxes={true} />r(
-//     element,
+test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change (array uncheck)", () => {
+  const onChange = jest.fn();
 
-//       {
-//         x: { type: Array },
-//         "x.$": { type: String, allowedValues: ["a", "b"] },
-//       },
-//       { onChange }
-//     )
-//   );
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" value={["b"]} checkboxes={true} />,
+      {
+        x: { type: Array },
+        "x.$": { type: String, allowedValues: ["a", "b"] },
+      },
+      { onChange }
+    )
+  );
 
-//   expect(screen.getByTestId("select-checkbox-field")).toHaveLength(2);
-//   expect(screen.getByTestId("select-checkbox-field").at(1).simulate("change")).toBeTruthy();
-//   expect(onChange).toHaveBeenLastCalledWith("x", []);
-// });
+  expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")).toHaveLength(2);
 
-// test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change (same value)", () => {
-//   const onChange = jest.fn();
+  fireEvent.click(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")[1]);
+  expect(onChange).toHaveBeenLastCalledWith("x", []);
+});
 
-//   render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" checkboxes={true} />, { x: { type: String, allowedValues: ["a", "b"] } }, { model: { x: "b" }, onChange }));
+test("<SelectField checkboxes> - renders a set of checkboxes which correctly reacts on change (same value)", () => {
+  const onChange = jest.fn();
 
-//   expect(screen.getByTestId("select-checkbox-field")).toHaveLength(2);
-//   expect(screen.getByTestId("select-checkbox-field").at(0).simulate("change")).toBeTruthy();
-//   expect(onChange).toHaveBeenLastCalledWith("x", "a");
-// });
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" checkboxes={true} />,
+      { x: { type: String, allowedValues: ["a", "b"] } },
+      { model: { x: "b" }, onChange }
+    )
+  );
+  expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
+
+  expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")).toHaveLength(2);
+
+  fireEvent.click(screen.getByTestId("select-checkbox-field").getElementsByTagName("input")[0]);
+  expect(onChange).toHaveBeenLastCalledWith("x", "a");
+});
 
 test("<SelectField checkboxes> - renders a label", () => {
   render(
@@ -264,34 +284,53 @@ test("<SelectField> - renders a select with correct name", () => {
   );
 
   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
-  expect(screen.getByTestId("select-inputs-field")).toMatchSnapshot();
   expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-  expect(screen.getByTestId("select-inputs-field").getAttribute("name")).toBe("x");
+  // patternfly don't pass down the name property
+  // expect(screen.getByTestId("select-inputs-field").getAttribute("name")).toBe("x");
 });
 
-// test("<SelectField> - renders a select with correct options", () => {
-//   render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, { x: { type: String, allowedValues: ["a", "b"] } }));
+test("<SelectField> - renders a select with correct options", () => {
+  render(
+    usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, {
+      x: { type: String, allowedValues: ["a", "b"] },
+    })
+  );
 
-//   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")).toHaveLength(2);
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[0].props.value).toBe("a");
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[0].props.children).toBe("a");
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[1].props.value).toBe("b");
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[1].props.children).toBe("b");
-// });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1].textContent).toBe("a");
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2].textContent).toBe("b");
+});
 
-// test("<SelectField> - renders a select with correct options (transform)", () => {
-//   render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" transform={(x: string) => x.toUpperCase()} />, { x: { type: String, allowedValues: ["a", "b"] } }));
+test("<SelectField> - renders a select with correct options (transform)", () => {
+  render(
+    usingUniformsContext(<SelectField onToggle={() => {}} name="x" transform={(x: string) => x.toUpperCase()} />, {
+      x: { type: String, allowedValues: ["a", "b"] },
+    })
+  );
 
-//   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
-//   expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")).toHaveLength(2);
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[0].props.value).toBe("a");
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[0].props.children).toBe("A");
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[1].props.value).toBe("b");
-//   expect(screen.getByTestId("select-inputs-field").getAttribute("children")?.[1].props.children).toBe("B");
-// });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1].textContent).toBe("A");
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2].textContent).toBe("B");
+});
+
+test("<SelectField> - renders a select with correct options (numbers)", () => {
+  render(
+    usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, { x: { type: String, allowedValues: [1, 2] } })
+  );
+
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1].textContent).toBe("1");
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2].textContent).toBe("2");
+});
 
 test("<SelectField> - renders a select with correct placeholder (implicit)", () => {
   render(
@@ -302,8 +341,8 @@ test("<SelectField> - renders a select with correct placeholder (implicit)", () 
 
   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
   expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-  expect(screen.getByTestId("select-inputs-field").getAttribute("placeholderText")).toBe("y");
-  expect(screen.getByTestId("select-inputs-field").getAttribute("value")).toBe(undefined);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("span")[0].textContent).toBe("y");
+  expect(screen.getByTestId("select-inputs-field").getAttribute("value")).toBe(null);
 });
 
 test("<SelectField> - renders a select with correct value (default)", () => {
@@ -315,7 +354,7 @@ test("<SelectField> - renders a select with correct value (default)", () => {
 
   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
   expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-  expect(screen.getByTestId("select-inputs-field").getAttribute("value")).toBe(undefined);
+  expect(screen.getByTestId("select-inputs-field").getAttribute("value")).toBe(null);
 });
 
 test("<SelectField> - renders a select with correct value (model)", () => {
@@ -341,76 +380,86 @@ test("<SelectField> - renders a select with correct value (specified)", () => {
 
   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
   expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1].textContent).toBe("b");
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("span")[0].textContent).toBe("b");
 });
 
-// test("<SelectField> - renders a select which correctly reacts on change", () => {
-//   const onChange = jest.fn();
-//   render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, { x: { type: String, allowedValues: ["a", "b"] } }, { onChange }));
+test("<SelectField> - renders a select which correctly reacts on change", () => {
+  const onChange = jest.fn();
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" />,
+      { x: { type: String, allowedValues: ["a", "b"] } },
+      { onChange }
+    )
+  );
 
-//   act(() => {
-//     const changeEvent = screen.getByTestId("select-inputs-field").getAttribute("onSelect")?.("event" as any, "b");
-//     expect(changeEvent).toBeFalsy();
-//   });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2]);
+  expect(onChange).toHaveBeenLastCalledWith("x", "b");
+});
 
-//   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
-// expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-//   expect(onChange).toHaveBeenLastCalledWith("x", "b");
-// });
+test("<SelectField> - renders a select which correctly reacts on change (array)", () => {
+  const onChange = jest.fn();
 
-// test("<SelectField> - renders a select which correctly reacts on change (array)", () => {
-//   const onChange = jest.fn();
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" value={undefined} />,
+      {
+        x: { type: Array },
+        "x.$": { type: String, allowedValues: ["a", "b"] },
+      },
+      { onChange }
+    )
+  );
 
-//   <SelectField onToggle={() => {}} name="x" value={undefined} />r(
-//     element,
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2]);
+  expect(onChange).toHaveBeenLastCalledWith("x", ["b"]);
+});
 
-//       {
-//         x: { type: Array },
-//         "x.$": { type: String, allowedValues: ["a", "b"] },
-//       },
-//       { onChange }
-//     )
-//   );
+test("<SelectField> - renders a select which correctly reacts on change (placeholder)", () => {
+  const onChange = jest.fn();
 
-//   act(() => {
-//     const changeEvent = screen.getByTestId("select-inputs-field").getAttribute("onSelect")?.("event" as any, "b");
-//     expect(changeEvent).toBeFalsy();
-//   });
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" placeholder={"test"} />,
+      { x: { type: String, allowedValues: ["a", "b"] } },
+      { onChange }
+    )
+  );
 
-//   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
-// expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-//   expect(onChange).toHaveBeenLastCalledWith("x", ["b"]);
-// });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(4);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1]);
+  expect(onChange).toHaveBeenCalled();
+});
 
-// test("<SelectField> - renders a select which correctly reacts on change (placeholder)", () => {
-//   const onChange = jest.fn();
+test("<SelectField> - renders a select which correctly reacts on change (same value)", () => {
+  const onChange = jest.fn();
 
-//   render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" placeholder={"test"} />, { x: { type: String, allowedValues: ["a", "b"] } }, { onChange }));
+  render(
+    usingUniformsContext(
+      <SelectField onToggle={() => {}} name="x" />,
+      { x: { type: String, allowedValues: ["a", "b"] } },
+      { model: { x: "b" }, onChange }
+    )
+  );
 
-//   act(() => {
-//     const changeEvent = screen.getByTestId("select-inputs-field").getAttribute("onSelect")?.("event" as any, "test");
-//     expect(changeEvent).toBeUndefined();
-//   });
-
-//   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
-// expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-//   expect(onChange).toHaveBeenCalled();
-// });
-
-// test("<SelectField> - renders a select which correctly reacts on change (same value)", () => {
-//   const onChange = jest.fn();
-
-//   render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, { x: { type: String, allowedValues: ["a", "b"] } }, { model: { x: "b" }, onChange }));
-
-//   act(() => {
-//     const changeEvent = screen.getByTestId("select-inputs-field").getAttribute("onSelect")?.("event" as any, "b");
-//     expect(changeEvent).toBeFalsy();
-//   });
-
-//   expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
-// expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
-//   expect(onChange).toHaveBeenLastCalledWith("x", "b");
-// });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2]);
+  expect(onChange).toHaveBeenLastCalledWith("x", "b");
+});
 
 test("<SelectField> - renders a label", () => {
   render(

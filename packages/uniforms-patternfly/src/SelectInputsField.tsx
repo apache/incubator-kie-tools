@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Select,
   SelectOption,
@@ -23,8 +23,9 @@ import {
   SelectVariant,
 } from "@patternfly/react-core/dist/js/components/Select";
 import wrapField from "./wrapField";
-import { filterDOMProps } from "uniforms";
 import { SelectInputProps } from "./SelectField";
+
+type SelectFieldValue = string | string[] | number | number[];
 
 function isSelectOptionObject(
   toBeDetermined: string | number | SelectOptionObject
@@ -38,13 +39,18 @@ function isSelectOptionString(toBeDetermined: string[] | number[]): toBeDetermin
 
 function SelectInputsField(props: SelectInputProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string | string[] | number | number[] | undefined>([]);
+  const [selected, setSelected] = useState<SelectFieldValue | undefined>(() => {
+    if (!props.value) {
+      return [];
+    }
+    if (Array.isArray(props.value)) {
+      return [...props.value];
+    }
+    return props.value;
+  });
 
   const parseInput = useCallback(
-    (
-      selection: string | number | SelectOptionObject,
-      fieldType: typeof Array | any
-    ): string | string[] | number | number[] => {
+    (selection: string | number | SelectOptionObject, fieldType: typeof Array | any): SelectFieldValue => {
       const parsedSelection = isSelectOptionObject(selection) ? selection.toString() : selection;
 
       if (fieldType !== Array) {
@@ -73,7 +79,7 @@ function SelectInputsField(props: SelectInputProps) {
     (event: React.MouseEvent | React.ChangeEvent, selection: string | SelectOptionObject) => {
       if (selection === props.placeholder) {
         props.onChange(undefined);
-        setSelected(undefined);
+        setSelected([]);
       } else {
         const items = parseInput(selection, props.fieldType);
         props.onChange(items);
@@ -84,22 +90,22 @@ function SelectInputsField(props: SelectInputProps) {
     [parseInput, props]
   );
 
-  const selectOptions = useMemo(
-    () =>
-      props.allowedValues?.map((value) => (
+  const selectOptions = useMemo(() => {
+    const options: JSX.Element[] = [];
+    if (props.placeholder) {
+      options.push(
+        <SelectOption key={`placeholder ${props.allowedValues!.length}`} isPlaceholder value={props.placeholder} />
+      );
+    }
+    props.allowedValues?.forEach((value) =>
+      options.push(
         <SelectOption key={value} value={value}>
           {props.transform ? props.transform(value) : value}
         </SelectOption>
-      )),
-    [props]
-  );
-
-  useEffect(() => {
-    if (props.placeholder)
-      selectOptions?.unshift(
-        <SelectOption key={props.allowedValues!.length} isPlaceholder value={props.placeholder} />
-      );
-  }, [props.placeholder, selectOptions]);
+      )
+    );
+    return options;
+  }, [props]);
 
   return wrapField(
     props as any,
