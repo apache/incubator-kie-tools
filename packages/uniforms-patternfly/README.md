@@ -82,7 +82,7 @@ All we have to do now is to pass the previously created Bridge to the `AutoForm`
 
 ```js
 import * as React from "react";
-import { AutoForm } from "uniforms-patternfly";
+import { AutoForm } from "@kie-tools/uniforms-patternfly/dist/esm";
 
 import schema from "./schema";
 

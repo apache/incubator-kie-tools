@@ -2031,6 +2031,9 @@ importers:
       "@kie-tools/dashbuilder-component-api":
         specifier: workspace:*
         version: link:../dashbuilder-component-api
+      "@kie-tools/uniforms-patternfly":
+        specifier: workspace:*
+        version: link:../uniforms-patternfly
       "@patternfly/react-core":
         specifier: ^4.157.3
         version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
@@ -3371,6 +3374,9 @@ importers:
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      "@kie-tools/uniforms-patternfly":
+        specifier: workspace:*
+        version: link:../uniforms-patternfly
       "@patternfly/react-core":
         specifier: ^4.157.3
         version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
@@ -3480,6 +3486,9 @@ importers:
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      "@kie-tools/uniforms-patternfly":
+        specifier: workspace:*
+        version: link:../uniforms-patternfly
       "@patternfly/react-core":
         specifier: ^4.157.3
         version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
@@ -7174,6 +7183,9 @@ importers:
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      "@kie-tools/uniforms-patternfly":
+        specifier: workspace:*
+        version: link:../uniforms-patternfly
       "@patternfly/react-core":
         specifier: ^4.157.3
         version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
@@ -9073,7 +9085,7 @@ packages:
         optional: true
     dependencies:
       ajv: 8.8.2
-      ajv-formats: 2.1.1(ajv@8.8.2)
+      ajv-formats: 2.1.1
       fast-json-stable-stringify: 2.1.0
       magic-string: 0.25.7
       rxjs: 6.6.7
@@ -9091,7 +9103,7 @@ packages:
         optional: true
     dependencies:
       ajv: 8.9.0
-      ajv-formats: 2.1.1(ajv@8.9.0)
+      ajv-formats: 2.1.1
       fast-json-stable-stringify: 2.1.0
       magic-string: 0.25.7
       rxjs: 6.6.7
@@ -15481,40 +15493,14 @@ packages:
       ajv: 6.12.6
     dev: false
 
-  /ajv-formats@2.1.1(ajv@8.11.0):
+  /ajv-formats@2.1.1:
     resolution:
       { integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA== }
-    peerDependencies:
-      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
     dependencies:
       ajv: 8.11.0
-    dev: true
-
-  /ajv-formats@2.1.1(ajv@8.8.2):
-    resolution:
-      { integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA== }
-    peerDependencies:
-      ajv: ^8.0.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
-    dependencies:
-      ajv: 8.8.2
-    dev: true
-
-  /ajv-formats@2.1.1(ajv@8.9.0):
-    resolution:
-      { integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA== }
-    peerDependencies:
-      ajv: ^8.0.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
-    dependencies:
-      ajv: 8.9.0
     dev: true
 
   /ajv-keywords@3.5.2(ajv@6.12.6):
@@ -28170,7 +28156,7 @@ packages:
     dependencies:
       "@types/json-schema": 7.0.11
       ajv: 8.11.0
-      ajv-formats: 2.1.1(ajv@8.11.0)
+      ajv-formats: 2.1.1
       ajv-keywords: 5.1.0(ajv@8.11.0)
     dev: true
 

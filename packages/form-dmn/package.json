@@ -29,6 +29,7 @@
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools/form": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/uniforms-patternfly": "workspace:*",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "ajv": "^6.12.6",

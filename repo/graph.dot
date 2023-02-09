@@ -200,6 +200,7 @@ digraph G {
   "@kie-tools/dashbuilder-component-timeseries" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-timeseries" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-victory-charts" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
@@ -245,6 +246,7 @@ digraph G {
   "@kie-tools/feel-input-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/form" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-bootstrap4-codegen" [ style = "solid", color = "blue" ];
