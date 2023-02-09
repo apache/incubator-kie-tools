@@ -2053,14 +2053,11 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       uniforms-bridge-json-schema:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
-      uniforms-patternfly:
-        specifier: ^4.7.9
-        version: 4.7.9(@patternfly/react-core@4.168.8)(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -3402,14 +3399,11 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       uniforms-bridge-json-schema:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
-      uniforms-patternfly:
-        specifier: ^4.7.9
-        version: 4.7.9(@patternfly/react-core@4.168.8)(@patternfly/react-icons@4.19.8)(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -3514,14 +3508,11 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       uniforms-bridge-json-schema:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
-      uniforms-patternfly:
-        specifier: ^4.7.9
-        version: 4.7.9(@patternfly/react-core@4.168.8)(@patternfly/react-icons@4.19.8)(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -3608,11 +3599,11 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2
+        specifier: ^3.10.2
+        version: 3.10.2
       uniforms-bridge-json-schema:
-        specifier: ^3.5.5
-        version: 3.6.2
+        specifier: ^3.10.2
+        version: 3.10.2
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -6854,11 +6845,11 @@ importers:
         specifier: ^1.13.1
         version: 1.13.1
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       uniforms-bridge-simple-schema-2:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -7069,11 +7060,11 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       uniforms-bridge-simple-schema-2:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -7223,14 +7214,11 @@ importers:
         specifier: ^7.6.2
         version: 7.7.0(react@17.0.2)
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       uniforms-bridge-json-schema:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
-      uniforms-patternfly:
-        specifier: ^4.7.9
-        version: 4.7.9(@patternfly/react-core@4.168.8)(@patternfly/react-icons@4.19.8)(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -7347,14 +7335,11 @@ importers:
         specifier: ^7.6.2
         version: 7.7.0(react@17.0.2)
       uniforms:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       uniforms-bridge-json-schema:
-        specifier: ^3.5.5
-        version: 3.6.2(react@17.0.2)
-      uniforms-patternfly:
-        specifier: ^4.7.9
-        version: 4.7.9(@patternfly/react-core@4.168.8)(@patternfly/react-icons@4.19.8)(react@17.0.2)
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -16973,11 +16958,6 @@ packages:
       isobject: 3.0.1
       static-extend: 0.1.2
     dev: true
-
-  /classnames@2.3.1:
-    resolution:
-      { integrity: sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA== }
-    dev: false
 
   /clean-css@4.2.3:
     resolution:
@@ -30055,21 +30035,9 @@ packages:
     engines: { node: ">=4" }
     dev: true
 
-  /uniforms-bridge-json-schema@3.10.2(react@17.0.2):
+  /uniforms-bridge-json-schema@3.10.2:
     resolution:
       { integrity: sha512-J2RG0WQrMH39M9124lhopXnbR/ycuLJk9IkA/ix9Dxpk1dQ7EuHLg/CeXTeZTeQiF2KZrKMYXxUswEmFh7kIMQ== }
-    dependencies:
-      invariant: 2.2.4
-      lodash: 4.17.21
-      tslib: 2.3.1
-      uniforms: 3.10.2(react@17.0.2)
-    transitivePeerDependencies:
-      - react
-    dev: false
-
-  /uniforms-bridge-json-schema@3.6.2:
-    resolution:
-      { integrity: sha512-NI9qfFpImxsljw+k17D/QEAQwKlQHVtJlTVRlcMI00pHf3bx+3Kg2E3f/b5OLHKiM0eK3xF1hldBU0zpopuw3g== }
     dependencies:
       invariant: 2.2.4
       lodash: 4.17.21
@@ -30079,9 +30047,9 @@ packages:
       - react
     dev: false
 
-  /uniforms-bridge-json-schema@3.6.2(react@17.0.2):
+  /uniforms-bridge-json-schema@3.10.2(react@17.0.2):
     resolution:
-      { integrity: sha512-NI9qfFpImxsljw+k17D/QEAQwKlQHVtJlTVRlcMI00pHf3bx+3Kg2E3f/b5OLHKiM0eK3xF1hldBU0zpopuw3g== }
+      { integrity: sha512-J2RG0WQrMH39M9124lhopXnbR/ycuLJk9IkA/ix9Dxpk1dQ7EuHLg/CeXTeZTeQiF2KZrKMYXxUswEmFh7kIMQ== }
     dependencies:
       invariant: 2.2.4
       lodash: 4.17.21
@@ -30103,19 +30071,6 @@ packages:
     transitivePeerDependencies:
       - react
 
-  /uniforms-bridge-simple-schema-2@3.6.2(react@17.0.2):
-    resolution:
-      { integrity: sha512-69R1sCt+9uMBwPnw1EAHz+bMq74/lsFrUKG3QWmEv0QvNyiyRyloURaToJ2JyoUwnnzKCFfkYC7UIbcA2pcpcA== }
-    dependencies:
-      invariant: 2.2.4
-      lodash: 4.17.21
-      simpl-schema: 1.12.0
-      tslib: 2.3.1
-      uniforms: 3.10.2(react@17.0.2)
-    transitivePeerDependencies:
-      - react
-    dev: false
-
   /uniforms-bridge-simple-schema@3.10.2(react@17.0.2):
     resolution:
       { integrity: sha512-eMC+W+8L0IsYH/8tQoi9okLWzqN+ffAl4B9XEdJabnQN7ECWNNuJBhOrlNBNdYWJtbG/gJkptib/bcCbZ8lv/w== }
@@ -30126,43 +30081,6 @@ packages:
       uniforms: 3.10.2(react@17.0.2)
     transitivePeerDependencies:
       - react
-    dev: false
-
-  /uniforms-patternfly@4.7.9(@patternfly/react-core@4.168.8)(@patternfly/react-icons@4.19.8)(react@17.0.2):
-    resolution:
-      { integrity: sha512-HnxiGr/mkBwDoJCX/kAY6pNu6d5rbXG8IkC2zAUCkW3msoEwUB/mKzAXmMSQ76nnBE+O1vj6F28lOuW4n7UFzA== }
-    engines: { npm: ">=5.0.0" }
-    peerDependencies:
-      "@patternfly/react-core": ^4.135.0
-      "@patternfly/react-icons": ^4.11.0
-      react: ^17.0.0 || ^16.8.0
-    dependencies:
-      "@patternfly/react-core": 4.168.8(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-icons": 4.19.8(react-dom@17.0.2)(react@17.0.2)
-      classnames: 2.3.1
-      invariant: 2.2.4
-      lodash: 4.17.21
-      react: 17.0.2
-      tslib: 2.3.1
-      uniforms: 3.10.2(react@17.0.2)
-    dev: false
-
-  /uniforms-patternfly@4.7.9(@patternfly/react-core@4.168.8)(react@17.0.2):
-    resolution:
-      { integrity: sha512-HnxiGr/mkBwDoJCX/kAY6pNu6d5rbXG8IkC2zAUCkW3msoEwUB/mKzAXmMSQ76nnBE+O1vj6F28lOuW4n7UFzA== }
-    engines: { npm: ">=5.0.0" }
-    peerDependencies:
-      "@patternfly/react-core": ^4.135.0
-      "@patternfly/react-icons": ^4.11.0
-      react: ^17.0.0 || ^16.8.0
-    dependencies:
-      "@patternfly/react-core": 4.168.8(react-dom@17.0.2)(react@17.0.2)
-      classnames: 2.3.1
-      invariant: 2.2.4
-      lodash: 4.17.21
-      react: 17.0.2
-      tslib: 2.3.1
-      uniforms: 3.10.2(react@17.0.2)
     dev: false
 
   /uniforms@3.10.2:
@@ -30186,29 +30104,6 @@ packages:
       lodash: 4.17.21
       react: 17.0.2
       tslib: 2.3.1
-
-  /uniforms@3.6.2:
-    resolution:
-      { integrity: sha512-3mPd7xRkL5MHdV18z/+xYDayCMr4Ed675FFOQG7bPWQ1sHXMoM3YGhx/rz3h8sqWKyOetbPeQKiHnCSWq1AxgQ== }
-    peerDependencies:
-      react: ^17.0.0 || ^16.8.0
-    dependencies:
-      invariant: 2.2.4
-      lodash: 4.17.21
-      tslib: 2.3.1
-    dev: false
-
-  /uniforms@3.6.2(react@17.0.2):
-    resolution:
-      { integrity: sha512-3mPd7xRkL5MHdV18z/+xYDayCMr4Ed675FFOQG7bPWQ1sHXMoM3YGhx/rz3h8sqWKyOetbPeQKiHnCSWq1AxgQ== }
-    peerDependencies:
-      react: ^17.0.0 || ^16.8.0
-    dependencies:
-      invariant: 2.2.4
-      lodash: 4.17.21
-      react: 17.0.2
-      tslib: 2.3.1
-    dev: false
 
   /union-value@1.0.1:
     resolution:
