@@ -27,7 +27,7 @@ import { baseEndpoint, KubernetesApiVersions } from "../ApiConstants";
 import { DeploymentDescriptor } from "../types";
 
 export class CreateDeployment extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & CreateDeploymentArgs & { descriptor?: DeploymentDescriptor }) {
+  constructor(protected args: CreateResourceFetchArgs & CreateDeploymentArgs) {
     super(args);
   }
 
@@ -36,7 +36,7 @@ export class CreateDeployment extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? DEPLOYMENT_TEMPLATE({ ...this.args }));
+    return JSON.stringify(this.args.kind == "provided" ? this.args.descriptor : DEPLOYMENT_TEMPLATE({ ...this.args }));
   }
 
   public endpoint(): string {

@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { EnvVar } from "../api/types";
+import {
+  DeploymentDescriptor,
+  EnvVar,
+  KafkaSourceDescriptor,
+  KnativeServiceDescriptor,
+  SecretDescriptor,
+} from "../api/types";
 
 export interface CommonTemplateArgs {
   resourceName: string;
@@ -22,7 +28,8 @@ export interface CommonTemplateArgs {
   createdBy: string;
 }
 
-export interface CreateDeploymentArgs {
+export interface TemplatedCreateDeploymentArgs {
+  kind: "templated";
   uri: string;
   baseUrl: string;
   workspaceName: string;
@@ -30,11 +37,27 @@ export interface CreateDeploymentArgs {
   envVars: EnvVar[];
 }
 
-export interface CreateSecretArgs {
+export interface ProvidedCreateDeploymentArgs {
+  kind: "provided";
+  descriptor: DeploymentDescriptor;
+}
+
+export type CreateDeploymentArgs = TemplatedCreateDeploymentArgs | ProvidedCreateDeploymentArgs;
+
+export interface TemplatedCreateSecretArgs {
+  kind: "templated";
   data: Record<string, string>;
 }
 
-export interface CreateKafkaSourceArgs {
+export interface ProvidedCreateSecretArgs {
+  kind: "provided";
+  descriptor: SecretDescriptor;
+}
+
+export type CreateSecretArgs = TemplatedCreateSecretArgs | ProvidedCreateSecretArgs;
+
+export interface TemplatedCreateKafkaSourceArgs {
+  kind: "templated";
   sinkService: string;
   bootstrapServers: string[];
   topics: string[];
@@ -46,7 +69,22 @@ export interface CreateKafkaSourceArgs {
   };
 }
 
-export interface CreateKnativeServiceArgs {
+export interface ProvidedCreateKafkaSourceArgs {
+  kind: "provided";
+  descriptor: KafkaSourceDescriptor;
+}
+
+export type CreateKafkaSourceArgs = TemplatedCreateKafkaSourceArgs | ProvidedCreateKafkaSourceArgs;
+
+export interface TemplatedCreateKnativeServiceArgs {
+  kind: "templated";
   uri: string;
   workspaceName: string;
 }
+
+export interface ProvidedCreateKnativeServiceArgs {
+  kind: "provided";
+  descriptor: KnativeServiceDescriptor;
+}
+
+export type CreateKnativeServiceArgs = TemplatedCreateKnativeServiceArgs | ProvidedCreateKnativeServiceArgs;

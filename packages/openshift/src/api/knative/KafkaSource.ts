@@ -17,14 +17,11 @@
 import { baseEndpoint, KnativeApiVersions } from "../ApiConstants";
 import { KAFKA_SOURCE_TEMPLATE } from "../../template/ResourceTemplates";
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
-import { KafkaSourceDescriptor } from "../types";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { CreateKafkaSourceArgs } from "../../template/types";
 
 export class CreateKafkaSource extends ResourceFetch {
-  constructor(
-    protected args: CreateResourceFetchArgs & CreateKafkaSourceArgs & { descriptor?: KafkaSourceDescriptor }
-  ) {
+  constructor(protected args: CreateResourceFetchArgs & CreateKafkaSourceArgs) {
     super(args);
   }
 
@@ -33,7 +30,9 @@ export class CreateKafkaSource extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? KAFKA_SOURCE_TEMPLATE({ ...this.args }));
+    return JSON.stringify(
+      this.args.kind === "provided" ? this.args.descriptor : KAFKA_SOURCE_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

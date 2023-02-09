@@ -146,6 +146,7 @@ export class KieSandboxOpenShiftService {
       fetcher.execute<DeploymentDescriptor>({
         target: new CreateDeployment({
           ...resourceArgs,
+          kind: "templated",
           uri: args.targetFilePath,
           baseUrl: routeUrl,
           workspaceName: args.workspaceName,

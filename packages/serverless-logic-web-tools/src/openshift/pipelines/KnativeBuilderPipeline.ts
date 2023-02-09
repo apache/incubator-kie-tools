@@ -81,6 +81,7 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
       fetcher.execute({
         target: new CreateKnativeService({
           ...resourceArgs,
+          kind: "templated",
           uri: this.args.targetUri,
           workspaceName: this.args.workspaceName,
         }),
@@ -96,7 +97,7 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
       };
       await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
         fetcher.execute({
-          target: new CreateSecret({ ...resourceArgs, data: secretData }),
+          target: new CreateSecret({ ...resourceArgs, data: secretData, kind: "templated" }),
           rollbacks: rollbacks.slice(--rollbacksCount),
         })
       );
@@ -106,6 +107,7 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
         fetcher.execute({
           target: new CreateKafkaSource({
             ...resourceArgs,
+            kind: "templated",
             sinkService: this.args.resourceName,
             bootstrapServers,
             topics,

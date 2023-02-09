@@ -187,13 +187,8 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
         fetcher.execute({
           target: new CreateDeployment({
             ...resourceArgs,
+            kind: "provided",
             descriptor: deploymentDescriptor,
-            // TODO CAPONETTO: these props below must not be mandatory if I provide a descriptor
-            baseUrl: "",
-            containerImageUrl: "",
-            envVars: [],
-            uri: "",
-            workspaceName: "",
           }),
           rollbacks: rollbacks.slice(--rollbacksCount),
         })

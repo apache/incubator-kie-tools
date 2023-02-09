@@ -23,13 +23,10 @@ import {
   UniqueResourceFetchArgs,
 } from "../../fetch/ResourceFetch";
 import { KNATIVE_SERVICE_TEMPLATE } from "../../template/ResourceTemplates";
-import { KnativeServiceDescriptor } from "../types";
 import { CreateKnativeServiceArgs } from "../../template/types";
 
 export class CreateKnativeService extends ResourceFetch {
-  constructor(
-    protected args: CreateResourceFetchArgs & CreateKnativeServiceArgs & { descriptor?: KnativeServiceDescriptor }
-  ) {
+  constructor(protected args: CreateResourceFetchArgs & CreateKnativeServiceArgs) {
     super(args);
   }
 
@@ -38,7 +35,9 @@ export class CreateKnativeService extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? KNATIVE_SERVICE_TEMPLATE({ ...this.args }));
+    return JSON.stringify(
+      this.args.kind === "provided" ? this.args.descriptor : KNATIVE_SERVICE_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

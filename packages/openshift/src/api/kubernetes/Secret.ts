@@ -17,12 +17,11 @@
 import { baseEndpoint, KubernetesApiVersions } from "../ApiConstants";
 import { SECRET_TEMPLATE } from "../../template/ResourceTemplates";
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
-import { SecretDescriptor } from "../types";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { CreateSecretArgs } from "../../template/types";
 
 export class CreateSecret extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & CreateSecretArgs & { descriptor?: SecretDescriptor }) {
+  constructor(protected args: CreateResourceFetchArgs & CreateSecretArgs) {
     super(args);
   }
 
@@ -31,7 +30,7 @@ export class CreateSecret extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? SECRET_TEMPLATE({ ...this.args }));
+    return JSON.stringify(this.args.kind === "provided" ? this.args.descriptor : SECRET_TEMPLATE({ ...this.args }));
   }
 
   public endpoint(): string {

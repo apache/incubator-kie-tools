@@ -35,10 +35,10 @@ import {
 } from "./TemplateConstants";
 import {
   CommonTemplateArgs,
-  CreateDeploymentArgs,
-  CreateKafkaSourceArgs,
-  CreateKnativeServiceArgs,
-  CreateSecretArgs,
+  TemplatedCreateDeploymentArgs,
+  TemplatedCreateKafkaSourceArgs,
+  TemplatedCreateKnativeServiceArgs,
+  TemplatedCreateSecretArgs,
 } from "./types";
 
 export const BUILD_CONFIG_TEMPLATE = (args: CommonTemplateArgs): BuildConfigDescriptor => ({
@@ -74,7 +74,7 @@ export const BUILD_CONFIG_TEMPLATE = (args: CommonTemplateArgs): BuildConfigDesc
   },
 });
 
-export const DEPLOYMENT_TEMPLATE = (args: CommonTemplateArgs & CreateDeploymentArgs): DeploymentDescriptor => {
+export const DEPLOYMENT_TEMPLATE = (args: CommonTemplateArgs & TemplatedCreateDeploymentArgs): DeploymentDescriptor => {
   const annotations = {
     [ResourceLabelNames.URI]: args.uri,
     [ResourceLabelNames.WORKSPACE_NAME]: args.workspaceName,
@@ -197,7 +197,7 @@ export const SERVICE_TEMPLATE = (args: CommonTemplateArgs): ServiceDescriptor =>
   },
 });
 
-export const SECRET_TEMPLATE = (args: CommonTemplateArgs & CreateSecretArgs): SecretDescriptor => {
+export const SECRET_TEMPLATE = (args: CommonTemplateArgs & TemplatedCreateSecretArgs): SecretDescriptor => {
   const encodedData = Object.entries(args.data).reduce(
     (acc, [key, value]) => ({
       ...acc,
@@ -218,7 +218,9 @@ export const SECRET_TEMPLATE = (args: CommonTemplateArgs & CreateSecretArgs): Se
   };
 };
 
-export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSourceArgs): KafkaSourceDescriptor => ({
+export const KAFKA_SOURCE_TEMPLATE = (
+  args: CommonTemplateArgs & TemplatedCreateKafkaSourceArgs
+): KafkaSourceDescriptor => ({
   apiVersion: KnativeApiVersions.KAFKA_SOURCE,
   kind: "KafkaSource",
   metadata: {
@@ -268,7 +270,7 @@ export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSour
 });
 
 export const KNATIVE_SERVICE_TEMPLATE = (
-  args: CommonTemplateArgs & CreateKnativeServiceArgs
+  args: CommonTemplateArgs & TemplatedCreateKnativeServiceArgs
 ): KnativeServiceDescriptor => {
   const imageStreamTrigger: Trigger = {
     from: {
