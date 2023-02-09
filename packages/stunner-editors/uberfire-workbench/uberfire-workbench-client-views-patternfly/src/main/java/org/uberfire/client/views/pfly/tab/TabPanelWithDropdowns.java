@@ -65,32 +65,23 @@ public class TabPanelWithDropdowns extends Composite {
      * Widgets we have created that can have the CSS style name "active" added to them. When a new tab is selected, all
      * of these widgets get the "active" style removed from them.
      */
-    private final Set<Widget> activatableWidgets = new HashSet<Widget>();
+    private final Set<Widget> activatableWidgets = new HashSet<>();
     /**
      * Removes the "active" style class from all widgets in {@link #activatableWidgets}, then propagates the event to
      * the panel-level listeners.
      */
-    private final TabShowHandler individualTabShowHandler = new TabShowHandler() {
-
-        @Override
-        public void onShow(TabShowEvent showEvent) {
-            for (Widget w : activatableWidgets) {
-                if (showEvent.getTab().asWidget() != w) {
-                    w.removeStyleName(Styles.ACTIVE);
-                }
+    private final TabShowHandler individualTabShowHandler = showEvent -> {
+        for (Widget w : activatableWidgets) {
+            if (showEvent.getTab().asWidget() != w) {
+                w.removeStyleName(Styles.ACTIVE);
             }
-            TabPanelWithDropdowns.this.fireEvent(showEvent);
         }
+        TabPanelWithDropdowns.this.fireEvent(showEvent);
     };
     /**
      * Propagates the event to the panel-level listeners.
      */
-    private final TabShownHandler individualTabShownHandler = new TabShownHandler() {
-        @Override
-        public void onShown(TabShownEvent shownEvent) {
-            TabPanelWithDropdowns.this.fireEvent(shownEvent);
-        }
-    };
+    private final TabShownHandler individualTabShownHandler = shownEvent -> TabPanelWithDropdowns.this.fireEvent(shownEvent);
     /**
      * These are our own registrations on the events from the individual tabs, which must be removed when the associated
      * tab is removed. This is <i>not</i> a record of registrations we've handed out at the panel level: those are
@@ -101,7 +92,7 @@ public class TabPanelWithDropdowns extends Composite {
      * All tabs (both top-level and nested) that have content associated with them. In other words, everything except
      * the dropdown tabs themselves.
      */
-    private final Set<TabPanelEntry> allContentTabs = new HashSet<TabPanelEntry>();
+    private final Set<TabPanelEntry> allContentTabs = new HashSet<>();
     /**
      * The area that contains the tab bar and any additional custom widgets
      */
@@ -371,6 +362,10 @@ public class TabPanelWithDropdowns extends Composite {
         this.getWidgetsPanel().setCellHorizontalAlignment(customWidget, endOf(LTR));
     }
 
+    public void setTabBarVisible(final boolean visible) {
+        getTabBar().setVisible(visible);
+    }
+
     interface TabPanelWithDropdownsBinder
             extends
             UiBinder<TabPanel, TabPanelWithDropdowns> {
@@ -384,7 +379,7 @@ public class TabPanelWithDropdowns extends Composite {
     public class DropDownTab extends DropDownMenu {
 
         private final AnchorListItem owningTab;
-        private final List<TabPanelEntry> contents = new ArrayList<TabPanelEntry>();
+        private final List<TabPanelEntry> contents = new ArrayList<>();
         private final Multimap<TabPanelEntry, HandlerRegistration> tabHandlerRegistrations = HashMultimap.create();
 
         public DropDownTab(AnchorListItem owningTab) {
@@ -412,13 +407,7 @@ public class TabPanelWithDropdowns extends Composite {
             tabHandlerRegistrations.put(tab,
                                         tabWidget.addShownHandler(individualTabShownHandler));
             tabHandlerRegistrations.put(tab,
-                                        tabWidget.addShownHandler(new TabShownHandler() {
-
-                                            @Override
-                                            public void onShown(TabShownEvent event) {
-                                                DropDownTab.this.getParent().addStyleName(Styles.ACTIVE);
-                                            }
-                                        }));
+                                        tabWidget.addShownHandler(event -> DropDownTab.this.getParent().addStyleName(Styles.ACTIVE)));
 
             add(tabWidget);
             tabContent.add(tab.getContentPane());

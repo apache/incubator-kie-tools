@@ -19,7 +19,7 @@ import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 
-export function useOctokit(authSession: AuthSession | undefined): Octokit {
+export function useGitHubClient(authSession: AuthSession | undefined): Octokit {
   const authProviders = useAuthProviders();
 
   return useMemo(() => {
@@ -36,8 +36,8 @@ export function useOctokit(authSession: AuthSession | undefined): Octokit {
   }, [authProviders, authSession]);
 }
 
-export const getGithubInstanceApiUrl = (domain: string) => {
-  if (domain === "github.com") {
+export const getGithubInstanceApiUrl = (domain?: string) => {
+  if (!domain || domain === "github.com") {
     return undefined;
   }
   return `https://${domain}/api/v3`;

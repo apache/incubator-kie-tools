@@ -77,6 +77,10 @@ public interface AppConstants extends Messages {
 
     String emptyEditorMode();
 
+    String emptyClientMode();
+
+    String emptyWithImportId(String modelId);
+
     String errorContentTitle();
 
 }

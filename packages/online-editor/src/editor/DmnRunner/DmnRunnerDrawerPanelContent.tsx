@@ -50,6 +50,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
+import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -74,6 +75,7 @@ interface DmnRunnerStylesConfig {
 }
 
 export function DmnRunnerDrawerPanelContent(props: Props) {
+  const extendedServices = useExtendedServices();
   const { i18n, locale } = useOnlineI18n();
   const formRef = useRef<HTMLFormElement>(null);
   const dmnRunnerState = useDmnRunnerState();
@@ -148,13 +150,12 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const updateDmnRunnerResults = useCallback(
     async (formInputs: InputRow, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
       try {
         const payload = await dmnRunnerDispatch.preparePayload(formInputs);
-        const result = await dmnRunnerState.service.result(payload);
+        const result = await extendedServices.client.result(payload);
         if (canceled.get()) {
           return;
         }
@@ -175,14 +176,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }
           return result.decisionResults;
         });
-
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (e) {
-        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         setDmnRunnerResults(undefined);
       }
     },
-    [dmnRunnerState.service, dmnRunnerState.status, dmnRunnerDispatch, setExecutionNotifications]
+    [extendedServices.client, dmnRunnerState.status, dmnRunnerDispatch, setExecutionNotifications]
   );
 
   // Update outputs column on form change
@@ -310,7 +308,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [dmnRunnerState.inputRows]
+    [dmnRunnerState.inputRows, dmnRunnerDispatch]
   );
 
   const formInputs = useMemo(() => {
@@ -324,11 +322,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       selectRow(`Row ${newData.length}`);
       return newData;
     });
-  }, [dmnRunnerDispatch.setInputRows, dmnRunnerDispatch]);
+  }, [dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
-    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
+    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
   }, [dmnRunnerDispatch, props.editorPageDock]);
 
   return (
@@ -428,11 +426,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       </FlexItem>
                     </Flex>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                      <DrawerCloseButton
-                        onClick={(e: any) => {
-                          dmnRunnerDispatch.setExpanded(false);
-                        }}
-                      />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setExpanded(false)} />
                     )}
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
@@ -473,7 +467,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <Text component={"h3"}>{i18n.terms.outputs}</Text>
                     </TextContent>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                      <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
+                      <DrawerCloseButton onClick={() => dmnRunnerDispatch.setExpanded(false)} />
                     )}
                   </PageSection>
                   <div

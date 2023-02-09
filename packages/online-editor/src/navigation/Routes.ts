@@ -20,7 +20,6 @@ export enum QueryParams {
   SETTINGS = "settings",
   URL = "url",
   BRANCH = "branch",
-  DMN_RUNNER_FORM_INPUTS = "formInputs",
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
   CONFIRM = "confirm",
@@ -124,7 +123,7 @@ export const routes = {
    * Use import instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
-    queryParams: QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
+    queryParams: QueryParams.URL | QueryParams.SETTINGS;
   }>(({ extension }) => `/editor/${extension}`),
 
   newModel: new Route<{
@@ -132,12 +131,7 @@ export const routes = {
   }>(({ extension }) => `/new/${extension}`),
 
   import: new Route<{
-    queryParams:
-      | QueryParams.URL
-      | QueryParams.DMN_RUNNER_FORM_INPUTS
-      | QueryParams.BRANCH
-      | QueryParams.AUTH_SESSION_ID
-      | QueryParams.CONFIRM;
+    queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.AUTH_SESSION_ID | QueryParams.CONFIRM;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{
@@ -150,6 +144,7 @@ export const routes = {
       vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
       kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
+      kieHorizontalLogoDefault: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_default.svg`),
       kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
       dmnRunnerGif: new Route<{}>(() => `images/dmn-runner2.gif`),
       dmnDevDeploymentGif: new Route<{}>(() => `images/dmn-dev-deployment.gif`),

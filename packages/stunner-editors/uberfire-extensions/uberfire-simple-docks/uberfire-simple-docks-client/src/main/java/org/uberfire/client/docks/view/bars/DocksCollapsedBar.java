@@ -59,9 +59,7 @@ public class DocksCollapsedBar extends Composite implements OuiaComponent {
     }
 
     private void setCSS(UberfireDockPosition position) {
-        if (position == UberfireDockPosition.SOUTH) {
-            docksBarPanel.addStyleName(CSS.CSS().gradientTopBottom());
-        } else {
+        if (position == UberfireDockPosition.EAST) {
             docksBarPanel.addStyleName(CSS.CSS().gradientBottomTop());
         }
     }

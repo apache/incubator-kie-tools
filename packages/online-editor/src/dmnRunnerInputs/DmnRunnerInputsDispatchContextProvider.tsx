@@ -22,6 +22,7 @@ import { InputRow } from "@kie-tools/form-dmn";
 import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsDispatchContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useSyncedCompanionFs } from "../companionFs/CompanionFsHooks";
+import { EMPTY_DMN_RUNNER_INPUTS } from "./DmnRunnerInputsService";
 
 export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChildren<{}>) {
   const dmnRunnerInputsService = useMemo(() => {
@@ -63,6 +64,11 @@ export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChi
         workspaceId: workspaceFile.workspaceId,
         workspaceFileRelativePath: workspaceFile.relativePath,
       });
+
+      dmnRunnerInputsService.companionFsService.createOrOverwrite(
+        { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
+        JSON.stringify(EMPTY_DMN_RUNNER_INPUTS)
+      );
     },
     [dmnRunnerInputsService]
   );

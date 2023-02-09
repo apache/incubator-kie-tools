@@ -30,7 +30,14 @@ import { StorageFile } from "../services/StorageService";
 import { GitServerRef } from "./api/GitServerRef";
 import { LocalFile } from "./api/LocalFile";
 import { WorkspaceDescriptor } from "./api/WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./api/WorkspaceOrigin";
+import {
+  BitbucketOrigin,
+  GistOrigin,
+  GitHubOrigin,
+  SnippetOrigin,
+  WorkspaceKind,
+  WorkspaceOrigin,
+} from "./api/WorkspaceOrigin";
 import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
@@ -85,12 +92,33 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
+  public async kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+  }): Promise<void> {
+    return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+      return this.args.services.descriptorService.turnIntoSnippet(
+        fs,
+        args.workspaceId,
+        new URL(args.remoteUrl),
+        args.branch
+      );
+    });
+  }
+
   public async kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
     workspaceId: string;
     remoteUrl: string;
+    branch?: string;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
-      return this.args.services.descriptorService.turnIntoGit(fs, args.workspaceId, new URL(args.remoteUrl));
+      return this.args.services.descriptorService.turnIntoGit(
+        fs,
+        args.workspaceId,
+        new URL(args.remoteUrl),
+        args.branch
+      );
     });
   }
 
@@ -413,7 +441,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   }
 
   public async kieSandboxWorkspacesGit_clone(args: {
-    origin: GistOrigin | GitHubOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
     gitAuthSessionId: string | undefined;
@@ -436,9 +464,24 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
+  public async kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: {
+    workspaceId: string;
+  }): Promise<string[]> {
+    const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
+      return await this.args.services.gitService.unstagedModifiedFileRelativePaths({
+        fs,
+        dir: workspaceRootDirPath,
+        exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
+      });
+    });
+  }
+
   public async kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
+    commitMessage?: string;
   }): Promise<void> {
     const descriptor = await this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.get(fs, args.workspaceId);
@@ -446,20 +489,20 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
 
     const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
 
+    const defaultCommitMessage = `Changes from ${this.args.appName}`;
+
+    const fileRelativePaths = await this.kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths({
+      workspaceId: args.workspaceId,
+    });
+
+    if (fileRelativePaths.length === 0) {
+      console.debug("Nothing to commit.");
+      return;
+    }
+
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
-        const fileRelativePaths = await this.args.services.gitService.unstagedModifiedFileRelativePaths({
-          fs,
-          dir: workspaceRootDirPath,
-          exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
-        });
-
-        if (fileRelativePaths.length === 0) {
-          console.debug("Nothing to commit.");
-          return;
-        }
-
         await Promise.all(
           fileRelativePaths.map(async (relativePath) => {
             if (
@@ -488,7 +531,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           fs,
           dir: workspaceRootDirPath,
           targetBranch: descriptor.origin.branch,
-          message: `Changes from ${this.args.appName}`,
+          message: args.commitMessage ?? defaultCommitMessage,
           author: {
             name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
             email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,

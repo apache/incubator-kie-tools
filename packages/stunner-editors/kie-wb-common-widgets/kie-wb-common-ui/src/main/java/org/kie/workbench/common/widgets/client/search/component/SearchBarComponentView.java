@@ -156,6 +156,15 @@ public class SearchBarComponentView implements SearchBarComponent.View {
         presenter.closeIndex();
     }
 
+    @Override
+    public void setSearchButtonVisibility(final boolean visible) {
+        if (visible) {
+            searchButton.classList.remove(HIDDEN);
+        } else {
+            searchButton.classList.add(HIDDEN);
+        }
+    }
+
     private void search(final String value) {
         presenter.search(value);
     }

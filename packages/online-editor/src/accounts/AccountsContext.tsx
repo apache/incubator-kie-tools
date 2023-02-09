@@ -32,6 +32,7 @@ export enum AccountsSection {
   HOME = "HOME",
   CONNECT_TO_AN_ACCOUNT = "CONNECT_TO_AN_ACCOUNT",
   CONNECT_TO_GITHUB = "CONNECT_TO_GITHUB",
+  CONNECT_TO_BITBUCKET = "CONNECT_TO_BITBUCKET",
   CONNECT_TO_OPENSHIFT = "CONNECT_TO_OPENSHIFT",
 }
 
@@ -57,6 +58,12 @@ export type AccountsState =
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     }
   | {
+      section: AccountsSection.CONNECT_TO_BITBUCKET;
+      selectedAuthProvider: GitAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
       section: AccountsSection.CONNECT_TO_OPENSHIFT;
       selectedAuthProvider: OpenShiftAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
@@ -70,6 +77,7 @@ export enum AccountsDispatchActionKind {
   GO_HOME = "GO_HOME",
   SELECT_AUTH_PROVIDER = "SELECT_AUTH_PROVIDER",
   SETUP_GITHUB_AUTH = "SETUP_GITHUB_AUTH",
+  SETUP_BITBUCKET_AUTH = "SETUP_BITBUCKET_AUTH",
   SETUP_OPENSHIFT_AUTH = "SETUP_OPENSHIFT_AUTH",
 }
 
@@ -87,6 +95,12 @@ export type AccountsDispatchAction =
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_GITHUB_AUTH;
+      selectedAuthProvider: GitAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
+      kind: AccountsDispatchActionKind.SETUP_BITBUCKET_AUTH;
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
@@ -132,6 +146,13 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
         case AccountsDispatchActionKind.SETUP_GITHUB_AUTH:
           return {
             section: AccountsSection.CONNECT_TO_GITHUB,
+            selectedAuthProvider: action.selectedAuthProvider,
+            onNewAuthSession: action.onNewAuthSession,
+            backActionKind: action.backActionKind,
+          };
+        case AccountsDispatchActionKind.SETUP_BITBUCKET_AUTH:
+          return {
+            section: AccountsSection.CONNECT_TO_BITBUCKET,
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,

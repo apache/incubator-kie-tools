@@ -39,10 +39,12 @@ public class KogitoPropertiesDock extends DiagramEditorPropertiesDock {
 
     @Override
     public void init() {
-        this.uberfireDock = makeUberfireDock();
+        if (uberfireDock == null) {
+            this.uberfireDock = makeUberfireDock();
 
-        uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position());
+            uberfireDocks.add(getUberfireDock());
+            uberfireDocks.show(position());
+        }
     }
 
     @Override
@@ -63,5 +65,13 @@ public class KogitoPropertiesDock extends DiagramEditorPropertiesDock {
 
         isOpened = false;
         uberfireDocks.close(getUberfireDock());
+    }
+
+    @Override
+    public void destroy() {
+        if (uberfireDock != null) {
+            uberfireDocks.remove(getUberfireDock());
+            uberfireDock = null;
+        }
     }
 }

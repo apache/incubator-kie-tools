@@ -17,30 +17,26 @@
 import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
+import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
   currentInputRowIndex: number;
   error: boolean;
   inputRows: Array<InputRow>;
-  didUpdateInputRows: boolean;
   isExpanded: boolean;
+  isVisible: boolean;
   jsonSchema?: DmnSchema;
   mode: DmnRunnerMode;
-  didUpdateOutputRows: boolean;
-  service: DmnRunnerService;
   status: DmnRunnerStatus;
 }
 
 export interface DmnRunnerCallbacksContextType {
-  preparePayload: (formData?: InputRow) => Promise<DmnRunnerModelPayload>;
-  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  setDidUpdateInputRows: React.Dispatch<React.SetStateAction<boolean>>;
-  setDidUpdateOutputRows: React.Dispatch<React.SetStateAction<boolean>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
 }
 

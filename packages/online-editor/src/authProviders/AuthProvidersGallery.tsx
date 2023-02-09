@@ -89,6 +89,16 @@ export function AuthProvidersGallery(props: {
                               ? accounts.onNewAuthSession
                               : undefined,
                         });
+                      } else if (authProvider.enabled && authProvider.type === "bitbucket") {
+                        accountsDispatch({
+                          kind: AccountsDispatchActionKind.SETUP_BITBUCKET_AUTH,
+                          selectedAuthProvider: authProvider,
+                          backActionKind: props.backActionKind,
+                          onNewAuthSession:
+                            accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT
+                              ? accounts.onNewAuthSession
+                              : undefined,
+                        });
                       } else if (authProvider.enabled && authProvider.type === "openshift") {
                         accountsDispatch({
                           kind: AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH,

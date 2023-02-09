@@ -18,32 +18,38 @@ import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/Toggl
 import * as React from "react";
 import { PanelId } from "../EditorPageDockDrawer";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
+import { EditorPageDockToggleItem } from "../EditorPageDockToggleItem";
 
 interface Props {
   isSelected: boolean;
+  isDisabled: boolean;
+  disabledReason: string;
   onChange: (id: PanelId) => void;
 }
 
 export function DmnRunnerDockToggle(props: Props) {
   return (
-    <ToggleGroupItem
-      style={{
-        borderLeft: "solid 1px",
-        borderRadius: 0,
-        borderColor: "rgb(211, 211, 211)",
-        padding: "1px",
-      }}
-      buttonId={PanelId.DMN_RUNNER_TABULAR}
-      isSelected={props.isSelected}
-      onChange={() => props.onChange(PanelId.DMN_RUNNER_TABULAR)}
-      text={
-        <div style={{ display: "flex" }}>
-          <div style={{ paddingRight: "5px", width: "30px" }}>
-            <TableIcon />
+    <EditorPageDockToggleItem isDisabled={props.isDisabled} disabledReason={props.disabledReason}>
+      <ToggleGroupItem
+        style={{
+          borderLeft: "solid 1px",
+          borderRadius: 0,
+          borderColor: "rgb(211, 211, 211)",
+          padding: "1px",
+        }}
+        isDisabled={props.isDisabled}
+        buttonId={PanelId.DMN_RUNNER_TABLE}
+        isSelected={props.isSelected}
+        onChange={() => props.onChange(PanelId.DMN_RUNNER_TABLE)}
+        text={
+          <div style={{ display: "flex" }}>
+            <div style={{ paddingRight: "5px", width: "30px" }}>
+              <TableIcon />
+            </div>
+            Run
           </div>
-          Run
-        </div>
-      }
-    />
+        }
+      />
+    </EditorPageDockToggleItem>
   );
 }

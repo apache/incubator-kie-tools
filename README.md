@@ -23,7 +23,7 @@ This repository contains tooling applications and libraries for KIE projects.
 To start building the KIE Tools project, you're going to need:
 
 - Node `16` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
-- pnpm `7.0.0` _(To install, follow these instructions: https://pnpm.io/installation)_
+- pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.6`
 - Java `11`
 - Go `1.19` _(To install, follow these instructions: https://go.dev/doc/install)_
@@ -142,7 +142,7 @@ After that, you're ready to start developing the Editors individually.
 
 - DMN
 
-  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing`.
+  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime`.
   - Run `mvn clean gwt:run` to start.
   - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
 

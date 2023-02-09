@@ -20,9 +20,10 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { PanelId } from "../EditorPageDockDrawer";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { EditorPageDockToggleItem } from "../EditorPageDockToggleItem";
 
 interface PropsCommon {
+  isDisabled: boolean;
   isSelected: boolean;
   onChange: (id: PanelId) => void;
 }
@@ -85,25 +86,17 @@ export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelD
     );
 
     return (
-      <>
-        {props.isDisabled ? (
-          <Tooltip key={"disabled"} content={props.disabledReason} position={"top-end"}>
-            <NotificationsToggleItem
-              notificationsCount={notificationsCount}
-              isDisabled={props.isDisabled}
-              isSelected={props.isSelected}
-              onChange={props.onChange}
-            />
-          </Tooltip>
-        ) : (
-          <NotificationsToggleItem
-            notificationsCount={notificationsCount}
-            isDisabled={props.isDisabled}
-            isSelected={props.isSelected}
-            onChange={props.onChange}
-          />
-        )}
-      </>
+      <EditorPageDockToggleItem
+        isDisabled={props.isDisabled}
+        disabledReason={props.isDisabled ? props.disabledReason : ""}
+      >
+        <NotificationsToggleItem
+          notificationsCount={notificationsCount}
+          isDisabled={props.isDisabled}
+          isSelected={props.isSelected}
+          onChange={props.onChange}
+        />
+      </EditorPageDockToggleItem>
     );
   }
 );

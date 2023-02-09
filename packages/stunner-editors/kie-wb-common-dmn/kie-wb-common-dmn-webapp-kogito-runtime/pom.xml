@@ -35,6 +35,8 @@
     <kogito.large.model.it.tests>**/large/model/*IT.java</kogito.large.model.it.tests>
     <kogito.backward.compatibility.it.tests>**/backward/compatibility/*IT.java</kogito.backward.compatibility.it.tests>
     <kogito.selenium.it.tests>**/selenium/*IT.java</kogito.selenium.it.tests>
+    <gwt.helper.rootDirectories>${project.parent.basedir}/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/</gwt.helper.rootDirectories>
+    <gwt.helper.excludes>BPMN,Bpmn,Emf,Emulation</gwt.helper.excludes>
 
     <!-- this module is just and "integration" of components, to minimize CI times, we skip sonar here -->
     <sonar.skip>true</sonar.skip>
@@ -195,11 +197,6 @@
           <artifactId>javax.annotation-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>kie-wb-common-dmn-webapp-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -462,7 +459,7 @@
 
     <!-- Client side FEEL -->
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -477,7 +474,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <classifier>sources</classifier>
       <scope>provided</scope>
@@ -494,7 +491,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -510,7 +507,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -525,7 +522,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.antlr</groupId>
+          <groupId>org.antlr4gwt</groupId>
           <artifactId>antlr4-runtime</artifactId>
         </exclusion>
         <exclusion>
@@ -535,7 +532,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.antlr</groupId>
+      <groupId>org.antlr4gwt</groupId>
       <artifactId>antlr4gwt-runtime</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -612,6 +609,24 @@
         </configuration>
       </plugin>
 
+      <!-- Include additional sources path for hot reload -->
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-gwthelper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <excludes>${gwt.helper.excludes}</excludes> <!-- will include all GWT module whose configuration file name match that pattern -->
+              <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -650,8 +665,8 @@
             <compileSourcesArtifact>org.rikkola.gwt:antlr4-c3-gwt</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-feel</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-dmn-feel-gwt</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-model</compileSourcesArtifact>
 
             <!-- UF-ext -->
@@ -693,7 +708,6 @@
             <!-- DMN Editor -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-wires-core-grids</compileSourcesArtifact>

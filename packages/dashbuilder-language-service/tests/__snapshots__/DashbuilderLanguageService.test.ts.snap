@@ -200,3 +200,11 @@ pages:
   },
 ]
 `;
+
+exports[`diagnostic empty file 1`] = `0`;
+
+exports[`diagnostic empty file 2`] = `Array []`;
+
+exports[`diagnostic valid 1`] = `0`;
+
+exports[`diagnostic valid 2`] = `Array []`;

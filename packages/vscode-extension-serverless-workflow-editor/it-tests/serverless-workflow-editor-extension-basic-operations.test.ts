@@ -53,7 +53,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     let swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
     let swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
 
-    expect((await swfEditor.getAllStateNodes()).length).equal(6);
+    expect((await swfEditor.getAllNodeIds()).length).equal(6);
 
     let textEditor = await swfTextEditor.getSwfTextEditor();
 
@@ -74,7 +74,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     await textEditor.typeTextAt(47, 7, greetInGermanStateString);
     await textEditor.typeTextAt(26, 10, germanConditionString);
 
-    expect((await swfEditor.getAllStateNodes()).length).equal(7);
+    expect((await swfEditor.getAllNodeIds()).length).equal(7);
 
     if (await textEditor.isDirty()) {
       await textEditor.save();
@@ -99,7 +99,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     expect(editorTextTrimmedLines).to.have.string(greetInGermanStateString);
     expect(editorTextTrimmedLines).to.have.string(germanConditionString);
 
-    expect((await swfEditor.getAllStateNodes()).length).equal(7);
+    expect((await swfEditor.getAllNodeIds()).length).equal(7);
   });
 
   //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
@@ -117,12 +117,12 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, WORKFLOW_NAME), "utf-8");
 
     expect(await textEditor.getText()).equal(expectedContent);
-    expect((await swfEditor.getAllStateNodes()).length).equal(3);
+    expect((await swfEditor.getAllNodeIds()).length).equal(3);
 
     await testHelper.renameFile(WORKFLOW_NAME, RENAMED_WORKFLOW_NAME);
 
     expect(await textEditor.getText()).equal(expectedContent);
-    expect((await swfEditor.getAllStateNodes()).length).equal(3);
+    expect((await swfEditor.getAllNodeIds()).length).equal(3);
 
     await testHelper.closeAllEditors();
 
@@ -133,6 +133,6 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     textEditor = await swfTextEditor.getSwfTextEditor();
 
     expect(await textEditor.getText()).equal(expectedContent);
-    expect((await swfEditor.getAllStateNodes()).length).equal(3);
+    expect((await swfEditor.getAllNodeIds()).length).equal(3);
   });
 });

@@ -28,6 +28,11 @@ function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
 }
 
+function getFilePathFromGlobalState(context: vscode.ExtensionContext) {
+  const filePath = context.globalState.get("textEditorFilePath", {} as vscode.Uri);
+  return vscode.Uri.file(filePath.path);
+}
+
 async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
   if (!isSwf(args.textEditor.document)) {
     return;
@@ -94,7 +99,7 @@ export async function setupDiagramEditorCompanionTab(args: {
       if (!isSwf(textEditor.document)) {
         return;
       }
-
+      args.context.globalState.update("textEditorFilePath", textEditor?.document.uri);
       await maybeOpenAsDiagramIfSwf({ configuration: args.configuration, textEditor, active: false });
     })
   );
@@ -114,8 +119,8 @@ export async function setupDiagramEditorCompanionTab(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async (resourceUri) => {
-      await vscode.commands.executeCommand("vscode.open", resourceUri, {
+    vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async () => {
+      await vscode.commands.executeCommand("vscode.open", getFilePathFromGlobalState(args.context), {
         viewColumn: vscode.ViewColumn.One, // Not ideal, but works well enough.
         preserveFocus: false,
         background: false,
