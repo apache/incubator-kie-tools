@@ -30,7 +30,6 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.ouia.OuiaAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponent;
 import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
@@ -50,15 +49,9 @@ public abstract class AbstractDockItem extends Composite implements OuiaComponen
     public static AbstractDockItem create(UberfireDock dock,
                                           ParameterizedCommand<String> openCommand,
                                           ParameterizedCommand<String> closeCommand) {
-        if (dock.getDockPosition() == UberfireDockPosition.SOUTH) {
-            return new SouthDockItem(dock,
-                                     openCommand,
-                                     closeCommand);
-        } else {
             return new SideDockItem(dock,
                                     openCommand,
                                     closeCommand);
-        }
     }
 
     void configureText(final Button itemButton,

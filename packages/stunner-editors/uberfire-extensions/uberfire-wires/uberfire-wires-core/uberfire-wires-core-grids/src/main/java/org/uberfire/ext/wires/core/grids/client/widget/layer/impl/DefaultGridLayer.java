@@ -87,24 +87,27 @@ public class DefaultGridLayer extends Layer implements GridLayer,
         addNodeMouseMoveHandler(mouseMoveHandler);
         addNodeMouseUpHandler(mouseUpHandler);
 
-        //Destroy SingletonDOMElements on MouseDownEvents to ensure they're hidden:-
-        // 1) When moving columns
-        // 2) When resizing columns
-        // 3) When the User clicks outside of a GridWidget
-        // We do this rather than setFocus on GridPanel as the FocusImplSafari implementation of
-        // FocusPanel sets focus at unpredictable times which can lead to SingletonDOMElements
-        // loosing focus after they've been attached to the DOM and hence disappearing.
-        addNodeMouseDownHandler((event) -> {
-            for (GridWidget gridWidget : getGridWidgets()) {
-                for (GridColumn<?> gridColumn : gridWidget.getModel().getColumns()) {
-                    if (gridColumn instanceof HasSingletonDOMElementResource) {
-                        ((HasSingletonDOMElementResource) gridColumn).flush();
-                        ((HasSingletonDOMElementResource) gridColumn).destroyResources();
-                        batch();
-                    }
+        addNodeMouseDownHandler(event -> flushAllSingletonDOMElements());
+        addNodeMouseWheelHandler(event -> flushAllSingletonDOMElements());
+    }
+
+    /** Flush (and close) SingletonDOMElements on MouseEvents to ensure they're hidden:
+     *  1) When moving columns
+     *  2) When resizing columns
+     *  3) When the User clicks outside of a GridWidget
+     * We do this rather than setFocus on GridPanel as the FocusImplSafari implementation of
+     * FocusPanel sets focus at unpredictable times which can lead to SingletonDOMElements
+     * loosing focus after they've been attached to the DOM and hence disappearing.
+     */
+    protected void flushAllSingletonDOMElements() {
+        for (GridWidget gridWidget : getGridWidgets()) {
+            for (GridColumn<?> gridColumn : gridWidget.getModel().getColumns()) {
+                if (gridColumn instanceof HasSingletonDOMElementResource) {
+                    ((HasSingletonDOMElementResource) gridColumn).flush();
+                    batch();
                 }
             }
-        });
+        }
     }
 
     protected GridWidgetDnDMouseDownHandler getGridWidgetDnDMouseDownHandler() {
@@ -174,7 +177,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
 
     private void addGridWidget(final IPrimitive<?> child,
                                final IPrimitive<?>... children) {
-        final List<IPrimitive<?>> all = new ArrayList<IPrimitive<?>>();
+        final List<IPrimitive<?>> all = new ArrayList<>();
         all.add(child);
         all.addAll(Arrays.asList(children));
         for (IPrimitive<?> c : all) {
@@ -224,7 +227,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
 
     private void removeGridWidget(final IPrimitive<?> child,
                                   final IPrimitive<?>... children) {
-        final List<IPrimitive<?>> all = new ArrayList<IPrimitive<?>>();
+        final List<IPrimitive<?>> all = new ArrayList<>();
         all.add(child);
         all.addAll(Arrays.asList(children));
         for (IPrimitive<?> c : all) {
@@ -301,12 +304,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
             return;
         }
         final GridWidgetScrollIntoViewAnimation a = new GridWidgetScrollIntoViewAnimation(gridWidget,
-                                                                                          new Command() {
-                                                                                              @Override
-                                                                                              public void execute() {
-                                                                                                  select(gridWidget);
-                                                                                              }
-                                                                                          });
+                                                                                          () -> select(gridWidget));
         a.run();
     }
 

@@ -41,6 +41,7 @@ export function DeleteDropdownWithConfirmation(
       position={DropdownPosition.right}
       toggle={
         <ResponsiveDropdownToggle
+          style={{ color: "unset" }}
           icon={<TrashIcon />}
           toggleIndicator={null}
           onToggle={() => setDeleteDropdownOpen((prev) => !prev)}

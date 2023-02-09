@@ -65,7 +65,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
-        props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
+        props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
       } else {
         dmnRunnerDispatch.setExpanded((prev) => !prev);
       }
@@ -178,7 +178,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
-                  props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+                  props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
                   dmnRunnerDispatch.setExpanded(true);
                 }
               }}

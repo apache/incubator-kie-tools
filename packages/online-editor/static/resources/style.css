@@ -19,6 +19,10 @@
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
 
+.kie-sandbox--logo {
+  display: flex;
+}
+
 .pf-c-dropdown__group-title {
   white-space: nowrap;
 }
@@ -377,33 +381,6 @@
   margin: 10px;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-use {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-title {
-  margin: 20px;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-main-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-text-align {
-  text-align: center;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-margin {
-  margin: 10px;
-}
-
 .kogito--editor__notifications-panel-button {
   display: flex;
   flex-direction: column;
@@ -639,7 +616,7 @@ section.kie-tools--settings-tab {
   box-shadow: none;
 }
 
-.kie-tools--dmn-runner-loading-screen {
+.kie-tools__dmn-runner-loading-screen {
   width: 100%;
   height: 100%;
   z-index: 999;
@@ -648,20 +625,8 @@ section.kie-tools--settings-tab {
   left: 0;
 }
 
-.kie-tools--dmn-runner-loading {
-  animation-name: fade-out;
-  animation-duration: 400ms;
-  background-color: white;
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+.kie-tools__dmn-runner-loading-screen-drawer {
+  left: 10;
 }
 
 .kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel .pf-c-drawer__splitter.pf-m-vertical {

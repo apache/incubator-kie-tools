@@ -18,8 +18,7 @@ export const MapComponent = (props: Props) => {
       let markType: MarkType | undefined;
 
       if (type) {
-        markType = "bubble" === type.toLowerCase() ? MarkType.BUBBLE : undefined;
-        markType = "fill" === type.toLowerCase() ? MarkType.FILL : undefined;
+        markType = "bubble" === type.toLowerCase() ? MarkType.BUBBLE : MarkType.FILL;
       }
 
       props.controller.configurationOk();
@@ -28,6 +27,7 @@ export const MapComponent = (props: Props) => {
       if (columns.length == 2 && columns[0].type === "LABEL" && columns[1].type === "NUMBER") {
         // build
         setMapProps((previous) => ({
+          ...previous,
           markers: ds.data.map((line) => {
             return {
               name: line[0],
@@ -35,7 +35,6 @@ export const MapComponent = (props: Props) => {
             };
           }),
           markType: markType || MarkType.FILL,
-          ...previous,
         }));
       }
       // lat, long, value
@@ -46,6 +45,7 @@ export const MapComponent = (props: Props) => {
         columns[2].type === "NUMBER"
       ) {
         setMapProps((previous) => ({
+          ...previous,
           markers: ds.data.map((line) => {
             return {
               lat: +line[0],
@@ -53,8 +53,7 @@ export const MapComponent = (props: Props) => {
               value: +line[2],
             };
           }),
-          markType: markType || MarkType.BUBBLE,
-          ...previous,
+          markType: markType || MarkType.FILL,
         }));
       } else {
         props.controller.requireConfigurationFix(
@@ -66,6 +65,7 @@ export const MapComponent = (props: Props) => {
   );
   const onInit = useCallback((params: Map<string, any>) => {
     setMapProps((previous) => ({
+      ...previous,
       // map
       projection: params.get("projection"),
       background: params.get("background"),
@@ -101,7 +101,6 @@ export const MapComponent = (props: Props) => {
       fillBegin: params.get("fillBegin"),
       fillEnd: params.get("fillEnd"),
       geoKey: params.get("geoKey"),
-      ...previous,
     }));
   }, []);
 

@@ -24,7 +24,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { useCallback } from "react";
-import { ConnectToGitHubSection } from "./github/ConnectToGitHubSection";
+import { ConnectToGitSection } from "./git/ConnectToGitSection";
 import { AuthProvidersGallery } from "../authProviders/AuthProvidersGallery";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { AuthSessionsList } from "../authSessions/AuthSessionsList";
@@ -138,6 +138,32 @@ export function AccountsIcon() {
                   </Flex>
                 </>
               )}
+              {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
+                <>
+                  <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                    <FlexItem>
+                      <Flex
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        spaceItems={{ default: "spaceItemsSm" }}
+                      >
+                        <TextContent>
+                          <Text component={TextVariants.h2}>
+                            {`Connect to`}
+                            &nbsp;
+                            {accounts.selectedAuthProvider.name}
+                          </Text>
+                        </TextContent>
+                        <TextContent>
+                          <Text component={TextVariants.small}>
+                            <i>{accounts.selectedAuthProvider.domain}</i>
+                          </Text>
+                        </TextContent>
+                      </Flex>
+                    </FlexItem>
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
+                  </Flex>
+                </>
+              )}
               {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && (
                 <>
                   <TextContent>
@@ -192,7 +218,10 @@ export function AccountsIcon() {
                   />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
-                  <ConnectToGitHubSection authProvider={accounts.selectedAuthProvider} />
+                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
+                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
               </>

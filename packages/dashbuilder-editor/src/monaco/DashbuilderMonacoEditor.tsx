@@ -20,6 +20,9 @@ import { DefaultDashbuilderMonacoEditorController, DashbuilderMonacoEditorApi } 
 import { ChannelType, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { DashbuilderEditorChannelApi } from "../editor";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api/EditorTheme";
+import { initCodeLenses } from "./augmentation/codeLenses";
+import { initAugmentationCommands } from "./augmentation/commands";
+import { initCompletion } from "./augmentation/completion";
 
 interface Props {
   content: string;
@@ -45,9 +48,19 @@ const RefForwardingDashbuilderMonacoEditor: React.ForwardRefRenderFunction<
     if (!container.current) {
       return;
     }
-    controller.show(container.current, theme);
+    if (editorEnvelopeCtx.channelApi && theme === undefined) {
+      return;
+    }
+
+    const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
+    const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
+    const completion = initCompletion(commands, editorEnvelopeCtx.channelApi);
+    const codeLenses = initCodeLenses(commands, editorEnvelopeCtx.channelApi);
+
     return () => {
       controller.dispose();
+      codeLenses.dispose();
+      completion.dispose();
     };
   }, [
     content,

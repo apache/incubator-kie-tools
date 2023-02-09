@@ -41,12 +41,13 @@ import { ImportableUrl, UrlType, useImportableUrl } from "../importFromUrl/Impor
 import { useRoutes } from "../navigation/Hooks";
 import { fetchSingleFileContent } from "../importFromUrl/fetchSingleFileContent";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { useOctokit } from "../github/Hooks";
+import { useGitHubClient } from "../github/Hooks";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert } from "../alerts";
+import { useBitbucketClient } from "../bitbucket/Hooks";
 
 export function NewFileDropdownMenu(props: {
   destinationDirPath: string;
@@ -159,11 +160,21 @@ export function NewFileDropdownMenu(props: {
 
   const importableUrl = useImportableUrl(
     url,
-    useMemo(() => [UrlType.FILE, UrlType.GIST_DOT_GITHUB_DOT_COM_FILE, UrlType.GITHUB_DOT_COM_FILE], [])
+    useMemo(
+      () => [
+        UrlType.FILE,
+        UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
+        UrlType.GITHUB_DOT_COM_FILE,
+        UrlType.BITBUCKET_DOT_ORG_FILE,
+        UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE,
+      ],
+      []
+    )
   );
 
   const { authSession } = useAuthSession(authSessionId);
-  const octokit = useOctokit(authSession);
+  const gitHubClient = useGitHubClient(authSession);
+  const bitbucketClient = useBitbucketClient(authSession);
 
   // Select authSession based on the importableUrl domain (begin)
   const authProviders = useAuthProviders();
@@ -196,7 +207,7 @@ export function NewFileDropdownMenu(props: {
       setImportingError(undefined);
 
       try {
-        const { error, rawUrl, content } = await fetchSingleFileContent(importableUrl, octokit);
+        const { error, rawUrl, content } = await fetchSingleFileContent(importableUrl, gitHubClient, bitbucketClient);
         if (error) {
           setImportingError(error);
           return;
@@ -219,7 +230,7 @@ export function NewFileDropdownMenu(props: {
         setImporting(false);
       }
     },
-    [props, octokit, workspaces]
+    [gitHubClient, bitbucketClient, workspaces, props]
   );
 
   const sampleUrl = useCallback(

@@ -40,20 +40,29 @@ public class MultiPageEditorImpl implements MultiPageEditor {
         view.enableSelectedPageEvent(selectedPageEvent);
     }
 
+    @Override
     public void addPage(final Page page) {
         view.addPage(page);
     }
 
+    @Override
     public void selectPage(final int index) {
         view.selectPage(index);
     }
 
+    @Override
     public int selectedPage() {
         return view.selectedPage();
     }
 
+    @Override
     public void addTabBarWidget(final IsWidget customWidget) {
         view.addTabBarWidget(customWidget);
+    }
+
+    @Override
+    public void setTabBarVisible(final boolean visible) {
+        view.setTabBarVisible(visible);
     }
 
     @Override

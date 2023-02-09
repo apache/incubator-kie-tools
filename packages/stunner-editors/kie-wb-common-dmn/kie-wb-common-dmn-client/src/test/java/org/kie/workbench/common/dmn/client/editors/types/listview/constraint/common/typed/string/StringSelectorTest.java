@@ -47,6 +47,30 @@ public class StringSelectorTest {
     }
 
     @Test
+    public void testSetEmptyValue() {
+        stringSelector.setValue("");
+        verify(view).setValue("");
+    }
+
+    @Test
+    public void testSetNullValue() {
+        stringSelector.setValue(null);
+        verify(view).setValue("");
+    }
+
+    @Test
+    public void testSetValueWithIntermediateDoubleQuote() {
+        stringSelector.setValue("\"va\"lue\"");
+        verify(view).setValue("va\"lue");
+    }
+
+    @Test
+    public void testSetValueWithMultipleDoubleQuote() {
+        stringSelector.setValue("\"\"value\"\"");
+        verify(view).setValue("\"value\"");
+    }
+
+    @Test
     public void testGetValueWithRawValue() {
 
         when(view.getValue()).thenReturn("value");

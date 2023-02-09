@@ -173,7 +173,6 @@ public class StunnerEditorTest {
     }
 
     @Test
-    @SuppressWarnings("all")
     public void testHandleError() {
         Consumer<Throwable> exceptionConsumer = mock(Consumer.class);
         tested.setExceptionProcessor(exceptionConsumer);
@@ -183,7 +182,24 @@ public class StunnerEditorTest {
         ClientRuntimeError error = new ClientRuntimeError(e);
         tested.handleError(error);
         verify(parsingExceptionConsumer, never()).accept(any());
-        verify(exceptionConsumer, times(1)).accept(eq(e));
+        verify(view, never()).setWidget(errorPage);
+        verify(exceptionConsumer, times(1)).accept(e);
+    }
+
+    @Test
+    public void testHandleParseExceptionError() {
+        Consumer<Throwable> exceptionConsumer = mock(Consumer.class);
+        tested.setExceptionProcessor(exceptionConsumer);
+        Consumer<DiagramParsingException> parsingExceptionConsumer = mock(Consumer.class);
+        tested.setParsingExceptionProcessor(parsingExceptionConsumer);
+        DiagramParsingException e = new DiagramParsingException();
+        String errorMessage = "error-message";
+        ClientRuntimeError error = new ClientRuntimeError(errorMessage, e);
+        tested.handleError(error);
+        verify(parsingExceptionConsumer, times(1)).accept(e);
+        verify(view, times(1)).setWidget(errorPage);
+        verify(errorPage, times(1)).setErrorContent(errorMessage);
+        verify(exceptionConsumer, never()).accept(any());
     }
 
     @SuppressWarnings("all")

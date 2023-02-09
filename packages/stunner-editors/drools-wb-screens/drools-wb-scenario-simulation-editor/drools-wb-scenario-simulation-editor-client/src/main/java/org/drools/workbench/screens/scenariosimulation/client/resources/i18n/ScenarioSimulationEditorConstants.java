@@ -443,4 +443,8 @@ public interface ScenarioSimulationEditorConstants
     String scenarioValidationFieldAddedConstraintError();
 
     String scenarioValidationFieldRemovedConstraintError();
+
+    String scenarioParsingError();
+
+    String scenarioParsingErrorContent();
 }

@@ -51,6 +51,7 @@ public class DisplayerViewer extends Composite {
     CommonConstants i18n = CommonConstants.INSTANCE;
 
     DisplayerListener displayerListener = new AbstractDisplayerListener() {
+
         public void onDraw(Displayer displayer) {
             if (error) {
                 show();
@@ -68,7 +69,6 @@ public class DisplayerViewer extends Composite {
             error(error);
         }
     };
-    
 
     @Inject
     public DisplayerViewer(DisplayerLocator displayerLocator,
@@ -94,7 +94,7 @@ public class DisplayerViewer extends Composite {
         try {
             // Lookup the displayer
             checkNotNull("displayerSettings",
-                         displayerSettings);
+                    displayerSettings);
             this.displayerSettings = displayerSettings;
             this.displayer = displayerLocator.lookupDisplayer(displayerSettings);
             this.displayer.addListener(displayerListener);
@@ -116,18 +116,19 @@ public class DisplayerViewer extends Composite {
         // Add the renderer selector (if enabled)
         if (isShowRendererSelector) {
             rendererSelector.init(displayerSettings,
-                                  RendererSelector.SelectorType.TAB,
-                                  300,
-                                  new Command() {
-                                      public void execute() {
-                                          displayerSettings.setRenderer(rendererSelector.getRendererLibrary().getUUID());
-                                          displayer = displayerLocator.lookupDisplayer(displayerSettings);
-                                          displayer.draw();
+                    RendererSelector.SelectorType.TAB,
+                    300,
+                    new Command() {
 
-                                          displayerContainer.clear();
-                                          displayerContainer.add(displayer);
-                                      }
-                                  });
+                        public void execute() {
+                            displayerSettings.setRenderer(rendererSelector.getRendererLibrary().getUUID());
+                            displayer = displayerLocator.lookupDisplayer(displayerSettings);
+                            displayer.draw();
+
+                            displayerContainer.clear();
+                            displayerContainer.add(displayer);
+                        }
+                    });
             container.add(rendererSelector);
         }
         container.add(displayerContainer);
@@ -135,7 +136,7 @@ public class DisplayerViewer extends Composite {
     }
 
     public Displayer draw() {
-        if (displayerInitializationError != null ) {
+        if (displayerInitializationError != null) {
             error(displayerInitializationError, i18n.displayerviewer_displayer_not_created());
         } else {
             try {
@@ -151,9 +152,9 @@ public class DisplayerViewer extends Composite {
     public Displayer redraw() {
         try {
             checkNotNull("displayerSettings",
-                         displayerSettings);
+                    displayerSettings);
             checkNotNull("displayer",
-                         displayer);
+                    displayer);
 
             displayer.setDisplayerSettings(displayerSettings);
             displayer.redraw();
@@ -163,15 +164,21 @@ public class DisplayerViewer extends Composite {
         return displayer;
     }
 
-    
     public void error(ClientRuntimeError e) {
         error(e, e.getMessage());
     }
-    
+
     public void error(ClientRuntimeError e, String message) {
         container.clear();
         container.add(errorWidget);
         errorWidget.show(message, e.getThrowable());
+        if (displayerSettings != null) {
+            errorWidget.setRefreshAction(() -> {                
+                init(displayerSettings);
+                draw();
+            });
+        }
+
         error = true;
         GWT.log(e.getMessage(),
                 e.getThrowable());

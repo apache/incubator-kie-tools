@@ -31,7 +31,6 @@ import {
   WizardFooter,
 } from "@patternfly/react-core/dist/js/components/Wizard";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
@@ -39,7 +38,6 @@ import { useOnlineI18n } from "../i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { DEVELOPER_SANDBOX_URL } from "@kie-tools-core/openshift/dist/service/OpenShiftConstants";
 import { DependentFeature, useExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
@@ -48,7 +46,6 @@ import { ExtendedServicesConfig } from "../settings/SettingsContext";
 enum ModalPage {
   INITIAL,
   WIZARD,
-  USE,
 }
 
 const UBUNTU_APP_INDICATOR_LIB = "apt install libappindicator3-dev";
@@ -612,13 +609,13 @@ export function KieSandboxExtendedServicesModal() {
     } else if (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED) {
       setModalPage(ModalPage.WIZARD);
     } else if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-      setModalPage(ModalPage.USE);
+      extendedServices.setModalOpen(false);
     }
 
     if (extendedServices.outdated) {
       setModalPage(ModalPage.WIZARD);
     }
-  }, [extendedServices.status, extendedServices.outdated]);
+  }, [extendedServices.status, extendedServices.outdated, extendedServices]);
 
   const onClose = useCallback(() => {
     setModalPage(ModalPage.INITIAL);
@@ -631,7 +628,6 @@ export function KieSandboxExtendedServicesModal() {
   const modalTitle = useMemo(() => {
     switch (modalPage) {
       case ModalPage.INITIAL:
-      case ModalPage.USE:
         return "";
       case ModalPage.WIZARD:
         return i18n.dmnRunner.modal.wizard.title;
@@ -641,7 +637,6 @@ export function KieSandboxExtendedServicesModal() {
   const modalVariant = useMemo(() => {
     switch (modalPage) {
       case ModalPage.INITIAL:
-      case ModalPage.USE:
         return ModalVariant.medium;
       case ModalPage.WIZARD:
         return ModalVariant.large;
@@ -679,7 +674,6 @@ export function KieSandboxExtendedServicesModal() {
               />
             </div>
           )}
-          {modalPage === ModalPage.USE && <></>}
         </>
       }
     >
@@ -777,34 +771,6 @@ export function KieSandboxExtendedServicesModal() {
           />
         </div>
       )}
-      {modalPage === ModalPage.USE && (
-        <div className={"kogito--editor__kie-sandbox-extended-services-modal-use"}>
-          <div className={"kogito--editor__kie-sandbox-extended-services-modal-use-title"}>
-            <TextContent>
-              <Text component={TextVariants.h1}>{i18n.dmnRunner.modal.use.title}</Text>
-            </TextContent>
-          </div>
-          <div className={"kogito--editor__kie-sandbox-extended-services-modal-use-main-content"}>
-            <TextContent className={"kogito--editor__kie-sandbox-extended-services-modal-use-margin"}>
-              <Text
-                component={TextVariants.h3}
-                className={"kogito--editor__kie-sandbox-extended-services-modal-use-text-align"}
-              >
-                {i18n.dmnRunner.modal.use.connected}
-              </Text>
-            </TextContent>
-            <br />
-            <Button
-              variant={"primary"}
-              type="submit"
-              onClick={onClose}
-              className={"kogito--editor__kie-sandbox-extended-services-modal-use-margin"}
-            >
-              {i18n.dmnRunner.modal.use.backToEditor}
-            </Button>
-          </div>
-        </div>
-      )}
     </Modal>
   );
 }
@@ -824,7 +790,7 @@ function KieSandboxExtendedServicesWizardFooter(props: WizardImperativeControlPr
     if (status === KieSandboxExtendedServicesStatus.STOPPED) {
       wizardContext.goToStepByName(props.steps[1].name);
     }
-  }, [status, props.setModalPage]);
+  }, [status, props.steps, wizardContext]);
 
   return (
     <WizardFooter>

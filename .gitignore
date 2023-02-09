@@ -106,16 +106,6 @@ packages/stunner-editors/**/.netlify
 packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/java/org/
 packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/SCESIM.js
 packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/Jsonix-all.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNKogitoTestingWebapp/
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DC.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DI.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DMN12.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DMNDI12.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/KIE.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/Jsonix-all.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/MainJs.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/FormatterJs.js
-packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/kogito-editors-js
 packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/kogito-editors-js
 packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp/
 packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DC.js

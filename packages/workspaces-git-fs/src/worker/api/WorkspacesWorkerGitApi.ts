@@ -15,7 +15,7 @@
  */
 
 import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin } from "./WorkspaceOrigin";
+import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "./WorkspaceOrigin";
 import { LocalFile } from "./LocalFile";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 import { GitServerRef } from "./GitServerRef";
@@ -49,7 +49,7 @@ export interface WorkspacesWorkerGitApi {
   }>;
 
   kieSandboxWorkspacesGit_clone(args: {
-    origin: GistOrigin | GitHubOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
     gitAuthSessionId: string | undefined;
     gitConfig?: {
       email: string;
@@ -101,19 +101,32 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
 
+  kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: { workspaceId: string }): Promise<string[]>;
+
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
     gitConfig?: {
       email: string;
       name: string;
     };
+    commitMessage?: string;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
 
-  kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
+  kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch?: string;
+  }): Promise<void>;
 
   kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace(args: {
     workspaceId: string;
     remoteUrl: string;
     branch: string;

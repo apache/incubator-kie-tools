@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
@@ -44,16 +45,20 @@ import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.InputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
+import org.kie.workbench.common.dmn.api.property.dmn.ConstraintTypeProperty;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorModelEnricher;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.TypeRefUtils;
@@ -81,11 +86,22 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
         String text;
         QName typeRef;
+        String constraintValue;
+        ConstraintType constraintType;
 
         ClauseRequirement(final String text,
                           final QName typeRef) {
+            this(text, typeRef, null, null);
+        }
+
+        ClauseRequirement(final String text,
+                          final QName typeRef,
+                          String constraintValue,
+                          ConstraintType constraintType) {
             this.text = text;
             this.typeRef = typeRef;
+            this.constraintValue = constraintValue;
+            this.constraintType = constraintType;
         }
     }
 
@@ -157,14 +173,18 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
         if (outputClausesRequirement.isEmpty()) {
             dTable.getOutput().add(
-                    buildOutputClause(dTable, typeRef, name)
+                    buildOutputClause(dTable, typeRef, name, null, null)
             );
             populateOutputEntries(decisionRule);
         } else {
             outputClausesRequirement
                     .stream()
                     .sorted(Comparator.comparing(outputClauseRequirement -> outputClauseRequirement.text))
-                    .map(outputClauseRequirement -> buildOutputClause(dTable, outputClauseRequirement.typeRef, outputClauseRequirement.text))
+                    .map(outputClauseRequirement -> buildOutputClause(dTable,
+                                                                      outputClauseRequirement.typeRef,
+                                                                      outputClauseRequirement.text,
+                                                                      outputClauseRequirement.constraintValue,
+                                                                      outputClauseRequirement.constraintType))
                     .forEach(outputClause -> {
                         dTable.getOutput().add(outputClause);
                         populateOutputEntries(decisionRule);
@@ -196,7 +216,11 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     }
 
     private List<ClauseRequirement> generateOutputClauseRequirementsForFirstLevel(final ItemDefinition itemDefinition) {
-        return itemDefinition.getItemComponent()
+        final List<ItemDefinition> outputItemDefinitions =
+                itemDefinition.getItemComponent().isEmpty() ?
+                        Collections.singletonList(itemDefinition) : // it is a custom type, but not a structure
+                        itemDefinition.getItemComponent();          // it is a custom type, a structure
+        return outputItemDefinitions
                 .stream()
                 .map(this::definitionToClauseRequirementMapper)
                 .collect(Collectors.toList());
@@ -209,7 +233,11 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         if (Objects.isNull(typeRef) || typeRefDoesNotMatchAnyDefinition(typeRef)) {
             return new ClauseRequirement(name, ANY.asQName());
         }
-        return new ClauseRequirement(name, typeRef);
+        return new ClauseRequirement(
+                name,
+                typeRef,
+                itemDefinitionUtils.getConstraintText(itemDefinition),
+                itemDefinitionUtils.getConstraintType(itemDefinition));
     }
 
     private boolean typeRefDoesNotMatchAnyDefinition(final QName typeRef) {
@@ -219,10 +247,18 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                         .noneMatch(typeRefIsCustom(typeRef));
     }
 
-    private OutputClause buildOutputClause(final DecisionTable dtable, final QName typeRef, final String text) {
+    private OutputClause buildOutputClause(final DecisionTable dtable, final QName typeRef, final String text, final String constraintValue, final ConstraintType constraintType) {
         final OutputClause outputClause = new OutputClause();
         outputClause.setName(text);
         outputClause.setTypeRef(typeRef);
+        final OutputClauseUnaryTests ocUnaryTests = new OutputClauseUnaryTests();
+        if (constraintValue != null) {
+            ocUnaryTests.setText(new Text(constraintValue));
+        }
+        if (constraintType != null) {
+            ocUnaryTests.setConstraintTypeField(constraintType);
+        }
+        outputClause.setOutputValues(ocUnaryTests);
         outputClause.setParent(dtable);
         return outputClause;
     }
@@ -292,6 +328,14 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                     literalExpression.getText().setValue(inputClauseRequirement.text);
                     literalExpression.setTypeRef(inputClauseRequirement.typeRef);
                     inputClause.setInputExpression(literalExpression);
+                    final InputClauseUnaryTests icUnaryTests = new InputClauseUnaryTests();
+                    if (inputClauseRequirement.constraintValue != null) {
+                        icUnaryTests.setText(new Text(inputClauseRequirement.constraintValue));
+                    }
+                    if (inputClauseRequirement.constraintType != null) {
+                        icUnaryTests.setConstraintTypeProperty(new ConstraintTypeProperty(inputClauseRequirement.constraintType.value()));
+                    }
+                    inputClause.setInputValues(icUnaryTests);
                     dtable.getInput().add(inputClause);
 
                     dtable.getRule().stream().forEach(decisionRule -> {
@@ -328,8 +372,14 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                                    final List<ClauseRequirement> inputClauseRequirements,
                                    final String text) {
         if (itemDefinition.getItemComponent().size() == 0) {
-            inputClauseRequirements.add(new ClauseRequirement(text,
-                                                              getQName(itemDefinition)));
+            inputClauseRequirements.add(
+                    new ClauseRequirement(
+                            text,
+                            getQName(itemDefinition),
+                            itemDefinitionUtils.getConstraintText(itemDefinition),
+                            itemDefinitionUtils.getConstraintType(itemDefinition)
+                    )
+            );
         } else {
             itemDefinition.getItemComponent()
                     .forEach(itemComponent -> addInputClauseRequirement(itemComponent,
@@ -351,13 +401,28 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     }
 
     private Predicate<ItemDefinition> typeRefIsCustom(final QName typeRef) {
-        return itemDef -> Objects.equals(itemDef.getName().getValue(), typeRef.getLocalPart());
+        final Predicate<ItemDefinition> isTypeRefCustomType = itemDefinition -> {
+            if (!Objects.equals(itemDefinition.getName().getValue(), typeRef.getLocalPart())) {
+                if (itemDefinition.getNameHolder() != null) {
+                    return Objects.equals(itemDefinition.getNameHolder().getValue().getValue(), typeRef.getLocalPart());
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        };
+
+        return isTypeRefCustomType;
     }
 
     private QName getQName(final ItemDefinition itemDefinition) {
-        return Optional
-                .ofNullable(itemDefinition.getTypeRef())
-                .orElse(getQNameFromItemDefinitionName(itemDefinition));
+        if (!itemDefinitionUtils.findByName(itemDefinition.getName().getValue()).isEmpty()) {
+            return getQNameFromItemDefinitionName(itemDefinition);
+        } else {
+            return itemDefinition.getTypeRef();
+        }
+        
     }
 
     private QName getQNameFromItemDefinitionName(final ItemDefinition itemDefinition) {

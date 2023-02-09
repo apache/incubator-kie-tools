@@ -15,9 +15,14 @@
  */
 
 import * as vscode from "vscode";
-import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { parseApiContent } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { SwfServiceCatalogServiceSource } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import {
+  SwfServiceCatalogService,
+  SwfCatalogSourceType,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
+import path = require("path");
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
@@ -147,11 +152,17 @@ export class FsWatchingServiceCatalogRelativeStore {
   private async readServiceFile(fileUri: vscode.Uri, fileName: string, specsDirAbsolutePosixPath: string) {
     const rawData = await vscode.workspace.fs.readFile(fileUri);
     try {
+      const serviceSource = path.join(specsDirAbsolutePosixPath, fileName);
+      const source: SwfServiceCatalogServiceSource = {
+        type: SwfCatalogSourceType?.LOCAL_FS,
+        absoluteFilePath: serviceSource,
+      };
+
       return [
-        parseOpenApi({
-          specsDirAbsolutePosixPath,
+        parseApiContent({
           serviceFileName: fileName,
           serviceFileContent: new TextDecoder("utf-8").decode(rawData),
+          source,
         }),
       ];
     } catch (e) {

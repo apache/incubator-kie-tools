@@ -20,4 +20,4 @@ import "./style.css";
 export * from "./DashbuilderEditor";
 export * from "./DashbuilderEditorFactory";
 export * from "./DashbuilderEditorView";
-export * from "./DashbuilderEditorChannelApi";
+export * from "../api/DashbuilderEditorChannelApi";

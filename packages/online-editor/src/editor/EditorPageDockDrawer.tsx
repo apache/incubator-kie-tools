@@ -36,13 +36,12 @@ import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExt
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 export enum PanelId {
-  DMN_RUNNER_TABULAR = "dmn-runner-tabular",
+  DMN_RUNNER_TABLE = "dmn-runner-table",
   NOTIFICATIONS_PANEL = "notifications-panel",
   NONE = "",
 }
 
 interface EditorPageDockDrawerProps {
-  isEditorReady?: boolean;
   workspaceFile: WorkspaceFile;
 }
 
@@ -64,22 +63,24 @@ export const EditorPageDockDrawer = React.forwardRef<
   const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
+  const extendedServices = useExtendedServices();
 
   const notificationsPanelTabNames = useMemo(() => {
     if (
-      props.workspaceFile.extension.toLowerCase() === "dmn" &&
-      dmnRunnerState.isExpanded &&
-      dmnRunnerState.mode === DmnRunnerMode.FORM
+      (props.workspaceFile.extension.toLowerCase() === "dmn" &&
+        dmnRunnerState.isExpanded &&
+        dmnRunnerState.mode === DmnRunnerMode.FORM) ||
+      dmnRunnerState.mode === DmnRunnerMode.TABLE
     ) {
       return [i18n.terms.validation, i18n.terms.execution];
     }
     return [i18n.terms.validation];
   }, [
     props.workspaceFile.extension,
-    dmnRunnerState.isExpanded,
-    dmnRunnerState.mode,
     i18n.terms.validation,
     i18n.terms.execution,
+    dmnRunnerState.mode,
+    dmnRunnerState.isExpanded,
   ]);
 
   useEffect(() => {
@@ -123,21 +124,20 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, onToggle, setNotifications]
   );
 
-  const extendedServices = useExtendedServices();
-  const notificationsPanelIsDisabled = useMemo(() => {
+  const dockIsDisabled = useMemo(() => {
     return (
-      props.workspaceFile.extension.toLowerCase() === "bpmn" ||
-      (props.workspaceFile.extension.toLowerCase() === "dmn" &&
-        extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING)
+      (props.workspaceFile.extension.toLowerCase() === "dmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn2") &&
+      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     );
   }, [extendedServices.status, props.workspaceFile.extension]);
 
-  const notificationsPanelDisabledReason = useMemo(() => {
-    if (props.workspaceFile.extension.toLowerCase() === "bpmn") {
-      return "BPMN Editor doesn't have access to Problems tab";
-    }
+  const dockIsDisabledReason = useMemo(() => {
     if (
-      props.workspaceFile.extension.toLowerCase() === "dmn" &&
+      (props.workspaceFile.extension.toLowerCase() === "dmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn" ||
+        props.workspaceFile.extension.toLowerCase() === "bpmn2") &&
       extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     ) {
       return "In order to have access to Problems tab you need to use the KIE Sandbox Extended Services";
@@ -151,8 +151,14 @@ export const EditorPageDockDrawer = React.forwardRef<
   );
 
   useEffect(() => {
-    setPanel(PanelId.NONE);
-  }, [props.workspaceFile.relativePath]);
+    if (
+      (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
+        extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING) &&
+      panel === PanelId.DMN_RUNNER_TABLE
+    ) {
+      setPanel(PanelId.NONE);
+    }
+  }, [extendedServices.status, props.workspaceFile.relativePath]);
 
   return (
     <>
@@ -161,21 +167,16 @@ export const EditorPageDockDrawer = React.forwardRef<
           panelContent={
             panel !== PanelId.NONE && (
               <DrawerPanelContent style={{ height: "100%" }} isResizable={true}>
-                {props.isEditorReady && (
-                  <>
-                    {panel === PanelId.NOTIFICATIONS_PANEL && (
-                      <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
-                    )}
-                    {panel === PanelId.DMN_RUNNER_TABULAR && isDmnTableMode && (
-                      <DmnRunnerTable
-                        workspaceFile={props.workspaceFile}
-                        setPanelOpen={setPanel}
-                        isReady={props.isEditorReady}
-                        dmnRunnerResults={dmnRunnerResults}
-                        setDmnRunnerResults={setDmnRunnerResults}
-                      />
-                    )}
-                  </>
+                {panel === PanelId.NOTIFICATIONS_PANEL && (
+                  <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
+                )}
+                {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && (
+                  <DmnRunnerTable
+                    workspaceFile={props.workspaceFile}
+                    setPanelOpen={setPanel}
+                    dmnRunnerResults={dmnRunnerResults}
+                    setDmnRunnerResults={setDmnRunnerResults}
+                  />
                 )}
               </DrawerPanelContent>
             )
@@ -194,11 +195,16 @@ export const EditorPageDockDrawer = React.forwardRef<
       >
         <ToggleGroup>
           {isDmnTableMode && (
-            <DmnRunnerDockToggle isSelected={panel === PanelId.DMN_RUNNER_TABULAR} onChange={(id) => onToggle(id)} />
+            <DmnRunnerDockToggle
+              isDisabled={dockIsDisabled}
+              disabledReason={dockIsDisabledReason}
+              isSelected={panel === PanelId.DMN_RUNNER_TABLE}
+              onChange={(id) => onToggle(id)}
+            />
           )}
           <NotificationsPanelDockToggle
-            isDisabled={notificationsPanelIsDisabled}
-            disabledReason={notificationsPanelDisabledReason}
+            isDisabled={dockIsDisabled}
+            disabledReason={dockIsDisabledReason}
             ref={notificationsToggleRef}
             isSelected={panel === PanelId.NOTIFICATIONS_PANEL}
             onChange={(id) => onToggle(id)}

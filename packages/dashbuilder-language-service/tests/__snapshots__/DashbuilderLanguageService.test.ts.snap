@@ -1,0 +1,210 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`code completion empty file completion empty file with a newline after the cursor 1`] = `1`;
+
+exports[`code completion empty file completion empty file with a newline after the cursor 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple dashboard",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first dashboard",
+    "sortText": "100_Create your first dashboard",
+    "textEdit": Object {
+      "newText": "datasets:
+- uuid: products
+  content: >-
+            [
+              [\\"Computers\\", \\"Scanner\\", 5, 3],
+              [\\"Computers\\", \\"Printer\\", 7, 4],
+              [\\"Computers\\", \\"Laptop\\", 3, 2],
+              [\\"Electronics\\", \\"Camera\\", 10, 7],
+              [\\"Electronics\\", \\"Headphones\\", 5, 9]
+            ]
+  columns:
+    - id: Section
+      type: LABEL
+    - id: Product
+      type: LABEL
+    - id: Quantity
+      type: NUMBER
+    - id: Quantity2
+      type: NUMBER
+pages:
+- components:
+    - html: Welcome to Dashbuilder!
+      properties:
+        font-size: xx-large
+        margin-bottom: 30px
+    - settings:
+        type: BARCHART
+        lookup:
+            uuid: products
+            group:
+                - columnGroup:
+                    source: Product
+                  functions:
+                    - source: Product
+                    - source: Quantity
+                      function: SUM
+                    - source: Quantity2
+                      function: SUM
+    - settings:
+        lookup:
+            uuid: products",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`code completion empty file completion empty file with a newline before the cursor 1`] = `1`;
+
+exports[`code completion empty file completion empty file with a newline before the cursor 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple dashboard",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first dashboard",
+    "sortText": "100_Create your first dashboard",
+    "textEdit": Object {
+      "newText": "datasets:
+- uuid: products
+  content: >-
+            [
+              [\\"Computers\\", \\"Scanner\\", 5, 3],
+              [\\"Computers\\", \\"Printer\\", 7, 4],
+              [\\"Computers\\", \\"Laptop\\", 3, 2],
+              [\\"Electronics\\", \\"Camera\\", 10, 7],
+              [\\"Electronics\\", \\"Headphones\\", 5, 9]
+            ]
+  columns:
+    - id: Section
+      type: LABEL
+    - id: Product
+      type: LABEL
+    - id: Quantity
+      type: NUMBER
+    - id: Quantity2
+      type: NUMBER
+pages:
+- components:
+    - html: Welcome to Dashbuilder!
+      properties:
+        font-size: xx-large
+        margin-bottom: 30px
+    - settings:
+        type: BARCHART
+        lookup:
+            uuid: products
+            group:
+                - columnGroup:
+                    source: Product
+                  functions:
+                    - source: Product
+                    - source: Quantity
+                      function: SUM
+                    - source: Quantity2
+                      function: SUM
+    - settings:
+        lookup:
+            uuid: products",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`code completion empty file completion total empty file 1`] = `1`;
+
+exports[`code completion empty file completion total empty file 2`] = `
+Array [
+  Object {
+    "detail": "Start with a simple dashboard",
+    "insertTextFormat": 2,
+    "kind": 1,
+    "label": "Create your first dashboard",
+    "sortText": "100_Create your first dashboard",
+    "textEdit": Object {
+      "newText": "datasets:
+- uuid: products
+  content: >-
+            [
+              [\\"Computers\\", \\"Scanner\\", 5, 3],
+              [\\"Computers\\", \\"Printer\\", 7, 4],
+              [\\"Computers\\", \\"Laptop\\", 3, 2],
+              [\\"Electronics\\", \\"Camera\\", 10, 7],
+              [\\"Electronics\\", \\"Headphones\\", 5, 9]
+            ]
+  columns:
+    - id: Section
+      type: LABEL
+    - id: Product
+      type: LABEL
+    - id: Quantity
+      type: NUMBER
+    - id: Quantity2
+      type: NUMBER
+pages:
+- components:
+    - html: Welcome to Dashbuilder!
+      properties:
+        font-size: xx-large
+        margin-bottom: 30px
+    - settings:
+        type: BARCHART
+        lookup:
+            uuid: products
+            group:
+                - columnGroup:
+                    source: Product
+                  functions:
+                    - source: Product
+                    - source: Quantity
+                      function: SUM
+                    - source: Quantity2
+                      function: SUM
+    - settings:
+        lookup:
+            uuid: products",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`diagnostic empty file 1`] = `0`;
+
+exports[`diagnostic empty file 2`] = `Array []`;
+
+exports[`diagnostic valid 1`] = `0`;
+
+exports[`diagnostic valid 2`] = `Array []`;

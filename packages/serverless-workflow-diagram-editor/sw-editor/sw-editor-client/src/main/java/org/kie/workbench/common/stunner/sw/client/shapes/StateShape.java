@@ -22,6 +22,7 @@ import org.appformer.kogito.bridge.client.resource.ResourceContentService;
 import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
 public class StateShape extends NodeShapeImpl implements HasShapeState {
@@ -47,35 +48,25 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
             return;
         }
 
-        if (state.metadata.type != null) {
-            setType(state.metadata.type);
+        if (StringUtils.nonEmpty(state.metadata.icon)) {
+            if (state.metadata.icon.startsWith("data:")) {
+                Picture picture = new Picture(state.metadata.icon);
+                setIconPicture(picture);
+            } else {
+                loadIconFromFile(state, resourceContentService);
+            }
         }
 
         if (!isIconEmpty()) {
             return;
         }
 
-        if (state.metadata.icon == null) {
-            setType(state.getType());
-            return;
+        if (StringUtils.nonEmpty(state.metadata.type)) {
+            setType(state.metadata.type);
         }
 
-        if (state.metadata.icon.startsWith("data:")) {
-            Picture picture = new Picture(state.metadata.icon);
-            setIconPicture(picture);
-        } else {
-            resourceContentService
-                    .get(state.metadata.icon, ResourceContentOptions.binary())
-                    .then(image -> {
-                        if (image != null) {
-                            String base64image = iconDataUri(state.metadata.icon, image);
-                            Picture picture = new Picture(base64image);
-                            setIconPicture(picture);
-                        } else {
-                            setType(state.getType());
-                        }
-                        return null;
-                    });
+        if (isIconEmpty()) {
+            setType(state.getType());
         }
     }
 
@@ -83,6 +74,25 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
         super(new StateShapeView(name).asAbstractShape());
 
         shapeView = (StateShapeView) getShape().getShapeView();
+    }
+
+    private void loadIconFromFile(State state, ResourceContentService resourceContentService) {
+        resourceContentService
+                .get(state.metadata.icon, ResourceContentOptions.binary())
+                .then(image -> {
+                    setIconPicture(image, state.metadata.icon);
+                    return null;
+                });
+    }
+
+    protected void setIconPicture(String base64Data, String iconPath) {
+        if (StringUtils.isEmpty(base64Data)) {
+            return;
+        }
+
+        String base64image = iconDataUri(iconPath, base64Data);
+        Picture picture = new Picture(base64image);
+        setIconPicture(picture);
     }
 
     protected static String iconDataUri(String iconUri, String iconData) {
@@ -136,18 +146,33 @@ public class StateShape extends NodeShapeImpl implements HasShapeState {
         return shapeView.isIconEmpty();
     }
 
+    public StateShapeView getView() {
+        return shapeView;
+    }
+
     public StateShape setIconPicture(Picture picture) {
         picture.setImageShapeLoadedHandler(p -> {
-            double size = StateShapeView.STATE_SHAPE_ICON_RADIUS * 2;
-            int min = Math.min(p.getImageData().width, p.getImageData().height);
-            double scale = (size > min) ?
-                    size / min
-                    : 1 / (min / size);
+            double scale = calculateIconScale(p.getImageData().width, p.getImageData().height);
             p.setTransform(new Transform().scale(scale));
             p.getLayer().batch();
         });
         shapeView.setIconPicture(picture);
 
         return this;
+    }
+
+    /**
+     * The method calculates the scale for image transformation by using the smaller side
+     * of the not-square image as a reference. The longer side of the image is cut to fill
+     * the entire icon circle with the source image. If the source image is smaller than
+     * the icon circle, it is scaled to full size.
+     * @param width of the source image
+     * @param height of the source image
+     * @return scale rate to fit the icon in the icon circle
+     */
+    public static double calculateIconScale(int width, int height) {
+        double size = StateShapeView.STATE_SHAPE_ICON_RADIUS * 2;
+        int min = Math.min(width, height);
+        return size / min;
     }
 }
