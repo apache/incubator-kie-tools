@@ -134,9 +134,7 @@ public class DocksBars {
         int collapsedSize = docksBar.getCollapsedBarSize().intValue();
 
         int max = 0;
-        if (position == UberfireDockPosition.SOUTH) {
-            max = uberfireDocksContainer.getOffsetHeight() - collapsedSize;
-        } else {
+        if (position == UberfireDockPosition.EAST) {
             max = uberfireDocksContainer.getOffsetWidth() - 2 * collapsedSize;
         }
         return max;

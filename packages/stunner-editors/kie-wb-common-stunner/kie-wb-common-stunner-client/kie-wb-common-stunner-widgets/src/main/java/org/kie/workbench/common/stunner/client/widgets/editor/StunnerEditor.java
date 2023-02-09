@@ -154,6 +154,7 @@ public class StunnerEditor {
             final DiagramParsingException dpe = (DiagramParsingException) e;
             close();
             parsingExceptionProcessor.accept(dpe);
+            errorPage.setErrorContent(error.getMessage());
             view.setWidget(errorPage);
         } else {
             String message = null;

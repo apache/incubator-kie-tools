@@ -19,6 +19,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLCollection;
+import elemental2.dom.HTMLDivElement;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
@@ -43,6 +47,29 @@ public class ScenarioSimulationViewImpl extends KieEditorViewImpl implements Sce
     @Override
     public void setContentWidget(final Widget widget) {
         editorPanel.setWidget(widget);
+    }
+
+    @Override
+    public void setScenarioGridWidgetAsContent() {
+        editorPanel.setWidget(scenarioGridWidget);
+    }
+
+    /**
+     * It manages the TabBar visibility of Test Scenario.
+     * For some unknown reasons, using the TabPanel API (i.e. in ScenarioSimulationEditorKogitoWrapper using this call:
+     * getWidget().getMultiPage().setTabBarVisible() ) doesn't work. To manage the Widget visibility, we use this
+     * workaround, directing accessing the DOM and modifying the resulting Element. This because this widget is outside
+     * ScenarioSimulationView. The className used to find the Element must be synchronized!
+     * @param visible
+     */
+    @Override
+    public void setScenarioTabBarVisibility(boolean visible) {
+        /* The element className is bound with "TabPanelWithDropdowns.ui.xml" */
+        HTMLCollection<Element> elements = DomGlobal.document.getElementsByClassName("uf-tabbar-panel-nav-tabs");
+        if (elements.length == 1) {
+            HTMLDivElement element = (HTMLDivElement) elements.getAt(0);
+            element.style.display = visible ? "" : "none";
+        }
     }
 
     @Override

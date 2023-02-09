@@ -23,8 +23,8 @@ import org.openqa.selenium.By;
  */
 public class CommonCSSLocator implements DMNDesignerLocator {
 
-    private static final String DECISION_NAVIGATOR_EXPAND = "docks-item-W-org.kie.dmn.decision.navigator";
-    private static final String DECISION_NAVIGATOR_EXPANDED = "expanded-docks-bar-W";
+    private static final String DECISION_NAVIGATOR_EXPAND = "docks-item-E-org.kie.dmn.decision.navigator";
+    private static final String DECISION_NAVIGATOR_EXPANDED = "expanded-docks-bar-E";
 
     private String cssLocator;
 

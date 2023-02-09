@@ -50,16 +50,8 @@ public class AbstractDockItemOuiaTest {
     }
 
     @Test
-    public void testSouthDockItem() {
-        when(dockMock.getDockPosition()).thenReturn(UberfireDockPosition.SOUTH);
-        assertOuiaCompliance(new SouthDockItem(dockMock,
-                                               mock(ParameterizedCommand.class),
-                                               mock(ParameterizedCommand.class)));
-    }
-
-    @Test
     public void testSideDockItems() {
-        when(dockMock.getDockPosition()).thenReturn(UberfireDockPosition.WEST);
+        when(dockMock.getDockPosition()).thenReturn(UberfireDockPosition.EAST);
         assertOuiaCompliance(new SideDockItem(dockMock,
                                               mock(ParameterizedCommand.class),
                                               mock(ParameterizedCommand.class)));

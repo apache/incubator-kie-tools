@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.webapp.common.client.docks.preview;
+package org.kie.workbench.common.dmn.client.docks.preview;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramScreen;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.stunner.client.widgets.editor.DiagramEditorDock;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -54,12 +53,19 @@ public class PreviewDiagramDock implements DiagramEditorDock {
 
     @Override
     public void init() {
-        this.uberfireDock = makeUberfireDock();
+        if (uberfireDock == null) {
+            uberfireDock = makeUberfireDock();
+            uberfireDocks.add(getUberfireDock());
+            uberfireDocks.show(position());
+        }
     }
 
     @Override
     public void destroy() {
-        uberfireDocks.remove(getUberfireDock());
+        if (uberfireDock != null) {
+            uberfireDocks.remove(getUberfireDock());
+            uberfireDock = null;
+        }
     }
 
     @Override
@@ -69,8 +75,6 @@ public class PreviewDiagramDock implements DiagramEditorDock {
         }
 
         isOpened = true;
-        uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position());
         uberfireDocks.open(getUberfireDock());
     }
 
@@ -82,7 +86,6 @@ public class PreviewDiagramDock implements DiagramEditorDock {
 
         isOpened = false;
         uberfireDocks.close(getUberfireDock());
-        destroy();
     }
 
     protected boolean isOpened() {

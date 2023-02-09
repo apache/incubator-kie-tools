@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.docks.navigator;
+package org.kie.workbench.common.dmn.client.docks.preview;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -30,36 +30,30 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock.DOCK_SIZE;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
+import static org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock.DOCK_SIZE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DecisionNavigatorDockTest {
+public class PreviewDiagramDockTest {
 
     @Mock
     private UberfireDocks uberfireDocks;
 
     @Mock
-    private DecisionNavigatorPresenter decisionNavigatorPresenter;
-
-    @Mock
     private TranslationService translationService;
 
-    private DecisionNavigatorDock dock;
+    private PreviewDiagramDock dock;
 
     @Before
     public void setup() {
-        dock = spy(new DecisionNavigatorDock(uberfireDocks,
-                                             decisionNavigatorPresenter,
-                                             translationService));
+        dock = spy(new PreviewDiagramDock(uberfireDocks, translationService));
     }
 
     @Test
@@ -96,26 +90,12 @@ public class DecisionNavigatorDockTest {
     }
 
     @Test
-    public void testSetupCanvasHandler() {
-        dock.reload();
-        verify(decisionNavigatorPresenter).refresh();
-    }
-
-    @Test
-    public void testResetContent() {
-
-        dock.resetContent();
-
-        verify(decisionNavigatorPresenter).removeAllElements();
-    }
-
-    @Test
     public void testOpenWhenItIsOpened() {
-
         final UberfireDockPosition position = UberfireDockPosition.EAST;
 
-        dock.setOpened(true);
         doReturn(position).when(dock).position();
+        dock.open();
+        reset(uberfireDocks);
 
         dock.open();
 
@@ -125,10 +105,8 @@ public class DecisionNavigatorDockTest {
 
     @Test
     public void testOpenWhenItIsNotOpened() {
-
         final UberfireDock uberfireDock = mock(UberfireDock.class);
 
-        dock.setOpened(false);
         doReturn(uberfireDock).when(dock).getUberfireDock();
 
         dock.open();
@@ -139,11 +117,10 @@ public class DecisionNavigatorDockTest {
 
     @Test
     public void testCloseWhenItIsOpened() {
-
         final UberfireDock uberfireDock = mock(UberfireDock.class);
 
-        dock.setOpened(true);
         doReturn(uberfireDock).when(dock).getUberfireDock();
+        dock.open();
 
         dock.close();
 
@@ -153,10 +130,8 @@ public class DecisionNavigatorDockTest {
 
     @Test
     public void testCloseWhenItIsNotOpened() {
-
         final UberfireDock uberfireDock = mock(UberfireDock.class);
 
-        dock.setOpened(false);
         doReturn(uberfireDock).when(dock).getUberfireDock();
 
         dock.close();
@@ -190,14 +165,10 @@ public class DecisionNavigatorDockTest {
 
     @Test
     public void testMakeUberfireDock() {
-
         final UberfireDockPosition expectedPosition = UberfireDockPosition.EAST;
-        final String expectedIcon = IconType.MAP.toString();
-        final String expectedPlaceRequestIdentifier = DecisionNavigatorPresenter.IDENTIFIER;
+        final String expectedIcon = IconType.EYE.toString();
+        final String expectedPlaceRequestIdentifier = PreviewDiagramScreen.SCREEN_ID;
         final Double expectedSize = DOCK_SIZE;
-        final String expectedLabel = "DecisionNavigator";
-
-        when(translationService.format(DecisionNavigatorPresenter_DecisionNavigator)).thenReturn(expectedLabel);
 
         final UberfireDock uberfireDock = dock.makeUberfireDock();
 
@@ -205,12 +176,10 @@ public class DecisionNavigatorDockTest {
         final String actualIcon = uberfireDock.getIconType();
         final String actualPlaceRequestIdentifier = uberfireDock.getPlaceRequest().getIdentifier();
         final Double actualSize = uberfireDock.getSize();
-        final String actualLabel = uberfireDock.getLabel();
 
         assertEquals(expectedPosition, actualPosition);
         assertEquals(expectedIcon, actualIcon);
         assertEquals(expectedPlaceRequestIdentifier, actualPlaceRequestIdentifier);
         assertEquals(expectedSize, actualSize);
-        assertEquals(expectedLabel, actualLabel);
     }
 }

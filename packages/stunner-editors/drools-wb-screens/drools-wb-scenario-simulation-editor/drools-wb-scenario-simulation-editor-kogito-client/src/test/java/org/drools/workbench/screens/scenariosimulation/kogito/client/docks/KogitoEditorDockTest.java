@@ -34,11 +34,11 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -92,7 +92,7 @@ public class KogitoEditorDockTest {
     public void expandAuthoringDockEmpty() {
         kogitoEditorDockSpy.expandAuthoringDock(null);
 
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
+        verify(uberfireDocks, times(1)).show(UberfireDockPosition.EAST);
         verify(uberfireDocks, never()).open(any());
     }
 
@@ -101,19 +101,19 @@ public class KogitoEditorDockTest {
         final UberfireDock dockToOpen = mock(UberfireDock.class);
         kogitoEditorDockSpy.expandAuthoringDock(dockToOpen);
 
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
-        verify(uberfireDocks, times(1)).open(eq(dockToOpen));
+        verify(uberfireDocks, times(1)).show(UberfireDockPosition.EAST);
+        verify(uberfireDocks, times(1)).open(dockToOpen);
     }
 
     @Test
     public void setActiveHandler() {
         kogitoEditorDockSpy.setActiveHandler(handler);
         assertSame(kogitoEditorDockSpy.activeHandler, handler);
-        verify(handler, times(1)).provideDocks(eq(AUTHORING_PERSPECTIVE));
-        assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
+        verify(handler, times(1)).provideDocks(AUTHORING_PERSPECTIVE);
+        assertEquals(2, kogitoEditorDockSpy.activeDocks.length);
         verify(uberfireDocks, never()).remove(any());
         verify(uberfireDocks, times(1)).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
+        verify(uberfireDocks, times(1)).show(UberfireDockPosition.EAST);
     }
 
     @Test
@@ -122,11 +122,11 @@ public class KogitoEditorDockTest {
         handler.refresh(true, false);
         kogitoEditorDockSpy.setActiveHandler(handler);
         assertSame(kogitoEditorDockSpy.activeHandler, handler);
-        verify(handler, atLeastOnce()).provideDocks(eq(AUTHORING_PERSPECTIVE));
-        assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
+        verify(handler, atLeastOnce()).provideDocks(AUTHORING_PERSPECTIVE);
+        assertEquals(2, kogitoEditorDockSpy.activeDocks.length);
         verify(uberfireDocks, atLeastOnce()).remove(any());
         verify(uberfireDocks, atLeastOnce()).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, atLeastOnce()).show(eq(UberfireDockPosition.EAST));
+        verify(uberfireDocks, atLeastOnce()).show(UberfireDockPosition.EAST);
     }
 
     @Test
@@ -147,11 +147,11 @@ public class KogitoEditorDockTest {
         kogitoEditorDockSpy.activeDocks = activeDocks;
         kogitoEditorDockSpy.setActiveHandler(handler);
         assertSame(kogitoEditorDockSpy.activeHandler, handler);
-        verify(handler, atLeastOnce()).provideDocks(eq(AUTHORING_PERSPECTIVE));
-        assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
-        verify(uberfireDocks, times(1)).remove(eq(activeDock));
+        verify(handler, atLeastOnce()).provideDocks(AUTHORING_PERSPECTIVE);
+        assertEquals(2, kogitoEditorDockSpy.activeDocks.length);
+        verify(uberfireDocks, times(1)).remove(activeDock);
         verify(uberfireDocks, times(1)).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
+        verify(uberfireDocks, times(1)).show(UberfireDockPosition.EAST);
     }
 
     @Test
@@ -160,6 +160,7 @@ public class KogitoEditorDockTest {
         kogitoEditorDockSpy.setActiveHandler(handler);
         assertSame(kogitoEditorDockSpy.activeHandler, handler);
         verify(handler, never()).provideDocks(any());
+        verify(uberfireDocks, never()).remove(kogitoEditorDockSpy.activeDocks);
         verify(uberfireDocks, never()).add(any(), any());
         verify(uberfireDocks, never()).show(any());
     }

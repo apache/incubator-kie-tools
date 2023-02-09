@@ -32,10 +32,6 @@
   display: none;
 }
 
-.gradientTopBottom {
-  border: 1px solid #ddd;
-}
-
 .gradientBottomTop {
   border-right: 1px solid #ddd;
   border-left: 1px solid #ddd;
@@ -57,27 +53,6 @@
   width: 100%;
 }
 
-.dockExpandedContentPanelSouth {
-}
-
-.southDockItem {
-  margin-left: 5px;
-  margin-top: 5px;
-}
-
-.dockExpandedLabelWest {
-  float: left;
-  margin-left: 15px;
-  margin-top: 10px;
-  margin-bottom: 0px;
-}
-
-.dockExpandedButtonWest {
-  float: right;
-  margin-top: 6px;
-  margin-right: 15px;
-}
-
 .dockExpandedLabelEast {
   float: left;
   margin-left: 15px;
@@ -89,19 +64,6 @@
   float: right;
   margin-top: 6px;
   margin-right: 15px;
-}
-
-.dockExpandedLabelSouth {
-  float: left;
-  margin-left: 15px;
-  margin-top: 10px;
-  margin-bottom: 0px;
-}
-
-.dockExpandedButtonSouth {
-  float: right;
-  margin-right: 15px;
-  margin-top: 6px;
 }
 
 .buttonFocused {
