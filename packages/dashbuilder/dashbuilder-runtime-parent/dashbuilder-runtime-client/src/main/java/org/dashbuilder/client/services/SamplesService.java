@@ -45,9 +45,10 @@ public class SamplesService {
     void init() {
         var setup = RuntimeClientSetup.Builder.get();
         var userSamplesUrl = setup == null ? null : RuntimeClientSetup.Builder.get().getSamplesUrl();
-        var samplesUrl = userSamplesUrl.endsWith("/") ? userSamplesUrl : userSamplesUrl + "/";
         samplesByCategory = new HashMap<>();
+        
         if (userSamplesUrl != null) {
+            var samplesUrl = userSamplesUrl.endsWith("/") ? userSamplesUrl : userSamplesUrl + "/";
             var xhr = new XMLHttpRequest();
             xhr.open("GET", SAMPLES_FILE, false);
             xhr.send();
