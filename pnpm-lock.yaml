@@ -977,8 +977,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/selenium-webdriver":
-        specifier: ^4.1.9
-        version: 4.1.9
+        specifier: ^4.1.10
+        version: 4.1.10
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -998,8 +998,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.7.1
-        version: 4.7.1
+        specifier: ^4.8.0
+        version: 4.8.0
       start-server-and-test:
         specifier: ^1.12.1
         version: 1.12.1
@@ -8014,8 +8014,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/selenium-webdriver":
-        specifier: ^4.1.9
-        version: 4.1.9
+        specifier: ^4.1.10
+        version: 4.1.10
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -8053,8 +8053,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.7.1
-        version: 4.7.1
+        specifier: ^4.8.0
+        version: 4.8.0
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
@@ -8150,8 +8150,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/selenium-webdriver":
-        specifier: ^4.1.9
-        version: 4.1.9
+        specifier: ^4.1.10
+        version: 4.1.10
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -8186,8 +8186,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.7.1
-        version: 4.7.1
+        specifier: ^4.8.0
+        version: 4.8.0
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
@@ -13462,9 +13462,9 @@ packages:
     resolution:
       { integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA== }
 
-  /@types/selenium-webdriver@4.1.9:
+  /@types/selenium-webdriver@4.1.10:
     resolution:
-      { integrity: sha512-QNCYI3Rgjf3bZ2GZwXnUpOJUPR8p7+c9Um9MEKggLaUaF8UfjitH5aPCV1PF0DHVEiPYsXayGVS6+67DO3VILw== }
+      { integrity: sha512-o6ARpkBI8J0b+jhLjXF46rYc8Vsb5CLrRetyA3V3qUPVDwNjPDyHZsZOCFSXH0KPZ6lIn2BfP1xVEPnO+AQy5w== }
     dependencies:
       "@types/ws": 8.2.2
     dev: true
@@ -27052,19 +27052,6 @@ packages:
       { integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg== }
     dev: true
 
-  /selenium-webdriver@4.7.1:
-    resolution:
-      { integrity: sha512-IfTM9OE8HtCKjOJwyudbAVtAHQKOJK8mu2qrXXbKyj4lqgXF+2lYW4rSZXCV6SLQRWZ+DVGkomCmFzq5orD/ZA== }
-    engines: { node: ">= 14.20.0" }
-    dependencies:
-      jszip: 3.10.1
-      tmp: 0.2.1
-      ws: 8.10.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: true
-
   /selenium-webdriver@4.8.0:
     resolution:
       { integrity: sha512-s/HL8WNwy1ggHR244+tAhjhyKMJnZLt1HKJ6Gn7nQgVjB/ybDF+46Uui0qI2J7AjPNJzlUmTncdC/jg/kKkn0A== }
@@ -29587,7 +29574,7 @@ packages:
       mocha: ">=5.2.0"
       typescript: ">=4.6.2"
     dependencies:
-      "@types/selenium-webdriver": 4.1.9
+      "@types/selenium-webdriver": 4.1.10
       "@vscode/vsce": 2.16.0
       commander: 10.0.0
       compare-versions: 5.0.1
@@ -30258,20 +30245,6 @@ packages:
     resolution:
       { integrity: sha512-6GLgCqo2cy2A2rjCNFlxQS6ZljG/coZfZXclldI8FB/1G3CCI36Zd8xy2HrFVACi8tfk5XrgLQEk+P0Tnz9UcA== }
     engines: { node: ">=8.3.0" }
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: true
-
-  /ws@8.10.0:
-    resolution:
-      { integrity: sha512-+s49uSmZpvtAsd2h37vIPy1RBusaLawVe8of+GyEPsaJTCMpj/2v8NpeK1SHXjBlQ95lQTmQofOJnFiLoaN3yw== }
-    engines: { node: ">=10.0.0" }
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
