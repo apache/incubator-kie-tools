@@ -30,10 +30,8 @@ import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/Ac
 import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { AlertsController } from "../../alerts/Alerts";
 
 interface Props {
-  alerts: AlertsController | undefined;
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
@@ -43,7 +41,6 @@ interface Props {
 export function KieSandboxExtendedServicesButtons(props: Props) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const deployDropdownItems = useDeployDropdownItems({
-    alerts: props.alerts,
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
     canContentBeDeployed: props.canContentBeDeployed,

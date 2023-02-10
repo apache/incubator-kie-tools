@@ -80,8 +80,7 @@ import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
-import { Alerts, AlertsController } from "../alerts/Alerts";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import { Alerts } from "../alerts/Alerts";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
@@ -573,7 +572,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   }, [workspacePromise.data?.files]);
 
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
-  const [alerts, alertsRef] = useController<AlertsController>();
 
   return (
     <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
@@ -588,7 +586,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
         }
         resolved={(workspace) => (
           <>
-            <Alerts width={"100%"} ref={alertsRef} />
             <DrawerHead>
               <Flex>
                 <FlexItem>
@@ -614,7 +611,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                     }
                   >
                     <NewFileDropdownMenu
-                      alerts={alerts}
                       workspaceId={workspace.descriptor.workspaceId}
                       destinationDirPath={""}
                       onAddFile={async () => setNewFileDropdownMenuOpen(false)}

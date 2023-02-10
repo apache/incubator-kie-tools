@@ -27,6 +27,7 @@ import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 import { DevModeContextProvider } from "./openshift/devMode/DevModeContextProvider";
+import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
 
 export const App = () => (
   <HashRouter>
@@ -36,6 +37,7 @@ export const App = () => (
       [EnvContextProvider, {}],
       [KieSandboxExtendedServicesContextProvider, {}],
       [SettingsContextProvider, {}],
+      [GlobalAlertsContextProvider, []],
       [
         WorkspacesContextProvider,
         { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js", shouldRequireCommitMessage: false },

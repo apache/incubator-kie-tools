@@ -29,7 +29,6 @@ import {
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
@@ -38,11 +37,11 @@ import { FileTypes, isEditable, SupportedFileExtensions } from "../extension";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
+import { useGlobalAlert } from "../alerts/GlobalAlertsContext";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
 export function NewFileDropdownMenu(props: {
-  alerts: AlertsController | undefined;
   destinationDirPath: string;
   workspaceId: string;
   onAddFile: (file?: WorkspaceFile) => Promise<void>;
@@ -153,8 +152,7 @@ export function NewFileDropdownMenu(props: {
     [importFromUrl, routes]
   );
 
-  const successfullyUploadedAlert = useAlert(
-    props.alerts,
+  const successfullyUploadedAlert = useGlobalAlert(
     useCallback(({ close }, staticArgs: { qtt: number }) => {
       return (
         <Alert

@@ -28,7 +28,6 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { isDashbuilder, isEditable, isServerlessWorkflow } from "../extension";
@@ -69,6 +68,7 @@ import { DashbuilderLanguageServiceChannelApiImpl } from "./api/DashbuilderLangu
 import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { DashbuilderEditorChannelApiImpl } from "@kie-tools/dashbuilder-editor/dist/impl";
 import { DashbuilderLanguageServiceChannelApi } from "@kie-tools/dashbuilder-language-service/dist/api";
+import { useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
 export interface Props {
   workspaceId: string;
   fileRelativePath: string;
@@ -85,7 +85,6 @@ export function EditorPage(props: Props) {
   const workspaces = useWorkspaces();
   const { i18n, locale } = useAppI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
-  const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
@@ -94,6 +93,7 @@ export function EditorPage(props: Props) {
   const [isReady, setReady] = useState(false);
   const [isServiceRegistryReady, setServiceRegistryReady] = useState(false);
   const swfFeatureToggle = useSwfFeatureToggle(editor);
+  const alertsDispatch = useGlobalAlertsDispatchContext();
   const [canContentBeDeployed, setCanContentBeDeployed] = useState(false);
 
   const queryParams = useQueryParams();
@@ -250,8 +250,8 @@ export function EditorPage(props: Props) {
   // end (AUTO-SAVE)
 
   useEffect(() => {
-    alerts?.closeAll();
-  }, [alerts]);
+    alertsDispatch.closeAll();
+  }, [alertsDispatch]);
 
   const stateControl = useMemo(() => new StateControl(), [embeddedEditorFile?.getFileContents]);
 
@@ -441,8 +441,6 @@ export function EditorPage(props: Props) {
               <EditorToolbar
                 workspaceFile={file.workspaceFile}
                 editor={editor}
-                alerts={alerts}
-                alertsRef={alertsRef}
                 editorPageDock={editorPageDock}
                 canContentBeDeployed={canContentBeDeployed}
               />

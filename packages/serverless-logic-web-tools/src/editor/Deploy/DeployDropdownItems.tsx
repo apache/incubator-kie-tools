@@ -21,8 +21,7 @@ import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { RegistryIcon } from "@patternfly/react-icons/dist/js/icons";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons";
+import { RegistryIcon, ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
@@ -42,19 +41,17 @@ import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useDevMode } from "../../openshift/devMode/DevModeContext";
-import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { isServerlessWorkflow } from "../../extension";
 import { AppDeploymentMode, useEnv } from "../../env/EnvContext";
+import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 
 interface Props {
-  alerts: AlertsController | undefined;
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
   canContentBeDeployed: boolean;
 }
 
-// TOOD CAPONETTO: Alerts can be moved to a context
 export function useDeployDropdownItems(props: Props) {
   const { env } = useEnv();
   const { i18n } = useAppI18n();
@@ -67,8 +64,7 @@ export function useDeployDropdownItems(props: Props) {
     workspace: props.workspace,
   });
 
-  const devModeUploadingAlert = useAlert(
-    props.alerts,
+  const devModeUploadingAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         return (
@@ -91,8 +87,7 @@ export function useDeployDropdownItems(props: Props) {
     )
   );
 
-  const devModeReadyAlert = useAlert<{ routeUrl: string }>(
-    props.alerts,
+  const devModeReadyAlert = useGlobalAlert<{ routeUrl: string }>(
     useCallback(({ close }, { routeUrl }) => {
       return (
         <Alert
@@ -110,8 +105,7 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
-  const uploadToDevModeSuccessAlert = useAlert(
-    props.alerts,
+  const uploadToDevModeSuccessAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
         return (
@@ -134,8 +128,7 @@ export function useDeployDropdownItems(props: Props) {
     )
   );
 
-  const uploadToDevModeErrorAlert = useAlert(
-    props.alerts,
+  const uploadToDevModeErrorAlert = useGlobalAlert(
     useCallback(({ close }) => {
       return (
         <Alert
@@ -150,8 +143,7 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
-  const uploadToDevModeNotReadyAlert = useAlert(
-    props.alerts,
+  const uploadToDevModeNotReadyAlert = useGlobalAlert(
     useCallback(({ close }) => {
       return (
         <Alert
