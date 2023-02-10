@@ -24,14 +24,12 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 interface Props {
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
-  canContentBeDeployed: boolean;
 }
 
 export function KieSandboxExtendedServicesDropdownGroup(props: Props) {
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
-    canContentBeDeployed: props.canContentBeDeployed,
   });
 
   return (

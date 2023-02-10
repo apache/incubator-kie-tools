@@ -23,8 +23,9 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { RegistryIcon, ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
+import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useAppI18n } from "../../i18n";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
@@ -45,24 +46,34 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { isServerlessWorkflow } from "../../extension";
 import { AppDeploymentMode, useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
+import { useEditor } from "../hooks/EditorContext";
 
 interface Props {
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
-  canContentBeDeployed: boolean;
 }
 
 export function useDeployDropdownItems(props: Props) {
   const { env } = useEnv();
+  const { notifications } = useEditor();
   const { i18n } = useAppI18n();
   const devMode = useDevMode();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const openshift = useOpenShift();
+  const [canContentBeDeployed, setCanContentBeDeployed] = useState(true);
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
   });
+
+  useEffect(() => {
+    props.workspaceFile.getFileContentsAsString().then((content) => {
+      setCanContentBeDeployed(
+        content.trim().length > 0 && !notifications.some((d) => ["ERROR", "WARNING"].includes(d.severity))
+      );
+    });
+  }, [notifications, props.workspaceFile]);
 
   const devModeUploadingAlert = useGlobalAlert(
     useCallback(
@@ -239,7 +250,7 @@ export function useDeployDropdownItems(props: Props) {
               key={`dropdown-deploy`}
               component={"button"}
               onClick={onDeploy}
-              isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !props.canContentBeDeployed)}
+              isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
               ouiaId={"deploy-to-openshift-dropdown-button"}
             >
               {props.workspace.files.length > 1 && (
@@ -264,14 +275,12 @@ export function useDeployDropdownItems(props: Props) {
             </DropdownItem>
             {isDevModeEnabled && (
               <DropdownItem
-                icon={<OpenshiftIcon />}
+                icon={<UploadIcon />}
                 id="deploy-dev-mode-button"
                 key={`dropdown-deploy-dev-mode`}
                 component={"button"}
                 onClick={onDeployDevMode}
-                isDisabled={
-                  isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !props.canContentBeDeployed)
-                }
+                isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
                 ouiaId={"deploy-to-openshift-dev-mode-dropdown-button"}
               >
                 <Flex flexWrap={{ default: "nowrap" }}>
@@ -281,7 +290,7 @@ export function useDeployDropdownItems(props: Props) {
                 </Flex>
               </DropdownItem>
             )}
-            {needsDependencyDeployment && env.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY && (
+            {needsDependencyDeployment && (
               <>
                 <Divider />
                 <Tooltip content={i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip} position="bottom">
@@ -289,7 +298,7 @@ export function useDeployDropdownItems(props: Props) {
                     <Flex flexWrap={{ default: "nowrap" }}>
                       <FlexItem>
                         <Text component="small" style={{ color: "var(--pf-global--warning-color--200)" }}>
-                          {i18n.deployments.virtualServiceRegistry.dependencyWarning}
+                          This model has foreign workspace dependencies
                         </Text>
                       </FlexItem>
                     </Flex>
@@ -297,16 +306,25 @@ export function useDeployDropdownItems(props: Props) {
                 </Tooltip>
               </>
             )}
-            {!props.canContentBeDeployed && (
+            {!canContentBeDeployed && (
               <>
                 <Divider />
-                <DropdownItem icon={<ExclamationCircleIcon />} isDisabled>
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      <Text component="small">Models with errors/warnings cannot be deployed</Text>
-                    </FlexItem>
-                  </Flex>
-                </DropdownItem>
+                <Tooltip
+                  content={
+                    "Models with errors/warnings or empty ones cannot be deployed. Check the Problems tab for more information."
+                  }
+                  position="bottom"
+                >
+                  <DropdownItem icon={<ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />} isDisabled>
+                    <Flex flexWrap={{ default: "nowrap" }}>
+                      <FlexItem>
+                        <Text component="small" style={{ color: "var(--pf-global--danger-color--300)" }}>
+                          This model cannot be deployed
+                        </Text>
+                      </FlexItem>
+                    </Flex>
+                  </DropdownItem>
+                </Tooltip>
               </>
             )}
           </FeatureDependentOnKieSandboxExtendedServices>
@@ -330,8 +348,7 @@ export function useDeployDropdownItems(props: Props) {
     ];
   }, [
     props.workspace,
-    props.canContentBeDeployed,
-    env.FEATURE_FLAGS.MODE,
+    canContentBeDeployed,
     onDeploy,
     isKieSandboxExtendedServicesRunning,
     isOpenShiftConnected,

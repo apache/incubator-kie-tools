@@ -82,7 +82,6 @@ import {
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
-import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { FileSwitcher } from "./FileSwitcher";
 import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesButtons";
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
@@ -99,8 +98,6 @@ import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/Global
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
-  editorPageDock: EditorPageDockDrawerRef | undefined;
-  canContentBeDeployed: boolean; // TODO CAPONETTO: improve this
 }
 
 const showWhenSmall: ToolbarItemProps["visibility"] = {
@@ -1528,12 +1525,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarItem>
                     {canBeDeployed && (
                       <ToolbarItem visibility={hideWhenSmall}>
-                        <KieSandboxExtendedServicesButtons
-                          workspace={workspace}
-                          workspaceFile={props.workspaceFile}
-                          editorPageDock={props.editorPageDock}
-                          canContentBeDeployed={props.canContentBeDeployed}
-                        />
+                        <KieSandboxExtendedServicesButtons workspace={workspace} workspaceFile={props.workspaceFile} />
                       </ToolbarItem>
                     )}
                     {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
@@ -1707,7 +1699,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   workspace={workspace}
                                   workspaceFile={props.workspaceFile}
                                   key="kie-sandbox-extended-services-group"
-                                  canContentBeDeployed={props.canContentBeDeployed}
                                 />,
                               ]),
                         ]}
