@@ -88,7 +88,10 @@ function ListField({
             isValidElement(child)
               ? cloneElement(child as React.ReactElement<{ name: string }, string>, {
                   key: `${itemIndex}-${childIndex}`,
-                  name: child.props.name?.replace("$", "" + itemIndex),
+                  name: child.props.name
+                    ?.split(/\$(.*)/s)
+                    .slice(0, -1)
+                    .join(`${itemIndex}`),
                   ...itemProps,
                 })
               : child
