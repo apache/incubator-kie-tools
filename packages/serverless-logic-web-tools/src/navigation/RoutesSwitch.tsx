@@ -21,7 +21,7 @@ import { useRoutes } from "./Hooks";
 import { OnlineEditorPage } from "../homepage/pageTemplate/OnlineEditorPage";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { HomePageRoutes } from "../homepage/routes/HomePageRoutes";
-import { SettingsPageRoutes } from "../newSettings/routes/SettingsPageRoutes";
+import { SettingsPageRoutes } from "../settings/routes/SettingsPageRoutes";
 
 export function RoutesSwitch() {
   const routes = useRoutes();

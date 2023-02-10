@@ -23,18 +23,18 @@ import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesSt
 import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-icon";
 import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
 import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
-import { useSettingsDispatch } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsModalBody";
 import { useAppI18n } from "../i18n";
+import { routes } from "../navigation/Routes";
+import { useHistory } from "react-router";
 
 export function KieSandboxExtendedServicesIcon() {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const { i18n } = useAppI18n();
-  const settingsDispatch = useSettingsDispatch();
+  const history = useHistory();
 
   const toggleKieSandboxExtendedServices = useCallback(() => {
     if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-      settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
+      history.push(routes.settings.kie_sandbox_extended_services.path({}));
     }
 
     if (!kieSandboxExtendedServices.outdated) {
@@ -42,7 +42,7 @@ export function KieSandboxExtendedServicesIcon() {
     }
     kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
     kieSandboxExtendedServices.setModalOpen(true);
-  }, [settingsDispatch, kieSandboxExtendedServices]);
+  }, [kieSandboxExtendedServices, history]);
 
   const dropdownToggleIcon = useMemo(
     () => (

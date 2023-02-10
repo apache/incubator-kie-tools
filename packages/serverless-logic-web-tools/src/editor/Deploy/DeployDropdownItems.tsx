@@ -34,15 +34,16 @@ import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServic
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegistry/hooks/useVirtualServiceRegistryDependencies";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { useHistory } from "react-router";
+import { routes } from "../../navigation/Routes";
 
 export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
   const { i18n } = useAppI18n();
   const settings = useSettings();
-  const settingsDispatch = useSettingsDispatch();
+  const history = useHistory();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const openshift = useOpenShift();
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
@@ -60,8 +61,8 @@ export function useDeployDropdownItems(props: { workspace: ActiveWorkspace }) {
   );
 
   const onSetup = useCallback(() => {
-    settingsDispatch.open(SettingsTabs.OPENSHIFT);
-  }, [settingsDispatch]);
+    history.push(routes.settings.openshift.path({}));
+  }, [history]);
 
   const onDeploy = useCallback(() => {
     if (isKieSandboxExtendedServicesRunning) {

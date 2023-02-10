@@ -100,9 +100,8 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
         <TextContent>
           <Text component={TextVariants.h1}>Service Registry</Text>
           <Text component={TextVariants.p}>
-            Data you provide here is necessary for uploading Open API specs associated with models you design to your
-            Service Registry instance.
-            <br /> All information is locally stored in your browser and never shared with anyone.
+            Data you provide here is necessary for uploading specs associated with models you design to your Service
+            Registry instance. All information is locally stored in your browser and never shared with anyone.
           </Text>
         </TextContent>
       </PageSection>
@@ -136,7 +135,7 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
                 <Text component={"h2"}>{"Your Service Registry information is set."}</Text>
               </TextContent>
               <EmptyStateBody>
-                Uploading OpenAPI specs when deploying models is <b>enabled</b>.
+                Uploading specs when deploying models is <b>enabled</b>.
                 <br />
                 <b>Service Registry Name: </b>
                 <i>{config.name}</i>
