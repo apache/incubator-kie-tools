@@ -28,6 +28,7 @@ interface Props {
 }
 
 export function DmnRunnerDockToggle(props: Props) {
+  console.log("dmnrunner toggle!");
   return (
     <EditorPageDockToggleItem isDisabled={props.isDisabled} disabledReason={props.disabledReason}>
       <ToggleGroupItem
@@ -40,7 +41,11 @@ export function DmnRunnerDockToggle(props: Props) {
         isDisabled={props.isDisabled}
         buttonId={PanelId.DMN_RUNNER_TABLE}
         isSelected={props.isSelected}
-        onChange={() => props.onChange(PanelId.DMN_RUNNER_TABLE)}
+        onChange={() => {
+          if (!props.isDisabled) {
+            props.onChange(PanelId.DMN_RUNNER_TABLE);
+          }
+        }}
         text={
           <div style={{ display: "flex" }}>
             <div style={{ paddingRight: "5px", width: "30px" }}>

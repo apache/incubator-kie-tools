@@ -123,7 +123,13 @@ export function HomePage() {
 
   return (
     <OnlineEditorPage>
-      <PageSection isFilled={false} sticky={"top"} hasOverflowScroll={false} style={{ overflowX: "scroll" }}>
+      <PageSection
+        isFilled={false}
+        sticky={"top"}
+        hasOverflowScroll={false}
+        style={{ overflowX: "scroll" }}
+        aria-label="kie sandbox - home page - models section"
+      >
         <Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-c-page__main-section--PaddingTop)" }}>
           <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
@@ -176,7 +182,12 @@ export function HomePage() {
           </GridItem>
         </Grid>
       </PageSection>
-      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true}>
+      <PageSection
+        isFilled={true}
+        variant={"light"}
+        hasOverflowScroll={true}
+        aria-label="kie sandbox - home page - drawer"
+      >
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
