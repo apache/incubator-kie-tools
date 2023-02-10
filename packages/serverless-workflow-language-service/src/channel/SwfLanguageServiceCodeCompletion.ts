@@ -16,9 +16,8 @@
 
 import {
   SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionSourceType,
+  SwfCatalogSourceType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
@@ -65,12 +64,12 @@ function toCompletionItemLabelPrefix(
   specsDirRelativePosixPath: string
 ) {
   switch (swfServiceCatalogFunction.source.type) {
-    case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
+    case SwfCatalogSourceType.LOCAL_FS:
       const fileName =
         swfServiceCatalogFunction.source.serviceFileAbsolutePath.split("/").pop() ??
         swfServiceCatalogFunction.source.serviceFileAbsolutePath;
       return toCompletionItemLabel(specsDirRelativePosixPath, fileName, swfServiceCatalogFunction.name);
-    case SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY:
+    case SwfCatalogSourceType.SERVICE_REGISTRY:
       return toCompletionItemLabel(
         swfServiceCatalogFunction.source.registry,
         swfServiceCatalogFunction.source.serviceId,
@@ -235,7 +234,7 @@ export const SwfLanguageServiceCodeCompletion = {
           };
 
           const kind =
-            swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+            swfServiceCatalogFunc.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
               ? CompletionItemKind.Interface
               : CompletionItemKind.Reference;
 
@@ -250,7 +249,7 @@ export const SwfLanguageServiceCodeCompletion = {
             kind,
             label,
             detail:
-              swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
+              swfServiceCatalogService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
                 ? swfServiceCatalogService.source.url
                 : swfServiceCatalogFunc.operation,
             extraOptions: {
@@ -293,7 +292,7 @@ export const SwfLanguageServiceCodeCompletion = {
       .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
       .map((swfServiceCatalogFunc) => {
         const kind =
-          swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+          swfServiceCatalogFunc.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
             ? CompletionItemKind.Function
             : CompletionItemKind.Folder;
 

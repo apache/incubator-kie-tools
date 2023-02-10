@@ -36,6 +36,7 @@ public class AggregateFunctionManagerImpl implements AggregateFunctionManager {
         registerFunction(new DistinctFunction());
         registerFunction(new SumFunction());
         registerFunction(new AverageFunction());
+        registerFunction(new MedianFunction());
         registerFunction(new MaxFunction());
         registerFunction(new MinFunction());
     }

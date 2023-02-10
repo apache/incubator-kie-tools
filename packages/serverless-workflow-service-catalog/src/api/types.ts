@@ -32,6 +32,7 @@ export interface SwfServiceRegistriesSettings {
 export enum SwfServiceCatalogServiceType {
   rest = "rest",
   graphql = "graphql",
+  asyncapi = "asyncapi",
 }
 
 export interface SwfServiceCatalogService {
@@ -48,10 +49,10 @@ export type SwfServiceCatalogServiceSource =
       registry: string;
       id: string;
       url: string;
-      type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY;
+      type: SwfCatalogSourceType.SERVICE_REGISTRY;
     }
   | {
-      type: SwfServiceCatalogServiceSourceType.LOCAL_FS;
+      type: SwfCatalogSourceType.LOCAL_FS;
       absoluteFilePath: string;
     };
 
@@ -59,6 +60,11 @@ export enum SwfServiceCatalogFunctionType {
   rest = "rest",
   graphql = "graphql",
   asyncapi = "asyncapi",
+}
+
+export enum SupportArtifactTypes {
+  Openapi = "OPENAPI",
+  Asyncapi = "ASYNCAPI",
 }
 
 export enum SwfServiceCatalogFunctionArgumentType {
@@ -70,24 +76,19 @@ export enum SwfServiceCatalogFunctionArgumentType {
   array = "array",
 }
 
-export enum SwfServiceCatalogFunctionSourceType {
-  SERVICE_REGISTRY,
-  LOCAL_FS,
-}
-
-export enum SwfServiceCatalogServiceSourceType {
-  SERVICE_REGISTRY,
-  LOCAL_FS,
+export enum SwfCatalogSourceType {
+  SERVICE_REGISTRY = "SERVICE_REGISTRY",
+  LOCAL_FS = "LOCAL_FS",
 }
 
 export type SwfServiceCatalogFunctionSource =
   | {
       registry: string;
       serviceId: string;
-      type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY;
+      type: SwfCatalogSourceType.SERVICE_REGISTRY;
     }
   | {
-      type: SwfServiceCatalogFunctionSourceType.LOCAL_FS;
+      type: SwfCatalogSourceType.LOCAL_FS;
       serviceFileAbsolutePath: string;
     };
 

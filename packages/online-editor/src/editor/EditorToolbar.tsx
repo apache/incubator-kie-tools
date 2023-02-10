@@ -54,7 +54,6 @@ import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { ArrowCircleUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-circle-up-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -84,7 +83,6 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
 import { Location } from "history";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
@@ -95,17 +93,32 @@ import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdo
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { AuthSessionSelect, AuthSessionSelectFilter } from "../authSessions/AuthSessionSelect";
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
-import { useOctokit } from "../github/Hooks";
+import { useGitHubClient } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import {
-  authSessionsSelectFilterCompatibleWithGistUrlDomain,
+  authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain,
   authSessionsSelectFilterCompatibleWithGitUrlDomain,
   gitAuthSessionSelectFilter,
 } from "../authSessions/CompatibleAuthSessions";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
-import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
+import {
+  AuthProviderGroup,
+  GistEnabledAuthProviderType,
+  GitAuthProviderType,
+  isGistEnabledAuthProviderType,
+} from "../authProviders/AuthProvidersApi";
+import { CreateGitRepositoryModal, CreateRepositoryResponse } from "./CreateGitRepositoryModal";
+import { BitbucketIcon, GitIcon, GithubIcon } from "@patternfly/react-icons";
+import { useBitbucketClient } from "../bitbucket/Hooks";
+import {
+  isGistLikeWorkspaceKind,
+  WorkspaceKindGistLike,
+  WorkspaceKindGitBased,
+} from "@kie-tools-core/workspaces-git-fs/src/worker/api/WorkspaceOrigin";
+import { switchExpression } from "../switchExpression/switchExpression";
+import { CreateGistOrSnippetModal } from "./CreateGistOrSnippetModal";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -144,7 +157,7 @@ export function EditorToolbar(props: Props) {
   const workspaces = useWorkspaces();
   const accountsDispatch = useAccountsDispatch();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
-  const [isSyncGitHubGistDropdownOpen, setSyncGitHubGistDropdownOpen] = useState(false);
+  const [isSyncGistOrSnippetDropdownOpen, setSyncGistOrSnippetDropdownOpen] = useState(false);
   const [isSyncGitRepositoryDropdownOpen, setSyncGitRepositoryDropdownOpen] = useState(false);
   const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
@@ -158,15 +171,17 @@ export function EditorToolbar(props: Props) {
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
-  const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
+  const [isGistOrSnippetLoading, setGistOrSnippetLoading] = useState(false);
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
+  const [bitbucketSnippet, setBitbucketSnippet] = useState<any>(undefined);
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const { authSession, authInfo, gitConfig } = useAuthSession(workspacePromise.data?.descriptor.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
 
-  const octokit = useOctokit(authSession);
+  const gitHubClient = useGitHubClient(authSession);
+  const bitbucketClient = useBitbucketClient(authSession);
 
   const canPushToGitRepository = useMemo(
     () => authSession?.type === "git" && !!authProvider,
@@ -194,14 +209,21 @@ export function EditorToolbar(props: Props) {
     }
 
     if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST) {
-      return authSessionsSelectFilterCompatibleWithGistUrlDomain(
+      return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
         new URL(workspacePromise.data.descriptor.origin.url).hostname,
         gitHubGist?.owner?.login
       );
     }
 
+    if (workspacePromise.data.descriptor.origin.kind === WorkspaceKind.BITBUCKET_SNIPPET) {
+      return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
+        new URL(workspacePromise.data.descriptor.origin.url).hostname,
+        bitbucketSnippet?.owner?.login
+      );
+    }
+
     return gitAuthSessionSelectFilter();
-  }, [gitHubGist, workspacePromise.data]);
+  }, [bitbucketSnippet?.owner?.login, gitHubGist?.owner?.login, workspacePromise.data]);
 
   const isSaved = useMemo(() => {
     return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));
@@ -232,7 +254,7 @@ export function EditorToolbar(props: Props) {
           return;
         }
 
-        octokit.gists.get({ gist_id: gistId }).then(({ data: gist }) => {
+        gitHubClient.gists.get({ gist_id: gistId }).then(({ data: gist }) => {
           if (canceled.get()) {
             return;
           }
@@ -242,84 +264,142 @@ export function EditorToolbar(props: Props) {
           }
         });
       },
-      [gitHubGist, workspaceImportableUrl, octokit.gists]
+      [gitHubGist, workspaceImportableUrl, gitHubClient.gists]
     )
   );
 
-  const successfullyCreateGistAlert = useGlobalAlert(
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (bitbucketSnippet || workspaceImportableUrl.type !== UrlType.BITBUCKET_DOT_ORG_SNIPPET) {
+          return;
+        }
+
+        const { snippetId, org } = workspaceImportableUrl;
+
+        if (!snippetId || !org) {
+          return;
+        }
+
+        bitbucketClient.getSnippet({ workspace: org, snippetId }).then(async (response) => {
+          if (canceled.get()) {
+            return;
+          }
+          const json = await response.json();
+          setBitbucketSnippet(json);
+        });
+      },
+      [bitbucketSnippet, workspaceImportableUrl, bitbucketClient]
+    )
+  );
+
+  const successfullyCreatedGistOrSnippetAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
+        if (!isGistLikeWorkspaceKind(workspacePromise.data?.descriptor.origin.kind)) {
           return <></>;
         }
 
-        const gistUrl = workspacePromise.data?.descriptor.origin.url.toString();
+        const gistOrSnippetUrl = workspacePromise.data?.descriptor.origin.url;
         return (
           <Alert
             variant="success"
-            title={i18n.editorPage.alerts.createGist}
+            title={switchExpression(workspacePromise.data?.descriptor.origin.kind, {
+              GITHUB_GIST: i18n.editorPage.alerts.createGist,
+              BITBUCKET_SNIPPET: i18n.editorPage.alerts.createSnippet,
+            })}
             actionClose={<AlertActionCloseButton onClose={close} />}
-            actionLinks={<AlertActionLink onClick={() => window.open(gistUrl, "_blank")}>{gistUrl}</AlertActionLink>}
+            actionLinks={
+              <AlertActionLink onClick={() => window.open(gistOrSnippetUrl, "_blank")}>
+                {gistOrSnippetUrl}
+              </AlertActionLink>
+            }
           />
         );
       },
-      [i18n, workspacePromise]
+      [
+        i18n.editorPage.alerts.createGist,
+        i18n.editorPage.alerts.createSnippet,
+        workspacePromise.data?.descriptor.origin.kind,
+        workspacePromise.data?.descriptor.origin.url,
+      ]
     ),
     { durationInSeconds: 4 }
   );
 
-  const loadingGistAlert = useGlobalAlert(
+  const loadingGistOrSnippetAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
+        if (!isGistLikeWorkspaceKind(workspacePromise.data?.descriptor.origin.kind)) {
           return <></>;
         }
 
-        const gistUrl = workspacePromise.data?.descriptor.origin.url.toString();
+        const gistOrSnippetUrl = workspacePromise.data?.descriptor.origin.url;
         return (
           <Alert
             variant="info"
             title={
               <>
                 <Spinner size={"sm"} />
-                &nbsp;&nbsp; Updating gist...
+                &nbsp;&nbsp; Updating{" "}
+                {switchExpression(workspacePromise.data?.descriptor.origin.kind, {
+                  BITBUCKET_SNIPPET: "Snippet",
+                  GITHUB_GIST: "Gist",
+                })}
+                ...
               </>
             }
             actionClose={<AlertActionCloseButton onClose={close} />}
-            actionLinks={<AlertActionLink onClick={() => window.open(gistUrl, "_blank")}>{gistUrl}</AlertActionLink>}
+            actionLinks={
+              <AlertActionLink onClick={() => window.open(gistOrSnippetUrl, "_blank")}>
+                {gistOrSnippetUrl}
+              </AlertActionLink>
+            }
           />
         );
       },
-      [workspacePromise]
+      [workspacePromise.data?.descriptor.origin.kind, workspacePromise.data?.descriptor.origin.url]
     )
   );
 
   useEffect(() => {
-    if (isGitHubGistLoading) {
-      loadingGistAlert.show();
+    if (isGistOrSnippetLoading) {
+      loadingGistOrSnippetAlert.show();
     } else {
-      loadingGistAlert.close();
+      loadingGistOrSnippetAlert.close();
     }
-  }, [isGitHubGistLoading, loadingGistAlert]);
+  }, [isGistOrSnippetLoading, loadingGistOrSnippetAlert]);
 
-  const successfullyUpdateGistAlert = useGlobalAlert(
+  const successfullyUpdatedGistOrSnippetAlert = useGlobalAlert(
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
+        if (!isGistLikeWorkspaceKind(workspacePromise.data?.descriptor.origin.kind)) {
           return <></>;
         }
 
-        const gistUrl = workspacePromise.data?.descriptor.origin.url.toString();
+        const gistOrSnippetUrl = workspacePromise.data?.descriptor.origin.url;
         return (
           <Alert
             variant="success"
-            title={i18n.editorPage.alerts.updateGist}
+            title={switchExpression(workspacePromise.data?.descriptor.origin.kind, {
+              GITHUB_GIST: i18n.editorPage.alerts.updateGist,
+              BITBUCKET_SNIPPET: i18n.editorPage.alerts.updateSnippet,
+            })}
             actionClose={<AlertActionCloseButton onClose={close} />}
-            actionLinks={<AlertActionLink onClick={() => window.open(gistUrl, "_blank")}>{gistUrl}</AlertActionLink>}
+            actionLinks={
+              <AlertActionLink onClick={() => window.open(gistOrSnippetUrl, "_blank")}>
+                {gistOrSnippetUrl}
+              </AlertActionLink>
+            }
           />
         );
       },
-      [i18n, workspacePromise]
+      [
+        i18n.editorPage.alerts.updateGist,
+        i18n.editorPage.alerts.updateSnippet,
+        workspacePromise.data?.descriptor.origin.kind,
+        workspacePromise.data?.descriptor.origin.url,
+      ]
     ),
     { durationInSeconds: 4 }
   );
@@ -388,13 +468,13 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor]);
 
-  const forceUpdateGitHubGist = useCallback(async () => {
+  const forceUpdateGistOrSnippet = useCallback(async () => {
     try {
       if (!authInfo || !workspacePromise.data) {
         return;
       }
 
-      setGitHubGistLoading(true);
+      setGistOrSnippetLoading(true);
 
       await workspaces.push({
         workspaceId: props.workspaceFile.workspaceId,
@@ -412,13 +492,13 @@ export function EditorToolbar(props: Props) {
     } catch (e) {
       errorAlert.show();
     } finally {
-      setGitHubGistLoading(false);
-      setSyncGitHubGistDropdownOpen(false);
+      setGistOrSnippetLoading(false);
+      setSyncGistOrSnippetDropdownOpen(false);
     }
 
-    successfullyUpdateGistAlert.show();
+    successfullyUpdatedGistOrSnippetAlert.show();
   }, [
-    successfullyUpdateGistAlert,
+    successfullyUpdatedGistOrSnippetAlert,
     authInfo,
     workspacePromise.data,
     workspaces,
@@ -426,42 +506,57 @@ export function EditorToolbar(props: Props) {
     errorAlert,
   ]);
 
-  const errorPushingGist = useGlobalAlert(
+  const errorPushingGistOrSnippet = useGlobalAlert(
     useCallback(
-      ({ close }) => (
-        <Alert
-          variant="danger"
-          title={i18n.editorPage.alerts.errorPushingGist}
-          actionLinks={[
-            <AlertActionLink
-              key="force"
-              onClick={() => {
-                close();
-                forceUpdateGitHubGist();
-              }}
-            >
-              Push forcefully
-            </AlertActionLink>,
-            <AlertActionLink key="dismiss" onClick={close}>
-              Dismiss
-            </AlertActionLink>,
-          ]}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        >
-          <b>{i18n.editorPage.alerts.forcePushWarning}</b>
-        </Alert>
-      ),
-      [i18n, forceUpdateGitHubGist]
+      ({ close }) => {
+        return (
+          <Alert
+            variant="danger"
+            title={switchExpression(workspacePromise.data?.descriptor.origin.kind as WorkspaceKindGistLike, {
+              GITHUB_GIST: i18n.editorPage.alerts.errorPushingGist,
+              BITBUCKET_SNIPPET: i18n.editorPage.alerts.errorPushingSnippet,
+            })}
+            actionLinks={[
+              <AlertActionLink
+                key="force"
+                onClick={() => {
+                  close();
+                  forceUpdateGistOrSnippet();
+                }}
+              >
+                Push forcefully
+              </AlertActionLink>,
+              <AlertActionLink key="dismiss" onClick={close}>
+                Dismiss
+              </AlertActionLink>,
+            ]}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          >
+            <b>{i18n.editorPage.alerts.forcePushWarning}</b>
+          </Alert>
+        );
+      },
+      [
+        workspacePromise.data?.descriptor.origin.kind,
+        i18n.editorPage.alerts.errorPushingGist,
+        i18n.editorPage.alerts.errorPushingSnippet,
+        i18n.editorPage.alerts.forcePushWarning,
+        forceUpdateGistOrSnippet,
+      ]
     )
   );
 
-  const updateGitHubGist = useCallback(async () => {
+  const updateGistOrSnippet = useCallback(async () => {
     try {
-      if (!authInfo || !workspacePromise.data) {
+      if (
+        !authInfo ||
+        !workspacePromise.data ||
+        !isGistEnabledAuthProviderType(authProvider?.type) ||
+        !isGistLikeWorkspaceKind(workspacePromise.data.descriptor.origin.kind)
+      ) {
         return;
       }
-
-      setGitHubGistLoading(true);
+      setGistOrSnippetLoading(true);
 
       await workspaces.createSavePoint({
         workspaceId: props.workspaceFile.workspaceId,
@@ -482,116 +577,23 @@ export function EditorToolbar(props: Props) {
         authInfo,
       });
     } catch (e) {
-      errorPushingGist.show();
+      errorPushingGistOrSnippet.show();
       throw e;
     } finally {
-      setGitHubGistLoading(false);
-      setSyncGitHubGistDropdownOpen(false);
+      setGistOrSnippetLoading(false);
+      setSyncGistOrSnippetDropdownOpen(false);
     }
 
-    successfullyUpdateGistAlert.show();
+    successfullyUpdatedGistOrSnippetAlert.show();
   }, [
-    successfullyUpdateGistAlert,
+    successfullyUpdatedGistOrSnippetAlert,
     authInfo,
     workspacePromise.data,
+    authProvider?.type,
     workspaces,
     props.workspaceFile.workspaceId,
     gitConfig,
-    errorPushingGist,
-  ]);
-
-  const createGitHubGist = useCallback(async () => {
-    try {
-      if (!authInfo) {
-        return;
-      }
-      setGitHubGistLoading(true);
-      const gist = await octokit.gists.create({
-        description: workspacePromise.data?.descriptor.name ?? "",
-        public: true,
-
-        // This file is used just for creating the Gist. The `push -f` overwrites it.
-        files: {
-          "README.md": {
-            content: `
-This Gist was created from KIE Sandbox.
-
-This file is temporary and you should not be seeing it.
-If you are, it means that creating this Gist failed and it can safely be deleted.
-`,
-          },
-        },
-      });
-
-      if (!gist.data.git_push_url) {
-        throw new Error("Gist creation failed.");
-      }
-
-      const gistDefaultBranch = (
-        await workspaces.getGitServerRefs({
-          url: new URL(gist.data.git_push_url).toString(),
-          authInfo,
-        })
-      )
-        .find((serverRef) => serverRef.ref === "HEAD")!
-        .target!.replace("refs/heads/", "");
-
-      await workspaces.initGistOnWorkspace({
-        workspaceId: props.workspaceFile.workspaceId,
-        remoteUrl: new URL(gist.data.git_push_url),
-        branch: gistDefaultBranch,
-      });
-
-      await workspaces.addRemote({
-        workspaceId: props.workspaceFile.workspaceId,
-        url: gist.data.git_push_url,
-        name: GIST_ORIGIN_REMOTE_NAME,
-        force: true,
-      });
-
-      await workspaces.branch({
-        workspaceId: props.workspaceFile.workspaceId,
-        checkout: true,
-        name: gistDefaultBranch,
-      });
-
-      await workspaces.createSavePoint({
-        workspaceId: props.workspaceFile.workspaceId,
-        gitConfig,
-      });
-
-      await workspaces.push({
-        workspaceId: props.workspaceFile.workspaceId,
-        remote: GIST_ORIGIN_REMOTE_NAME,
-        ref: gistDefaultBranch,
-        remoteRef: `refs/heads/${gistDefaultBranch}`,
-        force: true,
-        authInfo,
-      });
-
-      await workspaces.pull({
-        workspaceId: props.workspaceFile.workspaceId,
-        authInfo,
-      });
-
-      successfullyCreateGistAlert.show();
-
-      return;
-    } catch (err) {
-      errorAlert.show();
-      throw err;
-    } finally {
-      setGitHubGistLoading(false);
-    }
-  }, [
-    authInfo,
-    octokit.gists,
-    workspacePromise.data?.descriptor.name,
-    workspaces,
-    props.workspaceFile.workspaceId,
-    gitConfig,
-    successfullyCreateGistAlert,
-    errorAlert,
+    errorPushingGistOrSnippet,
   ]);
 
   const forkGitHubGist = useCallback(async () => {
@@ -600,10 +602,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         return;
       }
 
-      setGitHubGistLoading(true);
+      setGistOrSnippetLoading(true);
 
       // Fork Gist
-      const gist = await octokit.gists.fork({
+      const gist = await gitHubClient.gists.fork({
         gist_id: gitHubGist.id,
       });
 
@@ -647,14 +649,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       errorAlert.show();
       throw err;
     } finally {
-      setGitHubGistLoading(false);
+      setGistOrSnippetLoading(false);
     }
   }, [
     authSession,
     authInfo,
     gitHubGist,
     workspacePromise.data,
-    octokit.gists,
+    gitHubClient.gists,
     workspaces,
     props.workspaceFile.workspaceId,
     gitConfig,
@@ -677,39 +679,48 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     return authInfo?.username && gitHubGist?.owner?.login === authInfo.username;
   }, [authInfo, gitHubGist]);
 
-  const canCreateGitRepository = useMemo(() => authProvider?.type === "github", [authProvider?.type]);
+  const isBitbucketSnippetOwner = useMemo(() => {
+    return authInfo?.uuid && bitbucketSnippet?.creator.uuid === authInfo.uuid;
+  }, [authInfo, bitbucketSnippet]);
 
-  const canCreateGitHubGist = useMemo(
-    () =>
-      authProvider?.type === "github" &&
-      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL &&
-      !workspaceHasNestedDirectories,
-    [authProvider?.type, workspacePromise.data?.descriptor.origin.kind, workspaceHasNestedDirectories]
+  const isGistOrSnippetOwner = isGitHubGistOwner || isBitbucketSnippetOwner;
+
+  const canCreateGitHubRepository = useMemo(() => authProvider?.type === "github", [authProvider?.type]);
+  const canCreateBitbucketRepository = useMemo(() => authProvider?.type === "bitbucket", [authProvider?.type]);
+  const canCreateGitRepository = useMemo(
+    () => canCreateGitHubRepository || canCreateBitbucketRepository,
+    [canCreateGitHubRepository, canCreateBitbucketRepository]
   );
 
-  const canUpdateGitHubGist = useMemo(
+  const canCreateGistOrSnippet = useMemo(
     () =>
-      authProvider?.type === "github" &&
-      !!isGitHubGistOwner &&
-      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
+      authProvider &&
+      isGistEnabledAuthProviderType(authProvider?.type) &&
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL &&
       !workspaceHasNestedDirectories,
-    [
-      authProvider?.type,
-      isGitHubGistOwner,
-      workspacePromise.data?.descriptor.origin.kind,
-      workspaceHasNestedDirectories,
-    ]
+    [authProvider, workspacePromise.data?.descriptor.origin.kind, workspaceHasNestedDirectories]
+  );
+
+  const canUpdateGistOrSnippet = useMemo(
+    () =>
+      authProvider &&
+      isGistEnabledAuthProviderType(authProvider?.type) &&
+      !!isGistOrSnippetOwner &&
+      workspacePromise.data &&
+      isGistLikeWorkspaceKind(workspacePromise.data?.descriptor.origin.kind) &&
+      !workspaceHasNestedDirectories,
+    [authProvider, isGistOrSnippetOwner, workspacePromise.data, workspaceHasNestedDirectories]
   );
 
   const canForkGitHubGist = useMemo(
     () =>
       authProvider?.type === "github" &&
-      !isGitHubGistOwner &&
+      !isGistOrSnippetOwner &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
       !workspaceHasNestedDirectories,
     [
       authProvider?.type,
-      isGitHubGistOwner,
+      isGistOrSnippetOwner,
       workspacePromise.data?.descriptor.origin.kind,
       workspaceHasNestedDirectories,
     ]
@@ -726,7 +737,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [props.workspaceFile.workspaceId, workspaces]
   );
 
-  const [isCreateGitHubRepositoryModalOpen, setCreateGitHubRepositoryModalOpen] = useState(false);
+  const [isCreateGitRepositoryModalOpen, setCreateGitRepositoryModalOpen] = useState(false);
+  const [isCreateGistOrSnippetModalOpen, setCreateGistOrSnippetModalOpen] = useState(false);
 
   const shareDropdownItems = useMemo(
     () => [
@@ -777,70 +789,96 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             </DropdownGroup>,
           ]
         : []),
-      ...(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
-      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
+      ...(workspacePromise.data &&
+      (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
+        isGistLikeWorkspaceKind(workspacePromise.data?.descriptor.origin.kind))
         ? [
-            <DropdownGroup key={"github-group"} label={i18n.names.github}>
-              <Tooltip
-                data-testid={"create-github-repository-tooltip"}
-                key={`dropdown-create-github-repository`}
-                content={<div>{`You need to select an authentication source to be able to Create a repository.`}</div>}
-                trigger={!canCreateGitRepository ? "mouseenter click" : ""}
-                position="left"
+            <DropdownGroup key={"git-group"} label={i18n.names.git}>
+              <Alert
+                isInline={true}
+                variant={"info"}
+                title={"Authentication source"}
+                actionLinks={
+                  <AuthSessionSelect
+                    title={`Select Git authentication for '${workspacePromise.data.descriptor.name}'...`}
+                    position={SelectPosition.right}
+                    isPlain={false}
+                    authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
+                    showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
+                    setAuthSessionId={(newAuthSessionId) => {
+                      changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
+                      setTimeout(() => {
+                        accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                        setShareDropdownOpen(true);
+                        setSmallKebabOpen(true);
+                      }, 0);
+                    }}
+                    filter={authSessionSelectFilter}
+                  />
+                }
               >
-                <DropdownItem
-                  icon={<GithubIcon />}
-                  data-testid={"create-github-repository-button"}
-                  component="button"
-                  onClick={() => setCreateGitHubRepositoryModalOpen(true)}
-                  isDisabled={!canCreateGitRepository}
+                {`Manage authentication sources for '${workspacePromise.data.descriptor.name}' to be able to create Repository, GitHub Gist or Bitbucket Snippet.`}
+              </Alert>
+              {canCreateGitRepository && (
+                <Tooltip
+                  data-testid={"create-git-repository-tooltip"}
+                  key={`dropdown-create-git-repository`}
+                  content={<div>{"Click to create a repository."}</div>}
+                  trigger={!canCreateGitRepository ? "mouseenter click" : ""}
+                  position="left"
                 >
-                  Create Repository...
-                </DropdownItem>
-              </Tooltip>
-              <Tooltip
-                data-testid={"create-github-gist-tooltip"}
-                key={`dropdown-create-github-gist`}
-                content={<div>{i18n.editorToolbar.cantCreateGistTooltip}</div>}
-                trigger={!canCreateGitHubGist ? "mouseenter click" : ""}
-                position="left"
-              >
-                <DropdownItem
-                  icon={<GithubIcon />}
-                  data-testid={"create-github-gist-button"}
-                  component="button"
-                  onClick={createGitHubGist}
-                  isDisabled={!canCreateGitHubGist}
-                >
-                  {i18n.editorToolbar.createGist}
-                </DropdownItem>
-              </Tooltip>
-              {!canPushToGitRepository && (
-                <Alert
-                  isInline={true}
-                  variant={"default"}
-                  title={"Can't Create Repository or Gist without selecting an authentication source"}
-                  actionLinks={
-                    <AuthSessionSelect
-                      title={`Select Git authentication for '${workspacePromise.data.descriptor.name}'...`}
-                      position={SelectPosition.right}
-                      isPlain={false}
-                      authSessionId={workspacePromise.data.descriptor.gitAuthSessionId}
-                      showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
-                      setAuthSessionId={(newAuthSessionId) => {
-                        changeGitAuthSessionId(newAuthSessionId, workspacePromise.data?.descriptor.gitAuthSessionId);
-                        setTimeout(() => {
-                          accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                          setShareDropdownOpen(true);
-                          setSmallKebabOpen(true);
-                        }, 0);
-                      }}
-                      filter={authSessionSelectFilter}
-                    />
+                  <DropdownItem
+                    icon={switchExpression(authProvider?.type as GitAuthProviderType, {
+                      bitbucket: <BitbucketIcon />,
+                      github: <GithubIcon />,
+                      default: <GitIcon />,
+                    })}
+                    data-testid={"create-git-repository-button"}
+                    component="button"
+                    onClick={() => setCreateGitRepositoryModalOpen(true)}
+                    isDisabled={!canCreateGitRepository}
+                  >
+                    Create{" "}
+                    {switchExpression(authProvider?.type as GitAuthProviderType, {
+                      github: "GitHub repository",
+                      bitbucket: "Bitbucket repository",
+                      default: "Git repository",
+                    })}
+                    ...
+                  </DropdownItem>
+                </Tooltip>
+              )}
+              {canCreateGistOrSnippet && (
+                <Tooltip
+                  data-testid={"create-gist-or-snippet-tooltip"}
+                  key={`dropdown-create-gist-or-snippet`}
+                  content={
+                    <div>
+                      {switchExpression(authProvider?.type as GistEnabledAuthProviderType, {
+                        github: i18n.editorToolbar.cantCreateGistTooltip,
+                        bitbucket: i18n.editorToolbar.cantCreateSnippetTooltip,
+                      })}
+                    </div>
                   }
+                  trigger={!canCreateGistOrSnippet ? "mouseenter click" : ""}
+                  position="left"
                 >
-                  {`Select an authentication source for '${workspacePromise.data.descriptor.name}' to be able to Create Repository or Gist.`}
-                </Alert>
+                  <DropdownItem
+                    icon={switchExpression(authProvider?.type as GistEnabledAuthProviderType, {
+                      bitbucket: <BitbucketIcon />,
+                      github: <GithubIcon />,
+                    })}
+                    data-testid={"create-gist-or-snippet-button"}
+                    component="button"
+                    onClick={() => setCreateGistOrSnippetModalOpen(true)}
+                    isDisabled={!canCreateGistOrSnippet}
+                  >
+                    {switchExpression(authProvider?.type as GistEnabledAuthProviderType, {
+                      github: i18n.editorToolbar.createGist,
+                      bitbucket: i18n.editorToolbar.createSnippet,
+                    })}
+                  </DropdownItem>
+                </Tooltip>
               )}
             </DropdownGroup>,
           ]
@@ -856,14 +894,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       openEmbedModal,
       i18n.editorToolbar.embed,
       i18n.editorToolbar.cantCreateGistTooltip,
+      i18n.editorToolbar.cantCreateSnippetTooltip,
       i18n.editorToolbar.createGist,
-      i18n.names.github,
-      workspacePromise.data?.descriptor,
-      canCreateGitRepository,
-      canCreateGitHubGist,
-      createGitHubGist,
-      canPushToGitRepository,
+      i18n.editorToolbar.createSnippet,
+      i18n.names.git,
+      workspacePromise.data,
       authSessionSelectFilter,
+      canCreateGitRepository,
+      authProvider?.type,
+      canCreateGistOrSnippet,
       changeGitAuthSessionId,
       accountsDispatch,
     ]
@@ -1024,26 +1063,62 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     { durationInSeconds: 2 }
   );
 
+  const commitFailAlert = useGlobalAlert(
+    useCallback(({ close }, staticArgs: { reason: string }) => {
+      return (
+        <Alert
+          variant="danger"
+          title={`Failed to commit: ${staticArgs.reason}`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const nothingToCommitAlert = useGlobalAlert(
+    useCallback(() => {
+      return <Alert variant="info" title={"Nothing to commit."} />;
+    }, []),
+    { durationInSeconds: 2 }
+  );
+
   const createSavePointDropdownItem = useMemo(() => {
     return (
       <DropdownItem
         key={"commit-dropdown-item"}
         icon={<SaveIcon />}
         onClick={async () => {
+          if (!(await workspaces.hasLocalChanges({ workspaceId: props.workspaceFile.workspaceId }))) {
+            nothingToCommitAlert.show();
+            return;
+          }
           comittingAlert.show();
-          await workspaces.createSavePoint({
-            workspaceId: props.workspaceFile.workspaceId,
-            gitConfig,
-          });
-          comittingAlert.close();
-          commitSuccessAlert.show();
+          try {
+            await workspaces.createSavePoint({
+              workspaceId: props.workspaceFile.workspaceId,
+              gitConfig,
+            });
+            comittingAlert.close();
+            commitSuccessAlert.show();
+          } catch (e) {
+            comittingAlert.close();
+            commitFailAlert.show({ reason: e.message });
+          }
         }}
         description={"Create a save point"}
       >
         Commit
       </DropdownItem>
     );
-  }, [comittingAlert, workspaces, props.workspaceFile.workspaceId, gitConfig, commitSuccessAlert]);
+  }, [
+    workspaces,
+    props.workspaceFile.workspaceId,
+    comittingAlert,
+    nothingToCommitAlert,
+    gitConfig,
+    commitSuccessAlert,
+    commitFailAlert,
+  ]);
 
   const pushSuccessAlert = useGlobalAlert(
     useCallback(() => {
@@ -1299,10 +1374,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     pullFromGitRepository,
   ]);
 
-  const isGistWorkspace = useMemo(
-    () => workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST,
-    [workspacePromise.data?.descriptor.origin.kind]
-  );
   const navigationStatus = useNavigationStatus();
   const navigationStatusToggle = useNavigationStatusToggle();
   const confirmNavigationAlert = useGlobalAlert<{ lastBlockedLocation: Location }>(
@@ -1335,15 +1406,23 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   {`${i18n.terms.download} '${workspacePromise.data?.descriptor.name}'`}
                 </AlertActionLink>
               )) || (
-                <PushToGitHubAlertActionLinks
+                <PushToGitAlertActionLinks
                   changeGitAuthSessionId={changeGitAuthSessionId}
                   workspaceDescriptor={workspacePromise.data?.descriptor}
-                  canPush={isGistWorkspace ? canUpdateGitHubGist : canPushToGitRepository}
+                  canPush={switchExpression(workspacePromise.data?.descriptor.origin.kind as WorkspaceKindGitBased, {
+                    BITBUCKET_SNIPPET: canUpdateGistOrSnippet,
+                    GITHUB_GIST: canUpdateGistOrSnippet,
+                    GIT: canPushToGitRepository,
+                  })}
                   remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
                   authSessionSelectFilter={authSessionSelectFilter}
                   onPush={() => {
                     navigationStatusToggle.unblock();
-                    return isGistWorkspace ? updateGitHubGist() : pushToGitRepository();
+                    switchExpression(workspacePromise.data?.descriptor.origin.kind as WorkspaceKindGitBased, {
+                      BITBUCKET_SNIPPET: updateGistOrSnippet,
+                      GITHUB_GIST: updateGistOrSnippet,
+                      GIT: pushToGitRepository,
+                    })();
                   }}
                 />
               )}
@@ -1370,15 +1449,18 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       ),
       [
         workspacePromise.data?.descriptor,
-        i18n,
+        i18n.editorPage.alerts.unsaved.titleLocal,
+        i18n.editorPage.alerts.unsaved.titleGit,
+        i18n.editorPage.alerts.unsaved.proceedAnyway,
+        i18n.editorPage.alerts.unsaved.message,
+        i18n.terms.download,
         navigationStatusToggle,
         changeGitAuthSessionId,
-        isGistWorkspace,
-        canUpdateGitHubGist,
+        canUpdateGistOrSnippet,
         canPushToGitRepository,
         authSessionSelectFilter,
         downloadWorkspaceZip,
-        updateGitHubGist,
+        updateGistOrSnippet,
         pushToGitRepository,
         navigationBlockersBypass,
         history,
@@ -1559,7 +1641,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                     variant={"warning"}
                                     title={"You have new changes to Push"}
                                     actionLinks={
-                                      <PushToGitHubAlertActionLinks
+                                      <PushToGitAlertActionLinks
                                         changeGitAuthSessionId={changeGitAuthSessionId}
                                         workspaceDescriptor={workspace.descriptor}
                                         canPush={canPushToGitRepository}
@@ -1737,37 +1819,54 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             </ToolbarGroup>
                           )}
                         </ToolbarItem>
-                        {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
+                        {isGistLikeWorkspaceKind(workspace.descriptor.origin.kind) && (
                           <ToolbarItem>
                             <Dropdown
-                              onSelect={() => setSyncGitHubGistDropdownOpen(false)}
-                              isOpen={isSyncGitHubGistDropdownOpen}
+                              onSelect={() => setSyncGistOrSnippetDropdownOpen(false)}
+                              isOpen={isSyncGistOrSnippetDropdownOpen}
                               position={DropdownPosition.right}
                               toggle={
                                 <DropdownToggle
                                   id={"sync-dropdown"}
                                   data-testid={"sync-dropdown"}
-                                  onToggle={(isOpen) => setSyncGitHubGistDropdownOpen(isOpen)}
+                                  onToggle={(isOpen) => setSyncGistOrSnippetDropdownOpen(isOpen)}
                                 >
                                   Sync
                                 </DropdownToggle>
                               }
                               dropdownItems={[
-                                <DropdownGroup key={"sync-gist-dropdown-group"}>
+                                <DropdownGroup key={"sync-gist-or-snippet-dropdown-group"}>
                                   <Tooltip
-                                    data-testid={"gist-it-tooltip"}
-                                    content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
-                                    trigger={!canUpdateGitHubGist ? "mouseenter click" : ""}
+                                    data-testid={"gist-or-snippet-it-tooltip"}
+                                    content={
+                                      <div>
+                                        {switchExpression(workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
+                                          GITHUB_GIST: i18n.editorToolbar.cantUpdateGistTooltip,
+                                          BITBUCKET_SNIPPET: i18n.editorToolbar.cantUpdateSnippetTooltip,
+                                        })}
+                                      </div>
+                                    }
+                                    trigger={!canUpdateGistOrSnippet ? "mouseenter click" : ""}
                                     position="left"
                                   >
                                     <>
                                       <DropdownItem
                                         style={{ minWidth: "300px" }}
-                                        icon={<GithubIcon />}
-                                        onClick={updateGitHubGist}
-                                        isDisabled={!canUpdateGitHubGist}
+                                        icon={switchExpression(
+                                          workspace.descriptor.origin.kind as WorkspaceKindGistLike,
+                                          {
+                                            BITBUCKET_SNIPPET: <BitbucketIcon />,
+                                            GITHUB_GIST: <GithubIcon />,
+                                          }
+                                        )}
+                                        onClick={updateGistOrSnippet}
+                                        isDisabled={!canUpdateGistOrSnippet}
                                       >
-                                        Update Gist
+                                        Update{" "}
+                                        {switchExpression(workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
+                                          BITBUCKET_SNIPPET: "Bitbucket Snippet",
+                                          GITHUB_GIST: "GitHub Gist",
+                                        })}
                                       </DropdownItem>
                                       {canForkGitHubGist && (
                                         <>
@@ -1813,7 +1912,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                   );
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                                                   setTimeout(() => {
-                                                    setSyncGitHubGistDropdownOpen(true);
+                                                    setSyncGistOrSnippetDropdownOpen(true);
                                                   }, 0);
                                                 }}
                                                 filter={authSessionSelectFilter}
@@ -1828,7 +1927,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                           <Alert
                                             isInline={true}
                                             variant={"default"}
-                                            title={"Can't Update Gist without selecting an authentication source"}
+                                            title={`Can't Update ${switchExpression(
+                                              authProvider?.type as GitAuthProviderType,
+                                              {
+                                                github: "GitHub repository",
+                                                bitbucket: "Bitbucket repository",
+                                                default: "Git repository",
+                                              }
+                                            )} without selecting a matching authentication source`}
                                             actionLinks={
                                               <AuthSessionSelect
                                                 title={`Select Git authentication for '${workspace.descriptor.name}'...`}
@@ -1844,14 +1950,22 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                                   );
                                                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                                                   setTimeout(() => {
-                                                    setSyncGitHubGistDropdownOpen(true);
+                                                    setSyncGistOrSnippetDropdownOpen(true);
                                                   }, 0);
                                                 }}
                                                 filter={authSessionSelectFilter}
                                               />
                                             }
                                           >
-                                            {`Select an authentication source for '${workspace.descriptor.name}' to be able to Update Gist.`}
+                                            {`Select an authentication source for '${
+                                              workspace.descriptor.name
+                                            }' to be able to Update ${switchExpression(
+                                              workspace.descriptor.origin.kind as WorkspaceKindGistLike,
+                                              {
+                                                GITHUB_GIST: "Github Gist",
+                                                BITBUCKET_SNIPPET: "Bitbucket Snippet",
+                                              }
+                                            )}.`}
                                           </Alert>
                                         </>
                                       )}
@@ -1878,7 +1992,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 </DropdownToggle>
                               }
                               dropdownItems={[
-                                <DropdownGroup key={"sync-gist-dropdown-group"}>
+                                <DropdownGroup key={"sync-git-dropdown-group"}>
                                   <DropdownItem
                                     icon={<SyncAltIcon />}
                                     onClick={() => pullFromGitRepository({ showAlerts: true })}
@@ -1887,7 +2001,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                     Pull
                                   </DropdownItem>
                                   <Tooltip
-                                    data-testid={"gist-it-tooltip"}
+                                    data-testid={"git-it-tooltip"}
                                     content={
                                       <div>{`You need to select an authentication source to Push to this repository.`}</div>
                                     }
@@ -2000,12 +2114,23 @@ If you are, it means that creating this Gist failed and it can safely be deleted
               isOpen={isEmbedModalOpen}
               onClose={() => setEmbedModalOpen(false)}
             />
-            <CreateGitHubRepositoryModal
+            <CreateGitRepositoryModal
               workspace={workspace.descriptor}
-              isOpen={isCreateGitHubRepositoryModalOpen}
-              onClose={() => setCreateGitHubRepositoryModalOpen(false)}
+              isOpen={isCreateGitRepositoryModalOpen}
+              onClose={() => setCreateGitRepositoryModalOpen(false)}
               onSuccess={({ url }) => {
                 createRepositorySuccessAlert.show({ url });
+              }}
+            />
+            <CreateGistOrSnippetModal
+              workspace={workspace.descriptor}
+              isOpen={isCreateGistOrSnippetModalOpen}
+              onClose={() => setCreateGistOrSnippetModalOpen(false)}
+              onSuccess={({ url }) => {
+                successfullyCreatedGistOrSnippetAlert.show({ url });
+              }}
+              onError={() => {
+                errorAlert.show();
               }}
             />
             <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
@@ -2019,7 +2144,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 }
 
-export function PushToGitHubAlertActionLinks(props: {
+export function PushToGitAlertActionLinks(props: {
   onPush: () => void;
   canPush?: boolean;
   remoteRef?: string;
@@ -2035,7 +2160,14 @@ export function PushToGitHubAlertActionLinks(props: {
   const pushButton = useMemo(
     () => (
       <AlertActionLink onClick={props.onPush} style={{ fontWeight: "bold" }} isDisabled={!props.canPush}>
-        {props.workspaceDescriptor?.origin.kind === WorkspaceKind.GIT ? `Push to '${props.remoteRef}'` : `Update Gist`}
+        {props.workspaceDescriptor
+          ? switchExpression(props.workspaceDescriptor.origin.kind, {
+              GIT: `Push to '${props.remoteRef}'`,
+              GITHUB_GIST: "Update Gist",
+              BITBUCKET_SNIPPET: "Update Snippet",
+              default: "",
+            })
+          : ""}
       </AlertActionLink>
     ),
     [props]

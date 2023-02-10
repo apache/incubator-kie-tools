@@ -76,8 +76,8 @@ public class UberfireDockTest extends TestCase {
         UberfireDock uberfireDock = tested = new UberfireDock(UberfireDockPosition.EAST,
                                                               ICON_TYPE,
                                                               new DefaultPlaceRequest(SCREEN_ID));
-        uberfireDock.setUberfireDockPosition(UberfireDockPosition.WEST);
-        assertEquals(UberfireDockPosition.WEST, tested.getDockPosition());
+        uberfireDock.setUberfireDockPosition(UberfireDockPosition.EAST);
+        assertEquals(UberfireDockPosition.EAST, tested.getDockPosition());
     }
 
     @Test
@@ -151,14 +151,14 @@ public class UberfireDockTest extends TestCase {
                                                      null,
                                                      new DefaultPlaceRequest(SCREEN_ID));
 
-        UberfireDock compareDock5 = new UberfireDock(UberfireDockPosition.WEST,
+        UberfireDock compareDock5 = new UberfireDock(UberfireDockPosition.EAST,
                                                      ICON_TYPE + "EXTRA",
                                                      new DefaultPlaceRequest(SCREEN_ID + "EXTRA"))
                 .withSize(SIZE + 20)
                 .withLabel(LABEL + "EXTRA")
                 .withTooltip(TOOLTIP + "EXTRA");
 
-        UberfireDock compareDock6 = new UberfireDock(UberfireDockPosition.WEST,
+        UberfireDock compareDock6 = new UberfireDock(UberfireDockPosition.EAST,
                                                      imageIcon2,
                                                      imageIconFocused2,
                                                      new DefaultPlaceRequest(SCREEN_ID + "EXTRA"))

@@ -37,6 +37,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -72,6 +73,26 @@ public class DecisionNavigatorDockTest {
         final UberfireDock actualUberfireDock = dock.getUberfireDock();
 
         assertEquals(expectedUberfireDock, actualUberfireDock);
+
+        verify(uberfireDocks).add(expectedUberfireDock);
+        verify(uberfireDocks).show(UberfireDockPosition.EAST);
+    }
+
+    @Test
+    public void testInitNotNullUberfireDock() {
+        final UberfireDock expectedUberfireDock = mock(UberfireDock.class);
+
+        doReturn(expectedUberfireDock).when(dock).makeUberfireDock();
+        dock.uberfireDock = expectedUberfireDock;
+
+        dock.init();
+
+        final UberfireDock actualUberfireDock = dock.getUberfireDock();
+
+        assertEquals(expectedUberfireDock, actualUberfireDock);
+
+        verify(uberfireDocks, never()).add(any());
+        verify(uberfireDocks, never()).show(any());
     }
 
     @Test
@@ -91,7 +112,7 @@ public class DecisionNavigatorDockTest {
     @Test
     public void testOpenWhenItIsOpened() {
 
-        final UberfireDockPosition position = UberfireDockPosition.WEST;
+        final UberfireDockPosition position = UberfireDockPosition.EAST;
 
         dock.setOpened(true);
         doReturn(position).when(dock).position();
@@ -99,8 +120,6 @@ public class DecisionNavigatorDockTest {
         dock.open();
 
         assertTrue(dock.isOpened());
-        verify(uberfireDocks, never()).add(any());
-        verify(uberfireDocks, never()).show(any());
         verify(uberfireDocks, never()).open(any());
     }
 
@@ -108,7 +127,6 @@ public class DecisionNavigatorDockTest {
     public void testOpenWhenItIsNotOpened() {
 
         final UberfireDock uberfireDock = mock(UberfireDock.class);
-        final UberfireDockPosition position = UberfireDockPosition.WEST;
 
         dock.setOpened(false);
         doReturn(uberfireDock).when(dock).getUberfireDock();
@@ -116,8 +134,6 @@ public class DecisionNavigatorDockTest {
         dock.open();
 
         assertTrue(dock.isOpened());
-        verify(uberfireDocks).add(uberfireDock);
-        verify(uberfireDocks).show(position);
         verify(uberfireDocks).open(uberfireDock);
     }
 
@@ -133,7 +149,6 @@ public class DecisionNavigatorDockTest {
 
         assertFalse(dock.isOpened());
         verify(uberfireDocks).close(uberfireDock);
-        verify(uberfireDocks).remove(uberfireDock);
     }
 
     @Test
@@ -148,24 +163,35 @@ public class DecisionNavigatorDockTest {
 
         assertFalse(dock.isOpened());
         verify(uberfireDocks, never()).close(uberfireDock);
-        verify(uberfireDocks, never()).remove(uberfireDock);
     }
 
     @Test
-    public void testDestroy() {
+    public void testDestroyNullUberfireDock() {
         final UberfireDock uberfireDock = mock(UberfireDock.class);
 
         doReturn(uberfireDock).when(dock).getUberfireDock();
 
         dock.destroy();
 
-        verify(uberfireDocks).remove(uberfireDock);
+        verify(uberfireDocks, never()).remove(uberfireDock);
+    }
+
+    @Test
+    public void testDestroyWithUberfireDock() {
+        final UberfireDock uberfireDock = mock(UberfireDock.class);
+
+        doReturn(uberfireDock).when(dock).getUberfireDock();
+        dock.uberfireDock = uberfireDock;
+
+        dock.destroy();
+
+        verify(uberfireDocks, times(1)).remove(uberfireDock);
     }
 
     @Test
     public void testMakeUberfireDock() {
 
-        final UberfireDockPosition expectedPosition = UberfireDockPosition.WEST;
+        final UberfireDockPosition expectedPosition = UberfireDockPosition.EAST;
         final String expectedIcon = IconType.MAP.toString();
         final String expectedPlaceRequestIdentifier = DecisionNavigatorPresenter.IDENTIFIER;
         final Double expectedSize = DOCK_SIZE;

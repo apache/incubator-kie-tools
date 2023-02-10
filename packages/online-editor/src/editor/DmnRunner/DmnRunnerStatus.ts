@@ -20,6 +20,6 @@ export enum DmnRunnerStatus {
 }
 
 export enum DmnRunnerMode {
-  FORM,
-  TABLE,
+  FORM = "form",
+  TABLE = "table",
 }

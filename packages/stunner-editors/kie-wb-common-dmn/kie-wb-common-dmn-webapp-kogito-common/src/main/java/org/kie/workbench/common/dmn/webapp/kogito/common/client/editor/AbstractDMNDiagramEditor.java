@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpression
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
@@ -43,7 +44,6 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
-import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -172,10 +172,19 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     public void onStartup(final PlaceRequest place) {
         init(place);
         stunnerEditor.setReadOnly(this.isReadOnly());
-        decisionNavigatorDock.init();
-        diagramPropertiesDock.init();
-        diagramPreviewAndExplorerDock.init();
         guidedTourBridgeInitializer.init();
+        ensureDocksAreInitialized();
+        ensureTabBarVisibility(true);
+        setParsingErrorBehavior();
+        searchBarComponent.setSearchButtonVisibility(true);
+    }
+
+    private void setParsingErrorBehavior() {
+        stunnerEditor.setParsingExceptionProcessor(e -> {
+            ensureDocksAreRemoved();
+            ensureTabBarVisibility(false);
+            searchBarComponent.setSearchButtonVisibility(false);
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -230,6 +239,9 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     @SuppressWarnings("all")
     public void open(final Diagram diagram,
                      final SessionPresenter.SessionPresenterCallback callback) {
+        ensureDocksAreInitialized();
+        ensureTabBarVisibility(true);
+        searchBarComponent.setSearchButtonVisibility(true);
         feelInitializer.initializeFEELEditor();
         if (layoutHelper.hasLayoutInformation(diagram)) {
             executeOpen(diagram, callback);
@@ -321,11 +333,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     public void onClose() {
         stunnerEditor.close();
 
-        decisionNavigatorDock.destroy();
-        decisionNavigatorDock.resetContent();
-
-        diagramPropertiesDock.destroy();
-        diagramPreviewAndExplorerDock.destroy();
+        ensureDocksAreRemoved();
 
         dataTypesPage.disableShortcuts();
     }
@@ -427,4 +435,23 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
             return Promise.resolve("");
         }
     }
+
+
+    private void ensureDocksAreInitialized() {
+        decisionNavigatorDock.init();
+        diagramPropertiesDock.init();
+        diagramPreviewAndExplorerDock.init();
+    }
+
+    private void ensureDocksAreRemoved() {
+        decisionNavigatorDock.destroy();
+        decisionNavigatorDock.resetContent();
+        diagramPropertiesDock.destroy();
+        diagramPreviewAndExplorerDock.destroy();
+    }
+
+    private void ensureTabBarVisibility(boolean visible) {
+        getWidget().getMultiPage().setTabBarVisible(visible);
+    }
+
 }

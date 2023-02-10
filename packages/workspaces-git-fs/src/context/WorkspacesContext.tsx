@@ -23,7 +23,7 @@ import {
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin } from "../worker/api/WorkspaceOrigin";
+import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "../worker/api/WorkspaceOrigin";
 import { LocalFile } from "../worker/api/LocalFile";
 import { decoder } from "../encoderdecoder/EncoderDecoder";
 import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRelativePathParser";
@@ -98,7 +98,7 @@ export interface WorkspacesContextType {
   }>;
 
   createWorkspaceFromGitRepository: (args: {
-    origin: GistOrigin | GitHubOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
     gitConfig?: { email: string; name: string };
     gitAuthSessionId: string | undefined;
     authInfo?: {
@@ -214,9 +214,11 @@ export interface WorkspacesContextType {
 
   getWorkspace(args: { workspaceId: string }): Promise<WorkspaceDescriptor>;
 
-  initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
+  initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch?: string }): Promise<void>;
 
   initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
+
+  initSnippetOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
 
   changeGitAuthSessionId(args: { workspaceId: string; gitAuthSessionId: string | undefined }): Promise<void>;
 

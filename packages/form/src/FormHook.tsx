@@ -150,7 +150,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   useEffect(() => {
     const newFormModel = cloneDeep(formInputs);
     setFormModel(newFormModel);
-  }, [name]);
+  }, [formInputs]);
 
   // When the formModel changes, update the formData and reset the formError
   useEffect(() => {

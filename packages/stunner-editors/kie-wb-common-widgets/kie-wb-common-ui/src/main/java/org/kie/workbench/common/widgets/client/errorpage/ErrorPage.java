@@ -18,9 +18,11 @@ package org.kie.workbench.common.widgets.client.errorpage;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.Composite;
-import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLHeadingElement;
+import elemental2.dom.HTMLParagraphElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -30,5 +32,27 @@ public class ErrorPage extends Composite {
 
     @Inject
     @DataField
-    private HTMLDivElement content;
+    @Named("h1")
+    private HTMLHeadingElement title;
+
+    @Inject
+    @DataField
+    private HTMLParagraphElement content;
+
+    @Inject
+    @DataField
+    private HTMLParagraphElement errorContent;
+
+    public void setTitle(final String titleMessage) {
+        this.title.textContent = titleMessage;
+    }
+
+    public void setContent(final String message) {
+        this.content.textContent = message;
+    }
+
+    public void setErrorContent(final String errorMessage) {
+        this.errorContent.textContent = errorMessage;
+    }
+
 }

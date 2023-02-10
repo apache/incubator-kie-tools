@@ -18,10 +18,9 @@ import { SwfLanguageServiceConfig } from "@kie-tools/serverless-workflow-languag
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionArgumentType,
-  SwfServiceCatalogFunctionSourceType,
+  SwfCatalogSourceType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
@@ -29,7 +28,7 @@ export const testRelativeFunction1: SwfServiceCatalogFunction = {
   name: "testRelativeFunction1",
   type: SwfServiceCatalogFunctionType.rest,
   source: {
-    type: SwfServiceCatalogFunctionSourceType.LOCAL_FS,
+    type: SwfCatalogSourceType.LOCAL_FS,
     serviceFileAbsolutePath: "/Users/tiago/Desktop/testRelativeService1.yml",
   },
   arguments: {
@@ -42,7 +41,7 @@ export const testRelativeFunction1: SwfServiceCatalogFunction = {
 export const testRelativeService1: SwfServiceCatalogService = {
   name: "testRelativeService1",
   source: {
-    type: SwfServiceCatalogServiceSourceType.LOCAL_FS,
+    type: SwfCatalogSourceType.LOCAL_FS,
     absoluteFilePath: "/Users/tiago/Desktop/testRelativeService1.yml",
   },
   type: SwfServiceCatalogServiceType.rest,

@@ -31,9 +31,9 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -68,10 +68,29 @@ public abstract class BaseKogitoDockTest<DOCK extends DiagramEditorDock> {
 
     @Test
     public void testInit() {
+        dock.init();
+
         verify(uberfireDocks).add(dockArgumentCaptor.capture());
-        verify(uberfireDocks).show(eq(position()));
+        verify(uberfireDocks).show(position());
 
         assertEquals(screen(), dockArgumentCaptor.getValue().getIdentifier());
+    }
+
+    @Test
+    public void testInit2TimeCall() {
+        dock.init();
+
+        verify(uberfireDocks, times(1)).add(dockArgumentCaptor.capture());
+        verify(uberfireDocks, times(1)).show(position());
+
+        assertEquals(screen(), dockArgumentCaptor.getValue().getIdentifier());
+
+        reset(uberfireDocks);
+
+        dock.init();
+
+        verify(uberfireDocks, never()).add(any());
+        verify(uberfireDocks, never()).show(any());
     }
 
     @Test
@@ -81,6 +100,21 @@ public abstract class BaseKogitoDockTest<DOCK extends DiagramEditorDock> {
         verify(uberfireDocks).remove(dockArgumentCaptor.capture());
 
         assertEquals(screen(), dockArgumentCaptor.getValue().getIdentifier());
+    }
+
+    @Test
+    public void testDestroy2TimeCall() {
+        dock.destroy();
+
+        verify(uberfireDocks, times(1)).remove(dockArgumentCaptor.capture());
+
+        assertEquals(screen(), dockArgumentCaptor.getValue().getIdentifier());
+
+        reset(uberfireDocks);
+
+        dock.destroy();
+
+        verify(uberfireDocks, never()).remove(any());
     }
 
     @Test

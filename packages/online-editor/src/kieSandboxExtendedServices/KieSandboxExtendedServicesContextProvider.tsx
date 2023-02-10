@@ -27,6 +27,7 @@ import {
 } from "../settings/SettingsContext";
 import { KieSandboxExtendedServicesModal } from "./KieSandboxExtendedServicesModal";
 import { useEnv } from "../env/hooks/EnvContext";
+import { KieSandboxExtendedServicesClient } from "./KieSandboxExtendedServicesClient";
 
 interface Props {
   children: React.ReactNode;
@@ -122,10 +123,13 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
     return () => window.clearInterval(detectKieSandboxExtendedServices);
   }, [status, bridge, version]);
 
+  const client = useMemo(() => new KieSandboxExtendedServicesClient(config.url.jitExecutor), [config]);
+
   const value = useMemo(
     () => ({
       status,
       config,
+      client,
       version,
       outdated,
       isModalOpen,
@@ -135,7 +139,7 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       setInstallTriggeredBy,
       saveNewConfig,
     }),
-    [config, installTriggeredBy, isModalOpen, outdated, saveNewConfig, status, version]
+    [client, config, installTriggeredBy, isModalOpen, outdated, saveNewConfig, status, version]
   );
 
   return (

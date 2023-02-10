@@ -45,7 +45,7 @@ public class DocksExpandedBarTest {
 
     @Before
     public void setup() {
-        DocksExpandedBar dock = new DocksExpandedBar(UberfireDockPosition.WEST);
+        DocksExpandedBar dock = new DocksExpandedBar(UberfireDockPosition.EAST);
         targetPanel = mock(FlowPanel.class);
         dock.targetPanel = targetPanel;
         docksExpandedBar = spy(dock);
@@ -111,7 +111,7 @@ public class DocksExpandedBarTest {
 
     @Test
     public void testOuiaComponentIdAttribute() {
-        assertEquals("expanded-docks-bar-W", docksExpandedBar.ouiaComponentId().getValue());
+        assertEquals("expanded-docks-bar-E", docksExpandedBar.ouiaComponentId().getValue());
     }
 
     @Test

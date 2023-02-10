@@ -170,7 +170,7 @@ export default class VSCodeTestHelper {
     }
 
     const menu = await fileItem?.openContextMenu();
-    await menu?.select("Rename");
+    await menu?.select("Rename...");
 
     const inputElement = await this.workspaceSectionView.findElement(By.xpath('.//input[@type="text"]'));
     await inputElement.sendKeys(Key.chord(Key.CONTROL, "a"));

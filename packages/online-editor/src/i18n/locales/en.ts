@@ -18,6 +18,7 @@ import { OnlineI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
+import { names } from "@kie-tools/i18n-common-dictionary/dist/names";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -34,10 +35,13 @@ export const en: OnlineI18n = {
       updateGist: "Gist successfully updated.",
       createGist: "Gist successfully created.",
       errorPushingGist: "Failed to Push an update to your current Gist. Attempt to Push forcefully?",
+      updateSnippet: "Snippet successfully updated.",
+      createSnippet: "Snippet successfully created.",
+      errorPushingSnippet: "Failed to Push an update to your current Snippet. Attempt to Push forcefully?",
       forcePushWarning: "WARNING: This will overwrite your Gist with the local changes!",
       invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
       invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
-      error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
+      error: `An error occurred trying to perform the last operation. Check if your authentication token is still valid and try again later.`,
       unsaved: {
         titleLocal: "You have new changes since your last download.",
         titleGit: "You have new changes since your last Push.",
@@ -56,6 +60,9 @@ export const en: OnlineI18n = {
     createGist: "Create Gist",
     cantCreateGistTooltip: `You can't create a Gist because you're either not logged in, or your models are in nested directories.`,
     cantUpdateGistTooltip: `You can't update your Gist because you're either not logged in, not the owner, or your models are in nested directories.`,
+    createSnippet: "Create Snippet",
+    cantCreateSnippetTooltip: `You can't create a Snippet because you're either not logged in, or your models are in nested directories.`,
+    cantUpdateSnippetTooltip: `You can't update your Snippet because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
     embed: "Embed",
   },
@@ -181,20 +188,83 @@ export const en: OnlineI18n = {
     embedCode: "Embed code",
     copiedToClipboard: "Copied to clipboard",
   },
-  githubTokenModal: {
-    header: {
-      title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
-      subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`,
+  connectToGitModal: {
+    github: {
+      header: {
+        title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
+        subtitle: `Set up your ${en_common.names.github} token so you can interact with GitHub.`,
+      },
+      footer: {
+        createNewToken: "Generate new token",
+        placeHolder: "Paste your token here",
+      },
+      body: {
+        learnMore: `Learn more about ${en_common.names.github} tokens`,
+        note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+      },
+      validation: {
+        scopes: {
+          helper: "Your token must include the 'repo' and 'gist' scopes.",
+        },
+      },
+      form: {
+        token: {
+          label: "Personal Access Token (classic)",
+          placeHolder: "Paste your GitHub token here",
+        },
+      },
     },
-    footer: {
-      createNewToken: "Generate new token",
-      placeHolder: "Paste your token here",
+    bitbucket: {
+      header: {
+        title: `${en_common.names.bitbucket} ${en_common.names.oauth} ${en_common.terms.token}`,
+        subtitle: `Set up your ${en_common.names.bitbucket} App Password so you can interact with Bitbucket.`,
+      },
+      footer: {
+        createNewToken: "Generate new App Passord",
+        placeHolder: "Paste your App Password here",
+      },
+      body: {
+        learnMore: `Learn more about ${en_common.names.bitbucket} App Passwords`,
+        note: `You should provide a token with the ${"'snippet'".bold()} permission.`,
+      },
+      validation: {
+        scopes: {
+          helper: "Your token must include the 'account', 'repository' and 'snippet' scopes.",
+        },
+      },
+      form: {
+        username: {
+          label: "Bitbucket username",
+          placeHolder: "Paste your Bitbucket username here",
+        },
+        token: {
+          label: "Bitbucket App Password",
+          placeHolder: "Paste your Bitbucket App Password here",
+        },
+      },
     },
-    body: {
+    auth: {
       disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
-      learnMore: `Learn more about ${en_common.names.github} tokens`,
-      note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+      error: {
+        alreadyLoggedIn: "You're already logged in with this Token.",
+        oauthScopes: (requiredScopes: string) =>
+          `Make sure your Token includes the necessary OAuth2 scopes: ${requiredScopes}`,
+      },
     },
+    navigation: {
+      continue: "Continue",
+      seeConnectedAccounts: "See connected accounts",
+    },
+    status: {
+      loading: "Loading...",
+    },
+  },
+  commitModal: {
+    title: "Input custom commit message",
+    description: "Write a brief summary of the changes made to the workspace, ideally up to 72 characters.",
+    commit: "Commit",
+    emptyMessageValidation: "Commit message cannot be empty",
+    placeholder: "Commit message",
   },
   homePage: {
     uploadFile: {
@@ -418,15 +488,6 @@ export const en: OnlineI18n = {
           helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
         },
       },
-      use: {
-        title: "All set! 🎉",
-        connected: `You're connected to the ${en_common.names.kieSandboxExtendedServices}.`,
-        fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
-        deployTheModel: `You can also deploy your model to the ${en_common.names.devDeployments} when you're done editing.`,
-        backToEditor: "Back to Editor",
-        setupDevDeployments: `Set up the ${en_common.names.devDeployments}`,
-        devDeploymentsAlreadySetup: `${en_common.names.devDeployments} already set up`,
-      },
     },
     dropdown: {
       label: `${en_common.names.kieSandboxExtendedServices}`,
@@ -459,6 +520,110 @@ export const en: OnlineI18n = {
       initial: {
         subHeader: `Augment the ${en_common.names.dmn} editor`,
       },
+    },
+  },
+  createGitRepositoryModal: {
+    form: {
+      buttonCreate: "Create",
+      nameField: {
+        label: "Name",
+        hint: "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed.",
+      },
+      visibility: {
+        public: {
+          label: "Public",
+          description: "Anyone on the internet can see this repository. You choose who can commit.",
+        },
+        private: {
+          label: "Private",
+          description: "You choose who can see and commit to this repository.",
+        },
+      },
+    },
+    bitbucket: {
+      repository: `${en_common.names.bitbucket} repository`,
+      createRepository: `Create ${en_common.names.bitbucket} repository`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} repository.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.bitbucket} repository. ${error}`,
+      },
+      form: {
+        select: {
+          label: "Pick a workspace under which the new repository will be created.",
+          description: "Pick either a personal or shared workspace.",
+        },
+      },
+    },
+    github: {
+      repository: `${en_common.names.github} repository`,
+      createRepository: `Create ${en_common.names.github} repository`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.github} repository.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.github} repository. ${error}`,
+      },
+      form: {
+        select: {
+          label: "The new repository will be created under the following scope",
+          description: "Pick either your user account or a GitHub organization.",
+        },
+      },
+    },
+  },
+  createGistOrSnippetModal: {
+    form: {
+      buttonCreate: "Create",
+      visibility: {
+        public: {
+          label: "Public",
+          description: "Anyone on the internet can see this repository. You choose who can commit.",
+        },
+        private: {
+          label: "Private",
+          description: "You choose who can see and commit to this repository.",
+        },
+      },
+    },
+    bitbucket: {
+      gistOrSnippet: `${en_common.names.bitbucket} Snippet`,
+      create: `Create ${en_common.names.bitbucket} Snippet`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} Snippet.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.bitbucket} Snippet. ${error}`,
+      },
+      form: {
+        select: {
+          label: "Pick a workspace under which the new Snippet will be created.",
+          description: "Pick either a personal or shared workspace.",
+        },
+      },
+    },
+    github: {
+      gistOrSnippet: `${en_common.names.github} Gist`,
+      create: `Create ${en_common.names.github} Gist`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.github} Gist.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.github} Gist. ${error}`,
+      },
+      form: {
+        select: {
+          label: "The Gist will be created under the following user.",
+          description: "Currently GitHub does not allow to create Gists in GitHub organizations.",
+        },
+      },
+    },
+  },
+  loadOrganizationsSelect: {
+    bitbucket: {
+      user: "Bitbucket user",
+      organizations: "Bitbucket workspaces",
+    },
+    github: {
+      user: "GitHub user",
+      organizations: "GitHub organizations",
     },
   },
 };

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./EditorToolbar";
@@ -48,6 +48,9 @@ import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockD
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
+import { useFileValidation } from "./Validation";
+import { DmnLanguageService } from "@kie-tools/dmn-language-service";
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
 export interface Props {
   workspaceId: string;
@@ -286,6 +289,8 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     if (
       workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
+      workspaceFilePromise.data?.workspaceFile.extension === "bpmn" ||
+      workspaceFilePromise.data?.workspaceFile.extension === "bpmn2" ||
       !workspaceFilePromise.data ||
       !editor?.isReady
     ) {
@@ -338,6 +343,29 @@ export function EditorPage(props: Props) {
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
 
+  const dmnLanguageService = useMemo(() => {
+    if (!workspaceFilePromise.data?.workspaceFile) {
+      return;
+    }
+
+    if (workspaceFilePromise.data?.workspaceFile.extension.toLocaleLowerCase() !== "dmn") {
+      return;
+    }
+
+    return new DmnLanguageService({
+      getDmnImportedModel: async (importedModelRelativePath: string) => {
+        const fileContent = await workspaces.getFileContent({
+          workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
+          relativePath: importedModelRelativePath,
+        });
+
+        return { content: decoder.decode(fileContent), relativePath: importedModelRelativePath };
+      },
+    });
+  }, [workspaces, workspaceFilePromise.data?.workspaceFile]);
+
+  useFileValidation(workspaces, workspaceFilePromise.data?.workspaceFile, editorPageDock, dmnLanguageService);
+
   return (
     <OnlineEditorPage>
       <PromiseStateWrapper
@@ -358,17 +386,17 @@ export function EditorPage(props: Props) {
         )}
         resolved={(file) => (
           <>
-            <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
+            <DmnRunnerProvider
+              workspaceFile={file.workspaceFile}
+              isEditorReady={editor?.isReady}
+              dmnLanguageService={dmnLanguageService}
+            >
               <Page>
                 <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
                 <Divider />
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
                   <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-                    <EditorPageDockDrawer
-                      ref={editorPageDockRef}
-                      isEditorReady={editor?.isReady}
-                      workspaceFile={file.workspaceFile}
-                    >
+                    <EditorPageDockDrawer ref={editorPageDockRef} workspaceFile={file.workspaceFile}>
                       {embeddedEditorFile && (
                         <EmbeddedEditor
                           /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.

@@ -31,7 +31,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isEditable, isServerlessWorkflow } from "../extension";
+import { isDashbuilder, isEditable, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
@@ -64,7 +64,10 @@ import { APP_NAME } from "../AppConstants";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { Position } from "monaco-editor";
-
+import { DashbuilderLanguageServiceChannelApiImpl } from "./api/DashbuilderLanguageServiceChannelApiImpl";
+import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
+import { DashbuilderEditorChannelApiImpl } from "@kie-tools/dashbuilder-editor/dist/impl";
+import { DashbuilderLanguageServiceChannelApi } from "@kie-tools/dashbuilder-language-service/dist/api";
 export interface Props {
   workspaceId: string;
   fileRelativePath: string;
@@ -95,6 +98,11 @@ export function EditorPage(props: Props) {
 
   const isSwf = useMemo(
     () => workspaceFilePromise.data && isServerlessWorkflow(workspaceFilePromise.data.workspaceFile.name),
+    [workspaceFilePromise.data]
+  );
+
+  const isDash = useMemo(
+    () => workspaceFilePromise.data && isDashbuilder(workspaceFilePromise.data.workspaceFile.name),
     [workspaceFilePromise.data]
   );
 
@@ -291,6 +299,18 @@ export function EditorPage(props: Props) {
     [swfLanguageService]
   );
 
+  const dashbuilderLanguageService = useMemo(() => {
+    if (!isDash || !workspaceFilePromise.data) {
+      return;
+    }
+    return new DashbuilderLanguageService();
+  }, [isDash, workspaceFilePromise.data]);
+
+  const dashbuilderLanguageServiceChannelApiImpl = useMemo(
+    () => dashbuilderLanguageService && new DashbuilderLanguageServiceChannelApiImpl(dashbuilderLanguageService),
+    [dashbuilderLanguageService]
+  );
+
   const swfServiceCatalogChannelApiImpl = useMemo(
     () =>
       settingsDispatch.serviceRegistry.catalogStore &&
@@ -310,10 +330,15 @@ export function EditorPage(props: Props) {
   }, [embeddedEditorFile, isReady, settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry]);
 
   const apiImpl = useMemo(() => {
-    if (!channelApiImpl || !swfLanguageService || !swfServiceCatalogChannelApiImpl) {
+    if (!channelApiImpl || (!swfLanguageService && !dashbuilderLanguageService) || !swfServiceCatalogChannelApiImpl) {
       return;
     }
-
+    if (isDash) {
+      return new DashbuilderEditorChannelApiImpl(
+        channelApiImpl,
+        dashbuilderLanguageServiceChannelApiImpl as DashbuilderLanguageServiceChannelApi
+      );
+    }
     return new SwfCombinedEditorChannelApiImpl(
       channelApiImpl,
       swfFeatureToggleChannelApiImpl,
@@ -323,9 +348,11 @@ export function EditorPage(props: Props) {
   }, [
     channelApiImpl,
     swfLanguageService,
+    dashbuilderLanguageService,
     swfServiceCatalogChannelApiImpl,
     swfFeatureToggleChannelApiImpl,
     swfLanguageServiceChannelApiImpl,
+    dashbuilderLanguageServiceChannelApiImpl,
   ]);
 
   useEffect(() => {
@@ -386,7 +413,6 @@ export function EditorPage(props: Props) {
     },
     [swfEditorChannelApi]
   );
-
   return (
     <PromiseStateWrapper
       promise={workspaceFilePromise}

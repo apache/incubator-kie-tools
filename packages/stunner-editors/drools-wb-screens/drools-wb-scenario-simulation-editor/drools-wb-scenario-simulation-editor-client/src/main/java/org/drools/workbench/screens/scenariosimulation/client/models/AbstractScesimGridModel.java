@@ -90,10 +90,10 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactory;
     protected ScenarioExpressionCellTextAreaSingletonDOMElementFactory scenarioExpressionCellTextAreaSingletonDOMElementFactory;
 
-    public AbstractScesimGridModel() {
+    protected AbstractScesimGridModel() {
     }
 
-    public AbstractScesimGridModel(boolean isMerged) {
+    protected AbstractScesimGridModel(boolean isMerged) {
         super(isMerged);
         setHeaderRowCount(HEADER_ROW_COUNT);
     }
@@ -163,12 +163,12 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
     }
 
     /**
-     * It detaches all DomElement resources for selected DOMElementFactorys
+     * It flushes and detaches all DomElement resources for selected DOMElementFactorys
      */
-    public void destroyAllTextAreaDOMElementFactoryResources() {
-        scenarioCellTextAreaSingletonDOMElementFactory.destroyResources();
-        scenarioExpressionCellTextAreaSingletonDOMElementFactory.destroyResources();
-        scenarioHeaderTextBoxSingletonDOMElementFactory.destroyResources();
+    public void flushAllTextAreaDOMElementFactoryResources() {
+        scenarioCellTextAreaSingletonDOMElementFactory.flush();
+        scenarioExpressionCellTextAreaSingletonDOMElementFactory.flush();
+        scenarioHeaderTextBoxSingletonDOMElementFactory.flush();
     }
 
     /**

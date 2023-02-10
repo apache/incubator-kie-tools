@@ -19,12 +19,32 @@
   <head>
     <meta charset="UTF-8" />
     <title>DMN Editor Test</title>
-
     <script>
+      function newDiagram() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("DMNDiagramEditor").get().setContent("", "");
+        resetOpenFile();
+      }
+
+      function resetOpenFile() {
+        document.getElementById("open-file").value = "";
+      }
+
+      function openSample() {
+        fetch("static/sample.dmn")
+          .then((response) => {
+            return response.text();
+          })
+          .then((content) => {
+            window.frames.editorFrame.contentWindow.gwtEditorBeans
+              .get("DMNDiagramEditor")
+              .get()
+              .setContent("sample.dmn", content);
+            resetOpenFile();
+          });
+      }
+
       function loadDiagram(diagram) {
-        var path = "somePath";
-        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("DMNDiagramEditor").get().setContent(path, diagram);
-        document.getElementById("download_btn").disabled = false;
+        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("DMNDiagramEditor").get().setContent("", diagram);
       }
 
       function download() {
@@ -33,22 +53,29 @@
           .get()
           .getContent()
           .then(function (p) {
-            var d = document.createElement("a");
+            const d = document.createElement("a");
             d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(p));
             d.setAttribute("download", "diagram.dmn");
             d.style.display = "none";
-
             document.body.appendChild(d);
             d.click();
             document.body.removeChild(d);
           });
       }
 
-      var openFile = function (event) {
-        var input = event.target;
-        var reader = new FileReader();
+      function undo() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("DMNDiagramEditor").get().undo();
+      }
+
+      function redo() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("DMNDiagramEditor").get().redo();
+      }
+
+      const openFile = (event) => {
+        const input = event.target;
+        const reader = new FileReader();
         reader.onload = function () {
-          var diagram = reader.result;
+          const diagram = reader.result;
           loadDiagram(diagram);
         };
 
@@ -57,15 +84,23 @@
     </script>
   </head>
   <body>
-    <div id="editor">
-      Wait until the editor is loaded to open a DMN file:<br />
-      <input type="button" onclick="loadDiagram('')" value="Create new Diagram" />
-      or
-      <input type="file" onchange="openFile(event)" value="Choose DMN file" accept="dmn,txt" />
-      When you are ready you can
-      <input type="button" id="download_btn" value="Download the diagram" onclick="download()" disabled />
-    </div>
+    <div id="editor" style="margin: 5px 0px">
+      Please wait until the editor is fully loaded
+      <input type="button" value="New" onclick="newDiagram()" />
+      <input type="button" value="Try Sample" onclick="openSample()" />
+      <input
+        type="file"
+        id="open-file"
+        value="Open"
+        onchange="openFile(event)"
+        onclick="resetOpenFile()"
+        accept="dmn"
+      />
 
+      <input type="button" value="Undo" onclick="undo()" />
+      <input type="button" value="Redo" onclick="redo()" />
+      <input type="button" value="Download" onclick="download()" />
+    </div>
     <iframe id="editorFrame" src="index.html" width="100%" height="880px" frameborder="0" scrolling="no"></iframe>
   </body>
 </html>

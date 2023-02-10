@@ -15,12 +15,11 @@
  */
 
 import {
-  SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
+  SwfCatalogSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
+import { parseApiContent } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { ArtifactType, SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
@@ -193,41 +192,37 @@ export class SwfServiceCatalogStore {
       this.buildVirtualArtifacts(),
     ]);
 
-    const remoteServices = remoteArtifacts
-      .filter((artifact) => artifact.content.openapi)
-      .map((artifact) => {
-        const registry = this.configs.serviceRegistry.name;
-        const serviceId = this.remoteArtifactCatalogApi.resolveServiceId(artifact);
-        const url = this.remoteArtifactCatalogApi.resolveArtifactEndpoint(artifact);
+    const remoteServices = remoteArtifacts.map((artifact) => {
+      const registry = this.configs.serviceRegistry.name;
+      const serviceId = this.remoteArtifactCatalogApi.resolveServiceId(artifact);
+      const url = this.remoteArtifactCatalogApi.resolveArtifactEndpoint(artifact);
 
-        return this.buildSwfServiceCatalogService({
-          artifact,
-          registry,
-          serviceId,
-          url,
-        });
+      return this.buildSwfServiceCatalogService({
+        artifact,
+        registry,
+        serviceId,
+        url,
       });
+    });
 
-    const virtualServices = virtualArtifacts
-      .filter((artifact) => artifact.content.openapi)
-      .map((artifact) => {
-        const isFromSameWorkspace = artifact.metadata.groupId === this.currentFile?.workspaceId;
+    const virtualServices = virtualArtifacts.map((artifact) => {
+      const isFromSameWorkspace = artifact.metadata.groupId === this.currentFile?.workspaceId;
 
-        const serviceId = isFromSameWorkspace
-          ? this.SAME_WORKSPACE_REGISTRY_API.getServiceId(artifact.metadata)
-          : this.VIRTUAL_SERVICE_REGISTRY_API.getServiceId(artifact.metadata);
+      const serviceId = isFromSameWorkspace
+        ? this.SAME_WORKSPACE_REGISTRY_API.getServiceId(artifact.metadata)
+        : this.VIRTUAL_SERVICE_REGISTRY_API.getServiceId(artifact.metadata);
 
-        const url = isFromSameWorkspace
-          ? this.SAME_WORKSPACE_REGISTRY_API.getArtifactContentUrl(artifact.metadata)
-          : this.VIRTUAL_SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata);
+      const url = isFromSameWorkspace
+        ? this.SAME_WORKSPACE_REGISTRY_API.getArtifactContentUrl(artifact.metadata)
+        : this.VIRTUAL_SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata);
 
-        return this.buildSwfServiceCatalogService({
-          artifact,
-          registry: VIRTUAL_SERVICE_REGISTRY_NAME,
-          serviceId,
-          url,
-        });
+      return this.buildSwfServiceCatalogService({
+        artifact,
+        registry: VIRTUAL_SERVICE_REGISTRY_NAME,
+        serviceId,
+        url,
       });
+    });
 
     this.storedServices = [...remoteServices, ...virtualServices];
   }
@@ -238,23 +233,15 @@ export class SwfServiceCatalogStore {
     serviceId: string;
     url: string;
   }): SwfServiceCatalogService {
-    const functions = extractFunctions(args.artifact.content, {
-      type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
-      registry: args.registry,
-      serviceId: args.serviceId,
-    });
-
-    return {
-      name: args.artifact.metadata.id,
-      rawContent: yaml.stringify(args.artifact.content),
-      type: SwfServiceCatalogServiceType.rest,
-      functions: functions,
+    return parseApiContent({
       source: {
         url: args.url,
         id: args.serviceId,
         registry: args.registry,
-        type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+        type: SwfCatalogSourceType.SERVICE_REGISTRY,
       },
-    };
+      serviceFileName: `${args.registry}.yaml`,
+      serviceFileContent: yaml.stringify(args.artifact.content),
+    });
   }
 }
