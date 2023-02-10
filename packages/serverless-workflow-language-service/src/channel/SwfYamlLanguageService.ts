@@ -58,6 +58,7 @@ import {
   SwfLsNode,
   TranslateArgs,
 } from "./types";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -134,7 +135,11 @@ export class SwfYamlLanguageService {
     });
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string }) {
+  public async getDiagnostics(args: {
+    content: string;
+    uriPath: string;
+    swfServiceCatalogService: SwfServiceCatalogService[];
+  }) {
     if (!args.content.trim()) {
       return [];
     }

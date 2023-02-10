@@ -296,6 +296,7 @@ async function setSwfDiagnostics(
   const lsDiagnostics = await swfLanguageService.getDiagnostics({
     content: document.getText(),
     uriPath: document.uri.path,
+    swfServiceCatalogService: [],
   });
 
   const vscodeDiagnostics = lsDiagnostics.map(

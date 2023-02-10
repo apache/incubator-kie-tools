@@ -22,7 +22,7 @@ import {
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { doRefValidation } from "./refValidation";
@@ -149,9 +149,38 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
+  private getFunctionDiagnostics(contents: SwfServiceCatalogService[]): Diagnostic[] {
+    const diagnosticList: Diagnostic[] = [];
+    contents.forEach((value) => {
+      value.functions
+        .filter((f) => !f.name)
+        .filter((fs) => !this.isVirtualRegistry(JSON.stringify(fs.source)))
+        .forEach((fs) => {
+          diagnosticList.push(
+            Diagnostic.create(
+              Range.create(Position.create(0, 0), Position.create(100000, 10000)),
+              JSON.stringify(fs.source) + " does not have operationId",
+              DiagnosticSeverity.Warning
+            )
+          );
+        });
+    });
+    return diagnosticList;
+  }
+
+  private isVirtualRegistry(source: string): boolean {
+    if (source.includes("registry")) {
+      if (JSON.parse(source).registry === "Virtual") {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public async getDiagnostics(args: {
     content: string;
     uriPath: string;
+    swfServiceCatalogService: SwfServiceCatalogService[];
     rootNode: SwfLsNode | undefined;
     getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]> {
@@ -174,6 +203,14 @@ export class SwfLanguageService {
     const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
       ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
+
+    if (args.swfServiceCatalogService) {
+      return [
+        ...schemaValidationResults,
+        ...refValidationResults,
+        ...this.getFunctionDiagnostics(args.swfServiceCatalogService),
+      ];
+    }
 
     return [...schemaValidationResults, ...refValidationResults];
   }

@@ -72,37 +72,35 @@ function extractPathItemFunctions(
 ): SwfServiceCatalogFunction[] {
   const swfServiceCatalogFunctions: SwfServiceCatalogFunction[] = [];
 
-  Object.values(pathItem)
-    .filter((pathOperation) => pathOperation.operationId)
-    .forEach((pathOperation: OpenAPIV3.OperationObject) => {
-      const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
+  Object.values(pathItem).forEach((pathOperation: OpenAPIV3.OperationObject) => {
+    const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
 
-      const name = pathOperation.operationId as string;
+    const name = pathOperation.operationId as string;
 
-      const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
+    const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
 
-      // Looking at operation params
-      if (pathOperation.parameters) {
-        extractFunctionArgumentsFromParams(pathOperation.parameters, functionArguments);
-      }
+    // Looking at operation params
+    if (pathOperation.parameters) {
+      extractFunctionArgumentsFromParams(pathOperation.parameters, functionArguments);
+    }
 
-      // Looking only at application/json mime types, we might consider others.
-      if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
-        extractFunctionArgumentsFromRequestBody(
-          body.content[APPLICATION_JSON].schema ?? {},
-          serviceOpenApiDocument,
-          functionArguments
-        );
-      }
+    // Looking only at application/json mime types, we might consider others.
+    if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
+      extractFunctionArgumentsFromRequestBody(
+        body.content[APPLICATION_JSON].schema ?? {},
+        serviceOpenApiDocument,
+        functionArguments
+      );
+    }
 
-      const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
-        source,
-        name,
-        type: SwfServiceCatalogFunctionType.rest,
-        arguments: functionArguments,
-      };
-      swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
-    });
+    const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
+      source,
+      name,
+      type: SwfServiceCatalogFunctionType.rest,
+      arguments: functionArguments,
+    };
+    swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
+  });
 
   return swfServiceCatalogFunctions;
 }

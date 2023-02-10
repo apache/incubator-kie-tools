@@ -81,9 +81,9 @@ describe("openapi parser", () => {
     expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
     expect(result.source).toHaveProperty("absoluteFilePath", "/open-api-tests/specs/hiring.yaml");
     expect(result.name).toBe("process-usertasks-timer-quarkus-with-console API");
-    expect(result.functions).toHaveLength(1);
+    expect(result.functions).toHaveLength(6);
 
-    const functionDef = result.functions[0];
+    const functionDef = result.functions[1];
     expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(functionDef.name).toBe("doHiringOperation");
     expect(functionDef.arguments).not.toBeNull();

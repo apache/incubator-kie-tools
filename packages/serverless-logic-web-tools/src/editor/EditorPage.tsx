@@ -54,7 +54,7 @@ import {
   useUpdateVirtualServiceRegistryOnWorkspaceFileEvents,
 } from "../virtualServiceRegistry/hooks/useUpdateVirtualServiceRegistry";
 import { useVirtualServiceRegistry } from "../virtualServiceRegistry/VirtualServiceRegistryContext";
-import { DiagnosticSeverity } from "vscode-languageserver-types";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver-types";
 import { useSwfFeatureToggle } from "./hooks/useSwfFeatureToggle";
 import {
   SwfCombinedEditorChannelApiImpl,
@@ -69,6 +69,7 @@ import { DashbuilderLanguageServiceChannelApiImpl } from "./api/DashbuilderLangu
 import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { DashbuilderEditorChannelApiImpl } from "@kie-tools/dashbuilder-editor/dist/impl";
 import { DashbuilderLanguageServiceChannelApi } from "@kie-tools/dashbuilder-language-service/dist/api";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 export interface Props {
   workspaceId: string;
   fileRelativePath: string;
@@ -216,6 +217,10 @@ export function EditorPage(props: Props) {
     console.debug(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
 
+    // const functionList = JSON.parse(content).functions;
+    // functionList.fetch(f -> {
+    //   f
+    // });
     await workspaces.updateFile({
       workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
       relativePath: workspaceFilePromise.data.workspaceFile.relativePath,
@@ -365,6 +370,7 @@ export function EditorPage(props: Props) {
       .getDiagnostics({
         content: lastContent.current,
         uriPath: workspaceFilePromise.data.workspaceFile.relativePath,
+        swfServiceCatalogService: swfServiceCatalogChannelApiImpl.kogitoSwfServiceCatalog_services().defaultValue,
       })
       .then((lsDiagnostics) => {
         const diagnostics = lsDiagnostics.map(
@@ -382,7 +388,6 @@ export function EditorPage(props: Props) {
               },
             } as Notification)
         );
-
         editorPageDock?.setNotifications(i18n.terms.validation, "", diagnostics);
       })
       .catch((e) => console.error(e));
