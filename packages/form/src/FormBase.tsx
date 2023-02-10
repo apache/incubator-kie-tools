@@ -55,7 +55,7 @@ export function FormBase(props: React.PropsWithChildren<FormBaseProps>) {
       )}
       {props.formStatus === FormStatus.EMPTY && <EmptyFormStatus i18n={props.i18n} />}
       {props.formStatus === FormStatus.WITHOUT_ERROR && (
-        <div data-testid={"base-form"}>
+        <div data-testid={"form-base"}>
           <ErrorBoundary
             ref={props.errorBoundaryRef}
             setHasError={props.setFormError}
