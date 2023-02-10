@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition;
 import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
@@ -38,7 +39,9 @@ public class SleepStateShape extends StateShape {
     public void applyProperties(Node<View<State>, Edge> element, MutationContext mutationContext) {
         super.applyProperties(element, mutationContext);
         SleepState state = (SleepState) element.getContent().getDefinition();
-        getView().addChild(new CornerIcon(IconPath.CLOCK, "Duration: " + state.getDuration()));
+        getView().addChild(new CornerIcon(IconPath.CLOCK,
+                                          IconPosition.RIGHT_TOP_CORNER,
+                                          "Duration: " + state.getDuration()));
     }
 
     @Override
