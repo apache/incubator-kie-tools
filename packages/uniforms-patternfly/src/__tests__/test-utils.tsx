@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Context, context, randomIds } from "uniforms";
+import { Context, BaseForm, context, randomIds } from "uniforms";
 import SimpleSchema from "simpl-schema";
 import { SimpleSchema2Bridge } from "uniforms-bridge-simple-schema-2";
 
@@ -39,6 +39,16 @@ export function usingUniformsContext(children: React.ReactElement, schema = {}, 
     validating: false,
     submitted: false,
     schema: createSimpleSchema(schema),
+    formRef: new BaseForm<any>({
+      autosave: false,
+      autosaveDelay: 0,
+      error: false,
+      label: true,
+      model: {},
+      noValidate: false,
+      onSubmit: (event) => {},
+      schema: createSimpleSchema(schema),
+    }),
     ...ctx,
     state: {
       disabled: false,
@@ -47,6 +57,6 @@ export function usingUniformsContext(children: React.ReactElement, schema = {}, 
       showInlineError: false,
       readOnly: false,
     },
-  } as any;
+  };
   return <context.Provider value={partialCtx}>{children}</context.Provider>;
 }
