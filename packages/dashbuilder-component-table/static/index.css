@@ -49,31 +49,6 @@
   color: #eef1fa;
 }
 
-[mode="dark"] .pf-c-pagination__nav {
-  display: inherit;
-  visibility: inherit;
-}
-
-[mode="dark"] .pf-l-flex {
-  justify-content: center;
-}
-
-[mode="dark"] .pf-m-align-left {
-  padding-left: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.pf-l-flex {
-  justify-content: center;
-}
-
-.pf-m-align-left {
-  padding-left: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
 [mode="dark"] .pf-c-options-menu__menu-item:hover,
 [mode="dark"] .pf-c-table tr.pf-m-hoverable:hover {
   background-color: #393555;

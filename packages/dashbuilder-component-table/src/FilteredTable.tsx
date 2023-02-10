@@ -164,7 +164,7 @@ export const FilteredTable = (props: Props) => {
               onClear={() => onSearch("")}
             />
           </FlexItem>
-          <FlexItem align={{ default: "alignLeft" }}>
+          <FlexItem align={{ default: "alignRight" }}>
             <Pagination
               itemCount={rows.length}
               perPage={perPage}
