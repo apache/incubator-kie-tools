@@ -25,7 +25,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import wrapField from "./wrapField";
 
 export type DateFieldProps = FieldProps<
-  Date,
+  string,
   TextInputProps,
   {
     inputRef?: React.RefObject<HTMLInputElement>;
@@ -37,47 +37,63 @@ export type DateFieldProps = FieldProps<
 const DateConstructor = (typeof global === "object" ? global : window).Date;
 
 function DateField({ onChange, ...props }: DateFieldProps) {
-  const parseDate = useCallback(() => {
-    if (!props.value) {
-      return "";
-    }
-    return props.value.toISOString().slice(0, -14);
-  }, [props.value]);
+  const dateValue = useCallback(
+    (newDate?: Date) => {
+      if (newDate) {
+        return new DateConstructor(newDate);
+      }
+      if (!props.value) {
+        return undefined;
+      }
+      return new DateConstructor(props.value);
+    },
+    [props.value]
+  );
 
-  const parseTime = useCallback(() => {
-    if (!props.value) {
+  const parseDate = useMemo(() => {
+    const date = dateValue();
+    if (!date) {
       return "";
     }
-    return `${props.value.getUTCHours()}:${props.value.getUTCMinutes()}`;
-  }, [props.value]);
+    return date.toISOString().slice(0, -14);
+  }, [dateValue]);
+
+  const parseTime = useMemo(() => {
+    const date = dateValue();
+    if (!date) {
+      return "";
+    }
+    return `${date.getUTCHours()}:${date.getUTCMinutes()}`;
+  }, [dateValue]);
 
   const onDateChange = useCallback(
     (value: string, date?: Date) => {
       if (!date) {
         onChange(date);
       } else {
-        const newDate = new DateConstructor(date);
-        const time = parseTime();
+        const newDate = dateValue(date);
+        const time = parseTime;
         if (time !== "") {
-          newDate.setUTCHours(parseInt(time?.split(":")[0]));
-          newDate.setUTCMinutes(parseInt(time?.split(":")[1]?.split(" ")[0]));
+          newDate?.setUTCHours(parseInt(time?.split(":")[0]));
+          newDate?.setUTCMinutes(parseInt(time?.split(":")[1]?.split(" ")[0]));
         } else {
-          newDate.setUTCHours(0);
-          newDate.setUTCMinutes(0);
+          newDate?.setUTCHours(0);
+          newDate?.setUTCMinutes(0);
         }
-        onChange(newDate);
+        onChange(newDate?.toISOString());
       }
     },
-    [onChange, parseTime]
+    [onChange, parseTime, dateValue]
   );
 
   const isInvalid = useMemo(() => {
-    if (props.value) {
+    const date = dateValue();
+    if (date) {
       if (props.min) {
         const minDate = new Date(props.min);
         if (minDate.toString() === "Invalid Date") {
           return false;
-        } else if (props.value < minDate) {
+        } else if (date < minDate) {
           return `Should be after ${minDate.toISOString()}`;
         }
       }
@@ -85,18 +101,18 @@ function DateField({ onChange, ...props }: DateFieldProps) {
         const maxDate = new Date(props.max);
         if (maxDate.toString() === "Invalid Date") {
           return false;
-        } else if (props.value > maxDate) {
+        } else if (date > maxDate) {
           return `Should be before ${maxDate.toISOString()}`;
         }
       }
     }
     return false;
-  }, [props.value, props.min, props.max]);
+  }, [dateValue, props.min, props.max]);
 
   const onTimeChange = useCallback(
     (time: string, hours?: number, minutes?: number) => {
-      if (props.value) {
-        const newDate = new DateConstructor(props.value);
+      const newDate = dateValue();
+      if (newDate) {
         if (hours && minutes) {
           newDate.setUTCHours(hours);
           newDate.setUTCMinutes(minutes);
@@ -111,10 +127,10 @@ function DateField({ onChange, ...props }: DateFieldProps) {
           newDate.setUTCHours(0);
           newDate.setUTCMinutes(0);
         }
-        onChange(newDate);
+        onChange(newDate.toISOString());
       }
     },
-    [onChange, props.value]
+    [onChange, dateValue]
   );
 
   return wrapField(
@@ -135,7 +151,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
             isDisabled={props.disabled}
             name={props.name}
             onChange={onDateChange}
-            value={parseDate() ?? ""}
+            value={parseDate}
           />
           <TimePicker
             id={`time-picker-${props.id}`}
@@ -144,7 +160,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
             name={props.name}
             onChange={onTimeChange}
             style={{ width: "120px" }}
-            value={parseTime() ?? ""}
+            value={parseTime}
             is24Hour
           />
         </InputGroup>

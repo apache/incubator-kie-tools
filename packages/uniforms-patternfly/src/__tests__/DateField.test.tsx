@@ -98,7 +98,7 @@ test("<DateField> - renders a input with correct value (model)", () => {
 
 test("<DateField> - renders a input with correct value (specified)", () => {
   const now = new Date();
-  render(usingUniformsContext(<DateField name="x" value={now} />, { x: { type: Date } }));
+  render(usingUniformsContext(<DateField name="x" value={now.toISOString()} />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
 
@@ -116,7 +116,7 @@ test("<DateField> - renders a input which correctly reacts on change (DatePicker
   const input = screen.getByTestId("date-picker").getElementsByTagName("input")[0];
   fireEvent.change(input, { target: { value: now } });
 
-  expect(onChange).toHaveBeenLastCalledWith("x", new Date(`${now}T00:00:00Z`));
+  expect(onChange).toHaveBeenLastCalledWith("x", `${now}T00:00:00.000Z`);
 });
 
 test("<DateField> - renders a input which correctly reacts on change (DatePicker - empty)", () => {
@@ -147,26 +147,18 @@ test("<DateField> - renders a input which correctly reacts on change (TimePicker
 
   const date = "2000-04-04";
   const time = "10:30";
-  render(
-    usingUniformsContext(
-      <DateField name="x" value={new Date(`${date}T00:00:00Z`)} />,
-      { x: { type: Date } },
-      { onChange }
-    )
-  );
+  render(usingUniformsContext(<DateField name="x" value={`${date}T00:00:00Z`} />, { x: { type: Date } }, { onChange }));
 
   const input = screen.getByTestId("time-picker").getElementsByTagName("input")[0];
   fireEvent.change(input, { target: { value: time } });
 
-  expect(onChange).toHaveBeenLastCalledWith("x", new Date(`${date}T10:30:00Z`));
+  expect(onChange).toHaveBeenLastCalledWith("x", `${date}T${time}:00.000Z`);
 });
 
 test("<DateField> - test max property - valid", () => {
   const date = "1998-12-31";
   const max = "1999-01-01T00:00:00Z";
-  render(
-    usingUniformsContext(<DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
-  );
+  render(usingUniformsContext(<DateField name="x" max={max} value={`${date}T00:00:00Z`} />, { x: { type: Date } }));
 
   expect(screen.queryByTestId("Should be before")).toBeNull();
 });
@@ -174,9 +166,7 @@ test("<DateField> - test max property - valid", () => {
 test("<DateField> - test max property - invalid", () => {
   const date = "1999-01-02";
   const max = "1999-01-01T00:00:00.000Z";
-  render(
-    usingUniformsContext(<DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
-  );
+  render(usingUniformsContext(<DateField name="x" max={max} value={`${date}T00:00:00Z`} />, { x: { type: Date } }));
 
   expect(screen.getByText(`Should be before ${max}`)).toBeInTheDocument();
 });
@@ -184,9 +174,7 @@ test("<DateField> - test max property - invalid", () => {
 test("<DateField> - test min property - valid", () => {
   const date = "1999-01-02";
   const min = "1999-01-01T00:00:00Z";
-  render(
-    usingUniformsContext(<DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
-  );
+  render(usingUniformsContext(<DateField name="x" min={min} value={`${date}T00:00:00Z`} />, { x: { type: Date } }));
 
   expect(screen.queryByTestId("Should be after")).toBeNull();
 });
@@ -194,9 +182,7 @@ test("<DateField> - test min property - valid", () => {
 test("<DateField> - test min property - invalid", () => {
   const date = "1998-12-31";
   const min = "1999-01-01T00:00:00.000Z";
-  render(
-    usingUniformsContext(<DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />, { x: { type: Date } })
-  );
+  render(usingUniformsContext(<DateField name="x" min={min} value={`${date}T00:00:00Z`} />, { x: { type: Date } }));
 
   expect(screen.getByText(`Should be after ${min}`)).toBeInTheDocument();
 });
