@@ -50,7 +50,7 @@ function SelectInputsField(props: SelectInputProps) {
   });
 
   const parseInput = useCallback(
-    (selection: string | number | SelectOptionObject, fieldType: typeof Array | any): SelectFieldValue => {
+    (selection: string | number | SelectOptionObject, fieldType: typeof Array): SelectFieldValue => {
       const parsedSelection = isSelectOptionObject(selection) ? selection.toString() : selection;
 
       if (fieldType !== Array) {

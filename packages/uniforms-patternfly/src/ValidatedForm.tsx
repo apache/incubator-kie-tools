@@ -15,7 +15,6 @@
  */
 
 import { ValidatedForm } from "uniforms";
-
 import BaseForm from "./BaseForm";
 
 function Validated(parent: any): any {

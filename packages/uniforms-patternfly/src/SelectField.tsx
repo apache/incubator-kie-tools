@@ -14,7 +14,7 @@ export type SelectCheckboxProps = FieldProps<
     transform?: (value?: string) => string;
     allowedValues: string[];
     id?: string;
-    fieldType?: typeof Array | any;
+    fieldType?: typeof Array;
     disabled?: boolean;
   }
 >;
@@ -25,7 +25,7 @@ export type SelectInputProps = FieldProps<
   {
     checkboxes?: boolean;
     required?: boolean;
-    fieldType?: typeof Array | any;
+    fieldType?: typeof Array;
     onChange: (value?: string | string[] | number | number[]) => void;
     placeholder?: string;
     allowedValues?: (string | number)[];

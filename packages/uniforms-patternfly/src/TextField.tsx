@@ -23,6 +23,7 @@ import { connectField, filterDOMProps } from "uniforms";
 import wrapField from "./wrapField";
 
 export type TextFieldProps = {
+  id: string;
   decimal?: boolean;
   inputRef?: Ref<HTMLInputElement>;
   onChange: (value?: string) => void;
@@ -121,7 +122,7 @@ function TextField({ onChange, ...props }: TextFieldProps) {
   const { helperText, ...withoutHelperTextProps } = props;
 
   return wrapField(
-    props as any,
+    props,
     props.type === "date" || props.field?.format === "date" ? (
       <>
         <DatePicker
@@ -172,7 +173,7 @@ function TextField({ onChange, ...props }: TextFieldProps) {
         name={props.name}
         isDisabled={props.disabled}
         validated={props.error ? "error" : "default"}
-        onChange={(value, event) => onChange((event.target as any).value)}
+        onChange={(value, event) => onChange((event.target as any)?.value)}
         placeholder={props.placeholder}
         ref={props.inputRef}
         type={props.type ?? "text"}

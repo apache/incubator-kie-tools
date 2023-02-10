@@ -15,7 +15,6 @@
  */
 
 import { AutoForm } from "uniforms";
-
 import ValidatedQuickForm from "./ValidatedQuickForm";
 
 function Auto(parent: any): any {

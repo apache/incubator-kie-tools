@@ -21,7 +21,7 @@ import { connectField, filterDOMProps, Override } from "uniforms";
 export type ErrorFieldProps = Override<
   HTMLProps<HTMLDivElement>,
   {
-    error?: any;
+    error?: boolean;
     errorMessage?: string;
   }
 >;

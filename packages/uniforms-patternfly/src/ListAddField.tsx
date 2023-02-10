@@ -25,7 +25,6 @@ export type ListAddFieldProps = FieldProps<
   ButtonProps,
   {
     initialCount?: number;
-    parent?: any;
     name: string;
     disabled?: boolean;
     value?: unknown;

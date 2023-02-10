@@ -33,7 +33,7 @@ export type NumFieldProps = {
 function NumField(props: NumFieldProps) {
   const onChange = (value: string, event: React.FormEvent<HTMLInputElement>) => {
     const parse = props.decimal ? parseFloat : parseInt;
-    const v = parse((event.target as any).value);
+    const v = parse((event.target as any)?.value);
     props.onChange(isNaN(v) ? undefined : v);
   };
 

@@ -6944,6 +6944,12 @@ importers:
 
   packages/uniforms-patternfly:
     dependencies:
+      "@types/invariant":
+        specifier: ^2.2.35
+        version: 2.2.35
+      invariant:
+        specifier: ^2.2.4
+        version: 2.2.4
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -14285,6 +14291,11 @@ packages:
       "@types/through": 0.0.30
       rxjs: 6.6.7
     dev: true
+
+  /@types/invariant@2.2.35:
+    resolution:
+      { integrity: sha512-DxX1V9P8zdJPYQat1gHyY0xj3efl8gnMVjiM9iCY6y27lj+PoQWkgjt8jDqmovPqULkKVpKRg8J36iQiA+EtEg== }
+    dev: false
 
   /@types/istanbul-lib-coverage@2.0.1:
     resolution:
@@ -22653,7 +22664,7 @@ packages:
       jest-validate: 26.6.2
       micromatch: 4.0.5
       pretty-format: 26.6.2
-      ts-node: 10.9.1(typescript@4.5.4)
+      ts-node: 10.9.1(typescript@4.8.4)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -29701,7 +29712,7 @@ packages:
       bs-logger: 0.2.6
       buffer-from: 1.1.1
       fast-json-stable-stringify: 2.1.0
-      jest: 26.6.3
+      jest: 26.6.3(ts-node@10.9.1)
       jest-util: 26.6.2
       json5: 2.2.1
       lodash: 4.17.21

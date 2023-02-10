@@ -15,6 +15,7 @@
  */
 
 import { createAutoField } from "uniforms";
+import invariant from "invariant";
 import BoolField from "./BoolField";
 import DateField from "./DateField";
 import ListField from "./ListField";
@@ -46,7 +47,7 @@ const AutoField = createAutoField((props) => {
       return TextField;
   }
 
-  return new Error(`Unsupported field type: ${props.fieldType}`) as any;
+  return invariant(false, "Unsupported field type: %s", props.fieldType);
 });
 
 export default AutoField;
