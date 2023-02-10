@@ -751,7 +751,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       downloadWorkspaceZip,
       i18n,
       canCreateGitRepository,
-      settingsDispatch,
+      routes,
     ]
   );
 
@@ -1091,7 +1091,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           </Alert>
         );
       },
-      [canPushToGitRepository, pushNewBranch, settingsDispatch, workspacePromise]
+      [canPushToGitRepository, pushNewBranch, workspacePromise, history, routes]
     )
   );
 

@@ -45,7 +45,7 @@ export function OpenshiftDeploymentsDropdown() {
 
   const openOpenShiftSettings = useCallback(() => {
     history.push(routes.settings.openshift.path({}));
-  }, [settingsDispatch]);
+  }, [history]);
 
   const items = useMemo(() => {
     const common = isConnected
