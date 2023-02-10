@@ -39,6 +39,10 @@ export function VictoryChartComponent(props: Props) {
 
   useEffect(() => {
     props.controller.setOnInit((params: Map<string, any>) => {
+      const mode = params.get("mode");
+      if (mode) {
+        document.body.setAttribute("mode", mode.toLowerCase());
+      }
       setVictoryChartProps((props: VictoryChartProps) => {
         return {
           ...props,
