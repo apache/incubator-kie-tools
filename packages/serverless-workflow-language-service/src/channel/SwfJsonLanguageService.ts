@@ -37,8 +37,6 @@ import {
   SwfLsNode,
   TranslateArgs,
 } from "./types";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-// import {DiagnosticSeverity} from "vscode";
 /**
  * Check if a node has a comma after the end
  *

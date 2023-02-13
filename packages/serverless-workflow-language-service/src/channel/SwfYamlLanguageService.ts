@@ -58,7 +58,6 @@ import {
   SwfLsNode,
   TranslateArgs,
 } from "./types";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;

@@ -43,8 +43,6 @@ import {
   SWF_YAML_LANGUAGE_ID,
   VsCodeSwfLanguageService,
 } from "./languageService/VsCodeSwfLanguageService";
-import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 function isSwf(doc: TextDocument | undefined) {
   return (
@@ -62,7 +60,6 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   vsCodeSwfLanguageService: VsCodeSwfLanguageService;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
   kieEditorsStore: VsCodeKieEditorStore;
-  // swfServiceCatalogServices: SwfServiceCatalogService[];
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
     "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
@@ -105,7 +102,6 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         // Ignore non SWF files
         return;
       }
-
       return setSwfDiagnostics(args.vsCodeSwfLanguageService.getLs(document), document, swfDiagnosticsCollection);
     })
   );
@@ -124,6 +120,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       );
     })
   );
+
   const setSwfDiagnosticsDebounced = debounce(setSwfDiagnostics, 1000);
 
   args.context.subscriptions.push(
@@ -300,7 +297,7 @@ async function setSwfDiagnostics(
     content: document.getText(),
     uriPath: document.uri.path,
   });
-  console.log("built setSwfDiagnostics lsDiagnostics = " + JSON.stringify(lsDiagnostics));
+
   const vscodeDiagnostics = lsDiagnostics.map(
     (lsDiagnostic) =>
       new vscode.Diagnostic(
