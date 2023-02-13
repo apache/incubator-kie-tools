@@ -55,6 +55,6 @@ public class FillDecisionTableExpressionCommand extends FillExpressionCommand<De
     }
 
     void fill(final DecisionTable expression, final DecisionTableProps props) {
-        fillDecisionTableExpression(expression, props);
+        fillDecisionTableExpression(expression, props, qName -> getItemDefinitionUtils().normaliseTypeRef(qName));
     }
 }

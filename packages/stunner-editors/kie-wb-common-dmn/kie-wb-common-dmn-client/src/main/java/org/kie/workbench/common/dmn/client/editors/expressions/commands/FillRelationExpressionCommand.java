@@ -55,6 +55,6 @@ public class FillRelationExpressionCommand extends FillExpressionCommand<Relatio
     }
 
     void fill(final Relation expression, final RelationProps props) {
-        fillRelationExpression(expression, props);
+        fillRelationExpression(expression, props, qName -> getItemDefinitionUtils().normaliseTypeRef(qName));
     }
 }

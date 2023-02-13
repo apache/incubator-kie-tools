@@ -55,6 +55,6 @@ public class FillListExpressionCommand extends FillExpressionCommand<ListProps> 
     }
 
     void fill(final List expression, final ListProps props) {
-        fillListExpression(expression, props);
+        fillListExpression(expression, props, qName -> getItemDefinitionUtils().normaliseTypeRef(qName));
     }
 }

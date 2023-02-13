@@ -20,14 +20,7 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 
 @JsType(namespace = JsPackage.GLOBAL, name = "beeApiWrapper")
 public class BoxedExpressionService {
@@ -44,49 +37,8 @@ public class BoxedExpressionService {
     }
 
     @JsMethod
-    public static void broadcastLiteralExpressionDefinition(final LiteralProps literalProps) {
-        expressionEditor.broadcastLiteralExpressionDefinition(literalProps);
-    }
-
-    @JsMethod
-    public static void broadcastContextExpressionDefinition(final ContextProps contextProps) {
-        expressionEditor.broadcastContextExpressionDefinition(contextProps);
-    }
-
-    @JsMethod
-    public static void broadcastRelationExpressionDefinition(final RelationProps relationProps) {
-        expressionEditor.broadcastRelationExpressionDefinition(relationProps);
-    }
-
-    @JsMethod
-    public static void broadcastListExpressionDefinition(final ListProps listProps) {
-        expressionEditor.broadcastListExpressionDefinition(listProps);
-    }
-
-    @JsMethod
-    public static void broadcastInvocationExpressionDefinition(final InvocationProps invocationProps) {
-        expressionEditor.broadcastInvocationExpressionDefinition(invocationProps);
-    }
-
-    @JsMethod
-    public static void broadcastFunctionExpressionDefinition(final FunctionProps functionProps) {
-        expressionEditor.broadcastFunctionExpressionDefinition(functionProps);
-    }
-
-    @JsMethod
-    public static void broadcastDecisionTableExpressionDefinition(final DecisionTableProps decisionTableProps) {
-        expressionEditor.broadcastDecisionTableExpressionDefinition(decisionTableProps);
-    }
-
-    /**
-     * It creates an UNDO action in the GWT layer with the current expression status.
-     * This must be called from the REACT layer just before *ANY* user action we want to be undoable.
-     * GWT layer needs to store the expression status before the user change, for this reason this must be called
-     * BEFORE ANY change is actually persisted in the GWT layer.
-     */
-    @JsMethod
-    public static void createUndoCommand() {
-        expressionEditor.createUndoCommand();
+    public static void updateExpression(final ExpressionProps expressionProps) {
+        expressionEditor.updateExpression(expressionProps);
     }
 
     @JsMethod

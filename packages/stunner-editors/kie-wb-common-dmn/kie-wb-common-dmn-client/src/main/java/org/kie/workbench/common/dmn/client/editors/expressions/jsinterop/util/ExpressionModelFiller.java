@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -48,6 +49,7 @@ import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -92,19 +94,23 @@ public class ExpressionModelFiller {
         literalExpression.setText(new Text(literalProps.content));
     }
 
-    public static void fillContextExpression(final Context contextExpression, final ContextProps contextProps) {
+    public static void fillContextExpression(final Context contextExpression,
+                                             final ContextProps contextProps,
+                                             final UnaryOperator<QName> qNameNormalizer) {
         contextExpression.setId(new Id(contextProps.id));
         contextExpression.getComponentWidths().set(1, contextProps.entryInfoWidth);
         contextExpression.getComponentWidths().set(2, contextProps.entryExpressionWidth);
         contextExpression.getContextEntry().clear();
-        contextExpression.getContextEntry().addAll(contextEntriesConvertForContextExpression(contextProps));
-        contextExpression.getContextEntry().add(entryResultConvertForContextExpression(contextProps));
+        contextExpression.getContextEntry().addAll(contextEntriesConvertForContextExpression(contextProps, qNameNormalizer));
+        contextExpression.getContextEntry().add(entryResultConvertForContextExpression(contextProps, qNameNormalizer));
     }
 
-    public static void fillRelationExpression(final Relation relationExpression, final RelationProps relationProps) {
+    public static void fillRelationExpression(final Relation relationExpression,
+                                              final RelationProps relationProps,
+                                              final UnaryOperator<QName> qNameNormalizer) {
         relationExpression.setId(new Id(relationProps.id));
         relationExpression.getColumn().clear();
-        relationExpression.getColumn().addAll(columnsConvertForRelationExpression(relationProps));
+        relationExpression.getColumn().addAll(columnsConvertForRelationExpression(relationProps, qNameNormalizer));
         final int columnsLength = relationProps.columns == null ? 0 : relationProps.columns.length;
         IntStream.range(0, columnsLength)
                 .forEach(index -> relationExpression.getComponentWidths().set(index + 1, Objects.requireNonNull(relationProps.columns)[index].width));
@@ -112,14 +118,18 @@ public class ExpressionModelFiller {
         relationExpression.getRow().addAll(rowsConvertForRelationExpression(relationProps));
     }
 
-    public static void fillListExpression(final List listExpression, final ListProps listProps) {
+    public static void fillListExpression(final List listExpression,
+                                          final ListProps listProps,
+                                          final UnaryOperator<QName> qNameNormalizer) {
         listExpression.setId(new Id(listProps.id));
         listExpression.getComponentWidths().set(1, listProps.width);
         listExpression.getExpression().clear();
-        listExpression.getExpression().addAll(itemsConvertForListExpression(listProps, listExpression));
+        listExpression.getExpression().addAll(itemsConvertForListExpression(listProps, listExpression, qNameNormalizer));
     }
 
-    public static void fillInvocationExpression(final Invocation invocationExpression, final InvocationProps invocationProps) {
+    public static void fillInvocationExpression(final Invocation invocationExpression,
+                                                final InvocationProps invocationProps,
+                                                final UnaryOperator<QName> qNameNormalizer) {
         final LiteralExpression invokedFunction = new LiteralExpression();
         invocationExpression.setId(new Id(invocationProps.id));
         invocationExpression.getComponentWidths().set(1, invocationProps.entryInfoWidth);
@@ -128,20 +138,24 @@ public class ExpressionModelFiller {
         invokedFunction.setTypeRef(BuiltInType.STRING.asQName());
         invocationExpression.setExpression(invokedFunction);
         invocationExpression.getBinding().clear();
-        invocationExpression.getBinding().addAll(bindingsConvertForInvocationExpression(invocationProps));
+        invocationExpression.getBinding().addAll(bindingsConvertForInvocationExpression(invocationProps, qNameNormalizer));
     }
 
-    public static void fillFunctionExpression(final FunctionDefinition functionExpression, final FunctionProps functionProps) {
+    public static void fillFunctionExpression(final FunctionDefinition functionExpression,
+                                              final FunctionProps functionProps,
+                                              final UnaryOperator<QName> qNameNormalizer) {
         final FunctionDefinition.Kind functionKind = FunctionDefinition.Kind.fromValue(functionProps.functionKind);
         functionExpression.setId(new Id(functionProps.id));
         functionExpression.getComponentWidths().set(1, functionProps.classAndMethodNamesWidth);
         functionExpression.getFormalParameter().clear();
-        functionExpression.getFormalParameter().addAll(formalParametersConvertForFunctionExpression(functionProps));
+        functionExpression.getFormalParameter().addAll(formalParametersConvertForFunctionExpression(functionProps, qNameNormalizer));
         functionExpression.setKind(functionKind);
-        functionExpression.setExpression(wrappedExpressionBasedOnKind(functionKind, functionProps));
+        functionExpression.setExpression(wrappedExpressionBasedOnKind(functionKind, functionProps, qNameNormalizer));
     }
 
-    public static void fillDecisionTableExpression(final DecisionTable decisionTableExpression, final DecisionTableProps decisionTableProps) {
+    public static void fillDecisionTableExpression(final DecisionTable decisionTableExpression,
+                                                   final DecisionTableProps decisionTableProps,
+                                                   final UnaryOperator<QName> qNameNormalizer) {
         decisionTableExpression.setId(new Id(decisionTableProps.id));
         if (StringUtils.nonEmpty(decisionTableProps.hitPolicy)) {
             decisionTableExpression.setHitPolicy(HitPolicy.fromValue(decisionTableProps.hitPolicy));
@@ -152,60 +166,66 @@ public class ExpressionModelFiller {
         decisionTableExpression.getAnnotations().clear();
         decisionTableExpression.getAnnotations().addAll(annotationsConvertForDecisionTableExpression(decisionTableProps));
         decisionTableExpression.getInput().clear();
-        decisionTableExpression.getInput().addAll(inputConvertForDecisionTableExpression(decisionTableProps));
+        decisionTableExpression.getInput().addAll(inputConvertForDecisionTableExpression(decisionTableProps, qNameNormalizer));
         decisionTableExpression.getOutput().clear();
-        decisionTableExpression.getOutput().addAll(outputConvertForDecisionTableExpression(decisionTableProps));
+        decisionTableExpression.getOutput().addAll(outputConvertForDecisionTableExpression(decisionTableProps, qNameNormalizer));
         updateComponentWidthsForDecisionTableExpression(decisionTableExpression, decisionTableProps);
         decisionTableExpression.getRule().clear();
         decisionTableExpression.getRule().addAll(rulesConvertForDecisionTableExpression(decisionTableProps));
     }
 
-    private static Expression buildAndFillNestedExpression(final ExpressionProps props) {
+    private static Expression buildAndFillNestedExpression(final ExpressionProps props,
+                                                           final UnaryOperator<QName> qNameNormalizer) {
         if (Objects.equals(LITERAL_EXPRESSION.getText(), props.logicType)) {
             final LiteralExpression literalExpression = new LiteralExpression();
             fillLiteralExpression(literalExpression, (LiteralProps) props);
             return literalExpression;
         } else if (Objects.equals(CONTEXT.getText(), props.logicType)) {
             final Context contextExpression = new Context();
-            fillContextExpression(contextExpression, (ContextProps) props);
+            fillContextExpression(contextExpression, (ContextProps) props, qNameNormalizer);
             return contextExpression;
         } else if (Objects.equals(RELATION.getText(), props.logicType)) {
             final Relation relationExpression = new Relation();
-            fillRelationExpression(relationExpression, (RelationProps) props);
+            fillRelationExpression(relationExpression, (RelationProps) props, qNameNormalizer);
             return relationExpression;
         } else if (Objects.equals(LIST.getText(), props.logicType)) {
             final List listExpression = new List();
-            fillListExpression(listExpression, (ListProps) props);
+            fillListExpression(listExpression, (ListProps) props, qNameNormalizer);
             return listExpression;
         } else if (Objects.equals(INVOCATION.getText(), props.logicType)) {
             final Invocation invocationExpression = new Invocation();
-            fillInvocationExpression(invocationExpression, (InvocationProps) props);
+            fillInvocationExpression(invocationExpression, (InvocationProps) props, qNameNormalizer);
             return invocationExpression;
         } else if (Objects.equals(FUNCTION.getText(), props.logicType)) {
             final FunctionDefinition functionExpression = new FunctionDefinition();
-            fillFunctionExpression(functionExpression, (FunctionProps) props);
+            fillFunctionExpression(functionExpression, (FunctionProps) props, qNameNormalizer);
             return functionExpression;
         } else if (Objects.equals(DECISION_TABLE.getText(), props.logicType)) {
             final DecisionTable decisionTableExpression = new DecisionTable();
-            fillDecisionTableExpression(decisionTableExpression, (DecisionTableProps) props);
+            fillDecisionTableExpression(decisionTableExpression, (DecisionTableProps) props, qNameNormalizer);
             return decisionTableExpression;
         }
         return null;
     }
 
-    private static Collection<ContextEntry> contextEntriesConvertForContextExpression(final ContextProps contextProps) {
+    private static Collection<ContextEntry> contextEntriesConvertForContextExpression(final ContextProps contextProps,
+                                                                                      final UnaryOperator<QName> qNameNormalizer) {
         return Arrays.stream(Optional.ofNullable(contextProps.contextEntries).orElse(new ContextEntryProps[0])).map(entryRow -> {
             final ContextEntry contextEntry = new ContextEntry();
-            contextEntry.setVariable(buildInformationItem(entryRow.entryInfo.id, entryRow.entryInfo.name, entryRow.entryInfo.dataType));
-            contextEntry.setExpression(buildAndFillNestedExpression(entryRow.entryExpression));
+            contextEntry.setVariable(buildInformationItem(entryRow.entryInfo.id,
+                                                          entryRow.entryInfo.name,
+                                                          entryRow.entryInfo.dataType,
+                                                          qNameNormalizer));
+            contextEntry.setExpression(buildAndFillNestedExpression(entryRow.entryExpression, qNameNormalizer));
             return contextEntry;
         }).collect(Collectors.toList());
     }
 
-    private static ContextEntry entryResultConvertForContextExpression(final ContextProps contextProps) {
+    private static ContextEntry entryResultConvertForContextExpression(final ContextProps contextProps,
+                                                                       final UnaryOperator<QName> qNameNormalizer) {
         final ContextEntry contextEntryResult = new ContextEntry();
         if (contextProps.result != null) {
-            contextEntryResult.setExpression(buildAndFillNestedExpression(contextProps.result));
+            contextEntryResult.setExpression(buildAndFillNestedExpression(contextProps.result, qNameNormalizer));
         }
         return contextEntryResult;
     }
@@ -229,59 +249,68 @@ public class ExpressionModelFiller {
                 .collect(Collectors.toList());
     }
 
-    private static Collection<InformationItem> columnsConvertForRelationExpression(final RelationProps relationProps) {
+    private static Collection<InformationItem> columnsConvertForRelationExpression(final RelationProps relationProps,
+                                                                                   final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
                 .stream(Optional.ofNullable(relationProps.columns).orElse(new Column[0]))
-                .map(column -> buildInformationItem(column.id, column.name, column.dataType))
+                .map(column -> buildInformationItem(column.id, column.name, column.dataType, qNameNormalizer))
                 .collect(Collectors.toList());
     }
 
-    private static Collection<HasExpression> itemsConvertForListExpression(final ListProps listProps, final List listExpression) {
+    private static Collection<HasExpression> itemsConvertForListExpression(final ListProps listProps,
+                                                                           final List listExpression,
+                                                                           final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
                 .stream(Optional.ofNullable(listProps.items).orElse(new ExpressionProps[0]))
-                .map(props -> HasExpression.wrap(listExpression, buildAndFillNestedExpression(props)))
+                .map(props -> HasExpression.wrap(listExpression, buildAndFillNestedExpression(props, qNameNormalizer)))
                 .collect(Collectors.toList());
     }
 
-    private static Collection<Binding> bindingsConvertForInvocationExpression(final InvocationProps invocationProps) {
+    private static Collection<Binding> bindingsConvertForInvocationExpression(final InvocationProps invocationProps,
+                                                                              final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
                 .stream(Optional.ofNullable(invocationProps.bindingEntries).orElse(new ContextEntryProps[0]))
                 .map(binding -> {
                     final Binding bindingModel = new Binding();
-                    bindingModel.setVariable(buildInformationItem(binding.entryInfo.id, binding.entryInfo.name, binding.entryInfo.dataType));
-                    bindingModel.setExpression(buildAndFillNestedExpression(binding.entryExpression));
+                    bindingModel.setVariable(buildInformationItem(binding.entryInfo.id,
+                                                                  binding.entryInfo.name,
+                                                                  binding.entryInfo.dataType,
+                                                                  qNameNormalizer));
+                    bindingModel.setExpression(buildAndFillNestedExpression(binding.entryExpression, qNameNormalizer));
                     return bindingModel;
                 })
                 .collect(Collectors.toList());
     }
 
-    private static InformationItem buildInformationItem(final String id, final String name, final String dataType) {
+    private static InformationItem buildInformationItem(final String id,
+                                                        final String name,
+                                                        final String dataType,
+                                                        final UnaryOperator<QName> qNameNormalizer) {
         final InformationItem informationItem = new InformationItem();
         informationItem.setId(new Id(id));
         informationItem.setName(new Name(name));
-        informationItem.setTypeRef(BuiltInTypeUtils
-                                           .findBuiltInTypeByName(dataType)
-                                           .orElse(BuiltInType.UNDEFINED)
-                                           .asQName());
+        QName qName = qNameNormalizer.apply(makeQName(dataType));
+        informationItem.setTypeRef(qName);
         return informationItem;
     }
 
-    private static Collection<InformationItem> formalParametersConvertForFunctionExpression(final FunctionProps functionProps) {
+    private static Collection<InformationItem> formalParametersConvertForFunctionExpression(final FunctionProps functionProps,
+                                                                                            final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
                 .stream(Optional.ofNullable(functionProps.formalParameters).orElse(new EntryInfo[0]))
                 .map(entryInfo -> {
                     final InformationItem informationItem = new InformationItem();
                     informationItem.setName(new Name(entryInfo.name));
-                    informationItem.setTypeRef(BuiltInTypeUtils
-                                                       .findBuiltInTypeByName(entryInfo.dataType)
-                                                       .orElse(BuiltInType.UNDEFINED)
-                                                       .asQName());
+                    QName qName = qNameNormalizer.apply(makeQName(entryInfo.dataType));
+                    informationItem.setTypeRef(qName);
                     return informationItem;
                 })
                 .collect(Collectors.toList());
     }
 
-    private static Expression wrappedExpressionBasedOnKind(final FunctionDefinition.Kind functionKind, final FunctionProps functionProps) {
+    private static Expression wrappedExpressionBasedOnKind(final FunctionDefinition.Kind functionKind,
+                                                           final FunctionProps functionProps,
+                                                           final UnaryOperator<QName> qNameNormalizer) {
         switch (functionKind) {
             case JAVA:
                 final JavaFunctionProps javaFunctionProps = (JavaFunctionProps) functionProps;
@@ -300,7 +329,8 @@ public class ExpressionModelFiller {
                 final FeelFunctionProps feelFunctionProps = (FeelFunctionProps) functionProps;
                 return buildAndFillNestedExpression(
                         Optional.ofNullable(feelFunctionProps.expression)
-                                .orElse(new LiteralProps(new Id().getValue(), "Nested Literal Expression", UNDEFINED.getText(), "", null))
+                                .orElse(new LiteralProps(new Id().getValue(), "Nested Literal Expression", UNDEFINED.getText(), "", null)),
+                        qNameNormalizer
                 );
         }
     }
@@ -343,36 +373,33 @@ public class ExpressionModelFiller {
                 .collect(Collectors.toList());
     }
 
-    private static Collection<InputClause> inputConvertForDecisionTableExpression(final DecisionTableProps decisionTableProps) {
+    private static Collection<InputClause> inputConvertForDecisionTableExpression(final DecisionTableProps decisionTableProps,
+                                                                                  final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
                 .stream(Optional.ofNullable(decisionTableProps.input).orElse(new Clause[0]))
                 .map(input -> {
                     final InputClause inputClause = new InputClause();
                     inputClause.setId(new Id(input.id));
                     inputClause.getInputExpression().setText(new Text(input.name));
-                    inputClause.getInputExpression().setTypeRefHolder(
-                            new QNameHolder(
-                                    BuiltInTypeUtils
-                                            .findBuiltInTypeByName(input.dataType)
-                                            .orElse(BuiltInType.UNDEFINED)
-                                            .asQName()
-                            ));
+                    QName qName = qNameNormalizer.apply(makeQName(input.dataType));
+                    inputClause.getInputExpression().setTypeRef(qName);
+                    inputClause.getInputExpression().setTypeRefHolder(makeQNameHolder(qName));
+
                     return inputClause;
                 })
                 .collect(Collectors.toList());
     }
 
-    private static Collection<OutputClause> outputConvertForDecisionTableExpression(final DecisionTableProps decisionTableProps) {
+    private static Collection<OutputClause> outputConvertForDecisionTableExpression(final DecisionTableProps decisionTableProps,
+                                                                                    final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
                 .stream(Optional.ofNullable(decisionTableProps.output).orElse(new Clause[0]))
                 .map(output -> {
                     final OutputClause outputClause = new OutputClause();
                     outputClause.setId(new Id(output.id));
                     outputClause.setName(output.name);
-                    outputClause.setTypeRef(BuiltInTypeUtils
-                                                    .findBuiltInTypeByName(output.dataType)
-                                                    .orElse(BuiltInType.UNDEFINED)
-                                                    .asQName());
+                    QName qName = qNameNormalizer.apply(makeQName(output.dataType));
+                    outputClause.setTypeRef(qName);
                     return outputClause;
                 })
                 .collect(Collectors.toList());
@@ -404,5 +431,15 @@ public class ExpressionModelFiller {
                 .forEach(index -> decisionTableExpression.getComponentWidths().set(
                         inputProps.length + outputProps.length + index + 1, annotationProps[index].width)
                 );
+    }
+
+    private static QName makeQName(String dataType) {
+        return BuiltInTypeUtils.isBuiltInType(dataType) ?
+                BuiltInTypeUtils.findBuiltInTypeByName(dataType).orElse(BuiltInType.UNDEFINED).asQName() :
+                new QName(QName.NULL_NS_URI, dataType);
+    }
+
+    private static QNameHolder makeQNameHolder(QName qname) {
+        return new QNameHolder(qname);
     }
 }

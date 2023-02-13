@@ -55,6 +55,6 @@ public class FillContextExpressionCommand extends FillExpressionCommand<ContextP
     }
 
     void fill(final Context expression, final ContextProps props) {
-        fillContextExpression(expression, props);
+        fillContextExpression(expression, props, qName -> getItemDefinitionUtils().normaliseTypeRef(qName));
     }
 }

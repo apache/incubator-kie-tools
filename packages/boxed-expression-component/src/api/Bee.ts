@@ -33,19 +33,9 @@ declare global {
   // Set of Functions used by the BoxedExpressionEditor and the BoxedExpressionWrapper
   interface BeeApi {
     resetExpressionDefinition: (definition: ExpressionDefinition) => void;
-    broadcastLiteralExpressionDefinition: (definition: LiteralExpressionDefinition) => void;
-    broadcastRelationExpressionDefinition: (definition: RelationExpressionDefinition) => void;
-    broadcastContextExpressionDefinition: (definition: ContextExpressionDefinition) => void;
-    broadcastListExpressionDefinition: (definition: ListExpressionDefinition) => void;
-    broadcastInvocationExpressionDefinition: (definition: InvocationExpressionDefinition) => void;
-    broadcastFunctionExpressionDefinition: (definition: FunctionExpressionDefinition) => void;
-    broadcastDecisionTableExpressionDefinition: (definition: DecisionTableExpressionDefinition) => void;
 
-    // It creates an UNDO action in the GWT layer with the current expression status.
-    // This must be called just before *ANY* user action we want to be undoable.
-    // GWT layer needs to store the expression status before the user change, for this reason this
-    // must be called BEFORE ANY change is actually persisted in the GWT layer.
-    createUndoCommand: () => void;
+    // Notifies the GWT layer that the expression is changed.
+    updateExpression: (expressionDefinition: ExpressionDefinition) => void;
 
     // Navigate to Data Types definitions, if available
     openManageDataType: () => void;

@@ -332,7 +332,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void setReturnToLinkText(final String text) {
-        returnToDRGLabel.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, "DRG"));
+        returnToDRGLabel.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
     }
 
     @Override
@@ -468,74 +468,80 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                             getHasName()));
     }
 
-    public void broadcastLiteralExpressionDefinition(final LiteralProps literalProps) {
-        executeExpressionCommand(new FillLiteralExpressionCommand(getHasExpression(),
-                                                                  literalProps,
-                                                                  getEditorSelectedEvent(),
-                                                                  getNodeUUID(),
-                                                                  this,
-                                                                  itemDefinitionUtils,
-                                                                  getHasName()));
-    }
+    public void updateExpression(final ExpressionProps expressionProps) {
+        createUndoCommand();
 
-    public void broadcastContextExpressionDefinition(final ContextProps contextProps) {
-        executeExpressionCommand(new FillContextExpressionCommand(getHasExpression(),
-                                                                  contextProps,
-                                                                  getEditorSelectedEvent(),
-                                                                  getNodeUUID(),
-                                                                  this,
-                                                                  itemDefinitionUtils,
-                                                                  getHasName()));
-    }
-
-    public void broadcastRelationExpressionDefinition(final RelationProps relationProps) {
-        executeExpressionCommand(new FillRelationExpressionCommand(getHasExpression(),
-                                                                   relationProps,
-                                                                   getEditorSelectedEvent(),
-                                                                   getNodeUUID(),
-                                                                   this,
-                                                                   itemDefinitionUtils,
-                                                                   getHasName()));
-    }
-
-    public void broadcastListExpressionDefinition(final ListProps listProps) {
-        executeExpressionCommand(new FillListExpressionCommand(getHasExpression(),
-                                                               listProps,
-                                                               getEditorSelectedEvent(),
-                                                               getNodeUUID(),
-                                                               this,
-                                                               itemDefinitionUtils,
-                                                               getHasName()));
-    }
-
-    public void broadcastInvocationExpressionDefinition(final InvocationProps invocationProps) {
-        executeExpressionCommand(new FillInvocationExpressionCommand(getHasExpression(),
-                                                                     invocationProps,
-                                                                     getEditorSelectedEvent(),
-                                                                     getNodeUUID(),
-                                                                     this,
-                                                                     itemDefinitionUtils,
-                                                                     getHasName()));
-    }
-
-    public void broadcastFunctionExpressionDefinition(final FunctionProps functionProps) {
-        executeExpressionCommand(new FillFunctionExpressionCommand(getHasExpression(),
-                                                                   functionProps,
-                                                                   getEditorSelectedEvent(),
-                                                                   getNodeUUID(),
-                                                                   this,
-                                                                   itemDefinitionUtils,
-                                                                   getHasName()));
-    }
-
-    public void broadcastDecisionTableExpressionDefinition(final DecisionTableProps decisionTableProps) {
-        executeExpressionCommand(new FillDecisionTableExpressionCommand(getHasExpression(),
-                                                                        decisionTableProps,
-                                                                        getEditorSelectedEvent(),
-                                                                        getNodeUUID(),
-                                                                        this,
-                                                                        itemDefinitionUtils,
-                                                                        getHasName()));
+        ExpressionType logicType = ExpressionType.getTypeByText(expressionProps.logicType);
+        switch (logicType) {
+            case LITERAL_EXPRESSION:
+                executeExpressionCommand(new FillLiteralExpressionCommand(getHasExpression(),
+                                                                          (LiteralProps) expressionProps,
+                                                                          getEditorSelectedEvent(),
+                                                                          getNodeUUID(),
+                                                                          this,
+                                                                          itemDefinitionUtils,
+                                                                          getHasName()));
+                break;
+            case RELATION:
+                executeExpressionCommand(new FillRelationExpressionCommand(getHasExpression(),
+                                                                           (RelationProps) expressionProps,
+                                                                           getEditorSelectedEvent(),
+                                                                           getNodeUUID(),
+                                                                           this,
+                                                                           itemDefinitionUtils,
+                                                                           getHasName()));
+                break;
+            case CONTEXT:
+                executeExpressionCommand(new FillContextExpressionCommand(getHasExpression(),
+                                                                          (ContextProps) expressionProps,
+                                                                          getEditorSelectedEvent(),
+                                                                          getNodeUUID(),
+                                                                          this,
+                                                                          itemDefinitionUtils,
+                                                                          getHasName()));
+                break;
+            case DECISION_TABLE:
+                executeExpressionCommand(new FillDecisionTableExpressionCommand(getHasExpression(),
+                                                                                (DecisionTableProps) expressionProps,
+                                                                                getEditorSelectedEvent(),
+                                                                                getNodeUUID(),
+                                                                                this,
+                                                                                itemDefinitionUtils,
+                                                                                getHasName()));
+                break;
+            case INVOCATION:
+                executeExpressionCommand(new FillInvocationExpressionCommand(getHasExpression(),
+                                                                             (InvocationProps) expressionProps,
+                                                                             getEditorSelectedEvent(),
+                                                                             getNodeUUID(),
+                                                                             this,
+                                                                             itemDefinitionUtils,
+                                                                             getHasName()));
+                break;
+            case LIST:
+                executeExpressionCommand(new FillListExpressionCommand(getHasExpression(),
+                                                                       (ListProps) expressionProps,
+                                                                       getEditorSelectedEvent(),
+                                                                       getNodeUUID(),
+                                                                       this,
+                                                                       itemDefinitionUtils,
+                                                                       getHasName()));
+                break;
+            case FUNCTION:
+                executeExpressionCommand(new FillFunctionExpressionCommand(getHasExpression(),
+                                                                           (FunctionProps) expressionProps,
+                                                                           getEditorSelectedEvent(),
+                                                                           getNodeUUID(),
+                                                                           this,
+                                                                           itemDefinitionUtils,
+                                                                           getHasName()));
+                break;
+            case UNDEFINED:
+                // Ignore
+                break;
+            default:
+                throw new UnsupportedOperationException("Logic type: " + logicType + " is currently unsupported");
+        }
     }
 
     public void openManageDataType() {
@@ -706,7 +712,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return nodeUUID;
     }
 
-    public void createUndoCommand() {
+    /**
+     * It creates an UNDO command with the current expression status
+     */
+    protected void createUndoCommand() {
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
         final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
                                                                                       getEditorSelectedEvent(),

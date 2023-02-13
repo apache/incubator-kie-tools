@@ -62,13 +62,24 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   isResetSupportedOnRootExpression,
   pmmlParams,
 }: BoxedExpressionEditorProps) => {
-  const [expression, setExpression] = useState<ExpressionDefinition>(expressionDefinition);
+  const [expressionWrapper, setExpressionWrapper] = useState<{
+    source: "gwt" | "react";
+    expression: ExpressionDefinition;
+  }>({ source: "gwt", expression: expressionDefinition });
 
   useEffect(() => {
-    console.info("DMN Editor changed the expression. Updating internal state with:");
-    console.info(JSON.stringify(expressionDefinition));
-    setExpression(expressionDefinition);
+    setExpressionWrapper({ source: "gwt", expression: expressionDefinition });
   }, [expressionDefinition]);
+
+  useEffect(() => {
+    console.log("Expression is changed. Source is: " + expressionWrapper.source);
+    console.log(JSON.stringify(expressionDefinition));
+
+    if (expressionWrapper.source === "react") {
+      console.log("Sending expression update to GWT layer.");
+      window.beeApiWrapper?.updateExpression(expressionWrapper.expression);
+    }
+  }, [expressionWrapper.expression]);
 
   const beeGwtService: BeeGwtService = {
     openManageDataType(): void {
@@ -84,44 +95,12 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
 
   const setExpressionNotifyingUserAction = useCallback(
     (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
-      setExpression((prev) => {
-        const n = typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
-
-        console.info("Notifying DMN Editor that expression is changing with:");
-        console.info(JSON.stringify(n));
-        window.beeApiWrapper?.createUndoCommand();
-
-        const logicType = n.logicType;
-        switch (logicType) {
-          case ExpressionDefinitionLogicType.Literal:
-            window.beeApiWrapper?.broadcastLiteralExpressionDefinition?.(n);
-            break;
-          case ExpressionDefinitionLogicType.Relation:
-            window.beeApiWrapper?.broadcastRelationExpressionDefinition?.(n);
-            break;
-          case ExpressionDefinitionLogicType.Context:
-            window.beeApiWrapper?.broadcastContextExpressionDefinition?.(n);
-            break;
-          case ExpressionDefinitionLogicType.DecisionTable:
-            window.beeApiWrapper?.broadcastDecisionTableExpressionDefinition?.(n);
-            break;
-          case ExpressionDefinitionLogicType.Invocation:
-            window.beeApiWrapper?.broadcastInvocationExpressionDefinition?.(n);
-            break;
-          case ExpressionDefinitionLogicType.List:
-            window.beeApiWrapper?.broadcastListExpressionDefinition?.(n);
-            break;
-          case ExpressionDefinitionLogicType.Function:
-            window.beeApiWrapper?.broadcastFunctionExpressionDefinition?.(n);
-            break;
-          case ExpressionDefinitionLogicType.Undefined:
-            // Ignore
-            break;
-          default:
-            assertUnreachable(logicType);
-        }
-
-        return n;
+      setExpressionWrapper((prevState) => {
+        return {
+          source: "react",
+          expression:
+            typeof newExpressionAction === "function" ? newExpressionAction(prevState.expression) : newExpressionAction,
+        };
       });
     },
     []
@@ -139,7 +118,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
       decisionNodeId={decisionNodeId}
-      expressionDefinition={expression}
+      expressionDefinition={expressionWrapper.expression}
       setExpressionDefinition={setExpressionNotifyingUserAction}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
@@ -193,7 +172,3 @@ const renderImportJavaClasses = (selector: string) => {
 };
 
 export { renderBoxedExpressionEditor, renderImportJavaClasses };
-
-function assertUnreachable(logicType: never) {
-  throw new Error("Shouldn't reach this point.");
-}

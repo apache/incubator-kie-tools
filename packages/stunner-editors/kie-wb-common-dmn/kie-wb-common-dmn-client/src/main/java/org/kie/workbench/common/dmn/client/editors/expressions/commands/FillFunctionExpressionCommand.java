@@ -55,6 +55,6 @@ public class FillFunctionExpressionCommand extends FillExpressionCommand<Functio
     }
 
     void fill(final FunctionDefinition expression, final FunctionProps props) {
-        fillFunctionExpression(expression, props);
+        fillFunctionExpression(expression, props, qName -> getItemDefinitionUtils().normaliseTypeRef(qName));
     }
 }

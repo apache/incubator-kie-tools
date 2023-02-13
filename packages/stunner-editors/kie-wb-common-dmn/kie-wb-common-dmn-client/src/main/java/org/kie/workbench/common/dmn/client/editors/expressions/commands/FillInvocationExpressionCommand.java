@@ -55,6 +55,6 @@ public class FillInvocationExpressionCommand extends FillExpressionCommand<Invoc
     }
 
     void fill(final Invocation expression, final InvocationProps props) {
-        fillInvocationExpression(expression, props);
+        fillInvocationExpression(expression, props, qName -> getItemDefinitionUtils().normaliseTypeRef(qName));
     }
 }
