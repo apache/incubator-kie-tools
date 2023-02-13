@@ -17,11 +17,12 @@
 import * as React from "react";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { Page, PageSection } from "@patternfly/react-core/dist/js";
 import {
   Card,
   CardActions,
@@ -31,13 +32,6 @@ import {
   CardTitle,
 } from "@patternfly/react-core/dist/js/components/Card";
 import {
-  DataList,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-} from "@patternfly/react-core/dist/js/components/DataList";
-import {
   Drawer,
   DrawerActions,
   DrawerCloseButton,
@@ -46,11 +40,9 @@ import {
   DrawerHead,
   DrawerPanelBody,
   DrawerPanelContent,
-  DrawerSection,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -66,11 +58,14 @@ import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { VariableSizeList } from "react-window";
 import { Alerts, AlertsController } from "../../alerts/Alerts";
 import { RelativeDate } from "../../dates/RelativeDate";
 import { DeleteDropdownWithConfirmation } from "../../editor/DeleteDropdownWithConfirmation";
 import { NewFileDropdownMenu } from "../../editor/NewFileDropdownMenu";
 import { isEditable, splitFiles } from "../../extension";
+import { FileDataList, getFileDataListHeight } from "../../fileList/FileDataList";
 import { useRoutes } from "../../navigation/Hooks";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
@@ -123,50 +118,69 @@ export function ServerlessModels() {
       rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
       resolved={(workspaceDescriptors) => {
         return (
-          <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
-            <DrawerSection>
-              <TextContent>
-                <Text component={TextVariants.h1}>Recent models</Text>
-              </TextContent>
-              <br />
-            </DrawerSection>
-            <DrawerContent
-              panelContent={
-                <WorkspacesListDrawerPanelContent workspaceId={expandedWorkspaceId} onClose={closeExpandedWorkspace} />
-              }
-            >
-              <DrawerContentBody>
-                {workspaceDescriptors.length > 0 && (
-                  <Stack hasGutter={true} style={{ padding: "10px" }}>
-                    {workspaceDescriptors
-                      .sort((a, b) => (new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1))
-                      .map((workspace) => (
-                        <StackItem key={workspace.workspaceId}>
-                          <ErrorBoundary error={<WorkspaceCardError workspace={workspace} />}>
-                            <WorkspaceCard
-                              workspaceId={workspace.workspaceId}
-                              onSelect={() => expandWorkspace(workspace.workspaceId)}
-                              isSelected={workspace.workspaceId === expandedWorkspaceId}
-                            />
-                          </ErrorBoundary>
-                        </StackItem>
-                      ))}
-                  </Stack>
-                )}
-                {workspaceDescriptors.length === 0 && (
-                  <Bullseye>
-                    <EmptyState>
-                      <EmptyStateIcon icon={CubesIcon} />
-                      <Title headingLevel="h4" size="lg">
-                        {`Nothing here`}
-                      </Title>
-                      <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                    </EmptyState>
-                  </Bullseye>
-                )}
-              </DrawerContentBody>
-            </DrawerContent>
-          </Drawer>
+          <>
+            <Page>
+              <PageSection variant={"light"}>
+                <TextContent>
+                  <Text component={TextVariants.h1}>Recent models</Text>
+                  <Text component={TextVariants.p}>
+                    Use your recent models from GitHub Repository, a GitHub Gist or saved in your browser.
+                  </Text>
+                </TextContent>
+              </PageSection>
+
+              <PageSection isFilled>
+                <PageSection variant={"light"}>
+                  <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
+                    <DrawerContent
+                      panelContent={
+                        <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
+                          <WorkspacesListDrawerPanelContent
+                            key={expandedWorkspaceId}
+                            workspaceId={expandedWorkspaceId}
+                            onClose={closeExpandedWorkspace}
+                          />
+                        </DrawerPanelContent>
+                      }
+                    >
+                      <DrawerContentBody>
+                        {workspaceDescriptors.length > 0 && (
+                          <Stack hasGutter={true} style={{ padding: "10px" }}>
+                            {workspaceDescriptors
+                              .sort((a, b) =>
+                                new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1
+                              )
+                              .map((workspace) => (
+                                <StackItem key={workspace.workspaceId}>
+                                  <ErrorBoundary error={<WorkspaceCardError workspace={workspace} />}>
+                                    <WorkspaceCard
+                                      workspaceId={workspace.workspaceId}
+                                      onSelect={() => expandWorkspace(workspace.workspaceId)}
+                                      isSelected={workspace.workspaceId === expandedWorkspaceId}
+                                    />
+                                  </ErrorBoundary>
+                                </StackItem>
+                              ))}
+                          </Stack>
+                        )}
+                        {workspaceDescriptors.length === 0 && (
+                          <Bullseye>
+                            <EmptyState>
+                              <EmptyStateIcon icon={CubesIcon} />
+                              <Title headingLevel="h4" size="lg">
+                                {`Nothing here`}
+                              </Title>
+                              <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                            </EmptyState>
+                          </Bullseye>
+                        )}
+                      </DrawerContentBody>
+                    </DrawerContent>
+                  </Drawer>
+                </PageSection>
+              </PageSection>
+            </Page>
+          </>
         );
       }}
     />
@@ -174,7 +188,6 @@ export function ServerlessModels() {
 }
 
 export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
-  const routes = useRoutes();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
   const readonlyFiles = useMemo(
@@ -193,111 +206,94 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     [workspacePromise.data?.files]
   );
 
+  const arrayWithModelsThenOtherFiles = useMemo(() => {
+    return [...editableFiles, ...readonlyFiles];
+  }, [editableFiles, readonlyFiles]);
+
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const [alerts, alertsRef] = useController<AlertsController>();
 
   return (
-    <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
-      <PromiseStateWrapper
-        promise={workspacePromise}
-        pending={
-          <DrawerPanelBody>
-            <Bullseye>
-              <Spinner />
-            </Bullseye>
-          </DrawerPanelBody>
-        }
-        resolved={(workspace) => (
-          <>
-            <Alerts width={"100%"} ref={alertsRef} />
-            <DrawerHead>
-              <Flex>
-                <FlexItem>
-                  <TextContent>
-                    <Text
-                      component={TextVariants.h3}
-                    >{`Editable files in '${workspacePromise.data?.descriptor.name}'`}</Text>
-                  </TextContent>
-                </FlexItem>
-                <FlexItem>
-                  <Dropdown
-                    isPlain={true}
-                    position={"left"}
-                    isOpen={isNewFileDropdownMenuOpen}
-                    toggle={
-                      <DropdownToggle
-                        className={"kie-tools--masthead-hoverable"}
-                        toggleIndicator={null}
-                        onToggle={setNewFileDropdownMenuOpen}
-                      >
-                        <PlusIcon />
-                      </DropdownToggle>
-                    }
-                  >
-                    <NewFileDropdownMenu
-                      alerts={alerts}
-                      workspaceId={workspace.descriptor.workspaceId}
-                      destinationDirPath={""}
-                      onAddFile={async () => setNewFileDropdownMenuOpen(false)}
-                    />
-                  </Dropdown>
-                </FlexItem>
-              </Flex>
-              {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
-                workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
+    <PromiseStateWrapper
+      promise={workspacePromise}
+      pending={
+        <DrawerPanelBody>
+          <Bullseye>
+            <Spinner />
+          </Bullseye>
+        </DrawerPanelBody>
+      }
+      resolved={(workspace) => (
+        <>
+          <Alerts width={"100%"} ref={alertsRef} />
+          <DrawerHead>
+            <Flex>
+              <FlexItem>
                 <TextContent>
-                  <Text component={TextVariants.small}>
-                    <i>{workspace.descriptor.origin.url.toString()}</i>
-                  </Text>
+                  <Text
+                    component={TextVariants.h3}
+                  >{`Editable files in '${workspacePromise.data?.descriptor.name}'`}</Text>
                 </TextContent>
-              )}
-              <DrawerActions>
-                <DrawerCloseButton onClick={props.onClose} />
-              </DrawerActions>
-            </DrawerHead>
-            <DrawerPanelBody>
-              <DataList aria-label="models-data-list">
-                {editableFiles.map((file) => (
-                  <Link
-                    key={file.relativePath}
-                    to={routes.workspaceWithFilePath.path({
-                      workspaceId: workspace.descriptor.workspaceId ?? "",
-                      fileRelativePath: file.relativePathWithoutExtension,
-                      extension: file.extension,
-                    })}
-                  >
-                    <FileDataListItem file={file} />
-                  </Link>
-                ))}
-              </DataList>
-              <br />
-              {readonlyFiles.length > 0 && (
-                <ExpandableSection
-                  toggleTextCollapsed="View readonly files"
-                  toggleTextExpanded="Hide readonly files"
-                  className={"plain"}
+              </FlexItem>
+              <FlexItem>
+                <Dropdown
+                  isPlain={true}
+                  position={"left"}
+                  isOpen={isNewFileDropdownMenuOpen}
+                  toggle={
+                    <DropdownToggle
+                      className={"kie-tools--masthead-hoverable"}
+                      toggleIndicator={null}
+                      onToggle={setNewFileDropdownMenuOpen}
+                    >
+                      <PlusIcon />
+                    </DropdownToggle>
+                  }
                 >
-                  <DataList aria-label="readonly-files-data-list">
-                    {readonlyFiles.map((file) => (
-                      <Link
-                        key={file.relativePath}
-                        to={routes.workspaceWithFilePath.path({
-                          workspaceId: workspace.descriptor.workspaceId ?? "",
-                          fileRelativePath: file.relativePathWithoutExtension,
-                          extension: file.extension,
-                        })}
-                      >
-                        <FileDataListItem key={file.relativePath} file={file} />
-                      </Link>
-                    ))}
-                  </DataList>
-                </ExpandableSection>
+                  <NewFileDropdownMenu
+                    alerts={alerts}
+                    workspaceId={workspace.descriptor.workspaceId}
+                    destinationDirPath={""}
+                    onAddFile={async () => setNewFileDropdownMenuOpen(false)}
+                  />
+                </Dropdown>
+              </FlexItem>
+            </Flex>
+            {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
+              workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
+              <TextContent>
+                <Text component={TextVariants.small}>
+                  <i>{workspace.descriptor.origin.url.toString()}</i>
+                </Text>
+              </TextContent>
+            )}
+            <DrawerActions>
+              <DrawerCloseButton onClick={props.onClose} />
+            </DrawerActions>
+          </DrawerHead>
+          <DrawerPanelBody>
+            <AutoSizer>
+              {({ height, width }) => (
+                <VariableSizeList
+                  height={height}
+                  itemCount={arrayWithModelsThenOtherFiles.length}
+                  itemSize={(index) => getFileDataListHeight(arrayWithModelsThenOtherFiles[index])}
+                  width={width}
+                >
+                  {({ index, style }) => (
+                    <FileDataList
+                      file={arrayWithModelsThenOtherFiles[index]}
+                      isEditable={index < editableFiles.length}
+                      style={style}
+                    />
+                  )}
+                </VariableSizeList>
               )}
-            </DrawerPanelBody>
-          </>
-        )}
-      />
-    </DrawerPanelContent>
+            </AutoSizer>
+          </DrawerPanelBody>
+        </>
+      )}
+    />
   );
 }
 
@@ -524,29 +520,5 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
         </>
       )}
     />
-  );
-}
-
-export function FileDataListItem(props: { file: WorkspaceFile }) {
-  return (
-    <DataListItem>
-      <DataListItemRow>
-        <DataListItemCells
-          dataListCells={[
-            <DataListCell key="link" isFilled={false}>
-              <Flex flexWrap={{ default: "nowrap" }}>
-                <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
-                <FlexItem>
-                  <FileLabel extension={props.file.extension} />
-                </FlexItem>
-              </Flex>
-              <TextContent>
-                <Text component={TextVariants.small}>{props.file.relativeDirPath.split("/").join(" > ")}</Text>
-              </TextContent>
-            </DataListCell>,
-          ]}
-        />
-      </DataListItemRow>
-    </DataListItem>
   );
 }
