@@ -119,28 +119,33 @@ final class ProcessConverterDelegate {
         final Map<String, BpmnNode> resultMap = new HashMap<>();
         for (FlowElement element : flowElements) {
             try {
-                DomGlobal.console.log("Converting  " + element);
+                logMessage("Converting  " + element);
                 Result<BpmnNode> result = converterFactory.flowElementConverter().convertNode(element);
                 results.add(result);
-                DomGlobal.console.log("Mapping  " + result);
+                logMessage("Mapping  " + result);
                 if (result.value() != null) {
                     BpmnNode n = result.value();
                     resultMap.put(n.value().getUUID(), n);
                 }
             } catch (Throwable t) {
-                DomGlobal.console.log("Failed to convert/map " + element, t);
+                logMessage("Failed to convert/map " + element + t);
             }
         }
         Result toReturn = null;
         try {
-            DomGlobal.console.log("Composing result");
+            logMessage("Composing result");
             toReturn = ResultComposer.composeResults(resultMap, results);
         }  catch (Throwable t) {
-            DomGlobal.console.log("Failed to compose result ", t);
+            logMessage("Failed to compose result " + t);
         }
         return toReturn;
     }
 
+    private void logMessage(String message) {
+        if (DomGlobal.console != null) { //Safe for Unit Test
+            DomGlobal.console.log(message);
+        }
+    }
     private Result<BpmnNode>[] convertLane(Lane lane, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
         if (lane.getChildLaneSet() != null) {
             parents.add(lane);
