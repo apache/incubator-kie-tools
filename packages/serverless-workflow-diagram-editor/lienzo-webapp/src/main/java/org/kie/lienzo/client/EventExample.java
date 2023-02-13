@@ -31,9 +31,12 @@ import com.ait.lienzo.client.core.shape.Triangle;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 import com.ait.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.kie.lienzo.client.util.Console;
 
 public class EventExample extends BaseExample implements Example {
+
+    MultiPath container;
 
     public EventExample(final String title) {
         super(title);
@@ -56,16 +59,26 @@ public class EventExample extends BaseExample implements Example {
     }
 
     private void createDragTests() {
-        Rectangle rect = new Rectangle(500, 200);
-        rect.setX(50).setY(50);
-        rect.setFillColor(ColorName.PALEVIOLETRED);
-        rect.setStrokeColor(ColorName.PALEVIOLETRED);
-        rect.setDraggable(true);
-        layer.add(rect);
+        container = new MultiPath().rect(50, 50, 500, 200);
+        container.setID("Container");
+        container.setX(50).setY(50);
+        container.setFillColor(ColorName.PALEVIOLETRED);
+        container.setStrokeColor(ColorName.PALEVIOLETRED);
+        container.setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
+        container.setDraggable(true);
+        layer.add(container);
 
-        addHandlers(rect, NodeDragStartHandler.class, NodeDragMoveHandler.class, NodeDragEndHandler.class);
+        addHandlers(container,
+                    NodeDragStartHandler.class,
+                    NodeDragMoveHandler.class,
+                    NodeDragEndHandler.class,
+                    NodeMouseClickHandler.class,
+                    NodeMouseEnterHandler.class,
+                    NodeMouseExitHandler.class,
+                    NodeMouseOutHandler.class,
+                    NodeMouseOverHandler.class);
 
-        rect = new Rectangle(100, 100);
+        Rectangle rect = new Rectangle(100, 100);
         rect.setX(250).setY(100);
         rect.setFillColor(ColorName.DARKGRAY);
         rect.setStrokeColor(ColorName.DARKGRAY);
@@ -77,13 +90,15 @@ public class EventExample extends BaseExample implements Example {
 
     private void createMouseEnterExitTests() {
         Circle circ = new Circle(50);
+        circ.setID("YELLOWGREEN circle");
         circ.setX(150).setY(150);
         circ.setFillColor(ColorName.YELLOWGREEN);
         circ.setStrokeColor(ColorName.YELLOWGREEN);
-        circ.setDraggable(true);
+        circ.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
+        circ.setDraggable(false);
         layer.add(circ);
 
-        addHandlers(circ, NodeMouseEnterHandler.class, NodeMouseExitHandler.class);
+        addHandlers(circ, NodeMouseEnterHandler.class, NodeMouseExitHandler.class, NodeMouseClickHandler.class);
 
         circ = new Circle(50);
         circ.setX(150).setY(350);
@@ -208,57 +223,57 @@ public class EventExample extends BaseExample implements Example {
 
         @Override
         public void onNodeDragStart(final NodeDragStartEvent event) {
-            console.log("drag start");
+            console.log(event.getSource().getID() + ": " + "drag start");
         }
 
         @Override
         public void onNodeDragMove(final NodeDragMoveEvent event) {
-            console.log("drag move");
+            console.log(event.getSource().getID() + ": " + "drag move");
         }
 
         @Override
         public void onNodeDragEnd(final NodeDragEndEvent event) {
-            console.log("drag end");
+            console.log(event.getSource().getID() + ": " + "drag end");
         }
 
         @Override
         public void onNodeMouseEnter(final NodeMouseEnterEvent event) {
-            console.log("mouse enter");
+            console.log(event.getSource().getID() + ": " + "mouse enter");
         }
 
         @Override
         public void onNodeMouseExit(final NodeMouseExitEvent event) {
-            console.log("mouse exit");
+            console.log(event.getSource().getID() + ": " + "mouse exit");
         }
 
         @Override
         public void onNodeMouseUp(final NodeMouseUpEvent event) {
-            console.log("mouse up");
+            console.log(event.getSource().getID() + ": " + "mouse up");
         }
 
         @Override
         public void onNodeMouseDown(final NodeMouseDownEvent event) {
-            console.log("mouse down");
+            console.log(event.getSource().getID() + ": " + "mouse down");
         }
 
         @Override
         public void onNodeMouseClick(final NodeMouseClickEvent event) {
-            console.log("mouse click");
+            console.log(event.getSource().getID() + ": " + "mouse click");
         }
 
         @Override
         public void onNodeMouseDoubleClick(final NodeMouseDoubleClickEvent event) {
-            console.log("mouse double click");
+            console.log(event.getSource().getID() + ": " + "mouse double click");
         }
 
         @Override
         public void onNodeMouseOver(final NodeMouseOverEvent event) {
-            console.log("mouse over");
+            console.log(event.getSource().getID() + ": " + "mouse over");
         }
 
         @Override
         public void onNodeMouseOut(final NodeMouseOutEvent event) {
-            console.log("mouse out");
+            console.log(event.getSource().getID() + ": " + "mouse out");
         }
     }
 }
