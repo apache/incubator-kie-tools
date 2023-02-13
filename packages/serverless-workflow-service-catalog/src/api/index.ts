@@ -16,3 +16,4 @@
 
 export * from "./types";
 export * from "./SwfServiceCatalogChannelApi";
+export * from "../channel/parsers/impl/asyncapi/types";

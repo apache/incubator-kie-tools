@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.service;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -55,6 +56,8 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
 
     static final String DEFAULT_PACKAGE = "com.example";
     static final String NO_DIAGRAM_MESSAGE = "No BPMN Diagram can be found.";
+
+    private static final Logger LOGGER = Logger.getLogger(BPMNClientDiagramService.class.getName());
 
     private final DefinitionManager definitionManager;
     private final BPMNClientMarshalling marshalling;
@@ -111,7 +114,9 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
                     return promises.resolve();
                 })
                 .catch_((Promise.CatchOnRejectedCallbackFn<Collection<WorkItemDefinition>>) error -> {
-                    callback.onError(new ClientRuntimeError(new DiagramParsingException(metadata, xml)));
+                    String rootCauseMessage = Objects.toString(error, "No root cause message");
+                    LOGGER.severe(rootCauseMessage);
+                    callback.onError(new ClientRuntimeError(rootCauseMessage, new DiagramParsingException(metadata, xml)));
                     return promises.resolve();
                 });
     }

@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 
-public class EndShapeView extends ServerlessWorkflowBasicShape<EndShapeView> {
+public class EndShapeView extends ServerlessWorkflowShapeView<EndShapeView> {
 
     private final static int END_SHAPE_SIZE = 46;
 

@@ -195,12 +195,12 @@
         },
         "kogito.swf.shouldReferenceServiceRegistryFunctionsWithUrls": {
           "default": false,
-          "markdownDescription": "When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the OpenAPI file.",
+          "markdownDescription": "When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the file.",
           "type": "boolean"
         },
         "kogito.swf.specsStoragePath": {
           "default": "${fileDirname}/specs",
-          "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file).",
+          "markdownDescription": "Directory where spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file).",
           "type": "string"
         },
         "kogito.swf.svgFilePath": {

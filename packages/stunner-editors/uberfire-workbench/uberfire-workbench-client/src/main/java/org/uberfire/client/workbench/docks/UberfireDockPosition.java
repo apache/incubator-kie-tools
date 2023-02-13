@@ -17,28 +17,6 @@
 package org.uberfire.client.workbench.docks;
 
 public enum UberfireDockPosition {
-
-    SOUTH {
-        @Override
-        public boolean allowSingleDockItem() {
-            return false;
-        }
-        @Override
-        public String getShortName() {
-            return "S";
-        }
-    },
-    WEST {
-        @Override
-        public boolean allowSingleDockItem() {
-            return true;
-        }
-
-        @Override
-        public String getShortName() {
-            return "W";
-        }
-    },
     EAST {
         @Override
         public boolean allowSingleDockItem() {

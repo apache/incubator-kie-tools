@@ -16,7 +16,7 @@
 
 import {
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
+  SwfCatalogSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
 import { posix as posixPath } from "path";
@@ -38,7 +38,7 @@ export class SwfServiceCatalogSupportActions {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    if (args.containingService.source.type === SwfServiceCatalogServiceSourceType.LOCAL_FS) {
+    if (args.containingService.source.type === SwfCatalogSourceType.LOCAL_FS) {
       return;
     }
 

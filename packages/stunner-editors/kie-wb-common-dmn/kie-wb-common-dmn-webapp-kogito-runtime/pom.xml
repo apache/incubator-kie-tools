@@ -200,11 +200,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>kie-wb-common-dmn-webapp-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -464,7 +459,7 @@
 
     <!-- Client side FEEL -->
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -479,7 +474,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <classifier>sources</classifier>
       <scope>provided</scope>
@@ -670,8 +665,8 @@
             <compileSourcesArtifact>org.rikkola.gwt:antlr4-c3-gwt</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-feel</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-dmn-feel-gwt</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-model</compileSourcesArtifact>
 
             <!-- UF-ext -->
@@ -713,7 +708,6 @@
             <!-- DMN Editor -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-wires-core-grids</compileSourcesArtifact>

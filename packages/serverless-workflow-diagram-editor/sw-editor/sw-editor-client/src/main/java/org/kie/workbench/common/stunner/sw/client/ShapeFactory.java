@@ -71,7 +71,7 @@ public class ShapeFactory
         } else if (instance instanceof End) {
             return new EndShape();
         } else if (instance instanceof State) {
-            return new StateShape((State) instance, resourceContentService);
+            return StateShape.create((State) instance, resourceContentService);
         } else if (TransitionShape.isTransition(instance)) {
             return TransitionShape.create(instance).setAppearance(instance);
         }

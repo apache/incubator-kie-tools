@@ -24,21 +24,21 @@ describe("Dmn Editable.", () => {
     cy.editor("dmn-editable").find("[data-field='kie-palette']").should("be.visible");
 
     cy.editor("dmn-editable")
-      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W", { timeout: 10000 })
+      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-E", { timeout: 10000 })
       .should("be.visible");
 
     cy.uploadFile("call centre drd.dmn", "dmn-editable");
     cy.viewFile("call centre drd.dmn", "dmn-editable");
 
     cy.editor("dmn-editable")
-      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W")
+      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-E")
       .find("button")
       .first()
       .should("be.visible")
       .click(); // open DecisionNavigator
 
     cy.editor("dmn-editable")
-      .ouiaId("expanded-docks-bar", "expanded-docks-bar-W")
+      .ouiaId("expanded-docks-bar", "expanded-docks-bar-E")
       .should("be.visible")
       .within(($navigator) => {
         cy.get("[data-field='item'][title='DRG']")

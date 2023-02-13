@@ -291,7 +291,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt-functions</artifactId>
       <exclusions>
         <exclusion>
@@ -301,7 +301,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -316,7 +316,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <classifier>sources</classifier>
       <exclusions>

@@ -79,7 +79,6 @@ public class ModelUtils {
             state.setName((String) Js.undefined());
             state.setType((String) Js.undefined());
             state.setTransition((String) Js.undefined());
-            state.setEventTimeout((String) Js.undefined());
             state.setCompensatedBy((String) Js.undefined());
             state.setEnd(false);
             if (null != state.getOnErrors()) {

@@ -85,6 +85,32 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.editors</groupId>
+        <artifactId>kie-dmn-feel-gwt</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <artifactId>kie-dmn-feel-gwt</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <artifactId>kie-dmn-feel-gwt-functions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <artifactId>kie-dmn-feel-gwt-functions</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>kie-wb-common-dmn-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -92,12 +118,6 @@
       <dependency>
         <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>kie-wb-common-dmn-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
-        <artifactId>kie-wb-common-dmn-webapp-common</artifactId>
         <version>${project.version}</version>
       </dependency>
 

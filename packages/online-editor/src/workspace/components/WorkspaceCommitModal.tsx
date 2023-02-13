@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { PromiseModalChildren } from "./PromiseModal";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -22,21 +22,82 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../../i18n";
+import { useEnv } from "../../env/hooks/EnvContext";
+import {
+  CommitMessageValidation,
+  CommitMessageValidationService,
+} from "../commitMessageValidationService/CommitMessageValidationService";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
+
+const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
+  if (!props.validations) {
+    return null;
+  }
+  return (
+    <ul>
+      {props.validations.map(
+        (validation) =>
+          validation && (
+            <li key={validation}>
+              <Text
+                component={TextVariants.small}
+                style={{ whiteSpace: "pre-line", color: "var(--pf-global--danger-color--100)" }}
+              >
+                {validation}
+              </Text>
+            </li>
+          )
+      )}
+    </ul>
+  );
+};
 
 export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, onClose }) => {
   const { i18n } = useOnlineI18n();
+  const { env } = useEnv();
   const [commitMessage, setCommitMessage] = useState<string>("");
+  const [validation, setValidation] = useState<CommitMessageValidation>({
+    result: true,
+  });
+  const [loading, setLoading] = useState(false);
+
+  const commitMessageValidationService = useMemo(
+    () =>
+      env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL &&
+      new CommitMessageValidationService({
+        commitMessageValidationServiceUrl: env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL,
+      }),
+    [env.KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL]
+  );
+
+  const onValidate = useCallback(
+    async (message: string): Promise<CommitMessageValidation> => {
+      if (!message) {
+        return { result: false, reasons: [i18n.commitModal.emptyMessageValidation] };
+      }
+      if (!commitMessageValidationService) {
+        return { result: true };
+      }
+      return await commitMessageValidationService.validateCommitMessage(message);
+    },
+    [i18n, commitMessageValidationService]
+  );
 
   const onSubmit = useCallback(
-    (e) => {
+    async (e) => {
+      setLoading(true);
       e.preventDefault();
       e.stopPropagation();
-      if (!commitMessage) {
-        return;
+      const validationResult = await onValidate(commitMessage);
+
+      setValidation(validationResult);
+
+      if (validationResult.result) {
+        onReturn(commitMessage);
       }
-      onReturn(commitMessage);
+      setLoading(false);
     },
-    [commitMessage, onReturn]
+    [commitMessage, onReturn, onValidate]
   );
 
   return (
@@ -46,8 +107,8 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
       <Form onSubmit={onSubmit}>
         <FormGroup
           fieldId={"kie-sandbox-custom-commit-message"}
-          validated={!commitMessage ? "error" : "success"}
-          helperTextInvalid={i18n.commitModal.inputHelper}
+          validated={validation.result ? ValidatedOptions.success : ValidatedOptions.error}
+          helperTextInvalid={<CommitValidationErrorMessages validations={validation.reasons} />}
         >
           <TextArea
             value={commitMessage}
@@ -66,6 +127,7 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
             variant="primary"
             disabled={commitMessage.length === 0}
             onClick={onSubmit}
+            isLoading={loading}
             data-testid="save-commit-message-button"
           >
             Commit

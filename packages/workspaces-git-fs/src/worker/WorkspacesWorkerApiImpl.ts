@@ -30,7 +30,14 @@ import { StorageFile } from "../services/StorageService";
 import { GitServerRef } from "./api/GitServerRef";
 import { LocalFile } from "./api/LocalFile";
 import { WorkspaceDescriptor } from "./api/WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./api/WorkspaceOrigin";
+import {
+  BitbucketOrigin,
+  GistOrigin,
+  GitHubOrigin,
+  SnippetOrigin,
+  WorkspaceKind,
+  WorkspaceOrigin,
+} from "./api/WorkspaceOrigin";
 import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
@@ -85,12 +92,33 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
+  public async kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+  }): Promise<void> {
+    return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+      return this.args.services.descriptorService.turnIntoSnippet(
+        fs,
+        args.workspaceId,
+        new URL(args.remoteUrl),
+        args.branch
+      );
+    });
+  }
+
   public async kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
     workspaceId: string;
     remoteUrl: string;
+    branch?: string;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
-      return this.args.services.descriptorService.turnIntoGit(fs, args.workspaceId, new URL(args.remoteUrl));
+      return this.args.services.descriptorService.turnIntoGit(
+        fs,
+        args.workspaceId,
+        new URL(args.remoteUrl),
+        args.branch
+      );
     });
   }
 
@@ -413,7 +441,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   }
 
   public async kieSandboxWorkspacesGit_clone(args: {
-    origin: GistOrigin | GitHubOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
     gitAuthSessionId: string | undefined;

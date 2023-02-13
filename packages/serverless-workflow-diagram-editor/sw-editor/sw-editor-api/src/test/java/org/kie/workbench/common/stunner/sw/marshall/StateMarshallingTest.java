@@ -63,9 +63,8 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertTrue(workflow.getStates()[0].getEnd() instanceof StateEnd);
         final StateEnd end = (StateEnd) workflow.getStates()[0].getEnd();
         assertTrue(end.getTerminate());
-        assertEquals("{}",end.getContinueAs());
+        assertEquals("{}", end.getContinueAs());
         assertFalse(end.getCompensate());
-        //assertTrue(end.get("produceEvents").equals("[]"));
     }
 
     @Test
@@ -123,7 +122,6 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertNull(state1.getTransition());
         assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
         assertNull(state1.getCompensatedBy());
-        assertNull(state1.getEventTimeout());
         assertNull(state1.getOnErrors());
     }
 
@@ -144,7 +142,6 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertNull(state1.getTransition());
         assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
         assertNull(state1.getCompensatedBy());
-        assertNull(state1.getEventTimeout());
         assertNotNull(state1.getOnErrors());
         assertEquals(1, state1.getOnErrors().length);
         ErrorTransition onError = state1.getOnErrors()[0];

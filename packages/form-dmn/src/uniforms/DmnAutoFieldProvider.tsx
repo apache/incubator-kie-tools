@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AutoField, AutoFields } from "uniforms-patternfly";
+import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { DmnFeelContextField } from "./DmnFeelContextField";
 import * as React from "react";
 import { FEEL_CONTEXT } from "./DmnFormJsonSchemaBridge";

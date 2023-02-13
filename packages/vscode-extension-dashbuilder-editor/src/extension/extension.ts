@@ -26,6 +26,8 @@ import { ComponentServer } from "./ComponentsHttpServer";
 import { DashbuilderVsCodeExtensionConfiguration } from "./configuration";
 import { setupDashboardEditorControls } from "./setupDashboardEditorControls";
 import { DashbuilderViewerChannelApiProducer } from "../api/DashbuilderViewerChannelApiProducer";
+import { setupBuiltInVsCodeEditorDashbuilderContributions } from "./builtInVsCodeEditorDashbuilderContributions";
+import { VsCodeDashbuilderLanguageService } from "./languageService/VsCodeDashbuilderLanguageService";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -73,6 +75,16 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   const configuration = new DashbuilderVsCodeExtensionConfiguration();
+
+  const vsCodeDashbuilderLanguageService = new VsCodeDashbuilderLanguageService();
+
+  setupBuiltInVsCodeEditorDashbuilderContributions({
+    context,
+    vsCodeDashbuilderLanguageService,
+    configuration,
+    kieEditorsStore,
+  });
+
   await setupDashboardEditorControls({
     context,
     configuration,
