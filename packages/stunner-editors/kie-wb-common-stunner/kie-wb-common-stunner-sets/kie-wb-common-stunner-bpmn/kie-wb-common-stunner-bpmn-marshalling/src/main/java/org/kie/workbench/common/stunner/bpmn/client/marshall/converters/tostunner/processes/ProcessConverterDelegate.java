@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.google.gwt.core.client.GWT;
+import elemental2.dom.DomGlobal;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Lane;
@@ -115,28 +115,28 @@ final class ProcessConverterDelegate {
     }
 
     private Result<Map<String, BpmnNode>> convertFlowElements(List<FlowElement> flowElements) {
-        final List<Result<BpmnNode>> results = new ArrayList<Result<BpmnNode>>();
-        final Map<String, BpmnNode> resultMap = new HashMap<String, BpmnNode>();
+        final List<Result<BpmnNode>> results = new ArrayList<>();
+        final Map<String, BpmnNode> resultMap = new HashMap<>();
         for (FlowElement element : flowElements) {
             try {
-                GWT.log("Converting  " + element);
+                DomGlobal.console.log("Converting  " + element);
                 Result<BpmnNode> result = converterFactory.flowElementConverter().convertNode(element);
                 results.add(result);
-                GWT.log("Mapping  " + result);
+                DomGlobal.console.log("Mapping  " + result);
                 if (result.value() != null) {
                     BpmnNode n = result.value();
                     resultMap.put(n.value().getUUID(), n);
                 }
             } catch (Throwable t) {
-                GWT.log("Failed to convert/map " + element, t);
+                DomGlobal.console.log("Failed to convert/map " + element, t);
             }
         }
         Result toReturn = null;
         try {
-            GWT.log("Composing result");
+            DomGlobal.console.log("Composing result");
             toReturn = ResultComposer.composeResults(resultMap, results);
         }  catch (Throwable t) {
-            GWT.log("Failed to compose result ", t);
+            DomGlobal.console.log("Failed to compose result ", t);
         }
         return toReturn;
     }
