@@ -28,8 +28,9 @@ import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
 import { DevModeDeploymentLoaderPipeline } from "./pipelines/DevModeDeploymentLoaderPipeline";
-import { AppDeploymentMode, useEnv } from "../env/EnvContext";
+import { useEnv } from "../env/EnvContext";
 import { resolveWebToolsId } from "./devMode/DevModeContext";
+import { AppDistributionMode } from "../AppConstants";
 
 interface Props {
   children: React.ReactNode;
@@ -135,7 +136,7 @@ export function OpenShiftContextProvider(props: Props) {
 
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
       const deploymentLoaderPromises = Promise.all([
-        env.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
+        env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
           ? deploymentLoaderPipeline.execute()
           : Promise.resolve([]),
         devModeDeploymentLoaderPipeline.execute(),
@@ -155,34 +156,39 @@ export function OpenShiftContextProvider(props: Props) {
     }
 
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
-      const loadDeploymentsTask = window.setInterval(() => {
-        const deploymentLoaderPromises = Promise.all([
-          env.FEATURE_FLAGS.MODE === AppDeploymentMode.COMMUNITY
-            ? deploymentLoaderPipeline.execute()
-            : Promise.resolve([]),
-          devModeDeploymentLoaderPipeline.execute(),
-        ]).then((res) => res.flat());
-        deploymentLoaderPromises
-          .then((ds) => setDeployments(ds))
-          .catch((error) => {
-            onDisconnect();
-            window.clearInterval(loadDeploymentsTask);
-            console.error(error);
-          });
-      }, LOAD_DEPLOYMENTS_POLLING_TIME);
-      return () => window.clearInterval(loadDeploymentsTask);
+      let loadDeploymentsTask: number | undefined;
+
+      (function callImmediatelyAndPoll() {
+        try {
+          Promise.all([
+            env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
+              ? deploymentLoaderPipeline.execute()
+              : Promise.resolve([]),
+            devModeDeploymentLoaderPipeline.execute(),
+          ])
+            .then((res) => res.flat())
+            .then((ds) => setDeployments(ds));
+
+          loadDeploymentsTask = window.setTimeout(callImmediatelyAndPoll, LOAD_DEPLOYMENTS_POLLING_TIME);
+        } catch (error) {
+          onDisconnect();
+          window.clearTimeout(loadDeploymentsTask);
+          console.error(error);
+        }
+      })();
+
+      return () => window.clearTimeout(loadDeploymentsTask);
     }
   }, [
-    settings.openshift,
-    settingsDispatch.openshift.service,
-    deployments.length,
-    settingsDispatch.openshift,
-    isDeploymentsDropdownOpen,
-    kieSandboxExtendedServices.status,
-    onDisconnect,
     deploymentLoaderPipeline,
     devModeDeploymentLoaderPipeline,
     env.FEATURE_FLAGS.MODE,
+    isDeploymentsDropdownOpen,
+    kieSandboxExtendedServices.status,
+    onDisconnect,
+    settings.openshift.config,
+    settings.openshift.status,
+    settingsDispatch.openshift,
   ]);
 
   const value = useMemo(

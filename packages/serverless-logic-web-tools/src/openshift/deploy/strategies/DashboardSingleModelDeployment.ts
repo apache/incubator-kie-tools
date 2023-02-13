@@ -19,6 +19,7 @@ import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { DashbuilderViewer } from "../BaseContainerImages";
 import { createDashbuilderViewerAppDataFile } from "../DashbuilderViewerAppData";
+import { zipFiles } from "../../../zip";
 
 export class DashboardSingleModelDeployment extends DeploymentStrategy {
   public async buildPipeline(): Promise<OpenShiftPipeline> {
@@ -33,7 +34,7 @@ export class DashboardSingleModelDeployment extends DeploymentStrategy {
 
     const filesToBeDeployed = [this.args.targetFile, dockerfileFile, dockerIgnoreFile, appDataFile];
 
-    const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
+    const workspaceZipBlob = await zipFiles(filesToBeDeployed);
 
     return new KnativeBuilderPipeline({
       workspaceName: this.args.targetFile.name,

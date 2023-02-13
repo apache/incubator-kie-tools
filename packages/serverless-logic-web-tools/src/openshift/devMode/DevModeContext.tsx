@@ -17,8 +17,22 @@
 import { v4 as uuid } from "uuid";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import * as React from "react";
-import { useContext } from "react";
-import { DevModeEndpoints, DevModeUploadResult, WEB_TOOLS_ID_KEY } from "./DevModeConstants";
+import { useContext, useState, useEffect, useCallback, useMemo } from "react";
+import {
+  buildEndpoints,
+  DevModeEndpoints,
+  DevModeUploadResult,
+  WEB_TOOLS_ID_KEY,
+  ZIP_FILE_NAME,
+  ZIP_FILE_PART_KEY,
+} from "./DevModeConstants";
+import { useEnv } from "../../env/EnvContext";
+import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
+import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
+import { AppDistributionMode } from "../../AppConstants";
+import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
+import { fetchWithTimeout } from "../../fetch";
+import { zipFiles } from "../../zip";
 
 export const resolveWebToolsId = () => {
   const webToolsId = localStorage.getItem(WEB_TOOLS_ID_KEY) ?? uuid();
@@ -32,12 +46,122 @@ export const resolveDevModeResourceName = (webToolsId: string) => {
 
 export interface DevModeContextType {
   endpoints: DevModeEndpoints | undefined;
+}
+
+export interface DevModeDispatchContextType {
   upload(files: WorkspaceFile[]): Promise<DevModeUploadResult>;
   checkHealthReady(): Promise<boolean>;
 }
 
 export const DevModeContext = React.createContext<DevModeContextType>({} as any);
+export const DevModeDispatchContext = React.createContext<DevModeDispatchContextType>({} as any);
 
 export function useDevMode() {
   return useContext(DevModeContext);
+}
+
+export function useDevModeDispatch() {
+  return useContext(DevModeDispatchContext);
+}
+
+export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
+  const { env } = useEnv();
+  const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
+  const [endpoints, setEndpoints] = useState<DevModeEndpoints | undefined>();
+
+  useEffect(() => {
+    if (
+      settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED ||
+      env.FEATURE_FLAGS.MODE !== AppDistributionMode.OPERATE_FIRST
+    ) {
+      setEndpoints(undefined);
+      return;
+    }
+
+    try {
+      const spinUpDevModePipeline = new SpinUpDevModePipeline({
+        webToolsId: resolveWebToolsId(),
+        namespace: settings.openshift.config.namespace,
+        openShiftService: settingsDispatch.openshift.service,
+      });
+
+      spinUpDevModePipeline
+        .execute()
+        .then((routeUrl) => {
+          if (routeUrl) {
+            setEndpoints(buildEndpoints(routeUrl));
+          }
+        })
+        .catch((e) => console.debug(e));
+    } catch (e) {
+      console.debug(e);
+    }
+  }, [
+    settings.openshift.status,
+    settings.openshift.config.namespace,
+    settingsDispatch.openshift.service,
+    env.FEATURE_FLAGS.MODE,
+  ]);
+
+  const checkHealthReady = useCallback(async () => {
+    if (!endpoints) {
+      return false;
+    }
+
+    try {
+      const readyResponse = await fetchWithTimeout(endpoints.health.ready, { timeout: 2000 });
+      return readyResponse.ok;
+    } catch (e) {
+      console.debug(e);
+    }
+    return false;
+  }, [endpoints]);
+
+  const upload = useCallback(
+    async (files: WorkspaceFile[]): Promise<DevModeUploadResult> => {
+      if (!endpoints) {
+        console.error("Route URL for Dev Mode deployment not available.");
+        return {
+          success: false,
+          reason: "NOT_READY",
+        };
+      }
+
+      if (!(await checkHealthReady())) {
+        console.error("Dev Mode deployment is not ready");
+        return {
+          success: false,
+          reason: "NOT_READY",
+        };
+      }
+
+      try {
+        const zipBlob = await zipFiles(files);
+
+        const formData = new FormData();
+        formData.append(ZIP_FILE_PART_KEY, zipBlob, ZIP_FILE_NAME);
+
+        await fetch(endpoints.upload, { method: "POST", body: formData });
+
+        return { success: true };
+      } catch (e) {
+        console.debug(e);
+      }
+      return {
+        success: false,
+        reason: "ERROR",
+      };
+    },
+    [checkHealthReady, endpoints]
+  );
+
+  const value = useMemo(() => ({ endpoints }), [endpoints]);
+  const dispatch = useMemo(() => ({ upload, checkHealthReady }), [upload, checkHealthReady]);
+
+  return (
+    <DevModeContext.Provider value={value}>
+      <DevModeDispatchContext.Provider value={dispatch}>{props.children}</DevModeDispatchContext.Provider>
+    </DevModeContext.Provider>
+  );
 }

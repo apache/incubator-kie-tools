@@ -16,7 +16,7 @@
 
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 
 export interface EditorContextType {
   notifications: Notification[];
@@ -26,10 +26,10 @@ export interface EditorDispatchContextType {
   setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>;
 }
 
-export const EditorContext = createContext<EditorContextType>({} as any);
-export const EditorDispatchContext = createContext<EditorDispatchContextType>({} as any);
+export const EditorContext = React.createContext<EditorContextType>({} as any);
+export const EditorDispatchContext = React.createContext<EditorDispatchContextType>({} as any);
 
-export function EditorContextProvider(props: PropsWithChildren<{}>) {
+export function EditorContextProvider(props: React.PropsWithChildren<{}>) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const value = useMemo(() => ({ notifications }), [notifications]);
   const dispatch = useMemo(() => ({ setNotifications }), [setNotifications]);

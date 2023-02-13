@@ -18,11 +18,6 @@ import * as React from "react";
 import { useContext } from "react";
 import { EnvJson } from "./EnvJson";
 
-export enum AppDeploymentMode {
-  COMMUNITY = "COMMUNITY",
-  OPERATE_FIRST = "OPERATE_FIRST",
-}
-
 export interface EnvContextType {
   env: EnvJson;
 }

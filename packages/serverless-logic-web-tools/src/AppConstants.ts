@@ -15,3 +15,8 @@
  */
 
 export const APP_NAME = "Serverless Logic Web Tools";
+
+export enum AppDistributionMode {
+  COMMUNITY = "COMMUNITY",
+  OPERATE_FIRST = "OPERATE_FIRST",
+}

@@ -41,12 +41,15 @@ import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegis
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useDevMode } from "../../openshift/devMode/DevModeContext";
+import { useDevMode, useDevModeDispatch } from "../../openshift/devMode/DevModeContext";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { isServerlessWorkflow } from "../../extension";
-import { AppDeploymentMode, useEnv } from "../../env/EnvContext";
+import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
+import { AppDistributionMode } from "../../AppConstants";
+
+const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
 
 interface Props {
   workspace: ActiveWorkspace;
@@ -58,6 +61,7 @@ export function useDeployDropdownItems(props: Props) {
   const { notifications } = useEditor();
   const { i18n } = useAppI18n();
   const devMode = useDevMode();
+  const devModeDispatch = useDevModeDispatch();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
@@ -180,7 +184,8 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const isDevModeEnabled = useMemo(
-    () => env.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST && isServerlessWorkflow(props.workspaceFile.name),
+    () =>
+      env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST && isServerlessWorkflow(props.workspaceFile.name),
     [env.FEATURE_FLAGS.MODE, props.workspaceFile.name]
   );
 
@@ -197,30 +202,30 @@ export function useDeployDropdownItems(props: Props) {
     kieSandboxExtendedServices.setModalOpen(true);
   }, [isKieSandboxExtendedServicesRunning, kieSandboxExtendedServices, openshift]);
 
-  const onDeployDevMode = useCallback(async () => {
+  const onUploadDevMode = useCallback(async () => {
     if (isKieSandboxExtendedServicesRunning) {
       devModeUploadingAlert.show();
-      const result = await devMode.upload([props.workspaceFile]);
+      // TODO CAPONETTO: only the current file is uploaded for now
+      const result = await devModeDispatch.upload([props.workspaceFile]);
       devModeUploadingAlert.close();
-      if (result.success && devMode.endpoints) {
+
+      if (result.success) {
         uploadToDevModeSuccessAlert.show();
 
         const fetchDevModeDeploymentTask = window.setInterval(async () => {
-          const isReady = await devMode.checkHealthReady();
+          const isReady = await devModeDispatch.checkHealthReady();
           if (!isReady) {
             return;
           }
           uploadToDevModeSuccessAlert.close();
           devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swaggerUi });
           window.clearInterval(fetchDevModeDeploymentTask);
-        }, 2000);
-      }
-
-      if (!result.success) {
-        if (result.reason === "ERROR") {
-          uploadToDevModeErrorAlert.show();
-        } else if (result.reason === "NOT_READY") {
+        }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
+      } else {
+        if (result.reason === "NOT_READY") {
           uploadToDevModeNotReadyAlert.show();
+        } else {
+          uploadToDevModeErrorAlert.show();
         }
       }
     } else {
@@ -228,15 +233,16 @@ export function useDeployDropdownItems(props: Props) {
       kieSandboxExtendedServices.setModalOpen(true);
     }
   }, [
-    devMode,
-    devModeReadyAlert,
     isKieSandboxExtendedServicesRunning,
-    kieSandboxExtendedServices,
-    props.workspaceFile,
     devModeUploadingAlert,
-    uploadToDevModeErrorAlert,
-    uploadToDevModeNotReadyAlert,
+    devModeDispatch,
+    props.workspaceFile,
     uploadToDevModeSuccessAlert,
+    devModeReadyAlert,
+    devMode.endpoints,
+    uploadToDevModeNotReadyAlert,
+    uploadToDevModeErrorAlert,
+    kieSandboxExtendedServices,
   ]);
 
   return useMemo(() => {
@@ -276,12 +282,12 @@ export function useDeployDropdownItems(props: Props) {
             {isDevModeEnabled && (
               <DropdownItem
                 icon={<UploadIcon />}
-                id="deploy-dev-mode-button"
-                key={`dropdown-deploy-dev-mode`}
+                id="upload-dev-mode-button"
+                key={`dropdown-upload-dev-mode`}
                 component={"button"}
-                onClick={onDeployDevMode}
+                onClick={onUploadDevMode}
                 isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
-                ouiaId={"deploy-to-openshift-dev-mode-dropdown-button"}
+                ouiaId={"upload-to-openshift-dev-mode-dropdown-button"}
               >
                 <Flex flexWrap={{ default: "nowrap" }}>
                   <FlexItem>
@@ -353,7 +359,7 @@ export function useDeployDropdownItems(props: Props) {
     isKieSandboxExtendedServicesRunning,
     isOpenShiftConnected,
     isDevModeEnabled,
-    onDeployDevMode,
+    onUploadDevMode,
     needsDependencyDeployment,
     i18n.deployments.virtualServiceRegistry,
     onSetup,

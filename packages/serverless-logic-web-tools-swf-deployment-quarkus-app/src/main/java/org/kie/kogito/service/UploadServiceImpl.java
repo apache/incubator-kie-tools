@@ -27,6 +27,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Startup
@@ -56,15 +58,22 @@ public class UploadServiceImpl implements UploadService {
         var zipPath = Paths.get(WORK_FOLDER, UPLOADED_ZIP_FILE);
         try {
             Files.copy(inputStream, zipPath, StandardCopyOption.REPLACE_EXISTING);
-            zipService.unzip(zipPath.toString(), UNZIP_FOLDER);
+            var unzippedFilePaths = zipService.unzip(zipPath.toString(), UNZIP_FOLDER);
 
-            validateIncomingFiles();
+            var validFilePaths = validateFiles(unzippedFilePaths);
+
+            if (validFilePaths.size() == 0) {
+                LOGGER.warn("No valid file has been found. Upload skipped.");
+                return;
+            }
 
             cleanUpFolder(META_INF_RESOURCES_FOLDER);
 
-            copyResources();
+            copyResources(validFilePaths);
 
             cleanUpFolder(UNZIP_FOLDER);
+
+            zipPath.toFile().delete();
 
             LOGGER.info("Upload file ... done");
         } catch (Exception e) {
@@ -78,24 +87,33 @@ public class UploadServiceImpl implements UploadService {
         folder.mkdirs();
     }
 
-    private void validateIncomingFiles() throws IOException {
-        LOGGER.info("Validate incoming files");
+    private List<String> validateFiles(final List<String> filePaths) {
         // TODO CAPONETTO: improve this very simple logic; also assuming for now that all files are SW files
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(UNZIP_FOLDER))) {
-            for (Path path : stream) {
-                try {
-                    String format = path.getFileName().endsWith(".sw.json") ? "json" : "yml";
-                    ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(
-                            new InputStreamReader(new FileInputStream(path.toAbsolutePath().toString())),
-                            format,
-                            JavaKogitoBuildContext.builder().build());
+        LOGGER.info("Validate incoming files");
+        List<String> validFilePaths = new ArrayList<>();
+
+        for (String filePath : filePaths) {
+            var path = Paths.get(filePath);
+            try {
+                var format = path.getFileName().endsWith(".sw.json") ? "json" : "yml";
+                var parser = ServerlessWorkflowParser.of(
+                        new InputStreamReader(new FileInputStream(path.toAbsolutePath().toString())),
+                        format,
+                        JavaKogitoBuildContext.builder().build());
+                // TODO CAPONETTO: is there a better way to validate sw files?
+                var workflowId = parser.getProcessInfo().info().getId();
+                // Apparently Kogito does not support workflowId with dashes
+                if (workflowId.contains("-")) {
+                    LOGGER.error("Error when validating file. " + workflowId + " contains dash chars.");
+                } else {
+                    validFilePaths.add(filePath);
                     LOGGER.info("Workflow validated: " + parser.getProcessInfo().info().getId());
-                } catch (Exception e) {
-                    path.toFile().delete();
-                    LOGGER.error("Error when validating file", e);
                 }
+            } catch (Exception e) {
+                LOGGER.error("Error when validating file: " + e.getMessage());
             }
         }
+        return validFilePaths;
     }
 
     private void cleanUpFolder(final String folderPath) throws IOException {
@@ -112,23 +130,22 @@ public class UploadServiceImpl implements UploadService {
         }
     }
 
-    private void copyResources() throws IOException {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(UNZIP_FOLDER))) {
-            for (Path path : stream) {
-                var source = path.toFile();
-                var target = Paths.get(META_INF_RESOURCES_FOLDER, source.getName()).toFile();
+    private void copyResources(List<String> filePaths) throws IOException {
+        for (String filePath : filePaths) {
+            var path = Paths.get(filePath);
+            var source = path.toFile();
+            var target = Paths.get(META_INF_RESOURCES_FOLDER, source.getName()).toFile();
 
-                LOGGER.info("Copy file: " + source.getPath() + " -> " + target.getPath());
+            LOGGER.info("Copy file: " + source.getPath() + " -> " + target.getPath());
 
-                if (!source.exists()) {
-                    continue;
-                }
+            if (!source.exists()) {
+                continue;
+            }
 
-                if (source.isDirectory()) {
-                    FileUtils.copyDirectory(source, target);
-                } else {
-                    FileUtils.copyFile(source, target);
-                }
+            if (source.isDirectory()) {
+                FileUtils.copyDirectory(source, target);
+            } else {
+                FileUtils.copyFile(source, target);
             }
         }
     }

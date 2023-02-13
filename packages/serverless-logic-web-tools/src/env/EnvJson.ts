@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { AppDeploymentMode } from "./EnvContext";
+import { AppDistributionMode } from "../AppConstants";
 
 export interface EnvJson {
   KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
   SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: string;
   FEATURE_FLAGS: {
-    MODE: AppDeploymentMode;
+    MODE: AppDistributionMode;
   };
 }

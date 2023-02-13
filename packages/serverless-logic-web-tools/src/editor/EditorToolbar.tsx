@@ -92,8 +92,9 @@ import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatu
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
-import { AppDeploymentMode, useEnv } from "../env/EnvContext";
+import { useEnv } from "../env/EnvContext";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
+import { AppDistributionMode } from "../AppConstants";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -179,7 +180,7 @@ export function EditorToolbar(props: Props) {
   }, [isSaved]);
 
   const canBeDeployed = useMemo(() => {
-    if (env.FEATURE_FLAGS.MODE === AppDeploymentMode.OPERATE_FIRST) {
+    if (env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST) {
       return isServerlessWorkflow(props.workspaceFile.relativePath);
     }
 
