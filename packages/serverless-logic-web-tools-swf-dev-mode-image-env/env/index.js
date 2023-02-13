@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount: {
-      default: "caponetto", // TODO CAPONETTO: use kie-tools
+      default: "kie-tools",
       description: "",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName: {
