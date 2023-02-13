@@ -45,6 +45,9 @@ package-lock.json
 **/videos/
 !packages/online-editor/build
 
+## serverless-logic-web-tools
+!packages/serverless-logic-web-tools/build
+
 ## vscode-*
 **/.vscode-test/
 **/.vscode-test-web/
