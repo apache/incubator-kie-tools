@@ -250,35 +250,37 @@ export function useDeployDropdownItems(props: Props) {
       <React.Fragment key={"deploy-dropdown-items"}>
         {props.workspace && (
           <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
-            <DropdownItem
-              icon={<OpenshiftIcon />}
-              id="deploy-your-model-button"
-              key={`dropdown-deploy`}
-              component={"button"}
-              onClick={onDeploy}
-              isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
-              ouiaId={"deploy-to-openshift-dropdown-button"}
-            >
-              {props.workspace.files.length > 1 && (
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>
-                    Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
-                  </FlexItem>
-                </Flex>
-              )}
-              {props.workspace.files.length === 1 && (
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>
-                    Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
-                  </FlexItem>
-                  <FlexItem>
-                    <b>
-                      <FileLabel extension={props.workspace.files[0].extension} />
-                    </b>
-                  </FlexItem>
-                </Flex>
-              )}
-            </DropdownItem>
+            {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
+              <DropdownItem
+                icon={<OpenshiftIcon />}
+                id="deploy-your-model-button"
+                key={`dropdown-deploy`}
+                component={"button"}
+                onClick={onDeploy}
+                isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
+                ouiaId={"deploy-to-openshift-dropdown-button"}
+              >
+                {props.workspace.files.length > 1 && (
+                  <Flex flexWrap={{ default: "nowrap" }}>
+                    <FlexItem>
+                      Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
+                    </FlexItem>
+                  </Flex>
+                )}
+                {props.workspace.files.length === 1 && (
+                  <Flex flexWrap={{ default: "nowrap" }}>
+                    <FlexItem>
+                      Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
+                    </FlexItem>
+                    <FlexItem>
+                      <b>
+                        <FileLabel extension={props.workspace.files[0].extension} />
+                      </b>
+                    </FlexItem>
+                  </Flex>
+                )}
+              </DropdownItem>
+            )}
             {isDevModeEnabled && (
               <DropdownItem
                 icon={<UploadIcon />}
