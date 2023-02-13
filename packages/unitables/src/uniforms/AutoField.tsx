@@ -23,7 +23,7 @@ import {
   RadioField,
   SelectField,
   TextField,
-} from "uniforms-patternfly";
+} from "@kie-tools/uniforms-patternfly/dist/esm";
 import { createAutoField } from "uniforms";
 
 export const AutoField = createAutoField((props) => {
