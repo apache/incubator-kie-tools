@@ -370,7 +370,6 @@ export function EditorPage(props: Props) {
       .getDiagnostics({
         content: lastContent.current,
         uriPath: workspaceFilePromise.data.workspaceFile.relativePath,
-        swfServiceCatalogService: swfServiceCatalogChannelApiImpl.kogitoSwfServiceCatalog_services().defaultValue,
       })
       .then((lsDiagnostics) => {
         const diagnostics = lsDiagnostics.map(

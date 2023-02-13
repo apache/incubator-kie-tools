@@ -180,7 +180,6 @@ export class SwfLanguageService {
   public async getDiagnostics(args: {
     content: string;
     uriPath: string;
-    swfServiceCatalogService: SwfServiceCatalogService[];
     rootNode: SwfLsNode | undefined;
     getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]> {
@@ -204,15 +203,14 @@ export class SwfLanguageService {
       ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
 
-    if (args.swfServiceCatalogService) {
-      return [
-        ...schemaValidationResults,
-        ...refValidationResults,
-        ...this.getFunctionDiagnostics(args.swfServiceCatalogService),
-      ];
-    }
-
-    return [...schemaValidationResults, ...refValidationResults];
+    const doc = TextDocument.create(args.uriPath, this.args.lang.fileLanguage, 0, args.content);
+    const globalServices = await this.args.serviceCatalog.global.getServices();
+    const relativeServices = await this.args.serviceCatalog.relative.getServices(doc);
+    return [
+      ...schemaValidationResults,
+      ...refValidationResults,
+      ...this.getFunctionDiagnostics([...globalServices, ...relativeServices]),
+    ];
   }
 
   public async getCodeLenses(args: {

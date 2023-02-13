@@ -105,11 +105,7 @@ export class SwfJsonLanguageService {
     });
   }
 
-  public async getDiagnostics(args: {
-    content: string;
-    uriPath: string;
-    swfServiceCatalogService: SwfServiceCatalogService[];
-  }) {
+  public async getDiagnostics(args: { content: string; uriPath: string }) {
     return this.ls.getDiagnostics({
       ...args,
       rootNode: this.parseContent(args.content),

@@ -135,11 +135,7 @@ export class SwfYamlLanguageService {
     });
   }
 
-  public async getDiagnostics(args: {
-    content: string;
-    uriPath: string;
-    swfServiceCatalogService: SwfServiceCatalogService[];
-  }) {
+  public async getDiagnostics(args: { content: string; uriPath: string }) {
     if (!args.content.trim()) {
       return [];
     }
