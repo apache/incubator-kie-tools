@@ -101,14 +101,14 @@ function TextField({ onChange, ...props }: TextFieldProps) {
   }, [props.type, props.field, props.value, props.max, props.min, parseTime]);
 
   const onDateChange = useCallback(
-    (value: string) => {
+    (event: React.FormEvent<HTMLInputElement>, value: string) => {
       onChange(value);
     },
     [onChange]
   );
 
   const onTimeChange = useCallback(
-    (time: string) => {
+    (event: React.FormEvent<HTMLInputElement>, time: string) => {
       const parsedTime = time.split(":");
       if (parsedTime.length === 2) {
         onChange([...parsedTime, "00"].join(":"));

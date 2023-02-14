@@ -67,7 +67,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
   }, [dateValue]);
 
   const onDateChange = useCallback(
-    (value: string, date?: Date) => {
+    (event: React.FormEvent<HTMLInputElement>, value: string, date?: Date) => {
       if (!date) {
         onChange(date);
       } else {
@@ -110,7 +110,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
   }, [dateValue, props.min, props.max]);
 
   const onTimeChange = useCallback(
-    (time: string, hours?: number, minutes?: number) => {
+    (event: React.FormEvent<HTMLInputElement>, time: string, hours?: number, minutes?: number) => {
       const newDate = dateValue();
       if (newDate) {
         if (hours && minutes) {
