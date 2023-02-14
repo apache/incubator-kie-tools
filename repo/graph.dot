@@ -22,6 +22,9 @@ digraph G {
   "@kie-tools-examples/ping-pong-view-react" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "kie-tools-examples-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/uniforms-patternfly" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/uniforms-patternfly" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/kie-editors-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -51,7 +54,6 @@ digraph G {
   "@kie-tools/dashbuilder-component-victory-charts" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-dev" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-echarts-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -110,6 +112,7 @@ digraph G {
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -124,7 +127,6 @@ digraph G {
   "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-scripts/bootstrap" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/run-script-if" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/sparse-checkout" [ style = "dashed", color = "black" ];
@@ -144,6 +146,9 @@ digraph G {
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-angular" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-react" [ style = "solid", color = "orange" ];
@@ -195,6 +200,7 @@ digraph G {
   "@kie-tools/dashbuilder-component-timeseries" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-timeseries" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-victory-charts" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
@@ -240,6 +246,7 @@ digraph G {
   "@kie-tools/feel-input-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/form" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-bootstrap4-codegen" [ style = "solid", color = "blue" ];
@@ -347,6 +354,10 @@ digraph G {
   "@kie-tools/uniforms-bootstrap4-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-bootstrap4-codegen" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-bootstrap4-codegen" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];

@@ -35,13 +35,11 @@ import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJ
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
 
 /**
  * This class defines workflow states define building blocks of the workflow execution instructions.
  * They define the control flow logic instructions on what the workflow is supposed to do.
- *
+ * <p>
  * Type of the state is specified by its category, which is set in constructor for all its descendants.
  */
 @Bindable
@@ -95,21 +93,13 @@ public class State {
     private ErrorTransition[] onErrors;
 
     /**
-     * State specific timeouts.
-     */
-    private String eventTimeout;
-
-    /**
      * Unique name of a workflow state which is responsible for compensation of this state.
      */
     private String compensatedBy;
 
     private StateDataFilter stateDataFilter;
 
-
-    @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
-    @JsonbTypeDeserializer(WorkflowTimeoutsJsonDeserializer.class)
-    private Object timeouts;
+    private WorkflowTimeouts timeouts;
 
     public State() {
         this.name = "State";
@@ -160,15 +150,6 @@ public class State {
         return this;
     }
 
-    public String getEventTimeout() {
-        return eventTimeout;
-    }
-
-    public State setEventTimeout(String eventTimeout) {
-        this.eventTimeout = eventTimeout;
-        return this;
-    }
-
     public String getCompensatedBy() {
         return compensatedBy;
     }
@@ -193,6 +174,7 @@ public class State {
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
+
     public StateDataFilter getStateDataFilter() {
         return stateDataFilter;
     }
@@ -201,11 +183,11 @@ public class State {
         this.stateDataFilter = stateDataFilter;
     }
 
-    public Object getTimeouts() {
+    public WorkflowTimeouts getTimeouts() {
         return timeouts;
     }
 
-    public void setTimeouts(Object timeouts) {
+    public void setTimeouts(WorkflowTimeouts timeouts) {
         this.timeouts = timeouts;
     }
 }
