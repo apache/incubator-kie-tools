@@ -122,9 +122,11 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     }, [config, enabled, onBlur, onChange, onKeyDown]);
 
     useEffect(() => {
-      monacoRef.current?.setValue(value ?? "");
-      monacoRef.current?.setPosition(calculatePosition(value ?? ""));
-    }, [value]);
+      if (enabled) {
+        monacoRef.current?.setValue(value ?? "");
+        monacoRef.current?.setPosition(calculatePosition(value ?? ""));
+      }
+    }, [value, enabled]);
 
     useEffect(() => {
       Monaco.editor.colorize(value ?? "", MONACO_FEEL_LANGUAGE, {}).then((colorizedValue) => {
