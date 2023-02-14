@@ -129,8 +129,8 @@ export function ServerlessModels() {
                 </TextContent>
               </PageSection>
 
-              <PageSection isFilled>
-                <PageSection variant={"light"}>
+              <PageSection hasOverflowScroll isFilled>
+                <PageSection variant={"light"} isFilled style={{ height: "100%" }}>
                   <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
                     <DrawerContent
                       panelContent={
