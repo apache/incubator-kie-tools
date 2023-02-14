@@ -15,6 +15,9 @@
  */
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
@@ -38,37 +41,55 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const addParameter = useCallback(() => {
-    setExpression((prev: FunctionExpressionDefinition) => {
-      const newParameters = [
-        ...prev.formalParameters,
-        {
-          id: generateUuid(),
-          name: getNextAvailablePrefixedName(
-            prev.formalParameters.map((p) => p.name),
-            "p"
-          ),
-          dataType: DmnBuiltInDataType.Undefined,
-        },
-      ];
+  const addParameter = useCallback(
+    (mouseEvent) => {
+      mouseEvent.stopPropagation();
+      setExpression((prev: FunctionExpressionDefinition) => {
+        const newParameters = [
+          ...prev.formalParameters,
+          {
+            id: generateUuid(),
+            name: getNextAvailablePrefixedName(
+              prev.formalParameters.map((p) => p.name),
+              "p"
+            ),
+            dataType: DmnBuiltInDataType.Undefined,
+          },
+        ];
 
-      return {
-        ...prev,
-        formalParameters: newParameters,
-      };
-    });
-  }, [setExpression]);
+        return {
+          ...prev,
+          formalParameters: newParameters,
+        };
+      });
+    },
+    [setExpression]
+  );
 
   return (
     <div className="parameters-editor" onMouseDown={(e) => e.stopPropagation()}>
-      <Button variant="tertiary" onClick={addParameter} className="add-parameter">
-        {i18n.addParameter}
-      </Button>
-      <div className="parameters-container">
-        {parameters.map((parameter, index) => (
-          <ParameterEntry key={index} parameter={parameter} index={index} />
-        ))}
-      </div>
+      {parameters.length ? (
+        <>
+          <Button variant="tertiary" onClick={addParameter} className="add-parameter">
+            {i18n.addParameter}
+          </Button>
+          <div className="parameters-container">
+            {parameters.map((parameter, index) => (
+              <ParameterEntry key={index} parameter={parameter} index={index} />
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="parameters-container-empty">
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title headingLevel="h4">{i18n.noParametersDefined}</Title>
+            <Button variant="primary" onClick={addParameter}>
+              {i18n.addParameter}
+            </Button>
+          </EmptyState>
+        </div>
+      )}
     </div>
   );
 };

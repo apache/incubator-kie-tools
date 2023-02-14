@@ -74,6 +74,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   methodSignature: string;
   model: string;
   name: string;
+  noParametersDefined: string;
   parameters: string;
   outputClause: string;
   pmml: {

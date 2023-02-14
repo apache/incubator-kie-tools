@@ -81,6 +81,7 @@ export const en: BoxedExpressionEditorI18n = {
   methodSignature: "method signature",
   model: "model",
   name: "Name",
+  noParametersDefined: "No parameters have been defined.",
   outputClause: "OUTPUT CLAUSE",
   parameters: "PARAMETERS",
   pmml: {
