@@ -35,7 +35,7 @@ import { UnitablesColumnType } from "../UnitablesTypes";
 
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
-import { AutoField } from "uniforms-patternfly";
+import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { useField } from "uniforms";
 
 export const UNITABLES_COLUMN_MIN_WIDTH = 150;
