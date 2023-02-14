@@ -38,7 +38,7 @@ export class DmnLanguageService {
   private getImportedModelRelativePath(model: string): string[] {
     const xmlContent = this.parser.parseFromString(model, XML_MIME);
     const importTag = this.importTagRegExp.exec(model);
-    const importedModels = xmlContent.getElementsByTagName(importTag?.at(0) ?? IMPORT);
+    const importedModels = xmlContent.getElementsByTagName(importTag?.[0] ?? IMPORT);
     return Array.from(importedModels)
       .map((importedModel) => importedModel.getAttribute(LOCATION_URI_ATTRIBUTE))
       .filter((e) => e !== null) as string[];
@@ -57,7 +57,7 @@ export class DmnLanguageService {
     for (const resourceContent of resourceContents) {
       const xmlContent = this.parser.parseFromString(resourceContent.content ?? "", XML_MIME);
       const inputDataTag = this.inputDataRegEx.exec(resourceContent.content ?? "");
-      const inputs = xmlContent.getElementsByTagName(inputDataTag?.at(0) ?? INPUT_DATA);
+      const inputs = xmlContent.getElementsByTagName(inputDataTag?.[0] ?? INPUT_DATA);
       for (const input of Array.from(inputs)) {
         if (input.id === nodeId) {
           return resourceContent.relativePath;
