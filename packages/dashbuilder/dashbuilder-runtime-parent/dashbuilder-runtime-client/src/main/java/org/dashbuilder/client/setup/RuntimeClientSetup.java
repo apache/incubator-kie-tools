@@ -44,6 +44,9 @@ public interface RuntimeClientSetup {
     @JsProperty
     String getSamplesUrl();
 
+    @JsProperty
+    String getSamplesEditService();
+
     class Builder {
 
         @JsProperty(name = "dashbuilder", namespace = JsPackage.GLOBAL)

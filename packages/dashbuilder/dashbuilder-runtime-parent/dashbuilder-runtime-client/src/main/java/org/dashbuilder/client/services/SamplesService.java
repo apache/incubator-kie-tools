@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -41,6 +42,10 @@ public class SamplesService {
     final String SAMPLE_ID_KEY = "id";
     final String SAMPLE_NAME_KEY = "name";
 
+    final String SAMPLE_ID_PARAM = "sampleId";
+
+    String samplesEditUrl;
+
     @PostConstruct
     void init() {
         var setup = RuntimeClientSetup.Builder.get();
@@ -49,6 +54,7 @@ public class SamplesService {
 
         if (userSamplesUrl != null) {
             var xhr = new XMLHttpRequest();
+            samplesEditUrl = setup.getSamplesEditService();
             xhr.open("GET", SAMPLES_FILE, false);
             xhr.send();
             if (xhr.status >= 200 && xhr.status < 300) {
@@ -91,10 +97,12 @@ public class SamplesService {
                 var name = sampleJson.getString(SAMPLE_NAME_KEY);
                 var sampleBaseUrl = samplesUrl + id + "/";
                 var samplesSourceUrl = sampleBaseUrl + id + ".dash.yaml";
+                var editUrl = buildSampleUrl(id);
                 samples.add(new SampleInfo(id,
                         name == null ? id : name,
                         sampleBaseUrl + id + ".svg",
-                        samplesSourceUrl));
+                        samplesSourceUrl,
+                        editUrl));
             }
             if (samples.size() > 0) {
                 samplesByCategory.put(cat, samples);
@@ -102,22 +110,46 @@ public class SamplesService {
         }
     }
 
+    String buildSampleUrl(String id) {
+        if (samplesEditUrl != null) {
+            var sampleUrl = samplesEditUrl;
+            var sampleIdParam = SAMPLE_ID_PARAM + "=" + id;
+            if (sampleUrl.indexOf('?') == -1) {
+                sampleUrl += "?";
+            } else {
+                sampleUrl += "&";
+            }
+            sampleUrl += sampleIdParam;
+            return sampleUrl;
+        }
+        return null;
+    }
+
     public static class SampleInfo {
 
+        /**
+         * The sample ID which will be used as base for the SVG, source URLs and edit service (if available)
+         */
         private String id;
+        /**
+         * A human friendly name for the sample
+         */
         private String name;
 
         private String svgUrl;
         private String sourceUrl;
+        private Optional<String> editUrl;
 
         public SampleInfo(String id,
                           String name,
                           String svgUrl,
-                          String sourceUrl) {
+                          String sourceUrl,
+                          String editUrl) {
             this.id = id;
             this.name = name;
             this.svgUrl = svgUrl;
             this.sourceUrl = sourceUrl;
+            this.editUrl = Optional.ofNullable(editUrl);
         }
 
         public String getId() {
@@ -134,6 +166,10 @@ public class SamplesService {
 
         public String getSourceUrl() {
             return sourceUrl;
+        }
+
+        public Optional<String> getEditUrl() {
+            return editUrl;
         }
 
     }

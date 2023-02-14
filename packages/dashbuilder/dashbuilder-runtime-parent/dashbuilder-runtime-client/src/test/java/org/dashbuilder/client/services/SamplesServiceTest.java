@@ -75,4 +75,15 @@ public class SamplesServiceTest {
         assertTrue(service.isSample("samples/products-dashboard/products-dashboard.dash.yaml"));
     }
 
+    @Test
+    public void testBuildSampleUrl() {
+        var service = new SamplesService();
+
+        service.samplesEditUrl = "edit";
+        assertEquals("edit?sampleId=abc", service.buildSampleUrl("abc"));
+
+        service.samplesEditUrl = "edit?otherParam=test";
+        assertEquals("edit?otherParam=test&sampleId=abc", service.buildSampleUrl("abc"));
+    }
+
 }

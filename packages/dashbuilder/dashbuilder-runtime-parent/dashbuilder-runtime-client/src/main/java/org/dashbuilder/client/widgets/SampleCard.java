@@ -16,12 +16,15 @@
 
 package org.dashbuilder.client.widgets;
 
+import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.XMLHttpRequest;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.RouterScreen;
 import org.dashbuilder.client.services.SamplesService.SampleInfo;
@@ -53,6 +56,8 @@ public class SampleCard implements IsElement {
 
         void setSampleSvg(String sampleSvg);
 
+        void enableEdit(Supplier<String> getSamplePath);
+
     }
 
     @PostConstruct
@@ -77,6 +82,19 @@ public class SampleCard implements IsElement {
                 view.setSampleSvg(txt);
             }
             return null;
+        });
+
+        sample.getEditUrl().ifPresent(editUrl -> {
+            view.enableEdit(() -> {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", sample.getEditUrl().get(), false);
+                xhr.send();
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    return xhr.responseText;
+                }
+                DomGlobal.console.warn("Error calling sample edit service, server responded with " + xhr.status);
+                return null;
+            });
         });
     }
 
