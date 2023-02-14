@@ -89,7 +89,7 @@ function build_kogito_app() {
 
     nativeBuild=""
     if [ "${NATIVE^^}" == "TRUE" ]; then
-        nativeBuild="-Pnative"
+        nativeBuild="-Dnative"
     fi
 
     if [ "${SCRIPT_DEBUG}" != "true" ]; then

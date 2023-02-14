@@ -29,7 +29,9 @@ Table of Contents
   - [Kogito Images JVM Memory Management](#kogito-images-jvm-memory-management)
   - [Kogito Runtime and Builder Images](#kogito-runtime-and-builder-images)
     - [Kogito Builder Images](#kogito-builder-images)
-      - [Kogito swf Builder Image usage](#kogito-swf-builder-image-usage)
+      - [Kogito SWF (Serverless Workflow) Builder Image usage](#kogito-swf-serverless-workflow-builder-image-usage)
+        - [Using as a builder](#using-as-a-builder)
+        - [Using for application development](#using-for-application-development)
       - [Kogito s2i Builder Image usage](#kogito-s2i-builder-image-usage)
       - [Kogito s2i Builder Image example](#kogito-s2i-builder-image-example)
         - [S2i Builder Image Example with Quarkus](#s2i-builder-image-example-with-quarkus)
@@ -52,6 +54,7 @@ Table of Contents
     - [Kogito Explainability Component Image](#kogito-explainability-component-image)
     - [Kogito Trusty Component Image](#kogito-trusty-component-image)
     - [Kogito Jobs Service Component Images](#kogito-jobs-service-component-images)
+      - [Jobs Services All-in-one](#jobs-services-all-in-one)
     - [Kogito Management Console Component Image](#kogito-management-console-component-image)
     - [Kogito Task Console Component Image](#kogito-task-console-component-image)
     - [Kogito Trusty UI Component Image](#kogito-trusty-ui-component-image)
@@ -70,15 +73,6 @@ Table of Contents
         - [Running Bats tests](#running-bats-tests)
         - [Writing Bats tests](#writing-bats-tests)
     - [Reporting new issues](#reporting-new-issues)
-            [Image Modules](#image-modules)
-        * [Testing Images](#testing-images)
-            * [Behave tests](#behave-tests)
-                * [Running Behave tests](#running-behave-tests)
-                * [Writing Behave tests](#writing-behave-tests)
-            * [Bats tests](#bats-tests)
-                * [Running Bats tests](#running-bats-tests)
-                * [Writing Bats tests](#writing-bats-tests)
-        * [Reporting new issues](#reporting-new-issues)
 
          
 ## Kogito Images Requirements 
@@ -566,7 +560,7 @@ For this example, let's use the same as the previous one (process-quarkus-exampl
 But this time, let's perform a native build:
 
 ```bash
-$ mvn clean package -Pnative
+$ mvn clean package -Dnative
 ```
 
 A binary has been generated into the **target directory**.

@@ -55,7 +55,7 @@ mvn -f kogito-quarkus-examples/rules-quarkus-helloworld clean package ${MAVEN_OP
 mvn -f kogito-springboot-examples/process-springboot-example clean package ${MAVEN_OPTIONS}
 
 if [ "$NATIVE_BUILD" = 'true' ]; then
-    mvn -f kogito-quarkus-examples/rules-quarkus-helloworld-native -Pnative clean package ${MAVEN_OPTIONS} ${MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS}
+    mvn -f kogito-quarkus-examples/rules-quarkus-helloworld-native -Dnative clean package ${MAVEN_OPTIONS} ${MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS}
     ls -lah /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld-native/target/
 fi
 
