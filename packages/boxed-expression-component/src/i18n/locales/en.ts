@@ -21,6 +21,13 @@ export const en: BoxedExpressionEditorI18n = {
   ...en_common,
   addParameter: "Add parameter",
   builtInAggregator: "Builtin Aggregator",
+  builtInAggregatorHelp: {
+    sum: "Outputs the sum of all collected values. Values must be numeric.",
+    count: "Outputs the number of matching rules.",
+    min: "Outputs the minimum value among the matches. The resulting values must be comparable, such as numbers, dates or text (lexicographic order).",
+    max: "Outputs the maximum value among the matches. The resulting values must be comparable, such as numbers, dates or text (lexicographic order).",
+    none: "Aggregates values in an arbitrary list.",
+  },
   choose: "Choose...",
   class: "class",
   columnOperations: {
@@ -54,6 +61,18 @@ export const en: BoxedExpressionEditorI18n = {
   enterText: "Enter Text",
   function: "Function",
   hitPolicy: "Hit Policy",
+  hitPolicyHelp: {
+    unique: "Permits only one rule to match. Any overlap raises an error.",
+    first: "Uses the first match in rule order.",
+    priority:
+      "Permits multiple rules to match, with different outputs. The output that comes first in the output values list is selected.",
+    any: "Permits multiple rules to match, but they must all have the same output. If multiple matching rules do not have the same output, an error is raised.",
+    collect: "Aggregates output from multiple rules based on an aggregation function.",
+    ruleOrder:
+      "Collects output from multiple rules into list ordered according to rules order. It is very similar as 'Collect' without any aggregation function, but with explicit consistent ordering in the final list as defined in the table.",
+    outputOrder:
+      "Collects output from multiple rules into list ordered using the same sorting mechanism as 'Priority' hit policy.",
+  },
   inputClause: "INPUT CLAUSE",
   invocation: "Invocation",
   list: "List",

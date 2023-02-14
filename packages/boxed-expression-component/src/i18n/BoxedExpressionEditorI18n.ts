@@ -20,6 +20,13 @@ import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   addParameter: string;
   builtInAggregator: string;
+  builtInAggregatorHelp: {
+    sum: string;
+    count: string;
+    min: string;
+    max: string;
+    none: string;
+  };
   choose: string;
   columns: string;
   columnOperations: {
@@ -50,6 +57,15 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   delete: string;
   function: string;
   hitPolicy: string;
+  hitPolicyHelp: {
+    unique: string;
+    first: string;
+    priority: string;
+    any: string;
+    collect: string;
+    ruleOrder: string;
+    outputOrder: string;
+  };
   inputClause: string;
   invocation: string;
   list: string;

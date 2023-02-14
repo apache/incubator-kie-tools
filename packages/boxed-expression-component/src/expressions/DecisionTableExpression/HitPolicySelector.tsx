@@ -27,6 +27,7 @@ import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popov
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */
@@ -58,6 +59,58 @@ export function HitPolicySelector({
     [selectedHitPolicy]
   );
 
+  const hitPolicyHelp = useMemo(() => {
+    switch (selectedHitPolicy) {
+      case DecisionTableExpressionDefinitionHitPolicy.Unique:
+        return i18n.hitPolicyHelp.unique;
+      case DecisionTableExpressionDefinitionHitPolicy.First:
+        return i18n.hitPolicyHelp.first;
+      case DecisionTableExpressionDefinitionHitPolicy.Priority:
+        return i18n.hitPolicyHelp.priority;
+      case DecisionTableExpressionDefinitionHitPolicy.Any:
+        return i18n.hitPolicyHelp.any;
+      case DecisionTableExpressionDefinitionHitPolicy.Collect:
+        return i18n.hitPolicyHelp.collect;
+      case DecisionTableExpressionDefinitionHitPolicy.RuleOrder:
+        return i18n.hitPolicyHelp.ruleOrder;
+      case DecisionTableExpressionDefinitionHitPolicy.OutputOrder:
+        return i18n.hitPolicyHelp.outputOrder;
+      default:
+        return i18n.hitPolicyHelp.unique;
+    }
+  }, [
+    selectedHitPolicy,
+    i18n.hitPolicyHelp.unique,
+    i18n.hitPolicyHelp.first,
+    i18n.hitPolicyHelp.priority,
+    i18n.hitPolicyHelp.any,
+    i18n.hitPolicyHelp.collect,
+    i18n.hitPolicyHelp.ruleOrder,
+    i18n.hitPolicyHelp.outputOrder,
+  ]);
+
+  const aggregatorHelp = useMemo(() => {
+    switch (selectedBuiltInAggregator) {
+      case DecisionTableExpressionDefinitionBuiltInAggregation.SUM:
+        return i18n.builtInAggregatorHelp.sum;
+      case DecisionTableExpressionDefinitionBuiltInAggregation.COUNT:
+        return i18n.builtInAggregatorHelp.count;
+      case DecisionTableExpressionDefinitionBuiltInAggregation.MIN:
+        return i18n.builtInAggregatorHelp.min;
+      case DecisionTableExpressionDefinitionBuiltInAggregation.MAX:
+        return i18n.builtInAggregatorHelp.max;
+      default:
+        return i18n.builtInAggregatorHelp.none;
+    }
+  }, [
+    selectedBuiltInAggregator,
+    i18n.builtInAggregatorHelp.sum,
+    i18n.builtInAggregatorHelp.count,
+    i18n.builtInAggregatorHelp.min,
+    i18n.builtInAggregatorHelp.max,
+    i18n.builtInAggregatorHelp.none,
+  ]);
+
   const onHitPolicySelectToggle = useCallback((isOpen) => {
     return setHitPolicySelectOpen(isOpen);
   }, []);
@@ -68,6 +121,7 @@ export function HitPolicySelector({
 
   const hitPolicySelectionCallback = useCallback(
     (event: React.MouseEvent, itemId: string) => {
+      event.stopPropagation();
       const updatedHitPolicy = itemId as DecisionTableExpressionDefinitionHitPolicy;
       onHitPolicySelected(updatedHitPolicy);
       setHitPolicySelectOpen(false);
@@ -77,6 +131,7 @@ export function HitPolicySelector({
 
   const builtInAggregatorSelectionCallback = useCallback(
     (event: React.MouseEvent, itemId: string) => {
+      event.stopPropagation();
       onBuiltInAggregatorSelected(itemId as DecisionTableExpressionDefinitionBuiltInAggregation);
       setBuiltInAggregatorSelectOpen(false);
     },
@@ -93,47 +148,67 @@ export function HitPolicySelector({
       body={
         <div className="hit-policy-container">
           <div className="hit-policy-section">
-            <label>{i18n.hitPolicy}</label>
-            <Select
-              className="hit-policy-selector"
-              menuAppendTo={editorRef.current ?? "inline"}
-              ouiaId="hit-policy-selector"
-              variant={SelectVariant.single}
-              onToggle={onHitPolicySelectToggle}
-              onSelect={hitPolicySelectionCallback}
-              isOpen={hitPolicySelectOpen}
-              selections={selectedHitPolicy}
-            >
-              {_.map(Object.values(DecisionTableExpressionDefinitionHitPolicy), (key) => (
-                <SelectOption key={key} value={key} data-ouia-component-id={key}>
-                  {key}
-                </SelectOption>
-              ))}
-            </Select>
+            <div className="hit-policy-selectbox">
+              <Text component={TextVariants.h3}>{i18n.hitPolicy}</Text>
+              <Select
+                className="hit-policy-selector"
+                menuAppendTo={editorRef.current ?? "inline"}
+                ouiaId="hit-policy-selector"
+                variant={SelectVariant.single}
+                onToggle={onHitPolicySelectToggle}
+                onSelect={hitPolicySelectionCallback}
+                isOpen={hitPolicySelectOpen}
+                selections={selectedHitPolicy}
+              >
+                {_.map(Object.values(DecisionTableExpressionDefinitionHitPolicy), (key) => (
+                  <SelectOption key={key} value={key} data-ouia-component-id={key}>
+                    {key}
+                  </SelectOption>
+                ))}
+              </Select>
+            </div>
+            <div className="hit-policy-explanation">
+              <Text component={TextVariants.h3}>{selectedHitPolicy}</Text>
+              <Text component={TextVariants.p}>{hitPolicyHelp}</Text>
+            </div>
           </div>
-          <div className="builtin-aggregator-section">
-            <label>{i18n.builtInAggregator}</label>
-            <Select
-              className="builtin-aggregator-selector"
-              menuAppendTo={editorRef.current ?? "inline"}
-              ouiaId="builtin-aggregator-selector"
-              isDisabled={!builtInAggregatorEnabled}
-              variant={SelectVariant.single}
-              onToggle={onBuiltInAggregatorSelectToggle}
-              onSelect={builtInAggregatorSelectionCallback}
-              isOpen={builtInAggregatorSelectOpen}
-              selections={selectedBuiltInAggregator}
-            >
-              {_.map(Object.keys(DecisionTableExpressionDefinitionBuiltInAggregation), (key) => (
-                <SelectOption
-                  key={key}
-                  value={(DecisionTableExpressionDefinitionBuiltInAggregation as any)[key]}
-                  data-ouia-component-id={key}
-                >
-                  {key}
-                </SelectOption>
-              ))}
-            </Select>
+          <div className="hit-policy-aggregator-section">
+            <div className="hit-policy-selectbox">
+              {selectedHitPolicy === DecisionTableExpressionDefinitionHitPolicy.Collect && (
+                <>
+                  <Text component={TextVariants.h3}>{i18n.builtInAggregator}</Text>
+                  <Select
+                    className="builtin-aggregator-selector"
+                    menuAppendTo={editorRef.current ?? "inline"}
+                    ouiaId="builtin-aggregator-selector"
+                    isDisabled={!builtInAggregatorEnabled}
+                    variant={SelectVariant.single}
+                    onToggle={onBuiltInAggregatorSelectToggle}
+                    onSelect={builtInAggregatorSelectionCallback}
+                    isOpen={builtInAggregatorSelectOpen}
+                    selections={selectedBuiltInAggregator}
+                  >
+                    {_.map(Object.keys(DecisionTableExpressionDefinitionBuiltInAggregation), (key) => (
+                      <SelectOption
+                        key={key}
+                        value={(DecisionTableExpressionDefinitionBuiltInAggregation as any)[key]}
+                        data-ouia-component-id={key}
+                      >
+                        {key}
+                      </SelectOption>
+                    ))}
+                  </Select>
+                </>
+              )}
+            </div>
+            <div className="hit-policy-explanation">
+              {selectedHitPolicy === DecisionTableExpressionDefinitionHitPolicy.Collect && (
+                <Text component={TextVariants.h3}>{i18n.builtInAggregator}</Text>
+              )}
+              {selectedHitPolicy === DecisionTableExpressionDefinitionHitPolicy.Collect && (
+                <Text component={TextVariants.p}>{aggregatorHelp}</Text>
+              )}
+            </div>
           </div>
         </div>
       }
