@@ -15,6 +15,9 @@ importers:
       "@kie-tools-scripts/build-env":
         specifier: workspace:*
         version: link:scripts/build-env
+      "@kie-tools-scripts/check-junit-report-results":
+        specifier: workspace:*
+        version: link:scripts/check-junit-report-results
       "@kie-tools-scripts/run-script-if":
         specifier: workspace:*
         version: link:scripts/run-script-if
@@ -8887,6 +8890,12 @@ importers:
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
+
+  scripts/check-junit-report-results:
+    dependencies:
+      fast-xml-parser:
+        specifier: ^4.1.2
+        version: 4.1.2
 
   scripts/run-script-if:
     dependencies:
@@ -20441,6 +20450,14 @@ packages:
     requiresBuild: true
     dev: false
 
+  /fast-xml-parser@4.1.2:
+    resolution:
+      { integrity: sha512-CDYeykkle1LiA/uqQyNwYpFbyF6Axec6YapmpUP+/RHWIoR1zKjocdvNaTsxCxZzQ6v9MLXaSYm9Qq0thv0DHg== }
+    hasBin: true
+    dependencies:
+      strnum: 1.0.5
+    dev: false
+
   /fastest-levenshtein@1.0.12:
     resolution:
       { integrity: sha512-On2N+BpYJ15xIC974QNVuYGMOlEVt4s0EOI3wwMqOmK1fdDY+FN/zltPV8vosq4ad4c/gJ1KHScUn/6AWIgiow== }
@@ -29095,6 +29112,11 @@ packages:
     dependencies:
       escape-string-regexp: 1.0.5
     dev: true
+
+  /strnum@1.0.5:
+    resolution:
+      { integrity: sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA== }
+    dev: false
 
   /style-loader@2.0.0(webpack@5.70.0):
     resolution:

@@ -33,7 +33,7 @@ describe("ContextEntryExpression tests", () => {
       ).wrapper
     );
 
-    expect(container.querySelector(".entry-expression")).toBeTruthy();
+    expect(container.querySelector(".entry-expression")).toBeFalsy();
     expect(container.querySelector(".entry-expression .logic-type-selector")).toHaveClass("logic-type-not-present");
   });
 

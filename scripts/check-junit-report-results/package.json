@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "@kie-tools-scripts/check-junit-report-results",
+  "version": "0.0.0",
+  "keywords": [],
+  "dependencies": {
+    "fast-xml-parser": "^4.1.2"
+  }
+}
