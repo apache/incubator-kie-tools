@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.processes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import elemental2.dom.DomGlobal;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Lane;
@@ -112,19 +115,37 @@ final class ProcessConverterDelegate {
     }
 
     private Result<Map<String, BpmnNode>> convertFlowElements(List<FlowElement> flowElements) {
-        final List<Result<BpmnNode>> results = flowElements
-                .stream()
-                .map(converterFactory.flowElementConverter()::convertNode)
-                .collect(Collectors.toList());
-
-        final Map<String, BpmnNode> resultMap = results.stream()
-                .map(Result::value)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(n -> n.value().getUUID(), n -> n));
-
-        return ResultComposer.composeResults(resultMap, results);
+        final List<Result<BpmnNode>> results = new ArrayList<>();
+        final Map<String, BpmnNode> resultMap = new HashMap<>();
+        for (FlowElement element : flowElements) {
+            try {
+                logMessage("Converting  " + element);
+                Result<BpmnNode> result = converterFactory.flowElementConverter().convertNode(element);
+                results.add(result);
+                logMessage("Mapping  " + result);
+                if (result.value() != null) {
+                    BpmnNode n = result.value();
+                    resultMap.put(n.value().getUUID(), n);
+                }
+            } catch (Throwable t) {
+                logMessage("Failed to convert/map " + element + t);
+            }
+        }
+        Result toReturn = null;
+        try {
+            logMessage("Composing result");
+            toReturn = ResultComposer.composeResults(resultMap, results);
+        }  catch (Throwable t) {
+            logMessage("Failed to compose result " + t);
+        }
+        return toReturn;
     }
 
+    private void logMessage(String message) {
+        if (DomGlobal.console != null) { //Safe for Unit Test
+            DomGlobal.console.log(message);
+        }
+    }
     private Result<BpmnNode>[] convertLane(Lane lane, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
         if (lane.getChildLaneSet() != null) {
             parents.add(lane);

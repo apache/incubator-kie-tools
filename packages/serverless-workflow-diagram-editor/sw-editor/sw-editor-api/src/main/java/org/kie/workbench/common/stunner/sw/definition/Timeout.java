@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 
-// TODO: Timeouts are not being used for now, consider dropping all related classes and usages.
 @MorphBase(defaultType = EventTimeout.class)
 public class Timeout {
 

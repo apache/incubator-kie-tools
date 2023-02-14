@@ -27,19 +27,7 @@
   <artifactId>kie-wb-common-dmn-client</artifactId>
   <name>Kie Workbench - Common - DMN - Client</name>
   <description>Kie Workbench - Common - DMN - Client</description>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <packaging>jar</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <java.module.name>org.kie.wb.common.dmn.client</java.module.name>
