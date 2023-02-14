@@ -30,8 +30,6 @@ COPY --from=builder --chown=185 /home/kogito/${PROJECT_ARTIFACT_ID}/target/quark
 COPY --from=builder --chown=185 /home/kogito/${PROJECT_ARTIFACT_ID}/target/quarkus-app/app/ /deployments/app/
 COPY --from=builder --chown=185 /home/kogito/${PROJECT_ARTIFACT_ID}/target/quarkus-app/quarkus/ /deployments/quarkus/
 
-HEALTHCHECK --interval=2s --timeout=4s CMD curl --fail http://localhost:8080 || exit 1
-
 EXPOSE 8080
 USER 185
 ENV AB_JOLOKIA_OFF=""

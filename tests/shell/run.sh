@@ -11,7 +11,7 @@ if [ -z "${image_name}" ]; then
 fi
 
 if [ -d  "${script_dir_path}/${image_name}" ]; then
-  "${script_dir_path}/${image_name}"/run.sh
+  curl -Ls https://sh.jbang.dev | bash -s - "${script_dir_path}/${image_name}/RunTests.java" "${script_dir_path}/../../target/shell/${image_name}"
 else
   echo "No shell test to run for image ${image_name}"
 fi

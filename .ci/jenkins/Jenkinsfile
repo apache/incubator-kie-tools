@@ -90,8 +90,8 @@ pipeline {
                                     } catch (err) {
                                         echo "Testing error(s) for image ${image}"
                                     } finally {
-                                        junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
-                                        archiveArtifacts artifacts: 'target/test/results/*.xml', allowEmptyArchive: true
+                                        junit testResults: 'target/**/*.xml', allowEmptyResults: true
+                                        archiveArtifacts artifacts: 'target/**/*.xml', allowEmptyArchive: true
                                     }
                                 }
                             }
