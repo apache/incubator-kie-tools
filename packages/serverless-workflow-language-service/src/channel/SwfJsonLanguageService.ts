@@ -17,16 +17,7 @@
 import * as jsonc from "jsonc-parser";
 import { getLanguageService } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import {
-  CodeLens,
-  ColorPresentation,
-  CompletionItem,
-  CompletionItemKind,
-  Diagnostic,
-  DiagnosticSeverity,
-  Position,
-  Range,
-} from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
@@ -37,6 +28,7 @@ import {
   SwfLsNode,
   TranslateArgs,
 } from "./types";
+
 /**
  * Check if a node has a comma after the end
  *
