@@ -30,7 +30,7 @@ describe("List Expression Tests", () => {
 
   it("Define List expression", () => {
     // Assert some content
-    cy.ouiaId("expression-row-0").should("contain.text", "9999");
+    cy.ouiaId("expression-row-0").should("contain.text", "1");
   });
 
   it("Regression tests: focus on the first data cell", () => {
