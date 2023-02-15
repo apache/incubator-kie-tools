@@ -39,26 +39,28 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
         <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"kie-sandbox--logo"}>
-              <MastheadBrand
-                onClick={() => history.push({ pathname: routes.home.path({}) })}
-                style={{ textDecoration: "none" }}
-              >
-                <Flex alignItems={{ default: "alignItemsCenter" }}>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <Brand
-                      src={routes.static.images.kieHorizontalLogoReverse.path({})}
-                      alt={"Logo"}
-                      style={{ display: "inline", height: "38px" }}
-                    />
-                  </FlexItem>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <TextContent>
-                      <Text component={TextVariants.h3}>Sandbox</Text>
-                    </TextContent>
-                  </FlexItem>
-                </Flex>
-              </MastheadBrand>
-              <AboutButton />
+              <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
+                <MastheadBrand
+                  onClick={() => history.push({ pathname: routes.home.path({}) })}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Flex alignItems={{ default: "alignItemsCenter" }}>
+                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
+                      <Brand
+                        src={routes.static.images.kieHorizontalLogoReverse.path({})}
+                        alt={"Logo"}
+                        style={{ display: "inline", height: "38px" }}
+                      />
+                    </FlexItem>
+                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
+                      <TextContent>
+                        <Text component={TextVariants.h3}>Sandbox</Text>
+                      </TextContent>
+                    </FlexItem>
+                  </Flex>
+                </MastheadBrand>
+                <AboutButton />
+              </Flex>
             </PageHeaderToolsItem>
             <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
               <FlexItem>
